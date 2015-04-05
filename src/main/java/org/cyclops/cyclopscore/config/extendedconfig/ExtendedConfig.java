@@ -39,6 +39,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
     
     /**
      * Create a new config
+     * @param mod     The mod instance.
      * @param enabled If this should is enabled by default. If this is false, this can still
      * be enabled through the config file.
      * @param namedId a unique name id

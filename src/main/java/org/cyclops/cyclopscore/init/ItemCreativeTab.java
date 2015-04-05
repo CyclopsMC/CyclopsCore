@@ -13,7 +13,7 @@ public class ItemCreativeTab extends CreativeTabs {
     private Item item;
 
     public ItemCreativeTab(ModBase mod, Item item) {
-        super(mod.getModName());
+        super(mod.getModId());
         this.item = item;
     }
 

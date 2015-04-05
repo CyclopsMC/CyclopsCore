@@ -18,7 +18,7 @@ import java.util.Map;
  *
  */
 @SuppressWarnings("rawtypes")
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true, exclude = {"config", "mod"})
 @Data
 public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
 
