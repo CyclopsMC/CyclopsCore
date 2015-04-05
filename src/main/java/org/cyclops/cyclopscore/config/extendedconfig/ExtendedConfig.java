@@ -8,6 +8,7 @@ import org.cyclops.cyclopscore.config.configurable.IConfigurable;
 import org.cyclops.cyclopscore.init.IInitListener;
 import org.cyclops.cyclopscore.init.ModBase;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -109,22 +110,44 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      */
     @SuppressWarnings("unchecked")
     public void save() {
-        String errorMessage = "Registering " + this.getNamedId() + " caused an issue.";
         try {
             // Save inside the self-implementation
-            this.getClass().getField("_instance").set(null, this);
+            try {
+                this.getClass().getField("_instance").set(null, this);
+            } catch (NoSuchFieldError e) {
+                throw new CyclopsCoreConfigException(String.format("The config file for %s requires a static field " +
+                        "_instance.", this.getNamedId()));
+            }
 
             // Try initalizing the override sub instance.
             this.overriddenSubInstance = initSubInstance();
 
             // Save inside the unique instance this config refers to (only if such an instance exists!)
             if (getOverriddenSubInstance() == null && this.getHolderType().hasUniqueInstance()) {
-                this.getElement().getMethod("initInstance", ExtendedConfig.class).invoke(null, this);
+                Constructor constructor = this.getElement().getDeclaredConstructor(ExtendedConfig.class);
+                if(constructor == null) {
+                    throw new CyclopsCoreConfigException(String.format("The class %s requires a constructor with " +
+                            "ExtendedConfig as single parameter.", this.getElement()));
+                }
+                Object instance = constructor.newInstance(this);
+
+                Field field = this.getElement().getDeclaredField("_instance");
+                field.setAccessible(true);
+                if(field.get(null) == null) {
+                    field.set(null, instance);
+                } else {
+                    showDoubleInitError();
+                }
             }
+        } catch (IllegalAccessException | IllegalArgumentException | SecurityException | NoSuchFieldException |
+                 InstantiationException | NoSuchMethodException e) {
+            mod.getLoggerHelper().getLogger().error("Registering %s caused an issue. ", e);
+            throw new CyclopsCoreConfigException(String.format("Registering %s caused the issue: %s",
+                    this.getNamedId(), e.getCause().getMessage()));
         } catch (InvocationTargetException e) {
             mod.log(Level.ERROR, "Registering " + this.getNamedId() + " caused the issue "
                     + "(skipping registration): " + e.getCause().getMessage());
-            e.getCause().printStackTrace();
+            mod.getLoggerHelper().getLogger().error("Registering %s caused an issue. ", e.getCause());
 
             // Disable this configurable.
             if (!this.isDisableable()) {
@@ -134,21 +157,6 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
                         + "there might be ID conflicts with other mods.");
             }
             this.setEnabled(false);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            throw new CyclopsCoreConfigException(errorMessage);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            throw new CyclopsCoreConfigException(errorMessage);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            throw new CyclopsCoreConfigException(errorMessage);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-            throw new CyclopsCoreConfigException(errorMessage);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-            throw new CyclopsCoreConfigException(errorMessage);
         }
     }
     
@@ -200,19 +208,11 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
             throw new CyclopsCoreConfigException("There exists no unique instance for " + this);
         try {
             return (IConfigurable) this.getElement().getMethod("getInstance").invoke(null);
-        } catch (NoSuchMethodException e1) {
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
         	// Only possible in development mode
         	e1.printStackTrace();
-        } catch (SecurityException e2) {
-        	e2.printStackTrace();
-        } catch (IllegalAccessException e3) {
-        	e3.printStackTrace();
-        } catch (IllegalArgumentException e4) {
-        	e4.printStackTrace();
-        } catch (InvocationTargetException e5) {
-        	e5.printStackTrace();
         }
-            
+
         return null;
     }
     

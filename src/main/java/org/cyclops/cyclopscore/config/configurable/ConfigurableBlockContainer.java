@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
@@ -248,6 +249,11 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     @Override
     public final BlockContainerConfig getConfig() {
         return (BlockContainerConfig) this.eConfig;
+    }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, FACING); // TODO: abstract
     }
 
 }

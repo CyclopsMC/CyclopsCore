@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
+import lombok.Getter;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +12,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class LoggerHelper {
 
-    private final Logger logger;
+    @Getter private final Logger logger;
 
     /**
      * Initialize the logger.

@@ -8,11 +8,12 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.Reference;
+import org.cyclops.cyclopscore.Debug;
+import org.cyclops.cyclopscore.GeneralConfig;
 import org.cyclops.cyclopscore.config.ConfigHandler;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
 
-import java.io.File;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,7 +34,6 @@ public abstract class ModBase {
     private final Map<EnumReferenceKey, String> genericReference = Maps.newHashMap();
 
     private CreativeTabs defaultCreativeTab = null;
-    private File configFolder = null;
 
     public ModBase(String modId, String modName) {
         this.modId = modId;
@@ -115,19 +115,26 @@ public abstract class ModBase {
     public void preInit(FMLPreInitializationEvent event) {
         log(Level.INFO, "preInit()");
 
-        // Determine evilcraft config folder.
-        String rootFolderName = event.getModConfigurationDirectory()
-                + "/" + Reference.MOD_ID;
-        configFolder = new File(rootFolderName);
-        if(!configFolder.exists()) {
-            configFolder.mkdir();
-        }
-
-        // Register configs.
-        configHandler.handle(event);
+        // Register configs and start with loading the general configs
+        onGeneralConfigsRegister(getConfigHandler());
+        getConfigHandler().handle(event);
+        onMainConfigsRegister(getConfigHandler());
 
         // Call init listeners
         callInitStepListeners(IInitListener.Step.PREINIT);
+
+        // Run debugging tools
+        if(GeneralConfig.debug) {
+            Debug.checkPreConfigurables(getConfigHandler());
+        }
+
+        // Load the rest of the configs and run the ConfigHandler to make/read the config and fill in the game registry
+        getConfigHandler().handle(event);
+
+        // Run debugging tools
+        if(GeneralConfig.debug) {
+            Debug.checkPostConfigurables();
+        }
     }
 
     /**
@@ -152,6 +159,32 @@ public abstract class ModBase {
      * @return The default creative tab for items and blocks.
      */
     public abstract CreativeTabs constructDefaultCreativeTab();
+
+    /**
+     * Register a config file.
+     * The registration order is always kept.
+     * @param extendedConfig The config to register.
+     */
+    public final void registerConfig(ExtendedConfig<?> extendedConfig) {
+        getConfigHandler().add(extendedConfig);
+    }
+
+    /**
+     * Called when the general configs should be registered.
+     * These are configs which should be available before other configs can be registered.
+     * @param configHandler The config handler to register to.
+     */
+    public void onGeneralConfigsRegister(ConfigHandler configHandler) {
+
+    }
+
+    /**
+     * Called when the main configs should be registered.
+     * @param configHandler The config handler to register to.
+     */
+    public void onMainConfigsRegister(ConfigHandler configHandler) {
+
+    }
 
     /**
      * @return The default creative tab for items and blocks.
