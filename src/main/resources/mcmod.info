@@ -1,0 +1,17 @@
+[
+{
+  "modid": "CyclopsCore",
+  "name": "Cyclops Core",
+  "description": "Coremod for EvilCraft, Integrated Dynamics and others.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "logoFile": "assets/cyclopscore/textures/logo.png",
+  "url": "TODO",
+  "updateUrl": "TODO",
+  "authorList": [ "rubensworks (aka kroeserr)" ],
+  "credits": "kroeserr",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
