@@ -1,7 +1,11 @@
 package org.cyclops.cyclopscore.config.configurable;
 
+import lombok.experimental.Delegate;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.BlockState;
+import org.cyclops.cyclopscore.block.BlockPropertyManagerComponent;
+import org.cyclops.cyclopscore.block.IBlockPropertyManager;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 
 /**
@@ -10,7 +14,12 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
  *
  */
 public class ConfigurableBlock extends Block implements IConfigurable {
-    
+
+    @Delegate private IBlockPropertyManager propertyManager;
+    @Override protected BlockState createBlockState() {
+        return (propertyManager = new BlockPropertyManagerComponent(this)).createDelegatedBlockState();
+    }
+
     @SuppressWarnings("rawtypes")
     protected ExtendedConfig eConfig = null;
     

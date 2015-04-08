@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurable;
 
+import lombok.experimental.Delegate;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -18,6 +19,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import org.cyclops.cyclopscore.block.BlockProperty;
+import org.cyclops.cyclopscore.block.BlockPropertyManagerComponent;
+import org.cyclops.cyclopscore.block.IBlockPropertyManager;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockContainerConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -36,7 +40,13 @@ import java.util.Random;
  */
 public class ConfigurableBlockContainer extends BlockContainer implements IConfigurable {
 
+    @BlockProperty
     public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+
+    @Delegate private IBlockPropertyManager propertyManager;
+    @Override protected BlockState createBlockState() {
+        return (propertyManager = new BlockPropertyManagerComponent(this)).createDelegatedBlockState();
+    }
 
     @SuppressWarnings("rawtypes")
     protected ExtendedConfig eConfig = null;
@@ -97,10 +107,8 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
             tile.onLoad();
             tile.setRotatable(isRotatable());
             return tile;
-        } catch (InstantiationException e1) {
-            e1.printStackTrace();
-        } catch (IllegalAccessException e2) {
-        	e2.printStackTrace();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
         }
         return null;
     }
@@ -249,11 +257,6 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     @Override
     public final BlockContainerConfig getConfig() {
         return (BlockContainerConfig) this.eConfig;
-    }
-
-    @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, FACING); // TODO: abstract
     }
 
 }
