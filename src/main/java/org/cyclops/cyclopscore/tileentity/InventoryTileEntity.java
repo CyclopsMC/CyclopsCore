@@ -175,15 +175,15 @@ public abstract class InventoryTileEntity extends TickingCyclopsTileEntity imple
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound data) {
-        super.readFromNBT(data);
-        inventory.readFromNBT(data);
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
+        inventory.readFromNBT(tag);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound data) {
-        super.writeToNBT(data);
-        inventory.writeToNBT(data);
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
+        inventory.writeToNBT(tag);
     }
 
     @Override

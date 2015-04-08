@@ -67,23 +67,23 @@ public class CyclopsTileEntity extends TileEntity {
     }
     
     @Override
-    public void writeToNBT(NBTTagCompound NBTTagCompound) {
-        super.writeToNBT(NBTTagCompound);
+    public void writeToNBT(NBTTagCompound tag) {
+        super.writeToNBT(tag);
         for(Field field : nbtPersistedFields)
-            writePersistedField(field, NBTTagCompound);
+            writePersistedField(field, tag);
         
         // Separate action for direction
-        NBTTagCompound.setString("rotation", rotation.getName());
+        tag.setString("rotation", rotation.getName());
     }
     
     @Override
-    public void readFromNBT(NBTTagCompound NBTTagCompound) {
-        super.readFromNBT(NBTTagCompound);
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
         for(Field field : nbtPersistedFields)
-            readPersistedField(field, NBTTagCompound);
+            readPersistedField(field, tag);
         
         // Separate action for direction
-        EnumFacing foundRotation = EnumFacing.byName(NBTTagCompound.getString("rotation"));
+        EnumFacing foundRotation = EnumFacing.byName(tag.getString("rotation"));
         if(foundRotation != null) {
         	rotation = foundRotation;
         }
