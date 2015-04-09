@@ -111,19 +111,19 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
     @SuppressWarnings("unchecked")
     public void save() {
         try {
-            // Save inside the self-implementation
-            try {
-                this.getClass().getField("_instance").set(null, this);
-            } catch (NoSuchFieldError e) {
-                throw new CyclopsCoreConfigException(String.format("The config file for %s requires a static field " +
-                        "_instance.", this.getNamedId()));
-            }
-
             // Try initalizing the override sub instance.
             this.overriddenSubInstance = initSubInstance();
 
             // Save inside the unique instance this config refers to (only if such an instance exists!)
             if (getOverriddenSubInstance() == null && this.getHolderType().hasUniqueInstance()) {
+                // Save inside the self-implementation
+                try {
+                    this.getClass().getField("_instance").set(null, this);
+                } catch (NoSuchFieldError e) {
+                    throw new CyclopsCoreConfigException(String.format("The config file for %s requires a static field " +
+                            "_instance.", this.getNamedId()));
+                }
+
                 Constructor constructor = this.getElement().getDeclaredConstructor(ExtendedConfig.class);
                 if(constructor == null) {
                     throw new CyclopsCoreConfigException(String.format("The class %s requires a constructor with " +
@@ -141,7 +141,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
             }
         } catch (IllegalAccessException | IllegalArgumentException | SecurityException | NoSuchFieldException |
                  InstantiationException | NoSuchMethodException e) {
-            mod.getLoggerHelper().getLogger().error("Registering %s caused an issue. ", e);
+            mod.getLoggerHelper().getLogger().error(String.format("Registering %s caused an issue. ", getNamedId()), e);
             throw new CyclopsCoreConfigException(String.format("Registering %s caused the issue: %s",
                     this.getNamedId(), e.getCause().getMessage()));
         } catch (InvocationTargetException e) {
