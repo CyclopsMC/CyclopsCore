@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -72,6 +73,12 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
         /*if(eConfig.isMultipartEnabled()) {
             ForgeMultipartHelper.registerMicroblock(eConfig);
         }*/
+    }
+
+    @Override
+    public void polish(BlockConfig config) {
+        ItemAction.handleItemModel(Item.getItemFromBlock(config.getBlockInstance()), config.getNamedId(),
+                config.getTargetTab(), config.getMod().getModId());
     }
 
 }

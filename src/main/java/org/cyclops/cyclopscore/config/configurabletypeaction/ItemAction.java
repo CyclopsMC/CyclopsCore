@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
@@ -60,26 +61,30 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
         }
     }
 
-    @Override
-    public void polish(ItemConfig config) {
+    public static void handleItemModel(Item item, String namedId, CreativeTabs tab, String modId) {
         if(MinecraftHelpers.isClientSide()) {
-            Item item = config.getItemInstance();
             if(item.getHasSubtypes()) {
                 List<ItemStack> itemStacks = Lists.newLinkedList();
-                item.getSubItems(item, config.getTargetTab(), itemStacks);
+                item.getSubItems(item, tab, itemStacks);
                 for(ItemStack itemStack : itemStacks) {
                     String itemName = item.getUnlocalizedName(itemStack);
                     itemName =  itemName.substring(itemName.indexOf(".") + 1);
 
-                    ModelBakery.addVariantName(item, config.getMod().getModId() + ":" + itemName);
+                    ModelBakery.addVariantName(item, modId + ":" + itemName);
                     Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, itemStack.getMetadata(),
-                            new ModelResourceLocation(config.getMod().getModId() + ":" + itemName, "inventory"));
+                            new ModelResourceLocation(modId + ":" + itemName, "inventory"));
                 }
             } else {
                 Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0,
-                        new ModelResourceLocation(config.getMod().getModId() + ":" + config.getNamedId(), "inventory"));
+                        new ModelResourceLocation(modId + ":" + namedId, "inventory"));
             }
         }
+    }
+
+    @Override
+    public void polish(ItemConfig config) {
+        handleItemModel(config.getItemInstance(), config.getNamedId(), config.getTargetTab(),
+                config.getMod().getModId());
     }
 
 }
