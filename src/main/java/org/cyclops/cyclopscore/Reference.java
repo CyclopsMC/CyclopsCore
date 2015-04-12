@@ -8,7 +8,7 @@ package org.cyclops.cyclopscore;
 public final class Reference {
 
     // Mod info
-    public static final String MOD_ID = "CyclopsCore";
+    public static final String MOD_ID = "cyclopscore";
     public static final String MOD_NAME = "Cyclops Core";
     public static final String MOD_VERSION = "@VERSION@";
     public static final String MOD_BUILD_NUMBER = "@BUILD_NUMBER@";

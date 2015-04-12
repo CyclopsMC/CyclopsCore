@@ -143,7 +143,12 @@ public abstract class ModBase {
      */
     public void init(FMLInitializationEvent event) {
         log(Level.INFO, "init()");
+
+        // Initialize the creative tab
         getDefaultCreativeTab();
+
+        // Polish the enabled configs.
+        getConfigHandler().polishConfigs();
     }
 
     /**
