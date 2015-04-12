@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.item.IInformationProvider;
 
 import java.util.List;
@@ -77,7 +78,7 @@ public final class L10NHelpers {
 			} else {
 				list.add(localize(EnumChatFormatting.GRAY.toString()
 						+ EnumChatFormatting.ITALIC.toString()
-						+ localize("general.tooltip.info")));
+						+ localize("general." + Reference.MOD_ID + ".tooltip.info")));
 			}
 		}
 	}

@@ -28,7 +28,7 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> {
 
     @Override
 	public String getUnlocalizedName() {
-		return "blocks." + getNamedId();
+		return "blocks." + getMod().getModId() + "." + getNamedId();
 	}
 
     @Override
