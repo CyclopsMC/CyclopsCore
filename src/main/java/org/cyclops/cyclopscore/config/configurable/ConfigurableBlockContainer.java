@@ -4,7 +4,6 @@ import lombok.experimental.Delegate;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,12 +13,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import org.cyclops.cyclopscore.block.BlockProperty;
 import org.cyclops.cyclopscore.block.BlockPropertyManagerComponent;
 import org.cyclops.cyclopscore.block.IBlockPropertyManager;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockContainerConfig;
@@ -39,9 +36,6 @@ import java.util.Random;
  *
  */
 public class ConfigurableBlockContainer extends BlockContainer implements IConfigurable {
-
-    @BlockProperty
-    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
     @Delegate private IBlockPropertyManager propertyManager;
     @Override protected BlockState createBlockState() {
@@ -70,7 +64,6 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     @SuppressWarnings({ "rawtypes" })
     public ConfigurableBlockContainer(ExtendedConfig eConfig, Material material, Class<? extends CyclopsTileEntity> tileEntity) {
         super(material);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         this.random = new Random();
