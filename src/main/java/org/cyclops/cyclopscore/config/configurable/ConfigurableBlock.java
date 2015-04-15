@@ -4,8 +4,8 @@ import lombok.experimental.Delegate;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockState;
-import org.cyclops.cyclopscore.block.BlockPropertyManagerComponent;
-import org.cyclops.cyclopscore.block.IBlockPropertyManager;
+import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
+import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 
 /**

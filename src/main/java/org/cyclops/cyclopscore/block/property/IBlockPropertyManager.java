@@ -1,4 +1,4 @@
-package org.cyclops.cyclopscore.block;
+package org.cyclops.cyclopscore.block.property;
 
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
@@ -6,8 +6,8 @@ import net.minecraft.block.state.IBlockState;
 /**
  * Manager interface for providing implementations for the {@link net.minecraft.block.state.IBlockState} related
  * methodes inside a block.
- * @see org.cyclops.cyclopscore.block.BlockProperty
- * @see org.cyclops.cyclopscore.block.BlockPropertyManagerComponent
+ * @see BlockProperty
+ * @see BlockPropertyManagerComponent
  * @author rubensworks
  */
 public interface IBlockPropertyManager {

@@ -1,4 +1,4 @@
-package org.cyclops.cyclopscore.block;
+package org.cyclops.cyclopscore.block.property;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
- * Implementation of {@link org.cyclops.cyclopscore.block.IBlockPropertyManager}.
+ * Implementation of {@link IBlockPropertyManager}.
  * Because of limitations, simply delegating to this using the {@link lombok.experimental.Delegate} annotation
  * will not work, you will also need to override the following method.
  * If {@link net.minecraftforge.common.property.IUnlistedProperty} are detected, an
@@ -66,8 +66,19 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
                     Object fieldObject = field.get(block);
                     if(fieldObject instanceof IProperty) {
                         sortedProperties.add((IProperty) fieldObject);
-                    } else {
+                    } else if(fieldObject instanceof IUnlistedProperty) {
                         sortedUnlistedProperties.add((IUnlistedProperty) fieldObject);
+                    } else if(fieldObject instanceof IProperty[]) {
+                        for(IProperty property : ((IProperty[]) fieldObject)) {
+                            sortedProperties.add(property);
+                        }
+                    } else if(fieldObject instanceof IUnlistedProperty[]) {
+                        for(IUnlistedProperty unlistedProperty : ((IUnlistedProperty[]) fieldObject)) {
+                            sortedUnlistedProperties.add(unlistedProperty);
+                        }
+                    } else {
+                        throw new IllegalArgumentException(String.format("The field %s in class %s can not be used " +
+                                "as block property.", field.getName(), clazz.getCanonicalName()));
                     }
                 }
             }
