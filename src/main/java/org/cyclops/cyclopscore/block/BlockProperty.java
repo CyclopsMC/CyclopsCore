@@ -11,6 +11,8 @@ import java.lang.annotation.Target;
  * This will automatically generate the methods {@link net.minecraft.block.Block#getStateFromMeta(int)},
  * {@link net.minecraft.block.Block#getMetaFromState(net.minecraft.block.state.IBlockState)} and
  * {@link net.minecraft.block.Block#createBlockState()}.
+ * You should only annotate {@link net.minecraft.block.properties.IProperty} or
+ * {@link net.minecraftforge.common.property.IUnlistedProperty} fields.
  * @author rubensworks
  */
 @Retention(RetentionPolicy.RUNTIME)

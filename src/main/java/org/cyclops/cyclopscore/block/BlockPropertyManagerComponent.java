@@ -8,7 +8,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraftforge.common.property.ExtendedBlockState;
+import net.minecraftforge.common.property.IUnlistedProperty;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -17,6 +20,9 @@ import java.util.*;
  * Implementation of {@link org.cyclops.cyclopscore.block.IBlockPropertyManager}.
  * Because of limitations, simply delegating to this using the {@link lombok.experimental.Delegate} annotation
  * will not work, you will also need to override the following method.
+ * If {@link net.minecraftforge.common.property.IUnlistedProperty} are detected, an
+ * {@link net.minecraftforge.common.property.ExtendedBlockState} will be automatically created instead of a normal
+ * {@link net.minecraft.block.state.IBlockState}.
  * <code>
  *     {@literal @}Override
  *     protected BlockState createBlockState() {
@@ -26,17 +32,23 @@ import java.util.*;
  * @author rubensworks
  */
 @Data
-public class BlockPropertyManagerComponent implements IBlockPropertyManager, Comparator<IProperty> {
+public class BlockPropertyManagerComponent implements IBlockPropertyManager {
+
+    private static final Comparator<IProperty> PROPERTY_COMPARATOR = new PropertyComparator();
+    private static final Comparator<IUnlistedProperty> UNLISTEDPROPERTY_COMPARATOR = new UnlistedPropertyComparator();
 
     private final Block block;
     private final IProperty[] properties;
+    private final IUnlistedProperty[] unlistedProperties;
     private final IProperty[] propertiesReversed;
     private final Map<IProperty, ArrayList<Comparable>> propertyValues;
 
     public BlockPropertyManagerComponent(Block block) {
         this.block = block;
         try {
-            this.properties = preprocessProperties();
+            Pair<IProperty[], IUnlistedProperty[]> allProperties = preprocessProperties();
+            this.properties = allProperties.getLeft();
+            this.unlistedProperties = allProperties.getRight();
             this.propertiesReversed = Arrays.copyOf(properties, properties.length);
             ArrayUtils.reverse(this.propertiesReversed);
             this.propertyValues = preprocessPropertyValues(this.properties);
@@ -45,17 +57,24 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager, Com
         }
     }
 
-    private IProperty[] preprocessProperties() throws IllegalAccessException {
-        TreeSet<IProperty> sortedProperties = Sets.newTreeSet(this);
+    private Pair<IProperty[], IUnlistedProperty[]> preprocessProperties() throws IllegalAccessException {
+        TreeSet<IProperty> sortedProperties = Sets.newTreeSet(PROPERTY_COMPARATOR);
+        TreeSet<IUnlistedProperty> sortedUnlistedProperties = Sets.newTreeSet(UNLISTEDPROPERTY_COMPARATOR);
         for(Class<?> clazz = block.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
             for(Field field : clazz.getDeclaredFields()) {
                 if(field.isAnnotationPresent(BlockProperty.class)) {
-                    sortedProperties.add((IProperty) field.get(block));
+                    Object fieldObject = field.get(block);
+                    if(fieldObject instanceof IProperty) {
+                        sortedProperties.add((IProperty) fieldObject);
+                    } else {
+                        sortedUnlistedProperties.add((IUnlistedProperty) fieldObject);
+                    }
                 }
             }
         }
         IProperty[] properties = new IProperty[sortedProperties.size()];
-        return sortedProperties.toArray(properties);
+        IUnlistedProperty[] unlistedProperties = new IUnlistedProperty[sortedUnlistedProperties.size()];
+        return Pair.of(sortedProperties.toArray(properties), sortedUnlistedProperties.toArray(unlistedProperties));
     }
 
     private Map<IProperty, ArrayList<Comparable>> preprocessPropertyValues(IProperty[] properties) {
@@ -106,11 +125,24 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager, Com
 
     @Override
     public BlockState createDelegatedBlockState() {
-        return new BlockState(block, properties);
+        if(unlistedProperties.length == 0) {
+            return new BlockState(block, properties);
+        } else {
+            return new ExtendedBlockState(block, properties, unlistedProperties);
+        }
     }
 
-    @Override
-    public int compare(IProperty o1, IProperty o2) {
-        return o1.getName().compareTo(o2.getName());
+    private static class PropertyComparator implements Comparator<IProperty> {
+        @Override
+        public int compare(IProperty o1, IProperty o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    }
+
+    private static class UnlistedPropertyComparator implements Comparator<IUnlistedProperty> {
+        @Override
+        public int compare(IUnlistedProperty o1, IUnlistedProperty o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
     }
 }
