@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.Debug;
 import org.cyclops.cyclopscore.GeneralConfig;
+import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
@@ -32,6 +33,7 @@ public abstract class ModBase {
     private final Set<IInitListener> initListeners;
     private final ConfigHandler configHandler;
     private final Map<EnumReferenceKey, String> genericReference = Maps.newHashMap();
+    private final IconProvider iconProvider;
 
     private CreativeTabs defaultCreativeTab = null;
 
@@ -41,6 +43,7 @@ public abstract class ModBase {
         this.loggerHelper = new LoggerHelper(this.modName);
         this.initListeners = Sets.newHashSet();
         this.configHandler = new ConfigHandler(this);
+        this.iconProvider = new IconProvider(this);
         populateDefaultGenericReferences();
     }
 
