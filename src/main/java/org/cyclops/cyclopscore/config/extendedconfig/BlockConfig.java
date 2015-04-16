@@ -1,9 +1,19 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMapperBase;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Pair;
+import org.cyclops.cyclopscore.client.model.IDynamicModelBlock;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.item.ItemBlockExtended;
 
@@ -13,6 +23,9 @@ import org.cyclops.cyclopscore.item.ItemBlockExtended;
  * @see ExtendedConfig
  */
 public abstract class BlockConfig extends ExtendedConfig<BlockConfig> {
+
+    @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicBlockVariantLocation = null;
+    @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicItemVariantLocation  = null;
 
     /**
      * Make a new instance.
@@ -79,6 +92,37 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> {
      */
     public CreativeTabs getTargetTab() {
         return getMod().getDefaultCreativeTab();
+    }
+
+    /**
+     * Register default block and item models for this block.
+     * This should only be used when registering dynamic models.
+     * @return The pair of block resource location and item resource location.
+     */
+    @SideOnly(Side.CLIENT)
+    protected Pair<ModelResourceLocation, ModelResourceLocation> registerDynamicModel() {
+        String blockName = getMod().getModId() + ":" + getNamedId();
+        final ModelResourceLocation blockLocation = new ModelResourceLocation(blockName, "normal");
+        ModelResourceLocation itemLocation = new ModelResourceLocation(blockName, "inventory");
+        ModelLoader.setCustomStateMapper(getBlockInstance(), new StateMapperBase() {
+            @Override
+            protected ModelResourceLocation func_178132_a(IBlockState blockState) {
+                return blockLocation;
+            }
+        });
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(getBlockInstance()), 0, itemLocation);
+        return Pair.of(blockLocation, itemLocation);
+    }
+
+    @Override
+    public void onRegistered() {
+        super.onRegistered();
+        if(MinecraftHelpers.isClientSide() && getBlockInstance() instanceof IDynamicModelBlock &&
+                ((IDynamicModelBlock) getBlockInstance()).hasDynamicModel()) {
+            Pair<ModelResourceLocation, ModelResourceLocation> resourceLocations = registerDynamicModel();
+            this.dynamicBlockVariantLocation = resourceLocations.getLeft();
+            this.dynamicItemVariantLocation  = resourceLocations.getRight();
+        }
     }
 
 }

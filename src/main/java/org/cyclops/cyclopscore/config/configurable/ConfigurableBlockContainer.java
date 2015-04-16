@@ -6,6 +6,7 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,8 +18,15 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
 import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
+import org.cyclops.cyclopscore.client.model.IDynamicModelBlock;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockContainerConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -35,7 +43,7 @@ import java.util.Random;
  * @author rubensworks
  *
  */
-public class ConfigurableBlockContainer extends BlockContainer implements IConfigurable {
+public class ConfigurableBlockContainer extends BlockContainer implements IConfigurable, IDynamicModelBlock {
 
     @Delegate private IBlockPropertyManager propertyManager;
     @Override protected BlockState createBlockState() {
@@ -43,7 +51,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     }
 
     @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected BlockConfig eConfig = null;
     
     protected Random random;
     private Class<? extends CyclopsTileEntity> tileEntity;
@@ -70,6 +78,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         this.tileEntity = tileEntity;
         setHardness(5F);
         setStepSound(Block.soundTypePiston);
+        if(hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
     }
     
     /**
@@ -82,7 +91,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
 
     @SuppressWarnings("rawtypes")
     private void setConfig(ExtendedConfig eConfig) {
-        this.eConfig = eConfig;
+        this.eConfig = (BlockConfig) eConfig;
     }
     
     /**
@@ -250,6 +259,30 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     @Override
     public final BlockContainerConfig getConfig() {
         return (BlockContainerConfig) this.eConfig;
+    }
+
+    @Override
+    public boolean hasDynamicModel() {
+        return false;
+    }
+
+    @Override
+    public IBakedModel createDynamicModel() {
+        return null;
+    }
+
+    /**
+     * Called for baking the model of this cable depending on its state.
+     * @param event The bake event.
+     */
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public void onModelBakeEvent(ModelBakeEvent event){
+        if(hasDynamicModel()) {
+            IBakedModel cableModel = createDynamicModel();
+            event.modelRegistry.putObject(eConfig.dynamicBlockVariantLocation, cableModel);
+            event.modelRegistry.putObject(eConfig.dynamicItemVariantLocation , cableModel);
+        }
     }
 
 }
