@@ -1,14 +1,14 @@
 package org.cyclops.cyclopscore.tileentity;
 
+import lombok.experimental.Delegate;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
-
-import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
+import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
+import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
+import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
 
 /**
  * A base class for all the tile entities.
@@ -16,20 +16,13 @@ import java.util.List;
  * @author rubensworks
  *
  */
-public class CyclopsTileEntity extends TileEntity {
-    
-    private List<Field> nbtPersistedFields = null;
+public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     
     @NBTPersist
     private Boolean rotatable = false;
     private EnumFacing rotation = EnumFacing.NORTH;
-    
-    /**
-     * Make a new instance.
-     */
-    public CyclopsTileEntity() {
-        generateNBTPersistedFields();
-    }
+    @Delegate
+    private INBTProvider nbtProviderComponent = new NBTProviderComponent(this);
     
     /**
      * Called when the blockState of this tile entity is destroyed.
@@ -47,30 +40,10 @@ public class CyclopsTileEntity extends TileEntity {
         return true;
     }
     
-    private void generateNBTPersistedFields() {
-        nbtPersistedFields = new LinkedList<Field>();
-        for(Class<?> clazz = this.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
-	        for(Field field : clazz.getDeclaredFields()) {
-	            if(field.isAnnotationPresent(NBTPersist.class)) {         
-	                nbtPersistedFields.add(field);
-	            }
-	        }
-        }
-    }
-    
-    private void writePersistedField(Field field, NBTTagCompound tag) {
-        NBTClassType.performActionForField(this, field, tag, true);
-    }
-    
-    private void readPersistedField(Field field, NBTTagCompound tag) {
-        NBTClassType.performActionForField(this, field, tag, false);
-    }
-    
     @Override
     public void writeToNBT(NBTTagCompound tag) {
         super.writeToNBT(tag);
-        for(Field field : nbtPersistedFields)
-            writePersistedField(field, tag);
+        writeGeneratedFieldsToNBT(tag);
         
         // Separate action for direction
         tag.setString("rotation", rotation.getName());
@@ -79,8 +52,7 @@ public class CyclopsTileEntity extends TileEntity {
     @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
-        for(Field field : nbtPersistedFields)
-            readPersistedField(field, tag);
+        readGeneratedFieldsFromNBT(tag);
         
         // Separate action for direction
         EnumFacing foundRotation = EnumFacing.byName(tag.getString("rotation"));

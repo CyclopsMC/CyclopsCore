@@ -8,7 +8,9 @@ import net.minecraft.nbt.NBTTagCompound;
  * @author rubensworks
  *
  */
-public class TileEntityNBTStorage {
+public final class TileEntityNBTStorage {
+
+    private TileEntityNBTStorage() {}
 
     /**
      * The temporary tag storage for dropped NBT data from {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity}.

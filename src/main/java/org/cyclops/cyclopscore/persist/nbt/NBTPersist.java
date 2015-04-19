@@ -1,4 +1,4 @@
-package org.cyclops.cyclopscore.tileentity;
+package org.cyclops.cyclopscore.persist.nbt;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package org.cyclops.cyclopscore.tileentity;
+package org.cyclops.cyclopscore.persist.nbt;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -102,12 +102,12 @@ public abstract class NBTClassType<T> {
     
     /**
      * Perform a field persist action.
-     * @param tile The tile entity that has the field.
+     * @param provider The provider that has the field.
      * @param field The field to persist or read.
      * @param tag The tag compound to read or write to.
      * @param write If there should be written, otherwise there will be read.
      */
-    public static void performActionForField(CyclopsTileEntity tile, Field field, NBTTagCompound tag, boolean write) {
+    public static void performActionForField(INBTProvider provider, Field field, NBTTagCompound tag, boolean write) {
         Class<?> type = field.getType();
         String fieldName = field.getName();
         
@@ -120,32 +120,32 @@ public abstract class NBTClassType<T> {
         	try {
 	        	if(write) {
 	        		Method method = type.getMethod("toNBT");
-	        		tag.setTag(fieldName, (NBTBase) method.invoke(field.get(tile)));
+	        		tag.setTag(fieldName, (NBTBase) method.invoke(field.get(provider)));
 	        	} else {
 	        		Method method = type.getMethod("fromNBT", NBTTagCompound.class);
 	        		if(tag.hasKey(fieldName)) {
-	        			method.invoke(field.get(tile), tag.getTag(fieldName));
+	        			method.invoke(field.get(provider), tag.getTag(fieldName));
 	        		}
 	        	}
         	} catch (NoSuchMethodException e) {
-        		throw new RuntimeException("No such method for field " + fieldName + " of class " + type + " in " + tile.getClass() + " was found. Write: " + write);
+        		throw new RuntimeException("No such method for field " + fieldName + " of class " + type + " in " + provider.getClass() + " was found. Write: " + write);
         	} catch (IllegalAccessException e) {
-        		throw new RuntimeException("Could not access field " + fieldName + " in " + tile.getClass() + " Write: " + write);
+        		throw new RuntimeException("Could not access field " + fieldName + " in " + provider.getClass() + " Write: " + write);
 			} catch (IllegalArgumentException e) {
-				throw new RuntimeException("Invalid argument in field " + fieldName + " in " + tile.getClass() + " Write: " + write);
+				throw new RuntimeException("Invalid argument in field " + fieldName + " in " + provider.getClass() + " Write: " + write);
 			} catch (InvocationTargetException e) {
-				throw new RuntimeException("Could not invocate a method for field " + fieldName + " in " + tile.getClass() + " Write: " + write + "; Error: " + e.getTargetException().getMessage());
+				throw new RuntimeException("Could not invocate a method for field " + fieldName + " in " + provider.getClass() + " Write: " + write + "; Error: " + e.getTargetException().getMessage());
 			}
         } else {
 	        NBTClassType<?> action = NBTClassType.NBTYPES.get(type);
 	        if(action != null) {
 	            try {
-	                action.persistedFieldAction(tile, field, tag, write);
+	                action.persistedFieldAction(provider, field, tag, write);
 	            } catch (IllegalAccessException e) {
-	                throw new RuntimeException("Could not access field " + fieldName + " in " + tile.getClass());
+	                throw new RuntimeException("Could not access field " + fieldName + " in " + provider.getClass());
 	            }
 	        } else {
-	            throw new RuntimeException("No NBT persist action found for field " + fieldName + " of class " + type + " in " + tile.getClass());
+	            throw new RuntimeException("No NBT persist action found for field " + fieldName + " of class " + type + " in " + provider.getClass());
 	        }
         }
         
@@ -154,7 +154,7 @@ public abstract class NBTClassType<T> {
     
     /**
      * Called to read or write a field.
-     * @param tile The tile entity that has the field.
+     * @param provider The provider that has the field.
      * @param field The field to persist or read.
      * @param tag The tag compound to read or write to.
      * @param write If there should be written, otherwise there will be read.
@@ -162,9 +162,9 @@ public abstract class NBTClassType<T> {
      * @throws IllegalAccessException Access exception;
      */
     @SuppressWarnings("unchecked")
-    public void persistedFieldAction(CyclopsTileEntity tile, Field field, NBTTagCompound tag, boolean write) throws IllegalAccessException {
+    public void persistedFieldAction(INBTProvider provider, Field field, NBTTagCompound tag, boolean write) throws IllegalAccessException {
         String name = field.getName();
-        Object castTile = field.getDeclaringClass().cast(tile);
+        Object castTile = field.getDeclaringClass().cast(provider);
         if(write) {
             try {
                 T object = (T) field.get(castTile);
