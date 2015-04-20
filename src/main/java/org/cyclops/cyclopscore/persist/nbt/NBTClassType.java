@@ -35,6 +35,7 @@ public abstract class NBTClassType<T> {
                 return tag.getInteger(name);
             }
         });
+        NBTYPES.put(int.class, NBTYPES.get(Integer.class));
         
         NBTYPES.put(Float.class, new NBTClassType<Float>() {
 
@@ -48,6 +49,7 @@ public abstract class NBTClassType<T> {
                 return tag.getFloat(name);
             }
         });
+        NBTYPES.put(float.class, NBTYPES.get(Float.class));
         
         NBTYPES.put(Boolean.class, new NBTClassType<Boolean>() {
 
@@ -61,6 +63,7 @@ public abstract class NBTClassType<T> {
                 return tag.getBoolean(name);
             }
         });
+        NBTYPES.put(boolean.class, NBTYPES.get(Boolean.class));
         
         NBTYPES.put(String.class, new NBTClassType<String>() {
 
