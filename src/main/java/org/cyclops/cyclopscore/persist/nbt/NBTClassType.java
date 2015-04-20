@@ -1,13 +1,19 @@
 package org.cyclops.cyclopscore.persist.nbt;
 
+import com.google.common.collect.Maps;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Types of NBT field classes used for persistence of fields in {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity}.
@@ -90,6 +96,70 @@ public abstract class NBTClassType<T> {
             @Override
             protected NBTTagCompound readPersistedField(String name, NBTTagCompound tag) {
                 return tag.getCompoundTag(name);
+            }
+        });
+
+        NBTYPES.put(Map.class, new NBTClassType<Map>() {
+
+            protected NBTClassType getType(Class<?> type, Map map) {
+                NBTClassType<?> action = NBTClassType.NBTYPES.get(type);
+                if(action == null) {
+                    throw new RuntimeException("No NBT persist action found for type " + type.getCanonicalName()
+                            + " inside the map " + map);
+                }
+                return action;
+            }
+
+            @Override
+            protected void writePersistedField(String name, Map object, NBTTagCompound tag) {
+                NBTTagCompound mapTag = new NBTTagCompound();
+                NBTTagList list = new NBTTagList();
+                boolean setTypes = false;
+                for(Map.Entry entry : (Set<Map.Entry>) object.entrySet()) {
+                    NBTTagCompound entryTag = new NBTTagCompound();
+                    getType(entry.getKey().getClass(), object).writePersistedField("key", entry.getKey(), entryTag);
+                    getType(entry.getValue().getClass(), object).writePersistedField("value", entry.getValue(), entryTag);
+                    list.appendTag(entryTag);
+
+                    if(!setTypes) {
+                        setTypes = true;
+                        mapTag.setString("keyType", entry.getKey().getClass().getCanonicalName());
+                        mapTag.setString("valueType", entry.getValue().getClass().getCanonicalName());
+                    }
+                }
+                mapTag.setTag("map", list);
+                tag.setTag(name, mapTag);
+            }
+
+            @Override
+            protected Map readPersistedField(String name, NBTTagCompound tag) {
+                NBTTagCompound mapTag = tag.getCompoundTag(name);
+                Map map = Maps.newHashMap();
+                NBTTagList list = mapTag.getTagList("map", MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
+                NBTClassType keyNBTClassType, valueNBTClassType;
+                try {
+                    Class keyType = Class.forName(mapTag.getString("keyType"));
+                    keyNBTClassType = getType(keyType, map);
+                } catch (ClassNotFoundException e) {
+                    CyclopsCore.clog(Level.WARN, "No class found for NBT type map key '" + tag.getString("keyType")
+                            + "', this could be a mod error.");
+                    return map;
+                }
+                try {
+                    Class valueType = Class.forName(mapTag.getString("valueType"));
+                    valueNBTClassType = getType(valueType, map);
+                } catch (ClassNotFoundException e) {
+                    CyclopsCore.clog(Level.WARN, "No class found for NBT type map value '" + tag.getString("valueType")
+                            + "', this could be a mod error.");
+                    return map;
+                }
+                for(int i = 0; i < list.tagCount(); i++) {
+                    NBTTagCompound entryTag = list.getCompoundTagAt(i);
+                    Object key = keyNBTClassType.readPersistedField("key", entryTag);
+                    Object value = valueNBTClassType.readPersistedField("value", entryTag);
+                    map.put(key, value);
+                }
+                return map;
             }
         });
     }
