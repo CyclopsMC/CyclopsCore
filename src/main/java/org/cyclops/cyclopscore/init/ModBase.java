@@ -4,9 +4,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.Debug;
 import org.cyclops.cyclopscore.GeneralConfig;
@@ -14,6 +13,7 @@ import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
+import org.cyclops.cyclopscore.persist.world.GlobalCounters;
 
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +36,7 @@ public abstract class ModBase {
     private final IconProvider iconProvider;
 
     private CreativeTabs defaultCreativeTab = null;
+    private GlobalCounters globalCounters = null;
 
     public ModBase(String modId, String modName) {
         this.modId = modId;
@@ -160,6 +161,30 @@ public abstract class ModBase {
      */
     public void postInit(FMLPostInitializationEvent event) {
         log(Level.INFO, "postInit()");
+    }
+
+    /**
+     * Override this, call super and annotate with {@link net.minecraftforge.fml.common.Mod.EventHandler}.
+     * Register the things that are related to server starting.
+     * @param event The Forge event required for this.
+     */
+    @Mod.EventHandler
+    public void onServerStarted(FMLServerStartedEvent event) {
+        if(globalCounters != null) {
+            globalCounters.onStartedEvent(event);
+        }
+    }
+
+    /**
+     * Override this, call super and annotate with {@link net.minecraftforge.fml.common.Mod.EventHandler}.
+     * Register the things that are related to server stopping, like persistent storage.
+     * @param event The Forge event required for this.
+     */
+    @Mod.EventHandler
+    public void onServerStopping(FMLServerStoppingEvent event) {
+        if(globalCounters != null) {
+            globalCounters.onStoppingEvent(event);
+        }
     }
 
     /**
