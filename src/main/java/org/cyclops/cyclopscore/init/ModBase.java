@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.init;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Data;
@@ -13,8 +14,9 @@ import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
-import org.cyclops.cyclopscore.persist.world.GlobalCounters;
+import org.cyclops.cyclopscore.persist.world.WorldStorage;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,9 +36,9 @@ public abstract class ModBase {
     private final ConfigHandler configHandler;
     private final Map<EnumReferenceKey, String> genericReference = Maps.newHashMap();
     private final IconProvider iconProvider;
+    private List<WorldStorage> worldStorages = Lists.newLinkedList();
 
     private CreativeTabs defaultCreativeTab = null;
-    private GlobalCounters globalCounters = null;
 
     public ModBase(String modId, String modName) {
         this.modId = modId;
@@ -170,8 +172,8 @@ public abstract class ModBase {
      */
     @Mod.EventHandler
     public void onServerStarted(FMLServerStartedEvent event) {
-        if(globalCounters != null) {
-            globalCounters.onStartedEvent(event);
+        for(WorldStorage worldStorage : worldStorages) {
+            worldStorage.onStartedEvent(event);
         }
     }
 
@@ -182,9 +184,19 @@ public abstract class ModBase {
      */
     @Mod.EventHandler
     public void onServerStopping(FMLServerStoppingEvent event) {
-        if(globalCounters != null) {
-            globalCounters.onStoppingEvent(event);
+        for(WorldStorage worldStorage : worldStorages) {
+            worldStorage.onStoppingEvent(event);
         }
+    }
+
+    /**
+     * Register a new world storage type.
+     * Make sure to call this at least before the event
+     * {@link net.minecraftforge.fml.common.event.FMLServerStartedEvent} is called.
+     * @param worldStorage The world storage to register.
+     */
+    public void registerWorldStorage(WorldStorage worldStorage) {
+        worldStorages.add(worldStorage);
     }
 
     /**
