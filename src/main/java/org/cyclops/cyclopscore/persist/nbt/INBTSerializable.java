@@ -1,6 +1,13 @@
 package org.cyclops.cyclopscore.persist.nbt;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * Objects that are serializable to NBT.
@@ -19,5 +26,54 @@ public interface INBTSerializable {
 	 * @param tag The tag to read from.
 	 */
 	public void fromNBT(NBTTagCompound tag);
+
+    @EqualsAndHashCode(callSuper = false)
+    @Data
+    public static class SelfNBTClassType extends NBTClassType<INBTSerializable> {
+
+        private final Class fieldType;
+
+        @Override
+        protected void writePersistedField(String name, INBTSerializable object, NBTTagCompound tag) {
+            try {
+                Method method = fieldType.getMethod("toNBT");
+                tag.setTag(name, (NBTBase) method.invoke(object));
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException("No method toNBT for field " + name + " of class " + fieldType + " was found.");
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException("Error in toNBT for field " + name + ". Error: " + e.getTargetException().getMessage());
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Could invoke toNBT for " + name + ".");
+            }
+
+        }
+
+        @Override
+        protected INBTSerializable readPersistedField(String name, NBTTagCompound tag) {
+            try {
+                Constructor constructor = fieldType.getConstructor();
+                if(constructor == null) {
+                    throw new RuntimeException("The NBT serializable " + name + " of class " + fieldType + " must " +
+                            "have a constructor without parameters.");
+                }
+                Method method = fieldType.getMethod("fromNBT", NBTTagCompound.class);
+                if(tag.hasKey("name")) {
+                    method.invoke(constructor.newInstance(), tag.getTag(name));
+                }
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException("No method fromNBT for field " + name + " of class " + fieldType + " was found.");
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException("Error in fromNBT for field " + name + ". Error: " + e.getTargetException().getMessage());
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Could invoke fromNBT for " + name + ".");
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Something went wrong while calling the empty constructor for " + name
+                        + "of class " + fieldType + ".");
+            }
+
+            return null;
+        }
+    }
 	
 }

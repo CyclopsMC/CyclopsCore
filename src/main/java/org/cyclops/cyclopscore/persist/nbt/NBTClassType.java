@@ -1,7 +1,8 @@
 package org.cyclops.cyclopscore.persist.nbt;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.nbt.NBTBase;
+import com.google.common.collect.Sets;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import org.apache.logging.log4j.Level;
@@ -9,11 +10,7 @@ import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Types of NBT field classes used for persistence of fields in {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity}.
@@ -99,16 +96,23 @@ public abstract class NBTClassType<T> {
             }
         });
 
-        NBTYPES.put(Map.class, new NBTClassType<Map>() {
+        NBTYPES.put(Set.class, new CollectionNBTClassType<Set>() {
 
-            protected NBTClassType getType(Class<?> type, Map map) {
-                NBTClassType<?> action = NBTClassType.NBTYPES.get(type);
-                if(action == null) {
-                    throw new RuntimeException("No NBT persist action found for type " + type.getCanonicalName()
-                            + " inside the map " + map);
-                }
-                return action;
+            @Override
+            protected Set createNewCollection() {
+                return Sets.newHashSet();
             }
+        });
+
+        NBTYPES.put(List.class, new CollectionNBTClassType<List>() {
+
+            @Override
+            protected List createNewCollection() {
+                return Lists.newLinkedList();
+            }
+        });
+
+        NBTYPES.put(Map.class, new NBTClassType<Map>() {
 
             @Override
             protected void writePersistedField(String name, Map object, NBTTagCompound tag) {
@@ -141,7 +145,7 @@ public abstract class NBTClassType<T> {
                     Class keyType = Class.forName(mapTag.getString("keyType"));
                     keyNBTClassType = getType(keyType, map);
                 } catch (ClassNotFoundException e) {
-                    CyclopsCore.clog(Level.WARN, "No class found for NBT type map key '" + tag.getString("keyType")
+                    CyclopsCore.clog(Level.WARN, "No class found for NBT type map key '" + mapTag.getString("keyType")
                             + "', this could be a mod error.");
                     return map;
                 }
@@ -149,7 +153,7 @@ public abstract class NBTClassType<T> {
                     Class valueType = Class.forName(mapTag.getString("valueType"));
                     valueNBTClassType = getType(valueType, map);
                 } catch (ClassNotFoundException e) {
-                    CyclopsCore.clog(Level.WARN, "No class found for NBT type map value '" + tag.getString("valueType")
+                    CyclopsCore.clog(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
                             + "', this could be a mod error.");
                     return map;
                 }
@@ -172,6 +176,20 @@ public abstract class NBTClassType<T> {
     	}
     	return true;
     }
+
+    protected static NBTClassType getType(Class<?> type, Object target) {
+        // Add special logic for INBTSerializable's
+        if(isImplementsInterface(type, INBTSerializable.class)) {
+            return new INBTSerializable.SelfNBTClassType(type);
+        } else {
+            NBTClassType<?> action = NBTClassType.NBTYPES.get(type);
+            if (action == null) {
+                throw new RuntimeException("No NBT persist action found for type " + type.getCanonicalName()
+                        + " in class " + target.getClass() + " for target object " + target + ".");
+            }
+            return action;
+        }
+    }
     
     /**
      * Perform a field persist action.
@@ -187,39 +205,13 @@ public abstract class NBTClassType<T> {
         // Make editable, will set back to the original at the end of this call.
         boolean wasAccessible = field.isAccessible();
         field.setAccessible(true);
-        
-        // Add special logic for INBTSerializable's
-        if(isImplementsInterface(type, INBTSerializable.class)) {
-        	try {
-	        	if(write) {
-	        		Method method = type.getMethod("toNBT");
-	        		tag.setTag(fieldName, (NBTBase) method.invoke(field.get(provider)));
-	        	} else {
-	        		Method method = type.getMethod("fromNBT", NBTTagCompound.class);
-	        		if(tag.hasKey(fieldName)) {
-	        			method.invoke(field.get(provider), tag.getTag(fieldName));
-	        		}
-	        	}
-        	} catch (NoSuchMethodException e) {
-        		throw new RuntimeException("No such method for field " + fieldName + " of class " + type + " in " + provider.getClass() + " was found. Write: " + write);
-        	} catch (IllegalAccessException e) {
-        		throw new RuntimeException("Could not access field " + fieldName + " in " + provider.getClass() + " Write: " + write);
-			} catch (IllegalArgumentException e) {
-				throw new RuntimeException("Invalid argument in field " + fieldName + " in " + provider.getClass() + " Write: " + write);
-			} catch (InvocationTargetException e) {
-				throw new RuntimeException("Could not invocate a method for field " + fieldName + " in " + provider.getClass() + " Write: " + write + "; Error: " + e.getTargetException().getMessage());
-			}
-        } else {
-	        NBTClassType<?> action = NBTClassType.NBTYPES.get(type);
-	        if(action != null) {
-	            try {
-	                action.persistedFieldAction(provider, field, tag, write);
-	            } catch (IllegalAccessException e) {
-	                throw new RuntimeException("Could not access field " + fieldName + " in " + provider.getClass());
-	            }
-	        } else {
-	            throw new RuntimeException("No NBT persist action found for field " + fieldName + " of class " + type + " in " + provider.getClass());
-	        }
+
+        // Get a non-null action
+        NBTClassType<?> action = getType(type, provider);
+        try {
+            action.persistedFieldAction(provider, field, tag, write);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Could not access field " + fieldName + " in " + provider.getClass());
         }
         
         field.setAccessible(wasAccessible);
@@ -244,7 +236,8 @@ public abstract class NBTClassType<T> {
                 try {
                 	writePersistedField(name, object, tag);
                 } catch (Exception e) {
-                	throw new RuntimeException("Something went from with field " + field.getName() + " in " + castTile + ": " + e.getMessage());
+                    e.printStackTrace();
+                	throw new RuntimeException("Something went from with the field " + field.getName() + " in " + castTile + ": " + e.getMessage());
                 }
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException("Can not write the field " + field.getName() + " in " + castTile + " since it does not exist.");
@@ -262,5 +255,53 @@ public abstract class NBTClassType<T> {
     
     protected abstract void writePersistedField(String name, T object, NBTTagCompound tag);
     protected abstract T readPersistedField(String name, NBTTagCompound tag);
+
+    private abstract static class CollectionNBTClassType<C extends Collection> extends NBTClassType<C> {
+
+        protected abstract C createNewCollection();
+
+        @Override
+        protected void writePersistedField(String name, C object, NBTTagCompound tag) {
+            NBTTagCompound collectionTag = new NBTTagCompound();
+            NBTTagList list = new NBTTagList();
+            boolean setTypes = false;
+            for(Object element : object) {
+                if(element != null) {
+                    NBTTagCompound elementTag = new NBTTagCompound();
+                    getType(element.getClass(), object).writePersistedField("element", element, elementTag);
+                    list.appendTag(elementTag);
+
+                    if (!setTypes) {
+                        setTypes = true;
+                        collectionTag.setString("elementType", element.getClass().getCanonicalName());
+                    }
+                }
+            }
+            collectionTag.setTag("collection", list);
+            tag.setTag(name, collectionTag);
+        }
+
+        @Override
+        protected C readPersistedField(String name, NBTTagCompound tag) {
+            NBTTagCompound collectionTag = tag.getCompoundTag(name);
+            C collection = createNewCollection();
+            NBTTagList list = collectionTag.getTagList("collection", MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
+            NBTClassType elementNBTClassType;
+            try {
+                Class elementType = Class.forName(collectionTag.getString("elementType"));
+                elementNBTClassType = getType(elementType, collection);
+            } catch (ClassNotFoundException e) {
+                CyclopsCore.clog(Level.WARN, "No class found for NBT type collection element '" + collectionTag.getString("elementType")
+                        + "', this could be a mod error.");
+                return collection;
+            }
+            for(int i = 0; i < list.tagCount(); i++) {
+                NBTTagCompound entryTag = list.getCompoundTagAt(i);
+                Object element = elementNBTClassType.readPersistedField("element", entryTag);
+                collection.add(element);
+            }
+            return collection;
+        }
+    }
     
 }
