@@ -51,6 +51,7 @@ public abstract class WorldStorage implements INBTProvider {
      */
     public void onStartedEvent(FMLServerStartedEvent event) {
         loadData();
+        afterLoad();
     }
 
     /**
@@ -58,6 +59,7 @@ public abstract class WorldStorage implements INBTProvider {
      * @param event The received event.
      */
     public void onStoppingEvent(FMLServerStoppingEvent event) {
+        beforeSave();
         saveData();
     }
 
@@ -83,6 +85,20 @@ public abstract class WorldStorage implements INBTProvider {
         NBTDataHolder data = getDataHolder();
         writeToNBT(data.tag);
         data.setDirty(true);
+    }
+
+    /**
+     * Called after the data is loaded from the world storage.
+     */
+    public void afterLoad() {
+
+    }
+
+    /**
+     * Called before the data is saved to the world storage.
+     */
+    public void beforeSave() {
+
     }
 
     /**
