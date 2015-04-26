@@ -140,28 +140,30 @@ public abstract class NBTClassType<T> {
                 NBTTagCompound mapTag = tag.getCompoundTag(name);
                 Map map = Maps.newHashMap();
                 NBTTagList list = mapTag.getTagList("map", MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
-                NBTClassType keyNBTClassType, valueNBTClassType;
-                try {
-                    Class keyType = Class.forName(mapTag.getString("keyType"));
-                    keyNBTClassType = getType(keyType, map);
-                } catch (ClassNotFoundException e) {
-                    CyclopsCore.clog(Level.WARN, "No class found for NBT type map key '" + mapTag.getString("keyType")
-                            + "', this could be a mod error.");
-                    return map;
-                }
-                try {
-                    Class valueType = Class.forName(mapTag.getString("valueType"));
-                    valueNBTClassType = getType(valueType, map);
-                } catch (ClassNotFoundException e) {
-                    CyclopsCore.clog(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
-                            + "', this could be a mod error.");
-                    return map;
-                }
-                for(int i = 0; i < list.tagCount(); i++) {
-                    NBTTagCompound entryTag = list.getCompoundTagAt(i);
-                    Object key = keyNBTClassType.readPersistedField("key", entryTag);
-                    Object value = valueNBTClassType.readPersistedField("value", entryTag);
-                    map.put(key, value);
+                if(list.tagCount() > 0) {
+                    NBTClassType keyNBTClassType, valueNBTClassType;
+                    try {
+                        Class keyType = Class.forName(mapTag.getString("keyType"));
+                        keyNBTClassType = getType(keyType, map);
+                    } catch (ClassNotFoundException e) {
+                        CyclopsCore.clog(Level.WARN, "No class found for NBT type map key '" + mapTag.getString("keyType")
+                                + "', this could be a mod error.");
+                        return map;
+                    }
+                    try {
+                        Class valueType = Class.forName(mapTag.getString("valueType"));
+                        valueNBTClassType = getType(valueType, map);
+                    } catch (ClassNotFoundException e) {
+                        CyclopsCore.clog(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
+                                + "', this could be a mod error.");
+                        return map;
+                    }
+                    for (int i = 0; i < list.tagCount(); i++) {
+                        NBTTagCompound entryTag = list.getCompoundTagAt(i);
+                        Object key = keyNBTClassType.readPersistedField("key", entryTag);
+                        Object value = valueNBTClassType.readPersistedField("value", entryTag);
+                        map.put(key, value);
+                    }
                 }
                 return map;
             }
@@ -284,19 +286,21 @@ public abstract class NBTClassType<T> {
             NBTTagCompound collectionTag = tag.getCompoundTag(name);
             C collection = createNewCollection();
             NBTTagList list = collectionTag.getTagList("collection", MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
-            NBTClassType elementNBTClassType;
-            try {
-                Class elementType = Class.forName(collectionTag.getString("elementType"));
-                elementNBTClassType = getType(elementType, collection);
-            } catch (ClassNotFoundException e) {
-                CyclopsCore.clog(Level.WARN, "No class found for NBT type collection element '" + collectionTag.getString("elementType")
-                        + "', this could be a mod error.");
-                return collection;
-            }
-            for(int i = 0; i < list.tagCount(); i++) {
-                NBTTagCompound entryTag = list.getCompoundTagAt(i);
-                Object element = elementNBTClassType.readPersistedField("element", entryTag);
-                collection.add(element);
+            if(list.tagCount() > 0) {
+                NBTClassType elementNBTClassType;
+                try {
+                    Class elementType = Class.forName(collectionTag.getString("elementType"));
+                    elementNBTClassType = getType(elementType, collection);
+                } catch (ClassNotFoundException e) {
+                    CyclopsCore.clog(Level.WARN, "No class found for NBT type collection element '" + collectionTag.getString("elementType")
+                            + "', this could be a mod error.");
+                    return collection;
+                }
+                for (int i = 0; i < list.tagCount(); i++) {
+                    NBTTagCompound entryTag = list.getCompoundTagAt(i);
+                    Object element = elementNBTClassType.readPersistedField("element", entryTag);
+                    collection.add(element);
+                }
             }
             return collection;
         }
