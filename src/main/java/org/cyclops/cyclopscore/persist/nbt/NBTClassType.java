@@ -266,15 +266,13 @@ public abstract class NBTClassType<T> {
             NBTTagList list = new NBTTagList();
             boolean setTypes = false;
             for(Object element : object) {
-                if(element != null) {
-                    NBTTagCompound elementTag = new NBTTagCompound();
-                    getType(element.getClass(), object).writePersistedField("element", element, elementTag);
-                    list.appendTag(elementTag);
+                NBTTagCompound elementTag = new NBTTagCompound();
+                getType(element.getClass(), object).writePersistedField("element", element, elementTag);
+                list.appendTag(elementTag);
 
-                    if (!setTypes) {
-                        setTypes = true;
-                        collectionTag.setString("elementType", element.getClass().getCanonicalName());
-                    }
+                if (!setTypes) {
+                    setTypes = true;
+                    collectionTag.setString("elementType", element.getClass().getCanonicalName());
                 }
             }
             collectionTag.setTag("collection", list);

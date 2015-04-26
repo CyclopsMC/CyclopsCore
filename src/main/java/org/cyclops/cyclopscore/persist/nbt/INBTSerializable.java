@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.CyclopsCore;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -41,6 +43,7 @@ public interface INBTSerializable {
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException("No method toNBT for field " + name + " of class " + fieldType + " was found.");
             } catch (InvocationTargetException e) {
+                e.getTargetException().printStackTrace();
                 throw new RuntimeException("Error in toNBT for field " + name + ". Error: " + e.getTargetException().getMessage());
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("Could invoke toNBT for " + name + ".");
@@ -57,12 +60,18 @@ public interface INBTSerializable {
                             "have a constructor without parameters.");
                 }
                 Method method = fieldType.getMethod("fromNBT", NBTTagCompound.class);
-                if(tag.hasKey("name")) {
-                    method.invoke(constructor.newInstance(), tag.getTag(name));
+                INBTSerializable obj = (INBTSerializable) constructor.newInstance();
+                if(tag.hasKey(name)) {
+                    method.invoke(obj, tag.getTag(name));
+                } else {
+                    CyclopsCore.clog(Level.WARN, String.format("The tag %s did not contain the key %s, skipping " +
+                            "reading.", tag, name));
                 }
+                return obj;
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException("No method fromNBT for field " + name + " of class " + fieldType + " was found.");
             } catch (InvocationTargetException e) {
+                e.getTargetException().printStackTrace();
                 throw new RuntimeException("Error in fromNBT for field " + name + ". Error: " + e.getTargetException().getMessage());
             } catch (IllegalAccessException e) {
                 throw new RuntimeException("Could invoke fromNBT for " + name + ".");
@@ -71,8 +80,6 @@ public interface INBTSerializable {
                 throw new RuntimeException("Something went wrong while calling the empty constructor for " + name
                         + "of class " + fieldType + ".");
             }
-
-            return null;
         }
     }
 	
