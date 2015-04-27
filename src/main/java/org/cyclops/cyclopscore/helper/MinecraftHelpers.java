@@ -231,4 +231,21 @@ public class MinecraftHelpers {
         // Does nothing for now.
     }
 
+    /**
+     * Comparator for {@link net.minecraft.util.BlockPos}.
+     * @param pos1 First pos.
+     * @param pos2 Second pos.
+     * @return The compared value.
+     */
+    public static int compareBlockPos(BlockPos pos1, BlockPos pos2) {
+        int compX = Integer.compare(pos1.getX(), pos2.getX());
+        if(compX == 0) {
+            int compY = Integer.compare(pos1.getY(), pos2.getY());
+            if(compY == 0) {
+                return Integer.compare(pos1.getZ(), pos2.getZ());
+            }
+        }
+        return compX;
+    }
+
 }
