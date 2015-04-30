@@ -111,19 +111,19 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
     @SuppressWarnings("unchecked")
     public void save() {
         try {
+            // Save inside the self-implementation
+            try {
+                this.getClass().getField("_instance").set(null, this);
+            } catch (NoSuchFieldError e) {
+                throw new CyclopsCoreConfigException(String.format("The config file for %s requires a static field " +
+                        "_instance.", this.getNamedId()));
+            }
+
             // Try initalizing the override sub instance.
             this.overriddenSubInstance = initSubInstance();
 
             // Save inside the unique instance this config refers to (only if such an instance exists!)
             if (getOverriddenSubInstance() == null && this.getHolderType().hasUniqueInstance()) {
-                // Save inside the self-implementation
-                try {
-                    this.getClass().getField("_instance").set(null, this);
-                } catch (NoSuchFieldError e) {
-                    throw new CyclopsCoreConfigException(String.format("The config file for %s requires a static field " +
-                            "_instance.", this.getNamedId()));
-                }
-
                 Constructor constructor = this.getElement().getDeclaredConstructor(ExtendedConfig.class);
                 if(constructor == null) {
                     throw new CyclopsCoreConfigException(String.format("The class %s requires a constructor with " +
