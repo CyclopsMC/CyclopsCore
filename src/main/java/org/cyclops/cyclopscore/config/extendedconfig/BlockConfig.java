@@ -106,7 +106,7 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> {
         ModelResourceLocation itemLocation = new ModelResourceLocation(blockName, "inventory");
         ModelLoader.setCustomStateMapper(getBlockInstance(), new StateMapperBase() {
             @Override
-            protected ModelResourceLocation func_178132_a(IBlockState blockState) {
+            protected ModelResourceLocation getModelResourceLocation(IBlockState blockState) {
                 return blockLocation;
             }
         });

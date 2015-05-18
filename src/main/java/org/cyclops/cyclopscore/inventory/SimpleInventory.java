@@ -206,7 +206,7 @@ public class SimpleInventory implements IInventory {
 	}
 
     @Override
-    public String getName() {
+    public String getCommandSenderName() {
         return _name;
     }
 
@@ -217,6 +217,6 @@ public class SimpleInventory implements IInventory {
 
     @Override
     public IChatComponent getDisplayName() {
-        return new ChatComponentTranslation(this.getName());
+        return new ChatComponentTranslation(this.getCommandSenderName());
     }
 }

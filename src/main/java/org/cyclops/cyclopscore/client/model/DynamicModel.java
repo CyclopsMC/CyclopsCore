@@ -123,12 +123,12 @@ public abstract class DynamicModel implements IFlexibleBakedModel, ISmartBlockMo
     }
 
     @Override
-    public List<BakedQuad> func_177551_a(EnumFacing side) {
+    public List<BakedQuad> getFaceQuads(EnumFacing side) {
         return Collections.emptyList();
     }
 
     @Override
-    public List<BakedQuad> func_177550_a() {
+    public List<BakedQuad> getGeneralQuads() {
         return null;
     }
 
@@ -138,7 +138,7 @@ public abstract class DynamicModel implements IFlexibleBakedModel, ISmartBlockMo
     }
 
     @Override
-    public boolean isAmbientOcclusionEnabled() {
+    public boolean isAmbientOcclusion() {
         return true;
     }
 
@@ -149,7 +149,7 @@ public abstract class DynamicModel implements IFlexibleBakedModel, ISmartBlockMo
 
     @Override
     public ItemCameraTransforms getItemCameraTransforms() {
-        return ItemCameraTransforms.field_178357_a;
+        return ItemCameraTransforms.DEFAULT;
     }
 
     @Override

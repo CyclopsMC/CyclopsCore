@@ -32,7 +32,7 @@ public class IconProvider {
     }
 
     protected TextureAtlasSprite registerIcon(TextureMap textureMap, String location) {
-        return textureMap.func_174942_a(new ResourceLocation(modBase.getModId(), location));
+        return textureMap.registerSprite(new ResourceLocation(modBase.getModId(), location));
     }
 
     @SubscribeEvent

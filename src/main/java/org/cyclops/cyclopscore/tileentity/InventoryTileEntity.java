@@ -115,8 +115,8 @@ public abstract class InventoryTileEntity extends TickingCyclopsTileEntity imple
     }
 
     @Override
-    public String getName() {
-        return inventory.getName();
+    public String getCommandSenderName() {
+        return inventory.getCommandSenderName();
     }
 
     @Override
