@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.init.ItemCreativeTab;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.proxy.ICommonProxy;
 
 /**
  * The main mod class of CyclopsCore.
@@ -54,6 +55,11 @@ public class CyclopsCore extends ModBase {
     @Override
     public CreativeTabs constructDefaultCreativeTab() {
         return new ItemCreativeTab(this, Items.diamond); // TODO: temp
+    }
+
+    @Override
+    public ICommonProxy getProxy() {
+        return null;
     }
 
     /**

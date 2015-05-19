@@ -15,6 +15,7 @@ import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.persist.world.WorldStorage;
+import org.cyclops.cyclopscore.proxy.ICommonProxy;
 
 import java.util.List;
 import java.util.Map;
@@ -141,6 +142,12 @@ public abstract class ModBase {
         if(GeneralConfig.debug) {
             Debug.checkPostConfigurables();
         }
+
+        // Register events
+        ICommonProxy proxy = getProxy();
+        if(proxy != null) {
+            proxy.registerEventHooks();
+        }
     }
 
     /**
@@ -155,6 +162,18 @@ public abstract class ModBase {
 
         // Polish the enabled configs.
         getConfigHandler().polishConfigs();
+
+        // Register proxy related things.
+        ICommonProxy proxy = getProxy();
+        if(proxy != null) {
+            proxy.registerRenderers();
+            proxy.registerKeyBindings();
+            proxy.registerPacketHandlers();
+            proxy.registerTickHandlers();
+        }
+
+        // Call init listeners
+        callInitStepListeners(IInitListener.Step.INIT);
     }
 
     /**
@@ -163,6 +182,9 @@ public abstract class ModBase {
      */
     public void postInit(FMLPostInitializationEvent event) {
         log(Level.INFO, "postInit()");
+
+        // Call init listeners
+        callInitStepListeners(IInitListener.Step.POSTINIT);
     }
 
     /**
@@ -240,6 +262,11 @@ public abstract class ModBase {
         }
         return defaultCreativeTab;
     }
+
+    /**
+     * @return The proxy for this mod, can be null if not required.
+     */
+    public abstract ICommonProxy getProxy();
 
     @Data(staticConstructor = "create")
     private static class EnumReferenceKey {
