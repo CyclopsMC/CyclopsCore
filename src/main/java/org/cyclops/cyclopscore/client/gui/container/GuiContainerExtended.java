@@ -14,7 +14,8 @@ import java.util.List;
  * @author rubensworks
  */
 public abstract class GuiContainerExtended extends GuiContainer {
-	
+
+    protected ExtendedInventoryContainer container;
     protected ResourceLocation texture;
     protected int offsetX = 0;
     protected int offsetY = 0;
@@ -25,7 +26,12 @@ public abstract class GuiContainerExtended extends GuiContainer {
      */
     public GuiContainerExtended(ExtendedInventoryContainer container) {
         super(container);
+        this.container = container;
         this.texture = new ResourceLocation(container.getGuiProvider().getMod().getModId(), getGuiTexture());
+    }
+
+    protected ExtendedInventoryContainer getContainer() {
+        return this.container;
     }
 
     /**
