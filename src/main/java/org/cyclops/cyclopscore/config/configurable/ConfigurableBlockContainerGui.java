@@ -13,6 +13,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.Helpers;
+import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 import org.cyclops.cyclopscore.inventory.container.TileInventoryContainer;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
@@ -24,7 +25,7 @@ import org.cyclops.cyclopscore.tileentity.InventoryTileEntity;
  * @author rubensworks
  *
  */
-public class ConfigurableBlockContainerGui extends ConfigurableBlockContainer implements IGuiContainerProvider {
+public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockContainer implements IGuiContainerProvider {
     
     private int guiID;
 
@@ -42,7 +43,9 @@ public class ConfigurableBlockContainerGui extends ConfigurableBlockContainer im
     public ConfigurableBlockContainerGui(ExtendedConfig eConfig,
             Material material, Class<? extends CyclopsTileEntity> tileEntity) {
         super(eConfig, material, tileEntity);
-        this.guiID = Helpers.getNewId(eConfig.getMod(), Helpers.IDType.GUI);
+        if(hasGui()) {
+            this.guiID = Helpers.getNewId(eConfig.getMod(), Helpers.IDType.GUI);
+        }
         this.hasGui = true;
     }
     
@@ -50,29 +53,12 @@ public class ConfigurableBlockContainerGui extends ConfigurableBlockContainer im
     public int getGuiID() {
         return this.guiID;
     }
-    
+
     @Override
-    @SideOnly(Side.CLIENT)
-    public void setGUI(Class<? extends GuiScreen> gui) {
-        this.gui = gui;
+    public ModBase getMod() {
+        return getConfig().getMod();
     }
-    
-    @Override
-    public void setContainer(Class<? extends Container> container) {
-        this.container = container;
-    }
-    
-    @Override
-	public Class<? extends Container> getContainer() {
-        return container;
-    }
-    
-    @Override
-	@SideOnly(Side.CLIENT)
-    public Class<? extends GuiScreen> getGUI() {
-        return gui;
-    }
-    
+
     @Override
     public boolean isNormalCube() {
         return false;

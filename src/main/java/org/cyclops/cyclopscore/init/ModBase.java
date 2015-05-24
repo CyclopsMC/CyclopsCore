@@ -7,9 +7,11 @@ import lombok.Data;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.Debug;
 import org.cyclops.cyclopscore.GeneralConfig;
+import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
@@ -37,18 +39,36 @@ public abstract class ModBase {
     private final ConfigHandler configHandler;
     private final Map<EnumReferenceKey, String> genericReference = Maps.newHashMap();
     private final IconProvider iconProvider;
-    private List<WorldStorage> worldStorages = Lists.newLinkedList();
+    private final List<WorldStorage> worldStorages = Lists.newLinkedList();
+    private final GuiHandler guiHandler;
 
     private CreativeTabs defaultCreativeTab = null;
 
     public ModBase(String modId, String modName) {
         this.modId = modId;
         this.modName = modName;
-        this.loggerHelper = new LoggerHelper(this.modName);
+        this.loggerHelper = constructLoggerHelper();
         this.initListeners = Sets.newHashSet();
-        this.configHandler = new ConfigHandler(this);
-        this.iconProvider = new IconProvider(this);
+        this.configHandler = constructConfigHandler();
+        this.iconProvider = constructIconProvider();
+        this.guiHandler = constructGuiHandler();
         populateDefaultGenericReferences();
+    }
+
+    protected LoggerHelper constructLoggerHelper() {
+        return new LoggerHelper(this.modName);
+    }
+
+    protected ConfigHandler constructConfigHandler() {
+        return new ConfigHandler(this);
+    }
+
+    protected IconProvider constructIconProvider() {
+        return new IconProvider(this);
+    }
+
+    protected GuiHandler constructGuiHandler() {
+        return new GuiHandler(this);
     }
 
     private void populateDefaultGenericReferences() {
@@ -156,6 +176,9 @@ public abstract class ModBase {
      */
     public void init(FMLInitializationEvent event) {
         log(Level.INFO, "init()");
+
+        // Gui Handlers
+        NetworkRegistry.INSTANCE.registerGuiHandler(getModId(), getGuiHandler());
 
         // Initialize the creative tab
         getDefaultCreativeTab();

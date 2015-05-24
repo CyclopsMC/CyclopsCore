@@ -59,7 +59,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
             // If the blockState has a GUI, go ahead and register that.
             if(container.hasGui()) {
                 ConfigurableBlockContainerGui gui = (ConfigurableBlockContainerGui) container;
-                GuiHandler.registerGUI(gui, GuiHandler.GuiType.BLOCK);
+                eConfig.getMod().getGuiHandler().registerGUI(gui, GuiHandler.GuiType.BLOCK);
             }
         }
         
