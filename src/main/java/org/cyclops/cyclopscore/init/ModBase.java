@@ -41,6 +41,7 @@ public abstract class ModBase {
     private final IconProvider iconProvider;
     private final List<WorldStorage> worldStorages = Lists.newLinkedList();
     private final GuiHandler guiHandler;
+    private final RegistryManager registryManager;
 
     private CreativeTabs defaultCreativeTab = null;
 
@@ -52,6 +53,7 @@ public abstract class ModBase {
         this.configHandler = constructConfigHandler();
         this.iconProvider = constructIconProvider();
         this.guiHandler = constructGuiHandler();
+        this.registryManager = constructRegistryManager();
         populateDefaultGenericReferences();
     }
 
@@ -69,6 +71,10 @@ public abstract class ModBase {
 
     protected GuiHandler constructGuiHandler() {
         return new GuiHandler(this);
+    }
+
+    protected RegistryManager constructRegistryManager() {
+        return new RegistryManager();
     }
 
     private void populateDefaultGenericReferences() {
