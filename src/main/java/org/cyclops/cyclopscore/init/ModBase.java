@@ -297,8 +297,11 @@ public abstract class ModBase {
      */
     public abstract ICommonProxy getProxy();
 
+    /**
+     * Unique references to values that can be registered inside a mod.
+     */
     @Data(staticConstructor = "create")
-    private static class EnumReferenceKey {
+    public static class EnumReferenceKey {
 
         private final String key;
 
