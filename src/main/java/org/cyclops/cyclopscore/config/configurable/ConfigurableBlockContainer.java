@@ -183,17 +183,32 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     public void writeAdditionalInfo(TileEntity tile, NBTTagCompound tag) {
     	
     }
+
+    /**
+     * If this block should drop its block item.
+     * @param world The world.
+     * @param pos The position.
+     * @param blockState The block state.
+     * @param fortune Fortune level.
+     * @return If the item should drop.
+     */
+    public boolean isDropBlockItem(IBlockAccess world, BlockPos pos, IBlockState blockState, int fortune) {
+        return true;
+    }
     
     @Override
-    public List<ItemStack> getDrops(IBlockAccess world, BlockPos blockPos, IBlockState blockState, int fortune) {
+    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState blockState, int fortune) {
         List<ItemStack> drops = new ArrayList<ItemStack>();
-        ItemStack itemStack = new ItemStack(getItemDropped(blockState, new Random(), fortune), 1, damageDropped(blockState));
-		if(TileEntityNBTStorage.TAG != null) {
-		    itemStack.setTagCompound(TileEntityNBTStorage.TAG);
-		}
-		drops.add(itemStack);
+        Item item = getItemDropped(blockState, new Random(), fortune);
+        if(item != null && isDropBlockItem(world, pos, blockState, fortune)) {
+            ItemStack itemStack = new ItemStack(item, 1, damageDropped(blockState));
+            if(TileEntityNBTStorage.TAG != null) {
+                itemStack.setTagCompound(TileEntityNBTStorage.TAG);
+            }
+            drops.add(itemStack);
+        }
         
-        MinecraftHelpers.postDestroyBlock(world, blockPos);
+        MinecraftHelpers.postDestroyBlock(world, pos);
         return drops;
     }
 
