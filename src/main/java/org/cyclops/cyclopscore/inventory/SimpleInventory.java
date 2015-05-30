@@ -76,7 +76,7 @@ public class SimpleInventory implements IInventory {
         return _stackLimit;
     }
 
-    private void onInventoryChanged() {
+    protected void onInventoryChanged() {
         markDirty();
     }
 
