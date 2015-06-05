@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.inventory.slot;
 
 import lombok.Getter;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -11,7 +10,7 @@ import net.minecraft.item.ItemStack;
  * @author rubensworks
  *
  */
-public class SlotSingleItem extends Slot {
+public class SlotSingleItem extends SlotExtended {
     
 	@Getter private Item item;
 	
@@ -30,7 +29,7 @@ public class SlotSingleItem extends Slot {
     
     @Override
     public boolean isItemValid(ItemStack itemStack) {
-        return itemStack.getItem() == getItem();
+        return super.isEnabled() && itemStack.getItem() == getItem();
     }
     
 }

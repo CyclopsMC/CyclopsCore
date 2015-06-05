@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.inventory.slot;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -9,7 +8,7 @@ import net.minecraft.item.ItemStack;
  * @author rubensworks
  *
  */
-public class SlotRemoveOnly extends Slot {
+public class SlotRemoveOnly extends SlotExtended {
 
     /**
      * Make a new instance.
