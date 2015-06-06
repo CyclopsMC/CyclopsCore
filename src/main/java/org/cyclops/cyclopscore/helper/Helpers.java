@@ -70,4 +70,16 @@ public class Helpers {
     	 */
     	PACKET;
     }
+
+    /**
+     * Convert r, g and b colors to an integer representation.
+     * @param r red
+     * @param g green
+     * @param b blue
+     * @return integer representation of the color.
+     */
+    public static int RGBToInt(int r, int g, int b) {
+        return (int)r << 16 | (int)g << 8 | (int)b;
+    }
+
 }

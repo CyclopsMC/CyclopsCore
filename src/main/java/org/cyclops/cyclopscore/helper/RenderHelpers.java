@@ -4,12 +4,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * A helper for rendering.
  * @author rubensworks
  *
  */
+@SideOnly(Side.CLIENT)
 public class RenderHelpers {
     
     /**
@@ -19,17 +22,6 @@ public class RenderHelpers {
     public static void bindTexture(ResourceLocation texture) {
     	Minecraft.getMinecraft().renderEngine.bindTexture(texture);
     }
-
-	/**
-	 * Convert r, g and b colors to an integer representation.
-	 * @param r red
-	 * @param g green
-	 * @param b blue
-	 * @return integer representation of the color.
-	 */
-	public static int RGBToInt(int r, int g, int b) {
-	    return (int)r << 16 | (int)g << 8 | (int)b;
-	}
 
     /**
      * Draw the given text and scale it to the max width.
