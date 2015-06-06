@@ -8,6 +8,7 @@ import scala.actors.threadpool.Arrays;
 
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * An inventory container that has a scrollbar and searchfield.
@@ -135,7 +136,12 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
      * @param searchString The input string to search by.
      */
     public void updateFilter(String searchString) {
-        Pattern pattern = Pattern.compile(".*" + searchString + ".*");
+        Pattern pattern = null;
+        try {
+            pattern = Pattern.compile(".*" + searchString + ".*");
+        } catch (PatternSyntaxException e) {
+            pattern = Pattern.compile(".*");
+        }
         this.filteredItems = filter(unfilteredItems, itemSearchPredicate, pattern);
         scrollTo(0); // Reset scroll, will also refresh items on-screen.
     }
