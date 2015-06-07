@@ -138,7 +138,7 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
     public void updateFilter(String searchString) {
         Pattern pattern = null;
         try {
-            pattern = Pattern.compile(".*" + searchString + ".*");
+            pattern = Pattern.compile(".*" + searchString.toLowerCase() + ".*");
         } catch (PatternSyntaxException e) {
             pattern = Pattern.compile(".*");
         }
