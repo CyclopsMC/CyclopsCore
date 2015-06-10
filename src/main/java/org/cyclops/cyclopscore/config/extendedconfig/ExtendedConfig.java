@@ -11,6 +11,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -207,7 +208,11 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
         if(!this.getHolderType().hasUniqueInstance())
             throw new CyclopsCoreConfigException("There exists no unique instance for " + this);
         try {
-            return (IConfigurable) this.getElement().getMethod("getInstance").invoke(null);
+            Method method = this.getElement().getMethod("getInstance");
+            if(method == null) {
+                throw new CyclopsCoreConfigException("There exists no static getInstance method for  " + this);
+            }
+            return (IConfigurable) method.invoke(null);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
         	// Only possible in development mode
         	e1.printStackTrace();
