@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.inventory;
 
+import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -8,6 +9,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
+
+import java.util.List;
 
 /**
  * A basic inventory implementation.
@@ -19,6 +23,7 @@ public class SimpleInventory implements IInventory {
     private final ItemStack[] _contents;
     private final String _name;
     private final int _stackLimit;
+    private final List<IDirtyMarkListener> dirtyMarkListeners = Lists.newLinkedList();
 
     /**
      * Make a new instance.
@@ -30,6 +35,22 @@ public class SimpleInventory implements IInventory {
         _contents = new ItemStack[size];
         _name = name;
         _stackLimit = stackLimit;
+    }
+
+    /**
+     * Add a dirty marking listener.
+     * @param dirtyMarkListener The dirty mark listener.
+     */
+    public void addDirtyMarkListener(IDirtyMarkListener dirtyMarkListener) {
+        this.dirtyMarkListeners.add(dirtyMarkListener);
+    }
+
+    /**
+     * Remove a dirty marking listener.
+     * @param dirtyMarkListener The dirty mark listener.
+     */
+    public void removeDirtyMarkListener(IDirtyMarkListener dirtyMarkListener) {
+        this.dirtyMarkListeners.remove(dirtyMarkListener);
     }
 
     @Override
@@ -202,7 +223,9 @@ public class SimpleInventory implements IInventory {
 
     @Override
 	public void markDirty() {
-		
+		for(IDirtyMarkListener dirtyMarkListener : dirtyMarkListeners) {
+            dirtyMarkListener.onDirty();
+        }
 	}
 
     @Override
