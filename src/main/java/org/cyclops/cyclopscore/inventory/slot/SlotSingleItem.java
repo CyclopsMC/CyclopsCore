@@ -29,7 +29,7 @@ public class SlotSingleItem extends SlotExtended {
     
     @Override
     public boolean isItemValid(ItemStack itemStack) {
-        return super.isEnabled() && itemStack.getItem() == getItem();
+        return super.isItemValid(itemStack) && itemStack.getItem() == getItem();
     }
     
 }

@@ -22,7 +22,7 @@ public class SlotExtended extends Slot {
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return isEnabled();
+        return isEnabled() && inventory.isItemValidForSlot(getSlotIndex(), stack);
     }
 
 }
