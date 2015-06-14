@@ -118,30 +118,38 @@ public abstract class NBTClassType<T> {
             protected void writePersistedField(String name, Map object, NBTTagCompound tag) {
                 NBTTagCompound mapTag = new NBTTagCompound();
                 NBTTagList list = new NBTTagList();
-                boolean setTypes = false;
+                boolean setKeyType = false;
+                boolean setValueType = false;
                 for(Map.Entry entry : (Set<Map.Entry>) object.entrySet()) {
                     NBTTagCompound entryTag = new NBTTagCompound();
                     getType(entry.getKey().getClass(), object).writePersistedField("key", entry.getKey(), entryTag);
-                    getType(entry.getValue().getClass(), object).writePersistedField("value", entry.getValue(), entryTag);
+                    if(entry.getValue() != null) {
+                        getType(entry.getValue().getClass(), object).writePersistedField("value", entry.getValue(), entryTag);
+                    }
                     list.appendTag(entryTag);
 
-                    if(!setTypes) {
-                        setTypes = true;
-                        mapTag.setString("keyType", entry.getKey().getClass().getCanonicalName());
-                        mapTag.setString("valueType", entry.getValue().getClass().getCanonicalName());
+                    if(!setKeyType) {
+                        setKeyType = true;
+                        mapTag.setString("keyType", entry.getKey().getClass().getName());
+                    }
+                    if(!setValueType && entry.getValue() != null) {
+                        setValueType = true;
+                        mapTag.setString("valueType", entry.getValue().getClass().getName());
                     }
                 }
                 mapTag.setTag("map", list);
                 tag.setTag(name, mapTag);
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             protected Map readPersistedField(String name, NBTTagCompound tag) {
                 NBTTagCompound mapTag = tag.getCompoundTag(name);
                 Map map = Maps.newHashMap();
                 NBTTagList list = mapTag.getTagList("map", MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
                 if(list.tagCount() > 0) {
-                    NBTClassType keyNBTClassType, valueNBTClassType;
+                    NBTClassType keyNBTClassType;
+                    NBTClassType valueNBTClassType = null; // Remains null when all map values are null.
                     try {
                         Class keyType = Class.forName(mapTag.getString("keyType"));
                         keyNBTClassType = getType(keyType, map);
@@ -150,18 +158,25 @@ public abstract class NBTClassType<T> {
                                 + "', this could be a mod error.");
                         return map;
                     }
-                    try {
-                        Class valueType = Class.forName(mapTag.getString("valueType"));
-                        valueNBTClassType = getType(valueType, map);
-                    } catch (ClassNotFoundException e) {
-                        CyclopsCore.clog(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
-                                + "', this could be a mod error.");
-                        return map;
+                    if(mapTag.hasKey("valueType")) {
+                        try {
+                            Class valueType = Class.forName(mapTag.getString("valueType"));
+                            valueNBTClassType = getType(valueType, map);
+                        } catch (ClassNotFoundException e) {
+                            CyclopsCore.clog(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
+                                    + "', this could be a mod error.");
+                            return map;
+                        }
                     }
                     for (int i = 0; i < list.tagCount(); i++) {
                         NBTTagCompound entryTag = list.getCompoundTagAt(i);
                         Object key = keyNBTClassType.readPersistedField("key", entryTag);
-                        Object value = valueNBTClassType.readPersistedField("value", entryTag);
+                        Object value = null;
+                        // If the class type is null, this means all map values are null, so
+                        // we won't have any problems with just inserting nulls for all values here.
+                        if(valueNBTClassType != null) {
+                            value = valueNBTClassType.readPersistedField("value", entryTag);
+                        }
                         map.put(key, value);
                     }
                 }
@@ -186,7 +201,7 @@ public abstract class NBTClassType<T> {
         } else {
             NBTClassType<?> action = NBTClassType.NBTYPES.get(type);
             if (action == null) {
-                throw new RuntimeException("No NBT persist action found for type " + type.getCanonicalName()
+                throw new RuntimeException("No NBT persist action found for type " + type.getName()
                         + " in class " + target.getClass() + " for target object " + target + ".");
             }
             return action;
@@ -274,7 +289,7 @@ public abstract class NBTClassType<T> {
 
                 if (!setTypes) {
                     setTypes = true;
-                    collectionTag.setString("elementType", element.getClass().getCanonicalName());
+                    collectionTag.setString("elementType", element.getClass().getName());
                 }
             }
             collectionTag.setTag("collection", list);

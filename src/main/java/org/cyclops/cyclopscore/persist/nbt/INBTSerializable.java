@@ -25,6 +25,8 @@ public interface INBTSerializable {
 	public NBTTagCompound toNBT();
 	/**
 	 * Read the data from an NBT tag and place it in this object.
+     * The given tag will never be null, so make sure that all fields have a correct default value in case
+     * the received tag would be null anyways.
 	 * @param tag The tag to read from.
 	 */
 	public void fromNBT(NBTTagCompound tag);
