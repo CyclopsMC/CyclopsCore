@@ -94,13 +94,15 @@ public final class L10NHelpers {
 
     /**
      * Holder class that acts as a parameterized unlocalized string.
+     * This can also take other unlocalized strings in the parameter list, and they will recursively
+     * be localized when calling {@link UnlocalizedString#localize()}.
      */
     public static class UnlocalizedString implements INBTSerializable {
 
         private String parameterizedString;
-        private String[] parameters;
+        private Object[] parameters;
 
-        public UnlocalizedString(String parameterizedString, String... parameters) {
+        public UnlocalizedString(String parameterizedString, Object... parameters) {
             this.parameterizedString = parameterizedString;
             this.parameters = parameters;
         }
@@ -111,7 +113,16 @@ public final class L10NHelpers {
         }
 
         public String localize() {
-            return L10NHelpers.localize(parameterizedString, (Object[]) parameters);
+            Object[] realParameters = new Object[parameters.length];
+            for(int i = 0; i < parameters.length; i++) {
+                Object param = parameters[i];
+                if(param instanceof UnlocalizedString) {
+                    realParameters[i] = ((UnlocalizedString) param).localize();
+                } else {
+                    realParameters[i] = param;
+                }
+            }
+            return L10NHelpers.localize(parameterizedString, realParameters);
         }
 
         @Override
@@ -119,8 +130,17 @@ public final class L10NHelpers {
             NBTTagCompound tag = new NBTTagCompound();
             tag.setString("parameterizedString", parameterizedString);
             NBTTagList list = new NBTTagList();
-            for (String parameter : parameters) {
-                list.appendTag(new NBTTagString(parameter));
+            for (Object parameter : parameters) {
+                if(parameter instanceof UnlocalizedString) {
+                    NBTTagCompound objectTag = ((UnlocalizedString) parameter).toNBT();
+                    objectTag.setString("type", "object");
+                    list.appendTag(objectTag);
+                } else {
+                    NBTTagCompound stringTag = new NBTTagCompound();
+                    stringTag.setTag("value", new NBTTagString((String) parameter));
+                    stringTag.setString("type", "string");
+                    list.appendTag(stringTag);
+                }
             }
             tag.setTag("parameters", list);
             return tag;
@@ -129,10 +149,17 @@ public final class L10NHelpers {
         @Override
         public void fromNBT(NBTTagCompound tag) {
             this.parameterizedString = tag.getString("parameterizedString");
-            NBTTagList list = tag.getTagList("parameters", MinecraftHelpers.NBTTag_Types.NBTTagString.ordinal());
-            this.parameters = new String[list.tagCount()];
+            NBTTagList list = tag.getTagList("parameters", MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
+            this.parameters = new Object[list.tagCount()];
             for (int i = 0; i < this.parameters.length; i++) {
-                this.parameters[i] = list.getStringTagAt(i);
+                NBTTagCompound elementTag = list.getCompoundTagAt(i);
+                if("object".equals(elementTag.getString("type"))) {
+                    UnlocalizedString object = new UnlocalizedString();
+                    object.fromNBT(elementTag);
+                    this.parameters[i] = object;
+                } else {
+                    this.parameters[i] = elementTag.getString("value");
+                }
             }
         }
 
