@@ -6,6 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -162,6 +163,14 @@ public class MinecraftHelpers {
 	public static boolean isPlayerInventoryFull(EntityPlayer player) {
 	    return player.inventory.getFirstEmptyStack() == -1;
 	}
+
+    /**
+     * Check if we are inside a modded minecraft environment.
+     * @return If in minecraft.
+     */
+    public static boolean isModdedEnvironment() {
+        return MinecraftHelpers.class.getClassLoader() instanceof LaunchClassLoader;
+    }
 
 	/**
 	 * Check if this code is ran on client side.
