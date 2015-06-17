@@ -174,7 +174,8 @@ public abstract class NBTClassType<T> {
                         Object value = null;
                         // If the class type is null, this means all map values are null, so
                         // we won't have any problems with just inserting nulls for all values here.
-                        if(valueNBTClassType != null) {
+                        // Also check if it has a 'value' tag, since later elements can still be null.
+                        if(valueNBTClassType != null && entryTag.hasKey("value")) {
                             value = valueNBTClassType.readPersistedField("value", entryTag);
                         }
                         map.put(key, value);
