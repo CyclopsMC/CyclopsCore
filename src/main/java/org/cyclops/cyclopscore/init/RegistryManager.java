@@ -23,7 +23,7 @@ public class RegistryManager {
 		registries = Maps.newHashMap();
 	}
 	
-	public void addRegistry(Class<? extends IRegistry> clazz, IRegistry registry) {
+	public <R extends IRegistry> void addRegistry(Class<R> clazz, R registry) {
 		registries.put(clazz, registry);
 	}
 	
