@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.init.DirectObjectReference;
 import org.cyclops.cyclopscore.init.ItemCreativeTab;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
@@ -54,7 +55,7 @@ public class CyclopsCore extends ModBase {
 
     @Override
     public CreativeTabs constructDefaultCreativeTab() {
-        return new ItemCreativeTab(this, Items.diamond); // TODO: temp
+        return new ItemCreativeTab(this, new DirectObjectReference<>(Items.diamond)); // TODO: temp
     }
 
     @Override

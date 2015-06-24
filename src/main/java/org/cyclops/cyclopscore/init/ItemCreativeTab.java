@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.init;
 
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 
@@ -10,19 +9,15 @@ import net.minecraft.item.Item;
  */
 public class ItemCreativeTab extends CreativeTabs {
 
-    private Item item;
+    private final IObjectReference<Item> item;
 
-    public ItemCreativeTab(ModBase mod, Item item) {
+    public ItemCreativeTab(ModBase mod, IObjectReference<Item> item) {
         super(mod.getModId());
         this.item = item;
     }
 
-    public ItemCreativeTab(ModBase mod, Block block) {
-        this(mod, Item.getItemFromBlock(block));
-    }
-
     @Override
     public Item getTabIconItem() {
-        return item;
+        return item.getObject();
     }
 }
