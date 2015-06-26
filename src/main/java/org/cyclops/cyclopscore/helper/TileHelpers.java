@@ -14,17 +14,17 @@ public final class TileHelpers {
      * Safely cast a tile entity.
      * @param world The world.
      * @param pos The position of the block providing the tile entity.
+     * @param targetClazz The class to cast to.
      * @param <T> The type of tile to cast at.
      * @return The tile entity or null.
      */
-    public static <T extends TileEntity> T getSafeTile(IBlockAccess world, BlockPos pos) {
+    public static <T> T getSafeTile(IBlockAccess world, BlockPos pos, Class<T> targetClazz) {
         TileEntity tile = world.getTileEntity(pos);
-        if(tile != null) {
-            try {
-                return (T) world.getTileEntity(pos);
-            } catch (ClassCastException e) {}
+        try {
+            return targetClazz.cast(tile);
+        } catch (ClassCastException e) {
+            return null;
         }
-        return null;
     }
 
 }
