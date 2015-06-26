@@ -4,7 +4,7 @@ repositories {
 
 dependencies {
     // Project lombok
-    compile "org.projectlombok:lombok:1.14.4"
+    compile "org.projectlombok:lombok:1.16.4"
 }
 
 minecraft {
