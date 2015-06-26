@@ -80,6 +80,11 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         setStepSound(Block.soundTypePiston);
         if(hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
     }
+
+    @Override
+    public int getRenderType() {
+        return 3;
+    }
     
     /**
      * Get the class of the tile entity this blockState holds.
@@ -113,11 +118,6 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
             e.printStackTrace();
         }
         return null;
-    }
-
-    @Override
-    public boolean isOpaqueCube() {
-        return false;
     }
     
     /**
