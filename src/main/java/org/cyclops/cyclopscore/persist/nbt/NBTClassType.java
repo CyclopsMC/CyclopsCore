@@ -195,15 +195,35 @@ public abstract class NBTClassType<T> {
     	return true;
     }
 
+    private static NBTClassType getTypeSilent(Class<?> type) {
+        NBTClassType action = NBTClassType.NBTYPES.get(type);
+        if(action == null) {
+            for(Class<?> iface : type.getInterfaces()) {
+                action = NBTClassType.NBTYPES.get(iface);
+                if(action != null) {
+                    return action;
+                }
+            }
+            Class<?> superClass = type.getSuperclass();
+            if(superClass != null) {
+                return getTypeSilent(superClass);
+            } else {
+                return null;
+            }
+        }
+        return action;
+    }
+
     protected static NBTClassType getType(Class<?> type, Object target) {
         // Add special logic for INBTSerializable's
         if(isImplementsInterface(type, INBTSerializable.class)) {
             return new INBTSerializable.SelfNBTClassType(type);
         } else {
-            NBTClassType<?> action = NBTClassType.NBTYPES.get(type);
+            NBTClassType<?> action = getTypeSilent(type);
             if (action == null) {
                 throw new RuntimeException("No NBT persist action found for type " + type.getName()
-                        + " in class " + target.getClass() + " for target object " + target + ".");
+                        + " or any of its parents and interfaces in class " + target.getClass() + " for target object "
+                        + target + ".");
             }
             return action;
         }
