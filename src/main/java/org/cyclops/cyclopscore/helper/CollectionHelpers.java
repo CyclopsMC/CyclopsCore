@@ -23,10 +23,12 @@ public final class CollectionHelpers {
      * @param <V> The value type.
      */
     public static <K, V> void addToMapList(Map<K, List<V>> map, K key, V value) {
-        if(!map.containsKey(key)) {
-            map.put(key, Lists.<V>newLinkedList());
+        List<V> collection = map.get(key);
+        if(collection == null) {
+            collection = Lists.newLinkedList();
+            map.put(key, collection);
         }
-        map.get(key).add(value);
+        collection.add(value);
     }
 
     /**
@@ -39,10 +41,12 @@ public final class CollectionHelpers {
      * @param <V> The value type.
      */
     public static <K, V> void addToMapSet(Map<K, Set<V>> map, K key, V value) {
-        if(!map.containsKey(key)) {
-            map.put(key, Sets.<V>newHashSet());
+        Set<V> collection = map.get(key);
+        if(collection == null) {
+            collection = Sets.newHashSet();
+            map.put(key, collection);
         }
-        map.get(key).add(value);
+        collection.add(value);
     }
 
 }
