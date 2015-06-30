@@ -18,7 +18,7 @@ import java.util.Map;
  * @author rubensworks
  *
  */
-public abstract class InventoryTileEntity extends TickingCyclopsTileEntity implements ISidedInventory {
+public abstract class InventoryTileEntity extends CyclopsTileEntity implements ISidedInventory {
     
     protected SimpleInventory inventory;
     protected Map<EnumFacing, int[]> slotSides;
