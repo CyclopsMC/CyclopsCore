@@ -27,11 +27,15 @@ public abstract class GuiContainerExtended extends GuiContainer {
     public GuiContainerExtended(ExtendedInventoryContainer container) {
         super(container);
         this.container = container;
-        this.texture = new ResourceLocation(container.getGuiProvider().getMod().getModId(), getGuiTexture());
+        this.texture = constructResourceLocation();
     }
 
     protected ExtendedInventoryContainer getContainer() {
         return this.container;
+    }
+
+    protected ResourceLocation constructResourceLocation() {
+        return new ResourceLocation(container.getGuiProvider().getMod().getModId(), getGuiTexture());
     }
 
     /**

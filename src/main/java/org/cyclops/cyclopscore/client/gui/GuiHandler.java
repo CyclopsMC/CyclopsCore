@@ -49,7 +49,7 @@ public class GuiHandler implements IGuiHandler {
      * @param type The GUI type.
      */
     public void registerGUI(IGuiContainerProvider guiProvider, GuiType type) {
-    	containers.put(guiProvider.getGuiID(), guiProvider.getContainer());
+        containers.put(guiProvider.getGuiID(), guiProvider.getContainer());
     	if(MinecraftHelpers.isClientSide()) {
     		guis.put(guiProvider.getGuiID(), guiProvider.getGui());
     	}
@@ -79,12 +79,12 @@ public class GuiHandler implements IGuiHandler {
     }
     
     private <O> O getTemporaryData(GuiType<O> guiType) throws IllegalArgumentException {
-    	O data = (O) (MinecraftHelpers.isClientSide() ? tempDataHolderClient.get(guiType) : tempDataHolderServer.get(guiType));
-    	clearTemporaryData(guiType);
-        if(data == null) {
+        O data = (O) (MinecraftHelpers.isClientSide() ? tempDataHolderClient.get(guiType) : tempDataHolderServer.get(guiType));
+        clearTemporaryData(guiType);
+        if(guiType.isCarriesData() && data == null) {
             throw new IllegalArgumentException("Invalid GUI data.");
         }
-    	return data;
+        return data;
     }
 
     @SuppressWarnings("unchecked")
@@ -111,16 +111,21 @@ public class GuiHandler implements IGuiHandler {
     
     /**
      * Types of GUIs.
-     * Use the {@link org.cyclops.cyclopscore.client.gui.GuiHandler.GuiType#create()} method to create new types.
+     * Use the {@link org.cyclops.cyclopscore.client.gui.GuiHandler.GuiType#create(boolean)} method to create new types.
      * @author rubensworks
      */
     public static class GuiType<O> {
 
+        private final boolean carriesData;
         private IContainerConstructor<O> containerConstructor = null;
         private IGuiConstructor<O> guiConstructor = null;
 
-        private GuiType() {
+        private GuiType(boolean carriesData) {
+            this.carriesData = carriesData;
+        }
 
+        public boolean isCarriesData() {
+            return this.carriesData;
         }
 
         public void setContainerConstructor(IContainerConstructor<O> containerConstructor) {
@@ -154,21 +159,22 @@ public class GuiHandler implements IGuiHandler {
          * and
          * {@link org.cyclops.cyclopscore.client.gui.GuiHandler.GuiType#setGuiConstructor(org.cyclops.cyclopscore.client.gui.GuiHandler.IGuiConstructor)}
          * for full initialization.
+         * @param carriesData If this type requires additional data to be passed when the gui is opened.
          * @param <O> The type of temporary data passed to this gui type, can be Void.
          * @return The new unique gui type instance.
          */
-        public static <O> GuiType<O> create() {
-            return new GuiType<O>();
+        public static <O> GuiType<O> create(boolean carriesData) {
+            return new GuiType<O>(carriesData);
         }
 
         /**
          * A block with a tile entity.
          */
-        public static final GuiType<Void> BLOCK = GuiType.create();
+        public static final GuiType<Void> BLOCK = GuiType.create(false);
         /**
          * An item.
          */
-        public static final GuiType<Integer> ITEM = GuiType.create();
+        public static final GuiType<Integer> ITEM = GuiType.create(true);
 
         static {
             BLOCK.setContainerConstructor(new IContainerConstructor<Void>() {

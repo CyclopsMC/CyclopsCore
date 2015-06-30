@@ -46,7 +46,7 @@ public class Helpers {
      * @return The incremented ID.
      */
     public static int getNewId(ModBase mod, IDType type) {
-    	Integer ID = ID_COUNTER.get(Pair.of(mod, type));
+        Integer ID = ID_COUNTER.get(Pair.of(mod, type));
     	if(ID == null) ID = 0;
     	ID_COUNTER.put(Pair.of(mod, type), ID + 1);
     	return ID;

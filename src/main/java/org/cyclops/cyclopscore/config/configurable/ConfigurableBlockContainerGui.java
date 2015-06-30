@@ -3,9 +3,7 @@ package org.cyclops.cyclopscore.config.configurable;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -29,10 +27,6 @@ public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockCon
     
     private int guiID;
 
-    private Class<? extends Container> container;
-    @SideOnly(Side.CLIENT)
-    private Class<? extends GuiScreen> gui;
-
     /**
      * Make a new blockState instance.
      * @param eConfig Config for this blockState.
@@ -43,10 +37,10 @@ public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockCon
     public ConfigurableBlockContainerGui(ExtendedConfig eConfig,
             Material material, Class<? extends CyclopsTileEntity> tileEntity) {
         super(eConfig, material, tileEntity);
+        this.hasGui = true;
         if(hasGui()) {
             this.guiID = Helpers.getNewId(eConfig.getMod(), Helpers.IDType.GUI);
         }
-        this.hasGui = true;
     }
     
     @Override
@@ -74,7 +68,7 @@ public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockCon
         }
 
         if (!world.isRemote && hasGui()) {
-            entityplayer.openGui(getConfig().getMod(), guiID, world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
+            entityplayer.openGui(getConfig().getMod(), getGuiID(), world, blockPos.getX(), blockPos.getY(), blockPos.getZ());
         }
 
         return true;
