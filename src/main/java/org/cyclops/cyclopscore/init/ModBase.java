@@ -297,6 +297,21 @@ public abstract class ModBase {
      */
     public abstract ICommonProxy getProxy();
 
+    @Override
+    public String toString() {
+        return getModId();
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        return object == this;
+    }
+
     /**
      * Unique references to values that can be registered inside a mod.
      */
