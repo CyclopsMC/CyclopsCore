@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public abstract class VillagerConfig extends ExtendedConfig<VillagerConfig> {
 
-    private final int id;
+    private int id;
 
     /**
      * Make a new instance.
@@ -25,6 +25,10 @@ public abstract class VillagerConfig extends ExtendedConfig<VillagerConfig> {
             String comment, Class<? extends ConfigurableVillager> element) {
         super(mod, defaultId != 0, namedId, comment, element);
         this.id = defaultId;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getId() {
