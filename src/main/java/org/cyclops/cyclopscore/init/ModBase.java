@@ -32,6 +32,8 @@ import java.util.Set;
 public abstract class ModBase {
 
     public static final EnumReferenceKey REFKEY_TEXTURE_PATH_GUI = EnumReferenceKey.create("texture_path_gui");
+    public static final EnumReferenceKey REFKEY_TEXTURE_PATH_MODELS = EnumReferenceKey.create("texture_path_models");
+    public static final EnumReferenceKey REFKEY_TEXTURE_PATH_SKINS = EnumReferenceKey.create("texture_path_skins");
 
     private final String modId, modName;
     private final LoggerHelper loggerHelper;
@@ -79,6 +81,8 @@ public abstract class ModBase {
 
     private void populateDefaultGenericReferences() {
         genericReference.put(REFKEY_TEXTURE_PATH_GUI, "textures/gui/");
+        genericReference.put(REFKEY_TEXTURE_PATH_MODELS, "textures/models/");
+        genericReference.put(REFKEY_TEXTURE_PATH_SKINS, "textures/skins/");
     }
 
     /**

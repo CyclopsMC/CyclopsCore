@@ -45,10 +45,6 @@ public enum ConfigurableTypeCategory {
      */
     BIOME("biome"),
     /**
-     * Degradation Effect category.
-     */
-    DEGRADATIONEFFECT("degradation effect"),
-    /**
      * Machine category.
      */
     MACHINE("machine"),
@@ -62,13 +58,6 @@ public enum ConfigurableTypeCategory {
      */
     CORE("core");
     
-    /**
-     * All the categories.
-     */
-    public static ConfigurableTypeCategory[] CATEGORIES = new ConfigurableTypeCategory[]{
-            ITEM, BLOCK, FLUID, ENTITY, GENERAL, WORLDGENERATION, ENCHANTMENT, MOB, BIOME, MACHINE, POTION
-    };
-    
     private String name;
     
     private ConfigurableTypeCategory(String name) {
@@ -79,7 +68,7 @@ public enum ConfigurableTypeCategory {
     public String toString() {
         return name;
     }
-    
+
     /**
      * Get the original to string.
      * @return The enum name.

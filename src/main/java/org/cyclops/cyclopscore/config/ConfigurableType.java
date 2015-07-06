@@ -1,14 +1,8 @@
 package org.cyclops.cyclopscore.config;
 
 import org.cyclops.cyclopscore.config.configurable.IConfigurable;
-import org.cyclops.cyclopscore.config.configurabletypeaction.BlockAction;
-import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeAction;
-import org.cyclops.cyclopscore.config.configurabletypeaction.DummyAction;
-import org.cyclops.cyclopscore.config.configurabletypeaction.ItemAction;
-import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
-import org.cyclops.cyclopscore.config.extendedconfig.DummyConfig;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
-import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
+import org.cyclops.cyclopscore.config.configurabletypeaction.*;
+import org.cyclops.cyclopscore.config.extendedconfig.*;
 
 /**
  * The different types of {@link IConfigurable}.
@@ -29,6 +23,35 @@ public class ConfigurableType {
      * Block type with containers.
      */
     public static final ConfigurableType BLOCKCONTAINER = new ConfigurableType(true, BlockConfig.class, new BlockAction(), ConfigurableTypeCategory.BLOCK);
+
+    /**
+     * Mob type.
+     */
+    public static final ConfigurableType MOB = new ConfigurableType(false, MobConfig.class, new MobAction(), ConfigurableTypeCategory.MOB);
+    /**
+     * Regular entity type.
+     */
+    public static final ConfigurableType ENTITY = new ConfigurableType(false, EntityConfig.class, new EntityAction(), ConfigurableTypeCategory.ENTITY);
+    /**
+     * Fluid type.
+     */
+    public static final ConfigurableType FLUID = new ConfigurableType(true, FluidConfig.class, new FluidAction(), ConfigurableTypeCategory.FLUID);
+    /**
+     * Enchantment type.
+     */
+    public static final ConfigurableType ENCHANTMENT = new ConfigurableType(true, EnchantmentConfig.class, new EnchantmentAction(), ConfigurableTypeCategory.ENCHANTMENT);
+    /**
+     * Villager type.
+     */
+    public static final ConfigurableType VILLAGER = new ConfigurableType(true, VillagerConfig.class, new VillagerAction(), ConfigurableTypeCategory.MOB);
+    /**
+     * Biome type.
+     */
+    public static final ConfigurableType BIOME = new ConfigurableType(true, BiomeConfig.class, new BiomeAction(), ConfigurableTypeCategory.BIOME);
+    /**
+     * Potion effect type.
+     */
+    public static final ConfigurableType POTION = new ConfigurableType(true, PotionConfig.class, new PotionAction(), ConfigurableTypeCategory.POTION);
 
     /**
      * Dummy type, only used for configs that refer to nothing.
