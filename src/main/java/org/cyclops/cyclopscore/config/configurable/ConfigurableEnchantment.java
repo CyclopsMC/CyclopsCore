@@ -42,7 +42,7 @@ public class ConfigurableEnchantment extends Enchantment implements IConfigurabl
     
     @Override
     public String getTranslatedName(int level) {
-        String enchantmentName = L10NHelpers.localize("enchantment." + eConfig.downCast().getNamedId());
+        String enchantmentName = L10NHelpers.localize("enchantment." + eConfig.getMod().getModId() + "." + eConfig.downCast().getNamedId());
         return enchantmentName + " " + L10NHelpers.localize("enchantment.level." + level);
     }
 

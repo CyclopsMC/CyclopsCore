@@ -32,7 +32,7 @@ public abstract class PotionConfig extends ExtendedConfig<PotionConfig> {
 
     @Override
     public String getUnlocalizedName() {
-        return "potions." + getNamedId();
+        return "potions." + getMod().getModId() + "." + getNamedId();
     }
 
     @Override

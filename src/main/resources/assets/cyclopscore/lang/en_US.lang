@@ -1,3 +1,5 @@
 # General
 itemGroup.cyclopscore=Cyclops Core
 general.cyclopscore.tooltip.info=<Shift for info>
+general.cyclopscore.info.enabled=Enabled
+general.cyclopscore.info.disabled=Disabled

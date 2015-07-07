@@ -19,8 +19,8 @@ import java.util.List;
 public final class L10NHelpers {
 
     public static final int MAX_TOOLTIP_LINE_LENGTH = 25;
-    private static final String KEY_ENABLED = "general.info.enabled";
-    private static final String KEY_DISABLED = "general.info.disabled";
+    private static final String KEY_ENABLED = "general." + Reference.MOD_ID + ".info.enabled";
+    private static final String KEY_DISABLED = "general." + Reference.MOD_ID + ".info.disabled";
 
     /**
      * Localize a key that has values in language files.
