@@ -19,6 +19,7 @@ import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.persist.world.WorldStorage;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -44,8 +45,10 @@ public abstract class ModBase {
     private final List<WorldStorage> worldStorages = Lists.newLinkedList();
     private final GuiHandler guiHandler;
     private final RegistryManager registryManager;
+    private final RecipeHandler recipeHandler;
 
     private CreativeTabs defaultCreativeTab = null;
+    private File configFolder = null;
 
     public ModBase(String modId, String modName) {
         this.modId = modId;
@@ -56,6 +59,7 @@ public abstract class ModBase {
         this.iconProvider = constructIconProvider();
         this.guiHandler = constructGuiHandler();
         this.registryManager = constructRegistryManager();
+        this.recipeHandler = constructRecipeHandler();
         populateDefaultGenericReferences();
     }
 
@@ -78,6 +82,8 @@ public abstract class ModBase {
     protected RegistryManager constructRegistryManager() {
         return new RegistryManager();
     }
+
+    protected abstract RecipeHandler constructRecipeHandler();
 
     private void populateDefaultGenericReferences() {
         genericReference.put(REFKEY_TEXTURE_PATH_GUI, "textures/gui/");
@@ -152,6 +158,16 @@ public abstract class ModBase {
     public void preInit(FMLPreInitializationEvent event) {
         log(Level.INFO, "preInit()");
 
+        if(getConfigFolder() == null) {
+            // Determine config folder.
+            String rootFolderName = event.getModConfigurationDirectory() + "/" + getModId();
+            File configFolder = new File(rootFolderName);
+            if (!configFolder.exists()) {
+                configFolder.mkdir();
+            }
+            setConfigFolder(configFolder);
+        }
+
         // Register configs and start with loading the general configs
         onGeneralConfigsRegister(getConfigHandler());
         getConfigHandler().handle(event);
@@ -203,6 +219,12 @@ public abstract class ModBase {
             proxy.registerKeyBindings();
             proxy.registerPacketHandlers();
             proxy.registerTickHandlers();
+        }
+
+        // Register recipes
+        RecipeHandler recipeHandler = getRecipeHandler();
+        if(recipeHandler != null) {
+            recipeHandler.registerRecipes(getConfigFolder());
         }
 
         // Call init listeners

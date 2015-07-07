@@ -3,12 +3,17 @@ package org.cyclops.cyclopscore.config;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.cyclops.cyclopscore.config.configurable.IConfigurable;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.init.IInitListener;
 import org.cyclops.cyclopscore.init.ModBase;
 
+import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
@@ -196,6 +201,25 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
             return false;
         } catch (SecurityException e4) {
             return false;
+        }
+    }
+
+    /**
+     * Get the config from a given item.
+     * It will internally also try to get the blockState from the item if it exists to get the config from.
+     * @param item The item, possibly IConfigurable.
+     * @return The config or null.
+     */
+    public static @Nullable ExtendedConfig<?> getConfigFromItem(Item item) {
+        if(item instanceof IConfigurable) {
+            return ((IConfigurable) item).getConfig();
+        } else {
+            Block block = Block.getBlockFromItem(item);
+            if(block != Blocks.air && block instanceof IConfigurable) {
+                return ((IConfigurable) block).getConfig();
+            } else {
+                return null;
+            }
         }
     }
     

@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.init.DirectObjectReference;
 import org.cyclops.cyclopscore.init.ItemCreativeTab;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 
 /**
@@ -33,6 +34,11 @@ public class CyclopsCore extends ModBase {
 
     public CyclopsCore() {
         super(Reference.MOD_ID, Reference.MOD_NAME);
+    }
+
+    @Override
+    protected RecipeHandler constructRecipeHandler() {
+        return null;
     }
 
     @Mod.EventHandler
