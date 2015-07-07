@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.config;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.minecraft.block.Block;
@@ -16,6 +17,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Create config file and register items and blocks from the given ExtendedConfigs.
@@ -29,8 +31,9 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
 
     private final ModBase mod;
     private Configuration config;
-    private LinkedHashSet<ExtendedConfig> processedConfigs = new LinkedHashSet<ExtendedConfig>();
-    private Map<String, ExtendedConfig> configDictionary = Maps.newHashMap();
+    private final LinkedHashSet<ExtendedConfig> processedConfigs = new LinkedHashSet<ExtendedConfig>();
+    private final Map<String, ExtendedConfig> configDictionary = Maps.newHashMap();
+    private final Set<String> categories = Sets.newHashSet();
     
     @Override
     public boolean add(ExtendedConfig e) {
@@ -64,6 +67,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
     @SuppressWarnings("unchecked")
     public void loadConfig() {
         for(ExtendedConfig<?> eConfig : this) {
+            categories.add(eConfig.getHolderType().getCategory());
             if(!eConfig.isHardDisabled()) {
                 // Save additional properties
                 for(ConfigProperty configProperty : eConfig.configProperties) {

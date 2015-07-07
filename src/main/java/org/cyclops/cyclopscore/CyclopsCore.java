@@ -18,11 +18,12 @@ import org.cyclops.cyclopscore.proxy.ICommonProxy;
  * @author rubensworks
  *
  */
-@Mod(modid = Reference.MOD_ID,
-     name = Reference.MOD_NAME,
-     useMetadata = true,
-     version = Reference.MOD_VERSION,
-     dependencies = Reference.MOD_DEPENDENCIES
+@Mod(   modid = Reference.MOD_ID,
+        name = Reference.MOD_NAME,
+        useMetadata = true,
+        version = Reference.MOD_VERSION,
+        dependencies = Reference.MOD_DEPENDENCIES,
+        guiFactory = "org.cyclops.cyclopscore.GuiConfigOverview$ExtendedConfigGuiFactory"
 )
 public class CyclopsCore extends ModBase {
 
