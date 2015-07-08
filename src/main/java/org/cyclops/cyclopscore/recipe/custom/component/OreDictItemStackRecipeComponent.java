@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.recipe.custom.component;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -14,7 +13,6 @@ import java.util.List;
  *
  * @author immortaleeb
  */
-@EqualsAndHashCode(callSuper = false)
 @Data
 public class OreDictItemStackRecipeComponent extends ItemStackRecipeComponent {
 
