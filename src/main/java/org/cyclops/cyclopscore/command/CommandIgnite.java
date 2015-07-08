@@ -46,7 +46,7 @@ public class CommandIgnite extends CommandMod {
             GameProfile gameprofile = minecraftserver.getPlayerProfileCache().getGameProfileForUsername(parts[0]);
 
             if (gameprofile == null) {
-                sender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.command.invalidPlayer", parts[0])));
+                sender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.invalidPlayer", parts[0])));
             } else {
                 EntityPlayerMP player = minecraftserver.getConfigurationManager().getPlayerByUsername(parts[0]);
                 int duration = 2;
@@ -58,7 +58,7 @@ public class CommandIgnite extends CommandMod {
                     }
                 }
                 player.setFire(duration);
-                sender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.command.ignitedPlayer", parts[0], duration)));
+                sender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.ignitedPlayer", parts[0], duration)));
             }
         }
     }

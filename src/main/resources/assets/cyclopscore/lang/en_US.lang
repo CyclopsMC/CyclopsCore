@@ -3,3 +3,12 @@ itemGroup.cyclopscore=Cyclops Core
 general.cyclopscore.tooltip.info=<Shift for info>
 general.cyclopscore.info.enabled=Enabled
 general.cyclopscore.info.disabled=Disabled
+
+# Chat messages
+chat.cyclopscore.command.invalidArguments=Invalid Arguments
+chat.cyclopscore.command.invalidSubcommand=Invalid Subcommand
+chat.cyclopscore.command.onlyOneValue=Please define one new value
+chat.cyclopscore.command.invalidNewValue=Invalid new value
+chat.cyclopscore.command.updatedValue=Updated %s to: %s
+chat.cyclopscore.command.invalidPlayer=The player '%s' was not found
+chat.cyclopscore.command.ignitedPlayer=The player '%s' was lit on fire for %s seconds

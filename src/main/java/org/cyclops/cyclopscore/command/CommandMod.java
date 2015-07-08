@@ -95,14 +95,14 @@ public class CommandMod implements ICommand {
     @Override
     public void processCommand(ICommandSender icommandsender, String[] astring) throws CommandException {
         if(astring.length == 0) {
-            icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.command.invalidArguments")));
+            icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.invalidArguments")));
         } else {
             ICommand subcommand = getSubcommands().get(astring[0]);
             if(subcommand != null) {
                 String[] asubstring = shortenArgumentList(astring);
                 subcommand.processCommand(icommandsender, asubstring);
             } else {
-                icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.command.invalidSubcommand")));
+                icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.invalidSubcommand")));
             }
         }
     }

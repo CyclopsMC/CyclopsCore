@@ -51,7 +51,7 @@ public class CommandConfigSet extends CommandMod {
     @Override
     public void processCommand(ICommandSender icommandsender, String[] astring) {
         if(astring.length == 0 || astring.length > 1) {
-            icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.command.onlyOneValue")));
+            icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.onlyOneValue")));
         } else {
             Object newValue = Helpers.tryParse(astring[0], config.getValue());
             if(newValue != null) {
@@ -60,10 +60,10 @@ public class CommandConfigSet extends CommandMod {
                 config.getCallback().run(newValue);
                 config.save(configuration, true);
                 configuration.save();
-                icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.command.updatedValue",
+                icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.updatedValue",
                         name, newValue.toString())));
             } else {
-                icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.command.invalidNewValue")));
+                icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.invalidNewValue")));
             }
         }
     }
