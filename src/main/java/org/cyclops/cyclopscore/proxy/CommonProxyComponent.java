@@ -5,9 +5,11 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.cyclops.cyclopscore.event.ConfigChangedEventHook;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.world.gen.IRetroGenRegistry;
 
 /**
  * Base proxy for server and client side.
@@ -51,6 +53,11 @@ public abstract class CommonProxyComponent implements ICommonProxy {
 
     @Override
     public void registerEventHooks() {
+        IRetroGenRegistry retroGenRegistry = getMod().getRegistryManager().getRegistry(IRetroGenRegistry.class);
+        if(retroGenRegistry != null) {
+            MinecraftForge.EVENT_BUS.register(retroGenRegistry);
+        }
+
         FMLCommonHandler.instance().bus().register(new ConfigChangedEventHook(getMod()));
     }
 

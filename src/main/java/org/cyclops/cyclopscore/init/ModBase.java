@@ -32,15 +32,16 @@ import java.util.Set;
 @Data
 public abstract class ModBase {
 
-    public static final EnumReferenceKey REFKEY_TEXTURE_PATH_GUI = EnumReferenceKey.create("texture_path_gui");
-    public static final EnumReferenceKey REFKEY_TEXTURE_PATH_MODELS = EnumReferenceKey.create("texture_path_models");
-    public static final EnumReferenceKey REFKEY_TEXTURE_PATH_SKINS = EnumReferenceKey.create("texture_path_skins");
+    public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_GUI = EnumReferenceKey.create("texture_path_gui", String.class);
+    public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_MODELS = EnumReferenceKey.create("texture_path_models", String.class);
+    public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_SKINS = EnumReferenceKey.create("texture_path_skins", String.class);
+    public static final EnumReferenceKey<Boolean> REFKEY_RETROGEN = EnumReferenceKey.create("retrogen", Boolean.class);
 
     private final String modId, modName;
     private final LoggerHelper loggerHelper;
     private final Set<IInitListener> initListeners;
     private final ConfigHandler configHandler;
-    private final Map<EnumReferenceKey, String> genericReference = Maps.newHashMap();
+    private final Map<EnumReferenceKey, Object> genericReference = Maps.newHashMap();
     private final IconProvider iconProvider;
     private final List<WorldStorage> worldStorages = Lists.newLinkedList();
     private final GuiHandler guiHandler;
@@ -85,21 +86,28 @@ public abstract class ModBase {
 
     protected abstract RecipeHandler constructRecipeHandler();
 
+    protected <T> void putGenericReference(EnumReferenceKey<T> key, T value) {
+        genericReference.put(key, value);
+    }
+
     private void populateDefaultGenericReferences() {
-        genericReference.put(REFKEY_TEXTURE_PATH_GUI, "textures/gui/");
-        genericReference.put(REFKEY_TEXTURE_PATH_MODELS, "textures/models/");
-        genericReference.put(REFKEY_TEXTURE_PATH_SKINS, "textures/skins/");
+        putGenericReference(REFKEY_TEXTURE_PATH_GUI, "textures/gui/");
+        putGenericReference(REFKEY_TEXTURE_PATH_MODELS, "textures/models/");
+        putGenericReference(REFKEY_TEXTURE_PATH_SKINS, "textures/skins/");
+        putGenericReference(REFKEY_RETROGEN, false);
     }
 
     /**
      * Get the value for a generic reference key.
      * The default keys can be found in {@link org.cyclops.cyclopscore.init.ModBase}.
      * @param key The key of a value.
+     * @param <T> The type of value.
      * @return The value for the given key.
      */
-    public String getReferenceValue(EnumReferenceKey key) {
+    @SuppressWarnings("unchecked")
+    public <T> T getReferenceValue(EnumReferenceKey<T> key) {
         if(!genericReference.containsKey(key)) throw new IllegalArgumentException("Could not find " + key + " as generic reference item.");
-        return genericReference.get(key);
+        return (T) genericReference.get(key);
     }
 
     /**
@@ -340,11 +348,22 @@ public abstract class ModBase {
 
     /**
      * Unique references to values that can be registered inside a mod.
+     * @param <T> The type of value.
      */
-    @Data(staticConstructor = "create")
-    public static class EnumReferenceKey {
+    @Data
+    public static class EnumReferenceKey<T> {
 
         private final String key;
+        private final Class<T> type;
+
+        private EnumReferenceKey(String key, Class<T> type) {
+            this.key = key;
+            this.type = type;
+        }
+
+        public static <T> EnumReferenceKey<T> create(String key, Class<T> type) {
+            return new EnumReferenceKey<>(key, type);
+        }
 
     }
 
