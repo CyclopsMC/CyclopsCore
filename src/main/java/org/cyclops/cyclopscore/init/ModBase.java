@@ -18,6 +18,7 @@ import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
+import org.cyclops.cyclopscore.network.PacketHandler;
 import org.cyclops.cyclopscore.persist.world.WorldStorage;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 
@@ -52,6 +53,7 @@ public abstract class ModBase {
     private final RegistryManager registryManager;
     private final RecipeHandler recipeHandler;
     private final IKeyRegistry keyRegistry;
+    private final PacketHandler packetHandler;
     private final Debug debug;
 
     private CreativeTabs defaultCreativeTab = null;
@@ -68,6 +70,7 @@ public abstract class ModBase {
         this.registryManager = constructRegistryManager();
         this.recipeHandler = constructRecipeHandler();
         this.keyRegistry = new KeyRegistry();
+        this.packetHandler = constructPacketHandler();
         this.debug = new Debug(this);
         populateDefaultGenericReferences();
     }
@@ -93,6 +96,10 @@ public abstract class ModBase {
     }
 
     protected abstract RecipeHandler constructRecipeHandler();
+
+    protected PacketHandler constructPacketHandler() {
+        return new PacketHandler(this);
+    }
 
     protected ICommand constructBaseCommand() {
         return new CommandMod(this, Maps.<String, ICommand>newHashMap());
@@ -245,7 +252,8 @@ public abstract class ModBase {
         if(proxy != null) {
             proxy.registerRenderers();
             proxy.registerKeyBindings(getKeyRegistry());
-            proxy.registerPacketHandlers();
+            getPacketHandler().init();
+            proxy.registerPacketHandlers(getPacketHandler());
             proxy.registerTickHandlers();
         }
 

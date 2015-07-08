@@ -7,10 +7,14 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.event.ConfigChangedEventHook;
+import org.cyclops.cyclopscore.event.PlayerRingOfFire;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.item.IBucketRegistry;
+import org.cyclops.cyclopscore.network.PacketHandler;
+import org.cyclops.cyclopscore.network.packet.SoundPacket;
 import org.cyclops.cyclopscore.world.gen.IRetroGenRegistry;
 
 /**
@@ -44,8 +48,8 @@ public abstract class CommonProxyComponent implements ICommonProxy {
     }
 
     @Override
-    public void registerPacketHandlers() {
-    	// TODO: packet handler
+    public void registerPacketHandlers(PacketHandler packetHandler) {
+
     }
 
     @Override
@@ -64,6 +68,7 @@ public abstract class CommonProxyComponent implements ICommonProxy {
             MinecraftForge.EVENT_BUS.register(bucketRegistry);
         }
 
+        FMLCommonHandler.instance().bus().register(new PlayerRingOfFire());
         FMLCommonHandler.instance().bus().register(new ConfigChangedEventHook(getMod()));
     }
 
@@ -101,9 +106,8 @@ public abstract class CommonProxyComponent implements ICommonProxy {
     @Override
     public void sendSound(double x, double y, double z, String sound, float volume, float frequency,
     		String mod) {
-        // TODO
-    	//SoundPacket packet = new SoundPacket(x, y, z, sound, volume, frequency, mod);
-		//PacketHandler.sendToServer(packet);
+    	SoundPacket packet = new SoundPacket(x, y, z, sound, volume, frequency, mod);
+		CyclopsCore._instance.getPacketHandler().sendToServer(packet); // Yes, all sounds go through cyclops.
     }
 
     @Override

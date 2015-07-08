@@ -5,6 +5,7 @@ import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -35,6 +36,13 @@ import java.util.Map;
         guiFactory = "org.cyclops.cyclopscore.GuiConfigOverview$ExtendedConfigGuiFactory"
 )
 public class CyclopsCore extends ModBase {
+
+    /**
+     * The proxy of this mod, depending on 'side' a different proxy will be inside this field.
+     * @see net.minecraftforge.fml.common.SidedProxy
+     */
+    @SidedProxy(clientSide = "org.cyclops.cyclopscore.proxy.ClientProxy", serverSide = "org.cyclops.cyclopscore.proxy.CommonProxy")
+    public static ICommonProxy proxy;
 
     /**
      * The unique instance of this mod.
@@ -90,7 +98,7 @@ public class CyclopsCore extends ModBase {
 
     @Override
     public ICommonProxy getProxy() {
-        return null;
+        return proxy;
     }
 
     @Override

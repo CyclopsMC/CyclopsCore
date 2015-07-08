@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
+import org.cyclops.cyclopscore.network.PacketHandler;
 
 /**
  * Interface for common proxies.
@@ -40,8 +41,9 @@ public interface ICommonProxy {
 
     /**
      * Register packet handlers.
+     * @param packetHandler The packet handler.
      */
-    public void registerPacketHandlers();
+    public void registerPacketHandlers(PacketHandler packetHandler);
 
     /**
      * Register tick handlers.
