@@ -4,6 +4,7 @@ import lombok.experimental.Delegate;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.model.IBakedModel;
@@ -14,6 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
@@ -35,6 +37,7 @@ import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 import org.cyclops.cyclopscore.tileentity.TileEntityNBTStorage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -79,6 +82,18 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         setHardness(5F);
         setStepSound(Block.soundTypePiston);
         if(hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @Override
+    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+                                     int meta, EntityLivingBase placer) {
+        IBlockState blockState = super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
+        for(IProperty property : (Collection<IProperty>) blockState.getPropertyNames()) {
+            if(property.getName().equals("facing")) {
+                blockState.withProperty(property, placer.getHorizontalFacing());
+            }
+        }
+        return blockState;
     }
 
     @Override

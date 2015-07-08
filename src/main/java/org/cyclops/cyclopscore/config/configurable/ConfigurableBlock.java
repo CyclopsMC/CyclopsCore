@@ -3,8 +3,14 @@ package org.cyclops.cyclopscore.config.configurable;
 import lombok.experimental.Delegate;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -15,6 +21,8 @@ import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
 import org.cyclops.cyclopscore.client.model.IDynamicModelBlock;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+
+import java.util.Collection;
 
 /**
  * Block that can hold ExtendedConfigs
@@ -45,6 +53,18 @@ public class ConfigurableBlock extends Block implements IConfigurable, IDynamicM
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         if(hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @Override
+    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+                                     int meta, EntityLivingBase placer) {
+        IBlockState blockState = super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
+        for(IProperty property : (Collection<IProperty>) blockState.getPropertyNames()) {
+            if(property.getName().equals("facing")) {
+                blockState.withProperty(property, placer.getHorizontalFacing());
+            }
+        }
+        return blockState;
     }
 
     private void setConfig(@SuppressWarnings("rawtypes") ExtendedConfig eConfig) {
