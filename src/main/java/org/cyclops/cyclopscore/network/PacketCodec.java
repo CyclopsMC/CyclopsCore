@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import org.apache.commons.lang3.ClassUtils;
-import org.cyclops.cyclopscore.algorithm.SingleCache;
+import org.cyclops.cyclopscore.datastructure.SingleCache;
 
 import java.lang.reflect.Field;
 import java.util.*;

@@ -1,4 +1,4 @@
-package org.cyclops.cyclopscore.algorithm;
+package org.cyclops.cyclopscore.datastructure;
 
 /**
  * A generic single object cache.
