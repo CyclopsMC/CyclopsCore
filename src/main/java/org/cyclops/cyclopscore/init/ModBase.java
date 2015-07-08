@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Data;
+import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
+import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
@@ -87,6 +89,10 @@ public abstract class ModBase {
     }
 
     protected abstract RecipeHandler constructRecipeHandler();
+
+    protected ICommand constructBaseCommand() {
+        return new CommandMod(this, Maps.<String, ICommand>newHashMap());
+    }
 
     /**
      * Save a mod value.
@@ -258,6 +264,16 @@ public abstract class ModBase {
 
         // Call init listeners
         callInitStepListeners(IInitListener.Step.POSTINIT);
+    }
+
+    /**
+     * Override this, call super and annotate with {@link net.minecraftforge.fml.common.Mod.EventHandler}.
+     * Register the things that are related to when the server is starting.
+     * @param event The Forge event required for this.
+     */
+    @Mod.EventHandler
+    public void onServerStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(constructBaseCommand());
     }
 
     /**

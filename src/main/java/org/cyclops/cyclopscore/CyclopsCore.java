@@ -1,18 +1,26 @@
 package org.cyclops.cyclopscore;
 
+import com.google.common.collect.Maps;
+import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.command.CommandIgnite;
+import org.cyclops.cyclopscore.command.CommandMod;
+import org.cyclops.cyclopscore.command.CommandRecursion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.init.DirectObjectReference;
 import org.cyclops.cyclopscore.init.ItemCreativeTab;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
+
+import java.util.Map;
 
 /**
  * The main mod class of CyclopsCore.
@@ -43,6 +51,14 @@ public class CyclopsCore extends ModBase {
         return null;
     }
 
+    @Override
+    protected ICommand constructBaseCommand() {
+        Map<String, ICommand> commands = Maps.newHashMap();
+        commands.put(CommandRecursion.NAME, new CommandRecursion(this));
+        commands.put(CommandIgnite.NAME, new CommandIgnite(this));
+        return new CommandMod(this, commands);
+    }
+
     @Mod.EventHandler
     @Override
     public final void preInit(FMLPreInitializationEvent event) {
@@ -59,6 +75,12 @@ public class CyclopsCore extends ModBase {
     @Override
     public final void postInit(FMLPostInitializationEvent event) {
         super.postInit(event);
+    }
+
+    @Mod.EventHandler
+    @Override
+    public void onServerStarting(FMLServerStartingEvent event) {
+        super.onServerStarting(event);
     }
 
     @Override

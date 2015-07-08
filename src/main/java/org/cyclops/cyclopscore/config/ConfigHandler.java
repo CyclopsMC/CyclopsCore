@@ -34,6 +34,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
     private final LinkedHashSet<ExtendedConfig> processedConfigs = new LinkedHashSet<ExtendedConfig>();
     private final Map<String, ExtendedConfig> configDictionary = Maps.newHashMap();
     private final Set<String> categories = Sets.newHashSet();
+    private final Map<String, ConfigProperty> commandableProperties = Maps.newHashMap();
     
     @Override
     public boolean add(ExtendedConfig e) {
@@ -73,7 +74,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
                 for(ConfigProperty configProperty : eConfig.configProperties) {
                     configProperty.save(config);
                     if(configProperty.isCommandable()) {
-                        // TODO: save in map reachable by commands.
+                        commandableProperties.put(configProperty.getName(), configProperty);
                     }
                 }
                 
