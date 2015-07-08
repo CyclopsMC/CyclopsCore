@@ -12,6 +12,8 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
+import org.cyclops.cyclopscore.client.key.IKeyRegistry;
+import org.cyclops.cyclopscore.client.key.KeyRegistry;
 import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
@@ -49,6 +51,7 @@ public abstract class ModBase {
     private final GuiHandler guiHandler;
     private final RegistryManager registryManager;
     private final RecipeHandler recipeHandler;
+    private final IKeyRegistry keyRegistry;
     private final Debug debug;
 
     private CreativeTabs defaultCreativeTab = null;
@@ -64,6 +67,7 @@ public abstract class ModBase {
         this.guiHandler = constructGuiHandler();
         this.registryManager = constructRegistryManager();
         this.recipeHandler = constructRecipeHandler();
+        this.keyRegistry = new KeyRegistry();
         this.debug = new Debug(this);
         populateDefaultGenericReferences();
     }
@@ -240,7 +244,7 @@ public abstract class ModBase {
         ICommonProxy proxy = getProxy();
         if(proxy != null) {
             proxy.registerRenderers();
-            proxy.registerKeyBindings();
+            proxy.registerKeyBindings(getKeyRegistry());
             proxy.registerPacketHandlers();
             proxy.registerTickHandlers();
         }

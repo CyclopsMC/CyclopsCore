@@ -3,18 +3,18 @@ package org.cyclops.cyclopscore.proxy;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,11 +60,7 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
 	}
 
 	@Override
-	public void registerKeyBindings() {
-		GameSettings settings = Minecraft.getMinecraft().gameSettings;
-
-		// TODO: keyhandler
-
+	public void registerKeyBindings(IKeyRegistry keyRegistry) {
         getMod().getLoggerHelper().log(Level.INFO, "Registered key bindings");
 	}
 
@@ -72,6 +68,12 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
 	public void registerTickHandlers() {
         getMod().getLoggerHelper().log(Level.INFO, "Registered tick handlers");
 	}
+
+	@Override
+	public void registerEventHooks() {
+        getMod().getLoggerHelper().log(Level.INFO, "Registered event hooks");
+        FMLCommonHandler.instance().bus().register(getMod().getKeyRegistry());
+    }
     
     @Override
     public void playSound(double x, double y, double z, String sound, float volume, float frequency,

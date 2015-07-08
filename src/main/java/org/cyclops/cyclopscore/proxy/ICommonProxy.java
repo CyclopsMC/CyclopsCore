@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 
 /**
  * Interface for common proxies.
@@ -33,8 +34,9 @@ public interface ICommonProxy {
 
     /**
      * Register key bindings.
+     * @param keyRegistry The key registry to register to.
      */
-    public void registerKeyBindings();
+    public void registerKeyBindings(IKeyRegistry keyRegistry);
 
     /**
      * Register packet handlers.

@@ -7,6 +7,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.event.ConfigChangedEventHook;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.item.IBucketRegistry;
@@ -39,7 +40,7 @@ public abstract class CommonProxyComponent implements ICommonProxy {
     }
 
     @Override
-    public void registerKeyBindings() {
+    public void registerKeyBindings(IKeyRegistry keyRegistry) {
     }
 
     @Override
