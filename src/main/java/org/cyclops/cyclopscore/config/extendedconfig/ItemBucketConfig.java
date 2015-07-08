@@ -1,9 +1,15 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.block.Block;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.item.IBucketRegistry;
 
 /**
  * Config for buckets, extension of {@link ItemConfig}.
@@ -44,19 +50,22 @@ public abstract class ItemBucketConfig extends ItemConfig {
     @Override
     public void onRegistered() {
         Item item = (Item) this.getSubInstance();
-        // TODO: abstract bucket handler
-        /*if(getFluidInstance() != null) {
-            FluidStack fluidStack = FluidRegistry.getFluidStack(getFluidInstance().getName(), FluidContainerRegistry.BUCKET_VOLUME);
-            FluidContainerRegistry.registerFluidContainer(
-                    fluidStack,
-                    new ItemStack(item),
-                    new ItemStack(item.getContainerItem())
-            );
-            Recipes.BUCKETS.put(item, fluidStack);
+        IBucketRegistry bucketRegistry = getMod().getRegistryManager().getRegistry(IBucketRegistry.class);
+        if(bucketRegistry != null) {
+            if (getFluidInstance() != null) {
+                FluidStack fluidStack = FluidRegistry.getFluidStack(getFluidInstance().getName(), FluidContainerRegistry.BUCKET_VOLUME);
+                FluidContainerRegistry.registerFluidContainer(
+                        fluidStack,
+                        new ItemStack(item),
+                        new ItemStack(item.getContainerItem())
+                );
+                bucketRegistry.registerBucket(item, fluidStack);
+            }
+
+            if (getFluidBlockInstance() != Blocks.air) {
+                bucketRegistry.registerBucket(getFluidBlockInstance(), item);
+            }
         }
-        if(getFluidBlockInstance() != Blocks.air) {
-            BucketHandler.getInstance().buckets.put(getFluidBlockInstance(), item);
-        }*/
     }
     
     @Override

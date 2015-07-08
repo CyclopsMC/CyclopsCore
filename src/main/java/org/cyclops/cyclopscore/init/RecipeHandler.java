@@ -3,9 +3,7 @@ package org.cyclops.cyclopscore.init;
 import com.google.common.collect.*;
 import lombok.Data;
 import lombok.Getter;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.RecipeSorter;
 import org.cyclops.cyclopscore.GeneralConfig;
 import org.cyclops.cyclopscore.Reference;
@@ -33,7 +31,6 @@ public class RecipeHandler {
 
     private final Multimap<String, ItemStack> taggedOutput = LinkedListMultimap.create();
     private final Multimap<String, ExtendedConfig<?>> taggedConfigurablesOutput = LinkedListMultimap.create();
-    private final Map<Item, FluidStack> buckets = Maps.newHashMap();
     private final Map<String, IRecipeTypeHandler> recipeTypeHandlers = Maps.newHashMap();
     private final Map<String, IRecipeConditionHandler> recipeConditionHandlers = Maps.newHashMap();
     private final Map<String, ItemStack> predefinedItems = Maps.newHashMap();
