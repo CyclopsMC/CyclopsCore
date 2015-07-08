@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.init.DirectObjectReference;
 import org.cyclops.cyclopscore.init.ItemCreativeTab;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -68,6 +69,11 @@ public class CyclopsCore extends ModBase {
     @Override
     public ICommonProxy getProxy() {
         return null;
+    }
+
+    @Override
+    public void onGeneralConfigsRegister(ConfigHandler configHandler) {
+        configHandler.add(new GeneralConfig());
     }
 
     /**

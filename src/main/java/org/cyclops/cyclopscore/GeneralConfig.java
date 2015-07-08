@@ -5,6 +5,7 @@ import org.cyclops.cyclopscore.config.ConfigurableProperty;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCategory;
 import org.cyclops.cyclopscore.config.extendedconfig.DummyConfig;
+import org.cyclops.cyclopscore.init.ModBase;
 
 /**
  * A config with general options for this mod.
@@ -39,12 +40,6 @@ public class GeneralConfig extends DummyConfig {
     public static boolean crashOnModCompatCrash = false;
     
     /**
-     * If retro-generation of ores should be enabled. WARNING: This could cause lag if permanently enabled.
-     */
-    @ConfigurableProperty(category = ConfigurableTypeCategory.GENERAL, comment = "If retro-generation of ores should be enabled. WARNING: This could cause lag if permanently enabled.", isCommandable = true)
-    public static boolean retrogen = false;
-    
-    /**
      * The type of this config.
      */
     public static ConfigurableType TYPE = ConfigurableType.DUMMY;
@@ -68,6 +63,9 @@ public class GeneralConfig extends DummyConfig {
         if(!version.equals(Reference.MOD_VERSION)) {
             System.err.println("The config file of " + Reference.MOD_NAME + " is out of date and might cause problems, please remove it so it can be regenerated.");
         }
+
+        getMod().putGenericReference(ModBase.REFKEY_CRASH_ON_INVALID_RECIPE, GeneralConfig.crashOnInvalidRecipe);
+        getMod().putGenericReference(ModBase.REFKEY_DEBUGCONFIG, GeneralConfig.debug);
     }
     
     @Override

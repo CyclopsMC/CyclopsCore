@@ -1,4 +1,4 @@
-package org.cyclops.cyclopscore;
+package org.cyclops.cyclopscore.init;
 
 import com.google.common.collect.Sets;
 import org.apache.logging.log4j.Level;
@@ -13,18 +13,23 @@ import java.util.Set;
  */
 public class Debug {
     
-    private static String CONFIGCHECKER_PREFIX = "[CONFIGCHECKER] ";
+    private static final String CONFIGCHECKER_PREFIX = "[CONFIGCHECKER] ";
     @SuppressWarnings("rawtypes")
-    private static Set<ExtendedConfig> savedConfigs = Sets.newHashSet();
+    private final Set<ExtendedConfig> savedConfigs = Sets.newHashSet();
+    private final ModBase mod;
     
-    private static boolean ok = true;
+    private boolean ok = true;
+
+    public Debug(ModBase mod) {
+        this.mod = mod;
+    }
 
     /**
      * Loops over the list of configs and checks their correctness.
      * @param configs List of configs
      */
     @SuppressWarnings("rawtypes")
-    public static void checkPreConfigurables(Set<ExtendedConfig> configs) {
+    public void checkPreConfigurables(Set<ExtendedConfig> configs) {
         for(ExtendedConfig config : configs) {
             // _instance field on ExtendedConfig
             try {
@@ -44,21 +49,12 @@ public class Debug {
      * Loops over the list of configs (was saved from the Pre call) and checks their correctness.
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static void checkPostConfigurables() {
-        for(ExtendedConfig config : savedConfigs) {            
+    public void checkPostConfigurables() {
+        for(ExtendedConfig config : savedConfigs) {
             if(config.getHolderType().hasUniqueInstance() && config.isEnabled()) {
                 // The sub-instance of ExtendedConfig (can be in a higher class hierarchy, bit of a hack...
                 if(config.getSubInstance() == null) {
                     log(config.getElement()+" has no sub-instance, even though it is enabled.");
-                }
-                
-                // initInstance(ExtendedConfig eConfig) in the sub-instance of ExtendedConfig
-                try {
-                    config.getElement().getMethod("initInstance", ExtendedConfig.class);
-                } catch (NoSuchMethodException e) {
-                    log(config.getElement()+" has no static 'initInstance(ExtendedConfig eConfig)' method.");
-                } catch (SecurityException e) {
-                    log(config.getElement()+" has a non-public static 'initInstance(ExtendedConfig eConfig)' method, make it public.");
                 }
                 
                 // getInstance() in the sub-instance of ExtendedConfig
@@ -73,13 +69,13 @@ public class Debug {
         }
         
         if(ok) {
-            CyclopsCore.clog(CONFIGCHECKER_PREFIX + "Everything is just fine!");
+            log("Everything is just fine!");
         }
     }
     
-    private static void log(String message) {
+    private void log(String message) {
         ok = false;
-        CyclopsCore.clog(Level.INFO, CONFIGCHECKER_PREFIX + message);
+        mod.log(Level.INFO, CONFIGCHECKER_PREFIX + message);
     }
 
 }

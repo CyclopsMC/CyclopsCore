@@ -9,8 +9,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.Debug;
-import org.cyclops.cyclopscore.GeneralConfig;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.config.ConfigHandler;
@@ -36,6 +34,8 @@ public abstract class ModBase {
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_MODELS = EnumReferenceKey.create("texture_path_models", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_SKINS = EnumReferenceKey.create("texture_path_skins", String.class);
     public static final EnumReferenceKey<Boolean> REFKEY_RETROGEN = EnumReferenceKey.create("retrogen", Boolean.class);
+    public static final EnumReferenceKey<Boolean> REFKEY_DEBUGCONFIG = EnumReferenceKey.create("debug_config", Boolean.class);
+    public static final EnumReferenceKey<Boolean> REFKEY_CRASH_ON_INVALID_RECIPE = EnumReferenceKey.create("crash_on_invalid_recipe", Boolean.class);
 
     private final String modId, modName;
     private final LoggerHelper loggerHelper;
@@ -47,6 +47,7 @@ public abstract class ModBase {
     private final GuiHandler guiHandler;
     private final RegistryManager registryManager;
     private final RecipeHandler recipeHandler;
+    private final Debug debug;
 
     private CreativeTabs defaultCreativeTab = null;
     private File configFolder = null;
@@ -61,6 +62,7 @@ public abstract class ModBase {
         this.guiHandler = constructGuiHandler();
         this.registryManager = constructRegistryManager();
         this.recipeHandler = constructRecipeHandler();
+        this.debug = new Debug(this);
         populateDefaultGenericReferences();
     }
 
@@ -86,7 +88,13 @@ public abstract class ModBase {
 
     protected abstract RecipeHandler constructRecipeHandler();
 
-    protected <T> void putGenericReference(EnumReferenceKey<T> key, T value) {
+    /**
+     * Save a mod value.
+     * @param key The key.
+     * @param value The value.
+     * @param <T> The value type.
+     */
+    public <T> void putGenericReference(EnumReferenceKey<T> key, T value) {
         genericReference.put(key, value);
     }
 
@@ -95,6 +103,8 @@ public abstract class ModBase {
         putGenericReference(REFKEY_TEXTURE_PATH_MODELS, "textures/models/");
         putGenericReference(REFKEY_TEXTURE_PATH_SKINS, "textures/skins/");
         putGenericReference(REFKEY_RETROGEN, false);
+        putGenericReference(REFKEY_DEBUGCONFIG, false);
+        putGenericReference(REFKEY_CRASH_ON_INVALID_RECIPE, false);
     }
 
     /**
@@ -185,16 +195,16 @@ public abstract class ModBase {
         callInitStepListeners(IInitListener.Step.PREINIT);
 
         // Run debugging tools
-        if(GeneralConfig.debug) {
-            Debug.checkPreConfigurables(getConfigHandler());
+        if(getReferenceValue(REFKEY_DEBUGCONFIG)) {
+            getDebug().checkPreConfigurables(getConfigHandler());
         }
 
         // Load the rest of the configs and run the ConfigHandler to make/read the config and fill in the game registry
         getConfigHandler().handle(event);
 
         // Run debugging tools
-        if(GeneralConfig.debug) {
-            Debug.checkPostConfigurables();
+        if(getReferenceValue(REFKEY_DEBUGCONFIG)) {
+            getDebug().checkPostConfigurables();
         }
 
         // Register events
