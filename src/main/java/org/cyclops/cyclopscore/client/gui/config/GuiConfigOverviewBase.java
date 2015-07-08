@@ -26,6 +26,7 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
 
 	/**
 	 * Make a new instance.
+	 * @param mod The mod.
 	 * @param parentScreen the parent GuiScreen object
 	 */
 	public GuiConfigOverviewBase(ModBase mod, GuiScreen parentScreen) {

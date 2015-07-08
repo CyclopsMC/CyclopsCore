@@ -8,8 +8,8 @@
   "logoFile": "assets/cyclopscore/textures/logo.png",
   "url": "TODO",
   "updateUrl": "TODO",
-  "authorList": [ "rubensworks (aka kroeserr)" ],
-  "credits": "kroeserr",
+  "authorList": [ "rubensworks (aka kroeserr)", "immortaleeb (aka _EeB_)" ],
+  "credits": "kroeserr, _EeB_",
   "parent": "",
   "screenshots": [],
   "dependencies": []
