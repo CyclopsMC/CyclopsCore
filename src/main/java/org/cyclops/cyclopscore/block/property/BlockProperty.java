@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface BlockProperty {
     /**
-     * If set to true this property will not be required in the blockstate file.
+     * @return If set to true this property will not be required in the blockstate file.
      */
 	public boolean ignore() default false;
 }
