@@ -62,9 +62,8 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
     private Pair<IProperty[], IUnlistedProperty[]> preprocessProperties() throws IllegalAccessException {
         TreeSet<IProperty> sortedProperties = Sets.newTreeSet(PROPERTY_COMPARATOR);
         TreeSet<IUnlistedProperty> sortedUnlistedProperties = Sets.newTreeSet(UNLISTEDPROPERTY_COMPARATOR);
+        TreeSet<IProperty> ignoredProperties = Sets.newTreeSet(PROPERTY_COMPARATOR);
         for(Class<?> clazz = block.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
-            TreeSet<IProperty> ignoredProperties = Sets.newTreeSet(PROPERTY_COMPARATOR);
-
             for(Field field : clazz.getDeclaredFields()) {
                 if(field.isAnnotationPresent(BlockProperty.class)) {
                     BlockProperty annotation = field.getAnnotation(BlockProperty.class);
@@ -92,14 +91,15 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
                     }
                 }
             }
-
-            if (ignoredProperties.size() != 0) {
-                IProperty[] ignoredPropertiesArray = new IProperty[ignoredProperties.size()];
-                ignoredProperties.toArray(ignoredPropertiesArray);
-                ModelLoader.setCustomStateMapper(block,
-                        (new StateMap.Builder()).addPropertiesToIgnore(ignoredPropertiesArray).build());
-            }
         }
+
+        if (ignoredProperties.size() != 0) {
+            IProperty[] ignoredPropertiesArray = new IProperty[ignoredProperties.size()];
+            ignoredProperties.toArray(ignoredPropertiesArray);
+            ModelLoader.setCustomStateMapper(block,
+                    (new StateMap.Builder()).addPropertiesToIgnore(ignoredPropertiesArray).build());
+        }
+
         IProperty[] properties = new IProperty[sortedProperties.size()];
         IUnlistedProperty[] unlistedProperties = new IUnlistedProperty[sortedUnlistedProperties.size()];
         return Pair.of(sortedProperties.toArray(properties), sortedUnlistedProperties.toArray(unlistedProperties));
