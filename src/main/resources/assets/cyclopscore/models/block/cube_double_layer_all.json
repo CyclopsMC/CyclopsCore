@@ -1,0 +1,18 @@
+{
+  "parent": "cyclopscore:block/cube_double_layer",
+  "textures": {
+    "particle": "#all1",
+    "down0": "#all0",
+    "up0": "#all0",
+    "north0": "#all0",
+    "east0": "#all0",
+    "south0": "#all0",
+    "west0": "#all0",
+    "down1": "#all1",
+    "up1": "#all1",
+    "north1": "#all1",
+    "east1": "#all1",
+    "south1": "#all1",
+    "west1": "#all1"
+  }
+}
