@@ -2,15 +2,12 @@ package org.cyclops.cyclopscore.config.configurable;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.block.component.EntityDropParticleFXBlockComponent;
 import org.cyclops.cyclopscore.block.component.IEntityDropParticleFXBlock;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
@@ -80,24 +77,6 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
         super.randomDisplayTick(world, blockPos, blockState, rand);
         if(entityDropParticleFXBlockComponent != null)
             entityDropParticleFXBlockComponent.randomDisplayTick(world, blockPos, blockState, rand);
-    }
-
-    /**
-     * Get the still icon.
-     * @param map The texture map.
-     * @return The icon.
-     */
-    public TextureAtlasSprite getIconLocationStill(TextureMap map) {
-        return map.getAtlasSprite(Reference.MOD_ID + ":" + "blocks/" + getConfig().getNamedId() + "_still");
-    }
-
-    /**
-     * Get the flow icon.
-     * @param map The texture map.
-     * @return The icon.
-     */
-    public TextureAtlasSprite getIconLocationFlow(TextureMap map) {
-        return map.getAtlasSprite(Reference.MOD_ID + ":" + "blocks/" + getConfig().getNamedId() + "_flow");
     }
 
 }

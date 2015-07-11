@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -37,6 +38,22 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig> {
     @Override
     public boolean isDisableable() {
         return false;
+    }
+
+    /**
+     * Get the still icon location.
+     * @return The icon location.
+     */
+    public ResourceLocation getIconLocationStill() {
+        return new ResourceLocation(getMod().getModId(), "blocks/" + getNamedId() + "_still");
+    }
+
+    /**
+     * Get the flow icon location.
+     * @return The icon location.
+     */
+    public ResourceLocation getIconLocationFlow() {
+        return new ResourceLocation(getMod().getModId(), "blocks/" + getNamedId() + "_flow");
     }
 
 }

@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.config.configurable;
 
 import net.minecraftforge.fluids.Fluid;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
 
 /**
  * Fluid that can hold ExtendedConfigs
@@ -18,9 +19,8 @@ public abstract class ConfigurableFluid extends Fluid implements IConfigurable{
      * @param eConfig Config for this blockState.
      */
     @SuppressWarnings({ "rawtypes" })
-    protected ConfigurableFluid(ExtendedConfig eConfig) {
-        super(eConfig.getNamedId());
-        //eConfig.ID = this.getID(); // This could've changed.
+    protected ConfigurableFluid(ExtendedConfig<FluidConfig> eConfig) {
+        super(eConfig.getNamedId(), eConfig.downCast().getIconLocationStill(), eConfig.downCast().getIconLocationFlow());
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
