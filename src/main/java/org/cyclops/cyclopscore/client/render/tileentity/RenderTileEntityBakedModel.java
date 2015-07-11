@@ -43,7 +43,7 @@ public abstract class RenderTileEntityBakedModel<T extends CyclopsTileEntity> ex
         BlockModelShapes blockModelShapes = blockRendererDispatcher.getBlockModelShapes();
         IBakedModel bakedModel = blockModelShapes.getModelForState(getBlockState(tile, x, y, z, partialTick, destroyStage));
         Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
-        renderModel(tile, bakedModel, partialTick);
+        renderModel(tile, bakedModel, partialTick, destroyStage);
 
         GlStateManager.popAttrib();
         GlStateManager.popMatrix();
@@ -55,7 +55,7 @@ public abstract class RenderTileEntityBakedModel<T extends CyclopsTileEntity> ex
     protected abstract IBlockState getBlockState(T tile, double x, double y, double z, float partialTick, int destroyStage);
 
     @Override
-    protected void renderModel(T tile, IBakedModel model, float partialTick) {
+    protected void renderModel(T tile, IBakedModel model, float partialTick, int destroyStage) {
         Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().
                 renderModelBrightnessColor(model, 1.0F, 1.0F, 1.0F, 1.0F);
     }

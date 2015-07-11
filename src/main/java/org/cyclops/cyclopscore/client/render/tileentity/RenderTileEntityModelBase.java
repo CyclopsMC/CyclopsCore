@@ -21,7 +21,7 @@ public class RenderTileEntityModelBase<T extends CyclopsTileEntity, M extends Mo
     }
 
     @Override
-    protected void renderModel(T tile, M model, float partialTick) {
+    protected void renderModel(T tile, M model, float partialTick, int destroyStage) {
         model.render(null, 0, 0, 0, 0, 0, 0);
     }
 }

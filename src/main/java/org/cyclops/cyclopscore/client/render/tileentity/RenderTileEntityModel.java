@@ -8,8 +8,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 /**
  * General renderer for {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity} with models.
@@ -43,10 +41,20 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
     
     protected void renderTileEntityAt(T tile, double x, double y, double z, float partialTick, int destroyStage) {
         EnumFacing direction = tile.getRotation();
-        if(getTexture() != null) this.bindTexture(getTexture());
+
+        if (destroyStage >= 0) {
+            this.bindTexture(DESTROY_STAGES[destroyStage]);
+            GlStateManager.matrixMode(5890);
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(4.0F, 4.0F, 1.0F);
+            GlStateManager.translate(0.0625F, 0.0625F, 0.0625F);
+            GlStateManager.matrixMode(5888);
+        } else if(getTexture() != null) {
+            this.bindTexture(getTexture());
+        }
 
         GlStateManager.pushMatrix();
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GlStateManager.enableRescaleNormal();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.translate((float) x, (float) y + 1.0F, (float) z + 1.0F);
         GlStateManager.scale(1.0F, -1.0F, -1.0F);
@@ -69,10 +77,16 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
         GlStateManager.rotate((float) rotation, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
 
-        renderModel(tile, getModel(), partialTick);
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        renderModel(tile, getModel(), partialTick, destroyStage);
+        GlStateManager.disableRescaleNormal();
         GlStateManager.popMatrix();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+        if (destroyStage >= 0) {
+            GlStateManager.matrixMode(5890);
+            GlStateManager.popMatrix();
+            GlStateManager.matrixMode(5888);
+        }
     }
 	
 	@Override
@@ -85,6 +99,7 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
      * @param tile The tile entity.
      * @param model The base model.
      * @param partialTick The partial render tick.
+     * @param destroyStage The destroy stage
      */
-    protected abstract void renderModel(T tile, M model, float partialTick);
+    protected abstract void renderModel(T tile, M model, float partialTick, int destroyStage);
 }
