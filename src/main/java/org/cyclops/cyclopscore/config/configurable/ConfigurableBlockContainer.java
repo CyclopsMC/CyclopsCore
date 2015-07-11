@@ -90,7 +90,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         IBlockState blockState = super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
         for(IProperty property : (Collection<IProperty>) blockState.getPropertyNames()) {
             if(property.getName().equals("facing")) {
-                blockState.withProperty(property, placer.getHorizontalFacing());
+                blockState = blockState.withProperty(property, placer.getHorizontalFacing());
             }
         }
         return blockState;
