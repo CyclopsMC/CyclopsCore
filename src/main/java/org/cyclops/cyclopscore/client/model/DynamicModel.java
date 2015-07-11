@@ -23,6 +23,9 @@ import java.util.List;
  */
 public abstract class DynamicModel implements IFlexibleBakedModel, ISmartBlockModel, ISmartItemModel {
 
+    // Rotation UV coordinates
+    protected static final float[][] ROTATION_UV = {{1, 0}, {1, 1}, {0, 1}, {0, 0}};
+
     @Getter private final IExtendedBlockState state;
     @Getter private final boolean isItemStack;
 
@@ -118,6 +121,34 @@ public abstract class DynamicModel implements IFlexibleBakedModel, ISmartBlockMo
                 vertexToInts((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord, -1, texture, x1 * 16, z2 * 16),
                 vertexToInts((float) v3.xCoord, (float) v3.yCoord, (float) v3.zCoord, -1, texture, x2 * 16, z2 * 16),
                 vertexToInts((float) v4.xCoord, (float) v4.yCoord, (float) v4.zCoord, -1, texture, x2 * 16, z1 * 16)
+        );
+        quads.add(new BakedQuad(data, -1, side));
+    }
+
+    /**
+     * Add a given rotated quad to a list of quads.
+     * @param quads The quads to append to.
+     * @param x1 Start X
+     * @param x2 End X
+     * @param z1 Start Z
+     * @param z2 End Z
+     * @param y Y
+     * @param texture The base texture
+     * @param side The side to add render quad at.
+     * @param rotation The rotation index to rotate by.
+     */
+    protected static void addBakedQuadRotated(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
+                                              TextureAtlasSprite texture, EnumFacing side, int rotation) {
+        float[][] r = ROTATION_UV;
+        Vec3 v1 = rotate(new Vec3(x1 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
+        Vec3 v2 = rotate(new Vec3(x1 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
+        Vec3 v3 = rotate(new Vec3(x2 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
+        Vec3 v4 = rotate(new Vec3(x2 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
+        int[] data =  Ints.concat(
+                vertexToInts((float) v1.xCoord, (float) v1.yCoord, (float) v1.zCoord, -1, texture, r[(0 + rotation) % 4][0] * 16, r[(0 + rotation) % 4][1] * 16),
+                vertexToInts((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord, -1, texture, r[(1 + rotation) % 4][0] * 16, r[(1 + rotation) % 4][1] * 16),
+                vertexToInts((float) v3.xCoord, (float) v3.yCoord, (float) v3.zCoord, -1, texture, r[(2 + rotation) % 4][0] * 16, r[(2 + rotation) % 4][1] * 16),
+                vertexToInts((float) v4.xCoord, (float) v4.yCoord, (float) v4.zCoord, -1, texture, r[(3 + rotation) % 4][0] * 16, r[(3 + rotation) % 4][1] * 16)
         );
         quads.add(new BakedQuad(data, -1, side));
     }

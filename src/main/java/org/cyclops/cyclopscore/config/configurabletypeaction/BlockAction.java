@@ -12,6 +12,7 @@ import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainerGui;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 /**
  * The action used for {@link BlockConfig}.
@@ -77,8 +78,10 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
 
     @Override
     public void polish(BlockConfig config) {
-        ItemAction.handleItemModel(Item.getItemFromBlock(config.getBlockInstance()), config.getNamedId(),
-                config.getTargetTab(), config.getMod().getModId());
+        if (MinecraftHelpers.isClientSide()) {
+            ItemAction.handleItemModel(Item.getItemFromBlock(config.getBlockInstance()), config.getNamedId(),
+                    config.getTargetTab(), config.getMod().getModId());
+        }
     }
 
 }

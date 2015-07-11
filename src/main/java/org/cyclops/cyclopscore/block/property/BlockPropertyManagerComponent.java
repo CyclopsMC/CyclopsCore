@@ -8,6 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import org.apache.commons.lang3.ArrayUtils;
@@ -60,17 +62,24 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
     private Pair<IProperty[], IUnlistedProperty[]> preprocessProperties() throws IllegalAccessException {
         TreeSet<IProperty> sortedProperties = Sets.newTreeSet(PROPERTY_COMPARATOR);
         TreeSet<IUnlistedProperty> sortedUnlistedProperties = Sets.newTreeSet(UNLISTEDPROPERTY_COMPARATOR);
+        TreeSet<IProperty> ignoredProperties = Sets.newTreeSet(PROPERTY_COMPARATOR);
         for(Class<?> clazz = block.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
             for(Field field : clazz.getDeclaredFields()) {
                 if(field.isAnnotationPresent(BlockProperty.class)) {
+                    BlockProperty annotation = field.getAnnotation(BlockProperty.class);
+                    boolean ignored = annotation.ignore();
+
                     Object fieldObject = field.get(block);
                     if(fieldObject instanceof IProperty) {
                         sortedProperties.add((IProperty) fieldObject);
+                        if (ignored) ignoredProperties.add((IProperty) fieldObject);
                     } else if(fieldObject instanceof IUnlistedProperty) {
                         sortedUnlistedProperties.add((IUnlistedProperty) fieldObject);
+                        if (ignored) ignoredProperties.add((IProperty) fieldObject);
                     } else if(fieldObject instanceof IProperty[]) {
                         for(IProperty property : ((IProperty[]) fieldObject)) {
                             sortedProperties.add(property);
+                            if (ignored) ignoredProperties.add(property);
                         }
                     } else if(fieldObject instanceof IUnlistedProperty[]) {
                         for(IUnlistedProperty unlistedProperty : ((IUnlistedProperty[]) fieldObject)) {
@@ -83,6 +92,14 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
                 }
             }
         }
+
+        if (ignoredProperties.size() != 0) {
+            IProperty[] ignoredPropertiesArray = new IProperty[ignoredProperties.size()];
+            ignoredProperties.toArray(ignoredPropertiesArray);
+            ModelLoader.setCustomStateMapper(block,
+                    (new StateMap.Builder()).addPropertiesToIgnore(ignoredPropertiesArray).build());
+        }
+
         IProperty[] properties = new IProperty[sortedProperties.size()];
         IUnlistedProperty[] unlistedProperties = new IUnlistedProperty[sortedUnlistedProperties.size()];
         return Pair.of(sortedProperties.toArray(properties), sortedUnlistedProperties.toArray(unlistedProperties));
