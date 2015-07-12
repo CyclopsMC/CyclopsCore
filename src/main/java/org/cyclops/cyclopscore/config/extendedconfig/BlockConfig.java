@@ -7,6 +7,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -22,7 +23,7 @@ import org.cyclops.cyclopscore.item.ItemBlockExtended;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class BlockConfig extends ExtendedConfig<BlockConfig> {
+public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements IModelProviderConfig {
 
     @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicBlockVariantLocation = null;
     @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicItemVariantLocation  = null;
@@ -37,6 +38,11 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> {
      */
     public BlockConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends Block> element) {
         super(mod, enabled, namedId, comment, element);
+    }
+
+    @Override
+    public String getModelName(ItemStack itemStack) {
+        return getNamedId();
     }
 
     @Override

@@ -14,7 +14,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class ItemConfig extends ExtendedConfig<ItemConfig> {
+public abstract class ItemConfig extends ExtendedConfig<ItemConfig> implements IModelProviderConfig {
 
     /**
      * Make a new instance.
@@ -31,6 +31,11 @@ public abstract class ItemConfig extends ExtendedConfig<ItemConfig> {
     @Override
     protected IConfigurable initSubInstance() {
         return this.getElement() == null ? new ConfigurableItem(this) : super.initSubInstance();
+    }
+
+    @Override
+    public String getModelName(ItemStack itemStack) {
+        return getNamedId();
     }
     
     @Override

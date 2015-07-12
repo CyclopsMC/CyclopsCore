@@ -11,6 +11,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
+import org.cyclops.cyclopscore.config.extendedconfig.IModelProviderConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
@@ -61,14 +62,13 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
         }
     }
 
-    public static void handleItemModel(Item item, String namedId, CreativeTabs tab, String modId) {
+    public static void handleItemModel(Item item, String namedId, CreativeTabs tab, String modId, IModelProviderConfig modelProvider) {
         if(MinecraftHelpers.isClientSide()) {
             if(item.getHasSubtypes()) {
                 List<ItemStack> itemStacks = Lists.newLinkedList();
                 item.getSubItems(item, tab, itemStacks);
                 for(ItemStack itemStack : itemStacks) {
-                    String itemName = item.getUnlocalizedName(itemStack);
-                    itemName =  itemName.substring(itemName.indexOf(".") + 1);
+                    String itemName = modelProvider.getModelName(itemStack);
 
                     ModelBakery.addVariantName(item, modId + ":" + itemName);
                     Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, itemStack.getMetadata(),
@@ -84,7 +84,7 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
     @Override
     public void polish(ItemConfig config) {
         handleItemModel(config.getItemInstance(), config.getNamedId(), config.getTargetTab(),
-                config.getMod().getModId());
+                config.getMod().getModId(), config);
     }
 
 }

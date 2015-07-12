@@ -80,7 +80,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
     public void polish(BlockConfig config) {
         if (MinecraftHelpers.isClientSide()) {
             ItemAction.handleItemModel(Item.getItemFromBlock(config.getBlockInstance()), config.getNamedId(),
-                    config.getTargetTab(), config.getMod().getModId());
+                    config.getTargetTab(), config.getMod().getModId(), config);
         }
     }
 
