@@ -40,16 +40,19 @@ public abstract class EntityConfig extends ExtendedConfig<EntityConfig>{
 	public ConfigurableType getHolderType() {
 		return ConfigurableType.ENTITY;
 	}
-    
+
     @Override
     @SideOnly(Side.CLIENT)
-    public void onRegistered() {
-        Render render = getRender(Minecraft.getMinecraft().getRenderManager(),
-                Minecraft.getMinecraft().getRenderItem());
-        if(render != null) {
-        	@SuppressWarnings("unchecked")
-            Class<? extends Entity> clazz = (Class<? extends Entity>) this.getElement();
-            getMod().getProxy().registerRenderer(clazz, render);
+    public void onInit(Step step) {
+        super.onInit(step);
+        if(step == Step.INIT) {
+            Render render = getRender(Minecraft.getMinecraft().getRenderManager(),
+                    Minecraft.getMinecraft().getRenderItem());
+            if(render != null) {
+                @SuppressWarnings("unchecked")
+                Class<? extends Entity> clazz = (Class<? extends Entity>) this.getElement();
+                getMod().getProxy().registerRenderer(clazz, render);
+            }
         }
     }
     

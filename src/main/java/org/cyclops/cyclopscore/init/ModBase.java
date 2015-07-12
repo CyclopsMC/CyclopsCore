@@ -247,6 +247,9 @@ public abstract class ModBase {
         // Polish the enabled configs.
         getConfigHandler().polishConfigs();
 
+        // Call init listeners
+        callInitStepListeners(IInitListener.Step.INIT);
+
         // Register proxy related things.
         ICommonProxy proxy = getProxy();
         if(proxy != null) {
@@ -262,9 +265,6 @@ public abstract class ModBase {
         if(recipeHandler != null) {
             recipeHandler.registerRecipes(getConfigFolder());
         }
-
-        // Call init listeners
-        callInitStepListeners(IInitListener.Step.INIT);
     }
 
     /**
