@@ -37,10 +37,6 @@ public class ConnectedBlockModel extends DynamicModel {
             {DirectionCorner.UPPER_NORTH,      DirectionCorner.UPPER_SOUTH,      DirectionCorner.LOWER_SOUTH,      DirectionCorner.LOWER_NORTH},      // WEST
             {DirectionCorner.UPPER_SOUTH,      DirectionCorner.UPPER_NORTH,      DirectionCorner.LOWER_NORTH,      DirectionCorner.LOWER_SOUTH},      // EAST
     };
-    // A rotation offset fix for all sides
-    protected static final int[] ROTATION_FIX = {2, 0, 2, 0, 1, 3};
-    // u1, v1; u2, v2
-    protected static final float[][] UVS = {{0, 0}, {1, 1}};
 
     private final ConfigurableBlockConnectedTexture block;
 
