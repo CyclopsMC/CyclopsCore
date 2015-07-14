@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.Vec3i;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -182,6 +183,20 @@ public abstract class NBTClassType<T> {
                     }
                 }
                 return map;
+            }
+        });
+
+        NBTYPES.put(Vec3i.class, new NBTClassType<Vec3i>() {
+
+            @Override
+            protected void writePersistedField(String name, Vec3i object, NBTTagCompound tag) {
+                tag.setIntArray(name, new int[]{object.getX(), object.getY(), object.getZ()});
+            }
+
+            @Override
+            protected Vec3i readPersistedField(String name, NBTTagCompound tag) {
+                int[] array = tag.getIntArray(name);
+                return new Vec3i(array[0], array[1], array[2]);
             }
         });
     }
