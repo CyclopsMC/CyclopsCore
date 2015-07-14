@@ -16,7 +16,7 @@ import org.cyclops.cyclopscore.client.model.IDynamicModelBlock;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
-import org.cyclops.cyclopscore.item.ItemBlockExtended;
+import org.cyclops.cyclopscore.item.ItemBlockMetadata;
 
 /**
  * Config for blocks.
@@ -65,7 +65,7 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
      * @return the ItemBlock class to use for the target blockState.
      */
     public Class<? extends ItemBlock> getItemBlockClass() {
-        return ItemBlockExtended.class;
+        return ItemBlockMetadata.class;
     }
     
     /**
