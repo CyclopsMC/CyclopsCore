@@ -18,6 +18,7 @@ import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
+import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.network.PacketHandler;
 import org.cyclops.cyclopscore.persist.world.WorldStorage;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
@@ -41,6 +42,7 @@ public abstract class ModBase {
     public static final EnumReferenceKey<Boolean> REFKEY_RETROGEN = EnumReferenceKey.create("retrogen", Boolean.class);
     public static final EnumReferenceKey<Boolean> REFKEY_DEBUGCONFIG = EnumReferenceKey.create("debug_config", Boolean.class);
     public static final EnumReferenceKey<Boolean> REFKEY_CRASH_ON_INVALID_RECIPE = EnumReferenceKey.create("crash_on_invalid_recipe", Boolean.class);
+    public static final EnumReferenceKey<Boolean> REFKEY_CRASH_ON_MODCOMPAT_CRASH = EnumReferenceKey.create("crash_on_modcompat_crash", Boolean.class);
 
     private final String modId, modName;
     private final LoggerHelper loggerHelper;
@@ -54,6 +56,7 @@ public abstract class ModBase {
     private final RecipeHandler recipeHandler;
     private final IKeyRegistry keyRegistry;
     private final PacketHandler packetHandler;
+    private final ModCompatLoader modCompatLoader;
     private final Debug debug;
 
     private CreativeTabs defaultCreativeTab = null;
@@ -71,8 +74,12 @@ public abstract class ModBase {
         this.recipeHandler = constructRecipeHandler();
         this.keyRegistry = new KeyRegistry();
         this.packetHandler = constructPacketHandler();
+        this.modCompatLoader = constructModCompatLoader();
         this.debug = new Debug(this);
+
         populateDefaultGenericReferences();
+        addInitListeners(getModCompatLoader());
+        loadModCompats(getModCompatLoader());
     }
 
     protected LoggerHelper constructLoggerHelper() {
@@ -101,6 +108,10 @@ public abstract class ModBase {
         return new PacketHandler(this);
     }
 
+    protected ModCompatLoader constructModCompatLoader() {
+        return new ModCompatLoader(this);
+    }
+
     protected ICommand constructBaseCommand() {
         return new CommandMod(this, Maps.<String, ICommand>newHashMap());
     }
@@ -122,6 +133,15 @@ public abstract class ModBase {
         putGenericReference(REFKEY_RETROGEN, false);
         putGenericReference(REFKEY_DEBUGCONFIG, false);
         putGenericReference(REFKEY_CRASH_ON_INVALID_RECIPE, false);
+        putGenericReference(REFKEY_CRASH_ON_MODCOMPAT_CRASH, false);
+    }
+
+    /**
+     * This is called only once to let the mod compatibilities register themselves.
+     * @param modCompatLoader The loader.
+     */
+    protected void loadModCompats(ModCompatLoader modCompatLoader) {
+
     }
 
     /**
