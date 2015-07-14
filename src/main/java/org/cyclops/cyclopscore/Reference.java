@@ -14,6 +14,10 @@ public final class Reference {
     public static final String MOD_BUILD_NUMBER = "@BUILD_NUMBER@";
     public static final String MOD_MC_VERSION = "@MC_VERSION@";
 
+    // Mod ID's
+    public static final String MOD_BAUBLES = "Baubles";
+
+    // Dependencies
     public static final String MOD_DEPENDENCIES =
               "required-after:Forge@[11.14.1.1329,);";
 
