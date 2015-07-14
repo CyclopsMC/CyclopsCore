@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.inventory.container.ExtendedInventoryContainer;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import java.awt.*;
 import java.util.List;
@@ -61,7 +61,7 @@ public abstract class GuiContainerExtended extends GuiContainer {
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(texture);
         drawTexturedModalRect(guiLeft + offsetX, guiTop + offsetY, 0, 0, xSize - 2 * offsetX, ySize - 2 * offsetY);
     }
@@ -71,10 +71,10 @@ public abstract class GuiContainerExtended extends GuiContainer {
     }
     
     protected void drawTooltip(List<String> lines, int x, int y) {
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.disableLighting();
         
         int tooltipWidth = 0;
         int tempWidth;
@@ -134,7 +134,7 @@ public abstract class GuiContainerExtended extends GuiContainer {
             yStart += 10;
         }
         
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         
         this.zLevel = 0.0F;

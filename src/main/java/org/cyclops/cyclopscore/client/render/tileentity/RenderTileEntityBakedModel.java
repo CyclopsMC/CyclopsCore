@@ -8,8 +8,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.model.IBakedModel;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 /**
  * General renderer for {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity} with {@link net.minecraft.client.resources.model.IBakedModel} models.
@@ -33,10 +31,10 @@ public abstract class RenderTileEntityBakedModel<T extends CyclopsTileEntity> ex
         GlStateManager.pushMatrix();
         GlStateManager.pushAttrib();
 
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GlStateManager.enableRescaleNormal();
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.translate((float) x, (float) y, (float) z);
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        GlStateManager.disableRescaleNormal();
 
         Minecraft mc = Minecraft.getMinecraft();
         BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
