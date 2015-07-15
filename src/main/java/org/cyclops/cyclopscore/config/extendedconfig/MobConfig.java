@@ -1,7 +1,11 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.EntityLiving;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -33,6 +37,20 @@ public abstract class MobConfig extends ExtendedConfig<MobConfig> {
 	public ConfigurableType getHolderType() {
 		return ConfigurableType.MOB;
 	}
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void onInit(Step step) {
+        super.onInit(step);
+        if(step == Step.INIT) {
+            Render render = getRender(Minecraft.getMinecraft().getRenderManager());
+            if(render != null) {
+                @SuppressWarnings("unchecked")
+                Class<? extends EntityLiving> clazz = (Class<? extends EntityLiving>) this.getElement();
+                getMod().getProxy().registerRenderer(clazz, render);
+            }
+        }
+    }
     
     /**
      * Get the background color of the spawn egg.

@@ -1,12 +1,10 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.cyclops.cyclopscore.config.extendedconfig.MobConfig;
 import org.cyclops.cyclopscore.helper.Helpers;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 /**
  * The action used for {@link MobConfig}.
@@ -28,8 +26,6 @@ public class MobAction extends ConfigurableTypeAction<MobConfig>{
         
         // Register mob
         Class<? extends EntityLiving> clazz = (Class<? extends EntityLiving>) eConfig.getElement();
-        if (MinecraftHelpers.isClientSide())
-            eConfig.getMod().getProxy().registerRenderer(clazz, eConfig.getRender(Minecraft.getMinecraft().getRenderManager()));
         EntityRegistry.registerModEntity(clazz, eConfig.getNamedId(), Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY), eConfig.getMod(), 80, 3, true, eConfig.getBackgroundEggColor(), eConfig.getForegroundEggColor());
     }
 
