@@ -1,10 +1,12 @@
 language: java
 jdk: openjdk7
-
 notifications:
   email: false
 env:
-  global: TERM=dumb
-
+  global:
+  - TERM=dumb
+  - secure: RkEG8bmCishmaQnS1C+f1o34QD+4oQP3Kacgc/6gAwdjACrviktNsbuAK2MyvZqA3r4XNN2Hjxsm39IvWNl+zH81xh4OsHZFkhb2Z6yfYtJd5ftrYFaWX0mcsVWbDFfYkZsDyfn/vLzSAoBju1QlRy0nJ8ieA5/5a+7CjUGL7Cs=
 install: ./gradlew setupCIWorkspace -S
-script: ./gradlew build -S
+script:
+  - ./gradlew build -S
+  - ./gradlew curse
