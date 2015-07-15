@@ -140,8 +140,8 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
                     showDoubleInitError();
                 }
             }
-        } catch (IllegalAccessException | IllegalArgumentException | SecurityException | NoSuchFieldException |
-                 InstantiationException | NoSuchMethodException e) {
+        } catch (IllegalAccessException | NoSuchFieldException | InstantiationException | NoSuchMethodException
+                | RuntimeException e) {
             mod.getLoggerHelper().getLogger().error(String.format("Registering %s caused an issue. ", getNamedId()), e);
             throw new CyclopsCoreConfigException(String.format("Registering %s caused the issue: %s",
                     this.getNamedId(), e.getCause().getMessage()));

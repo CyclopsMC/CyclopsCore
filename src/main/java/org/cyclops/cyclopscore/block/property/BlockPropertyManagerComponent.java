@@ -12,8 +12,11 @@ import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -93,16 +96,21 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
             }
         }
 
-        if (ignoredProperties.size() != 0) {
-            IProperty[] ignoredPropertiesArray = new IProperty[ignoredProperties.size()];
-            ignoredProperties.toArray(ignoredPropertiesArray);
-            ModelLoader.setCustomStateMapper(block,
-                    (new StateMap.Builder()).addPropertiesToIgnore(ignoredPropertiesArray).build());
+        if (MinecraftHelpers.isClientSide() && ignoredProperties.size() != 0) {
+            ignoreProperties(ignoredProperties);
         }
 
         IProperty[] properties = new IProperty[sortedProperties.size()];
         IUnlistedProperty[] unlistedProperties = new IUnlistedProperty[sortedUnlistedProperties.size()];
         return Pair.of(sortedProperties.toArray(properties), sortedUnlistedProperties.toArray(unlistedProperties));
+    }
+
+    @SideOnly(Side.CLIENT)
+    protected void ignoreProperties(TreeSet<IProperty> ignoredProperties) {
+        IProperty[] ignoredPropertiesArray = new IProperty[ignoredProperties.size()];
+        ignoredProperties.toArray(ignoredPropertiesArray);
+        ModelLoader.setCustomStateMapper(block,
+                (new StateMap.Builder()).addPropertiesToIgnore(ignoredPropertiesArray).build());
     }
 
     private Map<IProperty, ArrayList<Comparable>> preprocessPropertyValues(IProperty[] properties) {

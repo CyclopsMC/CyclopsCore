@@ -15,7 +15,7 @@ public class ClientProxy extends ClientProxyComponent {
 	private final CommonProxy commonProxy = new CommonProxy();
 
 	@Override
-	protected ModBase getMod() {
+	public ModBase getMod() {
 		return CyclopsCore._instance;
 	}
 

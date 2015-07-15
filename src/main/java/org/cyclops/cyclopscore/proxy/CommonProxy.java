@@ -14,7 +14,7 @@ import org.cyclops.cyclopscore.network.packet.SoundPacket;
 public class CommonProxy extends CommonProxyComponent {
 
     @Override
-    protected ModBase getMod() {
+    public ModBase getMod() {
         return CyclopsCore._instance;
     }
  

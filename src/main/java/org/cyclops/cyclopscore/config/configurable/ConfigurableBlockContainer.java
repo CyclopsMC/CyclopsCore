@@ -297,6 +297,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public IBakedModel createDynamicModel() {
         return null;
     }

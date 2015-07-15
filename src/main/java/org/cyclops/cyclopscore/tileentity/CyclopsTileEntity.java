@@ -184,7 +184,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
         writeGeneratedFieldsToNBT(tag);
         
         // Separate action for direction
-        tag.setString("rotation", rotation.getName());
+        tag.setInteger("rotation", rotation.ordinal());
     }
     
     @Override
@@ -193,7 +193,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
         readGeneratedFieldsFromNBT(tag);
         
         // Separate action for direction
-        EnumFacing foundRotation = EnumFacing.byName(tag.getString("rotation"));
+        EnumFacing foundRotation = EnumFacing.VALUES[tag.getInteger("rotation")];
         if(foundRotation != null) {
         	rotation = foundRotation;
         }

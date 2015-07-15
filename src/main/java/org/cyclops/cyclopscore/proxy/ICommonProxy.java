@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
+import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.PacketHandler;
 
 /**
@@ -13,6 +14,11 @@ import org.cyclops.cyclopscore.network.PacketHandler;
  * @author rubensworks
  */
 public interface ICommonProxy {
+
+    /**
+     * @return The mod for this proxy.
+     */
+    public ModBase getMod();
 
     /**
      * Register an entity renderer.

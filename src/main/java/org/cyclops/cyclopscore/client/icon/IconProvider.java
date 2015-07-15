@@ -7,8 +7,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.proxy.ClientProxyComponent;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -17,13 +19,14 @@ import java.util.List;
  * An alternative way of registering icons.
  * @author rubensworks
  */
+@SideOnly(Side.CLIENT)
 public class IconProvider {
 
-    private final ModBase modBase;
+    private final ClientProxyComponent clientProxy;
     private final List<Pair<Pair<Object, Field>, String>> toRegister = Lists.newLinkedList();
 
-    public IconProvider(ModBase modBase) {
-        this.modBase = modBase;
+    public IconProvider(ClientProxyComponent clientProxy) {
+        this.clientProxy = clientProxy;
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -32,7 +35,7 @@ public class IconProvider {
     }
 
     protected TextureAtlasSprite registerIcon(TextureMap textureMap, String location) {
-        return textureMap.registerSprite(new ResourceLocation(modBase.getModId(), location));
+        return textureMap.registerSprite(new ResourceLocation(clientProxy.getMod().getModId(), location));
     }
 
     @SubscribeEvent

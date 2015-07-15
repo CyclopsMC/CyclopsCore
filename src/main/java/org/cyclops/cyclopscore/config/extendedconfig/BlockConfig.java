@@ -25,8 +25,8 @@ import org.cyclops.cyclopscore.item.ItemBlockMetadata;
  */
 public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements IModelProviderConfig {
 
-    @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicBlockVariantLocation = null;
-    @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicItemVariantLocation  = null;
+    @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicBlockVariantLocation;
+    @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicItemVariantLocation;
 
     /**
      * Make a new instance.
@@ -38,6 +38,10 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
      */
     public BlockConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends Block> element) {
         super(mod, enabled, namedId, comment, element);
+        if(MinecraftHelpers.isClientSide()) {
+            dynamicBlockVariantLocation = null;
+            dynamicItemVariantLocation  = null;
+        }
     }
 
     @Override

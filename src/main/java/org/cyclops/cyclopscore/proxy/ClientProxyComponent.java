@@ -14,6 +14,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 
 import java.util.Map;
@@ -31,8 +32,17 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
 	
 	protected static final String SOUND_NONE = "none";
 
+	private final IconProvider iconProvider;
 	protected final Map<Class<? extends Entity>, Render> entityRenderers = Maps.newHashMap();
     protected final Map<Class<? extends TileEntity>, TileEntitySpecialRenderer> tileEntityRenderers = Maps.newHashMap();
+
+    public ClientProxyComponent() {
+        this.iconProvider = constructIconProvider();
+    }
+
+    protected IconProvider constructIconProvider() {
+        return new IconProvider(this);
+    }
 
     @Override
     public void registerRenderer(Class<? extends Entity> clazz, Render renderer) {

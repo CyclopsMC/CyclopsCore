@@ -23,6 +23,7 @@ import org.cyclops.cyclopscore.block.property.BlockProperty;
 import org.cyclops.cyclopscore.client.model.ConnectedBlockModel;
 import org.cyclops.cyclopscore.client.model.DirectionCorner;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import java.util.Map;
 
@@ -53,8 +54,10 @@ public class ConfigurableBlockConnectedTexture extends ConfigurableBlock {
         }
     }
 
-    private Map<String, ResourceLocation> textureMap = Maps.newHashMap();
-    private Map<String, TextureAtlasSprite> loadedTextureMap = Maps.newHashMap();
+    @SideOnly(Side.CLIENT)
+    private Map<String, ResourceLocation> textureMap;
+    @SideOnly(Side.CLIENT)
+    private Map<String, TextureAtlasSprite> loadedTextureMap;
 
     /**
      * Make a new blockState instance.
@@ -65,10 +68,15 @@ public class ConfigurableBlockConnectedTexture extends ConfigurableBlock {
     public ConfigurableBlockConnectedTexture(ExtendedConfig eConfig, Material material) {
         super(eConfig, material);
 
-        FMLCommonHandler.instance().bus().register(this);
-        loadTextureMap();
+        if(MinecraftHelpers.isClientSide()) {
+            textureMap = Maps.newHashMap();
+            loadedTextureMap = Maps.newHashMap();
+            FMLCommonHandler.instance().bus().register(this);
+            loadTextureMap();
+        }
     }
 
+    @SideOnly(Side.CLIENT)
     protected void loadTextureMap() {
         String mod = getConfig().getMod().getModId();
         String base = "blocks/" + getConfig().getNamedId();
@@ -83,11 +91,13 @@ public class ConfigurableBlockConnectedTexture extends ConfigurableBlock {
      * @param name Texture name.
      * @return The texture or null if it did not exist.
      */
+    @SideOnly(Side.CLIENT)
     public TextureAtlasSprite getTexture(String name) {
         return loadedTextureMap.get(name);
     }
 
     @SubscribeEvent
+    @SideOnly(Side.CLIENT)
     public void onPreTextureStitch(TextureStitchEvent.Pre event) {
         for(Map.Entry<String, ResourceLocation> textureEntry : textureMap.entrySet()) {
             loadedTextureMap.put(textureEntry.getKey(), event.map.registerSprite(textureEntry.getValue()));

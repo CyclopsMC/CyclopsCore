@@ -11,7 +11,6 @@ import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.event.ConfigChangedEventHook;
 import org.cyclops.cyclopscore.event.PlayerRingOfFire;
-import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.item.IBucketRegistry;
 import org.cyclops.cyclopscore.network.PacketHandler;
 import org.cyclops.cyclopscore.network.packet.SoundPacket;
@@ -25,8 +24,6 @@ import org.cyclops.cyclopscore.world.gen.IRetroGenRegistry;
 public abstract class CommonProxyComponent implements ICommonProxy {
 	
 	protected static final String DEFAULT_RESOURCELOCATION_MOD = "minecraft";
-
-    protected abstract ModBase getMod();
 
     @Override
     public void registerRenderer(Class<? extends Entity> clazz, Render renderer) {

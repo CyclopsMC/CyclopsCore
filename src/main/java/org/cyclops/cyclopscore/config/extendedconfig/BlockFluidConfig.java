@@ -9,6 +9,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.BlockFluidClassic;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -19,6 +21,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public abstract class BlockFluidConfig extends BlockConfig {
 
+    @SideOnly(Side.CLIENT)
     private ModelResourceLocation fluidLocation;
 
     /**
@@ -32,8 +35,9 @@ public abstract class BlockFluidConfig extends BlockConfig {
      */
     public BlockFluidConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends BlockFluidClassic> element) {
         super(mod, enabled, namedId, comment, element);
-
-        fluidLocation = new ModelResourceLocation(mod.getModId() + ":" + getNamedId(), "fluid");
+        if (MinecraftHelpers.isClientSide()) {
+            fluidLocation = new ModelResourceLocation(mod.getModId() + ":" + getNamedId(), "fluid");
+        }
     }
 
     @Override
@@ -42,29 +46,28 @@ public abstract class BlockFluidConfig extends BlockConfig {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void onRegistered() {
         super.onRegistered();
 
         // Handle registration for fluid rendering
-        if (MinecraftHelpers.isClientSide()) {
-            BlockFluidClassic blockInstance = getBlockInstance();
-            Item fluid = Item.getItemFromBlock(blockInstance);
+        BlockFluidClassic blockInstance = getBlockInstance();
+        Item fluid = Item.getItemFromBlock(blockInstance);
 
-            ModelBakery.addVariantName(fluid);
-            ModelLoader.setCustomMeshDefinition(fluid, new ItemMeshDefinition() {
-                @Override
-                public ModelResourceLocation getModelLocation(ItemStack stack) {
-                    return fluidLocation;
-                }
-            });
+        ModelBakery.addVariantName(fluid);
+        ModelLoader.setCustomMeshDefinition(fluid, new ItemMeshDefinition() {
+            @Override
+            public ModelResourceLocation getModelLocation(ItemStack stack) {
+                return fluidLocation;
+            }
+        });
 
-            ModelLoader.setCustomStateMapper(blockInstance, new StateMapperBase() {
+        ModelLoader.setCustomStateMapper(blockInstance, new StateMapperBase() {
 
-                @Override
-                protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
-                    return fluidLocation;
-                }
-            });
-        }
+            @Override
+            protected ModelResourceLocation getModelResourceLocation(IBlockState state) {
+                return fluidLocation;
+            }
+        });
     }
 }

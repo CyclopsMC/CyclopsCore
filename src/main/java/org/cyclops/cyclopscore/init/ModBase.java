@@ -9,6 +9,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
@@ -21,6 +23,7 @@ import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.network.PacketHandler;
 import org.cyclops.cyclopscore.persist.world.WorldStorage;
+import org.cyclops.cyclopscore.proxy.ClientProxyComponent;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 
 import java.io.File;
@@ -49,7 +52,6 @@ public abstract class ModBase {
     private final Set<IInitListener> initListeners;
     private final ConfigHandler configHandler;
     private final Map<EnumReferenceKey, Object> genericReference = Maps.newHashMap();
-    private final IconProvider iconProvider;
     private final List<WorldStorage> worldStorages = Lists.newLinkedList();
     private final GuiHandler guiHandler;
     private final RegistryManager registryManager;
@@ -68,7 +70,6 @@ public abstract class ModBase {
         this.loggerHelper = constructLoggerHelper();
         this.initListeners = Sets.newHashSet();
         this.configHandler = constructConfigHandler();
-        this.iconProvider = constructIconProvider();
         this.guiHandler = constructGuiHandler();
         this.registryManager = constructRegistryManager();
         this.recipeHandler = constructRecipeHandler();
@@ -88,10 +89,6 @@ public abstract class ModBase {
 
     protected ConfigHandler constructConfigHandler() {
         return new ConfigHandler(this);
-    }
-
-    protected IconProvider constructIconProvider() {
-        return new IconProvider(this);
     }
 
     protected GuiHandler constructGuiHandler() {
@@ -114,6 +111,14 @@ public abstract class ModBase {
 
     protected ICommand constructBaseCommand() {
         return new CommandMod(this, Maps.<String, ICommand>newHashMap());
+    }
+
+    /**
+     * @return The icon provider that was constructed in {@link ClientProxyComponent}.
+     */
+    @SideOnly(Side.CLIENT)
+    public IconProvider getIconProvider() {
+        return ((ClientProxyComponent) getProxy()).getIconProvider();
     }
 
     /**

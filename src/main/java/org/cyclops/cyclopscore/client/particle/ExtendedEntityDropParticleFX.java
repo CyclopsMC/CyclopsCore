@@ -86,7 +86,11 @@ public class ExtendedEntityDropParticleFX extends EntityFX {
         Material material = this.worldObj.getBlockState(blockPos).getBlock().getMaterial();
 
         if (material.isLiquid() || material.isSolid()) {
-            double d0 = (double) ((float) (MathHelper.floor_double(this.posY) + 1) - BlockLiquid.getLiquidHeightPercent((Integer) this.worldObj.getBlockState(blockPos).getValue(BlockLiquid.LEVEL)));
+            float h = 1;
+            if(worldObj.getBlockState(blockPos).getBlock() instanceof BlockLiquid) {
+                h = BlockLiquid.getLiquidHeightPercent((Integer) this.worldObj.getBlockState(blockPos).getValue(BlockLiquid.LEVEL));
+            }
+            double d0 = (double) ((float) (MathHelper.floor_double(this.posY) + 1) - h);
 
             if (this.posY < d0) {
                 this.setDead();
