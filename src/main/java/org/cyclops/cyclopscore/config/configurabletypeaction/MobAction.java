@@ -27,12 +27,10 @@ public class MobAction extends ConfigurableTypeAction<MobConfig>{
         eConfig.save();
         
         // Register mob
-        // TODO: remove global entity id's
         Class<? extends EntityLiving> clazz = (Class<? extends EntityLiving>) eConfig.getElement();
         if (MinecraftHelpers.isClientSide())
             eConfig.getMod().getProxy().registerRenderer(clazz, eConfig.getRender(Minecraft.getMinecraft().getRenderManager()));
-        EntityRegistry.registerGlobalEntityID(clazz, eConfig.getNamedId(), EntityRegistry.findGlobalUniqueEntityId(), eConfig.getBackgroundEggColor(), eConfig.getForegroundEggColor());
-		EntityRegistry.registerModEntity(clazz, eConfig.getNamedId(), Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY), eConfig.getMod(), 80, 3, true);
+        EntityRegistry.registerModEntity(clazz, eConfig.getNamedId(), Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY), eConfig.getMod(), 80, 3, true, eConfig.getBackgroundEggColor(), eConfig.getForegroundEggColor());
     }
 
 }
