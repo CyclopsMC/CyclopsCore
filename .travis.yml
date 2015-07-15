@@ -2,11 +2,12 @@ language: java
 jdk: openjdk7
 notifications:
   email: false
+  slack:
+    secure: GrrdAizKa/qMab+Rzb6Zv7sGaXBcEbJjY258wUDheku3DC/TEHler1lgoVrnXxx5PFDXy0ztXnMSJ7Epg8k7+Itf1uxlJUmzm2XIHoJ9LvbmEZvE+lz7v7w4VyVG45m672fWo2FrPQj2FopFcRW8hQiNAY3DcRghFP9JztOlnow=
 env:
+  secure: QOHlf9ZWzUjSkDqt6DZA075F3W8heuEzCg8LV5QeE6BEtFGjxdifBITQ8Vv0oAInm3x0rzuWKilEgQtCOTFzoOhQNDrNvkm04aKre9xYss0eXiRjtXlFm0xamkvNmTtUj1SpFpLjxXWch1KnggRfXX8wznQ7LWtoYJcoeQSCzVI=
   global:
-  - TERM=dumb
-  - secure: RkEG8bmCishmaQnS1C+f1o34QD+4oQP3Kacgc/6gAwdjACrviktNsbuAK2MyvZqA3r4XNN2Hjxsm39IvWNl+zH81xh4OsHZFkhb2Z6yfYtJd5ftrYFaWX0mcsVWbDFfYkZsDyfn/vLzSAoBju1QlRy0nJ8ieA5/5a+7CjUGL7Cs=
+    - TERM=dumb
 install: ./gradlew setupCIWorkspace -S
-script:
-  - ./gradlew build -S
-  - ./gradlew curse
+script: ./gradlew build -S
+after_success: ./gradlew curse -S
