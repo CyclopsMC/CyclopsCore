@@ -41,8 +41,6 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         fluid.setBlock(this);
-        // TODO: texture stitching
-        //TextureStitchEventHook.fluidMap.put(fluid, this);
         this.fluid = fluid;
     }
 
