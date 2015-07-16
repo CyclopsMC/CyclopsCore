@@ -27,6 +27,9 @@ public class ConfigurableEnchantment extends Enchantment implements IConfigurabl
         super(eConfig.downCast().ID, new ResourceLocation(eConfig.getNamedId()), weight, type);
         this.setConfig(eConfig);
         this.setName(eConfig.getUnlocalizedName());
+        if(isAllowedOnBooks()) {
+            addToBookList(this);
+        }
         
     }
     
