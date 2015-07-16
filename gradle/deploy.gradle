@@ -11,7 +11,6 @@ curse {
     }
 
     if(System.getenv().TRAVIS && 'master'.equals(System.getenv().TRAVIS_BRANCH)) {
-        System.out.println("release curse"); // TODO
         apiKey = System.getenv().CURSEFORGE_KEY_SECRET
         changelog = "https://github.com/" + System.getenv().TRAVIS_REPO_SLUG + "/compare/" + System.getenv().TRAVIS_COMMIT_RANGE
         releaseType = "alpha"

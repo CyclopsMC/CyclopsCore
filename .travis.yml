@@ -5,7 +5,6 @@ notifications:
   slack:
     secure: GrrdAizKa/qMab+Rzb6Zv7sGaXBcEbJjY258wUDheku3DC/TEHler1lgoVrnXxx5PFDXy0ztXnMSJ7Epg8k7+Itf1uxlJUmzm2XIHoJ9LvbmEZvE+lz7v7w4VyVG45m672fWo2FrPQj2FopFcRW8hQiNAY3DcRghFP9JztOlnow=
 env:
-  secure: QOHlf9ZWzUjSkDqt6DZA075F3W8heuEzCg8LV5QeE6BEtFGjxdifBITQ8Vv0oAInm3x0rzuWKilEgQtCOTFzoOhQNDrNvkm04aKre9xYss0eXiRjtXlFm0xamkvNmTtUj1SpFpLjxXWch1KnggRfXX8wznQ7LWtoYJcoeQSCzVI=
   global:
     - TERM=dumb
 install: ./gradlew setupCIWorkspace -S
