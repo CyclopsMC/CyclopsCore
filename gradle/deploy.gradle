@@ -61,24 +61,29 @@ uploadArchives {
         pom.project {
             name project.archivesBaseName
             packaging 'jar'
-            description 'An evil mod for Minecraft'
-            url 'https://github.com/rubensworks/EvilCraft'
+            description 'Minecraft coremod for EvilCraft, Integrated Dynamics and others.'
+            url 'https://github.com/CyclopsMC/CyclopsCore'
 
             scm {
-                url 'https://github.com/rubensworks/EvilCraft'
-                connection 'scm:git:git://github.com/rubensworks/EvilCraft.git'
-                developerConnection 'scm:git:git@github.com:rubensworks/EvilCraft.git'
+                url 'https://github.com/CyclopsMC/CyclopsCore'
+                connection 'scm:git:git://github.com/CyclopsMC/CyclopsCore.git'
+                developerConnection 'scm:git:git@github.com:CyclopsMC/CyclopsCore.git'
             }
 
             issueManagement {
                 system 'github'
-                url 'https://github.com/rubensworks/EvilCraft/issues'
+                url 'https://github.com/CyclopsMC/CyclopsCore/issues'
             }
 
             developers {
                 developer {
                     id 'rubensworks'
                     name 'rubensworks'
+                    roles { role 'developer' }
+                }
+                developer {
+                    id 'immortaleeb'
+                    name 'immortaleeb'
                     roles { role 'developer' }
                 }
             }
