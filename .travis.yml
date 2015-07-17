@@ -4,9 +4,31 @@ notifications:
   email: false
   slack:
     secure: GrrdAizKa/qMab+Rzb6Zv7sGaXBcEbJjY258wUDheku3DC/TEHler1lgoVrnXxx5PFDXy0ztXnMSJ7Epg8k7+Itf1uxlJUmzm2XIHoJ9LvbmEZvE+lz7v7w4VyVG45m672fWo2FrPQj2FopFcRW8hQiNAY3DcRghFP9JztOlnow=
+git:
+  depth: 150
 env:
   global:
     - TERM=dumb
+
 install: ./gradlew setupCIWorkspace -S
 script: ./gradlew build -S
-after_success: ./gradlew curse -S
+
+deploy:
+  - provider: script
+    script: ./gradlew curse -S
+    on:
+      repo: CyclopsMC/CyclopsCore
+      tags: true
+  	  branch: /^(master|release).*$/
+  - provider: releases
+    api_key:
+      secure: BEMYle1PPmd/qqRtZALxpRU/51aCImR5O5zzYQyQjzZg231e0oxNiCFbtAXSwvO9SvxPQvf0XN1wNpPEI2tL8d0jQVUG1A4GezQdbvoIn1ofPXWBP8cilUFO2HM9ljdHwFt3WD0wx6TC0CpzOGao8l72lFvXN1c/QREQNljkjQw=
+    on:
+      repo: CyclopsMC/CyclopsCore
+      tags: true
+      branch: /^(master|release).*$/
+  - provider: script
+    script: ./gradlew uploadArchives -S
+    on:
+      repo: CyclopsMC/CyclopsCore
+  	  branch: /^(master|release).*$/
