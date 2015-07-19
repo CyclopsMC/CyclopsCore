@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore;
 import com.google.common.collect.Maps;
 import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -15,8 +14,6 @@ import org.cyclops.cyclopscore.command.CommandIgnite;
 import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.command.CommandRecursion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
-import org.cyclops.cyclopscore.init.DirectObjectReference;
-import org.cyclops.cyclopscore.init.ItemCreativeTab;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
@@ -104,7 +101,7 @@ public class CyclopsCore extends ModBase implements IModVersion {
 
     @Override
     public CreativeTabs constructDefaultCreativeTab() {
-        return new ItemCreativeTab(this, new DirectObjectReference<>(Items.diamond)); // TODO: temp
+        return null; // We don't need a creative tab for this core mod.
     }
 
     @Override
