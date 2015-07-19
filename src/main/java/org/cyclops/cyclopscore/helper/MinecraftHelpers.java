@@ -111,14 +111,14 @@ public class MinecraftHelpers {
     /**
      * Spawns the creature specified by the egg's type in the location specified by the last three parameters.
      * @param world The world.
-     * @param entityID The ID of the entity.
+     * @param entityName The name of the entity.
      * @param x X coordinate.
      * @param y Y coordinate.
      * @param z Z coordinate.
      * @return the entity that was spawned.
      */
-    public static Entity spawnCreature(World world, int entityID, double x, double y, double z) {
-        return ItemMonsterPlacer.spawnCreature(world, entityID, x, y, z);
+    public static Entity spawnCreature(World world, String entityName, double x, double y, double z) {
+        return ItemMonsterPlacer.spawnCreature(world, entityName, x, y, z);
     }
     
     /**

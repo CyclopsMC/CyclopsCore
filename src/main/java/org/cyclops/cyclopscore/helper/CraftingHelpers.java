@@ -15,6 +15,7 @@ import java.util.Map;
  */
 public class CraftingHelpers {
 
+    @SuppressWarnings("unchecked")
     public static IRecipe findCraftingRecipe(ItemStack itemStack, int index) throws IllegalArgumentException {
         int indexAttempt = index;
         for(IRecipe recipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
@@ -26,6 +27,7 @@ public class CraftingHelpers {
                 "with index " + index);
     }
 
+    @SuppressWarnings("unchecked")
     public static Map.Entry<ItemStack, ItemStack> findFurnaceRecipe(ItemStack itemStack, int index) throws IllegalArgumentException {
         int indexAttempt = index;
         for(Map.Entry<ItemStack, ItemStack> recipe : ((Map<ItemStack, ItemStack>) FurnaceRecipes.instance().

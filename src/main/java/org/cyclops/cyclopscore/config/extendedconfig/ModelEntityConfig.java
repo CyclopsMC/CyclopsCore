@@ -36,17 +36,8 @@ public abstract class ModelEntityConfig extends EntityConfig{
         try {
             constructor = getRenderClass().getConstructor(ExtendedConfig.class);
             render = constructor.newInstance(this);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalArgumentException |
+                IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return render;

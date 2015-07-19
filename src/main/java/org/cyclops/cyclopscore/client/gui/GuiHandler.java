@@ -78,6 +78,7 @@ public class GuiHandler implements IGuiHandler {
         setTemporaryData(guiType, null);
     }
     
+    @SuppressWarnings("unchecked")
     private <O> O getTemporaryData(GuiType<O> guiType) throws IllegalArgumentException {
         O data = (O) (MinecraftHelpers.isClientSide() ? tempDataHolderClient.get(guiType) : tempDataHolderServer.get(guiType));
         clearTemporaryData(guiType);

@@ -18,7 +18,7 @@ public class DimPos implements Comparable<DimPos> {
     @Override
     public int compareTo(DimPos o) {
         int compareDim = Integer.compare(getWorld().provider.getDimensionId(),
-                ((DimPos) o).getWorld().provider.getDimensionId());
+                o.getWorld().provider.getDimensionId());
         if(compareDim == 0) {
             return MinecraftHelpers.compareBlockPos(getBlockPos(), o.getBlockPos());
         }

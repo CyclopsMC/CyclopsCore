@@ -31,7 +31,7 @@ public interface IInitListener {
     	/**
     	 * Mod post-init, {@link net.minecraftforge.fml.common.event.FMLPostInitializationEvent}.
     	 */
-    	POSTINIT;
+    	POSTINIT
     	
     }
 	

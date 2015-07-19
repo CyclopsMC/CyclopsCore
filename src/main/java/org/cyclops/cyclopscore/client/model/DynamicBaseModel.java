@@ -41,7 +41,7 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel {
             case WEST:  return new Vec3(-vec.yCoord,  vec.xCoord,  vec.zCoord);
             case EAST:  return new Vec3( vec.yCoord, -vec.xCoord,  vec.zCoord);
         }
-        return null;
+        return vec;
     }
 
     /**
@@ -59,7 +59,7 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel {
             case WEST:  return new Vec3( vec.yCoord, -vec.xCoord,  vec.zCoord);
             case EAST:  return new Vec3(-vec.yCoord,  vec.xCoord,  vec.zCoord);
         }
-        return null;
+        return vec;
     }
 
     /**

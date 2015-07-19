@@ -171,7 +171,7 @@ public abstract class InventoryTileEntity extends CyclopsTileEntity implements I
 
     @Override
     public void clear() {
-        inventory.clear();;
+        inventory.clear();
     }
 
     @Override

@@ -105,6 +105,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
     /**
      * Polish the enabled configs during the initialization phase.
      */
+    @SuppressWarnings("unchecked")
     public void polishConfigs() {
         for(ExtendedConfig<?> eConfig : processedConfigs) {
             ConfigurableType type = eConfig.getHolderType();

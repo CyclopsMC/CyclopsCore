@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.recipe.custom.component;
 
-import lombok.Data;
 import lombok.Getter;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -13,10 +12,9 @@ import java.util.List;
  *
  * @author immortaleeb
  */
-@Data
 public class OreDictItemStackRecipeComponent extends ItemStackRecipeComponent {
 
-    private final String key;
+    @Getter private final String key;
     @Getter(lazy=true) private final List<ItemStack> itemStacks = OreDictionary.getOres(getKey());
 
     public OreDictItemStackRecipeComponent(String key) {

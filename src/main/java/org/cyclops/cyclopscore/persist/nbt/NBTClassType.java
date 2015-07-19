@@ -115,6 +115,7 @@ public abstract class NBTClassType<T> {
 
         NBTYPES.put(Map.class, new NBTClassType<Map>() {
 
+            @SuppressWarnings("unchecked")
             @Override
             protected void writePersistedField(String name, Map object, NBTTagCompound tag) {
                 NBTTagCompound mapTag = new NBTTagCompound();
@@ -313,6 +314,7 @@ public abstract class NBTClassType<T> {
 
         protected abstract C createNewCollection();
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void writePersistedField(String name, C object, NBTTagCompound tag) {
             NBTTagCompound collectionTag = new NBTTagCompound();

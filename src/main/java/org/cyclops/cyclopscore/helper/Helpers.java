@@ -69,7 +69,7 @@ public class Helpers {
     	/**
     	 * Packet ID.
     	 */
-    	PACKET;
+    	PACKET
     }
 
     /**

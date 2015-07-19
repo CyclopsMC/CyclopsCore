@@ -24,7 +24,7 @@ public class EnchantmentHelpers {
 	        NBTTagList enchantmentList = itemStack.getEnchantmentTagList();
 	        if(enchantmentList != null) {
 	            for(int i = 0; i < enchantmentList.tagCount(); i++) {
-	                if (((NBTTagCompound)enchantmentList.getCompoundTagAt(i)).getShort("id") == enchantID) {
+	                if (enchantmentList.getCompoundTagAt(i).getShort("id") == enchantID) {
 	                    return i;
 	                }
 	            }
@@ -43,7 +43,7 @@ public class EnchantmentHelpers {
 	 */
 	public static int getEnchantmentLevel(ItemStack itemStack, int enchantmentListID) {
 	    NBTTagList enchlist = itemStack.getEnchantmentTagList();
-	    return ((NBTTagCompound)enchlist.getCompoundTagAt(enchantmentListID)).getShort("lvl");
+	    return enchlist.getCompoundTagAt(enchantmentListID).getShort("lvl");
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class EnchantmentHelpers {
 	 */
 	public static int getEnchantmentID(ItemStack itemStack, int enchantmentListID) {
 	    NBTTagList enchlist = itemStack.getEnchantmentTagList();
-	    return ((NBTTagCompound)enchlist.getCompoundTagAt(enchantmentListID)).getShort("id");
+	    return enchlist.getCompoundTagAt(enchantmentListID).getShort("id");
 	}
 
 	/**

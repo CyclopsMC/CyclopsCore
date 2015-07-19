@@ -137,7 +137,7 @@ public class ConfigurableVillager implements IConfigurable { // TODO: IVillageTr
     }
     
     protected float safeDivide(int i, float j) {
-        return (float) i / (float) Math.max(1, j);
+        return (float) i / Math.max(1, j);
     }
     
     protected WeightedItemStack getRandomWeightedItemStack(List<WeightedItemStack> trades, Random random) {

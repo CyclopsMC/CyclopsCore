@@ -29,13 +29,7 @@ public class ObfuscationHelpers {
 
             field.setAccessible(true);
             field.set(null, potionTypes);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | SecurityException | IllegalAccessException | IllegalArgumentException e) {
             e.printStackTrace();
         }
     }

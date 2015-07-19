@@ -81,6 +81,7 @@ public abstract class GuiInfoBook extends GuiScreen {
     protected abstract int getGuiHeight();
     protected abstract int getPageWidth();
 
+    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         this.buttonList.clear();

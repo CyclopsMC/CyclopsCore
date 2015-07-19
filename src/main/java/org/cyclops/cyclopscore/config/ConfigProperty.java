@@ -115,11 +115,9 @@ public final class ConfigProperty {
         this.value = value;
         try {
             field.set(null, this.value);
-        } catch (IllegalArgumentException e1) {
+        } catch (IllegalArgumentException | IllegalAccessException e1) {
             // Won't happen, trust me.
             e1.printStackTrace();
-        } catch (IllegalAccessException e2) {
-            e2.printStackTrace();
         }
     }
 
@@ -278,8 +276,10 @@ public final class ConfigProperty {
             mod.log(Level.ERROR, "Invalid config property class. No match found for '"
                     + name + "': '" + value + "'");
         }
-        additionalProperty.setRequiresWorldRestart(isRequiresWorldRestart());
-        additionalProperty.setRequiresMcRestart(isRequiresMcRestart());
+        if(additionalProperty != null) {
+            additionalProperty.setRequiresWorldRestart(isRequiresWorldRestart());
+            additionalProperty.setRequiresMcRestart(isRequiresMcRestart());
+        }
     }
 
 	/**

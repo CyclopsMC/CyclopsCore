@@ -25,10 +25,9 @@ public final class StringHelpers {
 	 */
 	public static List<String> splitLines(String input, int maxLength, String prefix) {
 		List<String> list = Lists.newLinkedList();
-		
-		StringBuilder buffer = null;
+
 		for(String partialInput : input.split(NEWLINE_PATTERN)) {
-			buffer = new StringBuilder();
+			StringBuilder buffer = new StringBuilder();
 			for(String word : partialInput.split(SPACE)) {
 				if(buffer.length() > 0) {
 					buffer.append(SPACE);

@@ -89,7 +89,8 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
         }
     }
 	
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
     public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTick, int destroyStage) {
         this.renderTileEntityAt((T) tile, x, y, z, partialTick, destroyStage);
     }

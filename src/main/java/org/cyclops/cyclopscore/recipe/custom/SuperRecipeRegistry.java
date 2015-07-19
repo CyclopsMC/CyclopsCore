@@ -17,6 +17,7 @@ import java.util.Map;
  * @see IMachine
  * @author immortaleeb
  */
+@SuppressWarnings("unchecked")
 public class SuperRecipeRegistry implements ISuperRecipeRegistry {
     private final Map<IMachine, List<IRecipe>> recipes = Maps.newHashMap();
     private final Map<IMachine, RecipeRegistry> registries = Maps.newHashMap();

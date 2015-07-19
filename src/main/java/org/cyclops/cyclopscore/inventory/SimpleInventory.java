@@ -136,7 +136,7 @@ public class SimpleInventory implements IInventory {
             _contents[j] = null;
 
         for (int j = 0; j < nbttaglist.tagCount(); ++j) {
-            NBTTagCompound slot = (NBTTagCompound) nbttaglist.getCompoundTagAt(j);
+            NBTTagCompound slot = nbttaglist.getCompoundTagAt(j);
             int index;
             if (slot.hasKey("index")) {
                 index = slot.getInteger("index");

@@ -24,17 +24,10 @@ import org.cyclops.cyclopscore.network.PacketCodec;
 public class RingOfFirePacket extends PacketCodec {
 	
 	private static final int RANGE = 3000;
-
-    private static double RING_AREA = 0.9F;
+    private static final double RING_AREA = 0.9F;
 	
     @CodecField
 	private String displayName;
-    @CodecField
-	private double x = 0;
-    @CodecField
-	private double y = 0;
-    @CodecField
-	private double z = 0;
 
 	/**
 	 * Creates a packet with no content
@@ -49,15 +42,12 @@ public class RingOfFirePacket extends PacketCodec {
 	 */
 	public RingOfFirePacket(EntityPlayer player) {
 		this.displayName = player.getDisplayName().getFormattedText();
-		this.x = player.posX;
-		this.y = player.posY;
-		this.z = player.posZ;
 	}
 
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void actionClient(World world, EntityPlayer player) {
-		if(!player.getDisplayName().equals(displayName)) {
+		if(!player.getDisplayNameString().equals(displayName)) {
 			player = world.getPlayerEntityByName(displayName);
 		}
 		if(player != null) {

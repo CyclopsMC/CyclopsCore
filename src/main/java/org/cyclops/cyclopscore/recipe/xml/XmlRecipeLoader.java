@@ -145,7 +145,7 @@ public class XmlRecipeLoader {
 						"Could not find a recipe condition handler of type '%s'", conditionType));
 			}
 			String param = condition.getTextContent();
-			enable = enable && handler.isSatisfied(recipeHandler, param);
+			enable = handler.isSatisfied(recipeHandler, param);
 			j++;
 		}
 		return enable;

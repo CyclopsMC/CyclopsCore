@@ -55,6 +55,7 @@ public class ConfigurableBlock extends Block implements IConfigurable, IDynamicM
         if(hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
                                      int meta, EntityLivingBase placer) {

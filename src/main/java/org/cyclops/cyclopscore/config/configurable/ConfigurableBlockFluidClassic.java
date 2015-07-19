@@ -44,6 +44,13 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
         this.fluid = fluid;
     }
 
+    /**
+     * @return The associated fluid.
+     */
+    public Fluid getFluid() {
+        return this.fluid;
+    }
+
     private void setConfig(@SuppressWarnings("rawtypes") ExtendedConfig eConfig) {
         this.eConfig = eConfig;
     }

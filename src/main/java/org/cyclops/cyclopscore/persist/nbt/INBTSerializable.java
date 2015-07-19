@@ -31,6 +31,7 @@ public interface INBTSerializable {
 	 */
 	public void fromNBT(NBTTagCompound tag);
 
+    @SuppressWarnings("unchecked")
     @EqualsAndHashCode(callSuper = false)
     @Data
     public static class SelfNBTClassType extends NBTClassType<INBTSerializable> {

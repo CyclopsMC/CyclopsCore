@@ -58,12 +58,15 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
                 return stack;
             }
         }
-        FluidStack fluidStack = super.drain(container, maxDrain, doDrain);
-        if(container != null &&
-                (container.getTagCompound() == null || container.getTagCompound().getCompoundTag("Fluid") == null)) {
-            fill(container, new FluidStack(fluid, 0), true);
+        if(container != null) {
+            FluidStack fluidStack = super.drain(container, maxDrain, doDrain);
+            if ((container.getTagCompound() == null || container.getTagCompound().getCompoundTag("Fluid") == null)) {
+                fill(container, new FluidStack(fluid, 0), true);
+            }
+            return fluidStack;
+        } else {
+            return null;
         }
-        return fluidStack;
     }
     
     @Override

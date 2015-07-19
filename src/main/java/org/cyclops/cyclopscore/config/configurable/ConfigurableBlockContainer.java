@@ -9,10 +9,10 @@ import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -84,6 +84,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         if(hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
                                      int meta, EntityLivingBase placer) {
@@ -174,17 +175,11 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
                     stack.getTagCompound().setInteger("x", blockPos.getX());
                     stack.getTagCompound().setInteger("y", blockPos.getY());
                     stack.getTagCompound().setInteger("z", blockPos.getZ());
-                    //stack.getTagCompound().setInteger("rotation", UNKNOWN.ordinal());
                     tile.readFromNBT(stack.getTagCompound());
             }
-            
-            /*if(tile.isRotatable()) {
-                EnumFacing facing = DirectionHelpers.getEntityFacingDirection(entity);
-                tile.setRotation(facing);
-            }*/
 
-            if(tile instanceof IUpdatePlayerListBox) {
-                ((IUpdatePlayerListBox) tile).update();
+            if(tile instanceof CyclopsTileEntity.ITickingTile) {
+                tile.update();
             }
         }
         super.onBlockPlacedBy(world, blockPos, blockState, entity, stack);
@@ -270,7 +265,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     }
     
     @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos blockPos) {
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos blockPos, EntityPlayer player) {
     	Item item = getItem(world, blockPos);
 
         if (item == null) {

@@ -14,7 +14,6 @@ import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -109,6 +108,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
         return itemStacks;
     }
 
+    @SuppressWarnings("unchecked")
     protected List<ItemStack> getItemStacks(int index) {
         Object[] itemStacks;
         if(recipe instanceof ShapedRecipes) {
@@ -129,7 +129,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
         if(itemStacks.length <= index) return Collections.emptyList();
         Object element = itemStacks[index];
         if(element == null) return Collections.emptyList();
-        return element instanceof ItemStack ? Arrays.asList((ItemStack) element) : (List<ItemStack>) element;
+        return element instanceof ItemStack ? Collections.singletonList((ItemStack) element) : (List<ItemStack>) element;
     }
 
 }

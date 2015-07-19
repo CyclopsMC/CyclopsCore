@@ -35,6 +35,7 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
      * @param items       All items to potentially show in this list.
      * @param filterer    The predicate that is used to filter on the given items.
      */
+    @SuppressWarnings("unchecked")
     public ScrollingInventoryContainer(InventoryPlayer inventory, IGuiContainerProvider guiProvider, List<E> items,
                                        IItemPredicate<E> filterer) {
         super(inventory, guiProvider);
@@ -136,7 +137,7 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
      * @param searchString The input string to search by.
      */
     public void updateFilter(String searchString) {
-        Pattern pattern = null;
+        Pattern pattern;
         try {
             pattern = Pattern.compile(".*" + searchString.toLowerCase() + ".*");
         } catch (PatternSyntaxException e) {

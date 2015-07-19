@@ -56,10 +56,8 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
     	this.element = element;
         try {
             generateConfigProperties();
-        } catch (IllegalArgumentException e1) {
+        } catch (IllegalArgumentException | IllegalAccessException e1) {
             e1.printStackTrace();
-        } catch (IllegalAccessException e2) {
-        	e2.printStackTrace();
         }
     }
 
@@ -294,7 +292,6 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      */
     @SuppressWarnings("unchecked")
     public C downCast() {
-        C c = (C) this;
-        return c;
+        return (C) this;
     }
 }

@@ -211,9 +211,7 @@ public abstract class PacketCodec extends PacketBase {
 				Object object = null;
 				try {
 					object = field.get(PacketCodec.this);
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
+				} catch (IllegalArgumentException | IllegalAccessException e) {
 					e.printStackTrace();
 				}
 				action.encode(object, output);
@@ -230,9 +228,7 @@ public abstract class PacketCodec extends PacketBase {
 				Object object = action.decode(input);
 				try {
 					field.set(PacketCodec.this, object);
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
+				} catch (IllegalArgumentException | IllegalAccessException e) {
 					e.printStackTrace();
 				}
 			}

@@ -21,7 +21,11 @@ public final class BlockHelpers {
      * @param <T> The type of value to fetch.
      * @return The value.
      */
+    @SuppressWarnings("unchecked")
     public static <T> T getSafeBlockStateProperty(@Nullable IBlockState state, IProperty property, T fallback) {
+        if(state == null) {
+            return fallback;
+        }
         Comparable value = state.getValue(property);
         if(value == null) {
             return fallback;

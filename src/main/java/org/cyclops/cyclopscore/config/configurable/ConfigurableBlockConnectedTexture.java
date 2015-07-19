@@ -41,8 +41,10 @@ import java.util.Map;
  */
 public class ConfigurableBlockConnectedTexture extends ConfigurableBlock {
 
+    @SuppressWarnings("unchecked")
     @BlockProperty
     public static final IUnlistedProperty<Boolean>[] CONNECTED = new IUnlistedProperty[6];
+    @SuppressWarnings("unchecked")
     @BlockProperty
     public static final IUnlistedProperty<Boolean>[] CONNECTED_CORNER = new IUnlistedProperty[DirectionCorner.values().length];
     static {

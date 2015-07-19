@@ -97,6 +97,7 @@ public class InfoSection {
      * @param maxLines The maximum amount of lines per page.
      * @param lineHeight The line height.
      */
+    @SuppressWarnings("unchecked")
     public void bakeSection(FontRenderer fontRenderer, int width, int maxLines, int lineHeight) {
         if(paragraphs.size() == 0 && shouldAddIndex()) {
             // linkedmap to make sure the contents are sorted by insertion order.
@@ -192,7 +193,7 @@ public class InfoSection {
         }
     }
 
-    protected static final int getAppendixLineHeight(SectionAppendix appendix, FontRenderer fontRenderer) {
+    protected static int getAppendixLineHeight(SectionAppendix appendix, FontRenderer fontRenderer) {
         return (int) Math.ceil((double) appendix.getFullHeight() / (double) getFontHeight(fontRenderer));
     }
 
@@ -255,7 +256,7 @@ public class InfoSection {
     }
 
     public List<HyperLink> getLinks(int page) {
-        if(links.size() <= page || page < 0) return Collections.EMPTY_LIST;
+        if(links.size() <= page || page < 0) return Collections.emptyList();
         return links.get(page);
     }
 
@@ -380,7 +381,7 @@ public class InfoSection {
 
     public List<AdvancedButton> getAdvancedButtons(int page) {
         if(!advancedButtons.containsKey(page)) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return advancedButtons.get(page);
     }

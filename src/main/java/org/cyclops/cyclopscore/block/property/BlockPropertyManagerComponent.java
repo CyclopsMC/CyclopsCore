@@ -78,16 +78,13 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
                         if (ignored) ignoredProperties.add((IProperty) fieldObject);
                     } else if(fieldObject instanceof IUnlistedProperty) {
                         sortedUnlistedProperties.add((IUnlistedProperty) fieldObject);
-                        if (ignored) ignoredProperties.add((IProperty) fieldObject);
                     } else if(fieldObject instanceof IProperty[]) {
                         for(IProperty property : ((IProperty[]) fieldObject)) {
                             sortedProperties.add(property);
                             if (ignored) ignoredProperties.add(property);
                         }
                     } else if(fieldObject instanceof IUnlistedProperty[]) {
-                        for(IUnlistedProperty unlistedProperty : ((IUnlistedProperty[]) fieldObject)) {
-                            sortedUnlistedProperties.add(unlistedProperty);
-                        }
+                        Collections.addAll(sortedUnlistedProperties, ((IUnlistedProperty[]) fieldObject));
                     } else {
                         throw new IllegalArgumentException(String.format("The field %s in class %s can not be used " +
                                 "as block property.", field.getName(), clazz.getCanonicalName()));
@@ -113,6 +110,7 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
                 (new StateMap.Builder()).addPropertiesToIgnore(ignoredPropertiesArray).build());
     }
 
+    @SuppressWarnings("unchecked")
     private Map<IProperty, ArrayList<Comparable>> preprocessPropertyValues(IProperty[] properties) {
         Map<IProperty, ArrayList<Comparable>> dict = Maps.newHashMap();
         for(IProperty property : properties) {

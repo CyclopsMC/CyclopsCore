@@ -172,11 +172,7 @@ public class InfoBookParser {
             InfoSection root = buildSection(infoBook, null, 0, doc.getDocumentElement());
             root.registerSection(new InfoSectionTagIndex(infoBook, root));
             return root;
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
         throw new InfoBookException("Info Book XML is invalid.");
@@ -243,7 +239,7 @@ public class InfoBookParser {
                 Collection<ItemStack> itemStacks = mod.getRecipeHandler().getTaggedOutput().get(appendixListNode.getTextContent());
                 for(ItemStack itemStack : itemStacks) {
                     try {
-                        appendixList.add(createAppendix(infoBook, appendixListNode.getAttribute("type"), itemStack));
+                        appendixList.add(createAppendix(infoBook, type, itemStack));
                     } catch (InvalidAppendixException e) {
                         // Skip this appendix.
                     }

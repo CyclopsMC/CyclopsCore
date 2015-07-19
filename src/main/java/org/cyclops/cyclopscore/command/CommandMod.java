@@ -86,9 +86,7 @@ public class CommandMod implements ICommand {
     
     protected String[] shortenArgumentList(String[] astring) {
         String[] asubstring = new String[astring.length - 1];
-        for(int i = 1; i < astring.length; i++) {
-            asubstring[i - 1] = astring[i];
-        }
+        System.arraycopy(astring, 1, asubstring, 0, astring.length - 1);
         return asubstring;
     }
 

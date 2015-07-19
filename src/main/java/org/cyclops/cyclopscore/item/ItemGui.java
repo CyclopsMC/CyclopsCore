@@ -58,7 +58,7 @@ public abstract class ItemGui extends ConfigurableItem implements IGuiContainerP
 				&& player instanceof EntityPlayerMP
 				&& player.openContainer != null
 				&& player.openContainer.getClass() == getContainer()) {
-			((EntityPlayerMP) player).closeScreen();
+			player.closeScreen();
 		}
 		return super.onDroppedByPlayer(itemstack, player);
 	}

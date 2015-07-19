@@ -83,7 +83,7 @@ public class CompositeMap<K, V> implements Map<K, V> {
     @Override
     public V get(Object key) {
         for(Map<K, V> element : elements) {
-            V value = element.get(element);
+            V value = element.get(key);
             if(value != null) {
                 return value;
             }
