@@ -28,6 +28,7 @@ public class CommandMod implements ICommand {
         this.mod = mod;
         this.subCommands = subCommands;
         this.subCommands.put(CommandConfig.NAME, new CommandConfig(mod));
+        this.subCommands.put(CommandVersion.NAME, new CommandVersion(mod));
     }
 
     public CommandMod(ModBase mod) {
