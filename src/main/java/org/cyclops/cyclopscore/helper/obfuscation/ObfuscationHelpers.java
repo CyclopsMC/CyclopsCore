@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.helper.obfuscation;
 
 import net.minecraft.potion.Potion;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -37,6 +38,24 @@ public class ObfuscationHelpers {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Get the private 'width' field from {@link net.minecraftforge.oredict.ShapedOreRecipe}.
+     * @param recipe The recipe instance.
+     * @return width
+     */
+    public static int getShapedOreRecipeWidth(ShapedOreRecipe recipe) {
+        return ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, recipe, ObfuscationData.SHAPEDORERECIPE_WIDTH);
+    }
+
+    /**
+     * Get the private 'height' field from {@link net.minecraftforge.oredict.ShapedOreRecipe}.
+     * @param recipe The recipe instance.
+     * @return width
+     */
+    public static int getShapedOreRecipeHeight(ShapedOreRecipe recipe) {
+        return ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, recipe, ObfuscationData.SHAPEDORERECIPE_HEIGHT);
     }
 	
 }

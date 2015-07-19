@@ -14,5 +14,14 @@ public class ObfuscationData {
      * Field from net.minecraft.potion.Potion.
      */
     public static final String[] POTION_POTIONTYPES = new String[] { "potionTypes", "field_76425_a", "a" };
+
+    /**
+     * Field from net.minecraftforge.oredict.ShapedOreRecipe.
+     */
+    public static final String[] SHAPEDORERECIPE_WIDTH = new String[] { "width" };
+    /**
+     * Field from net.minecraftforge.oredict.ShapedOreRecipe.
+     */
+    public static final String[] SHAPEDORERECIPE_HEIGHT = new String[] { "height" };
 	
 }
