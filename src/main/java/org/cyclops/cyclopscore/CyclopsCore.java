@@ -20,6 +20,7 @@ import org.cyclops.cyclopscore.init.ItemCreativeTab;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
+import org.cyclops.cyclopscore.version.Analytics;
 
 import java.util.Map;
 
@@ -52,6 +53,7 @@ public class CyclopsCore extends ModBase {
 
     public CyclopsCore() {
         super(Reference.MOD_ID, Reference.MOD_NAME);
+        putGenericReference(REFKEY_MOD_VERSION, Reference.MOD_VERSION);
     }
 
     @Override
@@ -76,6 +78,7 @@ public class CyclopsCore extends ModBase {
     @Mod.EventHandler
     @Override
     public final void init(FMLInitializationEvent event) {
+        Analytics.sendAll();
         super.init(event);
     }
 

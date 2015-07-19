@@ -6,6 +6,9 @@ import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCategory;
 import org.cyclops.cyclopscore.config.extendedconfig.DummyConfig;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.version.Analytics;
+
+import java.util.UUID;
 
 /**
  * A config with general options for this mod.
@@ -38,17 +41,29 @@ public class GeneralConfig extends DummyConfig {
      */
     @ConfigurableProperty(category = ConfigurableTypeCategory.CORE, comment = "If mod compatibility loader should crash hard if errors occur in that process.", requiresMcRestart = true)
     public static boolean crashOnModCompatCrash = false;
-    
+
     /**
-     * The type of this config.
+     * If an anonymous mod startup analytics request may be sent to our analytics service.
      */
-    public static ConfigurableType TYPE = ConfigurableType.DUMMY;
+    @ConfigurableProperty(category = ConfigurableTypeCategory.CORE, comment = "If an anonymous mod startup analytics request may be sent to our analytics service.")
+    public static boolean analytics = true;
+
+    /**
+     * The anonymous id used by the analytics service.
+     */
+    @ConfigurableProperty(category = ConfigurableTypeCategory.CORE, comment = "The anonymous id used by the analytics service.")
+    public static String anonymousAnalyticsID = UUID.randomUUID().toString();
 
     /**
      * The minimum array size of potion types, increase to allow for more potion types.
      */
     @ConfigurableProperty(category = ConfigurableTypeCategory.CORE, comment = "The minimum array size of potion types, increase to allow for more potion types.", requiresMcRestart = true)
     public static int minimumPotionTypesArraySize = 256;
+
+    /**
+     * The type of this config.
+     */
+    public static ConfigurableType TYPE = ConfigurableType.DUMMY;
     
     /**
      * Create a new instance.
@@ -67,6 +82,10 @@ public class GeneralConfig extends DummyConfig {
         getMod().putGenericReference(ModBase.REFKEY_CRASH_ON_INVALID_RECIPE, GeneralConfig.crashOnInvalidRecipe);
         getMod().putGenericReference(ModBase.REFKEY_DEBUGCONFIG, GeneralConfig.debug);
         getMod().putGenericReference(ModBase.REFKEY_CRASH_ON_MODCOMPAT_CRASH, GeneralConfig.crashOnModCompatCrash);
+
+        if(analytics) {
+            Analytics.registerMod(getMod(), Reference.GA_TRACKING_ID);
+        }
     }
     
     @Override

@@ -13,6 +13,7 @@ public final class Reference {
     public static final String MOD_VERSION = "@VERSION@";
     public static final String MOD_BUILD_NUMBER = "@BUILD_NUMBER@";
     public static final String MOD_MC_VERSION = "@MC_VERSION@";
+    public static final String GA_TRACKING_ID = "UA-65307010-1";
 
     // Mod ID's
     public static final String MOD_BAUBLES = "Baubles";

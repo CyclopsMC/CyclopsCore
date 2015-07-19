@@ -39,6 +39,7 @@ import java.util.Set;
 @Data
 public abstract class ModBase {
 
+    public static final EnumReferenceKey<String> REFKEY_MOD_VERSION = EnumReferenceKey.create("mod_version", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_GUI = EnumReferenceKey.create("texture_path_gui", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_MODELS = EnumReferenceKey.create("texture_path_models", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_SKINS = EnumReferenceKey.create("texture_path_skins", String.class);
