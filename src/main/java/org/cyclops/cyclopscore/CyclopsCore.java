@@ -20,7 +20,9 @@ import org.cyclops.cyclopscore.init.ItemCreativeTab;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
-import org.cyclops.cyclopscore.version.Analytics;
+import org.cyclops.cyclopscore.tracking.Analytics;
+import org.cyclops.cyclopscore.tracking.IModVersion;
+import org.cyclops.cyclopscore.tracking.Versions;
 
 import java.util.Map;
 
@@ -36,7 +38,7 @@ import java.util.Map;
         dependencies = Reference.MOD_DEPENDENCIES,
         guiFactory = "org.cyclops.cyclopscore.GuiConfigOverview$ExtendedConfigGuiFactory"
 )
-public class CyclopsCore extends ModBase {
+public class CyclopsCore extends ModBase implements IModVersion {
 
     /**
      * The proxy of this mod, depending on 'side' a different proxy will be inside this field.
@@ -50,6 +52,11 @@ public class CyclopsCore extends ModBase {
      */
     @Mod.Instance(value = Reference.MOD_ID)
     public static CyclopsCore _instance;
+
+    private boolean versionInfo = false;
+    private String version;
+    private String info;
+    private String updateUrl;
 
     public CyclopsCore() {
         super(Reference.MOD_ID, Reference.MOD_NAME);
@@ -79,6 +86,7 @@ public class CyclopsCore extends ModBase {
     @Override
     public final void init(FMLInitializationEvent event) {
         Analytics.sendAll();
+        Versions.checkAll();
         super.init(event);
     }
 
@@ -126,4 +134,36 @@ public class CyclopsCore extends ModBase {
         CyclopsCore._instance.log(level, message);
     }
 
+    @Override
+    public void setVersionInfo(String version, String info, String updateUrl) {
+        versionInfo = true;
+        this.version = version;
+        this.info = info;
+        this.updateUrl = updateUrl;
+    }
+
+    @Override
+    public boolean isVersionInfo() {
+        return versionInfo;
+    }
+
+    @Override
+    public String getVersion() {
+        return version;
+    }
+
+    @Override
+    public String getInfo() {
+        return info;
+    }
+
+    @Override
+    public String getUpdateUrl() {
+        return updateUrl;
+    }
+
+    @Override
+    public boolean needsUpdate() {
+        return !Reference.MOD_VERSION.equals(getVersion());
+    }
 }

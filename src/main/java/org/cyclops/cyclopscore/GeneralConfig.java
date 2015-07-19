@@ -1,12 +1,12 @@
 package org.cyclops.cyclopscore;
 
-
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCategory;
 import org.cyclops.cyclopscore.config.extendedconfig.DummyConfig;
 import org.cyclops.cyclopscore.init.ModBase;
-import org.cyclops.cyclopscore.version.Analytics;
+import org.cyclops.cyclopscore.tracking.Analytics;
+import org.cyclops.cyclopscore.tracking.Versions;
 
 import java.util.UUID;
 
@@ -55,6 +55,12 @@ public class GeneralConfig extends DummyConfig {
     public static String anonymousAnalyticsID = UUID.randomUUID().toString();
 
     /**
+     * If the version checker should be enabled.
+     */
+    @ConfigurableProperty(category = ConfigurableTypeCategory.CORE, comment = "If the version checker should be enabled.")
+    public static boolean versionChecker = true;
+
+    /**
      * The minimum array size of potion types, increase to allow for more potion types.
      */
     @ConfigurableProperty(category = ConfigurableTypeCategory.CORE, comment = "The minimum array size of potion types, increase to allow for more potion types.", requiresMcRestart = true)
@@ -85,6 +91,9 @@ public class GeneralConfig extends DummyConfig {
 
         if(analytics) {
             Analytics.registerMod(getMod(), Reference.GA_TRACKING_ID);
+        }
+        if(versionChecker) {
+            Versions.registerMod(getMod(), CyclopsCore._instance, Reference.VERSION_URL);
         }
     }
     

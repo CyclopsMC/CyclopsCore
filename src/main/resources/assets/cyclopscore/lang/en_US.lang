@@ -3,6 +3,9 @@ itemGroup.cyclopscore=Cyclops Core
 general.cyclopscore.tooltip.info=<Shift for info>
 general.cyclopscore.info.enabled=Enabled
 general.cyclopscore.info.disabled=Disabled
+general.cyclopscore.version.updateAvailable=Update available
+general.cyclopscore.version.download=Download
+general.cyclopscore.version.clickToDownload=Click to download
 
 # Chat messages
 chat.cyclopscore.command.invalidArguments=Invalid Arguments
