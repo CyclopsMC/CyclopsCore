@@ -7,7 +7,6 @@ import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.GuiConfigEntries.CategoryEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
-import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCategory;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -39,10 +38,6 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
         return this.mod;
     }
 
-	private ConfigHandler getConfigHandler() {
-		return getMod().getConfigHandler();
-	}
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static List<IConfigElement> getConfigElements(ModBase mod) {
 		List<IConfigElement> list = new ArrayList<IConfigElement>();
@@ -57,7 +52,7 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
 	 * @author rubensworks
 	 *
 	 */
-	public class ExtendedCategoryEntry extends CategoryEntry {
+	public static class ExtendedCategoryEntry extends CategoryEntry {
 
 		private String category;
 		
@@ -70,17 +65,18 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
 		@SuppressWarnings("rawtypes")
 		public ExtendedCategoryEntry(GuiConfig config, GuiConfigEntries entries,
 				IConfigElement element) {
-			super(config, entries, element);			
-		}
+			super(config, entries, element);
+        }
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
         protected GuiScreen buildChildScreen() {
+            ModBase mod = ((GuiConfigOverviewBase) this.owningScreen).getMod();
+
 			// Cheaty way of getting the current ConfigurableTypeCategory.
 			this.category = configElement.getName();
-			
-			// Get all the elements inside this category
-            List<IConfigElement> elements = (new ConfigElement(getConfigHandler().getConfig()
+            // Get all the elements inside this category
+            List<IConfigElement> elements = (new ConfigElement(mod.getConfigHandler().getConfig()
             		.getCategory(category))).getChildElements();
 			return new GuiConfig(this.owningScreen, elements,
                     this.owningScreen.modID, category,
@@ -88,7 +84,7 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
                     	|| this.owningScreen.allRequireWorldRestart, 
                     this.configElement.requiresMcRestart()
                     	|| this.owningScreen.allRequireMcRestart,
-                    GuiConfig.getAbridgedConfigPath(getConfigHandler().getConfig().toString()));
+                    GuiConfig.getAbridgedConfigPath(mod.getConfigHandler().getConfig().toString()));
         }
 		
 	}
