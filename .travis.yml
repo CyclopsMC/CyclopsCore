@@ -13,6 +13,7 @@ script: ./gradlew build -S
 
 deploy:
   - provider: script
+    skip_cleanup: true
     script: ./gradlew curse -S
     on:
       all_branches: true
@@ -20,6 +21,7 @@ deploy:
       condition: "$TRAVIS_BRANCH =~ ^(master|release).*$"
       tags: true
   - provider: releases
+    skip_cleanup: true
     api_key:
       secure: BEMYle1PPmd/qqRtZALxpRU/51aCImR5O5zzYQyQjzZg231e0oxNiCFbtAXSwvO9SvxPQvf0XN1wNpPEI2tL8d0jQVUG1A4GezQdbvoIn1ofPXWBP8cilUFO2HM9ljdHwFt3WD0wx6TC0CpzOGao8l72lFvXN1c/QREQNljkjQw=
     on:
@@ -28,6 +30,7 @@ deploy:
       condition: "$TRAVIS_BRANCH =~ ^(master|release).*$"
       tags: true
   - provider: script
+    skip_cleanup: true
     script: ./gradlew uploadArchives -S
     on:
       all_branches: true
