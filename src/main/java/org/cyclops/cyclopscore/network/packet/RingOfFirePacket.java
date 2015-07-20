@@ -47,7 +47,7 @@ public class RingOfFirePacket extends PacketCodec {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void actionClient(World world, EntityPlayer player) {
-		if(!player.getDisplayNameString().equals(displayName)) {
+		if(player != null && !player.getDisplayNameString().equals(displayName)) {
 			player = world.getPlayerEntityByName(displayName);
 		}
 		if(player != null) {
