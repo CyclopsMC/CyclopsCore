@@ -88,6 +88,16 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     }
 
     /**
+     * Do not override this method (you won't even be able to do so).
+     * This is the direct MCP mapping because the update method above this one won't be translated as the
+     * {@link IUpdatePlayerListBox} interface is not applied yet at this point.
+     * Use updateTileEntity() instead.
+     */
+    public final void func_73660_a() {
+        update();
+    }
+
+    /**
      * Override this method instead of {@link CyclopsTileEntity#update()}.
      * This method is called each tick.
      */
