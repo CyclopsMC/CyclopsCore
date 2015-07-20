@@ -41,7 +41,7 @@ public class RingOfFirePacket extends PacketCodec {
 	 * @param player The player data.
 	 */
 	public RingOfFirePacket(EntityPlayer player) {
-		this.displayName = player.getDisplayName().getFormattedText();
+		this.displayName = player.getDisplayNameString();
 	}
 
 	@Override
