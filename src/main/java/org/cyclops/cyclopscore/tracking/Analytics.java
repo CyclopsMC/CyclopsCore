@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.tracking;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
@@ -51,7 +51,7 @@ public class Analytics {
     public static void sendAll() {
         if(!checked) {
             checked = true;
-            if (Minecraft.getMinecraft().isSnooperEnabled()) {
+            if (MinecraftServer.getServer().isSnooperEnabled()) {
                 new Thread(new Runnable() {
 
                     @Override
