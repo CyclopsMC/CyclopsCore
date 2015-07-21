@@ -4,12 +4,14 @@ import com.google.common.collect.Maps;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -70,13 +72,20 @@ public class CommandMod implements ICommand {
         return mod.getModId();
     }
 
+    /**
+     * @return Recursively returns the whole command string up to the current subcommand.
+     */
+    public String getFullCommand() {
+        return getCommandName();
+    }
+
     @Override
     public String getCommandUsage(ICommandSender icommandsender) {
-        String possibilities = "";
-        for(String full : getSubcommands().keySet()) {
-            possibilities += full + " ";
-        }
-        return mod.getModId() + " " + possibilities;
+        String command = "/" + getFullCommand();
+        Iterator<String> it = getSubcommands().keySet().iterator();
+        return it.hasNext() ?
+                joinStrings(command + " <", it, " | ", ">") :
+                command;
     }
 
     @SuppressWarnings("rawtypes")
@@ -91,17 +100,31 @@ public class CommandMod implements ICommand {
         return asubstring;
     }
 
+    /**
+     * This method is called when the user uses the command in an incorrect way. This command
+     * should either print out a friendly message explaining how to use the given (sub)command,
+     * or throw a CommandException with extra helpful information.
+     *
+     * @param icommandsender Use this commandsender to print chat message.
+     * @param astring The list of strings that were entered as subcommands to the current command by the user.
+     * @throws CommandException Thrown when the user entered something wrong, should contain some helpful information as
+     *                          to what wrong.
+     */
+    public void processCommandHelp(ICommandSender icommandsender, String[] astring) throws CommandException {
+        throw new WrongUsageException(getCommandUsage(icommandsender));
+    }
+
     @Override
     public void processCommand(ICommandSender icommandsender, String[] astring) throws CommandException {
         if(astring.length == 0) {
-            icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.invalidArguments")));
+            processCommandHelp(icommandsender, astring);
         } else {
             ICommand subcommand = getSubcommands().get(astring[0]);
             if(subcommand != null) {
                 String[] asubstring = shortenArgumentList(astring);
                 subcommand.processCommand(icommandsender, asubstring);
             } else {
-                icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.invalidSubcommand")));
+                throw new WrongUsageException(L10NHelpers.localize("chat.cyclopscore.command.invalidSubcommand"));
             }
         }
     }
@@ -132,5 +155,30 @@ public class CommandMod implements ICommand {
     public boolean isUsernameIndex(String[] astring, int i) {
         return false;
     }
-    
+
+    //== Helper functions ==//
+
+    protected String joinStrings(Iterator<String> it, String delim) {
+        return joinStrings("", it, delim, "");
+    }
+
+    protected String joinStrings(String prefix, Iterator<String> it, String delim, String suffix) {
+        StringBuilder builder = new StringBuilder(prefix);
+
+        if (it.hasNext()) {
+            builder.append(it.next());
+            while (it.hasNext()) {
+                builder.append(delim);
+                builder.append(it.next());
+            }
+        }
+
+        builder.append(suffix);
+
+        return builder.toString();
+    }
+
+    protected void printLineToChat(ICommandSender sender, String line) {
+        sender.addChatMessage(new ChatComponentText(line));
+    }
 }

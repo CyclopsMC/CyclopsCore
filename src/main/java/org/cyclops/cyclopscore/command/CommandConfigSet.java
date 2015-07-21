@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.command;
 
 import com.google.common.collect.Maps;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
@@ -19,7 +20,7 @@ import java.util.Map;
  * @author rubensworks
  *
  */
-public class CommandConfigSet extends CommandMod {
+public class CommandConfigSet extends CommandConfig {
     
     private ConfigProperty config;
     private String name;
@@ -35,7 +36,12 @@ public class CommandConfigSet extends CommandMod {
         this.name = name;
         this.config = config;
     }
-    
+
+    @Override
+    public String getFullCommand() {
+        return super.getFullCommand() + " " + this.name;
+    }
+
     @Override
     protected List<String> getAliases() {
         List<String> list = new LinkedList<String>();
@@ -47,10 +53,18 @@ public class CommandConfigSet extends CommandMod {
     protected Map<String, ICommand> getSubcommands() {
         return Maps.newHashMap();
     }
-    
+
     @Override
-    public void processCommand(ICommandSender icommandsender, String[] astring) {
-        if(astring.length == 0 || astring.length > 1) {
+    public void processCommandHelp(ICommandSender icommandsender, String[] astring) throws CommandException {
+        printLineToChat(icommandsender, config.getComment());
+        printLineToChat(icommandsender, config.getName() + " = " + config.getValue());
+    }
+
+    @Override
+    public void processCommand(ICommandSender icommandsender, String[] astring) throws CommandException {
+        if (astring.length == 0) {
+            processCommandHelp(icommandsender, astring);
+        } else if (astring.length > 1) {
             icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.onlyOneValue")));
         } else {
             Object newValue = Helpers.tryParse(astring[0], config.getValue());

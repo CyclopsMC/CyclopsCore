@@ -2,7 +2,9 @@ package org.cyclops.cyclopscore.command;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
@@ -27,6 +29,11 @@ public class CommandIgnite extends CommandMod {
     }
 
     @Override
+    public String getFullCommand() {
+        return super.getFullCommand() + " " + NAME;
+    }
+
+    @Override
     protected List<String> getAliases() {
         List<String> list = new LinkedList<String>();
         list.add(NAME);
@@ -40,7 +47,16 @@ public class CommandIgnite extends CommandMod {
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] parts) {
+    public void processCommandHelp(ICommandSender icommandsender, String[] astring) throws CommandException {
+        throw new WrongUsageException("/" + getFullCommand() + " <player> [duration]");
+    }
+
+    @Override
+    public void processCommand(ICommandSender sender, String[] parts) throws CommandException {
+        if (parts.length < 1 || parts.length > 2 || parts[0].length() == 0) {
+            processCommandHelp(sender, parts);
+        }
+
         if(parts.length >= 1 && parts[0].length() > 0) {
             MinecraftServer minecraftserver = MinecraftServer.getServer();
             GameProfile gameprofile = minecraftserver.getPlayerProfileCache().getGameProfileForUsername(parts[0]);

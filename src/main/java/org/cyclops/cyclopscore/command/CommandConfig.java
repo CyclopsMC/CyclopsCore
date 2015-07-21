@@ -1,13 +1,14 @@
 package org.cyclops.cyclopscore.command;
 
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.util.ChatComponentText;
 import org.cyclops.cyclopscore.config.ConfigProperty;
+import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 /**
@@ -21,6 +22,11 @@ public class CommandConfig extends CommandMod {
 
     public CommandConfig(ModBase mod) {
         super(mod);
+    }
+
+    @Override
+    public String getFullCommand() {
+        return super.getFullCommand() + " " + NAME;
     }
 
     @Override
@@ -38,5 +44,14 @@ public class CommandConfig extends CommandMod {
             map.put(name, new CommandConfigSet(getMod(), name, entry.getValue()));
         }
         return map;
+    }
+
+    @Override
+    public void processCommandHelp(ICommandSender icommandsender, String[] astring) throws CommandException {
+        Iterator<String> it = getSubcommands().keySet().iterator();
+        if (it.hasNext())
+            icommandsender.addChatMessage(new ChatComponentText(joinStrings(it, ", ")));
+        else
+            throw new CommandException(L10NHelpers.localize("chat.cyclopscore.command.noConfigsFound"));
     }
 }
