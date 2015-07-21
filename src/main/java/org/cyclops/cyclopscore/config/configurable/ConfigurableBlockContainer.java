@@ -179,7 +179,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
             }
 
             if(tile instanceof CyclopsTileEntity.ITickingTile) {
-                tile.update();
+                ((CyclopsTileEntity.ITickingTile) tile).update();
             }
         }
         super.onBlockPlacedBy(world, blockPos, blockState, entity, stack);

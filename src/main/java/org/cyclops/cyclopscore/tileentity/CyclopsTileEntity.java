@@ -82,23 +82,13 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      * Do not override this method (you won't even be able to do so).
      * Use updateTileEntity() instead.
      */
-    public final void update() {
+    private void updateTicking() {
         updateTileEntity();
         trySendActualUpdate();
     }
 
     /**
-     * Do not override this method (you won't even be able to do so).
-     * This is the direct MCP mapping because the update method above this one won't be translated as the
-     * {@link IUpdatePlayerListBox} interface is not applied yet at this point.
-     * Use updateTileEntity() instead.
-     */
-    public final void func_73660_a() {
-        update();
-    }
-
-    /**
-     * Override this method instead of {@link CyclopsTileEntity#update()}.
+     * Override this method instead of {@link CyclopsTileEntity#updateTicking()}.
      * This method is called each tick.
      */
     protected void updateTileEntity() {
@@ -274,6 +264,24 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      * Apply this interface on any tile classes that should tick.
      */
     public static interface ITickingTile extends IUpdatePlayerListBox {
+
+    }
+
+    /**
+     * Component to be used together with the {@link Delegate} annotation to enable tile ticking.
+     */
+    public static class TickingTileComponent implements ITickingTile {
+
+        private final CyclopsTileEntity tile;
+
+        public TickingTileComponent(CyclopsTileEntity tile) {
+            this.tile = tile;
+        }
+
+        @Override
+        public void update() {
+            tile.updateTicking();
+        }
 
     }
 
