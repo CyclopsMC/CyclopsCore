@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
+import net.minecraft.util.Vec3;
 import org.apache.commons.lang3.ClassUtils;
 import org.cyclops.cyclopscore.datastructure.SingleCache;
 
@@ -83,6 +84,24 @@ public abstract class PacketCodec extends PacketBase {
 				return input.readFloat();
 			}
 		});
+
+		codecActions.put(Vec3.class, new ICodecAction() {
+			@Override
+			public void encode(Object object, ByteArrayDataOutput output) {
+				Vec3 v = (Vec3)object;
+				output.writeDouble(v.xCoord);
+				output.writeDouble(v.yCoord);
+				output.writeDouble(v.zCoord);
+			}
+
+			@Override
+			public Object decode(ByteArrayDataInput input) {
+				double x = input.readDouble();
+				double y = input.readDouble();
+				double z = input.readDouble();
+				return new Vec3(x, y, z);
+			}
+		});
 		
 		codecActions.put(Map.class, new ICodecAction() {
 			
@@ -146,26 +165,30 @@ public abstract class PacketCodec extends PacketBase {
 
         @Override
         public List<Field> getNewValue(Void key) {
-            Field[] fields = PacketCodec.this.getClass().getDeclaredFields();
+			List<Field> fieldList = Lists.newLinkedList();
 
-            // Sort this because the Java API tells us that getDeclaredFields()
-            // does not deterministically define the order of the fields in the array.
-            // Otherwise we might get nasty class cast exceptions when running in SMP.
-            Arrays.sort(fields, new Comparator<Field>() {
+			Class clazz = PacketCodec.this.getClass();
+			for (; clazz != PacketCodec.class && clazz != null; clazz = clazz.getSuperclass()) {
+				Field[] fields = clazz.getDeclaredFields();
 
-                @Override
-                public int compare(Field o1, Field o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
+				// Sort this because the Java API tells us that getDeclaredFields()
+				// does not deterministically define the order of the fields in the array.
+				// Otherwise we might get nasty class cast exceptions when running in SMP.
+				Arrays.sort(fields, new Comparator<Field>() {
 
-            });
+					@Override
+					public int compare(Field o1, Field o2) {
+						return o1.getName().compareTo(o2.getName());
+					}
 
-            List<Field> fieldList = Lists.newLinkedList();
-            for(final Field field : fields) {
-                if(field.isAnnotationPresent(CodecField.class)) {
-                    fieldList.add(field);
-                }
-            }
+				});
+
+				for (final Field field : fields) {
+					if (field.isAnnotationPresent(CodecField.class)) {
+						fieldList.add(field);
+					}
+				}
+			}
 
             return fieldList;
         }
