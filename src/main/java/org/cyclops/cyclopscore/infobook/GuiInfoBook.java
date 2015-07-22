@@ -76,7 +76,9 @@ public abstract class GuiInfoBook extends GuiScreen {
     /**
      * @return The amount of pages to show at once.
      */
-    protected abstract int getPages();
+    protected int getPages() {
+        return infoBook.getPagesPerView();
+    }
     protected abstract int getGuiWidth();
     protected abstract int getGuiHeight();
     protected abstract int getPageWidth();
@@ -206,8 +208,11 @@ public abstract class GuiInfoBook extends GuiScreen {
     }
 
     private void updateButtons() {
-        this.buttonNextPage.visible = infoBook.getCurrentSection().getNext(infoBook.getCurrentPage() + getPages() - 1, false) != null;
-        this.buttonPreviousPage.visible = infoBook.getCurrentSection().getPrevious(infoBook.getCurrentPage(), false) != null;
+        InfoSection.Location current1 = new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection());
+        InfoSection.Location current2 = new InfoSection.Location(infoBook.getCurrentPage() + getPages() - 1, infoBook.getCurrentSection());
+        InfoSection.Location wouldBeNext = infoBook.getCurrentSection().getNext(infoBook.getCurrentPage() + getPages() - 1, false);
+        this.buttonNextPage.visible = !current1.equals(wouldBeNext) && !current2.equals(wouldBeNext);
+        this.buttonPreviousPage.visible = !current1.equals(infoBook.getCurrentSection().getPrevious(infoBook.getCurrentPage(), false));
         this.buttonParent.visible = infoBook.getCurrentSection() != null && infoBook.getCurrentSection().getParent() != null;
         this.buttonBack.visible = infoBook.getHistory().currentSize() > 0;
     }

@@ -10,6 +10,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 public interface IInfoBook {
 
     public ModBase getMod();
+    public int getPagesPerView();
 
     public void setCurrentPage(int page);
     public void setCurrentSection(InfoSection section);

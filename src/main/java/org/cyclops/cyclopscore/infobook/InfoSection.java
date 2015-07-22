@@ -331,7 +331,7 @@ public class InfoSection {
      * Get the next InfoSection relative to this one plus page in this tree hierarchy using pre-order traversal.
      * @param page The current page.
      * @param stepSection Take a complete section as traversal step.
-     * @return The next location or null if this was the last location.
+     * @return The next location or the current location if this was the last location.
      */
     public InfoSection.Location getNext(int page, boolean stepSection) {
         if(page < getPages() - 1 && !stepSection) {
@@ -354,11 +354,11 @@ public class InfoSection {
      * Get the previous InfoSection relative to this one plus page in this tree hierarchy using pre-order traversal.
      * @param page The current page.
      * @param stepSection Take a complete section as traversal step.
-     * @return The previous location or null if this was the last location.
+     * @return The previous location or the current location if this was the last location.
      */
     public InfoSection.Location getPrevious(int page, boolean stepSection) {
         if(page > 0) {
-            return new InfoSection.Location(stepSection ? 0 : page - 2, this);
+            return new InfoSection.Location(stepSection ? 0 : page - getInfoBook().getPagesPerView(), this);
         } else if(!isRoot() && getChildIndex() == 0) {
             return new InfoSection.Location(0, getParent());
         } else if(!isRoot() && getChildIndex() > 0) {
@@ -401,6 +401,14 @@ public class InfoSection {
 
         private int page;
         private InfoSection infoSection;
+
+        @Override
+        public boolean equals(Object o) {
+            if(o instanceof Location) {
+                return ((Location) o).page == this.page && ((Location) o).infoSection == this.infoSection;
+            }
+            return false;
+        }
 
     }
 
