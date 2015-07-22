@@ -349,7 +349,7 @@ public abstract class GuiInfoBook extends GuiScreen {
             }
         }
 
-        GlStateManager.disableBlend();
+        GlStateManager.color(1, 1, 1, 1);
     }
 
     public void renderToolTip(ItemStack itemStack, int x, int y) {
