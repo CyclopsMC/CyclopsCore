@@ -9,7 +9,6 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.PotionConfig;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -37,7 +36,7 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
         this.setConfig(eConfig);
         this.setPotionName(eConfig.getUnlocalizedName());
         this.setIconIndex(iconIndex % 8, iconIndex / 8);
-        this.resource = new ResourceLocation(Reference.MOD_ID, eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "potions.png");
+        this.resource = new ResourceLocation(eConfig.getMod().getModId(), eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "potions.png");
         MinecraftForge.EVENT_BUS.register(this);
     }
 
