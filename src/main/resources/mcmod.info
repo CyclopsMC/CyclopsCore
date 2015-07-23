@@ -1,6 +1,6 @@
 [
 {
-  "modid": "CyclopsCore",
+  "modid": "cyclopscore",
   "name": "Cyclops Core",
   "description": "Coremod for EvilCraft, Integrated Dynamics and others.",
   "version": "${version}",

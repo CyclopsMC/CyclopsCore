@@ -15,7 +15,7 @@ public enum ConfigurableTypeCategory {
     /**
      * Block category.
      */
-    BLOCK("blockState"),
+    BLOCK("block"),
     /**
      * Fluid category.
      */

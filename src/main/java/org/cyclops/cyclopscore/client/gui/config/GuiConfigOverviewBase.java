@@ -21,8 +21,6 @@ import java.util.List;
  */
 public abstract class GuiConfigOverviewBase extends GuiConfig {
 
-    private final ModBase mod;
-
 	/**
 	 * Make a new instance.
 	 * @param mod The mod.
@@ -31,12 +29,9 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
 	public GuiConfigOverviewBase(ModBase mod, GuiScreen parentScreen) {
 		super(parentScreen, getConfigElements(mod), mod.getModId(), false, false,
 			GuiConfig.getAbridgedConfigPath(mod.getConfigHandler().getConfig().toString()));
-        this.mod = mod;
 	}
 
-	public ModBase getMod() {
-        return this.mod;
-    }
+	public abstract ModBase getMod();
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static List<IConfigElement> getConfigElements(ModBase mod) {
@@ -76,7 +71,7 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
 			// Cheaty way of getting the current ConfigurableTypeCategory.
 			this.category = configElement.getName();
             // Get all the elements inside this category
-            List<IConfigElement> elements = (new ConfigElement(mod.getConfigHandler().getConfig()
+			List<IConfigElement> elements = (new ConfigElement(mod.getConfigHandler().getConfig()
             		.getCategory(category))).getChildElements();
 			return new GuiConfig(this.owningScreen, elements,
                     this.owningScreen.modID, category,

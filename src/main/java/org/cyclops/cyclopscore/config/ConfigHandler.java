@@ -72,6 +72,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
             if(!eConfig.isHardDisabled()) {
                 // Save additional properties
                 for(ConfigProperty configProperty : eConfig.configProperties) {
+                    categories.add(configProperty.getCategory());
                     configProperty.save(config);
                     if(configProperty.isCommandable()) {
                         commandableProperties.put(configProperty.getName(), configProperty);

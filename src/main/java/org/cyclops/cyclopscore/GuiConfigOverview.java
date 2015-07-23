@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore;
 import net.minecraft.client.gui.GuiScreen;
 import org.cyclops.cyclopscore.client.gui.config.ExtendedConfigGuiFactoryBase;
 import org.cyclops.cyclopscore.client.gui.config.GuiConfigOverviewBase;
+import org.cyclops.cyclopscore.init.ModBase;
 
 /**
  * @author rubensworks
@@ -14,6 +15,11 @@ public class GuiConfigOverview extends GuiConfigOverviewBase {
      */
     public GuiConfigOverview(GuiScreen parentScreen) {
         super(CyclopsCore._instance, parentScreen);
+    }
+
+    @Override
+    public ModBase getMod() {
+        return CyclopsCore._instance;
     }
 
     public static class ExtendedConfigGuiFactory extends ExtendedConfigGuiFactoryBase {
