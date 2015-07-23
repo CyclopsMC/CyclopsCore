@@ -58,6 +58,11 @@ public abstract class PlayerPositionPacket extends PacketCodec {
     }
 
     @Override
+    public boolean isAsync() {
+        return false;
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public void actionClient(World world, EntityPlayer player) {
         if (displayName == null) {

@@ -14,6 +14,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  */
 public abstract class PacketBase {
+
+    /**
+     * @return If this packet can run on a thread other than the main-thread of Minecraft.
+     *         If this is asynchronous, the player parameter inside the action is not guaranteed to be defined.
+     */
+	public abstract boolean isAsync();
 	
 	/**
 	 * Encode this packet.
@@ -30,7 +36,7 @@ public abstract class PacketBase {
 	/**
 	 * Actions for client-side.
 	 * @param world The world.
-	 * @param player The player.
+	 * @param player The player. Can be null if this packet is asynchronous.
 	 */
 	@SideOnly(Side.CLIENT)
     public abstract void actionClient(World world, EntityPlayer player);

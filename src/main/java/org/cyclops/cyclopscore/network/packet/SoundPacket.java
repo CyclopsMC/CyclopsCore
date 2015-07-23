@@ -87,7 +87,12 @@ public class SoundPacket extends PacketCodec {
 		this(location.getX(), location.getY(), location.getZ(),
 				sound, volume, frequency);
 	}
-    
+
+	@Override
+	public boolean isAsync() {
+		return false;
+	}
+
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void actionClient(World world, EntityPlayer player) {

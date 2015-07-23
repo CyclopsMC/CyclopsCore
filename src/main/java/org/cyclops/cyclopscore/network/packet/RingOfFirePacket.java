@@ -42,25 +42,25 @@ public class RingOfFirePacket extends PlayerPositionPacket {
             double zOffset = Math.sin(u) * area;
 
             double xCoord = pos.xCoord;
-            double yCoord = pos.yCoord - 1;
+            double yCoord = pos.yCoord;
             double zCoord = pos.zCoord;
 
             double particleX = xCoord + xOffset + world.rand.nextFloat() / 5;
             double particleY = yCoord + yOffset + world.rand.nextFloat() / 5;
             double particleZ = zCoord + zOffset + world.rand.nextFloat() / 5;
 
-            float particleMotionX = (float)xOffset / 5;
-            float particleMotionY = 0.25F;
-            float particleMotionZ = (float)zOffset / 5;
+            float particleMotionX = (float)xOffset / 50;
+            float particleMotionY = 0.01F;
+            float particleMotionZ = (float)zOffset / 50;
 
             if(world.rand.nextInt(20) == 0) {
                 FMLClientHandler.instance().getClient().effectRenderer.addEffect(
                         new EntityLavaFX.Factory().getEntityFX(EnumParticleTypes.LAVA.getParticleID(), world, particleX, particleY, particleZ,
-                                particleMotionX, particleMotionY, particleMotionZ, 0)
+                                0, 0, 0, 0)
                         );
             } else {
                 FMLClientHandler.instance().getClient().effectRenderer.addEffect(
-                        new EntityFlameFX.Factory().getEntityFX(0, world, particleX, particleY, particleZ, 0, 0, 0)
+                        new EntityFlameFX.Factory().getEntityFX(0, world, particleX, particleY, particleZ, particleMotionX, particleMotionY, particleMotionZ)
                         );
             }
         }
