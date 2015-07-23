@@ -52,12 +52,11 @@ public final class L10NHelpers {
      *                        this should be a formatted string with one parameter.
      */
     public static void addStatusInfo(List<String> infoLines, boolean isEnabled, String statusPrefixKey) {
-        String autoSupply = EnumChatFormatting.RESET + localize(KEY_DISABLED);
+        String autoSupply = localize(KEY_DISABLED);
         if (isEnabled) {
-            autoSupply = EnumChatFormatting.GREEN + localize(KEY_ENABLED);
+            autoSupply = localize(KEY_ENABLED);
         }
-        infoLines.add(EnumChatFormatting.BOLD
-                + localize(statusPrefixKey, autoSupply));
+        infoLines.add(localize(statusPrefixKey, autoSupply));
     }
 
     /**
