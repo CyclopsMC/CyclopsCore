@@ -410,6 +410,11 @@ public class InfoSection {
             return false;
         }
 
+        @Override
+        public int hashCode() {
+            return infoSection.hashCode() >> 4 & page;
+        }
+
     }
 
 }
