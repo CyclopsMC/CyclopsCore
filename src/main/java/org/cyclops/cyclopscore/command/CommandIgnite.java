@@ -12,7 +12,6 @@ import net.minecraft.util.ChatComponentText;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -21,23 +20,16 @@ import java.util.List;
  *
  */
 public class CommandIgnite extends CommandMod {
-    
+
     public static final String NAME = "ignite";
 
     public CommandIgnite(ModBase mod) {
-        super(mod);
+        super(mod, NAME);
     }
 
     @Override
     public String getFullCommand() {
         return super.getFullCommand() + " " + NAME;
-    }
-
-    @Override
-    protected List<String> getAliases() {
-        List<String> list = new LinkedList<String>();
-        list.add(NAME);
-        return list;
     }
 
     @Override

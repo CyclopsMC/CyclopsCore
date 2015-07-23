@@ -21,7 +21,11 @@ public class CommandConfig extends CommandMod {
     public static final String NAME = "config";
 
     public CommandConfig(ModBase mod) {
-        super(mod);
+        super(mod, NAME);
+    }
+
+    public CommandConfig(ModBase mod, String name) {
+        super(mod, NAME);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.command;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -25,12 +26,14 @@ public class CommandMod implements ICommand {
 
     private final ModBase mod;
     private final Map<String, ICommand> subCommands;
+    private final List<String> aliases = Lists.newLinkedList();
 
     public CommandMod(ModBase mod, Map<String, ICommand> subCommands) {
         this.mod = mod;
         this.subCommands = subCommands;
         this.subCommands.put(CommandConfig.NAME, new CommandConfig(mod));
         this.subCommands.put(CommandVersion.NAME, new CommandVersion(mod));
+        addAlias(mod.getModId());
     }
 
     public CommandMod(ModBase mod) {
@@ -38,14 +41,21 @@ public class CommandMod implements ICommand {
         this.subCommands = Maps.newHashMap();
     }
 
+    public CommandMod(ModBase mod, String name) {
+        this(mod);
+        addAlias(name);
+    }
+
+    public void addAlias(String alias) {
+        this.aliases.add(alias);
+    }
+
     protected ModBase getMod() {
         return this.mod;
     }
     
     protected List<String> getAliases() {
-        List<String> list = new LinkedList<String>();
-        list.add(mod.getModId());
-        return list;
+        return aliases;
     }
     
     protected Map<String, ICommand> getSubcommands() {

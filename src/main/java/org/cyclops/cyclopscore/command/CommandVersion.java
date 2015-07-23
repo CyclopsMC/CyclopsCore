@@ -5,7 +5,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import org.cyclops.cyclopscore.init.ModBase;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,14 +17,7 @@ public class CommandVersion extends CommandMod {
     public static final String NAME = "version";
 
     public CommandVersion(ModBase mod) {
-        super(mod);
-    }
-
-    @Override
-    protected List<String> getAliases() {
-        List<String> list = new LinkedList<String>();
-        list.add(NAME);
-        return list;
+        super(mod, NAME);
     }
 
     @Override

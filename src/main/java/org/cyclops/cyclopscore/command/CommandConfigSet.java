@@ -11,8 +11,6 @@ import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,7 +30,7 @@ public class CommandConfigSet extends CommandConfig {
      * @param config The config to be defined.
      */
     public CommandConfigSet(ModBase mod, String name, ConfigProperty config) {
-        super(mod);
+        super(mod, name);
         this.name = name;
         this.config = config;
     }
@@ -40,13 +38,6 @@ public class CommandConfigSet extends CommandConfig {
     @Override
     public String getFullCommand() {
         return super.getFullCommand() + " " + this.name;
-    }
-
-    @Override
-    protected List<String> getAliases() {
-        List<String> list = new LinkedList<String>();
-        list.add(name);
-        return list;
     }
 
     @Override

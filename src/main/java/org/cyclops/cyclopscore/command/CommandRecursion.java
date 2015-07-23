@@ -4,11 +4,9 @@ import com.google.common.collect.Maps;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import org.cyclops.cyclopscore.CyclopsCore;
+import net.minecraft.util.ChatComponentText;
 import org.cyclops.cyclopscore.init.ModBase;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +21,7 @@ public class CommandRecursion extends CommandMod {
     private int recursionDepth = 0;
 
     public CommandRecursion(ModBase mod) {
-        super(mod);
+        super(mod, NAME);
     }
 
     @Override
@@ -39,13 +37,6 @@ public class CommandRecursion extends CommandMod {
     }
 
     @Override
-    protected List<String> getAliases() {
-        List<String> list = new LinkedList<String>();
-        list.add(NAME);
-        return list;
-    }
-
-    @Override
     protected Map<String, ICommand> getSubcommands() {
         Map<String, ICommand> map = Maps.newHashMap();
         map.put(NAME, this);
@@ -54,15 +45,15 @@ public class CommandRecursion extends CommandMod {
 
     @Override
     public void processCommand(ICommandSender icommandsender, String[] astring) throws CommandException {
-        StringBuilder builder = new StringBuilder(NAME);
         recursionDepth = 0;
 
         // Count the recursion depth
         while (recursionDepth < astring.length && NAME.equals(astring[recursionDepth]))
             recursionDepth++;
 
-        CyclopsCore.clog("Depth: " + recursionDepth);
-
+        if(recursionDepth == 42 - 1) {
+            icommandsender.addChatMessage(new ChatComponentText("You just lost The Game"));
+        }
         processCommandHelp(icommandsender, astring);
     }
 }

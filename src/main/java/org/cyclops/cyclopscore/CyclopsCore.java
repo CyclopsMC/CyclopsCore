@@ -70,7 +70,9 @@ public class CyclopsCore extends ModBase implements IModVersion {
         Map<String, ICommand> commands = Maps.newHashMap();
         commands.put(CommandRecursion.NAME, new CommandRecursion(this));
         commands.put(CommandIgnite.NAME, new CommandIgnite(this));
-        return new CommandMod(this, commands);
+        CommandMod command =  new CommandMod(this, commands);
+        command.addAlias("cyclops");
+        return command;
     }
 
     @Mod.EventHandler
