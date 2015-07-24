@@ -7,6 +7,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.GeneralConfig;
 import org.cyclops.cyclopscore.Reference;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.io.IOException;
@@ -24,8 +25,8 @@ import java.util.List;
  */
 public class Analytics {
 
-    // Tracking id, Anonymized user id, Mod name, Mod version, Minecraft version
-    private static final String REQUEST_PATTERN = "http://www.google-analytics.com/collect?v=1&tid=%s&cid=%s&t=screenview&cd=Startup&an=%s&av=%s&cd1=%s";
+    // Tracking id, Anonymized user id, Mod name, Mod version, Minecraft version, Server/Client, Java Version
+    private static final String REQUEST_PATTERN = "http://www.google-analytics.com/collect?v=1&tid=%s&cid=%s&t=screenview&cd=Startup&an=%s&av=%s&cd1=%s&cd2=%s&cd3=%s";
     private static boolean checked = false;
 
     private static final List<Pair<ModBase, String>> trackingMods = Lists.newLinkedList();
@@ -74,8 +75,10 @@ public class Analytics {
 
     protected static String createRequestURL(ModBase mod, String trackingId) throws UnsupportedEncodingException {
         String mcVersion = URLEncoder.encode(Reference.MOD_MC_VERSION, "UTF-8");
-        return String.format(REQUEST_PATTERN, trackingId, GeneralConfig.anonymousAnalyticsID, URLEncoder.encode(mod.getModName(), "UTF-8"),
-                mcVersion + "-" + URLEncoder.encode(mod.getReferenceValue(ModBase.REFKEY_MOD_VERSION), "UTF-8"), mcVersion);
+        return String.format(REQUEST_PATTERN, trackingId, GeneralConfig.anonymousAnalyticsID,
+                URLEncoder.encode(mod.getModName(), "UTF-8"),
+                mcVersion + "-" + URLEncoder.encode(mod.getReferenceValue(ModBase.REFKEY_MOD_VERSION), "UTF-8"),
+                mcVersion, MinecraftHelpers.isClientSide() ? "client" : "server", System.getProperty("java.version"));
     }
 
 }
