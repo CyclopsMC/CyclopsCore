@@ -163,6 +163,6 @@ public class CyclopsCore extends ModBase implements IModVersion {
 
     @Override
     public boolean needsUpdate() {
-        return !Reference.MOD_VERSION.equals(getVersion());
+        return getVersion() != null && !Reference.MOD_VERSION.equals(getVersion());
     }
 }

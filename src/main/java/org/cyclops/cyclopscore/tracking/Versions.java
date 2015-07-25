@@ -78,6 +78,7 @@ public class Versions {
                             }
                         } catch (IOException e) {
                             triple.getLeft().log(Level.WARN, "Could not get version info: " + e.toString());
+                            triple.getMiddle().setVersionInfo(null, null, null);
                         }
                     }
                     allDone = true;
