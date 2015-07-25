@@ -18,7 +18,6 @@ deploy:
     on:
       all_branches: true
       repo: CyclopsMC/CyclopsCore
-      condition: "$TRAVIS_BRANCH =~ ^(release).*$"
       tags: true
   - provider: releases
     skip_cleanup: true
@@ -27,7 +26,6 @@ deploy:
     on:
       all_branches: true
       repo: CyclopsMC/CyclopsCore
-      condition: "$TRAVIS_BRANCH =~ ^(release).*$"
       tags: true
   - provider: script
     skip_cleanup: true
