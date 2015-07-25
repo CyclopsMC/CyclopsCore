@@ -5,7 +5,11 @@ curse {
     dependsOn 'reobf'
     projectId = "232758" // my project url is http://minecraft.curseforge.com/mc-mods/232758/
     releaseType = project.config.release_type
-    changelog = new File("resources/changelog/${project.version}.txt").text
+
+    changelog = ""
+    if(new File("resources/changelog/${project.version}.txt").exists()) {
+        changelog = new File("resources/changelog/${project.version}.txt").text
+    }
 
     if(project.hasProperty("curseforge_key") && project.hasProperty("changelog")) {
         apiKey = project.curseforge_key
