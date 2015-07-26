@@ -58,7 +58,3 @@ idea {
         sourceDirs += file('src/api/java')
     }
 }
-
-javadoc {
-    include( "src/api/java" )
-}
