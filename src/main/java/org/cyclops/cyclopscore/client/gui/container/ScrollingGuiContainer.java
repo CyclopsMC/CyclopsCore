@@ -141,9 +141,9 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
         if(isSearchEnabled()) this.searchField.drawTextBox();
-        int scrollX = this.guiLeft + 175;
-        int scrollMinY = this.guiTop + 18;
-        int scrollMaxY = scrollMinY + 112;
+        int scrollX = this.guiLeft + getScrollX();
+        int scrollMinY = this.guiTop + getScrollY();
+        int scrollMaxY = scrollMinY + getScrollHeight();
         this.mc.getTextureManager().bindTexture(SCROLLBUTTON);
         this.drawTexturedModalRect(
                 scrollX,
@@ -161,6 +161,18 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
 
     protected boolean needsScrollBars() {
         return getScrollingInventoryContainer().getFilteredItemCount() > getScrollingInventoryContainer().getPageSize();
+    }
+
+    protected int getScrollX() {
+        return 175;
+    }
+
+    protected int getScrollY() {
+        return 18;
+    }
+
+    protected int getScrollHeight() {
+        return 112;
     }
 
     protected boolean isSearchEnabled() {
