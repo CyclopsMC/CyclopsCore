@@ -46,7 +46,7 @@ import java.util.Random;
  * @author rubensworks
  *
  */
-public class ConfigurableBlockContainer extends BlockContainer implements IConfigurable, IDynamicModelBlock {
+public class ConfigurableBlockContainer extends BlockContainer implements IConfigurableBlock, IDynamicModelBlock {
 
     @Delegate private IBlockPropertyManager propertyManager;
     @Override protected BlockState createBlockState() {
@@ -58,7 +58,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     
     protected Random random;
     private Class<? extends CyclopsTileEntity> tileEntity;
-    
+
     protected boolean hasGui = false;
     
     private boolean rotatable;
@@ -114,11 +114,8 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     private void setConfig(ExtendedConfig eConfig) {
         this.eConfig = (BlockConfig) eConfig;
     }
-    
-    /**
-     * If this blockState container has a corresponding GUI.
-     * @return If it has a GUI.
-     */
+
+    @Override
     public boolean hasGui() {
         return hasGui;
     }

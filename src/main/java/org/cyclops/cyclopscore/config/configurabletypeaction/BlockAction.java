@@ -10,9 +10,10 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
-import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainerGui;
+import org.cyclops.cyclopscore.config.configurable.IConfigurableBlock;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 
 /**
  * The action used for {@link BlockConfig}.
@@ -53,15 +54,17 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
         block.setCreativeTab(eConfig.getTargetTab());
 
         // Also register tile entity
+        GuiHandler.GuiType guiType = GuiHandler.GuiType.BLOCK;
         if(eConfig.getHolderType().equals(ConfigurableType.BLOCKCONTAINER)) {
             ConfigurableBlockContainer container = (ConfigurableBlockContainer) block;
             GameRegistry.registerTileEntity(container.getTileEntity(), eConfig.getSubUniqueName());
-            
-            // If the blockState has a GUI, go ahead and register that.
-            if(container.hasGui()) {
-                ConfigurableBlockContainerGui gui = (ConfigurableBlockContainerGui) container;
-                eConfig.getMod().getGuiHandler().registerGUI(gui, GuiHandler.GuiType.BLOCK);
-            }
+            guiType = GuiHandler.GuiType.TILE;
+        }
+
+        // If the block has a GUI, go ahead and register that.
+        if(block instanceof IConfigurableBlock && ((IConfigurableBlock) block).hasGui()) {
+            IGuiContainerProvider gui = (IGuiContainerProvider) block;
+            eConfig.getMod().getGuiHandler().registerGUI(gui, guiType);
         }
         
         // Register optional ore dictionary ID

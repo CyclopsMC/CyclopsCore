@@ -19,12 +19,13 @@ import java.util.Random;
  * @author rubensworks
  *
  */
-public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic implements IConfigurable, IEntityDropParticleFXBlock {
+public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic implements IConfigurableBlock, IEntityDropParticleFXBlock {
     
 	private Fluid fluid;
 	
     @SuppressWarnings("rawtypes")
     protected ExtendedConfig eConfig = null;
+    protected boolean hasGui = false;
     
     @SideOnly(Side.CLIENT)
     protected EntityDropParticleFXBlockComponent entityDropParticleFXBlockComponent;
@@ -42,6 +43,11 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         fluid.setBlock(this);
         this.fluid = fluid;
+    }
+
+    @Override
+    public boolean hasGui() {
+        return hasGui;
     }
 
     /**

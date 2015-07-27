@@ -169,9 +169,13 @@ public class GuiHandler implements IGuiHandler {
         }
 
         /**
-         * A block with a tile entity.
+         * A block.
          */
         public static final GuiType<Void> BLOCK = GuiType.create(false);
+        /**
+         * A block with a tile entity.
+         */
+        public static final GuiType<Void> TILE = GuiType.create(false);
         /**
          * An item.
          */
@@ -179,6 +183,19 @@ public class GuiHandler implements IGuiHandler {
 
         static {
             BLOCK.setContainerConstructor(new IContainerConstructor<Void>() {
+                @Override
+                public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z,
+                                                  Class<? extends Container> containerClass, Void data) {
+                    try {
+                        Constructor<? extends Container> containerConstructor = containerClass.getConstructor(InventoryPlayer.class);
+                        return containerConstructor.newInstance(player.inventory);
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+            });
+            TILE.setContainerConstructor(new IContainerConstructor<Void>() {
                 @Override
                 public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z,
                                                   Class<? extends Container> containerClass, Void data) {
@@ -208,6 +225,19 @@ public class GuiHandler implements IGuiHandler {
 
             if(MinecraftHelpers.isClientSide()) {
                 BLOCK.setGuiConstructor(new IGuiConstructor<Void>() {
+                    @Override
+                    public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z,
+                                                      Class<? extends GuiScreen> guiClass, Void data) {
+                        try {
+                            Constructor<? extends GuiScreen> guiConstructor = guiClass.getConstructor(InventoryPlayer.class);
+                            return guiConstructor.newInstance(player.inventory);
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                });
+                TILE.setGuiConstructor(new IGuiConstructor<Void>() {
                     @Override
                     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z,
                                                       Class<? extends GuiScreen> guiClass, Void data) {

@@ -29,7 +29,7 @@ import java.util.Collection;
  * @author rubensworks
  *
  */
-public class ConfigurableBlock extends Block implements IConfigurable, IDynamicModelBlock {
+public class ConfigurableBlock extends Block implements IConfigurableBlock, IDynamicModelBlock {
 
     @Delegate private IBlockPropertyManager propertyManager;
     @Override protected BlockState createBlockState() {
@@ -38,7 +38,7 @@ public class ConfigurableBlock extends Block implements IConfigurable, IDynamicM
 
     @SuppressWarnings("rawtypes")
     protected BlockConfig eConfig = null;
-    
+    protected boolean hasGui = false;
     protected int pass = 0;
     protected boolean isInventoryBlock = false;
     
@@ -53,6 +53,11 @@ public class ConfigurableBlock extends Block implements IConfigurable, IDynamicM
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         if(hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    @Override
+    public boolean hasGui() {
+        return hasGui;
     }
 
     @SuppressWarnings("unchecked")
