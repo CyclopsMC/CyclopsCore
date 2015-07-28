@@ -65,6 +65,15 @@ public abstract class GuiContainerExtended extends GuiContainer {
         mc.renderEngine.bindTexture(texture);
         drawTexturedModalRect(guiLeft + offsetX, guiTop + offsetY, 0, 0, xSize - 2 * offsetX, ySize - 2 * offsetY);
     }
+
+    @Override
+    protected boolean isPointInRegion(int left, int top, int right, int bottom, int pointX, int pointY) {
+        int k1 = this.guiLeft;
+        int l1 = this.guiTop;
+        pointX -= k1;
+        pointY -= l1;
+        return pointX >= left && pointX < left + right && pointY >= top && pointY < top + bottom;
+    }
     
     protected boolean isPointInRegion(Rectangle region, Point mouse) {
     	return isPointInRegion(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
