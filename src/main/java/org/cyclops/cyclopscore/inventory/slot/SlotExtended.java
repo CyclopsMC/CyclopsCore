@@ -16,6 +16,14 @@ public class SlotExtended extends Slot {
     @Setter
     private boolean enabled = true;
 
+    @Getter
+    @Setter
+    private boolean phantom = false;
+
+    @Getter
+    @Setter
+    private boolean adjustable = true;
+
     public SlotExtended(IInventory inventoryIn, int index, int xPosition, int yPosition) {
         super(inventoryIn, index, xPosition, yPosition);
     }

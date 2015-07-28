@@ -6,6 +6,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
 
 /**
  * A container with inventory.
@@ -191,11 +192,88 @@ public abstract class InventoryContainer extends Container {
 
     @Override
     public ItemStack slotClick(int slotId, int arg, int function, EntityPlayer player) {
+        Slot slot = slotId < 0 ? null : (Slot) this.inventorySlots.get(slotId);
+        // Phantom slot code based on Buildcraft
+        if(slot instanceof SlotExtended && ((SlotExtended) slot).isPhantom()) {
+            return slotClickPhantom(slot, arg, function, player);
+        }
         ItemStack itemStack = super.slotClick(slotId, arg, function, player);
         if(arg == 0 && function == 0 && slotId >= 0) {
             getSlot(slotId).putStack(getSlot(slotId).getStack());
         }
         return itemStack;
+    }
+
+    private ItemStack slotClickPhantom(Slot slot, int mouseButton, int modifier, EntityPlayer player) {
+        ItemStack stack = null;
+
+        if (mouseButton == 2) {
+            if (((SlotExtended) slot).isAdjustable()) {
+                slot.putStack(null);
+            }
+        } else if (mouseButton == 0 || mouseButton == 1) {
+            InventoryPlayer playerInv = player.inventory;
+            slot.onSlotChanged();
+            ItemStack stackSlot = slot.getStack();
+            ItemStack stackHeld = playerInv.getItemStack();
+
+            if (stackSlot != null) {
+                stack = stackSlot.copy();
+            }
+
+            if (stackSlot == null) {
+                if (stackHeld != null && slot.isItemValid(stackHeld)) {
+                    fillPhantomSlot(slot, stackHeld, mouseButton, modifier);
+                }
+            } else if (stackHeld == null) {
+                adjustPhantomSlot(slot, mouseButton, modifier);
+                slot.onPickupFromSlot(player, playerInv.getItemStack());
+            } else if (slot.isItemValid(stackHeld)) {
+                if (ItemStack.areItemStacksEqual(stackSlot, stackHeld)) {
+                    adjustPhantomSlot(slot, mouseButton, modifier);
+                } else {
+                    fillPhantomSlot(slot, stackHeld, mouseButton, modifier);
+                }
+            }
+        }
+        return stack;
+    }
+
+    protected void adjustPhantomSlot(Slot slot, int mouseButton, int modifier) {
+        if (!((SlotExtended) slot).isAdjustable()) {
+            return;
+        }
+        ItemStack stackSlot = slot.getStack();
+        int stackSize;
+        if (modifier == 1) {
+            stackSize = mouseButton == 0 ? (stackSlot.stackSize + 1) / 2 : stackSlot.stackSize * 2;
+        } else {
+            stackSize = mouseButton == 0 ? stackSlot.stackSize - 1 : stackSlot.stackSize + 1;
+        }
+
+        if (stackSize > slot.getSlotStackLimit()) {
+            stackSize = slot.getSlotStackLimit();
+        }
+
+        stackSlot.stackSize = stackSize;
+
+        if (stackSlot.stackSize <= 0) {
+            slot.putStack(null);
+        }
+    }
+
+    protected void fillPhantomSlot(Slot slot, ItemStack stackHeld, int mouseButton, int modifier) {
+        if (!((SlotExtended) slot).isAdjustable()) {
+            return;
+        }
+        int stackSize = mouseButton == 0 ? stackHeld.stackSize : 1;
+        if (stackSize > slot.getSlotStackLimit()) {
+            stackSize = slot.getSlotStackLimit();
+        }
+        ItemStack phantomStack = stackHeld.copy();
+        phantomStack.stackSize = stackSize;
+
+        slot.putStack(phantomStack);
     }
 
 }

@@ -2,8 +2,10 @@ package org.cyclops.cyclopscore.client.gui.container;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.inventory.container.ExtendedInventoryContainer;
+import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -148,6 +150,15 @@ public abstract class GuiContainerExtended extends GuiContainer {
         
         this.zLevel = 0.0F;
         itemRender.zLevel = 0.0F;
+    }
+
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int mouseButton, long time) {
+        Slot slot = getSlotUnderMouse();
+        if (mouseButton == 1 && slot instanceof SlotExtended && ((SlotExtended) slot).isPhantom()) {
+            return;
+        }
+        super.mouseClickMove(mouseX, mouseY, mouseButton, time);
     }
 
 }
