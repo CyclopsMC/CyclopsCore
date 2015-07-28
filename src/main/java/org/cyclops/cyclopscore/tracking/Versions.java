@@ -94,7 +94,7 @@ public class Versions {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onTick(TickEvent.PlayerTickEvent event) {
-        if(event.phase == TickEvent.Phase.START && allDone) {
+        if(event.phase == TickEvent.Phase.END && allDone) {
             List<Triple<ModBase, IModVersion, String>> versionMods = getVersionMods();
             for (Triple<ModBase, IModVersion, String> triple : versionMods) {
                 if(triple.getMiddle().needsUpdate()) {
