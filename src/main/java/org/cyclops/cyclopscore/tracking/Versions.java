@@ -136,7 +136,9 @@ public class Versions {
                     player.addChatComponentMessage(chat);
                 }
             }
-            FMLCommonHandler.instance().bus().unregister(this);
+            try {
+                FMLCommonHandler.instance().bus().unregister(this);
+            } catch (Exception e) {}
         }
     }
 
