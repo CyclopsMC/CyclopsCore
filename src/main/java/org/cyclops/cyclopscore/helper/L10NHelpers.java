@@ -104,6 +104,11 @@ public final class L10NHelpers {
         public UnlocalizedString(String parameterizedString, Object... parameters) {
             this.parameterizedString = parameterizedString;
             this.parameters = parameters;
+            for(Object param : parameters) {
+                if(!(param instanceof UnlocalizedString || param instanceof String)) {
+                    throw new IllegalArgumentException(String.format("The object %s should be of type String or UnlocalizedString.", param));
+                }
+            }
         }
 
         public UnlocalizedString() {
