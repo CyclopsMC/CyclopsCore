@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
+import org.cyclops.cyclopscore.network.PacketHandler;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,11 +33,13 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
 	
 	protected static final String SOUND_NONE = "none";
 
+	private final CommonProxyComponent commonProxyComponent;
 	private final IconProvider iconProvider;
 	protected final Map<Class<? extends Entity>, Render> entityRenderers = Maps.newHashMap();
     protected final Map<Class<? extends TileEntity>, TileEntitySpecialRenderer> tileEntityRenderers = Maps.newHashMap();
 
-    public ClientProxyComponent() {
+    public ClientProxyComponent(CommonProxyComponent commonProxyComponent) {
+        this.commonProxyComponent = commonProxyComponent;
         this.iconProvider = constructIconProvider();
     }
 
@@ -74,13 +77,21 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
         getMod().getLoggerHelper().log(Level.INFO, "Registered key bindings");
 	}
 
+    @Override
+    public void registerPacketHandlers(PacketHandler packetHandler) {
+        commonProxyComponent.registerPacketHandlers(packetHandler);
+        getMod().getLoggerHelper().log(Level.INFO, "Registered packet handlers");
+    }
+
 	@Override
 	public void registerTickHandlers() {
+        commonProxyComponent.registerTickHandlers();
         getMod().getLoggerHelper().log(Level.INFO, "Registered tick handlers");
 	}
 
 	@Override
 	public void registerEventHooks() {
+        commonProxyComponent.registerEventHooks();
         getMod().getLoggerHelper().log(Level.INFO, "Registered event hooks");
         FMLCommonHandler.instance().bus().register(getMod().getKeyRegistry());
     }
