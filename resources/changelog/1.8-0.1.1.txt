@@ -1,0 +1,19 @@
+Features:
+* Add Version Checker support, Closes #4
+
+Fixes:
+* Catch rare version checking exception
+* Improve version checking
+
+Changes:
+* Don't create empty config directory anymore, Closes #3
+
+Lib changes:
+* Add type verification in UnlocalizedString constructor
+* Add support for phantom slots
+* Add base class for mods which are versionable
+* Allow regular blocks to have guis as well
+* Add scroll position hooks to the scrolling gui
+* Make gui mouse checking more exact
+* Make proxy component more user friendly
+This avoids the problem of having to call the common proxy manually in all client proxy instances
