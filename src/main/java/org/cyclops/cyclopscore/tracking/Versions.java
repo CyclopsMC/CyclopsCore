@@ -17,6 +17,7 @@ import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.modcompat.versionchecker.VersionCheckerModCompat;
 
 import java.io.IOException;
 import java.net.URL;
@@ -72,6 +73,9 @@ public class Versions {
                                 String updateUrl = lines[2];
                                 triple.getMiddle().setVersionInfo(version, info, updateUrl);
                                 if(triple.getMiddle().needsUpdate()) {
+                                    VersionCheckerModCompat.sendIMCOutdatedMessage(triple.getLeft(), triple.getMiddle());
+                                }
+                                if(triple.getMiddle().needsUpdate()) {
                                     triple.getLeft().log(Level.INFO, String.format("%s is outdated, version %s can be found at %s.", triple.getLeft().getModName(), version, updateUrl));
                                 } else {
                                     triple.getLeft().log(Level.INFO, String.format("%s is up-to-date!", triple.getLeft().getModName()));
@@ -96,51 +100,54 @@ public class Versions {
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onTick(TickEvent.PlayerTickEvent event) {
         if(event.phase == TickEvent.Phase.END && allDone && !displayed) {
-            List<Triple<ModBase, IModVersion, String>> versionMods = getVersionMods();
-            for (Triple<ModBase, IModVersion, String> triple : versionMods) {
-                if(triple.getMiddle().needsUpdate()) {
-                    // Chat formatting inspired by CoFH
-                    EntityPlayer player = event.player;
-                    IChatComponent chat = new ChatComponentText("");
+            synchronized (this) { // Why you ask? Apparently this event is sometimes called multiple times at once (concurrently).
+                List<Triple<ModBase, IModVersion, String>> versionMods = getVersionMods();
+                for (Triple<ModBase, IModVersion, String> triple : versionMods) {
+                    if (triple.getMiddle().needsUpdate()) {
+                        // Chat formatting inspired by CoFH
+                        EntityPlayer player = event.player;
+                        IChatComponent chat = new ChatComponentText("");
 
-                    ChatStyle modNameStyle = new ChatStyle();
-                    modNameStyle.setColor(EnumChatFormatting.AQUA);
+                        ChatStyle modNameStyle = new ChatStyle();
+                        modNameStyle.setColor(EnumChatFormatting.AQUA);
 
-                    ChatStyle versionStyle = new ChatStyle();
-                    versionStyle.setColor(EnumChatFormatting.AQUA);
+                        ChatStyle versionStyle = new ChatStyle();
+                        versionStyle.setColor(EnumChatFormatting.AQUA);
 
-                    ChatStyle downloadStyle = new ChatStyle();
-                    downloadStyle.setColor(EnumChatFormatting.BLUE);
+                        ChatStyle downloadStyle = new ChatStyle();
+                        downloadStyle.setColor(EnumChatFormatting.BLUE);
 
-                    String currentVersion = Reference.MOD_MC_VERSION + "-" + triple.getLeft().getReferenceValue(ModBase.REFKEY_MOD_VERSION);
-                    String newVersion = Reference.MOD_MC_VERSION + "-" + triple.getMiddle().getVersion();
-                    IChatComponent versionTransition = new ChatComponentText(String.format("%s -> %s", currentVersion, newVersion)).setChatStyle(versionStyle);
-                    modNameStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, versionTransition));
-                    IChatComponent modNameComponent = new ChatComponentText(String.format("[%s]", triple.getLeft().getModName())).setChatStyle(modNameStyle);
+                        String currentVersion = Reference.MOD_MC_VERSION + "-" + triple.getLeft().getReferenceValue(ModBase.REFKEY_MOD_VERSION);
+                        String newVersion = Reference.MOD_MC_VERSION + "-" + triple.getMiddle().getVersion();
+                        IChatComponent versionTransition = new ChatComponentText(String.format("%s -> %s", currentVersion, newVersion)).setChatStyle(versionStyle);
+                        modNameStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, versionTransition));
+                        IChatComponent modNameComponent = new ChatComponentText(String.format("[%s]", triple.getLeft().getModName())).setChatStyle(modNameStyle);
 
-                    IChatComponent downloadComponent = new ChatComponentText(String.format("[%s]", L10NHelpers.localize("general.cyclopscore.version.download"))).setChatStyle(downloadStyle);
-                    downloadStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentTranslation("general.cyclopscore.version.clickToDownload")));
-                    downloadStyle.setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, triple.getMiddle().getUpdateUrl()));
+                        IChatComponent downloadComponent = new ChatComponentText(String.format("[%s]", L10NHelpers.localize("general.cyclopscore.version.download"))).setChatStyle(downloadStyle);
+                        downloadStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentTranslation("general.cyclopscore.version.clickToDownload")));
+                        downloadStyle.setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, triple.getMiddle().getUpdateUrl()));
 
-                    chat.appendSibling(modNameComponent);
-                    chat.appendText(" ");
-                    chat.appendSibling(new ChatComponentTranslation("general.cyclopscore.version.updateAvailable").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE)));
-                    chat.appendText(String.format(": %s ", triple.getMiddle().getVersion()));
-                    chat.appendSibling(downloadComponent);
+                        chat.appendSibling(modNameComponent);
+                        chat.appendText(" ");
+                        chat.appendSibling(new ChatComponentTranslation("general.cyclopscore.version.updateAvailable").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE)));
+                        chat.appendText(String.format(": %s ", triple.getMiddle().getVersion()));
+                        chat.appendSibling(downloadComponent);
 
-                    player.addChatComponentMessage(chat);
+                        player.addChatComponentMessage(chat);
 
-                    chat = new ChatComponentText("");
-                    chat.appendSibling(modNameComponent);
-                    chat.appendText(EnumChatFormatting.WHITE + " ");
-                    chat.appendText(triple.getMiddle().getInfo());
-                    player.addChatComponentMessage(chat);
+                        chat = new ChatComponentText("");
+                        chat.appendSibling(modNameComponent);
+                        chat.appendText(EnumChatFormatting.WHITE + " ");
+                        chat.appendText(triple.getMiddle().getInfo());
+                        player.addChatComponentMessage(chat);
+                    }
+                }
+                displayed = true;
+                try {
+                    FMLCommonHandler.instance().bus().unregister(this);
+                } catch (Exception e) {
                 }
             }
-            displayed = true;
-            try {
-                FMLCommonHandler.instance().bus().unregister(this);
-            } catch (Exception e) {}
         }
     }
 

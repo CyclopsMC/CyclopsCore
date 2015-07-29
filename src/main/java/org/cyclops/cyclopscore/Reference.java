@@ -18,6 +18,7 @@ public final class Reference {
 
     // Mod ID's
     public static final String MOD_BAUBLES = "Baubles";
+    public static final String MOD_VERSION_CHECKER = "VersionChecker";
 
     // Dependencies
     public static final String MOD_DEPENDENCIES =

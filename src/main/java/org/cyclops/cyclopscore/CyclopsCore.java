@@ -16,6 +16,8 @@ import org.cyclops.cyclopscore.command.CommandRecursion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
+import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
+import org.cyclops.cyclopscore.modcompat.versionchecker.VersionCheckerModCompat;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 import org.cyclops.cyclopscore.tracking.Analytics;
 import org.cyclops.cyclopscore.tracking.IModVersion;
@@ -58,6 +60,11 @@ public class CyclopsCore extends ModBase implements IModVersion {
     public CyclopsCore() {
         super(Reference.MOD_ID, Reference.MOD_NAME);
         putGenericReference(REFKEY_MOD_VERSION, Reference.MOD_VERSION);
+    }
+
+    @Override
+    protected void loadModCompats(ModCompatLoader modCompatLoader) {
+        modCompatLoader.addModCompat(new VersionCheckerModCompat());
     }
 
     @Override
