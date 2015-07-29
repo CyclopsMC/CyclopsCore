@@ -37,6 +37,7 @@ public class Versions {
 
     private static volatile boolean checked = false;
     private static volatile boolean allDone = false;
+    private static volatile boolean displayed = false;
 
     public static synchronized void registerMod(ModBase mod, IModVersion modVersion, String versionUrl) {
         versionMods.add(Triple.of(mod, modVersion, versionUrl));
@@ -94,7 +95,7 @@ public class Versions {
     @SideOnly(Side.CLIENT)
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public void onTick(TickEvent.PlayerTickEvent event) {
-        if(event.phase == TickEvent.Phase.END && allDone) {
+        if(event.phase == TickEvent.Phase.END && allDone && !displayed) {
             List<Triple<ModBase, IModVersion, String>> versionMods = getVersionMods();
             for (Triple<ModBase, IModVersion, String> triple : versionMods) {
                 if(triple.getMiddle().needsUpdate()) {
@@ -136,6 +137,7 @@ public class Versions {
                     player.addChatComponentMessage(chat);
                 }
             }
+            displayed = true;
             try {
                 FMLCommonHandler.instance().bus().unregister(this);
             } catch (Exception e) {}
