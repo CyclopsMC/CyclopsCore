@@ -223,9 +223,6 @@ public abstract class ModBase {
             // Determine config folder.
             String rootFolderName = event.getModConfigurationDirectory() + "/" + getModId();
             File configFolder = new File(rootFolderName);
-            if (!configFolder.exists()) {
-                configFolder.mkdir();
-            }
             setConfigFolder(configFolder);
         }
 

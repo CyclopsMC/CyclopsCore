@@ -109,7 +109,9 @@ public class RecipeHandler {
     	}
     	
     	// Load all the externally defined recipes.
-    	registerRecipesForFiles(rootConfigFolder);
+        if(rootConfigFolder.exists()) {
+            registerRecipesForFiles(rootConfigFolder);
+        }
 
     	// Register remaining recipes that are too complex to declare in xml files.
         registerCustomRecipes();
