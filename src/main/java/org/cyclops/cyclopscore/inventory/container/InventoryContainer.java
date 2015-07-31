@@ -197,11 +197,7 @@ public abstract class InventoryContainer extends Container {
         if(slot instanceof SlotExtended && ((SlotExtended) slot).isPhantom()) {
             return slotClickPhantom(slot, arg, function, player);
         }
-        ItemStack itemStack = super.slotClick(slotId, arg, function, player);
-        if(arg == 0 && function == 0 && slotId >= 0) {
-            getSlot(slotId).putStack(getSlot(slotId).getStack());
-        }
-        return itemStack;
+        return super.slotClick(slotId, arg, function, player);
     }
 
     private ItemStack slotClickPhantom(Slot slot, int mouseButton, int modifier, EntityPlayer player) {
