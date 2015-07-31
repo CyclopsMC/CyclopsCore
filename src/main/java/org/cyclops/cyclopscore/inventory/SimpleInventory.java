@@ -41,7 +41,7 @@ public class SimpleInventory implements IInventory {
      * Add a dirty marking listener.
      * @param dirtyMarkListener The dirty mark listener.
      */
-    public void addDirtyMarkListener(IDirtyMarkListener dirtyMarkListener) {
+    public synchronized void addDirtyMarkListener(IDirtyMarkListener dirtyMarkListener) {
         this.dirtyMarkListeners.add(dirtyMarkListener);
     }
 
@@ -49,7 +49,7 @@ public class SimpleInventory implements IInventory {
      * Remove a dirty marking listener.
      * @param dirtyMarkListener The dirty mark listener.
      */
-    public void removeDirtyMarkListener(IDirtyMarkListener dirtyMarkListener) {
+    public synchronized void removeDirtyMarkListener(IDirtyMarkListener dirtyMarkListener) {
         this.dirtyMarkListeners.remove(dirtyMarkListener);
     }
 
@@ -223,6 +223,10 @@ public class SimpleInventory implements IInventory {
 
     @Override
 	public void markDirty() {
+        List<IDirtyMarkListener> dirtyMarkListeners;
+        synchronized (this) {
+            dirtyMarkListeners = Lists.newLinkedList(this.dirtyMarkListeners);
+        }
 		for(IDirtyMarkListener dirtyMarkListener : dirtyMarkListeners) {
             dirtyMarkListener.onDirty();
         }
