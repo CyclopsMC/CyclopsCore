@@ -242,4 +242,17 @@ public class SimpleInventory implements IInventory {
     public IChatComponent getDisplayName() {
         return new ChatComponentTranslation(this.getCommandSenderName());
     }
+
+    /**
+     * @return If all slots are empty.
+     */
+    public boolean isEmpty() {
+        for(int i = 0; i < getSizeInventory(); i++) {
+            if(getStackInSlot(i) != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
