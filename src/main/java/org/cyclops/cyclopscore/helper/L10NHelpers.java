@@ -9,6 +9,7 @@ import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.item.IInformationProvider;
 import org.cyclops.cyclopscore.persist.nbt.INBTSerializable;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,7 +30,11 @@ public final class L10NHelpers {
      * @return The localized string.
      */
     public static String localize(String key) {
-        return StatCollector.translateToLocal(key);
+        if(MinecraftHelpers.isModdedEnvironment()) {
+            return StatCollector.translateToLocal(key);
+        } else {
+            return key;
+        }
     }
 
     /**
@@ -40,7 +45,11 @@ public final class L10NHelpers {
      * @return The localized string.
      */
     public static String localize(String key, Object... params) {
-        return StatCollector.translateToLocalFormatted(key, params);
+        if(MinecraftHelpers.isModdedEnvironment()) {
+            return StatCollector.translateToLocalFormatted(key, params);
+        } else {
+            return String.format("%s: %s", key, Arrays.toString(params));
+        }
     }
 
     /**
@@ -104,9 +113,9 @@ public final class L10NHelpers {
         public UnlocalizedString(String parameterizedString, Object... parameters) {
             this.parameterizedString = parameterizedString;
             this.parameters = parameters;
-            for(Object param : parameters) {
-                if(!(param instanceof UnlocalizedString || param instanceof String)) {
-                    throw new IllegalArgumentException(String.format("The object %s should be of type String or UnlocalizedString.", param));
+            for(int i = 0; i < parameters.length; i++) {
+                if(!(parameters[i] instanceof UnlocalizedString || parameters[i] instanceof String)) {
+                    parameters[i] = String.valueOf(parameters[i]);
                 }
             }
         }
