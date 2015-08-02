@@ -107,6 +107,10 @@ public abstract class GuiContainerExtended extends GuiContainer {
         if(lines.size() > 1) {
             tooltipHeight += 2 + (lines.size() - 1) * 10;
         }
+
+        if(this.guiLeft + xStart + tooltipWidth + 6 > this.width) {
+            xStart = this.width - tooltipWidth - this.guiLeft - 6;
+        }
         
         if(this.guiTop + yStart + tooltipHeight + 6 > this.height) {
             yStart = this.height - tooltipHeight - this.guiTop - 6;
