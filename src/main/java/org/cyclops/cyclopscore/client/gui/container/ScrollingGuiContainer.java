@@ -113,10 +113,10 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
         boolean flag = Mouse.isButtonDown(0);
         int k = this.guiLeft;
         int l = this.guiTop;
-        int i1 = k + 175;
-        int j1 = l + 18;
+        int i1 = k + getScrollX();
+        int j1 = l + getScrollY();
         int k1 = i1 + 14;
-        int l1 = j1 + 112;
+        int l1 = j1 + getScrollHeight();
 
         if (!this.wasClicking && flag && mouseX >= i1 && mouseY >= j1 && mouseX < k1 && mouseY < l1) {
             this.isScrolling = this.needsScrollBars();
