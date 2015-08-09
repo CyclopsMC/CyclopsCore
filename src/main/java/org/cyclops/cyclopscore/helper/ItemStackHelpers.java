@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
@@ -71,6 +72,41 @@ public final class ItemStackHelpers {
             entityitem.motionX = RANDOM.nextGaussian() * (double)motion;
             entityitem.motionY = RANDOM.nextGaussian() * (double)motion + 0.2D;
             entityitem.motionZ = RANDOM.nextGaussian() * (double)motion;
+            world.spawnEntityInWorld(entityitem);
+        }
+    }
+
+    /**
+     * Spawn an entity in the direction of a player without setting a pickup delay.
+     * @param world The world
+     * @param pos The position to spawn an
+     * @param stack The stack to spawn
+     * @param player The player to direct the motion to
+     */
+    public static void spawnItemStackToPlayer(World world, BlockPos pos, ItemStack stack, EntityPlayer player) {
+        if (!world.isRemote) {
+            float f = 0.5F;
+
+            double xo = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+            double yo = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+            double zo = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+            EntityItem entityitem = new EntityItem(world, (double)pos.getX() + xo, (double)pos.getY() + yo, (double)pos.getZ() + zo, stack);
+
+            double d0 = 8.0D;
+            double d1 = (player.posX - entityitem.posX) / d0;
+            double d2 = (player.posY + (double)player.getEyeHeight() - entityitem.posY) / d0;
+            double d3 = (player.posZ - entityitem.posZ) / d0;
+            double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
+            double d5 = 1.0D - d4;
+
+            if (d5 > 0.0D) {
+                d5 *= d5;
+                entityitem.motionX += d1 / d4 * d5 * 0.1D;
+                entityitem.motionY += d2 / d4 * d5 * 0.1D;
+                entityitem.motionZ += d3 / d4 * d5 * 0.1D;
+            }
+
+            entityitem.setNoPickupDelay();
             world.spawnEntityInWorld(entityitem);
         }
     }
