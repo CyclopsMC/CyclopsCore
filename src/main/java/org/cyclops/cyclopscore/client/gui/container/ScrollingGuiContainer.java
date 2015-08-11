@@ -64,6 +64,7 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
 
         // Initial element load.
         getScrollingInventoryContainer().updateFilter("");
+        getScrollingInventoryContainer().scrollTo(currentScroll);
     }
 
     @Override
@@ -156,6 +157,7 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
     }
 
     protected void updateSearch(String searchString) {
+        this.currentScroll = 0;
         getScrollingInventoryContainer().updateFilter(searchString);
     }
 
