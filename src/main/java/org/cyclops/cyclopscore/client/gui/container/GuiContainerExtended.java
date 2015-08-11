@@ -69,19 +69,19 @@ public abstract class GuiContainerExtended extends GuiContainer {
     }
 
     @Override
-    protected boolean isPointInRegion(int left, int top, int right, int bottom, int pointX, int pointY) {
+    public boolean isPointInRegion(int left, int top, int right, int bottom, int pointX, int pointY) {
         int k1 = this.guiLeft;
         int l1 = this.guiTop;
         pointX -= k1;
         pointY -= l1;
         return pointX >= left && pointX < left + right && pointY >= top && pointY < top + bottom;
     }
-    
-    protected boolean isPointInRegion(Rectangle region, Point mouse) {
+
+    public boolean isPointInRegion(Rectangle region, Point mouse) {
     	return isPointInRegion(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
     }
     
-    protected void drawTooltip(List<String> lines, int x, int y) {
+    public void drawTooltip(List<String> lines, int x, int y) {
         GlStateManager.pushMatrix();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GlStateManager.disableRescaleNormal();
