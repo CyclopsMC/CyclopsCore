@@ -15,6 +15,14 @@ public class Image implements IImage {
     private final ResourceLocation resourceLocation;
     private final int sheetX, sheetY, sheetWidth, sheetHeight;
 
+    public Image(ResourceLocation resourceLocation, int sheetX, int sheetY, int sheetWidth, int sheetHeight) {
+        this.resourceLocation = resourceLocation;
+        this.sheetX = sheetX;
+        this.sheetY = sheetY;
+        this.sheetWidth = sheetWidth;
+        this.sheetHeight = sheetHeight;
+    }
+
     @Override
     public void draw(Gui gui, int x, int y) {
         Minecraft.getMinecraft().renderEngine.bindTexture(resourceLocation);
