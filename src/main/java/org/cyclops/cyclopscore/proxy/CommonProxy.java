@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.proxy;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.PacketHandler;
+import org.cyclops.cyclopscore.network.packet.ButtonClickPacket;
 import org.cyclops.cyclopscore.network.packet.RingOfFirePacket;
 import org.cyclops.cyclopscore.network.packet.SoundPacket;
 
@@ -25,6 +26,7 @@ public class CommonProxy extends CommonProxyComponent {
     	// Register packets.
         packetHandler.register(RingOfFirePacket.class);
         packetHandler.register(SoundPacket.class);
+        packetHandler.register(ButtonClickPacket.class);
     }
 
 }

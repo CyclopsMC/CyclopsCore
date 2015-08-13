@@ -1,21 +1,31 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
+import com.google.common.collect.Maps;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
+import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.inventory.container.ExtendedInventoryContainer;
+import org.cyclops.cyclopscore.inventory.container.button.IButtonActionClient;
+import org.cyclops.cyclopscore.inventory.container.button.IButtonClickAcceptorClient;
 import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
+import org.cyclops.cyclopscore.network.packet.ButtonClickPacket;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An extended GUI container.
  * @author rubensworks
  */
-public abstract class GuiContainerExtended extends GuiContainer {
+public abstract class GuiContainerExtended extends GuiContainer implements IButtonClickAcceptorClient<GuiContainerExtended, ExtendedInventoryContainer> {
+
+    private final Map<Integer, IButtonActionClient> buttonActions = Maps.newHashMap();
 
     protected ExtendedInventoryContainer container;
     protected ResourceLocation texture;
@@ -163,6 +173,35 @@ public abstract class GuiContainerExtended extends GuiContainer {
             return;
         }
         super.mouseClickMove(mouseX, mouseY, mouseButton, time);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) throws IOException {
+        if(requiresAction(button.id)) {
+            onButtonClick(button.id);
+        }
+        if(getContainer().requiresAction(button.id)) {
+            getContainer().onButtonClick(button.id);
+            CyclopsCore._instance.getPacketHandler().sendToServer(new ButtonClickPacket(button.id));
+        }
+    }
+
+    @Override
+    public void putButtonAction(int buttonId, IButtonActionClient<GuiContainerExtended, ExtendedInventoryContainer> action) {
+        buttonActions.put(buttonId, action);
+    }
+
+    @Override
+    public boolean requiresAction(int buttonId) {
+        return buttonActions.containsKey(buttonId);
+    }
+
+    @Override
+    public void onButtonClick(int buttonId) {
+        IButtonActionClient action;
+        if((action = buttonActions.get(buttonId)) != null) {
+            action.onAction(buttonId, this, getContainer());
+        }
     }
 
 }

@@ -1,21 +1,28 @@
 package org.cyclops.cyclopscore.inventory.container;
 
+import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import org.cyclops.cyclopscore.inventory.container.button.IButtonActionServer;
+import org.cyclops.cyclopscore.inventory.container.button.IButtonClickAcceptorServer;
 import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
+
+import java.util.Map;
 
 /**
  * A container with inventory.
  * @author rubensworks
  */
-public abstract class InventoryContainer extends Container {
+public abstract class InventoryContainer extends Container implements IButtonClickAcceptorServer<InventoryContainer> {
     
     protected static final int ITEMBOX = 18;
-    
+
+    private final Map<Integer, IButtonActionServer> buttonActions = Maps.newHashMap();
+
     private IInventory playerIInventory;
     protected int offsetX = 0;
     protected int offsetY = 0;
@@ -270,6 +277,24 @@ public abstract class InventoryContainer extends Container {
         phantomStack.stackSize = stackSize;
 
         slot.putStack(phantomStack);
+    }
+
+    @Override
+    public void putButtonAction(int buttonId, IButtonActionServer<InventoryContainer> action) {
+        buttonActions.put(buttonId, action);
+    }
+
+    @Override
+    public boolean requiresAction(int buttonId) {
+        return buttonActions.containsKey(buttonId);
+    }
+
+    @Override
+    public void onButtonClick(int buttonId) {
+        IButtonActionServer action;
+        if((action = buttonActions.get(buttonId)) != null) {
+            action.onAction(buttonId, this);
+        }
     }
 
 }
