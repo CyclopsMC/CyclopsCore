@@ -1,4 +1,4 @@
-package org.cyclops.cyclopscore.client.gui.component;
+package org.cyclops.cyclopscore.client.gui.component.button;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
