@@ -4,12 +4,19 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.inventory.IValueNotifiable;
+import org.cyclops.cyclopscore.inventory.IValueNotifier;
 import org.cyclops.cyclopscore.inventory.container.button.IButtonActionServer;
 import org.cyclops.cyclopscore.inventory.container.button.IButtonClickAcceptorServer;
 import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
+import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 
 import java.util.Map;
 
@@ -17,13 +24,18 @@ import java.util.Map;
  * A container with inventory.
  * @author rubensworks
  */
-public abstract class InventoryContainer extends Container implements IButtonClickAcceptorServer<InventoryContainer> {
+public abstract class InventoryContainer extends Container implements IButtonClickAcceptorServer<InventoryContainer>,
+        IValueNotifier, IValueNotifiable {
     
     protected static final int ITEMBOX = 18;
 
     private final Map<Integer, IButtonActionServer> buttonActions = Maps.newHashMap();
+    private final Map<Integer, NBTTagCompound> values = Maps.newHashMap();
+    private int nextValueId = 0;
+    private IValueNotifiable guiValueListener = null;
 
     private IInventory playerIInventory;
+    protected final EntityPlayer player;
     protected int offsetX = 0;
     protected int offsetY = 0;
 
@@ -33,6 +45,33 @@ public abstract class InventoryContainer extends Container implements IButtonCli
      */
     public InventoryContainer(InventoryPlayer inventory) {
         this.playerIInventory = inventory;
+        this.player = inventory.player;
+    }
+
+    /**
+     * Set the listener that will be triggered when a value in this container is updated by the server.
+     * @param listener The listener that will be triggered.
+     */
+    public void setGuiValueListener(IValueNotifiable listener) {
+        this.guiValueListener = listener;
+    }
+
+    @Override
+    public void onCraftGuiOpened(ICrafting listener) {
+        super.onCraftGuiOpened(listener);
+        if(!MinecraftHelpers.isClientSide()) {
+            initializeValues();
+        }
+    }
+
+    /**
+     * This is the place to initialize values server-side so that they can be sent to the client for the first time.
+     * This is only called on the server.
+     * Make sure not to initialize the value id's here, but do that inside the constructor, because these must be equal
+     * for client and server.
+     */
+    protected void initializeValues() {
+
     }
     
     protected Slot createNewSlot(IInventory inventory, int index, int x, int y) {
@@ -294,6 +333,34 @@ public abstract class InventoryContainer extends Container implements IButtonCli
         IButtonActionServer action;
         if((action = buttonActions.get(buttonId)) != null) {
             action.onAction(buttonId, this);
+        }
+    }
+
+    /**
+     * @return The next unique value id.
+     */
+    protected int getNextValueId() {
+        return nextValueId++;
+    }
+
+    @Override
+    public void setValue(int valueId, NBTTagCompound value) {
+        if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
+            CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(valueId, value), player);
+            values.put(valueId, value);
+        }
+    }
+
+    protected NBTTagCompound getValue(int valueId) {
+        NBTTagCompound value = values.get(valueId);
+        return value;
+    }
+
+    @Override
+    public void onUpdate(int valueId, NBTTagCompound value) {
+        values.put(valueId, value);
+        if(guiValueListener != null) {
+            guiValueListener.onUpdate(valueId, value);
         }
     }
 

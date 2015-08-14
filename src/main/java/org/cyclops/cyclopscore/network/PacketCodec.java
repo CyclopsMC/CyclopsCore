@@ -4,10 +4,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
+import io.netty.handler.codec.EncoderException;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTSizeTracker;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import org.apache.commons.lang3.ClassUtils;
 import org.cyclops.cyclopscore.datastructure.SingleCache;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -156,6 +161,27 @@ public abstract class PacketCodec extends PacketBase {
 					e.printStackTrace();
 				}
 				return map;
+			}
+		});
+
+		codecActions.put(NBTTagCompound.class, new ICodecAction() {
+
+			@Override
+			public void encode(Object object, ByteArrayDataOutput output) {
+				try {
+					CompressedStreamTools.write((NBTTagCompound) object, output);
+				} catch (IOException ioexception) {
+					throw new EncoderException(ioexception);
+				}
+			}
+
+			@Override
+			public Object decode(ByteArrayDataInput input) {
+				try {
+					return CompressedStreamTools.read(input, new NBTSizeTracker(2097152L));
+				} catch (IOException ioexception) {
+					throw new EncoderException(ioexception);
+				}
 			}
 		});
 	}

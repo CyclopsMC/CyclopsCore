@@ -6,6 +6,7 @@ import org.cyclops.cyclopscore.network.PacketHandler;
 import org.cyclops.cyclopscore.network.packet.ButtonClickPacket;
 import org.cyclops.cyclopscore.network.packet.RingOfFirePacket;
 import org.cyclops.cyclopscore.network.packet.SoundPacket;
+import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 
 /**
  * Proxy for server and client side.
@@ -27,6 +28,7 @@ public class CommonProxy extends CommonProxyComponent {
         packetHandler.register(RingOfFirePacket.class);
         packetHandler.register(SoundPacket.class);
         packetHandler.register(ButtonClickPacket.class);
+        packetHandler.register(ValueNotifyPacket.class);
     }
 
 }

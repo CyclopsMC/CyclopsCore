@@ -5,8 +5,10 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.Slot;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.inventory.container.ExtendedInventoryContainer;
 import org.cyclops.cyclopscore.inventory.container.button.IButtonActionClient;
 import org.cyclops.cyclopscore.inventory.container.button.IButtonClickAcceptorClient;
@@ -23,7 +25,8 @@ import java.util.Map;
  * An extended GUI container.
  * @author rubensworks
  */
-public abstract class GuiContainerExtended extends GuiContainer implements IButtonClickAcceptorClient<GuiContainerExtended, ExtendedInventoryContainer> {
+public abstract class GuiContainerExtended extends GuiContainer implements
+        IButtonClickAcceptorClient<GuiContainerExtended, ExtendedInventoryContainer>, IValueNotifiable {
 
     private final Map<Integer, IButtonActionClient> buttonActions = Maps.newHashMap();
 
@@ -38,6 +41,7 @@ public abstract class GuiContainerExtended extends GuiContainer implements IButt
      */
     public GuiContainerExtended(ExtendedInventoryContainer container) {
         super(container);
+        container.setGuiValueListener(this);
         this.container = container;
         this.texture = constructResourceLocation();
     }
@@ -202,6 +206,11 @@ public abstract class GuiContainerExtended extends GuiContainer implements IButt
         if((action = buttonActions.get(buttonId)) != null) {
             action.onAction(buttonId, this, getContainer());
         }
+    }
+
+    @Override
+    public void onUpdate(int valueId, NBTTagCompound value) {
+
     }
 
 }
