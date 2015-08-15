@@ -20,4 +20,11 @@ public interface IValueNotifier {
      */
     void setValue(int valueId, NBTTagCompound value);
 
+    /**
+     * Get the value for the given value id.
+     * @param valueId The value id.
+     * @return The value or null.
+     */
+    NBTTagCompound getValue(int valueId);
+
 }

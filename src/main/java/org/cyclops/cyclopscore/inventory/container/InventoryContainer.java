@@ -355,7 +355,8 @@ public abstract class InventoryContainer extends Container implements IButtonCli
         }
     }
 
-    protected NBTTagCompound getValue(int valueId) {
+    @Override
+    public NBTTagCompound getValue(int valueId) {
         return values.get(valueId);
     }
 
