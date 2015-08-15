@@ -48,7 +48,9 @@ public class ValueNotifyPacket extends PacketCodec {
 
 	@Override
 	public void actionServer(World world, EntityPlayerMP player) {
-
+		if(player.openContainer instanceof IValueNotifiable) {
+			((IValueNotifiable) player.openContainer).onUpdate(valueId, value);
+		}
 	}
 	
 }

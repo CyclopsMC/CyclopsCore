@@ -346,14 +346,17 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     @Override
     public void setValue(int valueId, NBTTagCompound value) {
         if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
-            CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(valueId, value), player);
+            if (!MinecraftHelpers.isClientSide()) { // server -> client
+                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(valueId, value), player);
+            } else { // client -> server
+                CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(valueId, value));
+            }
             values.put(valueId, value);
         }
     }
 
     protected NBTTagCompound getValue(int valueId) {
-        NBTTagCompound value = values.get(valueId);
-        return value;
+        return values.get(valueId);
     }
 
     @Override
