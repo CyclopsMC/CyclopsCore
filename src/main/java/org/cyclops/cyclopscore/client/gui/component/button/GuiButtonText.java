@@ -10,6 +10,18 @@ import net.minecraft.client.gui.FontRenderer;
  */
 public class GuiButtonText extends GuiButtonExtended {
 
+    /**
+     * Make a new instance.
+     * @param id The ID.
+     * @param x X
+     * @param y Y
+     * @param string The string to print.
+     */
+    public GuiButtonText(int id, int x, int y,
+                         String string) {
+        this(id, x, y, Minecraft.getMinecraft().fontRendererObj.getStringWidth(string) + 6, 16, string, true);
+    }
+
 	/**
 	 * Make a new instance.
 	 * @param id The ID.
