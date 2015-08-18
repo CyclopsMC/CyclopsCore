@@ -1,7 +1,9 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraft.block.Block;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -15,12 +17,43 @@ import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 
+import javax.annotation.Nullable;
+
 /**
  * The action used for {@link BlockConfig}.
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
 public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
+
+    /**
+     * Registers a block.
+     * @param block The block instance.
+     * @param name The unique name for this block.
+     * @param creativeTabs The creative tab this block will reside in.
+     */
+    public static void register(Block block, String name, @Nullable CreativeTabs creativeTabs) {
+        register(block, null, name, creativeTabs);
+    }
+
+    /**
+     * Registers a block.
+     * @param block The block instance.
+     * @param itemBlockClass The optional item block class.
+     * @param name The unique name for this block.
+     * @param creativeTabs The creative tab this block will reside in.
+     */
+    public static void register(Block block, @Nullable Class<? extends ItemBlock> itemBlockClass, String name, @Nullable CreativeTabs creativeTabs) {
+        if(itemBlockClass == null) {
+            GameRegistry.registerBlock(block, name);
+        } else {
+            GameRegistry.registerBlock(block, itemBlockClass, name);
+        }
+
+        if(creativeTabs != null) {
+            block.setCreativeTab(creativeTabs);
+        }
+    }
 
     @Override
     public void preRun(BlockConfig eConfig, Configuration config, boolean startup) {
@@ -43,15 +76,8 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
 
         Block block = (Block) eConfig.getSubInstance();
 
-        // Register
-        GameRegistry.registerBlock(
-                block,
-                eConfig.getItemBlockClass(),
-                eConfig.getSubUniqueName()
-                );
-
-        // Set creative tab
-        block.setCreativeTab(eConfig.getTargetTab());
+        // Register block and set creative tab.
+        register(block, eConfig.getItemBlockClass(), eConfig.getSubUniqueName(), eConfig.getTargetTab());
 
         // Also register tile entity
         GuiHandler.GuiType guiType = GuiHandler.GuiType.BLOCK;

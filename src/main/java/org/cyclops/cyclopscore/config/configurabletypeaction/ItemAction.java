@@ -16,6 +16,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -24,6 +25,20 @@ import java.util.List;
  * @see ConfigurableTypeAction
  */
 public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
+
+    /**
+     * Registers an item.
+     * @param item The item instance.
+     * @param name The unique name for this block.
+     * @param creativeTabs The creative tab this block will reside in.
+     */
+    public static void register(Item item, String name, @Nullable CreativeTabs creativeTabs) {
+        GameRegistry.registerItem(item, name);
+
+        if(creativeTabs != null) {
+            item.setCreativeTab(creativeTabs);
+        }
+    }
 
     @Override
     public void preRun(ItemConfig eConfig, Configuration config, boolean startup) {
@@ -45,15 +60,9 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
         eConfig.save();
         
         Item item = (Item) eConfig.getSubInstance();
-        
-        // Register
-        GameRegistry.registerItem(
-                item,
-                eConfig.getSubUniqueName()
-        );
-        
-        // Set creative tab
-        item.setCreativeTab(eConfig.getTargetTab());
+
+        // Register item and set creative tab.
+        register(item, eConfig.getSubUniqueName(), eConfig.getTargetTab());
         
         // Optionally register gui
         if(item instanceof IGuiContainerProvider) {
