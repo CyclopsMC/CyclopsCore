@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.client.gui.image;
 
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.texture.TextureManager;
 
 /**
  * Interface for graphics objects that can be rendered.
@@ -15,5 +16,34 @@ public interface IImage {
      * @param y The y position.
      */
     public void draw(Gui gui, int x, int y);
+
+    /**
+     * Draw the image in the world.
+     * @param textureManager The texture manager.
+     * @param x1 Start X
+     * @param x2 End X
+     * @param y1 Start Y
+     * @param y2 End Y
+     * @param z Z
+     */
+    public void drawWorld(TextureManager textureManager, float x1, float x2, float y1, float y2, float z);
+
+    /**
+     * Draw the image in the world.
+     * @param textureManager The texture manager.
+     * @param x1 Start X
+     * @param x2 End X
+     * @param y1 Start Y
+     * @param y2 End Y
+     */
+    public void drawWorld(TextureManager textureManager, float x1, float x2, float y1, float y2);
+
+    /**
+     * Draw the image in the world.
+     * @param textureManager The texture manager.
+     * @param x2 End X
+     * @param y2 End Y
+     */
+    public void drawWorld(TextureManager textureManager, float x2, float y2);
 
 }
