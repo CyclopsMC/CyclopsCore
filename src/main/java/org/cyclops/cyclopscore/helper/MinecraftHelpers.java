@@ -256,6 +256,7 @@ public class MinecraftHelpers {
             if(compY == 0) {
                 return Integer.compare(pos1.getZ(), pos2.getZ());
             }
+            return compY;
         }
         return compX;
     }
