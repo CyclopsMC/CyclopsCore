@@ -4,10 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.lang3.NotImplementedException;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Provides a composite read-only view on a collection of maps.
@@ -15,7 +12,7 @@ import java.util.Set;
  */
 public class CompositeMap<K, V> implements Map<K, V> {
 
-    private final Set<Map<K, V>> elements = Sets.newHashSet();
+    private final List<Map<K, V>> elements = Lists.newArrayList();
 
     /**
      * Add a new map to the composition.
