@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.cyclops.cyclopscore.helper.InventoryHelpers;
 
@@ -32,7 +33,12 @@ private static final String NBT_TAG_ROOT = "NBTSimpleInventory";
 	
 	@Override
 	public void markDirty() {
-		NBTTagCompound tag = InventoryHelpers.getItemFromIndex(player, itemIndex).getTagCompound();
+		ItemStack itemStack = InventoryHelpers.getItemFromIndex(player, itemIndex);
+		NBTTagCompound tag = itemStack.getTagCompound();
+		if(tag == null) {
+			tag = new NBTTagCompound();
+			itemStack.setTagCompound(tag);
+		}
 		writeToNBT(tag, NBT_TAG_ROOT);
 		InventoryHelpers.getItemFromIndex(player, itemIndex).setTagCompound(tag);
 	}
