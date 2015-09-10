@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
 import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
-import org.cyclops.cyclopscore.client.model.IDynamicModelBlock;
+import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 
@@ -29,7 +29,7 @@ import java.util.Collection;
  * @author rubensworks
  *
  */
-public class ConfigurableBlock extends Block implements IConfigurableBlock, IDynamicModelBlock {
+public class ConfigurableBlock extends Block implements IConfigurableBlock, IDynamicModelElement {
 
     @Delegate private IBlockPropertyManager propertyManager;
     @Override protected BlockState createBlockState() {

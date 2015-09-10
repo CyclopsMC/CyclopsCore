@@ -12,7 +12,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.client.model.IDynamicModelBlock;
+import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -127,8 +127,8 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
     @Override
     public void onRegistered() {
         super.onRegistered();
-        if(MinecraftHelpers.isClientSide() && getBlockInstance() instanceof IDynamicModelBlock &&
-                ((IDynamicModelBlock) getBlockInstance()).hasDynamicModel()) {
+        if(MinecraftHelpers.isClientSide() && getBlockInstance() instanceof IDynamicModelElement &&
+                ((IDynamicModelElement) getBlockInstance()).hasDynamicModel()) {
             Pair<ModelResourceLocation, ModelResourceLocation> resourceLocations = registerDynamicModel();
             this.dynamicBlockVariantLocation = resourceLocations.getLeft();
             this.dynamicItemVariantLocation  = resourceLocations.getRight();

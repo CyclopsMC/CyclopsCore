@@ -5,10 +5,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * Interface for blocks which can have a dynamic model.
+ * Interface for blocks and items which can have a dynamic model.
  * @author rubensworks
  */
-public interface IDynamicModelBlock {
+public interface IDynamicModelElement {
 
     /**
      * @return If this block has a dynamic model.
@@ -16,7 +16,7 @@ public interface IDynamicModelBlock {
     public boolean hasDynamicModel();
 
     /**
-     * Should return not null if {@link IDynamicModelBlock#hasDynamicModel()} is true.
+     * Should return not null if {@link IDynamicModelElement#hasDynamicModel()} is true.
      * This will only be called once.
      * @return A dynamic model instance.
      */

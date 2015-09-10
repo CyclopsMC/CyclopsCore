@@ -1,12 +1,18 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
+import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableItem;
 import org.cyclops.cyclopscore.config.configurable.IConfigurable;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -15,6 +21,8 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @see ExtendedConfig
  */
 public abstract class ItemConfig extends ExtendedConfig<ItemConfig> implements IModelProviderConfig {
+
+    @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicItemVariantLocation;
 
     /**
      * Make a new instance.
@@ -26,6 +34,9 @@ public abstract class ItemConfig extends ExtendedConfig<ItemConfig> implements I
      */
     public ItemConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends Item> element) {
         super(mod, enabled, namedId, comment, element);
+        if(MinecraftHelpers.isClientSide()) {
+            dynamicItemVariantLocation  = null;
+        }
     }
 
     @Override
@@ -68,14 +79,32 @@ public abstract class ItemConfig extends ExtendedConfig<ItemConfig> implements I
     public Item getItemInstance() {
     	return (Item) super.getSubInstance();
     }
+
+    /**
+     * Register default item models for this item.
+     * This should only be used when registering dynamic models.
+     * @return The item resource location.
+     */
+    @SideOnly(Side.CLIENT)
+    protected ModelResourceLocation registerDynamicModel() {
+        String blockName = getMod().getModId() + ":" + getNamedId();
+        ModelResourceLocation itemLocation = new ModelResourceLocation(blockName, "inventory");
+        ModelLoader.setCustomModelResourceLocation(getItemInstance(), 0, itemLocation);
+        return itemLocation;
+    }
     
     @Override
     public void onRegistered() {
+        super.onRegistered();
     	if(isEnabled()) {
 	        if(getOreDictionaryId() != null) {
 	            OreDictionary.registerOre(getOreDictionaryId(), new ItemStack(this.getItemInstance()));
 	        }
     	}
+        if(MinecraftHelpers.isClientSide() && getItemInstance() instanceof IDynamicModelElement &&
+                ((IDynamicModelElement) getItemInstance()).hasDynamicModel()) {
+            this.dynamicItemVariantLocation  = registerDynamicModel();
+        }
     }
 
     /**
