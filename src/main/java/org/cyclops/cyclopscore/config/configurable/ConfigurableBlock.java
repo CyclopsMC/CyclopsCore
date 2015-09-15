@@ -21,6 +21,7 @@ import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import java.util.Collection;
 
@@ -52,7 +53,7 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
         super(material);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
-        if(hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
+        if(MinecraftHelpers.isClientSide() && hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override

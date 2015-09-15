@@ -13,6 +13,7 @@ import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class ConfigurableItem extends Item implements IConfigurable, IDynamicMod
     public ConfigurableItem(ExtendedConfig eConfig) {
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
-        if(hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
+        if(MinecraftHelpers.isClientSide() && hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SuppressWarnings("rawtypes")
