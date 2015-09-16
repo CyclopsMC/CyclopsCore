@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.player.InventoryPlayer;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
-import scala.actors.threadpool.Arrays;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -41,7 +41,7 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
         super(inventory, guiProvider);
         this.unfilteredItems = Lists.newArrayList(items);
         this.filteredItems = Lists.newLinkedList();
-        this.visibleItems = Arrays.asList(new Object[getPageSize()]);
+        this.visibleItems = (List<E>) Arrays.asList(new Object[getPageSize()]);
         for(int i = 0; i < getPageSize(); i++) {
             this.visibleItems.set(i, null);
         }
