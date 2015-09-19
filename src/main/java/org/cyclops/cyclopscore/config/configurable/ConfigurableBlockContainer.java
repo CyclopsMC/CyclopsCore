@@ -140,11 +140,21 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     public boolean saveNBTToDroppedItem() {
         return true;
     }
-    
+
+    /**
+     * Called before the block is broken or destroyed.
+     * @param world The world.
+     * @param blockPos The position of the to-be-destroyed block.
+     */
     protected void onPreBlockDestroyed(World world, BlockPos blockPos) {
     	MinecraftHelpers.preDestroyBlock(this, world, blockPos, saveNBTToDroppedItem());
     }
-    
+
+    /**
+     * Called after the block is broken or destroyed.
+     * @param world The world.
+     * @param blockPos The position of the destroyed block.
+     */
     protected void onPostBlockDestroyed(World world, BlockPos blockPos) {
     	
     }
@@ -157,10 +167,10 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     }
     
     @Override
-    public void onBlockDestroyedByExplosion(World world, BlockPos blockPos, Explosion explosion) {
-    	onPreBlockDestroyed(world, blockPos);
-    	super.onBlockDestroyedByExplosion(world, blockPos, explosion);
-    	onPostBlockDestroyed(world, blockPos);
+    public void onBlockExploded(World world, BlockPos blockPos, Explosion explosion) {
+    	if(world.isRemote) onPreBlockDestroyed(world, blockPos);
+    	super.onBlockExploded(world, blockPos, explosion);
+        if(world.isRemote) onPostBlockDestroyed(world, blockPos);
     }
     
     @Override
