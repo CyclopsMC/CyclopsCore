@@ -32,9 +32,12 @@ public class EntityHelpers {
 	 * @param entity The entity that collides.
 	 */
 	public static void onEntityCollided(World world, BlockPos blockPos, Entity entity) {
-	    Block block = world.getBlockState(blockPos).getBlock();
-	    if(block != null)
-	        block.onEntityCollidedWithBlock(world, blockPos, entity);
+		if (blockPos != null) {
+			Block block = world.getBlockState(blockPos).getBlock();
+			if (block != null) {
+				block.onEntityCollidedWithBlock(world, blockPos, entity);
+			}
+		}
 	}
 
 	/**
