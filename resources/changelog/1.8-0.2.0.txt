@@ -1,0 +1,41 @@
+Fixes:
+* Fix incorrect use of the block explosion event
+* Don't use Scala classes
+* Fix server calls to client-only code
+* Fix calls to null tags on NBT inventories
+* Fix comparisson of BlockPos ignoring Y value
+* Fix image lombok constructor
+* Fix reset of scrollbar when resizing game window
+* Fix scroll click handler checking on the wrong location
+* Make tooltips stay on screen
+
+Lib features:
+* Add option to render images in world
+* Allow other mods to call block and item registration directly
+* Add simplified text button constructor
+* Add helpers for the value notifier framework
+* Add error and ok symbols
+* Add serialization methods for block states
+* Add number field abstraction
+* Add button abstraction with auto delegation to server
+* Add image abstraction to use
+One current use for it is in the image buttons
+* Add helper method to direct an item spawn to a player
+
+Lib changes:
+* Add safety for null BlockPos in entity collisions
+* Allow dynamic models on items as well
+* Don't use hashset to persist sub-maps in CompositeMap but a list
+Because the hashcode for regular maps is apparently based on the sum of the hashcodes of all elements in that map, what can cause nasty clashes for empty maps on addition.
+* Make value notification for guis bidirectional
+You can now also sent values from client to server.
+* Add Gui/Container value notify system
+To automatically send changed values of any type to the client
+* Make some gui methods public
+* Allow client-side checking to be done in unit tests
+* Add additional L10N checks
+For checking if in a modded environment, and ads better string creation for LocalizedStrings
+* Add concurrency safety for inventory IDirtyMarkListeners
+* Add empty check method in SimpleInventory
+* Remove double packet sending in setting inventory container slot
+
