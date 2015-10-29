@@ -98,7 +98,7 @@ public abstract class ItemConfig extends ExtendedConfig<ItemConfig> implements I
         super.onRegistered();
     	if(isEnabled()) {
 	        if(getOreDictionaryId() != null) {
-	            OreDictionary.registerOre(getOreDictionaryId(), new ItemStack(this.getItemInstance()));
+	            OreDictionary.registerOre(getOreDictionaryId(), new ItemStack(this.getItemInstance(), 1, OreDictionary.WILDCARD_VALUE));
 	        }
     	}
         if(MinecraftHelpers.isClientSide() && getItemInstance() instanceof IDynamicModelElement &&

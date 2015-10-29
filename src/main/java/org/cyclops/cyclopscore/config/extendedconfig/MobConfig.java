@@ -51,6 +51,13 @@ public abstract class MobConfig extends ExtendedConfig<MobConfig> {
             }
         }
     }
+
+    /**
+     * @return If a spawn egg should be registered for this mob.
+     */
+    public boolean hasSpawnEgg() {
+        return true;
+    }
     
     /**
      * Get the background color of the spawn egg.

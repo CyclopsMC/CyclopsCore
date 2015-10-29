@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.village.MerchantRecipeList;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.VillagerConfig;
+import org.cyclops.cyclopscore.item.WeightedItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,47 +155,6 @@ public class ConfigurableVillager implements IConfigurable { // TODO: IVillageTr
     
     protected int getRandomBetween(Random random, int min, int max) {
         return min + random.nextInt(max - min + 1);
-    }
-    
-    /**
-     * An ItemStack that has a certain weight that can be used to occur with a certain chance.
-     * @author rubensworks
-     *
-     */
-    public class WeightedItemStack{
-        private ItemStack itemStack;
-        private int weight;
-        
-        /**
-         * Make a new instance.
-         * @param itemStack The ItemStack to weigh.
-         * @param weight The weight of the ItemStack.
-         */
-        public WeightedItemStack(ItemStack itemStack, int weight) {
-            this.itemStack = itemStack;
-            this.weight = weight;
-        }
-        
-        /**
-         * Get the ItemStack.
-         * @return The ItemStack.
-         */
-        public ItemStack getItemStack() {
-            return itemStack;
-        }
-        
-        /**
-         * Get the weight.
-         * @return The weight.
-         */
-        public int getWeight() {
-            return weight;
-        }
-        
-        @Override
-        public String toString() {
-        	return "{ItemStack: " + itemStack + "; Weight: " + weight + "}";
-        }
     }
 
 }

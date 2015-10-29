@@ -4,10 +4,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.helper.LocationHelpers;
 import org.cyclops.cyclopscore.network.CodecField;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
@@ -101,7 +101,7 @@ public class SoundPacket extends PacketCodec {
 	@Override
 	public void actionServer(World world, EntityPlayerMP player) {
         CyclopsCore._instance.getPacketHandler().sendToAllAround(new SoundPacket(x, y, z, sound, volume, frequency, mod),
-				LocationHelpers.createTargetPointFromEntityPosition(player, RANGE));
+				new NetworkRegistry.TargetPoint(world.provider.getDimensionId(), x, y, z, RANGE));
 	}
 	
 }

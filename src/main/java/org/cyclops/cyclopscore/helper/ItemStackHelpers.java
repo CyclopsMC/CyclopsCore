@@ -1,12 +1,18 @@
 package org.cyclops.cyclopscore.helper;
 
+import com.google.common.collect.Lists;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.oredict.OreDictionary;
+import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -109,6 +115,74 @@ public final class ItemStackHelpers {
             entityitem.setNoPickupDelay();
             world.spawnEntityInWorld(entityitem);
         }
+    }
+
+
+
+    /**
+     * Check if the given player has at least one of the given item.
+     * @param player The player.
+     * @param item The item to search in the inventory.
+     * @return If the player has the item.
+     */
+    public static boolean hasPlayerItem(EntityPlayer player, Item item) {
+        for(PlayerExtendedInventoryIterator it = new PlayerExtendedInventoryIterator(player); it.hasNext();) {
+            ItemStack itemStack = it.next();
+            if (itemStack != null && itemStack.getItem() == item) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get a list of variants from the given stack if its damage value is the wildcard value,
+     * otherwise the list will only contain the given itemstack.
+     * @param itemStack The itemstack
+     * @return The list of variants.
+     */
+    public static List<ItemStack> getVariants(ItemStack itemStack) {
+        List<ItemStack> output = Lists.newLinkedList();
+        if(itemStack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
+            itemStack.getItem().getSubItems(itemStack.getItem(), null, output);
+        } else {
+            output.add(itemStack);
+        }
+        return output;
+    }
+
+    /**
+     * Parse a string to an itemstack.
+     * Expects the format "domain:itemname:amount:meta"
+     * The domain and itemname are mandatory, the rest is optional.
+     * @param itemStackString The string to parse.
+     * @return The itemstack.
+     * @throws IllegalArgumentException If the string was incorrectly formatted.
+     */
+    public static ItemStack parseItemStack(String itemStackString) {
+        String[] split = itemStackString.split(":");
+        String itemName = split[0] + ":" + split[1];
+        Item item =  GameData.getItemRegistry().getObject(itemName);
+        if(item == null) {
+            throw new IllegalArgumentException("Invalid ItemStack item: " + itemName);
+        }
+        int amount = 1;
+        int meta = 0;
+        if(split.length > 2) {
+            try {
+                amount = Integer.parseInt(split[2]);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Invalid ItemStack amount: " + split[2]);
+            }
+            if(split.length > 3) {
+                try {
+                    meta = Integer.parseInt(split[3]);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid ItemStack meta: " + split[3]);
+                }
+            }
+        }
+        return new ItemStack(item, amount, meta);
     }
 
 }

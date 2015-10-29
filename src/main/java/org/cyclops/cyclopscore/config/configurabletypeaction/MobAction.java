@@ -26,7 +26,11 @@ public class MobAction extends ConfigurableTypeAction<MobConfig>{
         
         // Register mob
         Class<? extends EntityLiving> clazz = (Class<? extends EntityLiving>) eConfig.getElement();
-        EntityRegistry.registerModEntity(clazz, eConfig.getNamedId(), Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY), eConfig.getMod(), 80, 3, true, eConfig.getBackgroundEggColor(), eConfig.getForegroundEggColor());
+        if(eConfig.hasSpawnEgg()) {
+            EntityRegistry.registerModEntity(clazz, eConfig.getNamedId(), Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY), eConfig.getMod(), 80, 3, true, eConfig.getBackgroundEggColor(), eConfig.getForegroundEggColor());
+        } else {
+            EntityRegistry.registerModEntity(clazz, eConfig.getNamedId(), Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY), eConfig.getMod(), 80, 3, true);
+        }
     }
 
 }

@@ -93,4 +93,30 @@ public class LocationHelpers {
         return new Vec3i(vec1.getX() - vec2.getX(), vec1.getY() - vec2.getY(), vec1.getZ() - vec2.getZ());
     }
 
+    /**
+     * Get yaw from the start location to the end location.
+     * @param start Start
+     * @param end End
+     * @return The yaw
+     */
+    public static double getYaw(BlockPos start, BlockPos end) {
+        double dX = start.getX() - end.getX();
+        double dY = start.getY() - end.getY();
+        double dZ = start.getZ() - end.getZ();
+        return Math.atan2(dZ, dX) * 180 / Math.PI;
+    }
+
+    /**
+     * Get pitch from the start location to the end location.
+     * @param start Start
+     * @param end End
+     * @return The pitch
+     */
+    public static double getPitch(BlockPos start, BlockPos end) {
+        double dX = start.getX() - end.getX();
+        double dY = start.getY() - end.getY();
+        double dZ = start.getZ() - end.getZ();
+        return (Math.atan2(Math.sqrt(dZ * dZ + dX * dX), dY) + Math.PI) * 180 / Math.PI;
+    }
+
 }

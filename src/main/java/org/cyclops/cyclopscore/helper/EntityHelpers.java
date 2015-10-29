@@ -3,6 +3,8 @@ package org.cyclops.cyclopscore.helper;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3i;
@@ -85,4 +87,22 @@ public class EntityHelpers {
         int z = x;
         return new Vec3i(x, y, z);
     }
+
+	/**
+	 * Spawn xp orbs at the given player.
+	 * @param world The world.
+	 * @param player The player.
+	 * @param xp The amount of experience to spawn.
+	 */
+	public static void spawnXpAtPlayer(World world, EntityPlayer player, int xp) {
+		if(!world.isRemote) {
+			while (xp > 0) {
+				int current;
+				current = EntityXPOrb.getXPSplit(xp);
+				xp -= current;
+				world.spawnEntityInWorld(new EntityXPOrb(world, player.posX, player.posY + 0.5D, player.posZ + 0.5D, current));
+			}
+		}
+	}
+
 }

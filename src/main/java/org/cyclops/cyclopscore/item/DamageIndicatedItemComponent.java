@@ -36,8 +36,7 @@ public class DamageIndicatedItemComponent{
      * @param item
      *          The item class on which the behaviour will be added.
      */
-    public DamageIndicatedItemComponent(ItemFluidContainer item)
-    {
+    public DamageIndicatedItemComponent(ItemFluidContainer item) {
         this.item = item;
         item.setMaxStackSize(1);
     }
@@ -87,7 +86,8 @@ public class DamageIndicatedItemComponent{
     	if(fluidStack != null) {
     		prefix = fluidStack.getFluid().getLocalizedName(fluidStack) + ": ";
     	}
-        return prefix + amount + " / " + capacity + " mB";
+        return prefix + String.format("%,d", amount) +
+                " / " + String.format("%,d", capacity) + " mB";
     }
     
     /**

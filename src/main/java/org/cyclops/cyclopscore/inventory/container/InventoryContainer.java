@@ -15,6 +15,7 @@ import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.inventory.IValueNotifier;
 import org.cyclops.cyclopscore.inventory.container.button.IButtonActionServer;
 import org.cyclops.cyclopscore.inventory.container.button.IButtonClickAcceptorServer;
+import org.cyclops.cyclopscore.inventory.slot.SlotArmor;
 import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
 import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 
@@ -108,6 +109,18 @@ public abstract class InventoryContainer extends Container implements IButtonCli
         // Player hotbar
         offsetY += 58;
         addInventory(inventory, 0, offsetX, offsetY, 1, cols);
+    }
+
+    /**
+     * Add player armor inventory to the GUI.
+     * @param inventory Inventory of the player
+     * @param offsetX Offset to X
+     * @param offsetY Offset to Y
+     */
+    protected void addPlayerArmorInventory(InventoryPlayer inventory, int offsetX, int offsetY) {
+        for (int y = 0; y < 4; y++) {
+            addSlotToContainer(new SlotArmor(inventory, 4 * 9 + (3 - y), offsetX, offsetY + y * ITEMBOX, inventory.player, y));
+        }
     }
     
     protected abstract int getSizeInventory();

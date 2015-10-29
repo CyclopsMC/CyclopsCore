@@ -58,6 +58,11 @@ public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
     }
 
     @Optional.Method(modid = Reference.MOD_BAUBLES)
+    protected void setBaublesStack(int index, ItemStack itemStack) {
+        BaublesApi.getBaubles(innerIt.getPlayer()).setInventorySlotContents(index, itemStack);
+    }
+
+    @Optional.Method(modid = Reference.MOD_BAUBLES)
     protected void setBaublesData() {
         maxBaublesSize = BaublesApi.getBaubles(innerIt.getPlayer()).getSizeInventory();
         baublesIterator = 0;
@@ -66,6 +71,18 @@ public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
     @Override
     public void remove() {
         throw new RuntimeException("Not implemented.");
+    }
+
+    /**
+     * Replaces the itemstack on the position of the last returned itemstack.
+     * @param itemStack The itemstack to place.
+     */
+    public void replace(ItemStack itemStack) {
+        if(hasIteratedInner && baublesIterator > 0) {
+            setBaublesStack(baublesIterator - 1, itemStack);
+        } else {
+            innerIt.replace(itemStack);
+        }
     }
 
 }
