@@ -4,9 +4,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.cyclops.cyclopscore.helper.InventoryHelpers;
-import org.cyclops.cyclopscore.item.ItemGui;
+import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 
 /**
  * A container for an item.
@@ -14,7 +15,7 @@ import org.cyclops.cyclopscore.item.ItemGui;
  *
  * @param <I> The item instance.
  */
-public abstract class ItemInventoryContainer<I extends ItemGui> extends ExtendedInventoryContainer {
+public abstract class ItemInventoryContainer<I extends Item & IGuiContainerProvider> extends ExtendedInventoryContainer {
 	
 	protected I item;
 	protected int itemIndex;

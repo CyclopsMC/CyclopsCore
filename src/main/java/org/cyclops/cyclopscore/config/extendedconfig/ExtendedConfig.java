@@ -142,7 +142,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
                 | RuntimeException e) {
             mod.getLoggerHelper().getLogger().error(String.format("Registering %s caused an issue. ", getNamedId()), e);
             throw new CyclopsCoreConfigException(String.format("Registering %s caused the issue: %s",
-                    this.getNamedId(), e.getCause().getMessage()));
+                    this.getNamedId(), e.getMessage()));
         } catch (InvocationTargetException e) {
             mod.log(Level.ERROR, "Registering " + this.getNamedId() + " caused the issue "
                     + "(skipping registration): " + e.getCause().getMessage());

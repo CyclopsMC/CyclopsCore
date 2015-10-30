@@ -38,6 +38,14 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
 	public ResourceLocation getTexture() {
 		return texture;
 	}
+
+    protected void preRotate(T tile) {
+        GlStateManager.translate(0.5F, 0.5F, 0.5F);
+    }
+
+    protected void postRotate(T tile) {
+        GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+    }
     
     protected void renderTileEntityAt(T tile, double x, double y, double z, float partialTick, int destroyStage) {
         EnumFacing direction = tile.getRotation();
@@ -58,7 +66,7 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.translate((float) x, (float) y + 1.0F, (float) z + 1.0F);
         GlStateManager.scale(1.0F, -1.0F, -1.0F);
-        GlStateManager.translate(0.5F, 0.5F, 0.5F);
+        preRotate(tile);
         short rotation = 0;
 
         if (direction == EnumFacing.SOUTH) {
@@ -75,7 +83,7 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
         }
 
         GlStateManager.rotate((float) rotation, 0.0F, 1.0F, 0.0F);
-        GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+        postRotate(tile);
 
         renderModel(tile, getModel(), partialTick, destroyStage);
         GlStateManager.disableRescaleNormal();
