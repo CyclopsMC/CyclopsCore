@@ -20,6 +20,7 @@ import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
+import org.cyclops.cyclopscore.modcompat.IMCHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.network.PacketHandler;
 import org.cyclops.cyclopscore.persist.world.WorldStorage;
@@ -60,6 +61,7 @@ public abstract class ModBase {
     private final IKeyRegistry keyRegistry;
     private final PacketHandler packetHandler;
     private final ModCompatLoader modCompatLoader;
+    private final IMCHandler imcHandler;
     private final Debug debug;
 
     private CreativeTabs defaultCreativeTab = null;
@@ -77,6 +79,7 @@ public abstract class ModBase {
         this.keyRegistry = new KeyRegistry();
         this.packetHandler = constructPacketHandler();
         this.modCompatLoader = constructModCompatLoader();
+        this.imcHandler = constructIMCHandler();
         this.debug = new Debug(this);
 
         populateDefaultGenericReferences();
@@ -108,6 +111,10 @@ public abstract class ModBase {
 
     protected ModCompatLoader constructModCompatLoader() {
         return new ModCompatLoader(this);
+    }
+
+    protected IMCHandler constructIMCHandler() {
+        return new IMCHandler(this);
     }
 
     protected ICommand constructBaseCommand() {
