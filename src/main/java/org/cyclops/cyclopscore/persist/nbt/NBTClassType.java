@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.Vec3i;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -198,6 +199,54 @@ public abstract class NBTClassType<T> {
             protected Vec3i readPersistedField(String name, NBTTagCompound tag) {
                 int[] array = tag.getIntArray(name);
                 return new Vec3i(array[0], array[1], array[2]);
+            }
+        });
+
+        NBTYPES.put(Pair.class, new NBTClassType<Pair>() {
+
+            @Override
+            protected void writePersistedField(String name, Pair object, NBTTagCompound tag) {
+                NBTTagCompound pairTag = new NBTTagCompound();
+                NBTTagCompound leftTag = new NBTTagCompound();
+                NBTTagCompound rightTag = new NBTTagCompound();
+                getType(object.getLeft().getClass(), object).writePersistedField("element", object.getLeft(), leftTag);
+                getType(object.getRight().getClass(), object).writePersistedField("element", object.getRight(), rightTag);
+                pairTag.setString("leftType", object.getLeft().getClass().getName());
+                pairTag.setString("rightType", object.getRight().getClass().getName());
+                pairTag.setTag("left", leftTag);
+                pairTag.setTag("right", rightTag);
+                tag.setTag(name, pairTag);
+            }
+
+            @Override
+            protected Pair readPersistedField(String name, NBTTagCompound tag) {
+                NBTTagCompound pairTag = tag.getCompoundTag(name);
+                NBTTagCompound leftTag = pairTag.getCompoundTag("left");
+                NBTTagCompound rightTag = pairTag.getCompoundTag("right");
+
+                NBTClassType leftElementNBTClassType;
+                try {
+                    Class elementType = Class.forName(pairTag.getString("leftType"));
+                    leftElementNBTClassType = getType(elementType, Pair.class);
+                } catch (ClassNotFoundException e) {
+                    CyclopsCore.clog(Level.WARN, "No class found for NBT type Pair left element '" + pairTag.getString("leftType")
+                            + "', this could be a mod error.");
+                    return Pair.of(null, null);
+                }
+
+                NBTClassType rightElementNBTClassType;
+                try {
+                    Class elementType = Class.forName(pairTag.getString("rightType"));
+                    rightElementNBTClassType = getType(elementType, Pair.class);
+                } catch (ClassNotFoundException e) {
+                    CyclopsCore.clog(Level.WARN, "No class found for NBT type Pair right element '" + pairTag.getString("rightType")
+                            + "', this could be a mod error.");
+                    return Pair.of(null, null);
+                }
+
+                Object left = leftElementNBTClassType.readPersistedField("element", leftTag);
+                Object right = rightElementNBTClassType.readPersistedField("element", rightTag);
+                return Pair.of(left, right);
             }
         });
     }
