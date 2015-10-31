@@ -56,16 +56,15 @@ public class SlotFluidContainer extends Slot {
      * @return If the given item is valid.
      */
     public static boolean checkIsItemValid(ItemStack itemStack, SingleUseTank tank) {
-        if(itemStack != null && itemStack.stackSize == 1) {
+        if(itemStack != null
+                && (itemStack.stackSize == 1 || FluidContainerRegistry.drainFluidContainer(itemStack) == null
+                || FluidContainerRegistry.drainFluidContainer(itemStack).stackSize == 0)) {
             FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(itemStack);
             if(fluidStack == null && itemStack.getItem() instanceof IFluidContainerItem) {
-            	IFluidContainerItem container = (IFluidContainerItem) itemStack.getItem();
-            	fluidStack = container.getFluid(itemStack);
+                IFluidContainerItem container = (IFluidContainerItem) itemStack.getItem();
+                fluidStack = container.getFluid(itemStack);
             }
-            if(tank != null && itemStack.getItem() instanceof IFluidContainerItem) {
-                return true;
-            }
-            if(tank != null && tank.getAcceptedFluid() != null && fluidStack != null) {
+            if(tank.getAcceptedFluid() != null && fluidStack != null) {
                 return tank.canTankAccept(fluidStack.getFluid());
             }
         }
