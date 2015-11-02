@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore;
 
+import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCategory;
@@ -82,7 +83,7 @@ public class GeneralConfig extends DummyConfig {
     public void onRegistered() {
         // Check version of config file
         if(!version.equals(Reference.MOD_VERSION)) {
-            System.err.println("The config file of " + Reference.MOD_NAME + " is out of date and might cause problems, please remove it so it can be regenerated.");
+            getMod().log(Level.WARN, "The config file of " + Reference.MOD_NAME + " is out of date and might cause problems, please remove it so it can be regenerated.");
         }
 
         getMod().putGenericReference(ModBase.REFKEY_CRASH_ON_INVALID_RECIPE, GeneralConfig.crashOnInvalidRecipe);

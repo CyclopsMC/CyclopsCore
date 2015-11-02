@@ -62,37 +62,37 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
 		// Entity renderers
 		for (Entry<Class<? extends Entity>, Render> entry : entityRenderers.entrySet()) {
 			RenderingRegistry.registerEntityRenderingHandler(entry.getKey(), entry.getValue());
-            getMod().getLoggerHelper().log(Level.INFO, String.format("Registered %s renderer %s", entry.getKey(), entry.getValue()));
+            getMod().getLoggerHelper().log(Level.TRACE, String.format("Registered %s renderer %s", entry.getKey(), entry.getValue()));
 		}
 
 		// Special TileEntity renderers
 		for (Entry<Class<? extends TileEntity>, TileEntitySpecialRenderer> entry : tileEntityRenderers.entrySet()) {
 			ClientRegistry.bindTileEntitySpecialRenderer(entry.getKey(), entry.getValue());
-            getMod().getLoggerHelper().log(Level.INFO, String.format("Registered %s special renderer %s", entry.getKey(), entry.getValue()));
+            getMod().getLoggerHelper().log(Level.TRACE, String.format("Registered %s special renderer %s", entry.getKey(), entry.getValue()));
 		}
 	}
 
 	@Override
 	public void registerKeyBindings(IKeyRegistry keyRegistry) {
-        getMod().getLoggerHelper().log(Level.INFO, "Registered key bindings");
+        getMod().getLoggerHelper().log(Level.TRACE, "Registered key bindings");
 	}
 
     @Override
     public void registerPacketHandlers(PacketHandler packetHandler) {
         commonProxyComponent.registerPacketHandlers(packetHandler);
-        getMod().getLoggerHelper().log(Level.INFO, "Registered packet handlers");
+        getMod().getLoggerHelper().log(Level.TRACE, "Registered packet handlers");
     }
 
 	@Override
 	public void registerTickHandlers() {
         commonProxyComponent.registerTickHandlers();
-        getMod().getLoggerHelper().log(Level.INFO, "Registered tick handlers");
+        getMod().getLoggerHelper().log(Level.TRACE, "Registered tick handlers");
 	}
 
 	@Override
 	public void registerEventHooks() {
         commonProxyComponent.registerEventHooks();
-        getMod().getLoggerHelper().log(Level.INFO, "Registered event hooks");
+        getMod().getLoggerHelper().log(Level.TRACE, "Registered event hooks");
         FMLCommonHandler.instance().bus().register(getMod().getKeyRegistry());
     }
     

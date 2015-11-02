@@ -9,6 +9,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.configurable.IConfigurable;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.init.IInitListener;
@@ -87,7 +88,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
 	                // Call the listener
 	                eConfig.onRegistered();
 	
-	                mod.log("Registered " + eConfig.getNamedId());
+	                mod.log(Level.TRACE, "Registered " + eConfig.getNamedId());
 	                processedConfigs.add(eConfig);
 	                
 	                // Register as init listener.

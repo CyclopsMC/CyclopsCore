@@ -224,7 +224,7 @@ public abstract class ModBase {
      * @param event The pre-init event.
      */
     public void preInit(FMLPreInitializationEvent event) {
-        log(Level.INFO, "preInit()");
+        log(Level.TRACE, "preInit()");
 
         if(getConfigFolder() == null) {
             // Determine config folder.
@@ -266,7 +266,7 @@ public abstract class ModBase {
      * @param event The init event.
      */
     public void init(FMLInitializationEvent event) {
-        log(Level.INFO, "init()");
+        log(Level.TRACE, "init()");
 
         // Gui Handlers
         NetworkRegistry.INSTANCE.registerGuiHandler(getModId(), getGuiHandler());
@@ -302,7 +302,7 @@ public abstract class ModBase {
      * @param event The post-init event.
      */
     public void postInit(FMLPostInitializationEvent event) {
-        log(Level.INFO, "postInit()");
+        log(Level.TRACE, "postInit()");
 
         // Call init listeners
         callInitStepListeners(IInitListener.Step.POSTINIT);

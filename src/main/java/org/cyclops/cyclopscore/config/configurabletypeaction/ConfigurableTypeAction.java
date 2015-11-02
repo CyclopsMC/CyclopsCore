@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraftforge.common.config.Configuration;
+import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.UndisableableConfigException;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
@@ -33,7 +34,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
     }
     
     protected void onSkipRegistration(ExtendedConfig<C> eConfig) {
-        eConfig.getMod().log("Skipped registering " + eConfig.getNamedId());
+        eConfig.getMod().log(Level.TRACE, "Skipped registering " + eConfig.getNamedId());
     }
     
     /**
