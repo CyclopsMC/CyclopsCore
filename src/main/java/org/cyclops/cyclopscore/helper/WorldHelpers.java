@@ -7,6 +7,8 @@ import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
+import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.CyclopsCore;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -39,7 +41,7 @@ public class WorldHelpers {
         if(chunk != null) {
         	BlockPos c = getChunkLocationFromWorldLocation(pos.getX(), 0, pos.getZ());
             int rx = c.getX();
-            int rz = c.getY();
+            int rz = c.getZ();
             byte[] biomeArray = chunk.getBiomeArray();
             biomeArray[rz << 4 | rx] = (byte)(biome.biomeID & 255);
             chunk.setChunkModified();
@@ -50,6 +52,8 @@ public class WorldHelpers {
                 List<ChunkCoordIntPair> chunks = (List<ChunkCoordIntPair>)player.loadedChunks;
                 chunks.add(new ChunkCoordIntPair(chunk.xPosition, chunk.zPosition));
             }
+        } else {
+            CyclopsCore.clog(Level.WARN, "Tried changing biome at non-existing chunk for position " + pos);
         }
     }
 
