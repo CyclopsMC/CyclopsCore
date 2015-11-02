@@ -12,6 +12,7 @@ import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
 
 /**
@@ -307,6 +308,13 @@ public abstract class NBTClassType<T> {
         
         // Make editable, will set back to the original at the end of this call.
         boolean wasAccessible = field.isAccessible();
+        try {
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
         field.setAccessible(true);
 
         // Get a non-null action
