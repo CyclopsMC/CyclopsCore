@@ -1,0 +1,14 @@
+Changes:
+* Upmerge changes from CyclopsMC/EvilCraft@ccfbf7c
+
+Fixes:
+* Fix setBiome changing wrong location
+* Fix down side of double layered blocks not showing
+
+Changes:
+* Lower various log levels to TRACE to increase logging SNR
+* Make FluidContainer slots accept itemstacks of size larger than 1
+
+Lib features:
+* Add Pair NBT persist support
+* Port IMCHandler from EvilCraft
