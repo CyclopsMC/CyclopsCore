@@ -1,29 +1,23 @@
 package org.cyclops.cyclopscore.tileentity;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import com.google.common.collect.Maps;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
 import org.cyclops.cyclopscore.helper.DirectionHelpers;
 import org.cyclops.cyclopscore.inventory.SimpleInventory;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A TileEntity with an internal inventory.
+ * A TileEntity with a static internal inventory.
  * @author rubensworks
  *
  */
-public abstract class InventoryTileEntity extends CyclopsTileEntity implements ISidedInventory {
+public abstract class InventoryTileEntity extends InventoryTileEntityBase {
     
     protected SimpleInventory inventory;
     protected Map<EnumFacing, int[]> slotSides;
     protected Map<EnumFacing, Integer> slotSidesSize;
-    protected boolean sendUpdateOnInventoryChanged = false;
     
     /**
      * Make new tile with an inventory.
@@ -33,8 +27,8 @@ public abstract class InventoryTileEntity extends CyclopsTileEntity implements I
      */
     public InventoryTileEntity(int inventorySize, String inventoryName, int stackSize) {
         inventory = new SimpleInventory(inventorySize , inventoryName, stackSize);
-        slotSides = new HashMap<EnumFacing, int[]>();
-        slotSidesSize = new HashMap<EnumFacing, Integer>();
+        slotSides = Maps.newHashMap();
+        slotSidesSize = Maps.newHashMap();
         for(EnumFacing side : DirectionHelpers.DIRECTIONS) {
             // Init each side to it can theoretically hold all possible slots,
             // Integer lists are not option because Java allows to autoboxing
@@ -78,153 +72,10 @@ public abstract class InventoryTileEntity extends CyclopsTileEntity implements I
     public SimpleInventory getInventory() {
         return inventory;
     }
-    
-    @Override
-    public int getSizeInventory() {
-        return inventory.getSizeInventory();
-    }
-    
-    @Override
-    public ItemStack getStackInSlot(int slotId) {
-        if(slotId >= getSizeInventory() || slotId < 0)
-            return null;
-        return inventory.getStackInSlot(slotId);
-    }
-
-    @Override
-    public ItemStack decrStackSize(int slotId, int count) {
-        ItemStack itemStack  = inventory.decrStackSize(slotId, count);
-        onInventoryChanged();
-        return itemStack;
-    }
-
-    @Override
-    public ItemStack getStackInSlotOnClosing(int slotId) {
-        return inventory.getStackInSlotOnClosing(slotId);
-    }
-
-    @Override
-    public void setInventorySlotContents(int slotId, ItemStack itemstack) {
-        inventory.setInventorySlotContents(slotId, itemstack);
-        onInventoryChanged();
-    }
-
-    protected void onInventoryChanged() {
-        if(isSendUpdateOnInventoryChanged())
-            sendUpdate();
-    }
-
-    @Override
-    public String getCommandSenderName() {
-        return inventory.getCommandSenderName();
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return inventory.hasCustomName();
-    }
-
-    @Override
-    public IChatComponent getDisplayName() {
-        return null;
-    }
-
-    @Override
-    public int getInventoryStackLimit() {
-        return inventory.getInventoryStackLimit();
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer entityPlayer) {
-        return worldObj.getTileEntity(getPos()) == this && entityPlayer.getDistanceSq(getPos().add(0.5D, 0.5D, 0.5D)) <= 64.0D;
-    }
-
-    @Override
-    public void openInventory(EntityPlayer playerIn) {
-        inventory.openInventory(playerIn);
-    }
-
-    @Override
-    public void closeInventory(EntityPlayer playerIn) {
-        inventory.closeInventory(playerIn);
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return inventory.isItemValidForSlot(index, stack);
-    }
-
-    @Override
-    public int getField(int id) {
-        return inventory.getField(id);
-    }
-
-    @Override
-    public void setField(int id, int value) {
-        inventory.setField(id, value);
-    }
-
-    @Override
-    public int getFieldCount() {
-        return inventory.getFieldCount();
-    }
-
-    @Override
-    public void clear() {
-        inventory.clear();
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound tag) {
-        super.readFromNBT(tag);
-        inventory.readFromNBT(tag);
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound tag) {
-        super.writeToNBT(tag);
-        inventory.writeToNBT(tag);
-    }
 
     @Override
     public int[] getSlotsForFace(EnumFacing side) {
         return slotSides.get(side);
-    }
-    
-    private boolean canAccess(int slot, EnumFacing side) {
-        boolean canAccess = false;
-        for(int slotAccess : getSlotsForFace(side)) {
-            if(slotAccess == slot)
-                canAccess = true;
-        }
-        return canAccess;
-    }
-
-    @Override
-    public boolean canInsertItem(int slot, ItemStack itemStack, EnumFacing side) {
-        return canAccess(slot, side) && this.isItemValidForSlot(slot, itemStack);
-    }
-
-    @Override
-    public boolean canExtractItem(int slot, ItemStack itemStack, EnumFacing side) {
-        return canAccess(slot, side);
-    }
-
-    /**
-     * If this tile should send blockState updates when the inventory has changed.
-     * @return If it should send blockState updates.
-     */
-    public boolean isSendUpdateOnInventoryChanged() {
-        return sendUpdateOnInventoryChanged;
-    }
-
-    /**
-     * If this tile should send blockState updates when the inventory has changed.
-     * @param sendUpdateOnInventoryChanged If it should send blockState updates.
-     */
-    public void setSendUpdateOnInventoryChanged(
-            boolean sendUpdateOnInventoryChanged) {
-        this.sendUpdateOnInventoryChanged = sendUpdateOnInventoryChanged;
     }
     
 }

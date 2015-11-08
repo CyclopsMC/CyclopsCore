@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -10,6 +9,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
+import org.cyclops.cyclopscore.persist.nbt.INBTSerializable;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import java.util.List;
  * @author rubensworks
  *
  */
-public class SimpleInventory implements IInventory {
+public class SimpleInventory implements INBTInventory, INBTSerializable {
 
     private final ItemStack[] _contents;
     private final String _name;
@@ -116,10 +116,7 @@ public class SimpleInventory implements IInventory {
 
     }
 
-    /**
-     * Read inventory data from the given NBT.
-     * @param data The NBT data containing inventory data.
-     */
+    @Override
     public void readFromNBT(NBTTagCompound data) {
         readFromNBT(data, "items");
     }
@@ -149,10 +146,7 @@ public class SimpleInventory implements IInventory {
         }
     }
 
-    /**
-     * Write inventory data to the given NBT.
-     * @param data The NBT tag that will receive inventory data.
-     */
+    @Override
     public void writeToNBT(NBTTagCompound data) {
         writeToNBT(data, "items");
     }
@@ -247,9 +241,7 @@ public class SimpleInventory implements IInventory {
         return new ChatComponentTranslation(this.getCommandSenderName());
     }
 
-    /**
-     * @return If all slots are empty.
-     */
+    @Override
     public boolean isEmpty() {
         for(int i = 0; i < getSizeInventory(); i++) {
             if(getStackInSlot(i) != null) {
@@ -259,4 +251,15 @@ public class SimpleInventory implements IInventory {
         return true;
     }
 
+    @Override
+    public NBTTagCompound toNBT() {
+        NBTTagCompound tag = new NBTTagCompound();
+        writeToNBT(tag);
+        return tag;
+    }
+
+    @Override
+    public void fromNBT(NBTTagCompound tag) {
+        readFromNBT(tag);
+    }
 }
