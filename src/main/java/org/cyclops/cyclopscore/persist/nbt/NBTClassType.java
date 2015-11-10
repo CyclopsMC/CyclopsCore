@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.Vec3;
 import net.minecraft.util.Vec3i;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
@@ -200,6 +201,24 @@ public abstract class NBTClassType<T> {
             protected Vec3i readPersistedField(String name, NBTTagCompound tag) {
                 int[] array = tag.getIntArray(name);
                 return new Vec3i(array[0], array[1], array[2]);
+            }
+        });
+
+        NBTYPES.put(Vec3.class, new NBTClassType<Vec3>() {
+
+            @Override
+            protected void writePersistedField(String name, Vec3 object, NBTTagCompound tag) {
+                NBTTagCompound vec = new NBTTagCompound();
+                vec.setDouble("x", object.xCoord);
+                vec.setDouble("y", object.yCoord);
+                vec.setDouble("z", object.zCoord);
+                tag.setTag(name, vec);
+            }
+
+            @Override
+            protected Vec3 readPersistedField(String name, NBTTagCompound tag) {
+                NBTTagCompound vec = tag.getCompoundTag(name);
+                return new Vec3(vec.getDouble("x"), vec.getDouble("y"), vec.getDouble("z"));
             }
         });
 
