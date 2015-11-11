@@ -41,7 +41,7 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
         super(inventory, guiProvider);
         this.unfilteredItems = Lists.newArrayList(items);
         this.filteredItems = Lists.newLinkedList();
-        this.visibleItems = (List<E>) Arrays.asList(new Object[getPageSize()]);
+        this.visibleItems = (List<E>) Arrays.asList(new Object[getPageSize() * getColumns()]);
         for(int i = 0; i < getPageSize(); i++) {
             this.visibleItems.set(i, null);
         }
@@ -72,6 +72,13 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
     }
 
     /**
+     * @return The stepsize for scrolling.
+     */
+    public int getScrollStepSize() {
+        return getColumns();
+    }
+
+    /**
      * Scroll to the given relative position.
      * @param scroll A value between 0 and 1.
      */
@@ -79,8 +86,8 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
         onScroll();
         int rows = (getFilteredItemCount() + getColumns() - 1) / getColumns() - getPageSize();
         int firstRow = (int)((double)(scroll * (float)rows) + 0.5D);
+        firstRow -= firstRow % getScrollStepSize();
         if(firstRow < 0) firstRow = 0;
-
         for(int i = 0; i < getPageSize(); i++) {
             for(int j = 0; j < getColumns(); j++) {
                 int index = i * getColumns() + j;
@@ -105,12 +112,12 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
 
     /**
      * After scrolling, this will be called to make items visible.
-     * @param row The row to show the given element at.
+     * @param visibleIndex The visible item index.
      * @param elementIndex The absolute element index.
      * @param element The element to show.
      */
-    protected void enableElementAt(int row, int elementIndex, E element) {
-        this.visibleItems.set(row, element);
+    protected void enableElementAt(int visibleIndex, int elementIndex, E element) {
+        this.visibleItems.set(visibleIndex, element);
     }
 
     /**
@@ -143,7 +150,7 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
         } catch (PatternSyntaxException e) {
             pattern = Pattern.compile(".*");
         }
-        this.filteredItems = filter(unfilteredItems, itemSearchPredicate, pattern);
+        this.filteredItems = filter(getUnfilteredItems(), itemSearchPredicate, pattern);
         scrollTo(0); // Reset scroll, will also refresh items on-screen.
     }
 

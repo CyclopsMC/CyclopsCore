@@ -75,12 +75,10 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (isSearchEnabled() && !this.checkHotbarKeys(keyCode)) {
-            if (this.searchField.textboxKeyTyped(typedChar, keyCode)) {
-                this.updateSearch(searchField.getText());
-            } else {
-                super.keyTyped(typedChar, keyCode);
-            }
+        if (isSearchEnabled() && !this.checkHotbarKeys(keyCode) && this.searchField.textboxKeyTyped(typedChar, keyCode)) {
+            this.updateSearch(searchField.getText());
+        } else {
+            super.keyTyped(typedChar, keyCode);
         }
     }
 
