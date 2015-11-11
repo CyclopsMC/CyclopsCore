@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class SimpleInventory implements INBTInventory, INBTSerializable {
 
-    private final ItemStack[] _contents;
+    protected final ItemStack[] _contents;
     private final String _name;
     private final int _stackLimit;
     private final List<IDirtyMarkListener> dirtyMarkListeners = Lists.newLinkedList();
