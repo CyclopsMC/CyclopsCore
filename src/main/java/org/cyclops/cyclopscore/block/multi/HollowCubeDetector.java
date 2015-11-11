@@ -1,4 +1,4 @@
-package org.cyclops.cyclopscore.block;
+package org.cyclops.cyclopscore.block.multi;
 
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3i;

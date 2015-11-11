@@ -1,5 +1,6 @@
-package org.cyclops.cyclopscore.block;
+package org.cyclops.cyclopscore.block.multi;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
@@ -26,8 +27,7 @@ public class CubeDetector {
 	private Collection<AllowedBlock> allowedBlocks = Sets.newHashSet();
 	private Map<Block, AllowedBlock> blockInfo = Maps.newHashMap();
 	private List<? extends IDetectionListener> listeners;
-	private Vec3i minimumSize = NULL_SIZE;
-	private Vec3i exactSize = NULL_SIZE;
+	private List<ISizeValidator> sizeValidators = Lists.newLinkedList();
 	
 	private Map<Block, Integer> blockOccurences;
 
@@ -59,44 +59,19 @@ public class CubeDetector {
 	}
 	
 	/**
-	 * @return the minimumSize
+	 * @return the size validators
 	 */
-	public Vec3i getMinimumSize() {
-		return minimumSize;
+	public List<ISizeValidator> getSizeValidators() {
+		return sizeValidators;
 	}
 
 	/**
-	 * The size is the inner size -1 on each dimension, so 2x2x2 is one blockState in the middle open,
-	 * with edge blocks on the side forming a 3x3x3.
-	 * @param minimumSize the minimumSize to set
+	 * An optional size validator to add.
+	 * @param sizeValidator The validator object to check the size
 	 * @return this instance.
 	 */
-	public CubeDetector setMinimumSize(Vec3i minimumSize) {
-		this.minimumSize = minimumSize;
-		if(getExactSize() != NULL_SIZE) {
-			throw new IllegalStateException("Can not set both a minimum and exact size.");
-		}
-		return this;
-	}
-
-	/**
-	 * @return the exactSize
-	 */
-	public Vec3i getExactSize() {
-		return exactSize;
-	}
-
-	/**
-	 * The size is the inner size -1 on each dimension, so 2x2x2 is one block in the middle open,
-	 * with edge blocks on the side forming a 3x3x3.
-	 * @param exactSize the exactSize to set
-	 * @return this instance.
-	 */
-	public CubeDetector setExactSize(Vec3i exactSize) {
-		this.exactSize = exactSize;
-		if(getMinimumSize() != NULL_SIZE) {
-			throw new IllegalStateException("Can not set both a minimum and exact size.");
-		}
+	public CubeDetector addSizeValidator(ISizeValidator sizeValidator) {
+		this.sizeValidators.add(sizeValidator);
 		return this;
 	}
 	
@@ -268,9 +243,9 @@ public class CubeDetector {
 		if(blockInfo.containsKey(block)) {
 			int occurences = blockOccurences.get(block);
 			AllowedBlock allowed = blockInfo.get(block);
-			
-			if(allowed.getMaxOccurences() >= 0) {
-				if(occurences >= allowed.getMaxOccurences()) {
+
+			for(IBlockCountValidator validator : allowed.getCountValidators()) {
+				if(!validator.isValid(occurences, false)) {
 					return false;
 				}
 			}
@@ -317,8 +292,8 @@ public class CubeDetector {
 		if(minimumValid) {
 			for(AllowedBlock allowed : allowedBlocks) {
 				int occurences = blockOccurences.get(allowed.getBlock());
-				if(allowed.getExactOccurences() >= 0) {
-					if(occurences != allowed.getExactOccurences()) {
+				for(IBlockCountValidator validator : allowed.getCountValidators()) {
+					if(!validator.isValid(occurences, true)) {
 						return !valid;
 					}
 				}
@@ -416,25 +391,14 @@ public class CubeDetector {
 		}
 
 		Vec3i size = LocationHelpers.fromArray(distances);
-		if(getMinimumSize() != NULL_SIZE) {
-			// Check if the size is not smaller than the minimum required size.
-			// If it is smaller we immediately return a null-size, but if we are in invalidation-mode,
+		for(ISizeValidator validator : getSizeValidators()) {
+			// Check if the size iis valid.
+			// If it is invalid we immediately return a null-size, but if we are in invalidation-mode,
 			// we skip this step because we always want to be able to invalidate existing structures.
 			// TODO: the 'valid' condition might be impossible to have influence if all structure
 			// handling goes according to plan.
-			if (compareVec3i(size, getMinimumSize()) < 0 && excludeLocation == null) {
+			if (!validator.isSizeValid(size) && excludeLocation == null) {
 				// System.out.println("too small");
-				return LocationHelpers.copyLocation(NULL_SIZE);
-			}
-		}
-		if(getExactSize() != NULL_SIZE) {
-			// Check if the size is the exact required size.
-			// If it is smaller we immediately return a null-size, but if we are in invalidation-mode,
-			// we skip this step because we always want to be able to invalidate existing structures.
-			// TODO: the 'valid' condition might be impossible to have influence if all structure
-			// handling goes according to plan.
-			if (compareVec3i(size, getExactSize()) != 0 && excludeLocation == null) {
-				// System.out.println(size + " is not exactly " + getExactSize());
 				return LocationHelpers.copyLocation(NULL_SIZE);
 			}
 		}
@@ -443,27 +407,6 @@ public class CubeDetector {
         }
 		return size;
 	}
-
-	protected int compareVec3i(Vec3i vec1, Vec3i vec2) {
-        int i = 0;
-        boolean validBuffer = false;
-        int buffer = Integer.MAX_VALUE; // This is used to store the minimum compared value > 0
-        int[] v1 = LocationHelpers.toArray(vec1);
-        int[] v2 = LocationHelpers.toArray(vec2);
-        while(i < 3) {
-            if(v1[i] != v2[i]) {
-                int comp =  v1[i] - v2[i];
-                if(comp < 0) {
-                    return comp;
-                } else {
-                    validBuffer = true;
-                    buffer = Math.min(buffer, comp);
-                }
-            }
-            i++;
-        }
-        return validBuffer ? buffer: 0;
-    }
 	
 	/**
 	 * Listener for detections.
@@ -507,5 +450,5 @@ public class CubeDetector {
         public void onValidate(BlockPos location, Block block);
 
     }
-	
+
 }
