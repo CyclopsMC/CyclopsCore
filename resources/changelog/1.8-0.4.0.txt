@@ -1,0 +1,11 @@
+Fixes:
+* Fix scrolling gui issues with multiple columns
+
+Lib features:
+* Add maximum size validator
+* Add LargeInventory that can hold slots of a count larger than a byte
+* Add NBT persistence action for Vec3
+* Don't call tile inventory persistence when the inventory is null
+* Port Wrapper datastructure from CyclopsMC/EvilCraft
+* Port multiblock structure detector from CyclopsMC/EvilCraft
+* Add extra inventory abstraction
