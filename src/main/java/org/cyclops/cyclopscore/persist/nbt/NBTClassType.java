@@ -363,11 +363,15 @@ public abstract class NBTClassType<T> {
         if(write) {
             try {
                 T object = (T) field.get(castTile);
-                try {
-                	writePersistedField(name, object, tag);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                	throw new RuntimeException("Something went from with the field " + field.getName() + " in " + castTile + ": " + e.getMessage());
+                if(object == null) {
+                    tag.setBoolean("__null", true);
+                } else {
+                    try {
+                        writePersistedField(name, object, tag);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw new RuntimeException("Something went from with the field " + field.getName() + " in " + castTile + ": " + e.getMessage());
+                    }
                 }
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException("Can not write the field " + field.getName() + " in " + castTile + " since it does not exist.");
@@ -375,11 +379,14 @@ public abstract class NBTClassType<T> {
         } else {
             T object = null;
             try {
-                object = readPersistedField(name, tag);
+                if(!tag.getBoolean("__null")) {
+                    object = readPersistedField(name, tag);
+                }
                 field.set(castTile, object);
             }  catch (IllegalArgumentException e) {
                 throw new RuntimeException("Can not read the field " + field.getName() + " as " + object + " in " + castTile + " since it does not exist OR there is a class mismatch.");
             }
+
         }
     }
     
