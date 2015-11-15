@@ -364,7 +364,7 @@ public abstract class NBTClassType<T> {
             try {
                 T object = (T) field.get(castTile);
                 if(object == null) {
-                    tag.setBoolean("__null", true);
+                    tag.setBoolean("__null:" + name, true);
                 } else {
                     try {
                         writePersistedField(name, object, tag);
@@ -379,7 +379,7 @@ public abstract class NBTClassType<T> {
         } else {
             T object = null;
             try {
-                if(!tag.getBoolean("__null")) {
+                if(!tag.getBoolean("__null:" + name)) {
                     object = readPersistedField(name, tag);
                 }
                 field.set(castTile, object);
