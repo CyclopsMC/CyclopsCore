@@ -363,9 +363,7 @@ public abstract class NBTClassType<T> {
         if(write) {
             try {
                 T object = (T) field.get(castTile);
-                if(object == null) {
-                    tag.setBoolean("__null:" + name, true);
-                } else {
+                if(object != null) {
                     try {
                         writePersistedField(name, object, tag);
                     } catch (Exception e) {
@@ -379,10 +377,10 @@ public abstract class NBTClassType<T> {
         } else {
             T object = null;
             try {
-                if(!tag.getBoolean("__null:" + name)) {
+                if(tag.hasKey(name)) {
                     object = readPersistedField(name, tag);
+                    field.set(castTile, object);
                 }
-                field.set(castTile, object);
             }  catch (IllegalArgumentException e) {
                 throw new RuntimeException("Can not read the field " + field.getName() + " as " + object + " in " + castTile + " since it does not exist OR there is a class mismatch.");
             }
