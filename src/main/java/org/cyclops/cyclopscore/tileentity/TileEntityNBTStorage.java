@@ -16,5 +16,9 @@ public final class TileEntityNBTStorage {
      * The temporary tag storage for dropped NBT data from {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity}.
      */
     public static NBTTagCompound TAG = null;
+    /**
+     * The temporary tag storage for dropped custom name from {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity}.
+     */
+    public static String NAME = null;
     
 }

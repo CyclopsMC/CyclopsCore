@@ -222,6 +222,9 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
             if(TileEntityNBTStorage.TAG != null) {
                 itemStack.setTagCompound(TileEntityNBTStorage.TAG);
             }
+            if(TileEntityNBTStorage.NAME != null) {
+                itemStack.setStackDisplayName(TileEntityNBTStorage.NAME);
+            }
             drops.add(itemStack);
         }
         

@@ -10,6 +10,7 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldNameable;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.fluids.FluidStack;
@@ -231,6 +232,14 @@ public class MinecraftHelpers {
             ecTile.destroy();
         } else {
             TileEntityNBTStorage.TAG = null;
+        }
+
+        if (tile instanceof IWorldNameable && ((IWorldNameable) tile).hasCustomName()) {
+            // Cache
+            IWorldNameable ecTile = ((IWorldNameable) tile);
+            TileEntityNBTStorage.NAME = ecTile.getCommandSenderName();
+        } else {
+            TileEntityNBTStorage.NAME = null;
         }
     }
 
