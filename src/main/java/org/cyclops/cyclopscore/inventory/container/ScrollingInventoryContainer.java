@@ -84,14 +84,14 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
      */
     public void scrollTo(float scroll) {
         onScroll();
-        int rows = (getFilteredItemCount() + getColumns() - 1) / getColumns() - getPageSize();
-        int firstRow = (int)((double)(scroll * (float)rows) + 0.5D);
-        firstRow -= firstRow % getScrollStepSize();
-        if(firstRow < 0) firstRow = 0;
+        int elements = (getFilteredItemCount() + getColumns() - 1) - getPageSize() * getColumns();
+        int firstElement = (int)((double)(scroll * (float)elements) + 0.5D);
+        firstElement -= firstElement % getScrollStepSize();
+        if(firstElement < 0) firstElement = 0;
         for(int i = 0; i < getPageSize(); i++) {
             for(int j = 0; j < getColumns(); j++) {
                 int index = i * getColumns() + j;
-                int elementIndex = index + firstRow;
+                int elementIndex = index + firstElement;
                 this.visibleItems.set(index, null);
                 if(elementIndex < getFilteredItemCount()) {
                     Pair<Integer, E> filteredItem = getFilteredItems().get(elementIndex);
