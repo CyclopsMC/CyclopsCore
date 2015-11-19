@@ -9,7 +9,6 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.IChatComponent;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
-import org.cyclops.cyclopscore.persist.nbt.INBTSerializable;
 
 import java.util.List;
 
@@ -18,12 +17,19 @@ import java.util.List;
  * @author rubensworks
  *
  */
-public class SimpleInventory implements INBTInventory, INBTSerializable {
+public class SimpleInventory implements INBTInventory {
 
     protected final ItemStack[] _contents;
     private final String _name;
     private final int _stackLimit;
     private final List<IDirtyMarkListener> dirtyMarkListeners = Lists.newLinkedList();
+
+    /**
+     * Default constructor for NBT persistence, don't call this yourself.
+     */
+    public SimpleInventory() {
+        this(0, "", 0);
+    }
 
     /**
      * Make a new instance.

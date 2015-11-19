@@ -2,12 +2,13 @@ package org.cyclops.cyclopscore.inventory;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
+import org.cyclops.cyclopscore.persist.nbt.INBTSerializable;
 
 /**
  * An {@link IInventory} that support NBT persistence.
  * @author rubensworks
  */
-public interface INBTInventory extends IInventory {
+public interface INBTInventory extends IInventory, INBTSerializable {
 
     /**
      * Read inventory data from the given NBT.

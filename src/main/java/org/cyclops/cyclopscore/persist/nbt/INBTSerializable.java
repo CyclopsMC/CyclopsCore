@@ -13,6 +13,8 @@ import java.lang.reflect.Method;
 
 /**
  * Objects that are serializable to NBT.
+ * Classes implementing must have a public default constructor which will be used
+ * for NBT reading instantiation.
  * @author rubensworks
  *
  */
