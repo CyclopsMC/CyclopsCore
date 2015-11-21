@@ -93,7 +93,7 @@ public class CubeDetector {
 		IBlockState blockState = world.getBlockState(location);
 		Block block = blockState.getBlock();
 		boolean contains = location.equals(excludeLocation) || blockInfo.containsKey(block);
-        if(contains && action != null && !action.onValidate(location, blockState)) {
+        if(blockInfo.containsKey(block) && action != null && !action.onValidate(location, blockState)) {
 			return false;
 		}
         return contains;

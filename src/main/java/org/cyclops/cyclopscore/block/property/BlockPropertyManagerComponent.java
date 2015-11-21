@@ -39,17 +39,22 @@ import java.util.*;
 @Data
 public class BlockPropertyManagerComponent implements IBlockPropertyManager {
 
-    private static final Comparator<IProperty> PROPERTY_COMPARATOR = new PropertyComparator();
-    private static final Comparator<IUnlistedProperty> UNLISTEDPROPERTY_COMPARATOR = new UnlistedPropertyComparator();
+    private static final Comparator<IProperty> DEFAULT_PROPERTY_COMPARATOR = new PropertyComparator();
+    private static final Comparator<IUnlistedProperty> DEFAULT_UNLISTEDPROPERTY_COMPARATOR = new UnlistedPropertyComparator();
 
     private final Block block;
     private final IProperty[] properties;
     private final IUnlistedProperty[] unlistedProperties;
     private final IProperty[] propertiesReversed;
     private final Map<IProperty, ArrayList<Comparable>> propertyValues;
+    private final Comparator<IProperty> propertyComparator;
+    private final Comparator<IUnlistedProperty> unlistedPropertyComparator;
 
-    public BlockPropertyManagerComponent(Block block) {
+    public BlockPropertyManagerComponent(Block block, Comparator<IProperty> propertyComparator,
+                                         Comparator<IUnlistedProperty> unlistedPropertyComparator) {
         this.block = block;
+        this.propertyComparator = propertyComparator;
+        this.unlistedPropertyComparator = unlistedPropertyComparator;
         try {
             Pair<IProperty[], IUnlistedProperty[]> allProperties = preprocessProperties();
             this.properties = allProperties.getLeft();
@@ -62,10 +67,22 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
         }
     }
 
+    public BlockPropertyManagerComponent(Block block) {
+        this(block, DEFAULT_PROPERTY_COMPARATOR, DEFAULT_UNLISTEDPROPERTY_COMPARATOR);
+    }
+
+    private Comparator<IProperty> getPropertyComponent() {
+        return this.propertyComparator;
+    }
+
+    private Comparator<IUnlistedProperty> getUnlistedPropertyComponent() {
+        return this.unlistedPropertyComparator;
+    }
+
     private Pair<IProperty[], IUnlistedProperty[]> preprocessProperties() throws IllegalAccessException {
-        TreeSet<IProperty> sortedProperties = Sets.newTreeSet(PROPERTY_COMPARATOR);
-        TreeSet<IUnlistedProperty> sortedUnlistedProperties = Sets.newTreeSet(UNLISTEDPROPERTY_COMPARATOR);
-        TreeSet<IProperty> ignoredProperties = Sets.newTreeSet(PROPERTY_COMPARATOR);
+        TreeSet<IProperty> sortedProperties = Sets.newTreeSet(getPropertyComparator());
+        TreeSet<IUnlistedProperty> sortedUnlistedProperties = Sets.newTreeSet(getUnlistedPropertyComparator());
+        TreeSet<IProperty> ignoredProperties = Sets.newTreeSet(getPropertyComparator());
         for(Class<?> clazz = block.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
             for(Field field : clazz.getDeclaredFields()) {
                 if(field.isAnnotationPresent(BlockProperty.class)) {
@@ -166,14 +183,14 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
         }
     }
 
-    private static class PropertyComparator implements Comparator<IProperty> {
+    public static class PropertyComparator implements Comparator<IProperty> {
         @Override
         public int compare(IProperty o1, IProperty o2) {
             return o1.getName().compareTo(o2.getName());
         }
     }
 
-    private static class UnlistedPropertyComparator implements Comparator<IUnlistedProperty> {
+    public static class UnlistedPropertyComparator implements Comparator<IUnlistedProperty> {
         @Override
         public int compare(IUnlistedProperty o1, IUnlistedProperty o2) {
             return o1.getName().compareTo(o2.getName());

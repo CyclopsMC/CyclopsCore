@@ -32,7 +32,7 @@ import java.util.Collection;
  */
 public class ConfigurableBlock extends Block implements IConfigurableBlock, IDynamicModelElement {
 
-    @Delegate private IBlockPropertyManager propertyManager;
+    @Delegate protected IBlockPropertyManager propertyManager;
     @Override protected BlockState createBlockState() {
         return (propertyManager = new BlockPropertyManagerComponent(this)).createDelegatedBlockState();
     }
