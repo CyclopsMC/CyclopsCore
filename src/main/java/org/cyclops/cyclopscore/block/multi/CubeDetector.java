@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
@@ -89,9 +90,12 @@ public class CubeDetector {
 	}
 	
 	protected boolean isValidLocation(World world, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
-		Block block = world.getBlockState(location).getBlock();
+		IBlockState blockState = world.getBlockState(location);
+		Block block = blockState.getBlock();
 		boolean contains = location.equals(excludeLocation) || blockInfo.containsKey(block);
-        if(contains && action != null) action.onValidate(location, block);
+        if(contains && action != null && !action.onValidate(location, blockState)) {
+			return false;
+		}
         return contains;
 	}
 
@@ -445,9 +449,10 @@ public class CubeDetector {
         /**
          * An action to execute when a location has been validated.
          * @param location The location that was successfully validated.
-         * @param block The blockState on that location.
+         * @param blockState The blockState on that location.
+		 * @return If the location is valid.
          */
-        public void onValidate(BlockPos location, Block block);
+        public boolean onValidate(BlockPos location, IBlockState blockState);
 
     }
 
