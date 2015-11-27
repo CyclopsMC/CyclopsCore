@@ -20,7 +20,7 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
     private static final int SCROLL_BUTTON_WIDTH = 12;
     private static final int SEARCH_WIDTH = 89;
 
-    private float currentScroll; // (0 = top, 1 = bottom)
+    protected float currentScroll; // (0 = top, 1 = bottom)
     private boolean isScrolling; // if the scrollbar is being dragged
     private boolean wasClicking; // if the left mouse button was held down last time drawScreen was called
 
@@ -82,18 +82,21 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
         }
     }
 
+    protected int getScrollStep() {
+        return getScrollingInventoryContainer().getFilteredItemCount() / getScrollingInventoryContainer().getColumns()
+                - getScrollingInventoryContainer().getPageSize() + 1;
+    }
+
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
         int i = Mouse.getEventDWheel();
 
         if (i != 0 && this.needsScrollBars()) {
-            int j = getScrollingInventoryContainer().getFilteredItemCount() / 9 - 5 + 1;
-
             if (i > 0) i = 1;
             if (i < 0) i = -1;
 
-            this.currentScroll = (float)((double)this.currentScroll - (double)i / (double)j);
+            this.currentScroll = (float)((double)this.currentScroll - (double)i / (double)getScrollStep());
             this.currentScroll = MathHelper.clamp_float(this.currentScroll, 0.0F, 1.0F);
             getScrollingInventoryContainer().scrollTo(this.currentScroll);
         }
