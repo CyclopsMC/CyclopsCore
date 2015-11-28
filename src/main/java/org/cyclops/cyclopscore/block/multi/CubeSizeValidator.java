@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.block.multi;
 
 import net.minecraft.util.Vec3i;
+import org.cyclops.cyclopscore.helper.L10NHelpers;
+import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 /**
  * A validator to check if all sides have an equal length.
@@ -8,7 +10,11 @@ import net.minecraft.util.Vec3i;
  */
 public class CubeSizeValidator implements ISizeValidator {
     @Override
-    public boolean isSizeValid(Vec3i size) {
-        return size.getX() == size.getY() && size.getY() == size.getZ();
+    public L10NHelpers.UnlocalizedString isSizeValid(Vec3i size) {
+        if(size.getX() == size.getY() && size.getY() == size.getZ()) {
+            return null;
+        }
+        return new L10NHelpers.UnlocalizedString("multiblock.cyclopscore.error.size.cube",
+                LocationHelpers.toCompactString(size));
     }
 }

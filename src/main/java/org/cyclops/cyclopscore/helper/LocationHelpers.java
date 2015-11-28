@@ -119,4 +119,22 @@ public class LocationHelpers {
         return (Math.atan2(Math.sqrt(dZ * dZ + dX * dX), dY) + Math.PI) * 180 / Math.PI;
     }
 
+    /**
+     * Compactly format a position.
+     * @param pos The position.
+     * @return The string.
+     */
+    public static String toCompactString(BlockPos pos) {
+        return String.format("x: %s ; y: %s ;z: %s", pos.getX(), pos.getY(), pos.getZ());
+    }
+
+    /**
+     * Compactly format a vector.
+     * @param vec The vector.
+     * @return The string.
+     */
+    public static String toCompactString(Vec3i vec) {
+        return String.format("%sx%sx%s", vec.getX(), vec.getY(), vec.getZ());
+    }
+
 }

@@ -3,6 +3,8 @@ package org.cyclops.cyclopscore.block.multi;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
+import org.cyclops.cyclopscore.helper.L10NHelpers;
+import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class HollowCubeDetector extends CubeDetector {
 
 			@Override
 			public boolean run(World world, BlockPos location) {
-				if(isEdge(world, dimensionEgdes, location) && isValidLocation(world, location, excludeLocation)) {
+				if(isEdge(world, dimensionEgdes, location) && isValidLocation(world, location, excludeLocation) == null) {
 					notifyListeners(world, location, size, valid, originCorner);
 				}
 				return true;
@@ -38,20 +40,22 @@ public class HollowCubeDetector extends CubeDetector {
 	}
 	
 	@Override
-	protected boolean validateLocationInStructure(World world, int[][] dimensionEgdes, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
+	protected L10NHelpers.UnlocalizedString validateLocationInStructure(World world, int[][] dimensionEgdes, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
 		// Validate edge or air.
+		L10NHelpers.UnlocalizedString error;
 		if (isEdge(world, dimensionEgdes, location)) {
-			if (!isValidLocation(world, location, action, excludeLocation)) {
+			if ((error = isValidLocation(world, location, action, excludeLocation)) != null) {
 				//System.out.println("No edge at " + location);
-				return false;
+				return error;
 			}
 		} else {
 			if (!isAir(world, location)) {
 				//System.out.println("No air at " + location);
-				return false;
+				return new L10NHelpers.UnlocalizedString("multiblock.cyclopscore.error.hollow.air",
+						LocationHelpers.toCompactString(location));
 			}
 		}
-		return true;
+		return null;
 	}
 
 }
