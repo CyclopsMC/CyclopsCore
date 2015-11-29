@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import io.netty.handler.codec.EncoderException;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
@@ -61,6 +62,19 @@ public abstract class PacketCodec extends PacketBase {
 			@Override
 			public Object decode(ByteArrayDataInput input) {
 				return input.readInt();
+			}
+		});
+
+		codecActions.put(short.class, new ICodecAction() {
+
+			@Override
+			public void encode(Object object, ByteArrayDataOutput output) {
+				output.writeShort((Short) object);
+			}
+
+			@Override
+			public Object decode(ByteArrayDataInput input) {
+				return input.readShort();
 			}
 		});
 		
@@ -184,6 +198,110 @@ public abstract class PacketCodec extends PacketBase {
 				}
 			}
 		});
+
+		codecActions.put(ItemStack.class, new ICodecAction() {
+
+			@Override
+			public void encode(Object object, ByteArrayDataOutput output) {
+				try {
+					output.writeBoolean(object != null);
+					if(object != null) {
+						NBTTagCompound tag = new NBTTagCompound();
+						((ItemStack) object).writeToNBT(tag);
+						CompressedStreamTools.write(tag, output);
+					}
+				} catch (IOException ioexception) {
+					throw new EncoderException(ioexception);
+				}
+			}
+
+			@Override
+			public Object decode(ByteArrayDataInput input) {
+				try {
+					if(input.readBoolean()) {
+						NBTTagCompound tag = CompressedStreamTools.read(input, new NBTSizeTracker(2097152L));
+						return ItemStack.loadItemStackFromNBT(tag);
+					} else {
+						return null;
+					}
+				} catch (IOException ioexception) {
+					throw new EncoderException(ioexception);
+				}
+			}
+		});
+
+		codecActions.put(List.class, new ICodecAction() {
+
+			// Packet structure:
+			// list length (int)
+			// --- end if length == 0
+			// Value class name (UTF)
+			// 	id + value
+			// -1
+
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+			@Override
+			public void encode(Object object, ByteArrayDataOutput output) {
+				List list = (List) object;
+				output.writeInt(list.size());
+				ICodecAction valueAction = null;
+				for(int i = 0; i < list.size(); i++) {
+					Object value = list.get(i);
+					if(value != null) {
+						if (valueAction == null) {
+							valueAction = getAction(value.getClass());
+							output.writeUTF(value.getClass().getName());
+						}
+						output.writeInt(i);
+						valueAction.encode(value, output);
+					}
+				}
+				if(valueAction == null) {
+					output.writeUTF("__noclass");
+				}
+				output.writeInt(-1);
+			}
+
+			@SuppressWarnings({ "rawtypes", "unchecked" })
+			@Override
+			public Object decode(ByteArrayDataInput input) {
+				List list;
+				int size = input.readInt();
+				if(size == 0) {
+					return Collections.emptyList();
+				} else {
+					list = Lists.newArrayListWithExpectedSize(size);
+				}
+				try {
+					String className = input.readUTF();
+					if(!className.equals("__noclass")) {
+						ICodecAction valueAction = getAction(Class.forName(className));
+						int actualI = -1;
+						for (int i = 0; i < size; i++) {
+							if (actualI < i) {
+								actualI = input.readInt();
+								if (actualI == -1) {
+									break;
+								}
+							}
+							if (actualI == i) {
+								Object value = valueAction.decode(input);
+								list.add(value);
+							} else {
+								list.add(null);
+							}
+						}
+					} else {
+						for (int i = 0; i < size; i++) {
+							list.add(null);
+						}
+					}
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+				return list;
+			}
+		});
 	}
 
     private SingleCache<Void, List<Field>> fieldCache = new SingleCache<Void, List<Field>>(
@@ -239,16 +357,20 @@ public abstract class PacketCodec extends PacketBase {
 	}
 	
 	private void loopCodecFields(ICodecRunnable runnable) {
-        for(Field field : fieldCache.get(null)) {
-            Class<?> clazz = field.getType();
-            ICodecAction action = getAction(clazz);
+		try {
+			for (Field field : fieldCache.get(null)) {
+				Class<?> clazz = field.getType();
+				ICodecAction action = getAction(clazz);
 
-            // Make private fields temporarily accessible.
-            boolean accessible = field.isAccessible();
-            field.setAccessible(true);
-            runnable.run(field, action);
-            field.setAccessible(accessible);
-        }
+				// Make private fields temporarily accessible.
+				boolean accessible = field.isAccessible();
+				field.setAccessible(true);
+				runnable.run(field, action);
+				field.setAccessible(accessible);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
