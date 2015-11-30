@@ -62,6 +62,14 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
         
         loadConfig();
     }
+
+    /**
+     * Add a config category.
+     * @param category The category to add.
+     */
+    public void addCategory(String category) {
+        categories.add(category);
+    }
     
     /**
      * Iterate over the given ExtendedConfigs to read/write the config and register the given elements.
@@ -69,7 +77,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
     @SuppressWarnings("unchecked")
     public void loadConfig() {
         for(ExtendedConfig<?> eConfig : this) {
-            categories.add(eConfig.getHolderType().getCategory());
+            addCategory(eConfig.getHolderType().getCategory());
             if(!eConfig.isHardDisabled()) {
                 // Save additional properties
                 for(ConfigProperty configProperty : eConfig.configProperties) {
