@@ -40,7 +40,7 @@ public class ModCompatLoader implements IInitListener {
     
     @Override
     public void onInit(IInitListener.Step step) {
-        if(step == Step.PREINIT) {
+        if(step == Step.PREINIT && !modCompats.isEmpty()) {
             mod.getConfigHandler().addCategory(CONFIG_CATEGORY);
         }
         for(IModCompat modCompat : modCompats) {
