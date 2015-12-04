@@ -1,0 +1,13 @@
+Fixes:
+* Show mod compats in gui config, Closes #7
+* Fix scrollbar not reaching entire list for multi-column guis
+
+Lib features:
+* Add new PacketCodec fields and add debug information
+* Make CubeDetector return error messages
+* Add option to use a custom blockstate property comparator
+* Allow IValidationAction to deny structure forming
+
+Lib changes:
+* Move INBTPersist annotation to INBTInventory instead of impl
+* Make some scrolling gui elements public
