@@ -56,7 +56,7 @@ public abstract class PacketCodec extends PacketBase {
 
 			@Override
 			public void encode(Object object, ByteArrayDataOutput output) {
-				output.writeInt((Integer) object);
+				output.writeInt((int) object);
 			}
 
 			@Override
@@ -244,6 +244,7 @@ public abstract class PacketCodec extends PacketBase {
 			public void encode(Object object, ByteArrayDataOutput output) {
 				List list = (List) object;
 				output.writeInt(list.size());
+				if(list.size() == 0) return;
 				ICodecAction valueAction = null;
 				for(int i = 0; i < list.size(); i++) {
 					Object value = list.get(i);
@@ -256,10 +257,11 @@ public abstract class PacketCodec extends PacketBase {
 						valueAction.encode(value, output);
 					}
 				}
-				if(valueAction == null) {
+                if(valueAction == null) {
 					output.writeUTF("__noclass");
+				} else {
+					output.writeInt(-1);
 				}
-				output.writeInt(-1);
 			}
 
 			@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -276,21 +278,20 @@ public abstract class PacketCodec extends PacketBase {
 					String className = input.readUTF();
 					if(!className.equals("__noclass")) {
 						ICodecAction valueAction = getAction(Class.forName(className));
-						int actualI = -1;
-						for (int i = 0; i < size; i++) {
-							if (actualI < i) {
-								actualI = input.readInt();
-								if (actualI == -1) {
-									break;
-								}
-							}
-							if (actualI == i) {
-								Object value = valueAction.decode(input);
-								list.add(value);
-							} else {
-								list.add(null);
-							}
-						}
+                        int i, currentLength = 0;
+                        while((i = input.readInt()) >= 0) {
+                            while(currentLength < i) {
+                                list.add(null);
+                                currentLength++;
+                            }
+                            Object value = valueAction.decode(input);
+                            list.add(value);
+                            currentLength++;
+                        }
+                        while(currentLength < size) {
+                            list.add(null);
+                            currentLength++;
+                        }
 					} else {
 						for (int i = 0; i < size; i++) {
 							list.add(null);
