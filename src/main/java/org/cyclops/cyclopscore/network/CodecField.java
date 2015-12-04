@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * Give this annotation to fields in {@link PacketCodec} to auto encode/decode them.
+ * Fields annotated with this annotations must not be null.
  * @author rubensworks
  *
  */
