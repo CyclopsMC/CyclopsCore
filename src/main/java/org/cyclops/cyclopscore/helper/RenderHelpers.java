@@ -8,6 +8,7 @@ import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.item.ItemStack;
@@ -134,7 +135,7 @@ public class RenderHelpers {
      */
     public static void renderItem(ItemStack itemStack) {
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-        renderItem.renderItem(itemStack, renderItem.getItemModelMesher().getItemModel(itemStack));
+        renderItem.func_181564_a(itemStack, ItemCameraTransforms.TransformType.NONE);
     }
 
 }
