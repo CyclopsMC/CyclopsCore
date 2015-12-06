@@ -8,7 +8,9 @@ import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -124,6 +126,15 @@ public class RenderHelpers {
             EntityFX fx = new EntityDiggingFX.Factory().getEntityFX(-1, world, d0, d1, d2, 0.0D, 0.0D, 0.0D, Block.getStateId(blockState));
             effectRenderer.addEffect(fx);
         }
+    }
+
+    /**
+     * Render the given item in the world.
+     * @param itemStack The item stack.
+     */
+    public static void renderItem(ItemStack itemStack) {
+        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+        renderItem.renderItem(itemStack, renderItem.getItemModelMesher().getItemModel(itemStack));
     }
 
 }

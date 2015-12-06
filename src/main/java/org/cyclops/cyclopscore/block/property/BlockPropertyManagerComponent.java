@@ -124,7 +124,7 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
         IProperty[] ignoredPropertiesArray = new IProperty[ignoredProperties.size()];
         ignoredProperties.toArray(ignoredPropertiesArray);
         ModelLoader.setCustomStateMapper(block,
-                (new StateMap.Builder()).addPropertiesToIgnore(ignoredPropertiesArray).build());
+                (new StateMap.Builder()).ignore(ignoredPropertiesArray).build());
     }
 
     @SuppressWarnings("unchecked")

@@ -55,7 +55,7 @@ public class ConnectedBlockModel extends DynamicModel {
         float[][] v = UVS;
 
         List<BakedQuad> ret = Lists.newLinkedList();
-        TextureAtlasSprite backgroundTexture = getTexture();
+        TextureAtlasSprite backgroundTexture = getParticleTexture();
         TextureAtlasSprite sideTexture = block.getTexture("border");
         TextureAtlasSprite cornerTexture = block.getTexture("corner");
         TextureAtlasSprite innerCornerTexture= block.getTexture("innerCorner");
@@ -113,7 +113,7 @@ public class ConnectedBlockModel extends DynamicModel {
     }
 
     @Override
-    public TextureAtlasSprite getTexture() {
+    public TextureAtlasSprite getParticleTexture() {
         return block.getTexture("background");
     }
 }

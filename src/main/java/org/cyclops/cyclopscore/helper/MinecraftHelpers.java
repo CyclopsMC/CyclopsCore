@@ -197,7 +197,7 @@ public class MinecraftHelpers {
         if(fluid1 == null) { // fluid2 is always null now
             return true;
         }
-        return fluid1.getFluidID() == fluid2.getFluidID() && fluid1.amount == fluid2.amount;
+        return fluid1.getFluid().getID() == fluid2.getFluid().getID() && fluid1.amount == fluid2.amount;
     }
 
     /**
@@ -237,7 +237,7 @@ public class MinecraftHelpers {
         if (tile instanceof IWorldNameable && ((IWorldNameable) tile).hasCustomName()) {
             // Cache
             IWorldNameable ecTile = ((IWorldNameable) tile);
-            TileEntityNBTStorage.NAME = ecTile.getCommandSenderName();
+            TileEntityNBTStorage.NAME = ecTile.getName();
         } else {
             TileEntityNBTStorage.NAME = null;
         }

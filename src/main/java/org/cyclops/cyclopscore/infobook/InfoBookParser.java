@@ -149,7 +149,7 @@ public class InfoBookParser {
         if(!node.getAttribute("meta").isEmpty()) {
             meta = Integer.parseInt(node.getAttribute("meta"));
         }
-        Item item = GameData.getItemRegistry().getObject(node.getTextContent());
+        Item item = GameData.getItemRegistry().getObject(new ResourceLocation(node.getTextContent()));
         if(item == null) {
             throw new InvalidAppendixException("Invalid item " + node.getTextContent());
         }

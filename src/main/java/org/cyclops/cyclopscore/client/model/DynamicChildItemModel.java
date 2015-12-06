@@ -22,8 +22,8 @@ public abstract class DynamicChildItemModel extends DynamicBaseModel implements 
     }
 
     @Override
-    public TextureAtlasSprite getTexture() {
-        return getBaseModel().getTexture();
+    public TextureAtlasSprite getParticleTexture() {
+        return getBaseModel().getParticleTexture();
     }
 
     @SuppressWarnings("unchecked")

@@ -7,10 +7,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
@@ -263,7 +263,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     /**
      * Apply this interface on any tile classes that should tick.
      */
-    public static interface ITickingTile extends IUpdatePlayerListBox {
+    public static interface ITickingTile extends ITickable {
 
     }
 

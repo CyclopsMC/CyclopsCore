@@ -176,7 +176,7 @@ public class SimpleInventory implements INBTInventory {
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slotId) {
+    public ItemStack removeStackFromSlot(int slotId) {
         if (this._contents[slotId] == null) {
             return null;
         }
@@ -233,7 +233,7 @@ public class SimpleInventory implements INBTInventory {
 	}
 
     @Override
-    public String getCommandSenderName() {
+    public String getName() {
         return _name;
     }
 
@@ -244,7 +244,7 @@ public class SimpleInventory implements INBTInventory {
 
     @Override
     public IChatComponent getDisplayName() {
-        return new ChatComponentTranslation(this.getCommandSenderName());
+        return new ChatComponentTranslation(this.getName());
     }
 
     @Override

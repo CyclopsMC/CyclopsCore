@@ -43,8 +43,8 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int slotId) {
-        return getInventory().getStackInSlotOnClosing(slotId);
+    public ItemStack removeStackFromSlot(int slotId) {
+        return getInventory().removeStackFromSlot(slotId);
     }
 
     @Override
@@ -59,8 +59,8 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
     }
 
     @Override
-    public String getCommandSenderName() {
-        return getInventory().getCommandSenderName();
+    public String getName() {
+        return getInventory().getName();
     }
 
     @Override
