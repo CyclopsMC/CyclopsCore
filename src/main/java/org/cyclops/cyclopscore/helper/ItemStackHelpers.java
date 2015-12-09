@@ -186,4 +186,14 @@ public final class ItemStackHelpers {
         return new ItemStack(item, amount, meta);
     }
 
+    /**
+     * If the given itemstacks are completely identical, including their stack size.
+     * @param a The first itemstack.
+     * @param b The second itemstack.
+     * @return If they are completely equal.
+     */
+    public static boolean areItemStacksIdentical(ItemStack a, ItemStack b) {
+        return ItemStack.areItemStacksEqual(a, b) && ((a == null && b == null) || (a != null && a.stackSize == b.stackSize));
+    }
+
 }
