@@ -41,16 +41,15 @@ public class Image implements IImage {
         WorldRenderer worldRenderer = Tessellator.getInstance().getWorldRenderer();
         worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
         textureManager.bindTexture(getResourceLocation());
-        worldRenderer.color(255, 255, 255, 255);
         float u1, u2, v1, v2;
         u1 = (float) (getSheetX()) / 256F;
         u2 = (float) (getSheetX() + getSheetWidth()) / 256F;
         v1 = (float) (getSheetY()) / 256F;
         v2 = (float) (getSheetY() + getSheetHeight()) / 256F;
-        worldRenderer.pos(x2, y2, z).tex(u2, v2).endVertex();
-        worldRenderer.pos(x2, y1, z).tex(u2, v1).endVertex();
-        worldRenderer.pos(x1, y1, z).tex(u1, v1).endVertex();
-        worldRenderer.pos(x1, y2, z).tex(u1, v2).endVertex();
+        worldRenderer.pos(x2, y2, z).tex(u2, v2).color(255, 255, 255, 255).endVertex();
+        worldRenderer.pos(x2, y1, z).tex(u2, v1).color(255, 255, 255, 255).endVertex();
+        worldRenderer.pos(x1, y1, z).tex(u1, v1).color(255, 255, 255, 255).endVertex();
+        worldRenderer.pos(x1, y2, z).tex(u1, v2).color(255, 255, 255, 255).endVertex();
         Tessellator.getInstance().draw();
         GlStateManager.popMatrix();
     }
