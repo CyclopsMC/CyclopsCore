@@ -86,6 +86,11 @@ public interface INBTSerializable {
                         + "of class " + fieldType + ".");
             }
         }
+
+        @Override
+        protected INBTSerializable getDefaultValue() {
+            return null;
+        }
     }
 	
 }

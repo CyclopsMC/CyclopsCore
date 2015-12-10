@@ -41,6 +41,11 @@ public abstract class NBTClassType<T> {
             protected Integer readPersistedField(String name, NBTTagCompound tag) {
                 return tag.getInteger(name);
             }
+
+            @Override
+            protected Integer getDefaultValue() {
+                return 0;
+            }
         });
         NBTYPES.put(int.class, NBTYPES.get(Integer.class));
         
@@ -55,6 +60,11 @@ public abstract class NBTClassType<T> {
             protected Float readPersistedField(String name, NBTTagCompound tag) {
                 return tag.getFloat(name);
             }
+
+            @Override
+            protected Float getDefaultValue() {
+                return 0F;
+            }
         });
         NBTYPES.put(float.class, NBTYPES.get(Float.class));
         
@@ -68,6 +78,11 @@ public abstract class NBTClassType<T> {
             @Override
             protected Boolean readPersistedField(String name, NBTTagCompound tag) {
                 return tag.getBoolean(name);
+            }
+
+            @Override
+            protected Boolean getDefaultValue() {
+                return false;
             }
         });
         NBTYPES.put(boolean.class, NBTYPES.get(Boolean.class));
@@ -85,6 +100,11 @@ public abstract class NBTClassType<T> {
             protected String readPersistedField(String name, NBTTagCompound tag) {
                 return tag.getString(name);
             }
+
+            @Override
+            protected String getDefaultValue() {
+                return null;
+            }
         });
         
         NBTYPES.put(NBTTagCompound.class, new NBTClassType<NBTTagCompound>() {
@@ -97,6 +117,11 @@ public abstract class NBTClassType<T> {
             @Override
             protected NBTTagCompound readPersistedField(String name, NBTTagCompound tag) {
                 return tag.getCompoundTag(name);
+            }
+
+            @Override
+            protected NBTTagCompound getDefaultValue() {
+                return null;
             }
         });
 
@@ -188,6 +213,11 @@ public abstract class NBTClassType<T> {
                 }
                 return map;
             }
+
+            @Override
+            protected Map getDefaultValue() {
+                return Maps.newHashMap();
+            }
         });
 
         NBTYPES.put(Vec3i.class, new NBTClassType<Vec3i>() {
@@ -201,6 +231,11 @@ public abstract class NBTClassType<T> {
             protected Vec3i readPersistedField(String name, NBTTagCompound tag) {
                 int[] array = tag.getIntArray(name);
                 return new Vec3i(array[0], array[1], array[2]);
+            }
+
+            @Override
+            protected Vec3i getDefaultValue() {
+                return null;
             }
         });
 
@@ -219,6 +254,11 @@ public abstract class NBTClassType<T> {
             protected Vec3 readPersistedField(String name, NBTTagCompound tag) {
                 NBTTagCompound vec = tag.getCompoundTag(name);
                 return new Vec3(vec.getDouble("x"), vec.getDouble("y"), vec.getDouble("z"));
+            }
+
+            @Override
+            protected Vec3 getDefaultValue() {
+                return null;
             }
         });
 
@@ -267,6 +307,11 @@ public abstract class NBTClassType<T> {
                 Object left = leftElementNBTClassType.readPersistedField("element", leftTag);
                 Object right = rightElementNBTClassType.readPersistedField("element", rightTag);
                 return Pair.of(left, right);
+            }
+
+            @Override
+            protected Pair getDefaultValue() {
+                return Pair.of(null, null);
             }
         });
     }
@@ -379,6 +424,8 @@ public abstract class NBTClassType<T> {
             try {
                 if(tag.hasKey(name)) {
                     object = readPersistedField(name, tag);
+                } else {
+                    object = getDefaultValue();
                 }
                 field.set(castTile, object);
             }  catch (IllegalArgumentException e) {
@@ -390,10 +437,16 @@ public abstract class NBTClassType<T> {
     
     protected abstract void writePersistedField(String name, T object, NBTTagCompound tag);
     protected abstract T readPersistedField(String name, NBTTagCompound tag);
+    protected abstract T getDefaultValue();
 
     private abstract static class CollectionNBTClassType<C extends Collection> extends NBTClassType<C> {
 
         protected abstract C createNewCollection();
+
+        @Override
+        protected C getDefaultValue() {
+            return createNewCollection();
+        }
 
         @SuppressWarnings("unchecked")
         @Override
