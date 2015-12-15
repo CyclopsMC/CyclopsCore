@@ -138,6 +138,10 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
         return dict;
     }
 
+    protected boolean ignoreMetaOverflow() {
+        return false;
+    }
+
     @Override
     public int getMetaFromState(IBlockState blockState) {
         int meta = 0;
@@ -150,7 +154,7 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
             }
             meta = meta * propertySize + propertyValueIndex;
         }
-        if(meta > Character.MAX_VALUE) {
+        if(meta > 15 && !ignoreMetaOverflow()) {
             throw new RuntimeException(String.format("The metadata for %s was too large (%s) to store.", this, meta));
         }
         return meta;
