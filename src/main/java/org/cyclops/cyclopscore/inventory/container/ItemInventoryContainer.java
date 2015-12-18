@@ -7,7 +7,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.cyclops.cyclopscore.helper.InventoryHelpers;
-import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
+import org.cyclops.cyclopscore.inventory.IGuiContainerProviderConfigurable;
 
 /**
  * A container for an item.
@@ -15,7 +15,7 @@ import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
  *
  * @param <I> The item instance.
  */
-public abstract class ItemInventoryContainer<I extends Item & IGuiContainerProvider> extends ExtendedInventoryContainer {
+public abstract class ItemInventoryContainer<I extends Item & IGuiContainerProviderConfigurable> extends InventoryContainerConfigurable {
 	
 	protected I item;
 	protected int itemIndex;

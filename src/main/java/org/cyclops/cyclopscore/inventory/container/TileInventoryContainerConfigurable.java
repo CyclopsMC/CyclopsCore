@@ -2,18 +2,17 @@ package org.cyclops.cyclopscore.inventory.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
+import org.cyclops.cyclopscore.inventory.IGuiContainerProviderConfigurable;
 import org.cyclops.cyclopscore.tileentity.InventoryTileEntity;
 
 /**
  * A container for a tile entity with inventory.
  * @author rubensworks
- * @deprecated Use {@link TileInventoryContainerConfigurable}.
+ *
  * @param <T> The type of tile.
  */
-@Deprecated
-public class TileInventoryContainer<T extends InventoryTileEntity> extends ExtendedInventoryContainer {
-    
+public class TileInventoryContainerConfigurable<T extends InventoryTileEntity> extends InventoryContainerConfigurable {
+
     protected T tile;
 
     /**
@@ -21,8 +20,8 @@ public class TileInventoryContainer<T extends InventoryTileEntity> extends Exten
      * @param inventory The player inventory.
      * @param tile The TileEntity for this container.
      */
-    public TileInventoryContainer(InventoryPlayer inventory, T tile) {
-        super(inventory, (IGuiContainerProvider) tile.getBlock());
+    public TileInventoryContainerConfigurable(InventoryPlayer inventory, T tile) {
+        super(inventory, (IGuiContainerProviderConfigurable) tile.getBlock());
         this.tile = tile;
     }
 

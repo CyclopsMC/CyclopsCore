@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.init.ModBase;
-import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
+import org.cyclops.cyclopscore.inventory.IGuiContainerProviderConfigurable;
 import org.cyclops.cyclopscore.inventory.container.TileInventoryContainer;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 import org.cyclops.cyclopscore.tileentity.InventoryTileEntity;
@@ -23,7 +23,7 @@ import org.cyclops.cyclopscore.tileentity.InventoryTileEntity;
  * @author rubensworks
  *
  */
-public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockContainer implements IGuiContainerProvider {
+public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockContainer implements IGuiContainerProviderConfigurable {
     
     private int guiID;
 

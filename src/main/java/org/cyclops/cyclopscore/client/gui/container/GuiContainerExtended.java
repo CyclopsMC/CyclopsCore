@@ -213,4 +213,18 @@ public abstract class GuiContainerExtended extends GuiContainer implements
 
     }
 
+    /**
+     * @return The total gui left offset.
+     */
+    public int getGuiLeft() {
+        return this.guiLeft + offsetX;
+    }
+
+    /**
+     * @return The total gui top offset.
+     */
+    public int getGuiTop() {
+        return this.guiTop + offsetY;
+    }
+
 }

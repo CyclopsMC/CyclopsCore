@@ -14,14 +14,14 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.Helpers.IDType;
 import org.cyclops.cyclopscore.init.ModBase;
-import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
+import org.cyclops.cyclopscore.inventory.IGuiContainerProviderConfigurable;
 
 /**
  * Configurable item that can show a GUI on right clicking.
  * @author rubensworks
  *
  */
-public abstract class ItemGui extends ConfigurableItem implements IGuiContainerProvider {
+public abstract class ItemGui extends ConfigurableItem implements IGuiContainerProviderConfigurable {
 
 	private int guiID;
 	
