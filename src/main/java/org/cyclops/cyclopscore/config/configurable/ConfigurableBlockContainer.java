@@ -142,6 +142,22 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     }
 
     /**
+     * Sets a block to air, but also plays the sound and particles and can spawn drops.
+     * This includes calls to {@link ConfigurableBlockContainer#onPreBlockDestroyed(World, BlockPos)}
+     * and {@link ConfigurableBlockContainer#onPostBlockDestroyed(World, BlockPos)}.
+     * @param world The world.
+     * @param pos The position.
+     * @param dropBlock If this should produce item drops.
+     * @return If the block was destroyed and not air.
+     */
+    public boolean destroyBlock(World world, BlockPos pos, boolean dropBlock) {
+        onPreBlockDestroyed(world, pos);
+        boolean result = world.destroyBlock(pos, dropBlock);
+        onPostBlockDestroyed(world, pos);
+        return result;
+    }
+
+    /**
      * Called before the block is broken or destroyed.
      * @param world The world.
      * @param blockPos The position of the to-be-destroyed block.
