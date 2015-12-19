@@ -16,9 +16,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -61,28 +59,43 @@ public class RecipeHandler {
         return new XmlRecipeLoader(getMod(), is, fileName, this);
     }
 
-    protected void registerRecipesForFile(InputStream is, String fileName) throws XmlRecipeLoader.XmlRecipeException {
-    	InputStream xsdIs = RecipeHandler.class.getResourceAsStream(getRecipesXsdPath());
-    	XmlRecipeLoader loader = constructXmlRecipeLoader(is, fileName);
-    	loader.setValidator(xsdIs);
-    	loader.loadRecipes(GeneralConfig.crashOnInvalidRecipe);
+    protected XmlRecipeLoader registerRecipesForFile(InputStream is, String fileName, boolean canOverride) throws XmlRecipeLoader.XmlRecipeException {
+        return constructXmlRecipeLoader(is, fileName);
     }
 
-    protected void registerRecipesForFiles(File file) throws XmlRecipeLoader.XmlRecipeException {
-    	if(file.isFile() && getExternalRecipesPattern().matcher(file.getName()).matches()) {
-    		try {
-				registerRecipesForFile(new FileInputStream(file), file.getName());
-			} catch (FileNotFoundException e) {
-				
-			}
-    	} else if(file.isDirectory()) {
+    protected List<XmlRecipeLoader> registerRecipesForFiles(File file, Map<String, XmlRecipeLoader> internalLoaders, boolean canOverride) throws XmlRecipeLoader.XmlRecipeException {
+        if(file.isFile() && getExternalRecipesPattern().matcher(file.getName()).matches()) {
+            try {
+                XmlRecipeLoader loader = registerRecipesForFile(new FileInputStream(file), file.getName(), canOverride);
+                if(internalLoaders.containsKey(file.getName()) && canOverride) {
+                    // Override the internal recipes file.
+                    internalLoaders.put(file.getName(), loader);
+                } else {
+                    return Lists.newArrayList(loader);
+                }
+            } catch (FileNotFoundException e) {
+                // Very unlikely to happen...
+            }
+        } else if(file.isDirectory()) {
             File[] childFiles = file.listFiles();
             if(childFiles != null) {
+                List<XmlRecipeLoader> loaders = Lists.newLinkedList();
                 for (File childFile : childFiles) {
-                    registerRecipesForFiles(childFile);
+                    loaders.addAll(registerRecipesForFiles(
+                            childFile, internalLoaders, getExternalRecipesPattern().equals(file.getName())
+                    ));
                 }
             }
-    	}
+        }
+        return Collections.emptyList();
+    }
+
+    private void loadAllRecipes(Collection<XmlRecipeLoader> loaders) {
+        for(XmlRecipeLoader loader : loaders) {
+            InputStream xsdIs = RecipeHandler.class.getResourceAsStream(getRecipesXsdPath());
+            loader.setValidator(xsdIs);
+            loader.loadRecipes(GeneralConfig.crashOnInvalidRecipe);
+        }
     }
 
     protected String getRecipesBasePath() {
@@ -101,17 +114,19 @@ public class RecipeHandler {
     public final void registerRecipes(File rootConfigFolder) throws XmlRecipeLoader.XmlRecipeException {
         registerRecipeSorters();
     	loadPredefineds(getPredefinedItems(), getPredefinedValues());
-    	
-    	// Load the recipes stored in XML.
-    	for(String file : getRecipeFiles()) {
-	    	InputStream is = RecipeHandler.class.getResourceAsStream(getRecipesBasePath() + file);
-	    	registerRecipesForFile(is, file);
-    	}
-    	
-    	// Load all the externally defined recipes.
-        if(rootConfigFolder.exists()) {
-            registerRecipesForFiles(rootConfigFolder);
+
+        // Load the recipes stored in XML.
+        Map<String, XmlRecipeLoader> internalLoaders = Maps.newHashMapWithExpectedSize(getRecipeFiles().size());
+        for(String file : getRecipeFiles()) {
+            InputStream is = RecipeHandler.class.getResourceAsStream(getRecipesBasePath() + file);
+            internalLoaders.put(file, registerRecipesForFile(is, file, true));
         }
+
+        // Load all the externally defined recipes.
+        List<XmlRecipeLoader> externalLoaders = registerRecipesForFiles(rootConfigFolder, internalLoaders, false);
+
+        loadAllRecipes(internalLoaders.values());
+        loadAllRecipes(externalLoaders);
 
     	// Register remaining recipes that are too complex to declare in xml files.
         registerCustomRecipes();
