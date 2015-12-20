@@ -97,4 +97,16 @@ public class Helpers {
         return Triple.of(red, green, blue);
     }
 
+    /**
+     * Take the sum of these two values capped at {@link Integer#MAX_VALUE}.
+     * @param a Integer
+     * @param b Integer
+     * @return The safe sum.
+     */
+    public static int addSafe(int a, int b) {
+        int sum = a + b;
+        if(sum < a || sum < b) return Integer.MAX_VALUE;
+        return sum;
+    }
+
 }
