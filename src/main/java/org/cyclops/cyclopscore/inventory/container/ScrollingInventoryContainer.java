@@ -26,6 +26,7 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
     private List<Pair<Integer, E>> filteredItems; // Pair: original index - item
     private final List<E> visibleItems;
     private final IItemPredicate<E> itemSearchPredicate;
+    private String lastSearchString = "";
 
     /**
      * Make a new instance.
@@ -139,11 +140,16 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
         return this.visibleItems.get(row);
     }
 
+    public void refreshFilter() {
+        updateFilter(lastSearchString);
+    }
+
     /**
      * Update the filtered items.
      * @param searchString The input string to search by.
      */
     public void updateFilter(String searchString) {
+        this.lastSearchString = searchString;
         Pattern pattern;
         try {
             pattern = Pattern.compile(".*" + searchString.toLowerCase() + ".*");
@@ -154,16 +160,25 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
         scrollTo(0); // Reset scroll, will also refresh items on-screen.
     }
 
-    protected static <E> List<Pair<Integer, E>> filter(List<E> input, IItemPredicate<E> predicate, Pattern pattern) {
+    protected List<Pair<Integer, E>> filter(List<E> input, IItemPredicate<E> predicate, Pattern pattern) {
         List<Pair<Integer, E>> filtered = Lists.newLinkedList();
         int i = 0;
         for(E item : input) {
-            if(predicate.apply(item, pattern)) {
+            if(predicate.apply(item, pattern) && additionalApplies(item)) {
                 filtered.add(Pair.of(i, item));
             }
             i++;
         }
         return filtered;
+    }
+
+    /**
+     * An additional conditional that can be added for filtering items.
+     * @param item The item to check.
+     * @return If the item should be shown.
+     */
+    protected boolean additionalApplies(E item) {
+        return true;
     }
 
     /**
