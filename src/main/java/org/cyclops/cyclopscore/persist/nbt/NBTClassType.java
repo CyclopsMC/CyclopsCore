@@ -5,11 +5,15 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraft.util.Vec3i;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.datastructure.DimPos;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import java.lang.reflect.Field;
@@ -312,6 +316,35 @@ public abstract class NBTClassType<T> {
             @Override
             protected Pair getDefaultValue() {
                 return Pair.of(null, null);
+            }
+        });
+
+        NBTYPES.put(DimPos.class, new NBTClassType<DimPos>() {
+
+            @Override
+            protected void writePersistedField(String name, DimPos object, NBTTagCompound tag) {
+                NBTTagCompound dimPos = new NBTTagCompound();
+                dimPos.setDouble("dim", object.getWorld().provider.getDimensionId());
+                dimPos.setInteger("x", object.getBlockPos().getX());
+                dimPos.setInteger("y", object.getBlockPos().getY());
+                dimPos.setInteger("z", object.getBlockPos().getZ());
+                tag.setTag(name, dimPos);
+            }
+
+            @Override
+            protected DimPos readPersistedField(String name, NBTTagCompound tag) {
+                NBTTagCompound dimPos = tag.getCompoundTag(name);
+                int dim = dimPos.getInteger("dim");
+                if(MinecraftServer.getServer().worldServers.length >= dim) {
+                    dim = 0;
+                }
+                World world = MinecraftServer.getServer().worldServers[dim];
+                return DimPos.of(world, new BlockPos(dimPos.getInteger("x"), dimPos.getInteger("y"), dimPos.getInteger("z")));
+            }
+
+            @Override
+            protected DimPos getDefaultValue() {
+                return null;
             }
         });
     }
