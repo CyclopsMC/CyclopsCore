@@ -13,10 +13,15 @@ import org.cyclops.cyclopscore.client.gui.image.Images;
 public class GuiTextFieldExtended extends GuiTextField {
 
     private final boolean background;
+    private IInputListener listener;
 
     public GuiTextFieldExtended(int componentId, FontRenderer fontrenderer, int x, int y, int width, int height, boolean background) {
         super(componentId, fontrenderer, x, y, width, height);
         this.background = background;
+    }
+
+    public void setListener(IInputListener listener) {
+        this.listener = listener;
     }
 
     protected void drawBackground(Minecraft minecraft, int mouseX, int mouseY) {
@@ -27,6 +32,12 @@ public class GuiTextFieldExtended extends GuiTextField {
         drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2, 0, width / 2, height / 2);//top right
         drawTexturedModalRect(xPosition, yPosition + height / 2, 0, 20 - height / 2, width / 2, height / 2);//bottom left
         drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2, 200 - width / 2, 20 - height / 2, width / 2, height / 2);//bottom right
+    }
+
+    @Override
+    public void setText(String value) {
+        super.setText(value);
+        if(listener != null) listener.onChanged();
     }
 
     /**
