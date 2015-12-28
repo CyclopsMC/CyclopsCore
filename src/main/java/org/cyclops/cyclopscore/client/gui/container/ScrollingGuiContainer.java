@@ -24,7 +24,7 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
     private boolean isScrolling; // if the scrollbar is being dragged
     private boolean wasClicking; // if the left mouse button was held down last time drawScreen was called
 
-    private GuiTextField searchField;
+    private GuiTextField searchField = null;
 
     /**
      * Make a new instance.
@@ -46,24 +46,34 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
         this.buttonList.clear();
         Keyboard.enableRepeatEvents(true);
 
+        boolean resetFilter = false;
         if(isSearchEnabled()) {
             int searchWidth = getSearchWidth();
             int searchX = getSearchX();
             int searchY = getSearchY();
-            this.searchField = new GuiTextField(0, this.fontRendererObj, this.guiLeft + searchX, this.guiTop + searchY, searchWidth, this.fontRendererObj.FONT_HEIGHT);
-            this.searchField.setMaxStringLength(64);
-            this.searchField.setMaxStringLength(15);
-            this.searchField.setEnableBackgroundDrawing(false);
-            this.searchField.setVisible(true);
-            this.searchField.setTextColor(16777215);
-            this.searchField.setCanLoseFocus(true);
-            this.searchField.setText("");
-            this.searchField.width = searchWidth;
-            this.searchField.xPosition = this.guiLeft + (searchX + searchWidth) - this.searchField.width;
+            if(this.searchField == null) {
+                resetFilter = true;
+                this.searchField = new GuiTextField(0, this.fontRendererObj, this.guiLeft + searchX, this.guiTop + searchY, searchWidth, this.fontRendererObj.FONT_HEIGHT);
+                this.searchField.setMaxStringLength(64);
+                this.searchField.setMaxStringLength(15);
+                this.searchField.setEnableBackgroundDrawing(false);
+                this.searchField.setVisible(true);
+                this.searchField.setTextColor(16777215);
+                this.searchField.setCanLoseFocus(true);
+                this.searchField.setText("");
+                this.searchField.width = searchWidth;
+                this.searchField.xPosition = this.guiLeft + (searchX + searchWidth) - this.searchField.width;
+            } else {
+                this.searchField.width = searchWidth;
+                this.searchField.xPosition = this.guiLeft + (searchX + searchWidth) - this.searchField.width;
+                this.searchField.yPosition = this.guiTop + searchY;
+            }
         }
 
         // Initial element load.
-        getScrollingInventoryContainer().updateFilter("");
+        if(resetFilter) {
+            getScrollingInventoryContainer().updateFilter("");
+        }
         getScrollingInventoryContainer().scrollTo(currentScroll);
     }
 
