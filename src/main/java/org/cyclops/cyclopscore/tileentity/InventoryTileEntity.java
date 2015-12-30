@@ -17,7 +17,6 @@ public abstract class InventoryTileEntity extends InventoryTileEntityBase {
     
     protected SimpleInventory inventory;
     protected Map<EnumFacing, int[]> slotSides;
-    protected Map<EnumFacing, Integer> slotSidesSize;
     
     /**
      * Make new tile with an inventory.
@@ -28,15 +27,8 @@ public abstract class InventoryTileEntity extends InventoryTileEntityBase {
     public InventoryTileEntity(int inventorySize, String inventoryName, int stackSize) {
         inventory = new SimpleInventory(inventorySize , inventoryName, stackSize);
         slotSides = Maps.newHashMap();
-        slotSidesSize = Maps.newHashMap();
         for(EnumFacing side : DirectionHelpers.DIRECTIONS) {
-            // Init each side to it can theoretically hold all possible slots,
-            // Integer lists are not option because Java allows to autoboxing
-            // and that would be required in the getter methods below.
-            int array[] = new int[inventorySize];
-            for(int i = 0; i < inventorySize; i++) array[i] = -1;
-            slotSides.put(side, array);
-            slotSidesSize.put(side, 0); 
+            slotSides.put(side, new int[0]);
         }
     }
     
@@ -56,13 +48,13 @@ public abstract class InventoryTileEntity extends InventoryTileEntityBase {
      */
     protected void addSlotsToSide(EnumFacing side, Collection<Integer> slots) {
         int[] currentSlots = slotSides.get(side);
-        int offset = slotSidesSize.get(side);
-        int i = 0;
+        int[] newSlots = new int[currentSlots.length + slots.size()];
+        System.arraycopy(currentSlots, 0, newSlots, 0, currentSlots.length);
+        int offset = currentSlots.length;
         for(int slot : slots) {
-            currentSlots[offset + i] = slot;
-            i++;
+            newSlots[offset++] = slot;
         }
-        slotSidesSize.put(side, offset + i);
+        slotSides.put(side, newSlots);
     }
     
     /**
