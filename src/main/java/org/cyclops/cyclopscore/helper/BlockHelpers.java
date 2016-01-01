@@ -99,6 +99,9 @@ public final class BlockHelpers {
      */
     public static ItemStack getItemStackFromBlockState(IBlockState blockState) {
         Item item = Item.getItemFromBlock(blockState.getBlock());
+        if(item == null) {
+            return null;
+        }
         return new ItemStack(item, 1, blockState.getBlock().getMetaFromState(blockState));
     }
 
