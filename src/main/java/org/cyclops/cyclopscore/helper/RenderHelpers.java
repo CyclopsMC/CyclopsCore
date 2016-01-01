@@ -135,7 +135,7 @@ public class RenderHelpers {
      */
     public static void renderItem(ItemStack itemStack) {
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-        renderItem.func_181564_a(itemStack, ItemCameraTransforms.TransformType.NONE);
+        renderItem.renderItem(itemStack, ItemCameraTransforms.TransformType.NONE);
     }
 
 }
