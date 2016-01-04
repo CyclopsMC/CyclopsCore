@@ -26,4 +26,9 @@ public @interface BlockProperty {
      * @return If set to true this property will not be required in the blockstate file.
      */
 	public boolean ignore() default false;
+
+    /**
+     * @return If this property should be excluded from meta value generation.
+     */
+    public boolean excludeFromMeta() default false;
 }

@@ -15,7 +15,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import java.lang.reflect.Field;
@@ -44,6 +44,7 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
 
     private final Block block;
     private final IProperty[] properties;
+    private final Set<IProperty> metaExclusions;
     private final IUnlistedProperty[] unlistedProperties;
     private final IProperty[] propertiesReversed;
     private final Map<IProperty, ArrayList<Comparable>> propertyValues;
@@ -56,9 +57,10 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
         this.propertyComparator = propertyComparator;
         this.unlistedPropertyComparator = unlistedPropertyComparator;
         try {
-            Pair<IProperty[], IUnlistedProperty[]> allProperties = preprocessProperties();
+            Triple<IProperty[], IUnlistedProperty[], Set<IProperty>> allProperties = preprocessProperties();
             this.properties = allProperties.getLeft();
-            this.unlistedProperties = allProperties.getRight();
+            this.unlistedProperties = allProperties.getMiddle();
+            this.metaExclusions = allProperties.getRight();
             this.propertiesReversed = Arrays.copyOf(properties, properties.length);
             ArrayUtils.reverse(this.propertiesReversed);
             this.propertyValues = preprocessPropertyValues(this.properties);
@@ -79,8 +81,9 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
         return this.unlistedPropertyComparator;
     }
 
-    private Pair<IProperty[], IUnlistedProperty[]> preprocessProperties() throws IllegalAccessException {
+    private Triple<IProperty[], IUnlistedProperty[], Set<IProperty>> preprocessProperties() throws IllegalAccessException {
         TreeSet<IProperty> sortedProperties = Sets.newTreeSet(getPropertyComparator());
+        Set<IProperty> metaExclusions = Sets.newHashSet();
         TreeSet<IUnlistedProperty> sortedUnlistedProperties = Sets.newTreeSet(getUnlistedPropertyComparator());
         TreeSet<IProperty> ignoredProperties = Sets.newTreeSet(getPropertyComparator());
         for(Class<?> clazz = block.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
@@ -92,13 +95,23 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
                     Object fieldObject = field.get(block);
                     if(fieldObject instanceof IProperty) {
                         sortedProperties.add((IProperty) fieldObject);
-                        if (ignored) ignoredProperties.add((IProperty) fieldObject);
+                        if (ignored) {
+                            ignoredProperties.add((IProperty) fieldObject);
+                        }
+                        if (annotation.excludeFromMeta()) {
+                            metaExclusions.add((IProperty) fieldObject);
+                        }
                     } else if(fieldObject instanceof IUnlistedProperty) {
                         sortedUnlistedProperties.add((IUnlistedProperty) fieldObject);
                     } else if(fieldObject instanceof IProperty[]) {
                         for(IProperty property : ((IProperty[]) fieldObject)) {
                             sortedProperties.add(property);
-                            if (ignored) ignoredProperties.add(property);
+                            if (ignored) {
+                                ignoredProperties.add(property);
+                            }
+                            if (annotation.excludeFromMeta()) {
+                                metaExclusions.add(property);
+                            }
                         }
                     } else if(fieldObject instanceof IUnlistedProperty[]) {
                         Collections.addAll(sortedUnlistedProperties, ((IUnlistedProperty[]) fieldObject));
@@ -116,7 +129,7 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
 
         IProperty[] properties = new IProperty[sortedProperties.size()];
         IUnlistedProperty[] unlistedProperties = new IUnlistedProperty[sortedUnlistedProperties.size()];
-        return Pair.of(sortedProperties.toArray(properties), sortedUnlistedProperties.toArray(unlistedProperties));
+        return Triple.of(sortedProperties.toArray(properties), sortedUnlistedProperties.toArray(unlistedProperties), metaExclusions);
     }
 
     @SideOnly(Side.CLIENT)
@@ -146,13 +159,15 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
     public int getMetaFromState(IBlockState blockState) {
         int meta = 0;
         for(IProperty property : properties) {
-            int propertySize = property.getAllowedValues().size();
-            int propertyValueIndex = propertyValues.get(property).indexOf(blockState.getValue(property));
-            if(propertyValueIndex < 0) {
-                throw new RuntimeException(String.format("The value %s was not found in the calculated property " +
-                        "values for %s.", propertyValueIndex, property));
+            if(!metaExclusions.contains(property)) {
+                int propertySize = property.getAllowedValues().size();
+                int propertyValueIndex = propertyValues.get(property).indexOf(blockState.getValue(property));
+                if (propertyValueIndex < 0) {
+                    throw new RuntimeException(String.format("The value %s was not found in the calculated property " +
+                            "values for %s.", propertyValueIndex, property));
+                }
+                meta = meta * propertySize + propertyValueIndex;
             }
-            meta = meta * propertySize + propertyValueIndex;
         }
         if(meta > 15 && !ignoreMetaOverflow()) {
             throw new RuntimeException(String.format("The metadata for %s was too large (%s) to store.", this, meta));
@@ -165,15 +180,17 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
         IBlockState blockState = block.getDefaultState();
         int metaLoop = meta;
         for(IProperty property : propertiesReversed) {
-            int propertySize = property.getAllowedValues().size();
-            int value = metaLoop % propertySize;
-            Comparable propertyValue = propertyValues.get(property).get(value);
-            if(propertyValue == null) {
-                throw new RuntimeException(String.format("The value %s was not found in the calculated property " +
-                        "values for %s.", value, property));
+            if(!metaExclusions.contains(property)) {
+                int propertySize = property.getAllowedValues().size();
+                int value = metaLoop % propertySize;
+                Comparable propertyValue = propertyValues.get(property).get(value);
+                if (propertyValue == null) {
+                    throw new RuntimeException(String.format("The value %s was not found in the calculated property " +
+                            "values for %s.", value, property));
+                }
+                blockState = blockState.withProperty(property, propertyValue);
+                metaLoop = (metaLoop - value) / propertySize;
             }
-            blockState = blockState.withProperty(property, propertyValue);
-            metaLoop = (metaLoop - value) / propertySize;
         }
         return blockState;
     }
