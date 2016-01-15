@@ -177,16 +177,21 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     
     @Override
     public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
-    	onPreBlockDestroyed(world, blockPos);
         super.breakBlock(world, blockPos, blockState);
         onPostBlockDestroyed(world, blockPos);
     }
-    
+
+    @Override
+    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
+        onPreBlockDestroyed(worldIn, pos);
+        super.onBlockHarvested(worldIn, pos, state, player);
+    }
+
     @Override
     public void onBlockExploded(World world, BlockPos blockPos, Explosion explosion) {
-    	if(world.isRemote) onPreBlockDestroyed(world, blockPos);
+    	onPreBlockDestroyed(world, blockPos);
     	super.onBlockExploded(world, blockPos, explosion);
-        if(world.isRemote) onPostBlockDestroyed(world, blockPos);
+        onPostBlockDestroyed(world, blockPos);
     }
     
     @Override
