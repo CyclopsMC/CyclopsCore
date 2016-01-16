@@ -161,6 +161,16 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
      * Called before the block is broken or destroyed.
      * @param world The world.
      * @param blockPos The position of the to-be-destroyed block.
+     * @param player The player destroying the block.
+     */
+    protected void onPreBlockDestroyed(World world, BlockPos blockPos, EntityPlayer player) {
+        onPreBlockDestroyed(world, blockPos);
+    }
+
+    /**
+     * Called before the block is broken or destroyed.
+     * @param world The world.
+     * @param blockPos The position of the to-be-destroyed block.
      */
     protected void onPreBlockDestroyed(World world, BlockPos blockPos) {
     	MinecraftHelpers.preDestroyBlock(this, world, blockPos, saveNBTToDroppedItem());
@@ -183,13 +193,13 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
 
     @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
-        onPreBlockDestroyed(worldIn, pos);
+        onPreBlockDestroyed(worldIn, pos, player);
         super.onBlockHarvested(worldIn, pos, state, player);
     }
 
     @Override
     public void onBlockExploded(World world, BlockPos blockPos, Explosion explosion) {
-    	onPreBlockDestroyed(world, blockPos);
+    	onPreBlockDestroyed(world, blockPos, null);
     	super.onBlockExploded(world, blockPos, explosion);
         onPostBlockDestroyed(world, blockPos);
     }
