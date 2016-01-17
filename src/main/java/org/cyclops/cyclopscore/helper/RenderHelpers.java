@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
+import com.google.common.base.Function;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -10,12 +11,15 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -136,6 +140,50 @@ public class RenderHelpers {
     public static void renderItem(ItemStack itemStack) {
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
         renderItem.renderItem(itemStack, ItemCameraTransforms.TransformType.NONE);
+    }
+
+    public static final Function<ResourceLocation, TextureAtlasSprite> TEXTURE_GETTER = new Function<ResourceLocation, TextureAtlasSprite>() {
+        public TextureAtlasSprite apply(ResourceLocation location) {
+            return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
+        }
+    };
+
+    /**
+     * Get the default icon from a block.
+     * @param block The block.
+     * @return The icon.
+     */
+    public static TextureAtlasSprite getBlockIcon(Block block) {
+        return Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(block.getDefaultState());
+    }
+
+    /**
+     * Get the icon of a fluid for a side in a safe way.
+     * @param fluid The fluid stack.
+     * @param side The side to get the icon from, UP if null.
+     * @return The icon.
+     */
+    public static TextureAtlasSprite getFluidIcon(FluidStack fluid, EnumFacing side) {
+        Block defaultBlock = Blocks.water;
+        Block block = defaultBlock;
+        if(fluid.getFluid().getBlock() != null) {
+            block = fluid.getFluid().getBlock();
+        }
+
+        if(side == null) side = EnumFacing.UP;
+
+        TextureAtlasSprite icon = TEXTURE_GETTER.apply(fluid.getFluid().getFlowing(fluid));
+        if(icon == null || (side == EnumFacing.UP || side == EnumFacing.DOWN)) {
+            icon = TEXTURE_GETTER.apply(fluid.getFluid().getStill(fluid));
+        }
+        if(icon == null) {
+            icon = getBlockIcon(block);
+            if(icon == null) {
+                icon = getBlockIcon(defaultBlock);
+            }
+        }
+
+        return icon;
     }
 
 }
