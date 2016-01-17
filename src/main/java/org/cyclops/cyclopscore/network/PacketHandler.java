@@ -5,6 +5,7 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -95,7 +96,7 @@ public final class PacketHandler {
      */
     public void sendToServer(PacketBase packet) {
     	getClientChannel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
-    	getClientChannel().writeAndFlush(packet);
+    	getClientChannel().writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
     }
     
     /**
@@ -106,7 +107,7 @@ public final class PacketHandler {
     public void sendToPlayer(PacketBase packet, EntityPlayer player) {
     	getServerChannel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
     	getServerChannel().attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
-    	getServerChannel().writeAndFlush(packet);
+    	getServerChannel().writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
     }
 
     /**
@@ -117,7 +118,7 @@ public final class PacketHandler {
     public void sendToAllAround(PacketBase packet, NetworkRegistry.TargetPoint point) {
     	getServerChannel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
     	getServerChannel().attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(point);
-    	getServerChannel().writeAndFlush(packet);
+    	getServerChannel().writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
     }
 
     /**
@@ -128,7 +129,7 @@ public final class PacketHandler {
     public void sendToDimension(PacketBase packet, int dimension) {
     	getServerChannel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DIMENSION);
     	getServerChannel().attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(dimension);
-    	getServerChannel().writeAndFlush(packet);
+    	getServerChannel().writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
     }
     
     /**
@@ -137,7 +138,7 @@ public final class PacketHandler {
      */
     public void sendToAll(PacketBase packet) {
     	getServerChannel().attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
-    	getServerChannel().writeAndFlush(packet);
+    	getServerChannel().writeAndFlush(packet).addListener(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE);
     }
     
     /**
