@@ -3,12 +3,24 @@ package org.cyclops.cyclopscore.helper;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import org.cyclops.cyclopscore.datastructure.DimPos;
 
 /**
  * Contains helper methods for various tile entity specific things.
  * @author rubensworks
  */
 public final class TileHelpers {
+
+    /**
+     * Safely cast a tile entity.
+     * @param dimPos The dimensional position of the block providing the tile entity.
+     * @param targetClazz The class to cast to.
+     * @param <T> The type of tile to cast at.
+     * @return The tile entity or null.
+     */
+    public static <T> T getSafeTile(DimPos dimPos, Class<T> targetClazz) {
+        return getSafeTile(dimPos.getWorld(), dimPos.getBlockPos(), targetClazz);
+    }
 
     /**
      * Safely cast a tile entity.
