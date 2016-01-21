@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.inventory.container;
 
 import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ICrafting;
@@ -360,7 +361,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     public void setValue(int valueId, NBTTagCompound value) {
         if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
             if (!MinecraftHelpers.isClientSide()) { // server -> client
-                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(valueId, value), player);
+                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(valueId, value), (EntityPlayerMP) player);
             } else { // client -> server
                 CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(valueId, value));
             }

@@ -2,9 +2,12 @@ package org.cyclops.cyclopscore.network;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -13,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author rubensworks
  *
  */
-public abstract class PacketBase {
+public abstract class PacketBase implements IMessage {
 
     /**
      * @return If this packet can run on a thread other than the main-thread of Minecraft.
@@ -47,5 +50,18 @@ public abstract class PacketBase {
 	 * @param player The player.
 	 */
     public abstract void actionServer(World world, EntityPlayerMP player);
-	
+
+	@Override
+	public void fromBytes(ByteBuf source) {
+		ByteArrayDataInput input = ByteStreams.newDataInput(source.array());
+		input.skipBytes(1); // skip the packet identifier byte
+		decode(input);
+	}
+
+	@Override
+	public void toBytes(ByteBuf target) {
+		ByteArrayDataOutput output = ByteStreams.newDataOutput();
+		encode(output);
+		target.writeBytes(output.toByteArray());
+	}
 }
