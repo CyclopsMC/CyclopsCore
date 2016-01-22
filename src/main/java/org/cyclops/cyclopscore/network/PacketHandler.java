@@ -119,6 +119,7 @@ public final class PacketHandler {
 
         @Override
         public IMessage onMessage(final PacketBase packet, MessageContext ctx) {
+            System.out.println("PACKET AT CLIENT " + packet); // TODO
             final Minecraft mc = Minecraft.getMinecraft();
             IThreadListener thread = FMLCommonHandler.instance().getWorldThread(ctx.getClientHandler());
             if (packet.isAsync() || thread.isCallingFromMinecraftThread()) {
@@ -139,10 +140,12 @@ public final class PacketHandler {
 
         @Override
         public IMessage onMessage(PacketBase packet, MessageContext ctx) {
+            System.out.println("PACKET AT SERVER " + packet); // TODO
             if (FMLCommonHandler.instance().getEffectiveSide().isClient()) {
                 // nothing on the client thread
                 return null;
             }
+            System.out.println("CONTINUED..."); // TODO
 
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
             packet.actionServer(player.worldObj, player);
