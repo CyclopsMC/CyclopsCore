@@ -305,7 +305,8 @@ public abstract class PacketCodec extends PacketBase {
 		});
 	}
 
-    private SingleCache<Void, List<Field>> fieldCache = new SingleCache<Void, List<Field>>(
+	// TODO: make private again
+    protected SingleCache<Void, List<Field>> fieldCache = new SingleCache<Void, List<Field>>(
             new SingleCache.ICacheUpdater<Void, List<Field>>() {
 
         @Override

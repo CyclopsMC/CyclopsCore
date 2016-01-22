@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.command.CommandDebug;
 import org.cyclops.cyclopscore.command.CommandIgnite;
 import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.command.CommandRecursion;
@@ -77,6 +78,7 @@ public class CyclopsCore extends ModBase implements IModVersion {
         Map<String, ICommand> commands = Maps.newHashMap();
         commands.put(CommandRecursion.NAME, new CommandRecursion(this));
         commands.put(CommandIgnite.NAME, new CommandIgnite(this));
+        commands.put(CommandDebug.NAME, new CommandDebug(this));
         CommandMod command =  new CommandMod(this, commands);
         command.addAlias("cyclops");
         return command;
