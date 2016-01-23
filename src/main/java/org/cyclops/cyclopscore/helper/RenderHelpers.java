@@ -19,6 +19,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -155,6 +156,16 @@ public class RenderHelpers {
      */
     public static TextureAtlasSprite getBlockIcon(Block block) {
         return Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(block.getDefaultState());
+    }
+
+    /**
+     * Get the icon of a fluid for a side in a safe way.
+     * @param fluid The fluid.
+     * @param side The side to get the icon from, UP if null.
+     * @return The icon.
+     */
+    public static TextureAtlasSprite getFluidIcon(Fluid fluid, EnumFacing side) {
+        return getFluidIcon(new FluidStack(fluid, 1000), side);
     }
 
     /**

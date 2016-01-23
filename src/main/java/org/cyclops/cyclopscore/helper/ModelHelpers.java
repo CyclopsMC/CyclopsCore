@@ -41,5 +41,4 @@ public final class ModelHelpers {
         Reader reader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
         return ModelBlock.deserialize(reader);
     }
-
 }
