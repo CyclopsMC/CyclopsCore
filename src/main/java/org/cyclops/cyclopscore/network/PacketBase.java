@@ -11,8 +11,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Arrays;
-
 /**
  * The base packet for packets.
  * @author rubensworks
@@ -55,7 +53,6 @@ public abstract class PacketBase implements IMessage {
 
 	@Override
 	public void fromBytes(ByteBuf source) {
-		System.out.println("FROM BYTES: " + Arrays.toString(source.array())); // TODO
 		ByteArrayDataInput input = ByteStreams.newDataInput(source.array());
 		input.skipBytes(1); // skip the packet identifier byte
 		decode(input);
@@ -63,7 +60,6 @@ public abstract class PacketBase implements IMessage {
 
 	@Override
 	public void toBytes(ByteBuf target) {
-		System.out.println("TO BYTES: " + Arrays.toString(target.array())); // TODO
 		ByteArrayDataOutput output = ByteStreams.newDataOutput();
 		encode(output);
 		target.writeBytes(output.toByteArray());
