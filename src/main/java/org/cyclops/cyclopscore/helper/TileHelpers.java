@@ -2,7 +2,10 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import org.cyclops.cyclopscore.datastructure.DimPos;
 
 /**
@@ -37,6 +40,23 @@ public final class TileHelpers {
         } catch (ClassCastException e) {
             return null;
         }
+    }
+
+    /**
+     * Safely get a capability from a tile.
+     * @param world The world.
+     * @param pos The position of the block of the tile entity providing the capability.
+     * @param side The side to get the capability from.
+     * @param capability The capability.
+     * @param <C> The capability instance.
+     * @return The capability or null.
+     */
+    public static <C> C getCapability(World world, BlockPos pos, EnumFacing side, Capability<C> capability) {
+        TileEntity tile = TileHelpers.getSafeTile(world, pos, TileEntity.class);
+        if(tile != null) {
+            return tile.getCapability(capability, side);
+        }
+        return null;
     }
 
 }
