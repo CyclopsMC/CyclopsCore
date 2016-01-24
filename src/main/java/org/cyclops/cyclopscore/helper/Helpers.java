@@ -84,6 +84,18 @@ public class Helpers {
     }
 
     /**
+     * Convert r, g, b and a colors to an integer representation.
+     * @param r red
+     * @param g green
+     * @param b blue
+     * @param a alpha
+     * @return integer representation of the color.
+     */
+    public static int RGBAToInt(int r, int g, int b, int a) {
+        return (a << 24) | (r << 16) | (g << 8) | b;
+    }
+
+    /**
      * Convert a color in integer representation to seperated r, g and b colors.
      * @param color The color in integer representation.
      * @return The separated r, g and b colors.
