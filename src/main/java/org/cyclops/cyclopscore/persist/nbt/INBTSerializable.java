@@ -41,7 +41,7 @@ public interface INBTSerializable {
         private final Class fieldType;
 
         @Override
-        protected void writePersistedField(String name, INBTSerializable object, NBTTagCompound tag) {
+        public void writePersistedField(String name, INBTSerializable object, NBTTagCompound tag) {
             try {
                 Method method = fieldType.getMethod("toNBT");
                 tag.setTag(name, (NBTBase) method.invoke(object));
@@ -57,7 +57,7 @@ public interface INBTSerializable {
         }
 
         @Override
-        protected INBTSerializable readPersistedField(String name, NBTTagCompound tag) {
+        public INBTSerializable readPersistedField(String name, NBTTagCompound tag) {
             try {
                 Constructor constructor = fieldType.getConstructor();
                 if(constructor == null) {
@@ -88,7 +88,7 @@ public interface INBTSerializable {
         }
 
         @Override
-        protected INBTSerializable getDefaultValue() {
+        public INBTSerializable getDefaultValue() {
             return null;
         }
     }
