@@ -69,5 +69,5 @@ public abstract class InventoryTileEntity extends InventoryTileEntityBase {
     public int[] getSlotsForFace(EnumFacing side) {
         return slotSides.get(side);
     }
-    
+
 }

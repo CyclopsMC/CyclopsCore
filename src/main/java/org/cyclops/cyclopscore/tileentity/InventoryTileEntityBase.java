@@ -1,12 +1,18 @@
 package org.cyclops.cyclopscore.tileentity;
 
+import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.cyclops.cyclopscore.inventory.INBTInventory;
+
+import java.util.Map;
 
 /**
  * A TileEntity with an internal inventory.
@@ -16,6 +22,14 @@ import org.cyclops.cyclopscore.inventory.INBTInventory;
 public abstract class InventoryTileEntityBase extends CyclopsTileEntity implements ISidedInventory {
 
     protected boolean sendUpdateOnInventoryChanged = false;
+    protected final Map<EnumFacing, IItemHandler> sidedInventoryHandlers;
+
+    public InventoryTileEntityBase() {
+        this.sidedInventoryHandlers = Maps.newHashMap();
+        for(EnumFacing side : EnumFacing.VALUES) {
+            this.sidedInventoryHandlers.put(side, new SidedInvWrapper(this, side));
+        }
+    }
     
     /**
      * Get the internal inventory.
@@ -170,6 +184,14 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
     public void setSendUpdateOnInventoryChanged(
             boolean sendUpdateOnInventoryChanged) {
         this.sendUpdateOnInventoryChanged = sendUpdateOnInventoryChanged;
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if(facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+            return (T) sidedInventoryHandlers.get(facing);
+        }
+        return super.getCapability(capability, facing);
     }
     
 }
