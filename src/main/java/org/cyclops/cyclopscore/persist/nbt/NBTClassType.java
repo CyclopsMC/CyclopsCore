@@ -12,6 +12,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
@@ -128,6 +130,24 @@ public abstract class NBTClassType<T> {
 
             @Override
             protected EnumFacing getDefaultValue() {
+                return null;
+            }
+        });
+
+        NBTYPES.put(Fluid.class, new NBTClassType<Fluid>() {
+            @Override
+            protected void writePersistedField(String name, Fluid object, NBTTagCompound tag) {
+                tag.setString(name, object.getName());
+            }
+
+            @Override
+            protected Fluid readPersistedField(String name, NBTTagCompound tag) {
+                String fluidName = tag.getString(name);
+                return FluidRegistry.getFluid(fluidName);
+            }
+
+            @Override
+            protected Fluid getDefaultValue() {
                 return null;
             }
         });
