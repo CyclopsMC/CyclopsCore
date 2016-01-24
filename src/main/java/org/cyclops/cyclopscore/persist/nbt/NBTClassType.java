@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraft.util.Vec3i;
 import net.minecraft.world.World;
@@ -110,6 +111,23 @@ public abstract class NBTClassType<T> {
 
             @Override
             protected String getDefaultValue() {
+                return null;
+            }
+        });
+
+        NBTYPES.put(EnumFacing.class, new NBTClassType<EnumFacing>() {
+            @Override
+            protected void writePersistedField(String name, EnumFacing object, NBTTagCompound tag) {
+                tag.setInteger(name, object.ordinal());
+            }
+
+            @Override
+            protected EnumFacing readPersistedField(String name, NBTTagCompound tag) {
+                return EnumFacing.values()[tag.getInteger(name)];
+            }
+
+            @Override
+            protected EnumFacing getDefaultValue() {
                 return null;
             }
         });
