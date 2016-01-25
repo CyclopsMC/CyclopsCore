@@ -7,8 +7,12 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.Attributes;
+import net.minecraftforge.client.model.IColoredBakedQuad;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
+import org.cyclops.cyclopscore.helper.Helpers;
+import org.lwjgl.util.Color;
 
 import java.util.Collections;
 import java.util.List;
@@ -100,17 +104,88 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel {
      */
     protected static void addBakedQuad(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
                                      TextureAtlasSprite texture, EnumFacing side) {
+        addBakedQuad(quads, x1, x2, z1, z2, y, texture, -1, side);
+    }
+
+    /**
+     * Add a given quad to a list of quads.
+     * @param quads The quads to append to.
+     * @param x1 Start X
+     * @param x2 End X
+     * @param z1 Start Z
+     * @param z2 End Z
+     * @param y Y
+     * @param texture The base texture
+     * @param shadeColor shade color for the texture in BGR format
+     * @param side The side to add render quad at.
+     */
+    protected static void addBakedQuad(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
+                                       TextureAtlasSprite texture, int shadeColor, EnumFacing side) {
+        addBakedQuad(quads, x1, x2, z1, z2, y, texture, shadeColor, side, false);
+    }
+
+    /**
+     * Add a given colored quad to a list of quads.
+     * @param quads The quads to append to.
+     * @param x1 Start X
+     * @param x2 End X
+     * @param z1 Start Z
+     * @param z2 End Z
+     * @param y Y
+     * @param texture The base texture
+     * @param shadeColor shade color for the texture
+     * @param side The side to add render quad at.
+     */
+    protected static void addColoredBakedQuad(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
+                                              TextureAtlasSprite texture, Color shadeColor, EnumFacing side) {
+        int color = Helpers.RGBAToInt(shadeColor.getBlue(), shadeColor.getGreen(), shadeColor.getRed(), shadeColor.getAlpha());
+        addColoredBakedQuad(quads, x1, x2, z1, z2, y, texture, color, side);
+    }
+
+    /**
+     * Add a given colored quad to a list of quads.
+     * @param quads The quads to append to.
+     * @param x1 Start X
+     * @param x2 End X
+     * @param z1 Start Z
+     * @param z2 End Z
+     * @param y Y
+     * @param texture The base texture
+     * @param shadeColor shade color for the texture in BGR format
+     * @param side The side to add render quad at.
+     */
+    protected static void addColoredBakedQuad(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
+                                              TextureAtlasSprite texture, int shadeColor, EnumFacing side) {
+        addBakedQuad(quads, x1, x2, z1, z2, y, texture, shadeColor, side, true);
+    }
+
+    /**
+     * Add a given quad to a list of quads.
+     * @param quads The quads to append to.
+     * @param x1 Start X
+     * @param x2 End X
+     * @param z1 Start Z
+     * @param z2 End Z
+     * @param y Y
+     * @param texture The base texture
+     * @param shadeColor shade color for the texture in BGR format
+     * @param side The side to add render quad at.
+     * @param isColored When set to true a colored baked quad will be made, otherwise a regular baked quad is used.
+     */
+    private static void addBakedQuad(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
+                                       TextureAtlasSprite texture, int shadeColor, EnumFacing side, boolean isColored) {
         Vec3 v1 = rotate(new Vec3(x1 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
         Vec3 v2 = rotate(new Vec3(x1 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
         Vec3 v3 = rotate(new Vec3(x2 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
         Vec3 v4 = rotate(new Vec3(x2 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
         int[] data =  Ints.concat(
-                vertexToInts((float) v1.xCoord, (float) v1.yCoord, (float) v1.zCoord, -1, texture, x1 * 16, z1 * 16),
-                vertexToInts((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord, -1, texture, x1 * 16, z2 * 16),
-                vertexToInts((float) v3.xCoord, (float) v3.yCoord, (float) v3.zCoord, -1, texture, x2 * 16, z2 * 16),
-                vertexToInts((float) v4.xCoord, (float) v4.yCoord, (float) v4.zCoord, -1, texture, x2 * 16, z1 * 16)
+                vertexToInts((float) v1.xCoord, (float) v1.yCoord, (float) v1.zCoord, shadeColor, texture, x1 * 16, z1 * 16),
+                vertexToInts((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord, shadeColor, texture, x1 * 16, z2 * 16),
+                vertexToInts((float) v3.xCoord, (float) v3.yCoord, (float) v3.zCoord, shadeColor, texture, x2 * 16, z2 * 16),
+                vertexToInts((float) v4.xCoord, (float) v4.yCoord, (float) v4.zCoord, shadeColor, texture, x2 * 16, z1 * 16)
         );
-        quads.add(new BakedQuad(data, -1, side));
+        ForgeHooksClient.fillNormal(data, side); // This fixes lighting issues when item is rendered in hand/inventory
+        quads.add(isColored ? new IColoredBakedQuad.ColoredBakedQuad(data, -1, side) : new BakedQuad(data, -1, side));
     }
 
     /**
