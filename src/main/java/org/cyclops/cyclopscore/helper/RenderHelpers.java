@@ -8,6 +8,8 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityDiggingFX;
 import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.renderer.BlockModelShapes;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -19,6 +21,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -100,7 +103,27 @@ public class RenderHelpers {
      * @return The corresponding baked model.
      */
     public static IBakedModel getBakedModel(IBlockState blockState) {
-        return Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getModelManager().getBlockModelShapes().getModelForState(blockState);
+        Minecraft mc = Minecraft.getMinecraft();
+        BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
+        BlockModelShapes blockModelShapes = blockRendererDispatcher.getBlockModelShapes();
+        return blockModelShapes.getModelForState(blockState);
+    }
+
+    /**
+     * Retrieve the potentially dynamic baked model for a position.
+     * This will automatically take into account smart block models.
+     * @param world The world.
+     * @param pos The position.
+     * @return The baked model.
+     */
+    public static IBakedModel getDynamicBakedModel(World world, BlockPos pos) {
+        IBlockState blockState = world.getBlockState(pos);
+        IBakedModel bakedModel = getBakedModel(blockState);
+        if(bakedModel instanceof ISmartBlockModel) {
+            IBlockState extendedBlockState = blockState.getBlock().getExtendedState(blockState, world, pos);
+            bakedModel = ((ISmartBlockModel) bakedModel).handleBlockState(extendedBlockState);
+        }
+        return bakedModel;
     }
 
     /**
