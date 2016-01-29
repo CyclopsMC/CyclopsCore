@@ -103,15 +103,10 @@ public final class ItemStackHelpers {
             double d1 = (player.posX - entityitem.posX) / d0;
             double d2 = (player.posY + (double)player.getEyeHeight() - entityitem.posY) / d0;
             double d3 = (player.posZ - entityitem.posZ) / d0;
-            double d4 = Math.sqrt(d1 * d1 + d2 * d2 + d3 * d3);
-            double d5 = 1.0D - d4;
 
-            if (d5 > 0.0D) {
-                d5 *= d5;
-                entityitem.motionX += d1 / d4 * d5 * 0.1D;
-                entityitem.motionY += d2 / d4 * d5 * 0.1D;
-                entityitem.motionZ += d3 / d4 * d5 * 0.1D;
-            }
+            entityitem.motionX += d1;
+            entityitem.motionY += d2;
+            entityitem.motionZ += d3;
 
             entityitem.setNoPickupDelay();
             world.spawnEntityInWorld(entityitem);
