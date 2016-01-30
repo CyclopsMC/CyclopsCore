@@ -1,10 +1,14 @@
 package org.cyclops.cyclopscore.helper;
 
+import com.google.common.collect.Maps;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -119,6 +123,22 @@ public class Helpers {
         int sum = a + b;
         if(sum < a || sum < b) return Integer.MAX_VALUE;
         return sum;
+    }
+
+    private static final Map<String, String> MODRESOURCEDOMAIN_TO_MODID = Maps.newHashMap();
+
+    /**
+     * Get the mod id from the given resource domain the given mod is using.
+     * @param modResourceDomain The mod resource domain.
+     * @return The mod id.
+     */
+    public static String getModId(String modResourceDomain) {
+        if(MODRESOURCEDOMAIN_TO_MODID.isEmpty()) {
+            for (Map.Entry<String, ModContainer> entry : Loader.instance().getIndexedModList().entrySet()) {
+                MODRESOURCEDOMAIN_TO_MODID.put(entry.getKey().toLowerCase(Locale.ENGLISH), entry.getValue().getModId());
+            }
+        }
+        return MODRESOURCEDOMAIN_TO_MODID.get(modResourceDomain);
     }
 
 }
