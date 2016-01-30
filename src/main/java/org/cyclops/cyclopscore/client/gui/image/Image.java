@@ -37,6 +37,21 @@ public class Image implements IImage {
 
     @Override
     public void drawWorld(TextureManager textureManager, float x1, float x2, float y1, float y2, float z) {
+        drawWorldWithAlpha(textureManager, x1, x2, y1, y2, z, 1);
+    }
+
+    @Override
+    public void drawWorld(TextureManager textureManager, float x1, float x2, float y1, float y2) {
+        drawWorldWithAlpha(textureManager, x1, x2, y1, y2, 1);
+    }
+
+    @Override
+    public void drawWorld(TextureManager textureManager, float x2, float y2) {
+        drawWorldWithAlpha(textureManager, x2, y2, 1);
+    }
+
+    @Override
+    public void drawWorldWithAlpha(TextureManager textureManager, float x1, float x2, float y1, float y2, float z, float alpha) {
         GlStateManager.pushMatrix();
         WorldRenderer worldRenderer = Tessellator.getInstance().getWorldRenderer();
         worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
@@ -46,22 +61,23 @@ public class Image implements IImage {
         u2 = (float) (getSheetX() + getSheetWidth()) / 256F;
         v1 = (float) (getSheetY()) / 256F;
         v2 = (float) (getSheetY() + getSheetHeight()) / 256F;
-        worldRenderer.pos(x2, y2, z).tex(u2, v2).color(255, 255, 255, 255).endVertex();
-        worldRenderer.pos(x2, y1, z).tex(u2, v1).color(255, 255, 255, 255).endVertex();
-        worldRenderer.pos(x1, y1, z).tex(u1, v1).color(255, 255, 255, 255).endVertex();
-        worldRenderer.pos(x1, y2, z).tex(u1, v2).color(255, 255, 255, 255).endVertex();
+        int a = Math.round(alpha * 255F);
+        worldRenderer.pos(x2, y2, z).tex(u2, v2).color(255, 255, 255, a).endVertex();
+        worldRenderer.pos(x2, y1, z).tex(u2, v1).color(255, 255, 255, a).endVertex();
+        worldRenderer.pos(x1, y1, z).tex(u1, v1).color(255, 255, 255, a).endVertex();
+        worldRenderer.pos(x1, y2, z).tex(u1, v2).color(255, 255, 255, a).endVertex();
         Tessellator.getInstance().draw();
         GlStateManager.popMatrix();
     }
 
     @Override
-    public void drawWorld(TextureManager textureManager, float x1, float x2, float y1, float y2) {
-        this.drawWorld(textureManager, x1, x2, y1, y2, 0);
+    public void drawWorldWithAlpha(TextureManager textureManager, float x1, float x2, float y1, float y2, float alpha) {
+        this.drawWorldWithAlpha(textureManager, x1, x2, y1, y2, 0, alpha);
     }
 
     @Override
-    public void drawWorld(TextureManager textureManager, float x2, float y2) {
-        this.drawWorld(textureManager, 0, x2, 0, y2);
+    public void drawWorldWithAlpha(TextureManager textureManager, float x2, float y2, float alpha) {
+        this.drawWorldWithAlpha(textureManager, 0, x2, 0, y2, alpha);
     }
 
 }

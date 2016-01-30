@@ -100,6 +100,26 @@ public class Helpers {
     }
 
     /**
+     * Add the given alpha value to the given RGB color.
+     * @param color The color.
+     * @param alpha The alpha from 0-255
+     * @return The color with alpha.
+     */
+    public static int addAlphaToColor(int color, int alpha) {
+        return alpha << 24 | color;
+    }
+
+    /**
+     * Add the given alpha value to the given RGB color.
+     * @param color The color.
+     * @param alpha The alpha from 0-1
+     * @return The color with alpha.
+     */
+    public static int addAlphaToColor(int color, float alpha) {
+        return addAlphaToColor(color, Math.round(alpha * 255F));
+    }
+
+    /**
      * Convert a color in integer representation to seperated r, g and b colors.
      * @param color The color in integer representation.
      * @return The separated r, g and b colors.
