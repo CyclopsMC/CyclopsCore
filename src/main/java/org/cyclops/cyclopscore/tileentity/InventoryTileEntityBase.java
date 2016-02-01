@@ -187,6 +187,12 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
     }
 
     @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return (facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+                || super.hasCapability(capability, facing);
+    }
+
+    @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if(facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             return (T) sidedInventoryHandlers.get(facing);
