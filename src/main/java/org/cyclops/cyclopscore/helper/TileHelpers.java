@@ -53,7 +53,7 @@ public final class TileHelpers {
      */
     public static <C> C getCapability(World world, BlockPos pos, EnumFacing side, Capability<C> capability) {
         TileEntity tile = TileHelpers.getSafeTile(world, pos, TileEntity.class);
-        if(tile != null) {
+        if(tile != null && tile.hasCapability(capability, side)) {
             return tile.getCapability(capability, side);
         }
         return null;
