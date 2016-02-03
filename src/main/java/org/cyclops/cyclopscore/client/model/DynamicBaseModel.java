@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.client.model;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -8,12 +9,13 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.model.Attributes;
-import net.minecraftforge.client.model.IColoredBakedQuad;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
+import net.minecraftforge.client.model.*;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.lwjgl.util.Color;
 
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Vector3f;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +23,7 @@ import java.util.List;
  * A model that can be used as a basis for flexible baked models.
  * @author rubensworks
  */
-public abstract class DynamicBaseModel implements IFlexibleBakedModel {
+public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspectiveAwareModel {
 
     // Rotation UV coordinates
     protected static final float[][] ROTATION_UV = {{1, 0}, {1, 1}, {0, 1}, {0, 0}};
@@ -29,6 +31,17 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel {
     protected static final int[] ROTATION_FIX = {2, 0, 2, 0, 1, 3};
     // u1, v1; u2, v2
     protected static final float[][] UVS = {{0, 0}, {1, 1}};
+
+    // Third person transform for block items
+    private static final TRSRTransformation THIRD_PERSON = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+            new Vector3f(0, 1.5f / 16, -2.75f / 16),
+            TRSRTransformation.quatFromYXZDegrees(new Vector3f(10, -45, 170)),
+            new Vector3f(0.375f, 0.375f, 0.375f),
+            null));
+
+    // Default perspective transforms
+    protected static final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> DEFAULT_PERSPECTIVE_TRANSFORMS =
+            ImmutableMap.of(ItemCameraTransforms.TransformType.THIRD_PERSON, THIRD_PERSON);
 
     /**
      * Rotate a given vector to the given side.
@@ -249,5 +262,10 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel {
     @Override
     public VertexFormat getFormat() {
         return Attributes.DEFAULT_BAKED_FORMAT;
+    }
+
+    @Override
+    public Pair<? extends IFlexibleBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+        return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, DEFAULT_PERSPECTIVE_TRANSFORMS, cameraTransformType);
     }
 }
