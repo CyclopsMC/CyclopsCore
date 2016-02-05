@@ -85,6 +85,7 @@ public class RecipeHandler {
                             childFile, internalLoaders, getExternalRecipesPattern().equals(file.getName())
                     ));
                 }
+                return loaders;
             }
         }
         return Collections.emptyList();
