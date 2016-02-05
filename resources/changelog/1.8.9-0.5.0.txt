@@ -1,0 +1,45 @@
+Make sure to backup your world before updating!
+
+Fixes:
+* Fix max meta value for block property serialization
+* Add NBT persistence for DimPos
+* Don't reset search field when resizing scrolling gui
+* Rewrite derpy tile inventory slot assignment to sides
+* Fix client-side persistence of DimPos
+* Don't make ItemStacks with a null Item
+* Fix incorrect infobook mirrored page rendering
+* Fix broken client to server packets, Closes #9
+* Take into account isKeepNBTOnDrop() when dropping block items
+* Fix aim of player-targeted item dropping
+
+Lib features:
+* Add empty icon
+* Add improved gui and container abstractions
+* Add pre- and post- safe destroy method for blocks
+* Port EvilCraft's recipe override system
+* Upmerge changes from CyclopsCore/EvilCraft@96261ce
+* Add list field with arrows
+* Add player-sensitive version of onPreBlockDestroyed
+* Add icon methods from EvilCraft to cyclops.
+* Add convenience getSafeTile method
+* Add debugging commands for the packet handler
+* Add support for Forge's new IItemHandler to inventory tiles
+* Add convenience method for retrieving tile capabilities
+* Add render methods that allow shading models
+* Allow Fluids to be NBT serialized
+* Allow EnumFacing to be NBTSerialized
+* Add method to convert RGBA to int
+* Add helper method to get mod id from mod domain
+* Add alpha support for world image rendering
+* Abstract perspective awareness to dynamic models
+* Add dynamic block model retrieval helper
+
+Lib changes:
+* Add default values for NBT persistence fields
+* Add hook for additional filters in scrolling container
+* Add option to ignore properties from meta value generation
+* Add network exceptions on failure
+* Use SimpleNetworkWrapper in PacketHandler
+* Add getFluidIcon method to RenderHelpers
+* Make NBT persistence methods public
+* Take into account ColoredBakedQuad
