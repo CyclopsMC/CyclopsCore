@@ -46,7 +46,7 @@ public class OreDictItemStackRecipeComponent extends ItemStackRecipeComponent {
 
     @Override
     public int hashCode() {
-        return key.hashCode() + 876;
+        return key != null ? key.hashCode() + 876 : 0;
     }
 
 }

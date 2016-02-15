@@ -1,6 +1,9 @@
 package org.cyclops.cyclopscore.recipe.xml;
 
 import com.google.common.collect.Maps;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.w3c.dom.Node;
 
@@ -48,6 +51,20 @@ public abstract class CommonRecipeTypeHandler implements IRecipeTypeHandler, IIt
 					"Could not find an item type handler of type '%s'", type));
 		}
 		return handler.getItem(recipeHandler, itemNode);
+	}
+
+	protected FluidStack getFluid(RecipeHandler recipeHandler, Node fluidNode) throws XmlRecipeLoader.XmlRecipeException {
+		int amount = 1000;
+		Node amountNode = fluidNode.getAttributes().getNamedItem("amount");
+		if(amountNode != null) {
+			amount = Integer.parseInt(amountNode.getTextContent());
+		}
+		String fluidName = fluidNode.getTextContent();
+		Fluid fluid = FluidRegistry.getFluid(fluidName);
+		if(fluid == null) {
+			throw new XmlRecipeLoader.XmlRecipeException(String.format("Fluid by name '%s' has not been found.", fluidName));
+		}
+		return new FluidStack(fluid, amount);
 	}
 	
 }
