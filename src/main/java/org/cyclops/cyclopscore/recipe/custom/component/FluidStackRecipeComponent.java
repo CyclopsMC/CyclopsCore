@@ -30,6 +30,6 @@ public class FluidStackRecipeComponent implements IRecipeInput, IRecipeOutput, I
 
     @Override
     public int hashCode() {
-        return fluidStack.getFluid().hashCode() + 90;
+        return fluidStack != null ? fluidStack.getFluid().hashCode() + 90 : 0;
     }
 }
