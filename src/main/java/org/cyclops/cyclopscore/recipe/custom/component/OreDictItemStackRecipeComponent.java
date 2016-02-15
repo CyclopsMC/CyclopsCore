@@ -24,16 +24,12 @@ public class OreDictItemStackRecipeComponent extends ItemStackRecipeComponent {
 
     @Override
     public boolean equals(Object object) {
-        if(super.equals(object)) {
-            return true;
-        }
-
         if (!(object instanceof ItemStackRecipeComponent)) return false;
         ItemStackRecipeComponent that = (ItemStackRecipeComponent)object;
 
         // To increase performance, first check if the comparing stack is not null before
         // potentially matching it with the whole oredict.
-        if(that.getItemStack() != null) {
+        if (that.getItemStack() != null) {
             for (ItemStack itemStack : getItemStacks()) {
                 if (equals(itemStack, that.getItemStack())) {
                     return true;
@@ -41,7 +37,7 @@ public class OreDictItemStackRecipeComponent extends ItemStackRecipeComponent {
             }
         }
 
-        return false;
+        return getItemStacks().isEmpty();
     }
 
     @Override
