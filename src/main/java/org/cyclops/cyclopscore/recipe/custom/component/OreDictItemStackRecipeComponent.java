@@ -41,6 +41,11 @@ public class OreDictItemStackRecipeComponent extends ItemStackRecipeComponent {
     }
 
     @Override
+    public ItemStack getItemStack() {
+        return getItemStacks().size() > 0 ? getItemStacks().get(0) : super.getItemStack();
+    }
+
+    @Override
     public int hashCode() {
         return key != null ? key.hashCode() + 876 : 0;
     }
