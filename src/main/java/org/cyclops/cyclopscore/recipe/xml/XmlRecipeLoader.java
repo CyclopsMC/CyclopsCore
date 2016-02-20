@@ -159,12 +159,13 @@ public class XmlRecipeLoader {
 					"Could not find a recipe type handler of type '%s'", type));
 		}
 		ItemStack output = handler.loadRecipe(recipeHandler, recipe);
-
-        ExtendedConfig<?> config = ConfigHandler.getConfigFromItem(output.getItem());
-        for(String tag : getTags(recipe)) {
-            getMod().getRecipeHandler().getTaggedOutput().put(tag, output);
-            getMod().getRecipeHandler().getTaggedConfigurablesOutput().put(tag, config);
-        }
+		if(output != null) {
+			ExtendedConfig<?> config = ConfigHandler.getConfigFromItem(output.getItem());
+			for (String tag : getTags(recipe)) {
+				getMod().getRecipeHandler().getTaggedOutput().put(tag, output);
+				getMod().getRecipeHandler().getTaggedConfigurablesOutput().put(tag, config);
+			}
+		}
     }
 
     private List<String> getTags(Element recipe) {
