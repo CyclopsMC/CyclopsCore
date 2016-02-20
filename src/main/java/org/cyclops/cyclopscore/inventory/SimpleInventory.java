@@ -196,7 +196,14 @@ public class SimpleInventory implements INBTInventory {
 
     @Override
     public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-        return true;
+        if (i >= _contents.length || i < 0) {
+            return false;
+        }
+        if (itemstack == null) {
+            return true;
+        }
+        int existing = this._contents[i] == null ? 0 : this._contents[i].stackSize;
+        return existing + itemstack.stackSize >= this.getInventoryStackLimit();
     }
 
     @Override
