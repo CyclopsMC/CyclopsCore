@@ -53,6 +53,7 @@ public class RecipeHandler {
         recipeConditionHandlers.put("config", new ConfigRecipeConditionHandler());
         recipeConditionHandlers.put("predefined", new PredefinedRecipeConditionHandler());
         recipeConditionHandlers.put("mod", new ModRecipeConditionHandler());
+        recipeConditionHandlers.put("oredict", new OreDictConditionHandler());
     }
 
     protected XmlRecipeLoader constructXmlRecipeLoader(InputStream is, String fileName) {
