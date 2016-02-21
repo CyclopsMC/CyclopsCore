@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.infobook;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -27,10 +28,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * XML parser which will generate the infobook.
@@ -40,6 +38,7 @@ public class InfoBookParser {
 
     private static final Map<String, IInfoSectionFactory> SECTION_FACTORIES = Maps.newHashMap();
     private static final Map<String, IAppendixFactory> APPENDIX_FACTORIES = Maps.newHashMap();
+    private static final Set<String> IGNORED_APPENDIX_FACTORIES = Sets.newHashSet();
     private static final Map<String, IAppendixItemFactory> APPENDIX_LIST_FACTORIES = Maps.newHashMap();
 
     static {
@@ -110,6 +109,15 @@ public class InfoBookParser {
         if(SECTION_FACTORIES.put(name, factory) != null) {
             throw new RuntimeException(String.format("A section factory with name %s was registered while another one already existed!", name));
         }
+    }
+
+    /**
+     * Indicate that the given factory should be ignored, this is useful when a target is somehow being disabled and
+     * no corresponding factory results should be shown.
+     * @param name The unique name for this factory, make sure to namespace this to your mod to avoid collisions.
+     */
+    public static void registerIgnoredFactory(String name) {
+        IGNORED_APPENDIX_FACTORIES.add(name);
     }
 
     /**
@@ -265,6 +273,9 @@ public class InfoBookParser {
         if(type == null) type = "";
         IAppendixFactory factory = APPENDIX_FACTORIES.get(type);
         if(factory == null) {
+            if(IGNORED_APPENDIX_FACTORIES.contains(type)) {
+                throw new InvalidAppendixException("Ignore appendix of type '" + type + "'.");
+            }
             throw new InfoBookException("No appendix of type '" + type + "' was found.");
         }
         return factory.create(infoBook, node);
