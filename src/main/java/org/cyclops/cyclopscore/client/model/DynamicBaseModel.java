@@ -33,7 +33,7 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspect
     protected static final float[][] UVS = {{0, 0}, {1, 1}};
 
     // Third person transform for block items
-    private static final TRSRTransformation THIRD_PERSON = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+    protected static final TRSRTransformation THIRD_PERSON = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
             new Vector3f(0, 1.5f / 16, -2.75f / 16),
             TRSRTransformation.quatFromYXZDegrees(new Vector3f(10, -45, 170)),
             new Vector3f(0.375f, 0.375f, 0.375f),
