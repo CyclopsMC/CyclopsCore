@@ -226,6 +226,7 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspect
                 vertexToInts((float) v3.xCoord, (float) v3.yCoord, (float) v3.zCoord, -1, texture, r[(2 + rotation) % 4][0] * 16, r[(2 + rotation) % 4][1] * 16),
                 vertexToInts((float) v4.xCoord, (float) v4.yCoord, (float) v4.zCoord, -1, texture, r[(3 + rotation) % 4][0] * 16, r[(3 + rotation) % 4][1] * 16)
         );
+        ForgeHooksClient.fillNormal(data, side); // This fixes lighting issues when item is rendered in hand/inventory
         quads.add(new BakedQuad(data, -1, side));
     }
 
