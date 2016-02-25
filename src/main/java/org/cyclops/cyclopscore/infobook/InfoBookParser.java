@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.CraftingRecipeAppendix;
 import org.cyclops.cyclopscore.infobook.pageelement.FurnaceRecipeAppendix;
@@ -239,6 +240,7 @@ public class InfoBookParser {
                     appendixList.add(createAppendix(infoBook, appendix.getAttribute("type"), appendix));
                 } catch (InvalidAppendixException e) {
                     // Skip this appendix.
+                    infoBook.getMod().log(Level.WARN, e.getMessage());
                 }
             }
             for (int j = 0; j < appendixLists.getLength(); j++) {
@@ -250,6 +252,7 @@ public class InfoBookParser {
                         appendixList.add(createAppendix(infoBook, type, itemStack));
                     } catch (InvalidAppendixException e) {
                         // Skip this appendix.
+                        infoBook.getMod().log(Level.WARN, e.getMessage());
                     }
                 }
             }
