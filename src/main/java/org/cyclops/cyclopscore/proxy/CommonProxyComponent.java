@@ -11,6 +11,7 @@ import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.event.ConfigChangedEventHook;
 import org.cyclops.cyclopscore.event.PlayerRingOfFire;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.item.IBucketRegistry;
 import org.cyclops.cyclopscore.network.PacketHandler;
 import org.cyclops.cyclopscore.network.packet.SoundPacket;
@@ -104,7 +105,11 @@ public abstract class CommonProxyComponent implements ICommonProxy {
     public void sendSound(double x, double y, double z, String sound, float volume, float frequency,
     		String mod) {
     	SoundPacket packet = new SoundPacket(x, y, z, sound, volume, frequency, mod);
-		CyclopsCore._instance.getPacketHandler().sendToServer(packet); // Yes, all sounds go through cyclops.
+        if(!MinecraftHelpers.isClientSide()) {
+            CyclopsCore._instance.getPacketHandler().sendToAll(packet); // Yes, all sounds go through cyclops.
+        } else {
+            CyclopsCore._instance.getPacketHandler().sendToServer(packet); // Yes, all sounds go through cyclops.
+        }
     }
 
     @Override
