@@ -203,7 +203,7 @@ public class SimpleInventory implements INBTInventory {
             return true;
         }
         int existing = this._contents[i] == null ? 0 : this._contents[i].stackSize;
-        return existing + itemstack.stackSize >= this.getInventoryStackLimit();
+        return existing + itemstack.stackSize <= this.getInventoryStackLimit();
     }
 
     @Override
