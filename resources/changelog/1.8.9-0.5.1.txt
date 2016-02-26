@@ -1,0 +1,27 @@
+Make sure to backup your world before updating!
+
+Changes:
+* Show infobook appendix errors as warnings
+
+Fixes:
+* Fix sound packet sending from server to client
+* Fix lighting for rotated quads
+* Increase bucket fill priority
+* Fix OreDictItemStackRecipeComponent matching null itemstacks
+
+Lib changes:
+* Make THIRD_PERSON in DynamicBaseModel protected
+* Take into account max stacksize in SimpleInventory
+
+Lib additions:
+* Add method to specify uv's in dynamic models
+* Add single model loader
+* Add option to ignore specific infobook factories by name
+* Add xml recipe oredict condition
+* Allow oredict items to be used as output in the xml recipe system
+* Enable handling of xml recipes with a null item output
+* Add getFluid helper to xml recipe type handler
+* Port custom recipes components from EvilCraft
+* Add FluidHelpers
+* Port fluid context rendering from EvilCraft
+* Abstract leaves, logs and saplings
