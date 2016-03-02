@@ -6,6 +6,7 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.Loader;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.init.IInitListener;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -68,7 +69,7 @@ public class ModCompatLoader implements IInitListener {
     }
     
     private boolean isModLoaded(IModCompat modCompat) {
-        return Loader.isModLoaded(modCompat.getModID());
+        return Reference.MOD_VANILLA.equals(modCompat.getModID()) || Loader.isModLoaded(modCompat.getModID());
     }
     
     private boolean isModEnabled(IModCompat modCompat) {

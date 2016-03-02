@@ -17,6 +17,7 @@ public final class Reference {
     public static final String VERSION_URL = "https://raw.githubusercontent.com/CyclopsMC/Versions/master/1.8/CyclopsCore.txt";
 
     // Mod ID's
+    public static final String MOD_VANILLA = "Minecraft";
     public static final String MOD_BAUBLES = "Baubles";
     public static final String MOD_VERSION_CHECKER = "VersionChecker";
 
