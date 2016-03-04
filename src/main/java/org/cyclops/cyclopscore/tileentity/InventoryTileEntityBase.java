@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.cyclops.cyclopscore.inventory.INBTInventory;
@@ -27,7 +27,7 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
     public InventoryTileEntityBase() {
         this.sidedInventoryHandlers = Maps.newHashMap();
         for(EnumFacing side : EnumFacing.VALUES) {
-            this.sidedInventoryHandlers.put(side, new SidedInvWrapper(this, side));
+            addCapabilitySided(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side, new SidedInvWrapper(this, side));
         }
     }
     
@@ -184,20 +184,6 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
     public void setSendUpdateOnInventoryChanged(
             boolean sendUpdateOnInventoryChanged) {
         this.sendUpdateOnInventoryChanged = sendUpdateOnInventoryChanged;
-    }
-
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return (facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-                || super.hasCapability(capability, facing);
-    }
-
-    @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if(facing != null && capability == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return (T) sidedInventoryHandlers.get(facing);
-        }
-        return super.getCapability(capability, facing);
     }
     
 }

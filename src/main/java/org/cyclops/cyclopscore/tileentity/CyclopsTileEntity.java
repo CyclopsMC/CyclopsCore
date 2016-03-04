@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.tileentity;
 
+import com.google.common.collect.Maps;
 import lombok.experimental.Delegate;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,10 +13,14 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
 import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
 import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
+
+import java.util.Map;
 
 /**
  * A base class for all the tile entities.
@@ -41,6 +46,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     private boolean shouldSendUpdate = false;
     private int sendUpdateBackoff = 0;
     private final boolean ticking;
+    private final Map<Pair<Capability<?>, EnumFacing>, Object> capabilities = Maps.newHashMap();
 
     public CyclopsTileEntity() {
         sendUpdateBackoff = (int) Math.round(Math.random() * getUpdateBackoffTicks()); // Random backoff so not all TE's will be updated at once.
@@ -258,6 +264,37 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      */
     public ConfigurableBlockContainer getBlock() {
         return (ConfigurableBlockContainer) this.getBlockType();
+    }
+
+    @Override
+    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+        return capabilities.containsKey(Pair.<Capability<?>, EnumFacing>of(capability, facing))
+                || (facing != null && capabilities.containsKey(Pair.<Capability<?>, EnumFacing>of(capability, null)))
+                || super.hasCapability(capability, facing);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        Object value = capabilities.get(Pair.<Capability<?>, EnumFacing>of(capability, facing));
+        if(value == null && facing != null) {
+            value = capabilities.get(Pair.<Capability<?>, EnumFacing>of(capability, null));
+        }
+        if(value != null) {
+            return (T) value;
+        }
+        return super.getCapability(capability, facing);
+    }
+
+    public <T> void addCapabilityInternal(Capability<T> capability, T value) {
+        capabilities.put(Pair.<Capability<?>, EnumFacing>of(capability, null), value);
+    }
+
+    public <T> void addCapabilitySided(Capability<T> capability, EnumFacing facing, T value) {
+        capabilities.put(Pair.<Capability<?>, EnumFacing>of(capability, facing), value);
+    }
+
+    protected Map<Pair<Capability<?>, EnumFacing>, Object> getCapabilities() {
+        return capabilities;
     }
 
     /**
