@@ -119,15 +119,27 @@ public class InventoryHelpers {
 	public static ItemStack getItemFromIndex(EntityPlayer player, int itemIndex) {
 		return player.inventory.mainInventory[itemIndex];
 	}
+
+	/**
+	 * Try to add the given item to the given slot.
+	 * @param inventory The inventory.
+	 * @param slot The slot to add to.
+	 * @param itemStack The item to try to put in the production slot.
+	 * @return If the item could be added or joined in the production slot.
+	 */
+	public static boolean addToSlot(IInventory inventory, int slot, ItemStack itemStack) {
+		return addToSlot(inventory, slot, itemStack, false);
+	}
 	
 	/**
      * Try to add the given item to the given slot.
      * @param inventory The inventory.
      * @param slot The slot to add to.
      * @param itemStack The item to try to put in the production slot.
+	 * @param simulate If the operation should be simulated.
      * @return If the item could be added or joined in the production slot.
      */
-    public static boolean addToSlot(IInventory inventory, int slot, ItemStack itemStack) {
+    public static boolean addToSlot(IInventory inventory, int slot, ItemStack itemStack, boolean simulate) {
         ItemStack produceStack = inventory.getStackInSlot(slot);
         if(produceStack == null) {
         	inventory.setInventorySlotContents(slot, itemStack);
@@ -135,7 +147,9 @@ public class InventoryHelpers {
         } else {
             if(produceStack.getItem() == itemStack.getItem()
                && produceStack.getMaxStackSize() >= produceStack.stackSize + itemStack.stackSize) {
-                produceStack.stackSize += itemStack.stackSize;
+				if(!simulate) {
+					produceStack.stackSize += itemStack.stackSize;
+				}
                 return true;
             }
         }
