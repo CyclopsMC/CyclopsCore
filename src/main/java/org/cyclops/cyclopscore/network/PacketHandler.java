@@ -121,7 +121,7 @@ public final class PacketHandler {
         public IMessage onMessage(final PacketBase packet, MessageContext ctx) {
             final Minecraft mc = Minecraft.getMinecraft();
             IThreadListener thread = FMLCommonHandler.instance().getWorldThread(ctx.getClientHandler());
-            if (packet.isAsync() || thread.isCallingFromMinecraftThread()) {
+            if (packet.isAsync()) {
                 packet.actionClient(mc.theWorld, mc.thePlayer);
             } else {
                 thread.addScheduledTask(new Runnable() {
