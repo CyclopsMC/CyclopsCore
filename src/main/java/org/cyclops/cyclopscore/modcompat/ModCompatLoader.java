@@ -8,6 +8,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModAPIManager;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.Reference;
@@ -28,8 +29,8 @@ public class ModCompatLoader implements IInitListener {
     private static final String CONFIG_CATEGORY = "mod compat";
 
     protected final ModBase mod;
-    protected final List<IModCompat> modCompats = Lists.newLinkedList();
-    protected final Set<String> crashedModcompats = Sets.newHashSet();
+    protected final List<IExternalCompat> compats = Lists.newLinkedList();
+    protected final Set<String> crashedcompats = Sets.newHashSet();
     public static final Multimap<Class<? extends ICapabilityProvider>,
             Pair<ICapabilityCompat.ICapabilityReference<?>, ICapabilityCompat<? extends ICapabilityProvider>>>
             capabilityCompats = HashMultimap.create();
@@ -44,7 +45,16 @@ public class ModCompatLoader implements IInitListener {
      * @param modCompat The mod compatibility
      */
     public void addModCompat(IModCompat modCompat) {
-        this.modCompats.add(modCompat);
+        this.compats.add(modCompat);
+    }
+
+    /**
+     * Register a new api compatibility.
+     * Make sure to call this before any Forge initialization steps are called!
+     * @param apiCompat The api compatibility
+     */
+    public void addApiCompat(IApiCompat apiCompat) {
+        this.compats.add(apiCompat);
     }
 
     /**
@@ -65,22 +75,43 @@ public class ModCompatLoader implements IInitListener {
     
     @Override
     public void onInit(IInitListener.Step step) {
-        if(step == Step.PREINIT && !modCompats.isEmpty()) {
+        if(step == Step.PREINIT && !compats.isEmpty()) {
             mod.getConfigHandler().addCategory(CONFIG_CATEGORY);
         }
-        for(IModCompat modCompat : modCompats) {
-            if(shouldLoadModCompat(modCompat)) {
+        for(IExternalCompat compat : compats) {
+            if(shouldLoadExternalCompat(compat)) {
+                String id = getId(compat);
                 try {
-                    modCompat.onInit(step);
+                    compat.onInit(step);
                 } catch (RuntimeException e) {
-                    mod.log(Level.ERROR, "The mod compatibility for " + modCompat.getModID() +
+                    mod.log(Level.ERROR, "The compatibility for " + id +
                             " has crashed! Report this crash clog to the mod author or try updating the conflicting mods.");
                     if(mod.getReferenceValue(ModBase.REFKEY_CRASH_ON_MODCOMPAT_CRASH)) throw e;
                     e.printStackTrace();
-                    crashedModcompats.add(modCompat.getModID());
+                    crashedcompats.add(id);
                 }
             }
         }
+    }
+
+    protected String getId(IExternalCompat compat) {
+        if(compat instanceof IModCompat) {
+            return ((IModCompat) compat).getModID();
+        }
+        if(compat instanceof IApiCompat) {
+            return ((IApiCompat) compat).getApiID();
+        }
+        return null;
+    }
+
+    /**
+     * If the given compat should be loaded.
+     * @param compat The mod compat.
+     * @return If it should be loaded.
+     */
+    public boolean shouldLoadExternalCompat(IExternalCompat compat) {
+        return (compat instanceof IModCompat && shouldLoadModCompat((IModCompat) compat)
+                || (compat instanceof IApiCompat && shouldLoadApiCompat((IApiCompat) compat)));
     }
     
     /**
@@ -89,19 +120,29 @@ public class ModCompatLoader implements IInitListener {
      * @return If it should be loaded.
      */
     public boolean shouldLoadModCompat(IModCompat modCompat) {
-    	return isModLoaded(modCompat) && isModEnabled(modCompat) && isModNotCrashed(modCompat);
+    	return isModLoaded(modCompat) && isEnabled(modCompat, modCompat.getModID()) && isNotCrashed(modCompat.getModID());
+    }
+
+    /**
+     * If the given api compat should be loaded.
+     * @param apiCompat The api compat.
+     * @return If it should be loaded.
+     */
+    public boolean shouldLoadApiCompat(IApiCompat apiCompat) {
+        return ModAPIManager.INSTANCE.hasAPI(apiCompat.getApiID()) && isEnabled(apiCompat, apiCompat.getApiID())
+                && isNotCrashed(apiCompat.getApiID());
     }
     
     private boolean isModLoaded(IModCompat modCompat) {
         return Reference.MOD_VANILLA.equals(modCompat.getModID()) || Loader.isModLoaded(modCompat.getModID());
     }
     
-    private boolean isModEnabled(IModCompat modCompat) {
+    private boolean isEnabled(IExternalCompat compat, String id) {
     	Configuration config = mod.getConfigHandler().getConfig();
-    	Property property = config.get(CONFIG_CATEGORY, modCompat.getModID(),
-    			modCompat.isEnabled());
+    	Property property = config.get(CONFIG_CATEGORY, id,
+                compat.isEnabled());
         property.setRequiresMcRestart(true);
-        property.comment = modCompat.getComment();
+        property.comment = compat.getComment();
         boolean enabled = property.getBoolean(true);
         if(config.hasChanged()) {
         	config.save();
@@ -109,8 +150,8 @@ public class ModCompatLoader implements IInitListener {
         return enabled;
     }
 
-    private boolean isModNotCrashed(IModCompat modCompat) {
-        return !crashedModcompats.contains(modCompat.getModID());
+    private boolean isNotCrashed(String id) {
+        return !crashedcompats.contains(id);
     }
 
     protected static void attachCapability(ICapabilityCompat<ICapabilityProvider> compat, ICapabilityProvider provider) {

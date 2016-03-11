@@ -1,17 +1,17 @@
 package org.cyclops.cyclopscore.modcompat;
 
 /**
- * Interface for external mod compatibilities.
+ * Interface for external api compatibilities.
  * @see IExternalCompat
  * @author rubensworks
  *
  */
-public interface IModCompat extends IExternalCompat {
+public interface IApiCompat extends IExternalCompat {
 
     /**
      * Get the unique mod ID.
      * @return The mod ID.
      */
-    public String getModID();
+    public String getApiID();
     
 }
