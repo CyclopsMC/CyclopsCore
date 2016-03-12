@@ -169,6 +169,30 @@ public class RenderHelpers {
         renderItem.renderItem(itemStack, ItemCameraTransforms.TransformType.NONE);
     }
 
+    /**
+     * Render the given item in the world.
+     * @param itemStack The item stack.
+     * @param transformType A transform type.
+     */
+    public static void renderItem(ItemStack itemStack, ItemCameraTransforms.TransformType transformType) {
+        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+        GlStateManager.translate(8.0F, 8.0F, 0.0F);
+        GlStateManager.scale(1.0F, 1.0F, -1.0F);
+        GlStateManager.scale(0.5F, 0.5F, 0.5F);
+        IBakedModel ibakedmodel = renderItem.getItemModelMesher().getItemModel(itemStack);
+        if (ibakedmodel.isGui3d()){
+            GlStateManager.scale(40.0F, 40.0F, 40.0F);
+            GlStateManager.rotate(210.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.enableLighting();
+        } else {
+            GlStateManager.scale(64.0F, 64.0F, 64.0F);
+            GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.disableLighting();
+        }
+        renderItem.renderItem(itemStack, transformType);
+    }
+
     public static final Function<ResourceLocation, TextureAtlasSprite> TEXTURE_GETTER = new Function<ResourceLocation, TextureAtlasSprite>() {
         public TextureAtlasSprite apply(ResourceLocation location) {
             return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
