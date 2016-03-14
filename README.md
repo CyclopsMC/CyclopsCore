@@ -1,6 +1,7 @@
 ## CyclopsCore
 
 [![Build Status](https://travis-ci.org/CyclopsMC/CyclopsCore.svg?branch=master-1.8)](https://travis-ci.org/CyclopsMC/CyclopsCore)
+[![Download](https://api.bintray.com/packages/cyclopsmc/dev/CyclopsCore/images/download.svg) ](https://bintray.com/cyclopsmc/dev/CyclopsCore/_latestVersion)
 
 Library mod for several other [mods](https://github.com/CyclopsMC).
 
@@ -16,8 +17,8 @@ You can add CyclopsCore to your development environment by adding the following 
 
     repositories {
         maven {
-            name "RubensWorks FS"
-            url "http://maven.rubensworks.net/"
+            name "Cyclops Repo"
+            url "https://dl.bintray.com/cyclopsmc/dev/"
         }
     }
     ...
