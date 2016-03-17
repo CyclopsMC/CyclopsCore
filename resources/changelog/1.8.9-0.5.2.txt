@@ -1,0 +1,17 @@
+Make sure to backup your world before updating!
+
+Fixes:
+* Fix rare concurrent modification exceptions due to packets
+* isItemValidForSlot must not take into account stack sizes
+The method contract requires this.
+
+Lib changes:
+* Always load the modcompat for the "Minecraft" mod id
+
+Lib additions:
+* Add helper function to render items for a different transform type
+* Add API compat support
+* Add simulate parameter to addToSlot inventory helper
+* Add capability compat loader
+* Add abstraction for adding tile capabilities
+* Port configurable Torch and Food from EvilCraft
