@@ -3,8 +3,10 @@ package org.cyclops.cyclopscore.recipe.custom.component;
 import lombok.Getter;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import org.cyclops.cyclopscore.datastructure.Wrapper;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A {@link org.cyclops.cyclopscore.recipe.custom.api.IRecipe} component (input, output or properties) that holds an
@@ -15,11 +17,12 @@ import java.util.List;
 public class OreDictItemStackRecipeComponent extends ItemStackRecipeComponent {
 
     @Getter private final String key;
-    @Getter(lazy=true) private final List<ItemStack> itemStacks = OreDictionary.getOres(getKey());
+    private final Wrapper<List<ItemStack>> itemStacks;
 
     public OreDictItemStackRecipeComponent(String key) {
         super(null);
         this.key = key;
+        this.itemStacks = new Wrapper<>(OreDictionary.getOres(Objects.requireNonNull(key)));
     }
 
     @Override
@@ -43,6 +46,11 @@ public class OreDictItemStackRecipeComponent extends ItemStackRecipeComponent {
     @Override
     public ItemStack getItemStack() {
         return getItemStacks().size() > 0 ? getItemStacks().get(0) : super.getItemStack();
+    }
+
+    @Override
+    public List<ItemStack> getItemStacks() {
+        return itemStacks.get();
     }
 
     @Override
