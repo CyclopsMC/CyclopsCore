@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.network.packet;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -26,7 +26,7 @@ public abstract class PlayerPositionPacket extends PacketCodec {
     @CodecField
     protected String displayName;
     @CodecField
-    protected Vec3 position = new Vec3(0, 0, 0);
+    protected Vec3d position = new Vec3d(0, 0, 0);
     @CodecField
     private int range = DEFAULT_RANGE;
 

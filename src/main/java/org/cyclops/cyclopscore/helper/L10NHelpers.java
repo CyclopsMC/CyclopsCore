@@ -3,8 +3,8 @@ package org.cyclops.cyclopscore.helper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.translation.I18n;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.item.IInformationProvider;
 import org.cyclops.cyclopscore.persist.nbt.INBTSerializable;
@@ -31,7 +31,7 @@ public final class L10NHelpers {
      */
     public static String localize(String key) {
         if(MinecraftHelpers.isModdedEnvironment()) {
-            return StatCollector.translateToLocal(key);
+            return I18n.translateToLocal(key);
         } else {
             return key;
         }
@@ -46,7 +46,7 @@ public final class L10NHelpers {
      */
     public static String localize(String key, Object... params) {
         if(MinecraftHelpers.isModdedEnvironment()) {
-            return StatCollector.translateToLocalFormatted(key, params);
+            return I18n.translateToLocalFormatted(key, params);
         } else {
             return String.format("%s: %s", key, Arrays.toString(params));
         }
@@ -87,14 +87,14 @@ public final class L10NHelpers {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void addOptionalInfo(List list, String prefix) {
         String key = prefix + ".info";
-        if (StatCollector.canTranslate(key)) {
+        if (I18n.canTranslate(key)) {
             if (MinecraftHelpers.isShifted()) {
                 String localized = localize(key);
                 list.addAll(StringHelpers.splitLines(localized, MAX_TOOLTIP_LINE_LENGTH,
                         IInformationProvider.INFO_PREFIX));
             } else {
-                list.add(localize(EnumChatFormatting.GRAY.toString()
-                        + EnumChatFormatting.ITALIC.toString()
+                list.add(localize(TextFormatting.GRAY.toString()
+                        + TextFormatting.ITALIC.toString()
                         + localize("general." + Reference.MOD_ID + ".tooltip.info")));
             }
         }

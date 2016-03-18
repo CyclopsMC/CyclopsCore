@@ -1,22 +1,23 @@
 package org.cyclops.cyclopscore.config.configurable;
 
 import lombok.experimental.Delegate;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -37,7 +38,6 @@ import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 import org.cyclops.cyclopscore.tileentity.TileEntityNBTStorage;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -49,7 +49,7 @@ import java.util.Random;
 public class ConfigurableBlockContainer extends BlockContainer implements IConfigurableBlock, IDynamicModelElement {
 
     @Delegate protected IBlockPropertyManager propertyManager;
-    @Override protected BlockState createBlockState() {
+    @Override protected BlockStateContainer createBlockState() {
         return (propertyManager = new BlockPropertyManagerComponent(this)).createDelegatedBlockState();
     }
 
@@ -80,7 +80,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         this.random = new Random();
         this.tileEntity = tileEntity;
         setHardness(5F);
-        setStepSound(Block.soundTypePiston);
+        setStepSound(SoundType.STONE);
         if(hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -89,7 +89,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
                                      int meta, EntityLivingBase placer) {
         IBlockState blockState = super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
-        for(IProperty property : (Collection<IProperty>) blockState.getPropertyNames()) {
+        for(IProperty property : blockState.getPropertyNames()) {
             if(property.getName().equals("facing")) {
                 blockState = blockState.withProperty(property, placer.getHorizontalFacing());
             }
@@ -98,10 +98,10 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     }
 
     @Override
-    public int getRenderType() {
-        return 3;
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.MODEL;
     }
-    
+
     /**
      * Get the class of the tile entity this blockState holds.
      * @return The tile entity class.
@@ -306,17 +306,11 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     public String getGuiTexture(String suffix) {
         return getConfig().getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + eConfig.getNamedId() + "_gui" + suffix + ".png";
     }
-    
+
     @Override
-    public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos blockPos, EntityPlayer player) {
-    	Item item = getItem(world, blockPos);
-
-        if (item == null) {
-            return null;
-        }
-
-        ItemStack itemStack = new ItemStack(item, 1, getDamageValue(world, blockPos));
-        TileEntity tile = world.getTileEntity(blockPos);
+    public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player) {
+        ItemStack itemStack = super.getPickBlock(state, target, world, pos, player);
+        TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof CyclopsTileEntity && isKeepNBTOnDrop()) {
             CyclopsTileEntity ecTile = ((CyclopsTileEntity) tile);
             itemStack.setTagCompound(ecTile.getNBTTagCompound());
@@ -349,8 +343,8 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     public void onModelBakeEvent(ModelBakeEvent event){
         if(hasDynamicModel()) {
             IBakedModel cableModel = createDynamicModel();
-            event.modelRegistry.putObject(eConfig.dynamicBlockVariantLocation, cableModel);
-            event.modelRegistry.putObject(eConfig.dynamicItemVariantLocation , cableModel);
+            event.getModelRegistry().putObject(eConfig.dynamicBlockVariantLocation, cableModel);
+            event.getModelRegistry().putObject(eConfig.dynamicItemVariantLocation, cableModel);
         }
     }
 

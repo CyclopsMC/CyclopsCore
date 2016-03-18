@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3i;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
 
@@ -40,7 +40,7 @@ public class LocationHelpers {
 	 */
 	public static TargetPoint createTargetPointFromLocation(World world, BlockPos location,
 			int range) {
-		return new TargetPoint(world.provider.getDimensionId(), location.getX(), location.getY(), location.getZ(), range);
+		return new TargetPoint(world.provider.getDimension(), location.getX(), location.getY(), location.getZ(), range);
 	}
 	
 	/**

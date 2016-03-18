@@ -4,7 +4,8 @@ import com.google.common.collect.Maps;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.common.config.Configuration;
 import org.cyclops.cyclopscore.config.ConfigProperty;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -52,11 +53,11 @@ public class CommandConfigSet extends CommandConfig {
     }
 
     @Override
-    public void processCommand(ICommandSender icommandsender, String[] astring) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender icommandsender, String[] astring) throws CommandException {
         if (astring.length == 0) {
             processCommandHelp(icommandsender, astring);
         } else if (astring.length > 1) {
-            icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.onlyOneValue")));
+            icommandsender.addChatMessage(new TextComponentString(L10NHelpers.localize("chat.cyclopscore.command.onlyOneValue")));
         } else {
             Object newValue = Helpers.tryParse(astring[0], config.getValue());
             if(newValue != null) {
@@ -65,10 +66,10 @@ public class CommandConfigSet extends CommandConfig {
                 config.getCallback().run(newValue);
                 config.save(configuration, true);
                 configuration.save();
-                icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.updatedValue",
+                icommandsender.addChatMessage(new TextComponentString(L10NHelpers.localize("chat.cyclopscore.command.updatedValue",
                         name, newValue.toString())));
             } else {
-                icommandsender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.invalidNewValue")));
+                icommandsender.addChatMessage(new TextComponentString(L10NHelpers.localize("chat.cyclopscore.command.invalidNewValue")));
             }
         }
     }

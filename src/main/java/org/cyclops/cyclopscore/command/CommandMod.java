@@ -7,8 +7,9 @@ import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -100,7 +101,7 @@ public class CommandMod implements ICommand {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List getCommandAliases() {
+    public List<String> getCommandAliases() {
         return this.getAliases();
     }
     
@@ -125,14 +126,14 @@ public class CommandMod implements ICommand {
     }
 
     @Override
-    public void processCommand(ICommandSender icommandsender, String[] astring) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender icommandsender, String[] astring) throws CommandException {
         if(astring.length == 0) {
             processCommandHelp(icommandsender, astring);
         } else {
             ICommand subcommand = getSubcommands().get(astring[0]);
             if(subcommand != null) {
                 String[] asubstring = shortenArgumentList(astring);
-                subcommand.processCommand(icommandsender, asubstring);
+                subcommand.execute(server, icommandsender, asubstring);
             } else {
                 throw new WrongUsageException(L10NHelpers.localize("chat.cyclopscore.command.invalidSubcommand"));
             }
@@ -140,19 +141,19 @@ public class CommandMod implements ICommand {
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender icommandsender) {
-        return icommandsender.canCommandSenderUseCommand(MinecraftServer.getServer().getOpPermissionLevel(), getCommandName());
+    public boolean checkPermission(MinecraftServer server, ICommandSender icommandsender) {
+        return icommandsender.canCommandSenderUseCommand(FMLCommonHandler.instance().getMinecraftServerInstance().getOpPermissionLevel(), getCommandName());
     }
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List addTabCompletionOptions(ICommandSender icommandsender,
+    public List getTabCompletionOptions(MinecraftServer server, ICommandSender icommandsender,
             String[] astring, BlockPos blockPos) {
         if(astring.length != 0) {
             ICommand subcommand = getSubcommands().get(astring[0]);
             if(subcommand != null) {
                 String[] asubstring = shortenArgumentList(astring);
-                return subcommand.addTabCompletionOptions(icommandsender, asubstring, blockPos);
+                return subcommand.getTabCompletionOptions(server, icommandsender, asubstring, blockPos);
             } else {
                 return getSubCommands(astring[0]);
             }
@@ -189,6 +190,6 @@ public class CommandMod implements ICommand {
     }
 
     protected void printLineToChat(ICommandSender sender, String line) {
-        sender.addChatMessage(new ChatComponentText(line));
+        sender.addChatMessage(new TextComponentString(line));
     }
 }

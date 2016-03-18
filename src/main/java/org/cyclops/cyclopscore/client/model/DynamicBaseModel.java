@@ -2,14 +2,18 @@ package org.cyclops.cyclopscore.client.model;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.model.*;
+import net.minecraftforge.client.model.Attributes;
+import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import net.minecraftforge.client.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.lwjgl.util.Color;
@@ -23,7 +27,7 @@ import java.util.List;
  * A model that can be used as a basis for flexible baked models.
  * @author rubensworks
  */
-public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspectiveAwareModel {
+public abstract class DynamicBaseModel implements IPerspectiveAwareModel {
 
     // Rotation UV coordinates
     protected static final float[][] ROTATION_UV = {{1, 0}, {1, 1}, {0, 1}, {0, 0}};
@@ -33,15 +37,15 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspect
     protected static final float[][] UVS = {{0, 0}, {1, 1}};
 
     // Third person transform for block items
-    protected static final TRSRTransformation THIRD_PERSON = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+    protected static final TRSRTransformation THIRD_PERSON_LEFT_HAND = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
             new Vector3f(0, 1.5f / 16, -2.75f / 16),
-            TRSRTransformation.quatFromYXZDegrees(new Vector3f(10, -45, 170)),
+            TRSRTransformation.quatFromXYZDegrees(new Vector3f(-45, 10, 170)),
             new Vector3f(0.375f, 0.375f, 0.375f),
             null));
 
     // Default perspective transforms
     protected static final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> DEFAULT_PERSPECTIVE_TRANSFORMS =
-            ImmutableMap.of(ItemCameraTransforms.TransformType.THIRD_PERSON, THIRD_PERSON);
+            ImmutableMap.of(ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, THIRD_PERSON_LEFT_HAND);
 
     /**
      * Rotate a given vector to the given side.
@@ -49,14 +53,14 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspect
      * @param side The side to rotate by.
      * @return The rotated vector.
      */
-    protected static Vec3 rotate(Vec3 vec, EnumFacing side) {
+    protected static Vec3d rotate(Vec3d vec, EnumFacing side) {
         switch(side) {
-            case DOWN:  return new Vec3( vec.xCoord, -vec.yCoord, -vec.zCoord);
-            case UP:    return new Vec3( vec.xCoord,  vec.yCoord,  vec.zCoord);
-            case NORTH: return new Vec3( vec.xCoord,  vec.zCoord, -vec.yCoord);
-            case SOUTH: return new Vec3( vec.xCoord, -vec.zCoord,  vec.yCoord);
-            case WEST:  return new Vec3(-vec.yCoord,  vec.xCoord,  vec.zCoord);
-            case EAST:  return new Vec3( vec.yCoord, -vec.xCoord,  vec.zCoord);
+            case DOWN:  return new Vec3d( vec.xCoord, -vec.yCoord, -vec.zCoord);
+            case UP:    return new Vec3d( vec.xCoord,  vec.yCoord,  vec.zCoord);
+            case NORTH: return new Vec3d( vec.xCoord,  vec.zCoord, -vec.yCoord);
+            case SOUTH: return new Vec3d( vec.xCoord, -vec.zCoord,  vec.yCoord);
+            case WEST:  return new Vec3d(-vec.yCoord,  vec.xCoord,  vec.zCoord);
+            case EAST:  return new Vec3d( vec.yCoord, -vec.xCoord,  vec.zCoord);
         }
         return vec;
     }
@@ -67,14 +71,14 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspect
      * @param side The side to rotate by.
      * @return The inversely rotated vector.
      */
-    protected static Vec3 revRotate(Vec3 vec, EnumFacing side) {
+    protected static Vec3d revRotate(Vec3d vec, EnumFacing side) {
         switch(side) {
-            case DOWN:  return new Vec3( vec.xCoord, -vec.yCoord, -vec.zCoord);
-            case UP:    return new Vec3( vec.xCoord,  vec.yCoord,  vec.zCoord);
-            case NORTH: return new Vec3( vec.xCoord, -vec.zCoord,  vec.yCoord);
-            case SOUTH: return new Vec3( vec.xCoord,  vec.zCoord, -vec.yCoord);
-            case WEST:  return new Vec3( vec.yCoord, -vec.xCoord,  vec.zCoord);
-            case EAST:  return new Vec3(-vec.yCoord,  vec.xCoord,  vec.zCoord);
+            case DOWN:  return new Vec3d( vec.xCoord, -vec.yCoord, -vec.zCoord);
+            case UP:    return new Vec3d( vec.xCoord,  vec.yCoord,  vec.zCoord);
+            case NORTH: return new Vec3d( vec.xCoord, -vec.zCoord,  vec.yCoord);
+            case SOUTH: return new Vec3d( vec.xCoord,  vec.zCoord, -vec.yCoord);
+            case WEST:  return new Vec3d( vec.yCoord, -vec.xCoord,  vec.zCoord);
+            case EAST:  return new Vec3d(-vec.yCoord,  vec.xCoord,  vec.zCoord);
         }
         return vec;
     }
@@ -223,10 +227,10 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspect
      */
     protected static void addBakedQuadRotated(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
                                               TextureAtlasSprite texture, EnumFacing side, int rotation, boolean isColored, float[][] uvs) {
-        Vec3 v1 = rotate(new Vec3(x1 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
-        Vec3 v2 = rotate(new Vec3(x1 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
-        Vec3 v3 = rotate(new Vec3(x2 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
-        Vec3 v4 = rotate(new Vec3(x2 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
+        Vec3d v1 = rotate(new Vec3d(x1 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
+        Vec3d v2 = rotate(new Vec3d(x1 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
+        Vec3d v3 = rotate(new Vec3d(x2 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
+        Vec3d v4 = rotate(new Vec3d(x2 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
         int[] data =  Ints.concat(
                 vertexToInts((float) v1.xCoord, (float) v1.yCoord, (float) v1.zCoord, -1, texture, uvs[(0 + rotation) % 4][0] * 16, uvs[(0 + rotation) % 4][1] * 16),
                 vertexToInts((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord, -1, texture, uvs[(1 + rotation) % 4][0] * 16, uvs[(1 + rotation) % 4][1] * 16),
@@ -234,17 +238,12 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspect
                 vertexToInts((float) v4.xCoord, (float) v4.yCoord, (float) v4.zCoord, -1, texture, uvs[(3 + rotation) % 4][0] * 16, uvs[(3 + rotation) % 4][1] * 16)
         );
         ForgeHooksClient.fillNormal(data, side); // This fixes lighting issues when item is rendered in hand/inventory
-        quads.add(isColored ? new IColoredBakedQuad.ColoredBakedQuad(data, -1, side) : new BakedQuad(data, -1, side));
+        quads.add(new BakedQuad(data, -1, side, texture, true, Attributes.DEFAULT_BAKED_FORMAT));
     }
 
     @Override
-    public List<BakedQuad> getFaceQuads(EnumFacing side) {
+    public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
         return Collections.emptyList();
-    }
-
-    @Override
-    public List<BakedQuad> getGeneralQuads() {
-        return null;
     }
 
     @Override
@@ -268,12 +267,12 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspect
     }
 
     @Override
-    public VertexFormat getFormat() {
-        return Attributes.DEFAULT_BAKED_FORMAT;
+    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+        return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, DEFAULT_PERSPECTIVE_TRANSFORMS, cameraTransformType);
     }
 
     @Override
-    public Pair<? extends IFlexibleBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-        return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, DEFAULT_PERSPECTIVE_TRANSFORMS, cameraTransformType);
+    public ItemOverrideList getOverrides() {
+        return ItemOverrideList.NONE;
     }
 }

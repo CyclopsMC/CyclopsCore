@@ -4,7 +4,8 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -71,40 +72,40 @@ public abstract class CommonProxyComponent implements ICommonProxy {
     }
 
     @Override
-    public void playSoundMinecraft(BlockPos pos, String sound, float volume, float frequency) {
-    	playSoundMinecraft(pos.getX(), pos.getY(), pos.getZ(), sound, volume, frequency);
+    public void playSoundMinecraft(BlockPos pos, String sound, SoundCategory category, float volume, float frequency) {
+    	playSoundMinecraft(pos.getX(), pos.getY(), pos.getZ(), sound, category, volume, frequency);
     }
 
     @Override
-    public void playSoundMinecraft(double x, double y, double z, String sound, float volume, float frequency) {
-    	playSound(x, y, z, sound, volume, frequency, DEFAULT_RESOURCELOCATION_MOD);
+    public void playSoundMinecraft(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency) {
+    	playSound(x, y, z, sound, category, volume, frequency, DEFAULT_RESOURCELOCATION_MOD);
     }
 
     @Override
-    public void playSound(double x, double y, double z, String sound, float volume, float frequency,
+    public void playSound(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency,
     		String mod) {
     	// No implementation server-side.
     }
 
     @Override
-    public void playSound(double x, double y, double z, String sound, float volume, float frequency) {
-    	playSound(x, y, z, sound, volume, frequency, getMod().getModId());
+    public void playSound(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency) {
+    	playSound(x, y, z, sound, category, volume, frequency, getMod().getModId());
     }
 
     @Override
-    public void sendSoundMinecraft(BlockPos pos, String sound, float volume, float frequency) {
-		sendSound(pos.getX(), pos.getY(), pos.getZ(), sound, volume, frequency, DEFAULT_RESOURCELOCATION_MOD);
+    public void sendSoundMinecraft(BlockPos pos, String sound, SoundCategory category, float volume, float frequency) {
+		sendSound(pos.getX(), pos.getY(), pos.getZ(), sound, category, volume, frequency, DEFAULT_RESOURCELOCATION_MOD);
     }
 
     @Override
-    public void sendSoundMinecraft(double x, double y, double z, String sound, float volume, float frequency) {
-		sendSound(x, y, z, sound, volume, frequency, DEFAULT_RESOURCELOCATION_MOD);
+    public void sendSoundMinecraft(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency) {
+		sendSound(x, y, z, sound, category, volume, frequency, DEFAULT_RESOURCELOCATION_MOD);
     }
 
     @Override
-    public void sendSound(double x, double y, double z, String sound, float volume, float frequency,
+    public void sendSound(double x, double y, double z, String sound, SoundCategory soundCategory, float volume, float frequency,
     		String mod) {
-    	SoundPacket packet = new SoundPacket(x, y, z, sound, volume, frequency, mod);
+    	SoundPacket packet = new SoundPacket(x, y, z, sound, soundCategory, volume, frequency, mod);
         if(!MinecraftHelpers.isClientSide()) {
             CyclopsCore._instance.getPacketHandler().sendToAll(packet); // Yes, all sounds go through cyclops.
         } else {
@@ -113,7 +114,7 @@ public abstract class CommonProxyComponent implements ICommonProxy {
     }
 
     @Override
-    public void sendSound(double x, double y, double z, String sound, float volume, float frequency) {
-    	sendSound(x, y, z, sound, volume, frequency, getMod().getModId());
+    public void sendSound(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency) {
+    	sendSound(x, y, z, sound, category, volume, frequency, getMod().getModId());
     }
 }

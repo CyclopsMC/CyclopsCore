@@ -2,14 +2,15 @@ package org.cyclops.cyclopscore.config.configurable;
 
 import lombok.experimental.Delegate;
 import net.minecraft.block.BlockSapling;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.cyclops.cyclopscore.block.property.BlockProperty;
 import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
@@ -28,7 +29,7 @@ import java.util.Random;
 public class ConfigurableBlockSapling extends BlockSapling implements IConfigurableBlock {
 
     @Delegate private IBlockPropertyManager propertyManager;
-    @Override protected BlockState createBlockState() {
+    @Override protected BlockStateContainer createBlockState() {
         return (propertyManager = new BlockPropertyManagerComponent(this)).createDelegatedBlockState();
     }
 
@@ -55,7 +56,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         this.treeGenerator = treeGenerator;
-        setStepSound(soundTypeGrass);
+        setStepSound(SoundType.GROUND);
     }
 
     @Override

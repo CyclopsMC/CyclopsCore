@@ -5,8 +5,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 
@@ -243,8 +243,8 @@ public class SimpleInventory implements INBTInventory {
     }
 
     @Override
-    public IChatComponent getDisplayName() {
-        return new ChatComponentTranslation(this.getName());
+    public ITextComponent getDisplayName() {
+        return new TextComponentTranslation(this.getName());
     }
 
     @Override

@@ -4,8 +4,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -54,13 +56,13 @@ public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockCon
     }
 
     @Override
-    public boolean isNormalCube() {
+    public boolean isNormalCube(IBlockState blockState) {
         return false;
     }
-    
+
     @Override
-    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityplayer, EnumFacing side, float par7, float par8, float par9) {
-        super.onBlockActivated(world, blockPos, blockState, entityplayer, side, par7, par8, par9);
+    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityplayer, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        super.onBlockActivated(world, blockPos, blockState, entityplayer, hand, heldItem, side, hitX, hitY, hitZ);
 
         // Drop through if the player is sneaking
         if (entityplayer.isSneaking()) {

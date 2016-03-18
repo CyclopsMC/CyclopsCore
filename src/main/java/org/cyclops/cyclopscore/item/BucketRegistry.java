@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -47,14 +47,14 @@ public class BucketRegistry implements IBucketRegistry {
     @Override
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onBucketFill(FillBucketEvent event) {
-        ItemStack result = fillCustomBucket(event.world, event.target, event.current);
+        ItemStack result = fillCustomBucket(event.getWorld(), event.getTarget(), event.getEmptyBucket());
         if (result != null) {
-            event.result = result;
+            event.setFilledBucket(result);
             event.setResult(Result.ALLOW);
         }
     }
 
-    private ItemStack fillCustomBucket(World world, MovingObjectPosition pos, ItemStack current) {
+    private ItemStack fillCustomBucket(World world, RayTraceResult pos, ItemStack current) {
         Block block = world.getBlockState(pos.getBlockPos()).getBlock();
 
         Item bucket = items.get(block);

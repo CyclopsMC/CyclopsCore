@@ -4,7 +4,8 @@ import com.google.common.collect.Maps;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.Map;
@@ -44,7 +45,7 @@ public class CommandRecursion extends CommandMod {
     }
 
     @Override
-    public void processCommand(ICommandSender icommandsender, String[] astring) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender icommandsender, String[] astring) throws CommandException {
         recursionDepth = 0;
 
         // Count the recursion depth
@@ -52,7 +53,7 @@ public class CommandRecursion extends CommandMod {
             recursionDepth++;
 
         if(recursionDepth == 42 - 1) {
-            icommandsender.addChatMessage(new ChatComponentText("You just lost The Game"));
+            icommandsender.addChatMessage(new TextComponentString("You just lost The Game"));
         }
         processCommandHelp(icommandsender, astring);
     }

@@ -2,7 +2,8 @@ package org.cyclops.cyclopscore.network.packet;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -31,6 +32,8 @@ public class SoundPacket extends PacketCodec {
 	private String mod = "";
 	@CodecField
 	private String sound = "";
+	@CodecField
+	private String category = "";
     @CodecField
 	private float volume = 0;
     @CodecField
@@ -49,14 +52,16 @@ public class SoundPacket extends PacketCodec {
      * @param y The Y coordinate.
      * @param z The Z coordinate.
      * @param sound The sound name to play.
+	 * @param category The sound category.
      * @param volume The volume of the sound.
      * @param frequency The pitch of the sound.
 	 */
-	public SoundPacket(double x, double y, double z, String sound, float volume, float frequency) {
+	public SoundPacket(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.sound = sound;
+		this.category = category.getName();
 		this.volume = volume;
 		this.frequency = frequency;
 	}
@@ -67,12 +72,13 @@ public class SoundPacket extends PacketCodec {
      * @param y The Y coordinate.
      * @param z The Z coordinate.
      * @param sound The sound name to play.
+	 * @param category The sound category.
      * @param volume The volume of the sound.
      * @param frequency The pitch of the sound.
 	 * @param mod The mod id that has this sound.
 	 */
-	public SoundPacket(double x, double y, double z, String sound, float volume, float frequency, String mod) {
-		this(x, y, z, sound, volume, frequency);
+	public SoundPacket(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency, String mod) {
+		this(x, y, z, sound, category, volume, frequency);
 		this.mod = mod;
 	}
 	
@@ -80,12 +86,13 @@ public class SoundPacket extends PacketCodec {
 	 * Creates a packet which contains the location data.
 	 * @param location The location data.
 	 * @param sound The sound name to play.
+	 * @param category The sound category.
      * @param volume The volume of the sound.
      * @param frequency The pitch of the sound.
 	 */
-	public SoundPacket(BlockPos location, String sound, float volume, float frequency) {
+	public SoundPacket(BlockPos location, String sound, SoundCategory category, float volume, float frequency) {
 		this(location.getX(), location.getY(), location.getZ(),
-				sound, volume, frequency);
+				sound, category, volume, frequency);
 	}
 
 	@Override
@@ -96,12 +103,12 @@ public class SoundPacket extends PacketCodec {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void actionClient(World world, EntityPlayer player) {
-		CyclopsCore._instance.getProxy().playSound(x, y, z, sound, volume, frequency, mod);
+		CyclopsCore._instance.getProxy().playSound(x, y, z, sound, SoundCategory.getByName(category), volume, frequency, mod);
 	}
 	@Override
 	public void actionServer(World world, EntityPlayerMP player) {
-        CyclopsCore._instance.getPacketHandler().sendToAllAround(new SoundPacket(x, y, z, sound, volume, frequency, mod),
-				new NetworkRegistry.TargetPoint(world.provider.getDimensionId(), x, y, z, RANGE));
+        CyclopsCore._instance.getPacketHandler().sendToAllAround(new SoundPacket(x, y, z, sound, SoundCategory.getByName(category), volume, frequency, mod),
+				new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, RANGE));
 	}
 	
 }

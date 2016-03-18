@@ -6,14 +6,14 @@ import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
-import net.minecraft.util.Vec3i;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
@@ -284,10 +284,10 @@ public abstract class NBTClassType<T> {
             }
         });
 
-        NBTYPES.put(Vec3.class, new NBTClassType<Vec3>() {
+        NBTYPES.put(Vec3d.class, new NBTClassType<Vec3d>() {
 
             @Override
-            public void writePersistedField(String name, Vec3 object, NBTTagCompound tag) {
+            public void writePersistedField(String name, Vec3d object, NBTTagCompound tag) {
                 NBTTagCompound vec = new NBTTagCompound();
                 vec.setDouble("x", object.xCoord);
                 vec.setDouble("y", object.yCoord);
@@ -296,13 +296,13 @@ public abstract class NBTClassType<T> {
             }
 
             @Override
-            public Vec3 readPersistedField(String name, NBTTagCompound tag) {
+            public Vec3d readPersistedField(String name, NBTTagCompound tag) {
                 NBTTagCompound vec = tag.getCompoundTag(name);
-                return new Vec3(vec.getDouble("x"), vec.getDouble("y"), vec.getDouble("z"));
+                return new Vec3d(vec.getDouble("x"), vec.getDouble("y"), vec.getDouble("z"));
             }
 
             @Override
-            public Vec3 getDefaultValue() {
+            public Vec3d getDefaultValue() {
                 return null;
             }
         });
@@ -365,7 +365,7 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, DimPos object, NBTTagCompound tag) {
                 NBTTagCompound dimPos = new NBTTagCompound();
-                dimPos.setDouble("dim", object.getWorld().provider.getDimensionId());
+                dimPos.setDouble("dim", object.getWorld().provider.getDimension());
                 dimPos.setInteger("x", object.getBlockPos().getX());
                 dimPos.setInteger("y", object.getBlockPos().getY());
                 dimPos.setInteger("z", object.getBlockPos().getZ());
@@ -383,14 +383,14 @@ public abstract class NBTClassType<T> {
                 int dim = dimPos.getInteger("dim");
                 World world;
                 if(!MinecraftHelpers.isClientSide()) {
-                    if (MinecraftServer.getServer().worldServers.length >= dim) {
+                    if (FMLCommonHandler.instance().getMinecraftServerInstance().worldServers.length >= dim) {
                         dim = 0;
                     }
-                    world = MinecraftServer.getServer().worldServers[dim];
+                    world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[dim];
                 } else {
                     world = getClientWorld();
-                    if(world.provider.getDimensionId() != dim) {
-                        CyclopsCore.clog(Level.WARN, String.format("Tried to fetch dimension %s at client-side while dimension %s was loaded.", dim, world.provider.getDimensionId()));
+                    if(world.provider.getDimension() != dim) {
+                        CyclopsCore.clog(Level.WARN, String.format("Tried to fetch dimension %s at client-side while dimension %s was loaded.", dim, world.provider.getDimension()));
                     }
                 }
                 return DimPos.of(world, new BlockPos(dimPos.getInteger("x"), dimPos.getInteger("y"), dimPos.getInteger("z")));

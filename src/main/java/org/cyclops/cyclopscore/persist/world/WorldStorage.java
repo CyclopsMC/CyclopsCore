@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.persist.world;
 
 import lombok.experimental.Delegate;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldSavedData;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -67,11 +67,11 @@ public abstract class WorldStorage implements INBTProvider {
 
     private NBTDataHolder getDataHolder() {
         String dataId = mod.getModId() + "_" + getDataId();
-        NBTDataHolder data = (NBTDataHolder) MinecraftServer.getServer().worldServers[0].
+        NBTDataHolder data = (NBTDataHolder) FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].
                 loadItemData(NBTDataHolder.class, dataId);
         if(data == null) {
             data = new NBTDataHolder(dataId);
-            MinecraftServer.getServer().worldServers[0].setItemData(dataId, data);
+            FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].setItemData(dataId, data);
         }
         return data;
     }

@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.world.gen;
 
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -34,7 +35,7 @@ public class SimpleMinableWorldGenerator implements IWorldGenerator {
 	}
 	
 	@Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
         for(WorldGenMinableExtended worldGen : worldGenerators) {
         	worldGen.loopGenerate(world, random, chunkX * 16, chunkZ * 16);
         }

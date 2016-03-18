@@ -8,11 +8,12 @@ import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.IWorldNameable;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ChestGenHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -21,9 +22,6 @@ import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 import org.cyclops.cyclopscore.tileentity.TileEntityNBTStorage;
 import org.lwjgl.input.Keyboard;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -70,24 +68,6 @@ public class MinecraftHelpers {
      * Stop the blockState from re-rendering.
      */
     public static final int BLOCK_NOTIFY_NO_RERENDER = 4;
-
-    /**
-     * A list of all the {@link net.minecraftforge.common.ChestGenHooks}.
-     * @see net.minecraftforge.common.ChestGenHooks
-     */
-    public static List<String> CHESTGENCATEGORIES = new LinkedList<String>();
-    static {
-        CHESTGENCATEGORIES.add(ChestGenHooks.BONUS_CHEST);
-        CHESTGENCATEGORIES.add(ChestGenHooks.DUNGEON_CHEST);
-        CHESTGENCATEGORIES.add(ChestGenHooks.MINESHAFT_CORRIDOR);
-        CHESTGENCATEGORIES.add(ChestGenHooks.PYRAMID_DESERT_CHEST);
-        CHESTGENCATEGORIES.add(ChestGenHooks.PYRAMID_JUNGLE_CHEST);
-        CHESTGENCATEGORIES.add(ChestGenHooks.PYRAMID_JUNGLE_DISPENSER);
-        CHESTGENCATEGORIES.add(ChestGenHooks.STRONGHOLD_CORRIDOR);
-        CHESTGENCATEGORIES.add(ChestGenHooks.STRONGHOLD_CROSSING);
-        CHESTGENCATEGORIES.add(ChestGenHooks.STRONGHOLD_LIBRARY);
-        CHESTGENCATEGORIES.add(ChestGenHooks.VILLAGE_BLACKSMITH);
-    }
     
     /**
      * Check if it's day in this world.
@@ -197,7 +177,7 @@ public class MinecraftHelpers {
         if(fluid1 == null) { // fluid2 is always null now
             return true;
         }
-        return fluid1.getFluid().getID() == fluid2.getFluid().getID() && fluid1.amount == fluid2.amount;
+        return fluid1.getFluid() == fluid2.getFluid() && fluid1.amount == fluid2.amount;
     }
 
     /**
@@ -253,7 +233,7 @@ public class MinecraftHelpers {
     }
 
     /**
-     * Comparator for {@link net.minecraft.util.BlockPos}.
+     * Comparator for {@link net.minecraft.util.math.BlockPos}.
      * @param pos1 First pos.
      * @param pos2 Second pos.
      * @return The compared value.
@@ -268,6 +248,16 @@ public class MinecraftHelpers {
             return compY;
         }
         return compX;
+    }
+
+    /**
+     * Create a new successfull action result.
+     * @param result The result element.
+     * @param <T> The type.
+     * @return The action result.
+     */
+    public static <T> ActionResult<T> successAction(T result) {
+        return new ActionResult<>(EnumActionResult.SUCCESS, result);
     }
 
 }

@@ -1,8 +1,9 @@
 package org.cyclops.cyclopscore.command;
 
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.List;
@@ -21,12 +22,12 @@ public class CommandVersion extends CommandMod {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] parts, BlockPos blockPos) {
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] parts, BlockPos blockPos) {
         return null;
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] parts) {
-        sender.addChatMessage(new ChatComponentText(getMod().getReferenceValue(ModBase.REFKEY_MOD_VERSION)));
+    public void execute(MinecraftServer server, ICommandSender sender, String[] parts) {
+        sender.addChatMessage(new TextComponentString(getMod().getReferenceValue(ModBase.REFKEY_MOD_VERSION)));
     }
 }

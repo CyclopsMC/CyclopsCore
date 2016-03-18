@@ -4,7 +4,7 @@ import net.minecraft.client.particle.EntityFlameFX;
 import net.minecraft.client.particle.EntityLavaFX;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -31,7 +31,7 @@ public class RingOfFirePacket extends PlayerPositionPacket {
     }
     
 	@SideOnly(Side.CLIENT)
-    private static void showFireRing(World world, Vec3 pos) {
+    private static void showFireRing(World world, Vec3d pos) {
         double area = RING_AREA;
         int points = 40;
         for(double point = -points; point <= points; point++) {

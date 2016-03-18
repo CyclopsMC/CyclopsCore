@@ -5,8 +5,9 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.PacketCodec;
@@ -64,7 +65,7 @@ public class CommandDebug extends CommandMod {
     public void processCommandHelp(ICommandSender icommandsender, String[] astring) throws CommandException {
         Iterator<String> it = getSubcommands().keySet().iterator();
         if (it.hasNext())
-            icommandsender.addChatMessage(new ChatComponentText(joinStrings(it, ", ")));
+            icommandsender.addChatMessage(new TextComponentString(joinStrings(it, ", ")));
         else
             throw new CommandException("empty");
     }
@@ -79,13 +80,13 @@ public class CommandDebug extends CommandMod {
         }
 
         @Override
-        public List addTabCompletionOptions(ICommandSender sender, String[] parts, BlockPos blockPos) {
+        public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] parts, BlockPos blockPos) {
             return null;
         }
 
         @Override
-        public void processCommand(ICommandSender sender, String[] parts) {
-            sender.addChatMessage(new ChatComponentText(String.format("Sending %s from client to server...", packet.getClass())));
+        public void execute(MinecraftServer server, ICommandSender sender, String[] parts) {
+            sender.addChatMessage(new TextComponentString(String.format("Sending %s from client to server...", packet.getClass())));
             CyclopsCore._instance.getPacketHandler().sendToPlayer(packet, (EntityPlayerMP) sender.getCommandSenderEntity());
         }
     }

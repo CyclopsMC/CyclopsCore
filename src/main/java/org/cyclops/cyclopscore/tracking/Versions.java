@@ -2,9 +2,9 @@ package org.cyclops.cyclopscore.tracking;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.event.HoverEvent;
-import net.minecraft.util.*;
+import net.minecraft.util.text.*;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -105,38 +105,38 @@ public class Versions {
                 if (triple.getMiddle().needsUpdate()) {
                     // Chat formatting inspired by CoFH
                     EntityPlayer player = event.player;
-                    IChatComponent chat = new ChatComponentText("");
+                    ITextComponent chat = new TextComponentString("");
 
-                    ChatStyle modNameStyle = new ChatStyle();
-                    modNameStyle.setColor(EnumChatFormatting.AQUA);
+                    Style modNameStyle = new Style();
+                    modNameStyle.setColor(TextFormatting.AQUA);
 
-                    ChatStyle versionStyle = new ChatStyle();
-                    versionStyle.setColor(EnumChatFormatting.AQUA);
+                    Style versionStyle = new Style();
+                    versionStyle.setColor(TextFormatting.AQUA);
 
-                    ChatStyle downloadStyle = new ChatStyle();
-                    downloadStyle.setColor(EnumChatFormatting.BLUE);
+                    Style downloadStyle = new Style();
+                    downloadStyle.setColor(TextFormatting.BLUE);
 
                     String currentVersion = Reference.MOD_MC_VERSION + "-" + triple.getLeft().getReferenceValue(ModBase.REFKEY_MOD_VERSION);
                     String newVersion = Reference.MOD_MC_VERSION + "-" + triple.getMiddle().getVersion();
-                    IChatComponent versionTransition = new ChatComponentText(String.format("%s -> %s", currentVersion, newVersion)).setChatStyle(versionStyle);
+                    ITextComponent versionTransition = new TextComponentString(String.format("%s -> %s", currentVersion, newVersion)).setChatStyle(versionStyle);
                     modNameStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, versionTransition));
-                    IChatComponent modNameComponent = new ChatComponentText(String.format("[%s]", triple.getLeft().getModName())).setChatStyle(modNameStyle);
+                    ITextComponent modNameComponent = new TextComponentString(String.format("[%s]", triple.getLeft().getModName())).setChatStyle(modNameStyle);
 
-                    IChatComponent downloadComponent = new ChatComponentText(String.format("[%s]", L10NHelpers.localize("general.cyclopscore.version.download"))).setChatStyle(downloadStyle);
-                    downloadStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ChatComponentTranslation("general.cyclopscore.version.clickToDownload")));
+                    ITextComponent downloadComponent = new TextComponentString(String.format("[%s]", L10NHelpers.localize("general.cyclopscore.version.download"))).setChatStyle(downloadStyle);
+                    downloadStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentTranslation("general.cyclopscore.version.clickToDownload")));
                     downloadStyle.setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, triple.getMiddle().getUpdateUrl()));
 
                     chat.appendSibling(modNameComponent);
                     chat.appendText(" ");
-                    chat.appendSibling(new ChatComponentTranslation("general.cyclopscore.version.updateAvailable").setChatStyle(new ChatStyle().setColor(EnumChatFormatting.WHITE)));
+                    chat.appendSibling(new TextComponentTranslation("general.cyclopscore.version.updateAvailable").setChatStyle(new Style().setColor(TextFormatting.WHITE)));
                     chat.appendText(String.format(": %s ", triple.getMiddle().getVersion()));
                     chat.appendSibling(downloadComponent);
 
                     player.addChatComponentMessage(chat);
 
-                    chat = new ChatComponentText("");
+                    chat = new TextComponentString("");
                     chat.appendSibling(modNameComponent);
-                    chat.appendText(EnumChatFormatting.WHITE + " ");
+                    chat.appendText(TextFormatting.WHITE + " ");
                     chat.appendText(triple.getMiddle().getInfo());
                     player.addChatComponentMessage(chat);
                 }

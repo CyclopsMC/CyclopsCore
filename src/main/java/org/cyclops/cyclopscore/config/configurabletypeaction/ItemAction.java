@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -78,10 +78,9 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
                 item.getSubItems(item, tab, itemStacks);
                 for(ItemStack itemStack : itemStacks) {
                     String itemName = modelProvider.getModelName(itemStack);
-
-                    ModelBakery.addVariantName(item, modId + ":" + itemName);
-                    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, itemStack.getMetadata(),
-                            new ModelResourceLocation(modId + ":" + itemName, "inventory"));
+                    ModelResourceLocation model = new ModelResourceLocation(modId + ":" + itemName, "inventory");
+                    ModelBakery.registerItemVariants(item, model);
+                    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, itemStack.getMetadata(), model);
                 }
             } else {
                 Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0,

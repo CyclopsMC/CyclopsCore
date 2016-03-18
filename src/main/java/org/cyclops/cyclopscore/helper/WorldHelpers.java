@@ -1,9 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
@@ -11,7 +8,6 @@ import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Helpers for world related logic.
@@ -43,15 +39,16 @@ public class WorldHelpers {
             int rx = c.getX();
             int rz = c.getZ();
             byte[] biomeArray = chunk.getBiomeArray();
-            biomeArray[rz << 4 | rx] = (byte)(biome.biomeID & 255);
+            biomeArray[rz << 4 | rx] = (byte)(BiomeGenBase.getIdForBiome(biome) & 255);
             chunk.setChunkModified();
             world.getChunkProvider().provideChunk(chunk.xPosition, chunk.zPosition);
             
             // Notify the players for a chunk update.
-            for(EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
-                List<ChunkCoordIntPair> chunks = (List<ChunkCoordIntPair>)player.loadedChunks;
+            // TODO: can this be removed?
+            /*for(EntityPlayerMP player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList()) {
+                List<ChunkCoordIntPair> chunks = player.loadedChunks;
                 chunks.add(new ChunkCoordIntPair(chunk.xPosition, chunk.zPosition));
-            }
+            }*/
         } else {
             CyclopsCore.clog(Level.WARN, "Tried changing biome at non-existing chunk for position " + pos);
         }

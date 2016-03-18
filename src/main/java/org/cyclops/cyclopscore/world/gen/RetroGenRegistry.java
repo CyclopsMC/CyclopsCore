@@ -50,7 +50,7 @@ public class RetroGenRegistry implements IRetroGenRegistry {
 			
 			boolean atLeastOneModified = false;
 			for(IRetroGen retroGen : retroGeneratables) {
-				if(retroGen.shouldRetroGen(tag, event.world.provider.getDimensionId())) {
+				if(retroGen.shouldRetroGen(tag, event.world.provider.getDimension())) {
 					retroGen.retroGenerateChunk(tag, event.getChunk(), random);
 					getMod().log(Level.INFO, "Retrogenerating chunk at "
                             + event.getChunk().xPosition + ":" + event.getChunk().zPosition);

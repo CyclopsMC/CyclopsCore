@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import org.cyclops.cyclopscore.inventory.container.ScrollingInventoryContainer;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;

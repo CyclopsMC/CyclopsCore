@@ -3,10 +3,10 @@ package org.cyclops.cyclopscore.world.gen;
 import com.google.common.base.Predicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.block.state.pattern.BlockHelper;
+import net.minecraft.block.state.pattern.BlockMatcher;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
@@ -40,7 +40,7 @@ public class WorldGenMinableExtended extends WorldGenMinable implements IRetroGe
      * @param replaceTarget The replace target blockState. Stone for overworld, netherrack for nether.
      */
     public WorldGenMinableExtended(IBlockState state, int blocksPerVein, int veinsPerChunk, int startY, int endY, Block replaceTarget) {
-        super(state, blocksPerVein, BlockHelper.forBlock(replaceTarget));
+        super(state, blocksPerVein, BlockMatcher.forBlock(replaceTarget));
         this.state = state;
         this.blocksPerVein = blocksPerVein;
         this.veinsPerChunk = veinsPerChunk;
@@ -121,7 +121,7 @@ public class WorldGenMinableExtended extends WorldGenMinable implements IRetroGe
 	                    	            Block oldBlock = oldBlockState.getBlock();
 	                    	            if(oldBlock != null
 	                    	            		&& oldBlockState != state
-	                    	            		&& oldBlock.isReplaceableOreGen(chunk.getWorld(), blockPos, new Predicate<IBlockState>() {
+	                    	            		&& oldBlock.isReplaceableOreGen(oldBlockState, chunk.getWorld(), blockPos, new Predicate<IBlockState>() {
                                             @Override
                                             public boolean apply(@Nullable IBlockState input) {
                                                 return input.equals(oldBlockState);

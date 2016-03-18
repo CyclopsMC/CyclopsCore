@@ -1,7 +1,8 @@
 package org.cyclops.cyclopscore.tracking;
 
 import com.google.common.collect.Lists;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
@@ -52,7 +53,9 @@ public class Analytics {
     public static void sendAll() {
         if(!checked) {
             checked = true;
-            if (MinecraftServer.getServer().isSnooperEnabled()) {
+            if (MinecraftHelpers.isClientSide()
+                    ? Minecraft.getMinecraft().isSnooperEnabled()
+                    : FMLCommonHandler.instance().getMinecraftServerInstance().isSnooperEnabled()) {
                 new Thread(new Runnable() {
 
                     @Override

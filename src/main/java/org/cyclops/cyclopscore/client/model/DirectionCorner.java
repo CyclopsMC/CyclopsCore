@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * An equivalent to {@link net.minecraft.util.EnumFacing} for being able to also refer to

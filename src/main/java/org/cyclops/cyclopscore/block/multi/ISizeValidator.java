@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.block.multi;
 
-import net.minecraft.util.Vec3i;
+import net.minecraft.util.math.Vec3i;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 
 /**

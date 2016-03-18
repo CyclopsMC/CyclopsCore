@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.network.packet.debug;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -40,7 +40,7 @@ public class PingPongPacketAsync extends PacketCodec {
 	}
 
 	protected void log(EntityPlayer player, String message) {
-		player.addChatComponentMessage(new ChatComponentText(message));
+		player.addChatComponentMessage(new TextComponentString(message));
 	}
 
 	protected PingPongPacketAsync newPacket() {

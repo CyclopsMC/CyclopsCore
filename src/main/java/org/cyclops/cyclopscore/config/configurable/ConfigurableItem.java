@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.configurable;
 
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -76,7 +76,7 @@ public class ConfigurableItem extends Item implements IConfigurable, IDynamicMod
     public void onModelBakeEvent(ModelBakeEvent event){
         if(hasDynamicModel()) {
             IBakedModel model = createDynamicModel();
-            event.modelRegistry.putObject(eConfig.dynamicItemVariantLocation, model);
+            event.getModelRegistry().putObject(eConfig.dynamicItemVariantLocation, model);
         }
     }
 

@@ -4,10 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ICrafting;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -119,8 +116,8 @@ public abstract class InventoryContainer extends Container implements IButtonCli
      * @param offsetY Offset to Y
      */
     protected void addPlayerArmorInventory(InventoryPlayer inventory, int offsetX, int offsetY) {
-        for (int y = 0; y < 4; y++) {
-            addSlotToContainer(new SlotArmor(inventory, 4 * 9 + (3 - y), offsetX, offsetY + y * ITEMBOX, inventory.player, y));
+        for (EntityEquipmentSlot type : EntityEquipmentSlot.values()) {
+            addSlotToContainer(new SlotArmor(inventory, 4 * 9 + (3 - type.getIndex()), offsetX, offsetY + type.getIndex() * ITEMBOX, inventory.player, type));
         }
     }
     
@@ -251,16 +248,17 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     @Override
-    public ItemStack slotClick(int slotId, int arg, int function, EntityPlayer player) {
+    // MCP: slotClick
+    public ItemStack func_184996_a(int slotId, int arg, ClickType clickType, EntityPlayer player) {
         Slot slot = slotId < 0 ? null : (Slot) this.inventorySlots.get(slotId);
         // Phantom slot code based on Buildcraft
         if(slot instanceof SlotExtended && ((SlotExtended) slot).isPhantom()) {
-            return slotClickPhantom(slot, arg, function, player);
+            return slotClickPhantom(slot, arg, clickType, player);
         }
-        return super.slotClick(slotId, arg, function, player);
+        return super.func_184996_a(slotId, arg, clickType, player);
     }
 
-    private ItemStack slotClickPhantom(Slot slot, int mouseButton, int modifier, EntityPlayer player) {
+    private ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickType, EntityPlayer player) {
         ItemStack stack = null;
 
         if (mouseButton == 2) {
@@ -279,29 +277,29 @@ public abstract class InventoryContainer extends Container implements IButtonCli
 
             if (stackSlot == null) {
                 if (stackHeld != null && slot.isItemValid(stackHeld)) {
-                    fillPhantomSlot(slot, stackHeld, mouseButton, modifier);
+                    fillPhantomSlot(slot, stackHeld, mouseButton, clickType);
                 }
             } else if (stackHeld == null) {
-                adjustPhantomSlot(slot, mouseButton, modifier);
+                adjustPhantomSlot(slot, mouseButton, clickType);
                 slot.onPickupFromSlot(player, playerInv.getItemStack());
             } else if (slot.isItemValid(stackHeld)) {
                 if (ItemStack.areItemStacksEqual(stackSlot, stackHeld)) {
-                    adjustPhantomSlot(slot, mouseButton, modifier);
+                    adjustPhantomSlot(slot, mouseButton, clickType);
                 } else {
-                    fillPhantomSlot(slot, stackHeld, mouseButton, modifier);
+                    fillPhantomSlot(slot, stackHeld, mouseButton, clickType);
                 }
             }
         }
         return stack;
     }
 
-    protected void adjustPhantomSlot(Slot slot, int mouseButton, int modifier) {
+    protected void adjustPhantomSlot(Slot slot, int mouseButton, ClickType clickType) {
         if (!((SlotExtended) slot).isAdjustable()) {
             return;
         }
         ItemStack stackSlot = slot.getStack();
         int stackSize;
-        if (modifier == 1) {
+        if (clickType == ClickType.QUICK_MOVE) {
             stackSize = mouseButton == 0 ? (stackSlot.stackSize + 1) / 2 : stackSlot.stackSize * 2;
         } else {
             stackSize = mouseButton == 0 ? stackSlot.stackSize - 1 : stackSlot.stackSize + 1;
@@ -318,7 +316,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
         }
     }
 
-    protected void fillPhantomSlot(Slot slot, ItemStack stackHeld, int mouseButton, int modifier) {
+    protected void fillPhantomSlot(Slot slot, ItemStack stackHeld, int mouseButton, ClickType clickType) {
         if (!((SlotExtended) slot).isAdjustable()) {
             return;
         }

@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.block.multi;
 
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3i;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.LocationHelpers;

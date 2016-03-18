@@ -1,12 +1,10 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fml.relauncher.Side;
@@ -54,13 +52,7 @@ public abstract class BlockFluidConfig extends BlockConfig {
         BlockFluidClassic blockInstance = getBlockInstance();
         Item fluid = Item.getItemFromBlock(blockInstance);
 
-        ModelBakery.addVariantName(fluid);
-        ModelLoader.setCustomMeshDefinition(fluid, new ItemMeshDefinition() {
-            @Override
-            public ModelResourceLocation getModelLocation(ItemStack stack) {
-                return fluidLocation;
-            }
-        });
+        ModelBakery.registerItemVariants(fluid, fluidLocation);
 
         ModelLoader.setCustomStateMapper(blockInstance, new StateMapperBase() {
 

@@ -7,15 +7,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
 import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
@@ -123,7 +124,8 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      * This contains the logic to send the update, so make sure to call the super!
      */
     protected void onSendUpdate() {
-        worldObj.markBlockForUpdate(getPos());
+        IBlockState blockState = getWorld().getBlockState(getPos());
+        worldObj.notifyBlockUpdate(getPos(), blockState, blockState, MinecraftHelpers.BLOCK_NOTIFY | MinecraftHelpers.BLOCK_NOTIFY_CLIENT);
     }
 
     /**
@@ -142,11 +144,11 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
 
     @Override
     public Packet getDescriptionPacket() {
-        return new S35PacketUpdateTileEntity(getPos(), 1, getNBTTagCompound());
+        return new SPacketUpdateTileEntity(getPos(), 1, getNBTTagCompound());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity packet) {
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
         super.onDataPacket(net, packet);
         NBTTagCompound tag = packet.getNbtCompound();
         readFromNBT(tag);

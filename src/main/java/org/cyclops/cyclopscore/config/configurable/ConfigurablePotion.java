@@ -32,7 +32,8 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
      * @param iconIndex The sprite index of the icon.
      */
     protected ConfigurablePotion(ExtendedConfig<PotionConfig> eConfig, boolean badEffect, int color, int iconIndex) {
-        super(eConfig.downCast().ID, new ResourceLocation(eConfig.getNamedId()), badEffect, color);
+        super(badEffect, color);
+        Potion.potionRegistry.register(eConfig.downCast().ID, new ResourceLocation(eConfig.getNamedId()), this);
         this.setConfig(eConfig);
         this.setPotionName(eConfig.getUnlocalizedName());
         this.setIconIndex(iconIndex % 8, iconIndex / 8);

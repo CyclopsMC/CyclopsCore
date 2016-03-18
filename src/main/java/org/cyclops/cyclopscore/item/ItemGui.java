@@ -5,6 +5,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -80,10 +83,10 @@ public abstract class ItemGui extends ConfigurableItem implements IGuiContainerP
         return false;
     }
 
-    @Override
-    public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
-    	openGuiForItemIndex(world, player, player.inventory.currentItem);
-    	return itemStack;
-    }
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
+		openGuiForItemIndex(world, player, player.inventory.currentItem);
+		return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
+	}
 
 }

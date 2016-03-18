@@ -4,9 +4,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.BlockSapling;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
@@ -74,12 +75,13 @@ public abstract class WorldGeneratorTree extends WorldGenerator {
             int zOffset;
 
             BlockPos basePos = blockPos.add(0, -1, 0);
-            block = world.getBlockState(basePos).getBlock();
+            IBlockState blockState = world.getBlockState(basePos);
+            block = blockState.getBlock();
             int x = blockPos.getX();
             int y = blockPos.getY();
             int z = blockPos.getZ();
 
-            if((block != null && block.canSustainPlant(world, basePos, EnumFacing.UP,
+            if((block != null && block.canSustainPlant(blockState, world, basePos, EnumFacing.UP,
                     getSapling())) && y < worldHeight - treeHeight - 1) {
                 for(yOffset = y; yOffset <= y + 1 + treeHeight; ++yOffset) {
                     byte radius = 1;
@@ -97,11 +99,12 @@ public abstract class WorldGeneratorTree extends WorldGenerator {
                         for(xOffset = x - radius; xOffset <= x + radius; ++xOffset) {
                             for(zOffset = z - radius; zOffset <= z + radius; ++zOffset) {
                                 BlockPos loopPos = new BlockPos(xOffset, yOffset, zOffset);
-                                block = world.getBlockState(loopPos).getBlock();
+                                IBlockState loopBlockState = world.getBlockState(loopPos);
+                                block = loopBlockState.getBlock();
 
-                                if(block != null && !(block.isLeaves(world, loopPos) ||
+                                if(block != null && !(block.isLeaves(loopBlockState, world, loopPos) ||
                                         block == Blocks.air ||
-                                        block.canBeReplacedByLeaves(world, loopPos))) {
+                                        block.canBeReplacedByLeaves(loopBlockState, world, loopPos))) {
                                     return false;
                                 }
                             }
@@ -111,9 +114,8 @@ public abstract class WorldGeneratorTree extends WorldGenerator {
                     }
                 }
 
-                block = world.getBlockState(basePos).getBlock();
                 if (block != null) {
-                    block.onPlantGrow(world, basePos, blockPos);
+                    block.onPlantGrow(blockState, world, basePos, blockPos);
 
                     // Add leaves
                     for(yOffset = y - 3 + treeHeight; yOffset <= y + treeHeight; ++yOffset) {
@@ -129,14 +131,15 @@ public abstract class WorldGeneratorTree extends WorldGenerator {
                                 int zPos = zOffset - z;
                                 zPos = (zPos + (t = zPos >> 31)) ^ t;
                                 BlockPos loopPos = new BlockPos(xOffset, yOffset, zOffset);
+                                IBlockState loopBlockState = world.getBlockState(loopPos);
     
-                                block = world.getBlockState(loopPos).getBlock();
+                                block = loopBlockState.getBlock();
     
                                 if(((xPos != center | zPos != center) ||
                                         rand.nextInt(2) != 0 && var12 != 0) &&
-                                        (block == null || block.isLeaves(world, loopPos) ||
+                                        (block == null || block.isLeaves(loopBlockState, world, loopPos) ||
                                         block == Blocks.air ||
-                                        block.canBeReplacedByLeaves(world, loopPos))) {
+                                        block.canBeReplacedByLeaves(loopBlockState, world, loopPos))) {
                                     this.setBlockAndNotifyAdequately(world, loopPos, getLeaves().getDefaultState());
                                 }
                             }
@@ -146,9 +149,11 @@ public abstract class WorldGeneratorTree extends WorldGenerator {
                     // Replace replacable blocks with logs
                     for(yOffset = 0; yOffset < treeHeight; ++yOffset) {
                         BlockPos loopPos = blockPos.add(0, yOffset, 0);
+                        IBlockState loopBlockState = world.getBlockState(loopPos);
+                        block = loopBlockState.getBlock();
 
                         if(block == null || block == Blocks.air  ||
-                                block.isLeaves(world, loopPos) ||
+                                block.isLeaves(loopBlockState, world, loopPos) ||
                                 block.isReplaceable(world, loopPos)) {
                             this.setBlockAndNotifyAdequately(world, loopPos,
                                     getLogs().getDefaultState().withProperty(BlockLog.LOG_AXIS, BlockLog.EnumAxis.Y));

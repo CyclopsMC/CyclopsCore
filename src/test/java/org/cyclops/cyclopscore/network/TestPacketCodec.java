@@ -7,7 +7,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import org.junit.Test;
 
 import java.util.List;
@@ -88,7 +88,7 @@ public class TestPacketCodec {
     @Test
     public void testVec3() {
         Vec3PacketCodec packet1 = new Vec3PacketCodec();
-        packet1.value = new Vec3(1, 2, 3);
+        packet1.value = new Vec3d(1, 2, 3);
         Vec3PacketCodec packet2 = new Vec3PacketCodec();
         encodeDecode(packet1, packet2);
         assertThat("Input equals output", packet1.value.xCoord, equalTo(packet2.value.xCoord));
@@ -232,7 +232,7 @@ public class TestPacketCodec {
 
     public static class Vec3PacketCodec extends SimplePacketCodec {
         @CodecField
-        public Vec3 value;
+        public Vec3d value;
     }
 
     public static class MapPacketCodec extends SimplePacketCodec {

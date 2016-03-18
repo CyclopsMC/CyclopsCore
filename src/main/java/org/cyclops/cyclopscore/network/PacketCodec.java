@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.ClassUtils;
 import org.cyclops.cyclopscore.datastructure.SingleCache;
 
@@ -104,10 +104,10 @@ public abstract class PacketCodec extends PacketBase {
 			}
 		});
 
-		codecActions.put(Vec3.class, new ICodecAction() {
+		codecActions.put(Vec3d.class, new ICodecAction() {
 			@Override
 			public void encode(Object object, ByteArrayDataOutput output) {
-				Vec3 v = (Vec3)object;
+				Vec3d v = (Vec3d)object;
 				output.writeDouble(v.xCoord);
 				output.writeDouble(v.yCoord);
 				output.writeDouble(v.zCoord);
@@ -118,7 +118,7 @@ public abstract class PacketCodec extends PacketBase {
 				double x = input.readDouble();
 				double y = input.readDouble();
 				double z = input.readDouble();
-				return new Vec3(x, y, z);
+				return new Vec3d(x, y, z);
 			}
 		});
 		

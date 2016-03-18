@@ -3,11 +3,16 @@ package org.cyclops.cyclopscore.config.configurable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -17,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 import org.cyclops.cyclopscore.item.DamageIndicatedItemFluidContainer;
 
@@ -59,7 +65,7 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player) {
+    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
         FluidStack fluidStack = getFluid(itemStack);
         FluidStack drained = this.drain(itemStack, FluidContainerRegistry.BUCKET_VOLUME, false);
         Block block = getFluid().getBlock();
@@ -68,15 +74,15 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
                 && (drained.amount == FluidContainerRegistry.BUCKET_VOLUME);
         boolean hasSpace = fluidStack == null
                 || (fluidStack.amount + FluidContainerRegistry.BUCKET_VOLUME <= getCapacity(itemStack));
-        MovingObjectPosition movingobjectpositionDrain = this.getMovingObjectPositionFromPlayer(world, player, false);
-        MovingObjectPosition movingobjectpositionFill = this.getMovingObjectPositionFromPlayer(world, player, true);
+        RayTraceResult movingobjectpositionDrain = this.getMovingObjectPositionFromPlayer(world, player, false);
+        RayTraceResult movingobjectpositionFill = this.getMovingObjectPositionFromPlayer(world, player, true);
 
         if (movingobjectpositionDrain != null && movingobjectpositionFill != null) {
-            if (isPickupFluids() && movingobjectpositionFill.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            if (isPickupFluids() && movingobjectpositionFill.typeOfHit == RayTraceResult.Type.BLOCK) {
                 // Fill the container and remove fluid blockState
                 BlockPos blockPos = movingobjectpositionFill.getBlockPos();
                 if (!world.canMineBlockBody(player, blockPos)) {
-                    return itemStack;
+                    return MinecraftHelpers.successAction(itemStack);
                 }
 
                 /*if (!player.canPlayerEdit(blockPos, movingobjectpositionFill.sideHit, itemStack)) {
@@ -87,15 +93,15 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
                         world.setBlockToAir(blockPos);
                         this.fill(itemStack, new FluidStack(getFluid(), FluidContainerRegistry.BUCKET_VOLUME), true);
                     }
-                    return itemStack;
+                    return MinecraftHelpers.successAction(itemStack);
                 }
             }
 
             // Drain container and place fluid blockState
-            if (hasBucket && isPlaceFluids() && movingobjectpositionDrain.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
+            if (hasBucket && isPlaceFluids() && movingobjectpositionDrain.typeOfHit == RayTraceResult.Type.BLOCK) {
                 BlockPos blockPos = movingobjectpositionFill.getBlockPos();
                 if (!world.canMineBlockBody(player, blockPos)) {
-                    return itemStack;
+                    return MinecraftHelpers.successAction(itemStack);
                 }
 
                 EnumFacing direction = movingobjectpositionDrain.sideHit;
@@ -107,18 +113,19 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
 
                 if (this.tryPlaceContainedLiquid(world, blockPos, block, true)) {
                     this.drain(itemStack, FluidContainerRegistry.BUCKET_VOLUME, true);
-                    return itemStack;
+                    return MinecraftHelpers.successAction(itemStack);
                 }
             }
         }
-        return itemStack;
+        return MinecraftHelpers.successAction(itemStack);
     }
 
     private boolean tryPlaceContainedLiquid(World world, BlockPos blockPos, Block block, boolean hasBucket) {
         if (!hasBucket) {
             return false;
         } else {
-            Material material = world.getBlockState(blockPos).getBlock().getMaterial();
+            IBlockState blockState = world.getBlockState(blockPos);
+            Material material = blockState.getBlock().getMaterial(blockState);
 
             if (!world.isAirBlock(blockPos) && material.isSolid()) {
                 return false;
@@ -167,17 +174,17 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
     public void setPlaceFluids(boolean placeFluids) {
         this.placeFluids = placeFluids;
     }
-    
+
     @Override
-    public boolean onItemUseFirst(ItemStack itemStack, EntityPlayer player, World world, BlockPos blockPos, EnumFacing side, float hitX, float hitY, float hitZ) {
-        return false;
+    public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+        return EnumActionResult.FAIL;
     }
 
     @Override
-    public boolean doesSneakBypassUse(World world, BlockPos blockPos, EntityPlayer player) {
+    public boolean doesSneakBypassUse(ItemStack stack, IBlockAccess world, BlockPos pos, EntityPlayer player) {
         return true;
     }
-    
+
     @SuppressWarnings("rawtypes")
     @SideOnly(Side.CLIENT)
     @Override

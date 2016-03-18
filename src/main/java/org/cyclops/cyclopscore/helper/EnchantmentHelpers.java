@@ -93,7 +93,7 @@ public class EnchantmentHelpers {
 	public static void setEnchantmentLevel(ItemStack itemStack, Enchantment enchantment, int level) {
 	    NBTTagList enchlist = itemStack.getEnchantmentTagList();
 	    if(level <= 0 || enchlist != null) {
-	    	setEnchantmentLevel(itemStack, enchantment.effectId, level);
+	    	setEnchantmentLevel(itemStack, Enchantment.getEnchantmentID(enchantment), level);
 	    } else {
 	    	itemStack.addEnchantment(enchantment, level);
 	    }

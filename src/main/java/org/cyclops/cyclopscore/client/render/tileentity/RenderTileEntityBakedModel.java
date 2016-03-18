@@ -5,12 +5,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.model.IBakedModel;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 
 /**
- * General renderer for {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity} with {@link net.minecraft.client.resources.model.IBakedModel} models.
+ * General renderer for {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity} with {@link net.minecraft.client.renderer.block.model.IBakedModel} models.
  * @author rubensworks
  *
  */

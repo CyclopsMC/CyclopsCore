@@ -3,8 +3,10 @@ package org.cyclops.cyclopscore.config.configurable;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -44,10 +46,10 @@ public abstract class ConfigurableBlockGui extends ConfigurableBlock implements 
     public ModBase getMod() {
         return getConfig().getMod();
     }
-    
+
     @Override
-    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityplayer, EnumFacing side, float par7, float par8, float par9) {
-        super.onBlockActivated(world, blockPos, blockState, entityplayer, side, par7, par8, par9);
+    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState state, EntityPlayer entityplayer, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+        super.onBlockActivated(world, blockPos, state, entityplayer, hand, heldItem, side, hitX, hitY, hitZ);
 
         // Drop through if the player is sneaking
         if (entityplayer.isSneaking()) {

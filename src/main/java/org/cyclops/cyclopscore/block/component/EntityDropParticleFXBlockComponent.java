@@ -1,8 +1,9 @@
 package org.cyclops.cyclopscore.block.component;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.particle.EntityFX;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.cyclops.cyclopscore.client.particle.ExtendedEntityDropParticleFX;
@@ -56,8 +57,8 @@ public class EntityDropParticleFXBlockComponent implements IEntityDropParticleFX
     @Override
     public void randomDisplayTick(World world, BlockPos blockPos, IBlockState blockState, Random rand) {
         if (rand.nextInt(chance) == 0 &&
-                (offset == 0 || World.doesBlockHaveSolidTopSurface(world, blockPos.add(0, -offset, 0))) &&
-                !world.getBlockState(blockPos.add(0, - offset - 1, 0)).getBlock().getMaterial().blocksMovement()) {
+                (offset == 0 || world.getBlockState(blockPos.add(0, -offset, 0)).getMaterial() == Material.air && !world.getBlockState(blockPos.add(0, -offset, 0)).isOpaqueCube()) &&
+                !world.getBlockState(blockPos.add(0, - offset - 1, 0)).getBlock().getMaterial(world.getBlockState(blockPos.add(0, - offset - 1, 0))).blocksMovement()) {
             double px = (double) ((float) blockPos.getX() + rand.nextFloat());
             double py = (double) blockPos.getY() - 0.05D - offset;
             double pz = (double) ((float) blockPos.getZ() + rand.nextFloat());

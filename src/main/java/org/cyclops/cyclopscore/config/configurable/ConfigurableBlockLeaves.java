@@ -5,14 +5,14 @@ import lombok.experimental.Delegate;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -33,7 +33,7 @@ import java.util.Random;
 public abstract class ConfigurableBlockLeaves extends BlockLeaves implements IConfigurableBlock {
 
     @Delegate private IBlockPropertyManager propertyManager;
-    @Override protected BlockState createBlockState() {
+    @Override protected BlockStateContainer createBlockState() {
         return (propertyManager = new BlockPropertyManagerComponent(this)).createDelegatedBlockState();
     }
 
@@ -86,19 +86,19 @@ public abstract class ConfigurableBlockLeaves extends BlockLeaves implements ICo
     }
     
     @Override
-    public boolean isOpaqueCube() {
+    public boolean isOpaqueCube(IBlockState blockState) {
         return false;
     }
     
     @Override
-    public boolean isNormalCube() {
+    public boolean isNormalCube(IBlockState blockState) {
         return false;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean shouldSideBeRendered(IBlockAccess world, BlockPos blockPos, EnumFacing side) {
-        return !(isTransparent) || super.shouldSideBeRendered(world, blockPos, side);
+    public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess world, BlockPos blockPos, EnumFacing side) {
+        return !(isTranslucent(blockState)) || super.shouldSideBeRendered(blockState, world, blockPos, side);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -106,9 +106,9 @@ public abstract class ConfigurableBlockLeaves extends BlockLeaves implements ICo
     public void getSubBlocks(Item item, CreativeTabs creativeTabs, List list) {
         list.add(new ItemStack(item, 1, 0));
     }
-    
+
     @Override
-    public boolean isLeaves (IBlockAccess world, BlockPos blockPos) {
+    public boolean isLeaves(IBlockState blockState, IBlockAccess world, BlockPos blockPos) {
         return true;
     }
 
@@ -118,8 +118,8 @@ public abstract class ConfigurableBlockLeaves extends BlockLeaves implements ICo
     }
 
     @Override
-    public EnumWorldBlockLayer getBlockLayer() {
-        return EnumWorldBlockLayer.CUTOUT_MIPPED;
+    public BlockRenderLayer getBlockLayer() {
+        return BlockRenderLayer.CUTOUT_MIPPED;
     }
 
     @Override

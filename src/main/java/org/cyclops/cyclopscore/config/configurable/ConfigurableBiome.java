@@ -19,23 +19,15 @@ public class ConfigurableBiome extends BiomeGenBase implements IConfigurable {
      * @param eConfig Config for this enchantment.
      */
     protected ConfigurableBiome(BiomeConfig eConfig) {
-        super(eConfig.getId());
+        super(new BiomeProperties(L10NHelpers.localize(eConfig.getUnlocalizedName())));
+        BiomeGenBase.registerBiome(eConfig.getId(), eConfig.getMod() + ":" + eConfig.getNamedId(), this);
         this.setConfig(eConfig);
-        this.setBiomeName(getLocalizedName());
         
     }
     
     @SuppressWarnings("rawtypes")
     private void setConfig(ExtendedConfig eConfig) {
         this.eConfig = (BiomeConfig)eConfig;
-    }
-    
-    /**
-     * Get localized name of this biome.
-     * @return Localized name.
-     */
-    public String getLocalizedName() {
-        return L10NHelpers.localize(eConfig.getUnlocalizedName());
     }
 
     @Override

@@ -5,9 +5,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.Vec3i;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
@@ -50,7 +50,7 @@ public class EntityHelpers {
 	 * @return The list of entities in that area.
 	 */
 	public static List<Entity> getEntitiesInArea(World world, BlockPos blockPos, int area) {
-	    AxisAlignedBB box = AxisAlignedBB.fromBounds(blockPos.getX(), blockPos.getY(), blockPos.getZ(),
+	    AxisAlignedBB box = new AxisAlignedBB(blockPos.getX(), blockPos.getY(), blockPos.getZ(),
 				blockPos.getX(), blockPos.getY(), blockPos.getZ()).expand(area, area, area);
 	    @SuppressWarnings("unchecked")
 	    List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, box);

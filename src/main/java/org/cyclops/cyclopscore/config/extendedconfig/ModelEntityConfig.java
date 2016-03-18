@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import org.cyclops.cyclopscore.client.render.model.RenderModel;

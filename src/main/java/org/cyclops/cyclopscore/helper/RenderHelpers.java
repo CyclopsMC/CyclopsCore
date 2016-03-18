@@ -11,19 +11,20 @@ import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderItem;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.client.model.ISmartBlockModel;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -119,13 +120,14 @@ public class RenderHelpers {
      * @param pos The position.
      * @return The baked model.
      */
+
     public static IBakedModel getDynamicBakedModel(World world, BlockPos pos) {
         IBlockState blockState = world.getBlockState(pos);
         IBakedModel bakedModel = getBakedModel(blockState);
-        if(bakedModel instanceof ISmartBlockModel) {
+        /*if(bakedModel instanceof ISmartBlockModel) {
             IBlockState extendedBlockState = blockState.getBlock().getExtendedState(blockState, world, pos);
             bakedModel = ((ISmartBlockModel) bakedModel).handleBlockState(extendedBlockState);
-        }
+        }*/
         return bakedModel;
     }
 
@@ -139,21 +141,22 @@ public class RenderHelpers {
      */
     public static void addBlockHitEffects(EffectRenderer effectRenderer, World world, IBlockState blockState, BlockPos pos, EnumFacing side)  {
         Block block = blockState.getBlock();
-        if (block.getRenderType() != -1) {
+        if (block.getRenderType(blockState) != EnumBlockRenderType.INVISIBLE) {
             int i = pos.getX();
             int j = pos.getY();
             int k = pos.getZ();
             float f = 0.1F;
-            double d0 = (double)i + rand.nextDouble() * (block.getBlockBoundsMaxX() - block.getBlockBoundsMinX() - (double)(f * 2.0F)) + (double)f + block.getBlockBoundsMinX();
-            double d1 = (double)j + rand.nextDouble() * (block.getBlockBoundsMaxY() - block.getBlockBoundsMinY() - (double)(f * 2.0F)) + (double)f + block.getBlockBoundsMinY();
-            double d2 = (double)k + rand.nextDouble() * (block.getBlockBoundsMaxZ() - block.getBlockBoundsMinZ() - (double)(f * 2.0F)) + (double)f + block.getBlockBoundsMinZ();
+            AxisAlignedBB bb = blockState.getBoundingBox(world, pos);
+            double d0 = (double)i + rand.nextDouble() * (bb.maxX - bb.minX - (double)(f * 2.0F)) + (double)f + bb.minX;
+            double d1 = (double)j + rand.nextDouble() * (bb.maxY - bb.minY - (double)(f * 2.0F)) + (double)f + bb.minY;
+            double d2 = (double)k + rand.nextDouble() * (bb.maxZ - bb.minZ - (double)(f * 2.0F)) + (double)f + bb.minZ;
 
-            if (side == EnumFacing.DOWN)  d1 = (double)j + block.getBlockBoundsMinY() - (double)f;
-            if (side == EnumFacing.UP)    d1 = (double)j + block.getBlockBoundsMaxY() + (double)f;
-            if (side == EnumFacing.NORTH) d2 = (double)k + block.getBlockBoundsMinZ() - (double)f;
-            if (side == EnumFacing.SOUTH) d2 = (double)k + block.getBlockBoundsMaxZ() + (double)f;
-            if (side == EnumFacing.WEST)  d0 = (double)i + block.getBlockBoundsMinX() - (double)f;
-            if (side == EnumFacing.EAST)  d0 = (double)i + block.getBlockBoundsMaxX() + (double)f;
+            if (side == EnumFacing.DOWN)  d1 = (double)j + bb.minY - (double)f;
+            if (side == EnumFacing.UP)    d1 = (double)j + bb.maxY + (double)f;
+            if (side == EnumFacing.NORTH) d2 = (double)k + bb.minZ - (double)f;
+            if (side == EnumFacing.SOUTH) d2 = (double)k + bb.maxZ + (double)f;
+            if (side == EnumFacing.WEST)  d0 = (double)i + bb.minX - (double)f;
+            if (side == EnumFacing.EAST)  d0 = (double)i + bb.maxX + (double)f;
 
             EntityFX fx = new EntityDiggingFX.Factory().getEntityFX(-1, world, d0, d1, d2, 0.0D, 0.0D, 0.0D, Block.getStateId(blockState));
             effectRenderer.addEffect(fx);

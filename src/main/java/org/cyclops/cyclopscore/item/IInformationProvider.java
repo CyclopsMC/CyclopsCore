@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.item;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public interface IInformationProvider {
     /**
      * A prefix for blockState information.
      */
-    public static String BLOCK_PREFIX = EnumChatFormatting.RED.toString();
+    public static String BLOCK_PREFIX = TextFormatting.RED.toString();
     /**
      * A prefix for item information.
      */
@@ -26,7 +26,7 @@ public interface IInformationProvider {
     /**
      * A prefix for additional info.
      */
-    public static String INFO_PREFIX = EnumChatFormatting.DARK_PURPLE.toString() + EnumChatFormatting.ITALIC.toString();
+    public static String INFO_PREFIX = TextFormatting.DARK_PURPLE.toString() + TextFormatting.ITALIC.toString();
     
     /**
      * Get info for a given itemStack.

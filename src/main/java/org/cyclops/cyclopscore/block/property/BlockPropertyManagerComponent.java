@@ -6,7 +6,7 @@ import com.google.common.collect.Sets;
 import lombok.Data;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraftforge.client.model.ModelLoader;
@@ -196,9 +196,9 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
     }
 
     @Override
-    public BlockState createDelegatedBlockState() {
+    public BlockStateContainer createDelegatedBlockState() {
         if(unlistedProperties.length == 0) {
-            return new BlockState(block, properties);
+            return new BlockStateContainer(block, properties);
         } else {
             return new ExtendedBlockState(block, properties, unlistedProperties);
         }

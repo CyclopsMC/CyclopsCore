@@ -4,12 +4,12 @@ import lombok.experimental.Delegate;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,8 +23,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
-import java.util.Collection;
-
 /**
  * Block that can hold ExtendedConfigs
  * @author rubensworks
@@ -33,7 +31,7 @@ import java.util.Collection;
 public class ConfigurableBlock extends Block implements IConfigurableBlock, IDynamicModelElement {
 
     @Delegate protected IBlockPropertyManager propertyManager;
-    @Override protected BlockState createBlockState() {
+    @Override protected BlockStateContainer createBlockState() {
         return (propertyManager = new BlockPropertyManagerComponent(this)).createDelegatedBlockState();
     }
 
@@ -66,7 +64,7 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
     public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
                                      int meta, EntityLivingBase placer) {
         IBlockState blockState = super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
-        for(IProperty property : (Collection<IProperty>) blockState.getPropertyNames()) {
+        for(IProperty property : blockState.getPropertyNames()) {
             if(property.getName().equals("facing")) {
                 blockState.withProperty(property, placer.getHorizontalFacing());
             }
@@ -103,8 +101,8 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
     public void onModelBakeEvent(ModelBakeEvent event){
         if(hasDynamicModel()) {
             IBakedModel cableModel = createDynamicModel();
-            event.modelRegistry.putObject(eConfig.dynamicBlockVariantLocation, cableModel);
-            event.modelRegistry.putObject(eConfig.dynamicItemVariantLocation , cableModel);
+            event.getModelRegistry().putObject(eConfig.dynamicBlockVariantLocation, cableModel);
+            event.getModelRegistry().putObject(eConfig.dynamicItemVariantLocation , cableModel);
         }
     }
 

@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.config.configurable;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.config.extendedconfig.EnchantmentConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
@@ -19,18 +20,16 @@ public class ConfigurableEnchantment extends Enchantment implements IConfigurabl
     /**
      * Make a new Enchantment instance
      * @param eConfig Config for this enchantment.
-     * @param weight The weight in which this enchantment should occurd
+     * @param rarity The rarity.
      * @param type The type of enchantment
+     * @param slots The equipment types on which the enchantment can occur.
      */
-    protected ConfigurableEnchantment(ExtendedConfig<EnchantmentConfig> eConfig, int weight,
-                                      EnumEnchantmentType type) {
-        super(eConfig.downCast().ID, new ResourceLocation(eConfig.getNamedId()), weight, type);
+    protected ConfigurableEnchantment(ExtendedConfig<EnchantmentConfig> eConfig, Enchantment.Rarity rarity,
+                                      EnumEnchantmentType type, EntityEquipmentSlot[] slots) {
+        super(rarity, type, slots);
+        Enchantment.enchantmentRegistry.register(eConfig.downCast().ID, new ResourceLocation(eConfig.getNamedId()), this);
         this.setConfig(eConfig);
         this.setName(eConfig.getUnlocalizedName());
-        if(isAllowedOnBooks()) {
-            addToBookList(this);
-        }
-        
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })

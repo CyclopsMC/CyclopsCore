@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.inventory.slot;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor;
@@ -15,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class SlotArmor extends Slot {
 
-    private final int armorIndex;
+    private final EntityEquipmentSlot armorType;
     private final EntityPlayer player;
 
     /**
@@ -25,12 +26,12 @@ public class SlotArmor extends Slot {
      * @param x X coordinate.
      * @param y Y coordinate.
      * @param player The player entity.
-     * @param armorIndex The index of the armor slot.
+     * @param armorType The armor type.
      */
     public SlotArmor(IInventory inventory, int index, int x,
-                     int y, EntityPlayer player, int armorIndex) {
+                     int y, EntityPlayer player, EntityEquipmentSlot armorType) {
         super(inventory, index, x, y);
-        this.armorIndex = armorIndex;
+        this.armorType = armorType;
         this.player = player;
     }
 
@@ -42,14 +43,14 @@ public class SlotArmor extends Slot {
     @Override
     public boolean isItemValid(ItemStack itemStack) {
         if (itemStack == null) return false;
-        return itemStack.getItem().isValidArmor(itemStack, armorIndex, player);
+        return itemStack.getItem().isValidArmor(itemStack, armorType, player);
     }
 
     @SideOnly(Side.CLIENT)
     @Override
     public String getSlotTexture()
     {
-        return ItemArmor.EMPTY_SLOT_NAMES[armorIndex];
+        return ItemArmor.EMPTY_SLOT_NAMES[armorType.getIndex()];
     }
     
 }

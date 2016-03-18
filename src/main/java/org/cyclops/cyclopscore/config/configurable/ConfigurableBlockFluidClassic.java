@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.config.configurable;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
@@ -84,8 +84,8 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
     /**
      * For the particle effects underneath a blockState that has the liquid on top.
      */
-    public void randomDisplayTick(World world, BlockPos blockPos, IBlockState blockState, Random rand) {
-        super.randomDisplayTick(world, blockPos, blockState, rand);
+    public void randomDisplayTick(IBlockState blockState, World world, BlockPos blockPos, Random rand) {
+        super.randomDisplayTick(blockState, world, blockPos, rand);
         if(entityDropParticleFXBlockComponent != null)
             entityDropParticleFXBlockComponent.randomDisplayTick(world, blockPos, blockState, rand);
     }

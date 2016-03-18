@@ -2,8 +2,9 @@ package org.cyclops.cyclopscore.config.configurable;
 
 import lombok.experimental.Delegate;
 import net.minecraft.block.BlockTorch;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import org.cyclops.cyclopscore.block.property.BlockProperty;
 import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
 import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
@@ -17,7 +18,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 public class ConfigurableBlockTorch extends BlockTorch implements IConfigurableBlock {
 
     @Delegate private IBlockPropertyManager propertyManager;
-    @Override protected BlockState createBlockState() {
+    @Override protected BlockStateContainer createBlockState() {
         return (propertyManager = new BlockPropertyManagerComponent(this)).createDelegatedBlockState();
     }
 
@@ -39,7 +40,7 @@ public class ConfigurableBlockTorch extends BlockTorch implements IConfigurableB
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         this.setHardness(0.0F);
         this.setLightLevel(0.9375F);
-        this.setStepSound(soundTypeWood);
+        this.setStepSound(SoundType.WOOD);
     }
 
     @Override

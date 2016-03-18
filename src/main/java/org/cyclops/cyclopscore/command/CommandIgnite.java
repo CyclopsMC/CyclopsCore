@@ -7,8 +7,9 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -33,9 +34,9 @@ public class CommandIgnite extends CommandMod {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] parts, BlockPos blockPos) {
+    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] parts, BlockPos blockPos) {
         return parts.length >= 1 ?
-                CommandBase.getListOfStringsMatchingLastWord(parts, MinecraftServer.getServer().getAllUsernames()) : null;
+                CommandBase.getListOfStringsMatchingLastWord(parts, FMLCommonHandler.instance().getMinecraftServerInstance().getAllUsernames()) : null;
     }
 
     @Override
@@ -44,19 +45,19 @@ public class CommandIgnite extends CommandMod {
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] parts) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] parts) throws CommandException {
         if (parts.length < 1 || parts.length > 2 || parts[0].length() == 0) {
             processCommandHelp(sender, parts);
         }
 
         if(parts.length >= 1 && parts[0].length() > 0) {
-            MinecraftServer minecraftserver = MinecraftServer.getServer();
+            MinecraftServer minecraftserver = FMLCommonHandler.instance().getMinecraftServerInstance();
             GameProfile gameprofile = minecraftserver.getPlayerProfileCache().getGameProfileForUsername(parts[0]);
 
             if (gameprofile == null) {
-                sender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.invalidPlayer", parts[0])));
+                sender.addChatMessage(new TextComponentString(L10NHelpers.localize("chat.cyclopscore.command.invalidPlayer", parts[0])));
             } else {
-                EntityPlayerMP player = minecraftserver.getConfigurationManager().getPlayerByUsername(parts[0]);
+                EntityPlayerMP player = minecraftserver.getPlayerList().getPlayerByUsername(parts[0]);
                 int duration = 2;
                 if(parts.length > 1) {
                     try {
@@ -66,7 +67,7 @@ public class CommandIgnite extends CommandMod {
                     }
                 }
                 player.setFire(duration);
-                sender.addChatMessage(new ChatComponentText(L10NHelpers.localize("chat.cyclopscore.command.ignitedPlayer", parts[0], duration)));
+                sender.addChatMessage(new TextComponentString(L10NHelpers.localize("chat.cyclopscore.command.ignitedPlayer", parts[0], duration)));
             }
         }
     }
