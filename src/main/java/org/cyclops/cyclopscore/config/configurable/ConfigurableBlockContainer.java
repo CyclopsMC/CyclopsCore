@@ -192,9 +192,9 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player) {
-        onPreBlockDestroyed(worldIn, pos, player);
-        super.onBlockHarvested(worldIn, pos, state, player);
+    public boolean removedByPlayer(World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
+        onPreBlockDestroyed(world, pos, player);
+        return super.removedByPlayer(world, pos, player, willHarvest);
     }
 
     @Override

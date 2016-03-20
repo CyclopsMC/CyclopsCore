@@ -1,0 +1,5 @@
+Make sure to backup your world before updating!
+
+Fixes:
+* Move the place at which onPreBlockDestroyed is called.
+* Add safety checks for avoiding null oredict entries
