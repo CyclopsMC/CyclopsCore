@@ -118,10 +118,11 @@ public interface ICommonProxy {
      * Send a minecraft sound packet.
      * @param pos The location.
      * @param sound The sound name to play.
+     * @param category The sound category.
      * @param volume The volume of the sound.
      * @param frequency The pitch of the sound.
      */
-    public void sendSoundMinecraft(BlockPos pos, String sound, SoundCategory soundCategory, float volume, float frequency);
+    public void sendSoundMinecraft(BlockPos pos, String sound, SoundCategory category, float volume, float frequency);
 
     /**
      * Send a minecraft sound packet.

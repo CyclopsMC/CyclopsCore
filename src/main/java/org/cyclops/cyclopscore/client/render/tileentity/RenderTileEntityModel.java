@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
@@ -16,7 +15,7 @@ import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
  */
 @EqualsAndHashCode(callSuper = false)
 @Data
-public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> extends TileEntitySpecialRenderer {
+public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> extends TileEntitySpecialRenderer<T> {
 
     protected final M model;
 	private final ResourceLocation texture;
@@ -46,8 +45,9 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
     protected void postRotate(T tile) {
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
     }
-    
-    protected void renderTileEntityAt(T tile, double x, double y, double z, float partialTick, int destroyStage) {
+
+    @Override
+    public void renderTileEntityAt(T tile, double x, double y, double z, float partialTick, int destroyStage) {
         EnumFacing direction = tile.getRotation();
 
         if (destroyStage >= 0) {
@@ -95,12 +95,6 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
             GlStateManager.popMatrix();
             GlStateManager.matrixMode(5888);
         }
-    }
-	
-	@SuppressWarnings("unchecked")
-    @Override
-    public void renderTileEntityAt(TileEntity tile, double x, double y, double z, float partialTick, int destroyStage) {
-        this.renderTileEntityAt((T) tile, x, y, z, partialTick, destroyStage);
     }
 	
 	/**

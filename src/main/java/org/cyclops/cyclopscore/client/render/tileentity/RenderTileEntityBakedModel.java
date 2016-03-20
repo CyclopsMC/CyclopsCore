@@ -23,7 +23,7 @@ public abstract class RenderTileEntityBakedModel<T extends CyclopsTileEntity> ex
         super(null, null);
     }
 
-    protected void renderTileEntityAt(T tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void renderTileEntityAt(T tile, double x, double y, double z, float partialTick, int destroyStage) {
         GlStateManager.enableRescaleNormal();
         GlStateManager.alphaFunc(516, 0.1F);
         GlStateManager.enableBlend();
