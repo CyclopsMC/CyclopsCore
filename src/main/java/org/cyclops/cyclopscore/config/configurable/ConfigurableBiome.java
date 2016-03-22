@@ -20,7 +20,6 @@ public class ConfigurableBiome extends BiomeGenBase implements IConfigurable {
      */
     protected ConfigurableBiome(BiomeConfig eConfig) {
         super(new BiomeProperties(L10NHelpers.localize(eConfig.getUnlocalizedName())));
-        BiomeGenBase.registerBiome(eConfig.getId(), eConfig.getMod() + ":" + eConfig.getNamedId(), this);
         this.setConfig(eConfig);
         
     }

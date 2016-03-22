@@ -12,8 +12,6 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @see ExtendedConfig
  */
 public abstract class BiomeConfig extends ExtendedConfig<BiomeConfig>{
-	
-	private int id;
 
     /**
      * Make a new instance.
@@ -26,22 +24,6 @@ public abstract class BiomeConfig extends ExtendedConfig<BiomeConfig>{
     public BiomeConfig(ModBase mod, int defaultId, String namedId,
             String comment, Class<? extends BiomeGenBase> element) {
         super(mod, defaultId > 0, namedId, comment, element);
-        this.id = defaultId;
-    }
-    
-    /**
-     * @return The ID.
-     */
-    public int getId() {
-		return id;
-	}
-    
-    /**
-     * Set the ID.
-     * @param id The new ID.
-     */
-    public void setId(int id) {
-    	this.id = id;
     }
     
     @Override
@@ -68,11 +50,6 @@ public abstract class BiomeConfig extends ExtendedConfig<BiomeConfig>{
      */
     public void registerBiomeDictionary() {
         BiomeDictionary.makeBestGuess(getBiome());
-    }
-    
-    @Override
-    public boolean isEnabled() {
-    	return this.getId() != 0;
     }
 
 }

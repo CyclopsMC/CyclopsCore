@@ -33,7 +33,6 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
      */
     protected ConfigurablePotion(ExtendedConfig<PotionConfig> eConfig, boolean badEffect, int color, int iconIndex) {
         super(badEffect, color);
-        Potion.potionRegistry.register(eConfig.downCast().ID, new ResourceLocation(eConfig.getNamedId()), this);
         this.setConfig(eConfig);
         this.setPotionName(eConfig.getUnlocalizedName());
         this.setIconIndex(iconIndex % 8, iconIndex / 8);

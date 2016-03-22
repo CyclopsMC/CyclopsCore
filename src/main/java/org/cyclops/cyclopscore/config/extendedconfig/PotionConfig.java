@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.potion.Potion;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.configurable.ConfigurablePotion;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -10,11 +11,6 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @see ExtendedConfig
  */
 public abstract class PotionConfig extends ExtendedConfig<PotionConfig> {
-
-    /**
-     * The ID for the configurable.
-     */
-    public int ID;
 
     /**
      * Make a new instance.
@@ -27,7 +23,6 @@ public abstract class PotionConfig extends ExtendedConfig<PotionConfig> {
     public PotionConfig(ModBase mod, int defaultId, String namedId,
                              String comment, Class<? extends Potion> element) {
         super(mod, defaultId != 0, namedId, comment, element);
-        this.ID = defaultId;
     }
 
     @Override
@@ -36,13 +31,16 @@ public abstract class PotionConfig extends ExtendedConfig<PotionConfig> {
     }
 
     @Override
-    public boolean isEnabled() {
-        return super.isEnabled() && this.ID != 0;
-    }
-
-    @Override
     public ConfigurableType getHolderType() {
         return ConfigurableType.POTION;
+    }
+
+    /**
+     * Get the potion configurable
+     * @return The potion.
+     */
+    public ConfigurablePotion getPotion() {
+        return (ConfigurablePotion) this.getSubInstance();
     }
 
 }

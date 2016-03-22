@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.cyclops.cyclopscore.config.extendedconfig.BiomeConfig;
@@ -14,15 +15,10 @@ public class BiomeAction extends ConfigurableTypeAction<BiomeConfig>{
     @Override
     public void preRun(BiomeConfig eConfig, Configuration config, boolean startup) {
         // Get property in config file and set comment
-        Property property = config.get(eConfig.getHolderType().getCategory(), eConfig.getNamedId(), eConfig.getId());
+        Property property = config.get(eConfig.getHolderType().getCategory(), eConfig.getNamedId(), eConfig.isEnabled());
         property.setRequiresWorldRestart(true);
         property.setRequiresMcRestart(true);
         property.comment = eConfig.getComment();
-        
-        if(startup) {
-        	// Update the ID, it could've changed
-        	eConfig.setId(property.getInt());
-        }
     }
 
     @Override
@@ -31,7 +27,7 @@ public class BiomeAction extends ConfigurableTypeAction<BiomeConfig>{
         eConfig.save();
         
         // Register biome
-        //BiomeManager.addSpawnBiome(eConfig.getBiome());
+        BiomeGenBase.registerBiome(-1, eConfig.getMod() + ":" + eConfig.getNamedId(), eConfig.getBiome());
         eConfig.registerBiomeDictionary();
     }
 
