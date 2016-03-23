@@ -6,6 +6,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
@@ -13,6 +14,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Contains helper methods for various block specific things.
@@ -115,6 +117,22 @@ public final class BlockHelpers {
     public static void markForUpdate(World world, BlockPos pos) {
         IBlockState blockState = world.getBlockState(pos);
         world.notifyBlockUpdate(pos, blockState, blockState, MinecraftHelpers.BLOCK_NOTIFY | MinecraftHelpers.BLOCK_NOTIFY_CLIENT);
+    }
+
+    /**
+     * Add a collision box to the given list if it intersects with a box.
+     * @param pos The block position the collision is happening in.
+     * @param collidingBox The box that is colliding with the block, absolute coordinates.
+     * @param collisions The list fo add the box to.
+     * @param addingBox The box to add to the lost, relative coordinates.
+     */
+    public static void addCollisionBoxToList(BlockPos pos, AxisAlignedBB collidingBox, List<AxisAlignedBB> collisions, AxisAlignedBB addingBox) {
+        if (addingBox != null) {
+            AxisAlignedBB axisalignedbb = addingBox.offset(pos);
+            if (collidingBox.intersectsWith(axisalignedbb)) {
+                collisions.add(axisalignedbb);
+            }
+        }
     }
 
 }
