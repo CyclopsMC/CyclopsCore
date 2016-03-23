@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.helper.BlockHelpers;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
 import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
@@ -124,8 +124,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      * This contains the logic to send the update, so make sure to call the super!
      */
     protected void onSendUpdate() {
-        IBlockState blockState = getWorld().getBlockState(getPos());
-        worldObj.notifyBlockUpdate(getPos(), blockState, blockState, MinecraftHelpers.BLOCK_NOTIFY | MinecraftHelpers.BLOCK_NOTIFY_CLIENT);
+        BlockHelpers.markForUpdate(getWorld(), getPos());
     }
 
     /**

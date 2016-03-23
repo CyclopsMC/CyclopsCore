@@ -6,6 +6,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import org.apache.commons.lang3.tuple.Pair;
@@ -103,6 +105,16 @@ public final class BlockHelpers {
             return null;
         }
         return new ItemStack(item, 1, blockState.getBlock().getMetaFromState(blockState));
+    }
+
+    /**
+     * Trigger a block update.
+     * @param world The world.
+     * @param pos The pos.
+     */
+    public static void markForUpdate(World world, BlockPos pos) {
+        IBlockState blockState = world.getBlockState(pos);
+        world.notifyBlockUpdate(pos, blockState, blockState, MinecraftHelpers.BLOCK_NOTIFY | MinecraftHelpers.BLOCK_NOTIFY_CLIENT);
     }
 
 }
