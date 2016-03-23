@@ -8,6 +8,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
@@ -133,6 +134,18 @@ public final class BlockHelpers {
                 collisions.add(axisalignedbb);
             }
         }
+    }
+
+    /**
+     * If the given block has a solid top surface.
+     * @param world The world.
+     * @param blockPos The block to check the top of.
+     * @return If it has a solid top surface.
+     */
+    public static boolean doesBlockHaveSolidTopSurface(IBlockAccess world, BlockPos blockPos) {
+        blockPos = blockPos.add(0, -1, 0);
+        return world.getBlockState(blockPos).getBlock().isAir(world.getBlockState(blockPos), world, blockPos)
+                && world.getBlockState(blockPos).isOpaqueCube();
     }
 
 }
