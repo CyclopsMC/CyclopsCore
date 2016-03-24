@@ -16,15 +16,15 @@ public class EnchantmentHelpers {
 	/**
 	 * Checks if an itemStack has a certain enchantment.
 	 * @param itemStack The itemStack to check.
-	 * @param enchantID The Enchantment to compare.
+	 * @param enchantment The Enchantment to compare.
 	 * @return The id of the enchantment in the enchantmentlist or -1 if it does not apply.
 	 */
-	public static int doesEnchantApply(ItemStack itemStack, int enchantID) {
+	public static int doesEnchantApply(ItemStack itemStack, Enchantment enchantment) {
 	    if(itemStack != null) {
 	        NBTTagList enchantmentList = itemStack.getEnchantmentTagList();
 	        if(enchantmentList != null) {
 	            for(int i = 0; i < enchantmentList.tagCount(); i++) {
-	                if (enchantmentList.getCompoundTagAt(i).getShort("id") == enchantID) {
+	                if (enchantmentList.getCompoundTagAt(i).getShort("id") == Enchantment.getEnchantmentID(enchantment)) {
 	                    return i;
 	                }
 	            }

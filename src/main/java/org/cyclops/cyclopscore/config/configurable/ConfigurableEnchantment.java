@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.config.configurable;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.config.extendedconfig.EnchantmentConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
@@ -27,7 +26,6 @@ public class ConfigurableEnchantment extends Enchantment implements IConfigurabl
     protected ConfigurableEnchantment(ExtendedConfig<EnchantmentConfig> eConfig, Enchantment.Rarity rarity,
                                       EnumEnchantmentType type, EntityEquipmentSlot[] slots) {
         super(rarity, type, slots);
-        Enchantment.enchantmentRegistry.register(eConfig.downCast().ID, new ResourceLocation(eConfig.getNamedId()), this);
         this.setConfig(eConfig);
         this.setName(eConfig.getUnlocalizedName());
     }

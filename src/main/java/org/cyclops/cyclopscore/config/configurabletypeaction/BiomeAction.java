@@ -19,6 +19,11 @@ public class BiomeAction extends ConfigurableTypeAction<BiomeConfig>{
         property.setRequiresWorldRestart(true);
         property.setRequiresMcRestart(true);
         property.comment = eConfig.getComment();
+
+        if(startup) {
+            // Update the ID, it could've changed
+            eConfig.setEnabled(property.getBoolean());
+        }
     }
 
     @Override
