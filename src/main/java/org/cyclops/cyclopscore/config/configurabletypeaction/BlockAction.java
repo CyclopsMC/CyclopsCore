@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -48,6 +50,9 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
             GameRegistry.registerBlock(block, name);
         } else {
             GameRegistry.registerBlock(block, itemBlockClass, name);
+        }
+        if(block instanceof IBlockColor) {
+            Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((IBlockColor) block, block);
         }
 
         if(creativeTabs != null) {

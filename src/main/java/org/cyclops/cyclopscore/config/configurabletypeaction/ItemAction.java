@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,6 +35,9 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
      */
     public static void register(Item item, String name, @Nullable CreativeTabs creativeTabs) {
         GameRegistry.registerItem(item, name);
+        if(item instanceof IItemColor) {
+            Minecraft.getMinecraft().getItemColors().registerItemColorHandler((IItemColor) item, item);
+        }
 
         if(creativeTabs != null) {
             item.setCreativeTab(creativeTabs);
