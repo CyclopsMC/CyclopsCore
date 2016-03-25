@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
@@ -32,7 +33,7 @@ public class BiomeAction extends ConfigurableTypeAction<BiomeConfig>{
         eConfig.save();
         
         // Register biome
-        BiomeGenBase.registerBiome(-1, eConfig.getMod() + ":" + eConfig.getNamedId(), eConfig.getBiome());
+        BiomeGenBase.biomeRegistry.register(-1, new ResourceLocation(eConfig.getMod().getModId(), eConfig.getNamedId()), eConfig.getBiome());
         eConfig.registerBiomeDictionary();
     }
 

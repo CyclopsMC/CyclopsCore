@@ -29,8 +29,10 @@ public class PotionAction extends ConfigurableTypeAction<PotionConfig> {
     @Override
     public void postRun(PotionConfig eConfig, Configuration config) {
         // Save the config inside the correct element
-        Potion.potionRegistry.register(-1, new ResourceLocation(eConfig.getNamedId()), eConfig.getPotion());
         eConfig.save();
+
+        // Register the potion
+        Potion.potionRegistry.register(-1, new ResourceLocation(eConfig.getMod().getModId(), eConfig.getNamedId()), eConfig.getPotion());
     }
 
 }

@@ -29,8 +29,10 @@ public class EnchantmentAction extends ConfigurableTypeAction<EnchantmentConfig>
     @Override
     public void postRun(EnchantmentConfig eConfig, Configuration config) {
         // Save the config inside the correct element
-        Enchantment.enchantmentRegistry.register(-1, new ResourceLocation(eConfig.getNamedId()), eConfig.getEnchantment());
         eConfig.save();
+
+        // Register the enchantment
+        Enchantment.enchantmentRegistry.register(-1, new ResourceLocation(eConfig.getMod().getModId(), eConfig.getNamedId()), eConfig.getEnchantment());
     }
 
 }
