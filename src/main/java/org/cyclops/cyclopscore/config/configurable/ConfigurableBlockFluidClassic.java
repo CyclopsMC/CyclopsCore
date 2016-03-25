@@ -84,7 +84,7 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
     /**
      * For the particle effects underneath a blockState that has the liquid on top.
      */
-    public void randomDisplayTick(IBlockState blockState, World world, BlockPos blockPos, Random rand) {
+    public void randomDisplayTick(World world, BlockPos blockPos, IBlockState blockState, Random rand) {
         super.randomDisplayTick(blockState, world, blockPos, rand);
         if(entityDropParticleFXBlockComponent != null)
             entityDropParticleFXBlockComponent.randomDisplayTick(world, blockPos, blockState, rand);
