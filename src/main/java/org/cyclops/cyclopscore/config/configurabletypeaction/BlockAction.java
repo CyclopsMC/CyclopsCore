@@ -51,9 +51,6 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
         } else {
             GameRegistry.registerBlock(block, itemBlockClass, name);
         }
-        if(block instanceof IBlockColor) {
-            Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((IBlockColor) block, block);
-        }
 
         if(creativeTabs != null) {
             block.setCreativeTab(creativeTabs);
@@ -113,8 +110,12 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
     @Override
     public void polish(BlockConfig config) {
         if (MinecraftHelpers.isClientSide()) {
-            ItemAction.handleItemModel(Item.getItemFromBlock(config.getBlockInstance()), config.getNamedId(),
+            Block block = config.getBlockInstance();
+            ItemAction.handleItemModel(Item.getItemFromBlock(block), config.getNamedId(),
                     config.getTargetTab(), config.getMod().getModId(), config);
+            if(block instanceof IBlockColor) {
+                Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((IBlockColor) block, block);
+            }
         }
     }
 

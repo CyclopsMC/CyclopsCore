@@ -35,9 +35,6 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
      */
     public static void register(Item item, String name, @Nullable CreativeTabs creativeTabs) {
         GameRegistry.registerItem(item, name);
-        if(item instanceof IItemColor) {
-            Minecraft.getMinecraft().getItemColors().registerItemColorHandler((IItemColor) item, item);
-        }
 
         if(creativeTabs != null) {
             item.setCreativeTab(creativeTabs);
@@ -95,8 +92,12 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
 
     @Override
     public void polish(ItemConfig config) {
-        handleItemModel(config.getItemInstance(), config.getNamedId(), config.getTargetTab(),
+        Item item = config.getItemInstance();
+        handleItemModel(item, config.getNamedId(), config.getTargetTab(),
                 config.getMod().getModId(), config);
+        if(item instanceof IItemColor) {
+            Minecraft.getMinecraft().getItemColors().registerItemColorHandler((IItemColor) item, item);
+        }
     }
 
 }
