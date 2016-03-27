@@ -142,7 +142,7 @@ public class ModCompatLoader implements IInitListener {
     	Property property = config.get(CONFIG_CATEGORY, id,
                 compat.isEnabled());
         property.setRequiresMcRestart(true);
-        property.comment = compat.getComment();
+        property.setComment(compat.getComment());
         boolean enabled = property.getBoolean(true);
         if(config.hasChanged()) {
         	config.save();

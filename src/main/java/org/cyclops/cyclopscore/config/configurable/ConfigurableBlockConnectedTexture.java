@@ -102,7 +102,7 @@ public class ConfigurableBlockConnectedTexture extends ConfigurableBlock {
     @SideOnly(Side.CLIENT)
     public void onPreTextureStitch(TextureStitchEvent.Pre event) {
         for(Map.Entry<String, ResourceLocation> textureEntry : textureMap.entrySet()) {
-            loadedTextureMap.put(textureEntry.getKey(), event.map.registerSprite(textureEntry.getValue()));
+            loadedTextureMap.put(textureEntry.getKey(), event.getMap().registerSprite(textureEntry.getValue()));
         }
     }
 

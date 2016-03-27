@@ -18,7 +18,7 @@ public class EnchantmentAction extends ConfigurableTypeAction<EnchantmentConfig>
         // Get property in config file and set comment
         Property property = config.get(eConfig.getHolderType().getCategory(), eConfig.getNamedId(), eConfig.isEnabled());
         property.setRequiresMcRestart(true);
-        property.comment = eConfig.getComment();
+        property.setComment(eConfig.getComment());
 
         if(startup) {
 	        // Update the ID, it could've changed

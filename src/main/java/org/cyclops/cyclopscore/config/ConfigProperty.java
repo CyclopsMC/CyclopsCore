@@ -201,7 +201,7 @@ public final class ConfigProperty {
             if(forceUpdate) {
             	additionalProperty.setValue((Integer)value);
             }
-            additionalProperty.comment = getComment();
+            additionalProperty.setComment(getComment());
             if(forceUpdate) {
                 getCallback().run((Integer)value);
             } else {
@@ -217,7 +217,7 @@ public final class ConfigProperty {
             if(forceUpdate) {
             	additionalProperty.setValue((Boolean)value);
             }
-            additionalProperty.comment = getComment();
+            additionalProperty.setComment(getComment());
             if(forceUpdate) {
                 getCallback().run((Boolean)value);
             } else {
@@ -234,7 +234,7 @@ public final class ConfigProperty {
             if(forceUpdate) {
             	additionalProperty.setValue((Double)value);
             }
-            additionalProperty.comment = getComment();
+            additionalProperty.setComment(getComment());
             if(forceUpdate) {
                 getCallback().run((Double)value);
             } else {
@@ -250,7 +250,7 @@ public final class ConfigProperty {
             if(forceUpdate) {
             	additionalProperty.setValue((String)value);
             }
-            additionalProperty.comment = getComment();
+            additionalProperty.setComment(getComment());
             if(forceUpdate) {
                 getCallback().run((String)value);
             } else {
@@ -266,7 +266,7 @@ public final class ConfigProperty {
                 if(forceUpdate) {
                 	additionalProperty.setValues((String[])value);
                 }
-                additionalProperty.comment = getComment();
+                additionalProperty.setComment(getComment());
                 if(forceUpdate) {
                     getCallback().run((String[])value);
                 } else {
@@ -282,7 +282,7 @@ public final class ConfigProperty {
             if(forceUpdate) {
                 additionalProperty.setValues((int[])value);
             }
-            additionalProperty.comment = getComment();
+            additionalProperty.setComment(getComment());
             if(forceUpdate) {
                 getCallback().run((int[])value);
             } else {

@@ -23,7 +23,7 @@ public class ConfigChangedEventHook {
      */
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-        if(eventArgs.modID.equals(mod.getModId())) {
+        if(eventArgs.getModID().equals(mod.getModId())) {
         	mod.getConfigHandler().syncProcessedConfigs();
         }
     }

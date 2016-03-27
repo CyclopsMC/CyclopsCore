@@ -41,7 +41,7 @@ public class IconProvider {
     @SubscribeEvent
     public void onPreTextureStitch(TextureStitchEvent.Pre event) {
         for(Pair<Pair<Object, Field>, String> entry : toRegister) {
-            TextureAtlasSprite icon = registerIcon(event.map, entry.getValue());
+            TextureAtlasSprite icon = registerIcon(event.getMap(), entry.getValue());
             Object object = entry.getLeft().getLeft();
             Field field = entry.getLeft().getRight();
             try {

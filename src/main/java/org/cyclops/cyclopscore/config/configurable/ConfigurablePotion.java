@@ -77,7 +77,7 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
 
     @SubscribeEvent
     public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
-        EntityLivingBase entity = event.entityLiving;
+        EntityLivingBase entity = event.getEntityLiving();
         if(isActiveOn(entity)) {
             onUpdate(entity);
         }

@@ -46,11 +46,11 @@ public class RetroGenRegistry implements IRetroGenRegistry {
 			if(tag == null) {
 				tag = new NBTTagCompound();
 			}
-			setChunkSeed(event.world, event.getChunk());
+			setChunkSeed(event.getWorld(), event.getChunk());
 			
 			boolean atLeastOneModified = false;
 			for(IRetroGen retroGen : retroGeneratables) {
-				if(retroGen.shouldRetroGen(tag, event.world.provider.getDimension())) {
+				if(retroGen.shouldRetroGen(tag, event.getWorld().provider.getDimension())) {
 					retroGen.retroGenerateChunk(tag, event.getChunk(), random);
 					getMod().log(Level.INFO, "Retrogenerating chunk at "
                             + event.getChunk().xPosition + ":" + event.getChunk().zPosition);
