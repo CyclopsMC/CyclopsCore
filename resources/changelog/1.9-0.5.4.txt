@@ -1,4 +1,5 @@
 Make sure to backup your world before updating!
+Required Forge 12.16.0.1811-1.9
 
 Fixes:
 * Changes to remain compatible with Forge updates
