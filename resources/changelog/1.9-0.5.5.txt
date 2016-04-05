@@ -1,0 +1,10 @@
+Make sure to backup your world before updating!
+Requires Forge 12.16.0.1846-1.9
+
+Fixes:
+* Changes to remain compatible with Forge updates
+* Fix fluid consumption of the wrong fluid type
+
+Lib changes:
+* Make player argument optional in fluid container consumption methods
+* Make originalStack in tryRedAddToStack nullable
