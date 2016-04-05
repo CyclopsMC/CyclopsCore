@@ -1,0 +1,8 @@
+Make sure to backup your world before updating!
+
+Fixes:
+* Fix fluid consumption of the wrong fluid type
+
+Lib changes:
+* Make player argument optional in fluid container consumption methods
+* Make originalStack in tryRedAddToStack nullable
