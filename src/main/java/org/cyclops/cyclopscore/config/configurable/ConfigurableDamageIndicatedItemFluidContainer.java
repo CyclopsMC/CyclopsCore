@@ -20,6 +20,7 @@ import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 import org.cyclops.cyclopscore.item.DamageIndicatedItemFluidContainer;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -214,13 +215,13 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
      * @param player The player.
      * @return If the given amount can be drained.
      */
-    public boolean canConsume(int amount, ItemStack itemStack, EntityPlayer player) {
+    public boolean canConsume(int amount, ItemStack itemStack, @Nullable EntityPlayer player) {
         if(canDrain(amount, itemStack)) return true;
         int availableAmount = 0;
         if(getFluid(itemStack) != null) {
             availableAmount = getFluid(itemStack).amount;
         }
-        return drainFromOthers(amount - availableAmount, itemStack, getFluid(), player, false) != null;
+        return player != null && drainFromOthers(amount - availableAmount, itemStack, getFluid(), player, false) != null;
     }
 
     /**
@@ -231,14 +232,14 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
      * @param player The player.
      * @return The fluid that was drained.
      */
-    public FluidStack consume(int amount, ItemStack itemStack, EntityPlayer player) {
-        boolean doDrain = !player.capabilities.isCreativeMode && !player.worldObj.isRemote;
+    public FluidStack consume(int amount, ItemStack itemStack, @Nullable EntityPlayer player) {
+        boolean doDrain = player == null || (!player.capabilities.isCreativeMode && !player.worldObj.isRemote);
         if (amount == 0) return null;
         FluidStack drained = drain(itemStack, amount, doDrain);
         if (drained != null && drained.amount == amount) return drained;
         int drainedAmount = (drained == null ? 0 : drained.amount);
         int toDrain = amount - drainedAmount;
-        FluidStack otherDrained = drainFromOthers(toDrain, itemStack, getFluid(), player, doDrain);
+        FluidStack otherDrained = player == null ? null : drainFromOthers(toDrain, itemStack, getFluid(), player, doDrain);
         if (otherDrained == null) return drained;
         otherDrained.amount += drainedAmount;
         return otherDrained;
