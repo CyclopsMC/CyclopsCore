@@ -6,7 +6,6 @@ import com.google.common.collect.Sets;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
@@ -158,7 +157,7 @@ public class InfoBookParser {
         if(!node.getAttribute("meta").isEmpty()) {
             meta = Integer.parseInt(node.getAttribute("meta"));
         }
-        Item item = GameData.getItemRegistry().getObject(new ResourceLocation(node.getTextContent()));
+        Item item = Item.itemRegistry.getObject(new ResourceLocation(node.getTextContent()));
         if(item == null) {
             throw new InvalidAppendixException("Invalid item " + node.getTextContent());
         }

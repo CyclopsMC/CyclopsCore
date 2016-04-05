@@ -12,10 +12,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
 import net.minecraftforge.common.property.Properties;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -73,7 +73,7 @@ public class ConfigurableBlockConnectedTexture extends ConfigurableBlock {
         if(MinecraftHelpers.isClientSide()) {
             textureMap = Maps.newHashMap();
             loadedTextureMap = Maps.newHashMap();
-            FMLCommonHandler.instance().bus().register(this);
+            MinecraftForge.EVENT_BUS.register(this);
             loadTextureMap();
         }
     }

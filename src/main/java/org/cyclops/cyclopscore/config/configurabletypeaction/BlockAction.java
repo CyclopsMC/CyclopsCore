@@ -16,10 +16,12 @@ import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.config.configurable.IConfigurableBlock;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * The action used for {@link BlockConfig}.
@@ -31,25 +33,29 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
     /**
      * Registers a block.
      * @param block The block instance.
-     * @param name The unique name for this block.
+     * @param config The config.
      * @param creativeTabs The creative tab this block will reside in.
      */
-    public static void register(Block block, String name, @Nullable CreativeTabs creativeTabs) {
-        register(block, null, name, creativeTabs);
+    public static void register(Block block, ExtendedConfig config, @Nullable CreativeTabs creativeTabs) {
+        register(block, null, config, creativeTabs);
     }
 
     /**
      * Registers a block.
      * @param block The block instance.
      * @param itemBlockClass The optional item block class.
-     * @param name The unique name for this block.
+     * @param config The config.
      * @param creativeTabs The creative tab this block will reside in.
      */
-    public static void register(Block block, @Nullable Class<? extends ItemBlock> itemBlockClass, String name, @Nullable CreativeTabs creativeTabs) {
-        if(itemBlockClass == null) {
-            GameRegistry.registerBlock(block, name);
-        } else {
-            GameRegistry.registerBlock(block, itemBlockClass, name);
+    public static void register(Block block, @Nullable Class<? extends ItemBlock> itemBlockClass, ExtendedConfig config, @Nullable CreativeTabs creativeTabs) {
+        register(block, config);
+        if(itemBlockClass != null) {
+            try {
+                ItemBlock item = itemBlockClass.getConstructor(Block.class).newInstance(block);
+                register(item, config);
+            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
 
         if(creativeTabs != null) {
@@ -79,7 +85,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
         Block block = (Block) eConfig.getSubInstance();
 
         // Register block and set creative tab.
-        register(block, eConfig.getItemBlockClass(), eConfig.getSubUniqueName(), eConfig.getTargetTab());
+        register(block, eConfig.getItemBlockClass(), eConfig, eConfig.getTargetTab());
 
         // Also register tile entity
         GuiHandler.GuiType guiType = GuiHandler.GuiType.BLOCK;

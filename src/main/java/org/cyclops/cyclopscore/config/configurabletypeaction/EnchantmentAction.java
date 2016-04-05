@@ -1,7 +1,5 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.cyclops.cyclopscore.config.extendedconfig.EnchantmentConfig;
@@ -32,7 +30,7 @@ public class EnchantmentAction extends ConfigurableTypeAction<EnchantmentConfig>
         eConfig.save();
 
         // Register the enchantment
-        Enchantment.enchantmentRegistry.register(-1, new ResourceLocation(eConfig.getMod().getModId(), eConfig.getNamedId()), eConfig.getEnchantment());
+        register(eConfig.getEnchantment(), eConfig);
     }
 
 }

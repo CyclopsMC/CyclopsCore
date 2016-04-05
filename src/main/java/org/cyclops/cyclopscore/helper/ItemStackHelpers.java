@@ -9,7 +9,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 
@@ -158,7 +157,7 @@ public final class ItemStackHelpers {
     public static ItemStack parseItemStack(String itemStackString) {
         String[] split = itemStackString.split(":");
         String itemName = split[0] + ":" + split[1];
-        Item item =  GameData.getItemRegistry().getObject(new ResourceLocation(itemName));
+        Item item =  Item.itemRegistry.getObject(new ResourceLocation(itemName));
         if(item == null) {
             throw new IllegalArgumentException("Invalid ItemStack item: " + itemName);
         }

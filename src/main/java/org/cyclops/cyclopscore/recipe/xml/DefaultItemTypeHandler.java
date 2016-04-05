@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.recipe.xml;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.OreDictionary;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.w3c.dom.Node;
@@ -15,7 +14,7 @@ import org.w3c.dom.Node;
 public class DefaultItemTypeHandler implements IItemTypeHandler {
 	
 	protected Object makeItemStack(RecipeHandler recipeHandler, String key, int amount, int meta) throws XmlRecipeLoader.XmlRecipeException {
-        Item item = GameData.getItemRegistry().getObject(new ResourceLocation(key));
+        Item item = Item.itemRegistry.getObject(new ResourceLocation(key));
         if(item == null) {
             throw new XmlRecipeLoader.XmlRecipeException(String.format("Item by name '%s' has not been found.", key));
         }

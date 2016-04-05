@@ -1,7 +1,5 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraft.potion.Potion;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.cyclops.cyclopscore.config.extendedconfig.PotionConfig;
@@ -32,7 +30,7 @@ public class PotionAction extends ConfigurableTypeAction<PotionConfig> {
         eConfig.save();
 
         // Register the potion
-        Potion.potionRegistry.register(-1, new ResourceLocation(eConfig.getMod().getModId(), eConfig.getNamedId()), eConfig.getPotion());
+        register(eConfig.getPotion(), eConfig);
     }
 
 }

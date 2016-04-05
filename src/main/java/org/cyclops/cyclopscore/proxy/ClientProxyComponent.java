@@ -5,16 +5,18 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
@@ -63,7 +65,13 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
 	public void registerRenderers() {
 		// Entity renderers
 		for (Entry<Class<? extends Entity>, Render> entry : entityRenderers.entrySet()) {
-			RenderingRegistry.registerEntityRenderingHandler(entry.getKey(), entry.getValue());
+            final Render render = entry.getValue();
+            RenderingRegistry.registerEntityRenderingHandler(entry.getKey(), new IRenderFactory<Entity>() {
+                @Override
+                public Render<? super Entity> createRenderFor(RenderManager manager) {
+                    return render;
+                }
+            });
             getMod().getLoggerHelper().log(Level.TRACE, String.format("Registered %s renderer %s", entry.getKey(), entry.getValue()));
 		}
 
@@ -95,7 +103,7 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
 	public void registerEventHooks() {
         commonProxyComponent.registerEventHooks();
         getMod().getLoggerHelper().log(Level.TRACE, "Registered event hooks");
-        FMLCommonHandler.instance().bus().register(getMod().getKeyRegistry());
+        MinecraftForge.EVENT_BUS.register(getMod().getKeyRegistry());
     }
     
     @Override

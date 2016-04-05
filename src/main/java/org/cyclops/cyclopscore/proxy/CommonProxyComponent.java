@@ -7,7 +7,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.event.ConfigChangedEventHook;
@@ -67,8 +66,8 @@ public abstract class CommonProxyComponent implements ICommonProxy {
             MinecraftForge.EVENT_BUS.register(bucketRegistry);
         }
 
-        FMLCommonHandler.instance().bus().register(new PlayerRingOfFire());
-        FMLCommonHandler.instance().bus().register(new ConfigChangedEventHook(getMod()));
+        MinecraftForge.EVENT_BUS.register(new PlayerRingOfFire());
+        MinecraftForge.EVENT_BUS.register(new ConfigChangedEventHook(getMod()));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.proxy;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.MinecraftForge;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.tracking.Versions;
@@ -25,7 +25,7 @@ public class ClientProxy extends ClientProxyComponent {
 	@Override
 	public void registerEventHooks() {
 		super.registerEventHooks();
-		FMLCommonHandler.instance().bus().register(new Versions());
+		MinecraftForge.EVENT_BUS.register(new Versions());
 	}
     
 }
