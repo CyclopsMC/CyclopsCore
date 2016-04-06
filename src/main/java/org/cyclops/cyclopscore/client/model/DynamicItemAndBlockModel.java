@@ -53,7 +53,7 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
 
     @Override
     public ItemOverrideList getOverrides() {
-        return super.getOverrides();
+        return itemOverrides;
     }
 
     public class ItemOverrides extends ItemOverrideList {

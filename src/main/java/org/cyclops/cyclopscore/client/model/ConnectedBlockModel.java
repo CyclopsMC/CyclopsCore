@@ -46,7 +46,7 @@ public class ConnectedBlockModel extends DynamicBaseModel {
     public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
         float[][] v = UVS;
 
-        boolean itemStack = state instanceof IExtendedBlockState;
+        boolean itemStack = !(state instanceof IExtendedBlockState);
         IExtendedBlockState extendedState = null;
         if(!itemStack) {
             extendedState = (IExtendedBlockState) state;
