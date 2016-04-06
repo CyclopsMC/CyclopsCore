@@ -62,7 +62,13 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
 
     }
 
-    protected static <T extends IForgeRegistryEntry> void register(T instance, ExtendedConfig config) {
+    /**
+     * Register the {@link IForgeRegistryEntry}.
+     * @param instance The instance.
+     * @param config The corresponding config.
+     * @param <T> The type to register.
+     */
+    public static <T extends IForgeRegistryEntry> void register(T instance, ExtendedConfig config) {
         instance.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
         GameRegistry.register(instance);
     }
