@@ -36,10 +36,13 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
     @Override
     public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
         if(factory) {
-            if(state == null) {
-                return handleItemState(null, null, null).getQuads(null, side, rand);
+            IBakedModel bakedModel;
+            if(isItemStack()) {
+                bakedModel = handleItemState(null, null, null);
+            } else {
+                bakedModel = handleBlockState(state, side, rand);
             }
-            return handleBlockState(state, side, rand).getQuads(state, side, rand);
+            return bakedModel.getQuads(state, side, rand);
         }
         return getGeneralQuads();
     }
