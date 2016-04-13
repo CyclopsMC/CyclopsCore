@@ -238,7 +238,7 @@ public abstract class DynamicBaseModel implements IPerspectiveAwareModel {
                 vertexToInts((float) v4.xCoord, (float) v4.yCoord, (float) v4.zCoord, -1, texture, uvs[(3 + rotation) % 4][0] * 16, uvs[(3 + rotation) % 4][1] * 16)
         );
         ForgeHooksClient.fillNormal(data, side); // This fixes lighting issues when item is rendered in hand/inventory
-        quads.add(new BakedQuad(data, -1, side, texture, true, Attributes.DEFAULT_BAKED_FORMAT));
+        quads.add(new BakedQuad(data, -1, side, texture, false, Attributes.DEFAULT_BAKED_FORMAT));
     }
 
     @Override
