@@ -23,6 +23,8 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
     private final boolean item;
     private final ItemOverrides itemOverrides;
 
+    private EnumFacing renderingSide;
+
     public DynamicItemAndBlockModel(boolean factory, boolean item) {
         this.factory = factory;
         this.item = item;
@@ -35,6 +37,7 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
 
     @Override
     public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
+        this.renderingSide = side;
         if(factory) {
             IBakedModel bakedModel;
             if(isItemStack()) {
@@ -57,6 +60,10 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
     @Override
     public ItemOverrideList getOverrides() {
         return itemOverrides;
+    }
+
+    public EnumFacing getRenderingSide() {
+        return renderingSide;
     }
 
     public class ItemOverrides extends ItemOverrideList {
