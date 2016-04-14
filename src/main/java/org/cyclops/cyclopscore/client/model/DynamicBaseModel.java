@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.client.model;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.primitives.Ints;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -13,13 +12,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
-import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.Helpers;
+import org.cyclops.cyclopscore.helper.ModelHelpers;
 import org.lwjgl.util.Color;
 
 import javax.vecmath.Matrix4f;
-import javax.vecmath.Vector3f;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,17 +33,6 @@ public abstract class DynamicBaseModel implements IPerspectiveAwareModel {
     protected static final int[] ROTATION_FIX = {2, 0, 2, 0, 1, 3};
     // u1, v1; u2, v2
     protected static final float[][] UVS = {{0, 0}, {1, 1}};
-
-    // Third person transform for block items
-    protected static final TRSRTransformation THIRD_PERSON_LEFT_HAND = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
-            new Vector3f(0, 1.5f / 16, -2.75f / 16),
-            TRSRTransformation.quatFromXYZDegrees(new Vector3f(-45, 10, 170)),
-            new Vector3f(0.375f, 0.375f, 0.375f),
-            null));
-
-    // Default perspective transforms
-    protected static final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> DEFAULT_PERSPECTIVE_TRANSFORMS =
-            ImmutableMap.of(ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, THIRD_PERSON_LEFT_HAND);
 
     /**
      * Rotate a given vector to the given side.
@@ -268,7 +255,7 @@ public abstract class DynamicBaseModel implements IPerspectiveAwareModel {
 
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-        return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, DEFAULT_PERSPECTIVE_TRANSFORMS, cameraTransformType);
+        return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, ModelHelpers.DEFAULT_PERSPECTIVE_TRANSFORMS, cameraTransformType);
     }
 
     @Override
