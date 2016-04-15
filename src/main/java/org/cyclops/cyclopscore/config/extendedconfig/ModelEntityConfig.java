@@ -12,10 +12,11 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * Config for Entities with a custom Model.
+ * @param <T> The entity type
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class ModelEntityConfig extends EntityConfig{
+public abstract class ModelEntityConfig<T extends Entity> extends EntityConfig<T>{
 
     /**
      * Make a new instance.
@@ -30,9 +31,9 @@ public abstract class ModelEntityConfig extends EntityConfig{
     }
     
     @Override
-    protected Render getRender(RenderManager renderManager, RenderItem renderItem) {
-        Constructor<? extends Render> constructor;
-        Render render = null;
+    public Render<? super T> getRender(RenderManager renderManager, RenderItem renderItem) {
+        Constructor<? extends Render<T>> constructor;
+        Render<T> render = null;
         try {
             constructor = getRenderClass().getConstructor(ExtendedConfig.class);
             render = constructor.newInstance(this);
@@ -47,5 +48,5 @@ public abstract class ModelEntityConfig extends EntityConfig{
      * Get the {@link RenderModel} class for the configurable.
      * @return The class for the model of the configurable.
      */
-    public abstract Class<? extends RenderModel<?>> getRenderClass();
+    public abstract Class<? extends RenderModel<T, ?>> getRenderClass();
 }

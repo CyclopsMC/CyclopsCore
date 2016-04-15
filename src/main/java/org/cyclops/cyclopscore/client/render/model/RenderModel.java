@@ -13,9 +13,10 @@ import org.cyclops.cyclopscore.init.ModBase;
  * It will automatically take care of the texture.
  * @author rubensworks
  *
+ * @param <T> The entity type
  * @param <M> The model that will be rendered.
  */
-public abstract class RenderModel<M extends ModelBase> extends Render {
+public abstract class RenderModel<T extends Entity, M extends ModelBase> extends Render<T> {
     
     private ResourceLocation texture;
 

@@ -1,8 +1,6 @@
 package org.cyclops.cyclopscore.proxy;
 
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -20,13 +18,6 @@ public interface ICommonProxy {
      * @return The mod for this proxy.
      */
     public ModBase getMod();
-
-    /**
-     * Register an entity renderer.
-     * @param clazz The entity class.
-     * @param renderer The entity renderer.
-     */
-    public void registerRenderer(Class<? extends Entity> clazz, Render renderer);
 
     /**
      * Register a tile entity renderer.

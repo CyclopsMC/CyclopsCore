@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -8,10 +9,11 @@ import org.cyclops.cyclopscore.helper.Helpers;
 
 /**
  * The action used for {@link MobConfig}.
+ * @param <T> The entity type.
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class MobAction extends ConfigurableTypeAction<MobConfig>{
+public class MobAction<T extends Entity> extends ConfigurableTypeAction<MobConfig<T>>{
 
     @Override
     public void preRun(MobConfig eConfig, Configuration config, boolean startup) {

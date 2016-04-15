@@ -1,8 +1,6 @@
 package org.cyclops.cyclopscore.proxy;
 
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -25,11 +23,6 @@ import org.cyclops.cyclopscore.world.gen.IRetroGenRegistry;
 public abstract class CommonProxyComponent implements ICommonProxy {
 	
 	protected static final String DEFAULT_RESOURCELOCATION_MOD = "minecraft";
-
-    @Override
-    public void registerRenderer(Class<? extends Entity> clazz, Render renderer) {
-        throw new IllegalArgumentException("Registration of renderers should not be called server side!");
-    }
 
     @Override
     public void registerRenderer(Class<? extends TileEntity> clazz, TileEntitySpecialRenderer renderer) {

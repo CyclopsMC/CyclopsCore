@@ -4,10 +4,7 @@ import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -15,8 +12,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
@@ -39,7 +34,6 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
 
 	private final CommonProxyComponent commonProxyComponent;
 	private final IconProvider iconProvider;
-	protected final Map<Class<? extends Entity>, Render> entityRenderers = Maps.newHashMap();
     protected final Map<Class<? extends TileEntity>, TileEntitySpecialRenderer> tileEntityRenderers = Maps.newHashMap();
 
     public ClientProxyComponent(CommonProxyComponent commonProxyComponent) {
@@ -52,29 +46,12 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
     }
 
     @Override
-    public void registerRenderer(Class<? extends Entity> clazz, Render renderer) {
-        entityRenderers.put(clazz, renderer);
-    }
-
-    @Override
     public void registerRenderer(Class<? extends TileEntity> clazz, TileEntitySpecialRenderer renderer) {
         tileEntityRenderers.put(clazz, renderer);
     }
 
 	@Override
 	public void registerRenderers() {
-		// Entity renderers
-		for (Entry<Class<? extends Entity>, Render> entry : entityRenderers.entrySet()) {
-            final Render render = entry.getValue();
-            RenderingRegistry.registerEntityRenderingHandler(entry.getKey(), new IRenderFactory<Entity>() {
-                @Override
-                public Render<? super Entity> createRenderFor(RenderManager manager) {
-                    return render;
-                }
-            });
-            getMod().getLoggerHelper().log(Level.TRACE, String.format("Registered %s renderer %s", entry.getKey(), entry.getValue()));
-		}
-
 		// Special TileEntity renderers
 		for (Entry<Class<? extends TileEntity>, TileEntitySpecialRenderer> entry : tileEntityRenderers.entrySet()) {
 			ClientRegistry.bindTileEntitySpecialRenderer(entry.getKey(), entry.getValue());

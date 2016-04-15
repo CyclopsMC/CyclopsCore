@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
+import net.minecraft.entity.Entity;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.cyclops.cyclopscore.config.extendedconfig.EntityConfig;
@@ -7,10 +8,11 @@ import org.cyclops.cyclopscore.helper.Helpers;
 
 /**
  * The action used for {@link EntityConfig}.
+ * @param <T> The entity type.
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class EntityAction extends ConfigurableTypeAction<EntityConfig>{
+public class EntityAction<T extends Entity> extends ConfigurableTypeAction<EntityConfig<T>>{
 
     @Override
     public void preRun(EntityConfig eConfig, Configuration config, boolean startup) {

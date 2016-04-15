@@ -1,9 +1,10 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.client.registry.IRenderFactory;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -11,10 +12,11 @@ import org.cyclops.cyclopscore.init.ModBase;
 
 /**
  * Config for mobs.
+ * @param <T> The entity type
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class MobConfig extends ExtendedConfig<MobConfig> {
+public abstract class MobConfig<T extends Entity> extends ExtendedConfig<MobConfig<T>> {
 
     /**
      * Make a new instance.
@@ -40,16 +42,16 @@ public abstract class MobConfig extends ExtendedConfig<MobConfig> {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void onInit(Step step) {
-        super.onInit(step);
-        if(step == Step.INIT) {
-            Render render = getRender(Minecraft.getMinecraft().getRenderManager());
-            if(render != null) {
-                @SuppressWarnings("unchecked")
-                Class<? extends EntityLiving> clazz = (Class<? extends EntityLiving>) this.getElement();
-                getMod().getProxy().registerRenderer(clazz, render);
+    public void onRegistered() {
+        super.onRegistered();
+        @SuppressWarnings("unchecked")
+        Class<T> clazz = (Class<T>) this.getElement();
+        RenderingRegistry.registerEntityRenderingHandler(clazz, new IRenderFactory<T>() {
+            @Override
+            public Render<? super T> createRenderFor(RenderManager manager) {
+                return MobConfig.this.getRender(manager);
             }
-        }
+        });
     }
 
     /**
@@ -75,6 +77,6 @@ public abstract class MobConfig extends ExtendedConfig<MobConfig> {
      * @param renderManager The render manager.
      * @return Get the render.
      */
-    public abstract Render getRender(RenderManager renderManager);
+    public abstract Render<? super T> getRender(RenderManager renderManager);
 
 }
