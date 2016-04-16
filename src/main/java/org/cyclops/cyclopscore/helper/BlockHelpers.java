@@ -143,9 +143,7 @@ public final class BlockHelpers {
      * @return If it has a solid top surface.
      */
     public static boolean doesBlockHaveSolidTopSurface(IBlockAccess world, BlockPos blockPos) {
-        blockPos = blockPos.add(0, -1, 0);
-        return world.getBlockState(blockPos).getBlock().isAir(world.getBlockState(blockPos), world, blockPos)
-                && world.getBlockState(blockPos).isOpaqueCube();
+        return world.getBlockState(blockPos.add(0, -1, 0)).isOpaqueCube();
     }
 
 }
