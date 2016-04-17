@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.proxy;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
@@ -21,8 +21,6 @@ import org.cyclops.cyclopscore.world.gen.IRetroGenRegistry;
  *
  */
 public abstract class CommonProxyComponent implements ICommonProxy {
-	
-	protected static final String DEFAULT_RESOURCELOCATION_MOD = "minecraft";
 
     @Override
     public void registerRenderer(Class<? extends TileEntity> clazz, TileEntitySpecialRenderer renderer) {
@@ -64,49 +62,17 @@ public abstract class CommonProxyComponent implements ICommonProxy {
     }
 
     @Override
-    public void playSoundMinecraft(BlockPos pos, String sound, SoundCategory category, float volume, float frequency) {
-    	playSoundMinecraft(pos.getX(), pos.getY(), pos.getZ(), sound, category, volume, frequency);
+    public void playSound(double x, double y, double z, SoundEvent sound, SoundCategory category, float volume, float frequency) {
+    	// This does nothing on the server
     }
 
     @Override
-    public void playSoundMinecraft(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency) {
-    	playSound(x, y, z, sound, category, volume, frequency, DEFAULT_RESOURCELOCATION_MOD);
-    }
-
-    @Override
-    public void playSound(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency,
-    		String mod) {
-    	// No implementation server-side.
-    }
-
-    @Override
-    public void playSound(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency) {
-    	playSound(x, y, z, sound, category, volume, frequency, getMod().getModId());
-    }
-
-    @Override
-    public void sendSoundMinecraft(BlockPos pos, String sound, SoundCategory category, float volume, float frequency) {
-		sendSound(pos.getX(), pos.getY(), pos.getZ(), sound, category, volume, frequency, DEFAULT_RESOURCELOCATION_MOD);
-    }
-
-    @Override
-    public void sendSoundMinecraft(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency) {
-		sendSound(x, y, z, sound, category, volume, frequency, DEFAULT_RESOURCELOCATION_MOD);
-    }
-
-    @Override
-    public void sendSound(double x, double y, double z, String sound, SoundCategory soundCategory, float volume, float frequency,
-    		String mod) {
-    	SoundPacket packet = new SoundPacket(x, y, z, sound, soundCategory, volume, frequency, mod);
+    public void sendSound(double x, double y, double z, SoundEvent sound, SoundCategory category, float volume, float frequency) {
+        SoundPacket packet = new SoundPacket(x, y, z, sound, category, volume, frequency);
         if(!MinecraftHelpers.isClientSide()) {
             CyclopsCore._instance.getPacketHandler().sendToAll(packet); // Yes, all sounds go through cyclops.
         } else {
             CyclopsCore._instance.getPacketHandler().sendToServer(packet); // Yes, all sounds go through cyclops.
         }
-    }
-
-    @Override
-    public void sendSound(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency) {
-    	sendSound(x, y, z, sound, category, volume, frequency, getMod().getModId());
     }
 }

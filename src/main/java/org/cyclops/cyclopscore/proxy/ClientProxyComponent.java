@@ -6,7 +6,6 @@ import lombok.EqualsAndHashCode;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,8 +28,6 @@ import java.util.Map.Entry;
 @EqualsAndHashCode(callSuper = false)
 @Data
 public abstract class ClientProxyComponent extends CommonProxyComponent implements ICommonProxy {
-	
-	protected static final String SOUND_NONE = "none";
 
 	private final CommonProxyComponent commonProxyComponent;
 	private final IconProvider iconProvider;
@@ -84,21 +81,11 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
     }
     
     @Override
-    public void playSound(double x, double y, double z, String sound, SoundCategory category, float volume, float frequency,
-    		String mod) {
-    	if(!SOUND_NONE.equals(sound)) {
-	    	ResourceLocation soundLocation = new ResourceLocation(mod, sound);
-	    	PositionedSoundRecord record = new PositionedSoundRecord(new SoundEvent(soundLocation), category,
-					volume, frequency, (float) x, (float) y, (float) z);
-	    	
-	    	// If we notice this sound is no mod sound, relay it to the default MC sound system.
-	    	if(!mod.equals(DEFAULT_RESOURCELOCATION_MOD) && !SoundEvent.soundEventRegistry.containsKey(soundLocation)) {
-	    		playSoundMinecraft(x, y, z, sound, category, volume, frequency);
-	    	} else {
-		    	FMLClientHandler.instance().getClient().getSoundHandler()
-		    		.playSound(record);
-	    	}
-    	}
+    public void playSound(double x, double y, double z, SoundEvent sound, SoundCategory category, float volume, float frequency) {
+		PositionedSoundRecord record = new PositionedSoundRecord(sound, category,
+				volume, frequency, (float) x, (float) y, (float) z);
+		FMLClientHandler.instance().getClient().getSoundHandler()
+				.playSound(record);
     }
     
 }

@@ -371,6 +371,7 @@ public abstract class GuiInfoBook extends GuiScreen {
     }
 
     public abstract void playPageFlipSound(SoundHandler soundHandler);
+    public abstract void playPagesFlipSound(SoundHandler soundHandler);
 
     @SideOnly(Side.CLIENT)
     static class NextPageButton extends GuiButton {
@@ -449,7 +450,7 @@ public abstract class GuiInfoBook extends GuiScreen {
 
         @Override
         public void playPressSound(SoundHandler soundHandler) {
-            guiInfoBook.playPageFlipSound(soundHandler);
+            guiInfoBook.playPagesFlipSound(soundHandler);
         }
 
     }
