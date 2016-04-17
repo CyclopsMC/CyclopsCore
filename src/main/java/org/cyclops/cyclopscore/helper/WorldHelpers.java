@@ -42,13 +42,7 @@ public class WorldHelpers {
             biomeArray[rz << 4 | rx] = (byte)(BiomeGenBase.getIdForBiome(biome) & 255);
             chunk.setChunkModified();
             world.getChunkProvider().provideChunk(chunk.xPosition, chunk.zPosition);
-            
-            // Notify the players for a chunk update.
-            // TODO: can this be removed?
-            /*for(EntityPlayerMP player : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerList()) {
-                List<ChunkCoordIntPair> chunks = player.loadedChunks;
-                chunks.add(new ChunkCoordIntPair(chunk.xPosition, chunk.zPosition));
-            }*/
+            world.markBlockRangeForRenderUpdate(pos, pos);
         } else {
             CyclopsCore.clog(Level.WARN, "Tried changing biome at non-existing chunk for position " + pos);
         }
