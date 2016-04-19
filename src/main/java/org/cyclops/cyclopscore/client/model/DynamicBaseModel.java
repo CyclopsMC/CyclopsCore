@@ -187,7 +187,8 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspect
      */
     private static void addBakedQuad(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
                                        TextureAtlasSprite texture, int shadeColor, EnumFacing side, boolean isColored) {
-        addBakedQuadRotated(quads, x1, x2, z1, z2, y, texture, side, 0, false, new float[][]{{x1, z1}, {x1, z2}, {x2, z2}, {x2, z1}});
+        addBakedQuadRotated(quads, x1, x2, z1, z2, y, texture, side, 0, isColored,
+                shadeColor, new float[][]{{x1, z1}, {x1, z2}, {x2, z2}, {x2, z1}});
     }
 
     /**
@@ -204,7 +205,7 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspect
      */
     protected static void addBakedQuadRotated(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
                                               TextureAtlasSprite texture, EnumFacing side, int rotation) {
-        addBakedQuadRotated(quads, x1, x2, z1, z2, y, texture, side, rotation, false, ROTATION_UV);
+        addBakedQuadRotated(quads, x1, x2, z1, z2, y, texture, side, rotation, false, -1, ROTATION_UV);
     }
 
     /**
@@ -219,19 +220,21 @@ public abstract class DynamicBaseModel implements IFlexibleBakedModel, IPerspect
      * @param side The side to add render quad at.
      * @param rotation The rotation index to rotate by.
      * @param isColored When set to true a colored baked quad will be made, otherwise a regular baked quad is used.
+     * @param shadeColor The shade color
      * @param uvs A double array of 4 uv pairs
      */
     protected static void addBakedQuadRotated(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
-                                              TextureAtlasSprite texture, EnumFacing side, int rotation, boolean isColored, float[][] uvs) {
+                                              TextureAtlasSprite texture, EnumFacing side, int rotation,
+                                              boolean isColored, int shadeColor, float[][] uvs) {
         Vec3 v1 = rotate(new Vec3(x1 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
         Vec3 v2 = rotate(new Vec3(x1 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
         Vec3 v3 = rotate(new Vec3(x2 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
         Vec3 v4 = rotate(new Vec3(x2 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
         int[] data =  Ints.concat(
-                vertexToInts((float) v1.xCoord, (float) v1.yCoord, (float) v1.zCoord, -1, texture, uvs[(0 + rotation) % 4][0] * 16, uvs[(0 + rotation) % 4][1] * 16),
-                vertexToInts((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord, -1, texture, uvs[(1 + rotation) % 4][0] * 16, uvs[(1 + rotation) % 4][1] * 16),
-                vertexToInts((float) v3.xCoord, (float) v3.yCoord, (float) v3.zCoord, -1, texture, uvs[(2 + rotation) % 4][0] * 16, uvs[(2 + rotation) % 4][1] * 16),
-                vertexToInts((float) v4.xCoord, (float) v4.yCoord, (float) v4.zCoord, -1, texture, uvs[(3 + rotation) % 4][0] * 16, uvs[(3 + rotation) % 4][1] * 16)
+                vertexToInts((float) v1.xCoord, (float) v1.yCoord, (float) v1.zCoord, shadeColor, texture, uvs[(0 + rotation) % 4][0] * 16, uvs[(0 + rotation) % 4][1] * 16),
+                vertexToInts((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord, shadeColor, texture, uvs[(1 + rotation) % 4][0] * 16, uvs[(1 + rotation) % 4][1] * 16),
+                vertexToInts((float) v3.xCoord, (float) v3.yCoord, (float) v3.zCoord, shadeColor, texture, uvs[(2 + rotation) % 4][0] * 16, uvs[(2 + rotation) % 4][1] * 16),
+                vertexToInts((float) v4.xCoord, (float) v4.yCoord, (float) v4.zCoord, shadeColor, texture, uvs[(3 + rotation) % 4][0] * 16, uvs[(3 + rotation) % 4][1] * 16)
         );
         ForgeHooksClient.fillNormal(data, side); // This fixes lighting issues when item is rendered in hand/inventory
         quads.add(isColored ? new IColoredBakedQuad.ColoredBakedQuad(data, -1, side) : new BakedQuad(data, -1, side));
