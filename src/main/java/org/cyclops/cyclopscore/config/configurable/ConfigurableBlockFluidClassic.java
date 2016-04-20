@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.config.configurable;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidClassic;
@@ -12,6 +13,7 @@ import org.cyclops.cyclopscore.block.component.EntityDropParticleFXBlockComponen
 import org.cyclops.cyclopscore.block.component.IEntityDropParticleFXBlock;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
@@ -43,6 +45,13 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         fluid.setBlock(this);
         this.fluid = fluid;
+    }
+
+    @Nullable
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IBlockColor getBlockColorHandler() {
+        return null;
     }
 
     @Override

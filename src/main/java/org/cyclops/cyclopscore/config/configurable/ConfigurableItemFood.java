@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurable;
 
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
@@ -8,6 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -15,7 +17,7 @@ import java.util.List;
  * @author rubensworks
  *
  */
-public class ConfigurableItemFood extends ItemFood implements IConfigurable {
+public class ConfigurableItemFood extends ItemFood implements IConfigurableItem {
     
     @SuppressWarnings("rawtypes")
     protected ExtendedConfig eConfig = null;
@@ -50,6 +52,13 @@ public class ConfigurableItemFood extends ItemFood implements IConfigurable {
     public void addInformation(ItemStack itemStack, EntityPlayer entityPlayer, List list, boolean par4) {
         super.addInformation(itemStack, entityPlayer, list, par4);
         L10NHelpers.addOptionalInfo(list, getUnlocalizedName());
+    }
+
+    @Nullable
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IItemColor getItemColorHandler() {
+        return null;
     }
 
 }

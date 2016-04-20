@@ -1,5 +1,11 @@
 package org.cyclops.cyclopscore.config.configurable;
 
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+
 /**
  * Configurable blocks.
  * @author rubensworks
@@ -12,5 +18,11 @@ public interface IConfigurableBlock extends IConfigurable {
      * @return If it has a GUI.
      */
     public boolean hasGui();
+
+    /**
+     * @return The color handler for the block instance.
+     */
+    @SideOnly(Side.CLIENT)
+    public @Nullable IBlockColor getBlockColorHandler();
 
 }

@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.config.configurable;
 
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,6 +16,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -22,7 +24,7 @@ import java.util.List;
  * @author rubensworks
  *
  */
-public class ConfigurableItem extends Item implements IConfigurable, IDynamicModelElement {
+public class ConfigurableItem extends Item implements IConfigurableItem, IDynamicModelElement {
     
     @SuppressWarnings("rawtypes")
     protected ItemConfig eConfig = null;
@@ -80,4 +82,10 @@ public class ConfigurableItem extends Item implements IConfigurable, IDynamicMod
         }
     }
 
+    @Nullable
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IItemColor getItemColorHandler() {
+        return null;
+    }
 }

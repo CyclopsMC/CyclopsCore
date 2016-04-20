@@ -5,10 +5,15 @@ import net.minecraft.block.BlockTorch;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.block.property.BlockProperty;
 import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
 import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+
+import javax.annotation.Nullable;
 
 /**
  * Torch blockState that can hold ExtendedConfigs
@@ -46,6 +51,13 @@ public class ConfigurableBlockTorch extends BlockTorch implements IConfigurableB
     @Override
     public boolean hasGui() {
         return hasGui;
+    }
+
+    @Nullable
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IBlockColor getBlockColorHandler() {
+        return null;
     }
 
     @SuppressWarnings("rawtypes")

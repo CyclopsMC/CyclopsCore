@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
+import org.cyclops.cyclopscore.config.configurable.IConfigurableItem;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.IModelProviderConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
@@ -92,11 +93,17 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
 
     @Override
     public void polish(ItemConfig config) {
-        Item item = config.getItemInstance();
-        handleItemModel(item, config.getNamedId(), config.getTargetTab(),
-                config.getMod().getModId(), config);
-        if(item instanceof IItemColor) {
-            Minecraft.getMinecraft().getItemColors().registerItemColorHandler((IItemColor) item, item);
+        if(MinecraftHelpers.isClientSide()) {
+            Item item = config.getItemInstance();
+            handleItemModel(item, config.getNamedId(), config.getTargetTab(),
+                    config.getMod().getModId(), config);
+            if (item instanceof IConfigurableItem) {
+                IConfigurableItem configurableItem = (IConfigurableItem) item;
+                IItemColor itemColorHandler = configurableItem.getItemColorHandler();
+                if (itemColorHandler != null) {
+                    Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColorHandler, item);
+                }
+            }
         }
     }
 

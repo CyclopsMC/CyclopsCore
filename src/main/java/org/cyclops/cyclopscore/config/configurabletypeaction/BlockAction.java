@@ -119,8 +119,12 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
             Block block = config.getBlockInstance();
             ItemAction.handleItemModel(Item.getItemFromBlock(block), config.getNamedId(),
                     config.getTargetTab(), config.getMod().getModId(), config);
-            if(block instanceof IBlockColor) {
-                Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler((IBlockColor) block, block);
+            if(block instanceof IConfigurableBlock) {
+                IConfigurableBlock configurableBlock = (IConfigurableBlock) block;
+                IBlockColor blockColorHandler = configurableBlock.getBlockColorHandler();
+                if (blockColorHandler != null) {
+                    Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(blockColorHandler, block);
+                }
             }
         }
     }
