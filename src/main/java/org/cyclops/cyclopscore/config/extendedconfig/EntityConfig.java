@@ -89,5 +89,6 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfig<Enti
      * @param renderItem The render item instance.
      * @return Get the render.
      */
+    @SideOnly(Side.CLIENT)
     public abstract Render<? super T> getRender(RenderManager renderManager, RenderItem renderItem);
 }

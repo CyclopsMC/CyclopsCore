@@ -77,6 +77,7 @@ public abstract class MobConfig<T extends Entity> extends ExtendedConfig<MobConf
      * @param renderManager The render manager.
      * @return Get the render.
      */
+    @SideOnly(Side.CLIENT)
     public abstract Render<? super T> getRender(RenderManager renderManager);
 
 }
