@@ -29,6 +29,7 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
@@ -299,6 +300,31 @@ public class RenderHelpers {
      */
     public static void renderTileFluidContext(final FluidStack fluid, final double x, final double y, final double z, final TileEntity tile, final IFluidContextRender render) {
         renderFluidContext(fluid, x, y, z, render);
+    }
+
+    /**
+     * Get the fluid color to use in {@link net.minecraft.client.renderer.VertexBuffer} rendering.
+     * @param fluidStack The fluid stack.
+     * @return The RGB colors.
+     */
+    public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidStack fluidStack) {
+        int color = fluidStack.getFluid().getColor(fluidStack);
+        return Helpers.intToRGB(color);
+    }
+
+    /**
+     * Get the fluid color to use in {@link net.minecraft.client.renderer.block.model.BakedQuad}.
+     * @param fluidStack The fluid stack.
+     * @return The BGR colors.
+     */
+    public static int getFluidBakedQuadColor(FluidStack fluidStack) {
+        Triple<Float, Float, Float> colorParts = Helpers.intToRGB(fluidStack.getFluid().getColor(fluidStack));
+        return Helpers.RGBAToInt(
+                (int) (colorParts.getRight() * 255),
+                (int) (colorParts.getMiddle() * 255),
+                (int) (colorParts.getLeft() * 255),
+                255
+        );
     }
 
     /**
