@@ -1,0 +1,27 @@
+As always, don't forget to backup your world before updating!
+Requires CyclopsCore version NONE.
+
+Additions:
+
+Changes:
+* Refactor sound packets
+* Apply new renderer registration method
+* Apply default perspective transforms to the dynamic base model
+
+Fixes:
+* Fix color not being applied to quads
+* Trigger render update on biome change
+* Fix doesBlockHaveSolidTopSurface
+* Fix flat item perspective
+* Fix incorrect quad shading
+
+Lib Additions:
+* Add helpers related to fluid color rendering
+* Change block and item coloring system in order to avoid server crash
+
+Lib Changes:
+* Differentiate between block side and rendering side in dynamic model
+* Use correct minecraft item model parent
+* Make configurable registration action public
+* Correctly abstract dynamic item models
+* Correctly handle models with item variants
