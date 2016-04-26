@@ -55,6 +55,9 @@ public class BucketRegistry implements IBucketRegistry {
     }
 
     private ItemStack fillCustomBucket(World world, RayTraceResult pos, ItemStack current) {
+        if (pos == null) {
+            return null;
+        }
         Block block = world.getBlockState(pos.getBlockPos()).getBlock();
 
         Item bucket = items.get(block);
