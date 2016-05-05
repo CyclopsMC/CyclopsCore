@@ -3,10 +3,7 @@ package org.cyclops.cyclopscore.proxy;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.PacketHandler;
-import org.cyclops.cyclopscore.network.packet.ButtonClickPacket;
-import org.cyclops.cyclopscore.network.packet.RingOfFirePacket;
-import org.cyclops.cyclopscore.network.packet.SoundPacket;
-import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
+import org.cyclops.cyclopscore.network.packet.*;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketAsync;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketComplexAsync;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketComplexSync;
@@ -33,6 +30,7 @@ public class CommonProxy extends CommonProxyComponent {
         packetHandler.register(SoundPacket.class);
         packetHandler.register(ButtonClickPacket.class);
         packetHandler.register(ValueNotifyPacket.class);
+        packetHandler.register(ReloadResourcesPacket.class);
 
         // Register debug packets
         packetHandler.register(PingPongPacketAsync.class);
