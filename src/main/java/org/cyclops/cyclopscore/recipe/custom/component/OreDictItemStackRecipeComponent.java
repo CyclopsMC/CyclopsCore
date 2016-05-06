@@ -38,6 +38,7 @@ public class OreDictItemStackRecipeComponent extends ItemStackRecipeComponent {
                     return true;
                 }
             }
+            return false;
         }
 
         return getItemStacks().isEmpty();

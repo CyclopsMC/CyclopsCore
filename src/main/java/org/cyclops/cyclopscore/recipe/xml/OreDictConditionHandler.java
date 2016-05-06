@@ -12,7 +12,7 @@ public class OreDictConditionHandler implements IRecipeConditionHandler {
 
 	@Override
 	public boolean isSatisfied(RecipeHandler recipeHandler, String param) {
-		return OreDictionary.doesOreNameExist(param);
+		return OreDictionary.doesOreNameExist(param) && !OreDictionary.getOres(param).isEmpty();
 	}
 
 }
