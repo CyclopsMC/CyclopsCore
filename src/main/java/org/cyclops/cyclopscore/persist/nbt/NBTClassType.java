@@ -406,18 +406,13 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, ItemStack object, NBTTagCompound tag) {
                 if (object != null) {
-                    NBTTagCompound itemStackTag = new NBTTagCompound();
-                    object.writeToNBT(itemStackTag);
-                    tag.setTag(name, itemStackTag);
+                    tag.setTag(name, object.copy().writeToNBT(new NBTTagCompound()));
                 }
             }
 
             @Override
             public ItemStack readPersistedField(String name, NBTTagCompound tag) {
-                if (tag.hasKey(name)) {
-                    return ItemStack.loadItemStackFromNBT(tag.getCompoundTag(name));
-                }
-                return null;
+                return ItemStack.loadItemStackFromNBT(tag.getCompoundTag(name));
             }
 
             @Override
