@@ -1,0 +1,18 @@
+As always, don't forget to backup your world before updating!
+Requires CyclopsCore version .
+
+Additions:
+* Add command to reload all resources
+* Incorporate version checker into Forge's checker, Closes #6
+
+Fixes:
+* Improve recipe handling with corrupted oredict keys
+* Fix drainFromOthers sometimes returning a non-null empty FluidStack
+
+Lib additions:
+* Add NBT persistence for ItemStacks
+* Allow predefined items to be referenced in infobook crafting appendix
+* Add helper to transform RGB to BGR(A)
+
+Lib changes:
+* Include NBT when matching items
