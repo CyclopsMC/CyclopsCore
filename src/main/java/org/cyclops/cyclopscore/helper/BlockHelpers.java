@@ -36,7 +36,12 @@ public final class BlockHelpers {
         if(state == null) {
             return fallback;
         }
-        Comparable value = state.getValue(property);
+        Comparable value;
+        try {
+            value = state.getValue(property);
+        } catch (IllegalArgumentException e) {
+            return fallback;
+        }
         if(value == null) {
             return fallback;
         }
@@ -56,7 +61,12 @@ public final class BlockHelpers {
         if(state == null) {
             return fallback;
         }
-        T value = state.getValue(property);
+        T value;
+        try {
+            value = state.getValue(property);
+        } catch (IllegalArgumentException e) {
+            return fallback;
+        }
         if(value == null) {
             return fallback;
         }
