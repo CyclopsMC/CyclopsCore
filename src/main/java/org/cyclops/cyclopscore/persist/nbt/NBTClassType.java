@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumFacing;
@@ -398,6 +399,24 @@ public abstract class NBTClassType<T> {
 
             @Override
             public DimPos getDefaultValue() {
+                return null;
+            }
+        });
+        NBTYPES.put(ItemStack.class, new NBTClassType<ItemStack>() {
+            @Override
+            public void writePersistedField(String name, ItemStack object, NBTTagCompound tag) {
+                if (object != null) {
+                    tag.setTag(name, object.copy().writeToNBT(new NBTTagCompound()));
+                }
+            }
+
+            @Override
+            public ItemStack readPersistedField(String name, NBTTagCompound tag) {
+                return ItemStack.loadItemStackFromNBT(tag.getCompoundTag(name));
+            }
+
+            @Override
+            public ItemStack getDefaultValue() {
                 return null;
             }
         });

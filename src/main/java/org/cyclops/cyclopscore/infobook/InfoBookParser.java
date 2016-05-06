@@ -15,6 +15,7 @@ import org.cyclops.cyclopscore.infobook.pageelement.FurnaceRecipeAppendix;
 import org.cyclops.cyclopscore.infobook.pageelement.ImageAppendix;
 import org.cyclops.cyclopscore.infobook.pageelement.SectionAppendix;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.recipe.xml.ConfigRecipeConditionHandler;
 import org.cyclops.cyclopscore.recipe.xml.IRecipeConditionHandler;
 import org.w3c.dom.Document;
@@ -68,7 +69,8 @@ public class InfoBookParser {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
-                return new CraftingRecipeAppendix(infoBook, CraftingHelpers.findCraftingRecipe(createStack(node), getIndex(node)));
+                return new CraftingRecipeAppendix(infoBook,
+                        CraftingHelpers.findCraftingRecipe(createStack(node, infoBook.getMod().getRecipeHandler()), getIndex(node)));
             }
 
         });
@@ -76,7 +78,8 @@ public class InfoBookParser {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
-                return new FurnaceRecipeAppendix(infoBook, CraftingHelpers.findFurnaceRecipe(createStack(node), getIndex(node)));
+                return new FurnaceRecipeAppendix(infoBook,
+                        CraftingHelpers.findFurnaceRecipe(createStack(node, infoBook.getMod().getRecipeHandler()), getIndex(node)));
             }
 
         });
@@ -152,10 +155,17 @@ public class InfoBookParser {
         return index;
     }
 
-    public static ItemStack createStack(Element node) throws InvalidAppendixException {
+    public static ItemStack createStack(Element node, RecipeHandler recipeHandler) throws InvalidAppendixException {
         int meta = OreDictionary.WILDCARD_VALUE;
         if(!node.getAttribute("meta").isEmpty()) {
             meta = Integer.parseInt(node.getAttribute("meta"));
+        }
+        if("true".equals(node.getAttribute("predefined"))) {
+            ItemStack itemStack = recipeHandler.getPredefinedItem(node.getTextContent());
+            if(itemStack == null) {
+                throw new InvalidAppendixException("Could not find predefined item " + node.getTextContent());
+            }
+            return itemStack;
         }
         Item item = Item.itemRegistry.getObject(new ResourceLocation(node.getTextContent()));
         if(item == null) {

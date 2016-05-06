@@ -11,6 +11,7 @@ import net.minecraft.client.resources.IResource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.model.TRSRTransformation;
+import org.apache.commons.lang3.tuple.Triple;
 
 import javax.vecmath.Vector3f;
 import java.io.IOException;
@@ -107,5 +108,29 @@ public final class ModelHelpers {
         transforms.putAll(overrides);
         return new ImmutableMap.Builder<ItemCameraTransforms.TransformType, TRSRTransformation>()
                 .putAll(transforms).build();
+
+    }
+
+    /**
+     * Convert the given color from RGB encoding to BGR encoding.
+     * @param color The color in RGB
+     * @param alpha The alpha to apply
+     * @return The color in BGR
+     */
+    public static int rgbToBgra(int color, int alpha) {
+        Triple<Float, Float, Float> triple = Helpers.intToRGB(color);
+        // RGB to BGR
+        return Helpers.RGBAToInt(
+                (int) (float) (triple.getRight() * 255F), (int) (float) (triple.getMiddle() * 255F), (int) (float) (triple.getLeft() * 255F),
+                alpha);
+    }
+
+    /**
+     * Convert the given color from RGB encoding to BGR encoding.
+     * @param color The color in RGB
+     * @return The color in BGR
+     */
+    public static int rgbToBgr(int color) {
+        return rgbToBgra(color, 255);
     }
 }

@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix color not being applied to quads
+
+Lib Additions:
+* Add helpers related to fluid color rendering

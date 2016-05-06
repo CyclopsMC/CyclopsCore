@@ -24,7 +24,7 @@ public class CraftingHelpers {
             }
         }
         throw new IllegalArgumentException("Could not find crafting recipe for " + itemStack.getItem().getUnlocalizedName() +
-                "with index " + index);
+                " with index " + index);
     }
 
     @SuppressWarnings("unchecked")
@@ -37,12 +37,13 @@ public class CraftingHelpers {
             }
         }
         throw new IllegalArgumentException("Could not find furnace recipe for " + itemStack.getItem().getUnlocalizedName() +
-                "with index " + index);
+                " with index " + index);
     }
 
     public static boolean itemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
         return itemStack1 != null && itemStack2 != null &&
                itemStack1.getItem() == itemStack2.getItem() &&
+               ItemStack.areItemStackTagsEqual(itemStack1, itemStack2) &&
                (itemStack1.getItemDamage() == itemStack2.getItemDamage() ||
                        itemStack1.getItemDamage() == OreDictionary.WILDCARD_VALUE ||
                        itemStack2.getItemDamage() == OreDictionary.WILDCARD_VALUE ||

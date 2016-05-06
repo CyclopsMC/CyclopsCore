@@ -1,14 +1,19 @@
 package org.cyclops.cyclopscore.tracking;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.versioning.ComparableVersion;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.io.IOUtils;
@@ -20,8 +25,12 @@ import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.modcompat.versionchecker.VersionCheckerModCompat;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Version checking service.
@@ -71,7 +80,7 @@ public class Versions {
                                 String version = lines[0];
                                 String info = lines[1];
                                 String updateUrl = lines[2];
-                                triple.getMiddle().setVersionInfo(version, info, updateUrl);
+                                setVersionInfo(triple.getLeft(), triple.getMiddle(), version, info, updateUrl);
                                 if(triple.getMiddle().needsUpdate()) {
                                     VersionCheckerModCompat.sendIMCOutdatedMessage(triple.getLeft(), triple.getMiddle());
                                 }
@@ -83,12 +92,38 @@ public class Versions {
                             }
                         } catch (IOException e) {
                             triple.getLeft().log(Level.WARN, "Could not get version info: " + e.toString());
-                            triple.getMiddle().setVersionInfo(null, null, null);
+                            setVersionInfo(triple.getLeft(), triple.getMiddle(), null, null, null);
                         }
                     }
                     allDone = true;
                 }
             }).run();
+        }
+    }
+
+    public static void setVersionInfo(ModBase mod, IModVersion modVersion, String version, String info, String updateUrl) {
+        modVersion.setVersionInfo(version, info, updateUrl);
+        if (version != null && info != null && updateUrl != null) {
+            setForgeVersionInfo(mod, modVersion, version, info, updateUrl);
+        }
+    }
+
+    public static void setForgeVersionInfo(ModBase mod, IModVersion modVersion, String version, String info, String updateUrl) {
+        try {
+            Field resultsField = ForgeVersion.class.getDeclaredField("results");
+            resultsField.setAccessible(true);
+            Map<ModContainer, ForgeVersion.CheckResult> results = (Map<ModContainer, ForgeVersion.CheckResult>) resultsField.get(null);
+
+            Constructor<ForgeVersion.CheckResult> constructor = ForgeVersion.CheckResult.class.getDeclaredConstructor(ForgeVersion.Status.class, ComparableVersion.class, Map.class, String.class);
+            constructor.setAccessible(true);
+            ForgeVersion.Status status = modVersion.needsUpdate() ? ForgeVersion.Status.OUTDATED : ForgeVersion.Status.UP_TO_DATE;
+            ComparableVersion comparableVersion = new ComparableVersion(version);
+            ForgeVersion.CheckResult checkResult = constructor.newInstance(status, comparableVersion, ImmutableMap.of(comparableVersion, info), updateUrl);
+            ModContainer modContainer = Loader.instance().getIndexedModList().get(mod.getModId());
+            results.put(modContainer, checkResult);
+        } catch (NoSuchFieldException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
+            mod.log(Level.ERROR, String.format("Failed to set Forge version information for %s-%s.", mod.getModName(), version));
+            e.printStackTrace();
         }
     }
 

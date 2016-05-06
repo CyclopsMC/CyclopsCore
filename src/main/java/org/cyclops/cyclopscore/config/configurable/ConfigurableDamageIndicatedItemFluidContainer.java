@@ -215,6 +215,9 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
                 }
             }
         }
+        if(drained != null && drained.amount == 0) {
+            drained = null;
+        }
         return drained;
     }
 
