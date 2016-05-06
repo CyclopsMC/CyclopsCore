@@ -2,7 +2,8 @@ package org.cyclops.cyclopscore.command;
 
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.packet.ReloadResourcesPacket;
@@ -23,17 +24,17 @@ public class CommandReloadResources extends CommandMod {
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender sender, String[] parts, BlockPos blockPos) {
+    public List getTabCompletionOptions(MinecraftServer server, ICommandSender icommandsender, String[] astring, BlockPos blockPos) {
         return null;
     }
 
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender sender) {
+    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
         return sender instanceof EntityPlayerMP;
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] parts) {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] parts) {
         CyclopsCore._instance.getPacketHandler().sendToPlayer(new ReloadResourcesPacket(), (EntityPlayerMP) sender);
     }
 }
