@@ -210,11 +210,10 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
             CyclopsTileEntity tile = (CyclopsTileEntity) world.getTileEntity(blockPos);
 
             if(stack.getTagCompound() != null) {
-                NBTTagCompound tag = (NBTTagCompound) stack.getTagCompound().copy();
-                tag.setInteger("x", blockPos.getX());
-                tag.setInteger("y", blockPos.getY());
-                tag.setInteger("z", blockPos.getZ());
-                tile.readFromNBT(tag);
+                stack.getTagCompound().setInteger("x", blockPos.getX());
+                stack.getTagCompound().setInteger("y", blockPos.getY());
+                stack.getTagCompound().setInteger("z", blockPos.getZ());
+                tile.readFromNBT(stack.getTagCompound());
             }
 
             if(tile instanceof CyclopsTileEntity.ITickingTile) {
