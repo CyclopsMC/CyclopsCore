@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Scope tileentity name by mod id. This is to avoid conflicts with other mods.
+* Undo various tileentity bugs introduced in latest version
