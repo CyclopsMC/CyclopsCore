@@ -1,11 +1,14 @@
 package org.cyclops.cyclopscore.helper.obfuscation;
 
 import net.minecraft.potion.Potion;
+import net.minecraft.world.storage.loot.LootPool;
+import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 /**
  * Helper for getting private fields or methods.
@@ -50,6 +53,15 @@ public class ObfuscationHelpers {
      */
     public static int getShapedOreRecipeHeight(ShapedOreRecipe recipe) {
         return ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, recipe, ObfuscationData.SHAPEDORERECIPE_HEIGHT);
+    }
+
+    /**
+     * Get the private 'pools' field from {@link LootTable}.
+     * @param lootTable The loot table
+     * @return classToIDMapping
+     */
+    public static List<LootPool> getLootPools(LootTable lootTable) {
+        return ReflectionHelper.getPrivateValue(LootTable.class, lootTable, ObfuscationData.LOOTTABLE_POOLS);
     }
 	
 }

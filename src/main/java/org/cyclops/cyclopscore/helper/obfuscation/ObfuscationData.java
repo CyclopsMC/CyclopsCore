@@ -23,5 +23,10 @@ public class ObfuscationData {
      * Field from net.minecraftforge.oredict.ShapedOreRecipe.
      */
     public static final String[] SHAPEDORERECIPE_HEIGHT = new String[] { "height" };
+
+    /**
+     * Field from net.minecraft.world.storage.loot.LootTable.
+     */
+    public static final String[] LOOTTABLE_POOLS = new String[] { "pools", "field_186466_c", "c" };
 	
 }

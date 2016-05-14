@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.helper;
 
-import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,13 +10,10 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.IWorldNameable;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootEntryItem;
-import net.minecraft.world.storage.loot.LootTableList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,8 +22,6 @@ import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 import org.cyclops.cyclopscore.tileentity.TileEntityNBTStorage;
 import org.lwjgl.input.Keyboard;
-
-import java.util.List;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -74,21 +68,6 @@ public class MinecraftHelpers {
      * Stop the blockState from re-rendering.
      */
     public static final int BLOCK_NOTIFY_NO_RERENDER = 4;
-
-    public static List<ResourceLocation> VANILLA_LOOT_CHEST_TABLES = Lists.newArrayList(
-            LootTableList.CHESTS_ABANDONED_MINESHAFT,
-            LootTableList.CHESTS_DESERT_PYRAMID,
-            LootTableList.CHESTS_END_CITY_TREASURE,
-            LootTableList.CHESTS_IGLOO_CHEST,
-            LootTableList.CHESTS_JUNGLE_TEMPLE,
-            LootTableList.CHESTS_NETHER_BRIDGE,
-            LootTableList.CHESTS_SIMPLE_DUNGEON,
-            LootTableList.CHESTS_SPAWN_BONUS_CHEST,
-            LootTableList.CHESTS_STRONGHOLD_CORRIDOR,
-            LootTableList.CHESTS_STRONGHOLD_CROSSING,
-            LootTableList.CHESTS_STRONGHOLD_LIBRARY,
-            LootTableList.CHESTS_VILLAGE_BLACKSMITH
-    );
     
     /**
      * Check if it's day in this world.
@@ -280,25 +259,4 @@ public class MinecraftHelpers {
     public static <T> ActionResult<T> successAction(T result) {
         return new ActionResult<>(EnumActionResult.SUCCESS, result);
     }
-
-    /**
-     * Add the given entry to all vanilla loot chests.
-     * @param lootEntryItem The new entry.
-     */
-    public static void addVanillaLootChestLootEntry(LootEntryItem lootEntryItem) {
-        for (ResourceLocation lootTable : VANILLA_LOOT_CHEST_TABLES) {
-            addLootEntry(lootEntryItem, lootTable);
-        }
-
-    }
-
-    /**
-     * Add an entry to the given loot table.
-     * @param lootEntryItem The new entry.
-     * @param lootTable The loot table location.
-     */
-    public static void addLootEntry(LootEntryItem lootEntryItem, ResourceLocation lootTable) {
-        // TODO: when https://github.com/MinecraftForge/MinecraftForge/pull/2543 is merged.
-    }
-
 }
