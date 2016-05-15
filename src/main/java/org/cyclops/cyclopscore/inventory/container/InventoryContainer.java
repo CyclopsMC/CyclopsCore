@@ -25,7 +25,9 @@ import java.util.Map;
  */
 public abstract class InventoryContainer extends Container implements IButtonClickAcceptorServer<InventoryContainer>,
         IValueNotifier, IValueNotifiable {
-    
+
+    private static final EntityEquipmentSlot[] EQUIPMENT_SLOTS = new EntityEquipmentSlot[] {
+            EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
     protected static final int ITEMBOX = 18;
 
     private final Map<Integer, IButtonActionServer> buttonActions = Maps.newHashMap();
@@ -116,8 +118,9 @@ public abstract class InventoryContainer extends Container implements IButtonCli
      * @param offsetY Offset to Y
      */
     protected void addPlayerArmorInventory(InventoryPlayer inventory, int offsetX, int offsetY) {
-        for (EntityEquipmentSlot type : EntityEquipmentSlot.values()) {
-            addSlotToContainer(new SlotArmor(inventory, 4 * 9 + (3 - type.getIndex()), offsetX, offsetY + type.getIndex() * ITEMBOX, inventory.player, type));
+        for (int k = 0; k < 4; ++k) {
+            EntityEquipmentSlot equipmentSlot = EQUIPMENT_SLOTS[k];
+            addSlotToContainer(new SlotArmor(inventory, 4 * 9 + (3 - k), offsetX, offsetY + k * ITEMBOX, inventory.player, equipmentSlot));
         }
     }
     
