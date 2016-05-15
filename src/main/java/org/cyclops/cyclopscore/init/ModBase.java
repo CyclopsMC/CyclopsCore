@@ -320,6 +320,18 @@ public abstract class ModBase {
 
     /**
      * Override this, call super and annotate with {@link net.minecraftforge.fml.common.Mod.EventHandler}.
+     * Register the things that are related to when the server is about to start.
+     * @param event The Forge event required for this.
+     */
+    @Mod.EventHandler
+    public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
+        for(WorldStorage worldStorage : worldStorages) {
+            worldStorage.onAboutToStartEvent(event);
+        }
+    }
+
+    /**
+     * Override this, call super and annotate with {@link net.minecraftforge.fml.common.Mod.EventHandler}.
      * Register the things that are related to server starting.
      * @param event The Forge event required for this.
      */

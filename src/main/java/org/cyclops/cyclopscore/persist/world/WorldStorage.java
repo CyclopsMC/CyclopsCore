@@ -4,6 +4,7 @@ import lombok.experimental.Delegate;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.WorldSavedData;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -49,6 +50,14 @@ public abstract class WorldStorage implements INBTProvider {
      * When a server is started.
      * @param event The received event.
      */
+    public void onAboutToStartEvent(FMLServerAboutToStartEvent event) {
+        reset();
+    }
+
+    /**
+     * When a server is started.
+     * @param event The received event.
+     */
     public void onStartedEvent(FMLServerStartedEvent event) {
         loadData();
         afterLoad();
@@ -77,7 +86,6 @@ public abstract class WorldStorage implements INBTProvider {
     }
 
     private synchronized void loadData() {
-        reset();
         readFromNBT(getDataHolder().tag);
     }
 
