@@ -31,7 +31,7 @@ public abstract class GuiButtonExtended extends GuiButton {
 	}
 
 	protected void drawBackground(Minecraft minecraft, int hoverState) {
-		minecraft.renderEngine.bindTexture(buttonTextures);
+		minecraft.renderEngine.bindTexture(BUTTON_TEXTURES);
 		GlStateManager.color(1, 1, 1, 1);
 
 		drawTexturedModalRect(xPosition, yPosition, 0, 46 + hoverState * 20, width / 2, height / 2);//top left

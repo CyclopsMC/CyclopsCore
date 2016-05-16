@@ -229,7 +229,7 @@ public class RenderHelpers {
      * @return The icon.
      */
     public static TextureAtlasSprite getFluidIcon(FluidStack fluid, EnumFacing side) {
-        Block defaultBlock = Blocks.water;
+        Block defaultBlock = Blocks.WATER;
         Block block = defaultBlock;
         if(fluid.getFluid().getBlock() != null) {
             block = fluid.getFluid().getBlock();
@@ -277,7 +277,7 @@ public class RenderHelpers {
             GlStateManager.translate(x, y, z);
 
             // Set blockState textures
-            Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
             render.renderFluid(fluid);
 

@@ -14,7 +14,7 @@ import org.w3c.dom.Node;
 public class DefaultItemTypeHandler implements IItemTypeHandler {
 	
 	protected Object makeItemStack(RecipeHandler recipeHandler, String key, int amount, int meta) throws XmlRecipeLoader.XmlRecipeException {
-        Item item = Item.itemRegistry.getObject(new ResourceLocation(key));
+        Item item = Item.REGISTRY.getObject(new ResourceLocation(key));
         if(item == null) {
             throw new XmlRecipeLoader.XmlRecipeException(String.format("Item by name '%s' has not been found.", key));
         }

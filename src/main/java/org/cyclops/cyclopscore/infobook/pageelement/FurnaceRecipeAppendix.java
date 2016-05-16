@@ -62,6 +62,6 @@ public class FurnaceRecipeAppendix extends RecipeAppendix<Map.Entry<ItemStack, I
         renderItem(gui, x + SLOT_OFFSET_X, y + SLOT_OFFSET_Y, input, mx, my, INPUT);
         renderItem(gui, x + START_X_RESULT, y + SLOT_OFFSET_Y, result, mx, my, RESULT);
 
-        renderItem(gui, x + middle, y + SLOT_OFFSET_Y, new ItemStack(Blocks.furnace), mx, my, false, null);
+        renderItem(gui, x + middle, y + SLOT_OFFSET_Y, new ItemStack(Blocks.FURNACE), mx, my, false, null);
     }
 }

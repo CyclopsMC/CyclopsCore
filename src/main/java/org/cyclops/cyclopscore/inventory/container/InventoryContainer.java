@@ -58,8 +58,8 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     @Override
-    public void onCraftGuiOpened(ICrafting listener) {
-        super.onCraftGuiOpened(listener);
+    public void addListener(ICrafting listener) {
+        super.addListener(listener);
         if(!MinecraftHelpers.isClientSide()) {
             initializeValues();
         }
@@ -251,14 +251,13 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     @Override
-    // MCP: slotClick
-    public ItemStack func_184996_a(int slotId, int arg, ClickType clickType, EntityPlayer player) {
+    public ItemStack slotClick(int slotId, int arg, ClickType clickType, EntityPlayer player) {
         Slot slot = slotId < 0 ? null : (Slot) this.inventorySlots.get(slotId);
         // Phantom slot code based on Buildcraft
         if(slot instanceof SlotExtended && ((SlotExtended) slot).isPhantom()) {
             return slotClickPhantom(slot, arg, clickType, player);
         }
-        return super.func_184996_a(slotId, arg, clickType, player);
+        return super.slotClick(slotId, arg, clickType, player);
     }
 
     private ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickType, EntityPlayer player) {

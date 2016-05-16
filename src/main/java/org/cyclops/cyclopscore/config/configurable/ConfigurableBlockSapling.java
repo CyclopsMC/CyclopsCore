@@ -60,7 +60,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         this.treeGenerator = treeGenerator;
-        setStepSound(SoundType.GROUND);
+        setSoundType(SoundType.GROUND);
     }
 
     @Override

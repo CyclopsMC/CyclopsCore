@@ -157,7 +157,7 @@ public final class ItemStackHelpers {
     public static ItemStack parseItemStack(String itemStackString) {
         String[] split = itemStackString.split(":");
         String itemName = split[0] + ":" + split[1];
-        Item item =  Item.itemRegistry.getObject(new ResourceLocation(itemName));
+        Item item =  Item.REGISTRY.getObject(new ResourceLocation(itemName));
         if(item == null) {
             throw new IllegalArgumentException("Invalid ItemStack item: " + itemName);
         }

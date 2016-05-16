@@ -40,7 +40,7 @@ public abstract class RenderTileEntityBakedModel<T extends CyclopsTileEntity> ex
         BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
         BlockModelShapes blockModelShapes = blockRendererDispatcher.getBlockModelShapes();
         IBakedModel bakedModel = blockModelShapes.getModelForState(getBlockState(tile, x, y, z, partialTick, destroyStage));
-        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         renderModel(tile, bakedModel, partialTick, destroyStage);
 
         GlStateManager.popAttrib();

@@ -28,7 +28,7 @@ public class EntityHelpers {
 
 	/**
 	 * This should by called when custom entities collide. It will call the
-	 * correct method in {@link Block#onEntityCollidedWithBlock(World, BlockPos, Entity)}.
+	 * correct method in {@link Block#onEntityWalk(World, BlockPos, Entity)}.
 	 * @param world The world
 	 * @param blockPos The position.
 	 * @param entity The entity that collides.
@@ -37,7 +37,7 @@ public class EntityHelpers {
 		if (blockPos != null) {
 			Block block = world.getBlockState(blockPos).getBlock();
 			if (block != null) {
-				block.onEntityCollidedWithBlock(world, blockPos, entity);
+				block.onEntityWalk(world, blockPos, entity);
 			}
 		}
 	}

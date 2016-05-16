@@ -75,8 +75,8 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
                 && (drained.amount == FluidContainerRegistry.BUCKET_VOLUME);
         boolean hasSpace = fluidStack == null
                 || (fluidStack.amount + FluidContainerRegistry.BUCKET_VOLUME <= getCapacity(itemStack));
-        RayTraceResult movingobjectpositionDrain = this.getMovingObjectPositionFromPlayer(world, player, false);
-        RayTraceResult movingobjectpositionFill = this.getMovingObjectPositionFromPlayer(world, player, true);
+        RayTraceResult movingobjectpositionDrain = this.rayTrace(world, player, false);
+        RayTraceResult movingobjectpositionFill = this.rayTrace(world, player, true);
 
         if (movingobjectpositionDrain != null && movingobjectpositionFill != null) {
             if (isPickupFluids() && movingobjectpositionFill.typeOfHit == RayTraceResult.Type.BLOCK) {

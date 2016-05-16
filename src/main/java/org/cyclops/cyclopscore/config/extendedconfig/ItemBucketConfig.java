@@ -62,7 +62,7 @@ public abstract class ItemBucketConfig extends ItemConfig {
                 bucketRegistry.registerBucket(item, fluidStack);
             }
 
-            if (getFluidBlockInstance() != Blocks.air) {
+            if (getFluidBlockInstance() != Blocks.AIR) {
                 bucketRegistry.registerBucket(getFluidBlockInstance(), item);
             }
         }

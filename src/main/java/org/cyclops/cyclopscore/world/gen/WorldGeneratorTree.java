@@ -103,7 +103,7 @@ public abstract class WorldGeneratorTree extends WorldGenerator {
                                 block = loopBlockState.getBlock();
 
                                 if(block != null && !(block.isLeaves(loopBlockState, world, loopPos) ||
-                                        block == Blocks.air ||
+                                        block == Blocks.AIR ||
                                         block.canBeReplacedByLeaves(loopBlockState, world, loopPos))) {
                                     return false;
                                 }
@@ -138,7 +138,7 @@ public abstract class WorldGeneratorTree extends WorldGenerator {
                                 if(((xPos != center | zPos != center) ||
                                         rand.nextInt(2) != 0 && var12 != 0) &&
                                         (block == null || block.isLeaves(loopBlockState, world, loopPos) ||
-                                        block == Blocks.air ||
+                                        block == Blocks.AIR ||
                                         block.canBeReplacedByLeaves(loopBlockState, world, loopPos))) {
                                     this.setBlockAndNotifyAdequately(world, loopPos, getLeaves().getDefaultState());
                                 }
@@ -152,7 +152,7 @@ public abstract class WorldGeneratorTree extends WorldGenerator {
                         IBlockState loopBlockState = world.getBlockState(loopPos);
                         block = loopBlockState.getBlock();
 
-                        if(block == null || block == Blocks.air  ||
+                        if(block == null || block == Blocks.AIR  ||
                                 block.isLeaves(loopBlockState, world, loopPos) ||
                                 block.isReplaceable(world, loopPos)) {
                             this.setBlockAndNotifyAdequately(world, loopPos,

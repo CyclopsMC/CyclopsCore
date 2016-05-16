@@ -62,7 +62,7 @@ public class SoundPacket extends PacketCodec {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.sound = SoundEvent.soundEventRegistry.getNameForObject(sound).toString();
+		this.sound = SoundEvent.REGISTRY.getNameForObject(sound).toString();
 		this.category = category.getName();
 		this.volume = volume;
 		this.frequency = frequency;
@@ -90,13 +90,13 @@ public class SoundPacket extends PacketCodec {
 	@SideOnly(Side.CLIENT)
 	public void actionClient(World world, EntityPlayer player) {
 		CyclopsCore._instance.getProxy().playSound(x, y, z,
-				SoundEvent.soundEventRegistry.getObject(new ResourceLocation(sound)),
+				SoundEvent.REGISTRY.getObject(new ResourceLocation(sound)),
 				SoundCategory.getByName(category), volume, frequency);
 	}
 	@Override
 	public void actionServer(World world, EntityPlayerMP player) {
         CyclopsCore._instance.getPacketHandler().sendToAllAround(new SoundPacket(x, y, z,
-						SoundEvent.soundEventRegistry.getObject(new ResourceLocation(sound)),
+						SoundEvent.REGISTRY.getObject(new ResourceLocation(sound)),
 						SoundCategory.getByName(category), volume, frequency),
 				new NetworkRegistry.TargetPoint(world.provider.getDimension(), x, y, z, RANGE));
 	}

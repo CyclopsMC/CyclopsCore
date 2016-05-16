@@ -45,7 +45,7 @@ public class ConfigurableBlockTorch extends BlockTorch implements IConfigurableB
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         this.setHardness(0.0F);
         this.setLightLevel(0.9375F);
-        this.setStepSound(SoundType.WOOD);
+        this.setSoundType(SoundType.WOOD);
     }
 
     @Override

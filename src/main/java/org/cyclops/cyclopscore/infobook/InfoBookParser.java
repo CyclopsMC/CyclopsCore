@@ -167,7 +167,7 @@ public class InfoBookParser {
             }
             return itemStack;
         }
-        Item item = Item.itemRegistry.getObject(new ResourceLocation(node.getTextContent()));
+        Item item = Item.REGISTRY.getObject(new ResourceLocation(node.getTextContent()));
         if(item == null) {
             throw new InvalidAppendixException("Invalid item " + node.getTextContent());
         }

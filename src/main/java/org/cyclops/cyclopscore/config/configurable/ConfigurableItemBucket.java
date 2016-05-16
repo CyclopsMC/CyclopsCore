@@ -36,7 +36,7 @@ public class ConfigurableItemBucket extends ItemBucket implements IConfigurableI
         super(block);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
-        setContainerItem(Items.bucket);
+        setContainerItem(Items.BUCKET);
     }
 
     @SuppressWarnings("rawtypes")

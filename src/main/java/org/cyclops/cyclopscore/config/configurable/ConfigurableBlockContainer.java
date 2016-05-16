@@ -82,7 +82,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         this.random = new Random();
         this.tileEntity = tileEntity;
         setHardness(5F);
-        setStepSound(SoundType.STONE);
+        setSoundType(SoundType.STONE);
         if(hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
     }
 

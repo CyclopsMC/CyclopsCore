@@ -153,17 +153,17 @@ public class Versions {
 
                     String currentVersion = Reference.MOD_MC_VERSION + "-" + triple.getLeft().getReferenceValue(ModBase.REFKEY_MOD_VERSION);
                     String newVersion = Reference.MOD_MC_VERSION + "-" + triple.getMiddle().getVersion();
-                    ITextComponent versionTransition = new TextComponentString(String.format("%s -> %s", currentVersion, newVersion)).setChatStyle(versionStyle);
-                    modNameStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, versionTransition));
-                    ITextComponent modNameComponent = new TextComponentString(String.format("[%s]", triple.getLeft().getModName())).setChatStyle(modNameStyle);
+                    ITextComponent versionTransition = new TextComponentString(String.format("%s -> %s", currentVersion, newVersion)).setStyle(versionStyle);
+                    modNameStyle.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, versionTransition));
+                    ITextComponent modNameComponent = new TextComponentString(String.format("[%s]", triple.getLeft().getModName())).setStyle(modNameStyle);
 
-                    ITextComponent downloadComponent = new TextComponentString(String.format("[%s]", L10NHelpers.localize("general.cyclopscore.version.download"))).setChatStyle(downloadStyle);
-                    downloadStyle.setChatHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentTranslation("general.cyclopscore.version.clickToDownload")));
-                    downloadStyle.setChatClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, triple.getMiddle().getUpdateUrl()));
+                    ITextComponent downloadComponent = new TextComponentString(String.format("[%s]", L10NHelpers.localize("general.cyclopscore.version.download"))).setStyle(downloadStyle);
+                    downloadStyle.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentTranslation("general.cyclopscore.version.clickToDownload")));
+                    downloadStyle.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, triple.getMiddle().getUpdateUrl()));
 
                     chat.appendSibling(modNameComponent);
                     chat.appendText(" ");
-                    chat.appendSibling(new TextComponentTranslation("general.cyclopscore.version.updateAvailable").setChatStyle(new Style().setColor(TextFormatting.WHITE)));
+                    chat.appendSibling(new TextComponentTranslation("general.cyclopscore.version.updateAvailable").setStyle(new Style().setColor(TextFormatting.WHITE)));
                     chat.appendText(String.format(": %s ", triple.getMiddle().getVersion()));
                     chat.appendSibling(downloadComponent);
 

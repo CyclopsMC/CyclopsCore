@@ -84,7 +84,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
 
         // Crafting Table icon
         renderItem(gui, x + (SLOT_SIZE + SLOT_OFFSET_X) * 3, y + SLOT_OFFSET_Y + SLOT_SIZE,
-                new ItemStack(Blocks.crafting_table), mx, my, false, null);
+                new ItemStack(Blocks.CRAFTING_TABLE), mx, my, false, null);
     }
 
     /**

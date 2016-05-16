@@ -42,7 +42,7 @@ public class InventoryHelpers {
 					--originalStack.stackSize;
 				}
         		if(!player.inventory.addItemStackToInventory(newStackPart)) {
-        			player.dropPlayerItemWithRandomChoice(newStackPart, false);
+        			player.dropItem(newStackPart, false);
         		}
         	}
         }

@@ -79,7 +79,7 @@ public final class BlockHelpers {
      * @return The pair of the blockname and meta value.
      */
     public static Pair<String, Integer> serializeBlockState(IBlockState blockState) {
-        String blockName = Block.blockRegistry.getNameForObject(blockState.getBlock()).toString();
+        String blockName = Block.REGISTRY.getNameForObject(blockState.getBlock()).toString();
         int meta = blockState.getBlock().getMetaFromState(blockState);
         return Pair.of(blockName, meta);
     }

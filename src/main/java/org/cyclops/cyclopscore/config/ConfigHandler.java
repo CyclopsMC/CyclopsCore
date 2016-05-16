@@ -231,7 +231,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
             return ((IConfigurable) item).getConfig();
         } else {
             Block block = Block.getBlockFromItem(item);
-            if(block != Blocks.air && block instanceof IConfigurable) {
+            if(block != Blocks.AIR && block instanceof IConfigurable) {
                 return ((IConfigurable) block).getConfig();
             } else {
                 return null;
