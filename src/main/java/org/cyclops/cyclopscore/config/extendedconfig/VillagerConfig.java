@@ -11,28 +11,17 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public abstract class VillagerConfig extends ExtendedConfig<VillagerConfig> {
 
-    private int id;
-
     /**
      * Make a new instance.
      * @param mod     The mod instance.
-     * @param defaultId The default ID for the configurable.
+     * @param enabled If this should is enabled.
      * @param namedId The unique name ID for the configurable.
      * @param comment The comment to add in the config file for this configurable.
      * @param element The class of this configurable.
      */
-    public VillagerConfig(ModBase mod, int defaultId, String namedId,
+    public VillagerConfig(ModBase mod, boolean enabled, String namedId,
             String comment, Class<? extends ConfigurableVillager> element) {
-        super(mod, defaultId != 0, namedId, comment, element);
-        this.id = defaultId;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return this.id;
+        super(mod, enabled, namedId, comment, element);
     }
     
     @Override

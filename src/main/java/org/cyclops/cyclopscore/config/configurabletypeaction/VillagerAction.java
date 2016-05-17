@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableVillager;
 import org.cyclops.cyclopscore.config.extendedconfig.VillagerConfig;
@@ -14,7 +15,16 @@ public class VillagerAction extends ConfigurableTypeAction<VillagerConfig>{
 
     @Override
     public void preRun(VillagerConfig eConfig, Configuration config, boolean startup) {
-        //if(startup && !eConfig.isEnabled()) eConfig.setId(0);
+        // Get property in config file and set comment
+        Property property = config.get(eConfig.getHolderType().getCategory(), eConfig.getNamedId(),
+                eConfig.isEnabled());
+        property.setRequiresMcRestart(true);
+        property.setComment(eConfig.getComment());
+
+        if(startup) {
+            // Update the ID, it could've changed
+            eConfig.setEnabled(property.getBoolean(true));
+        }
     }
 
     @Override
