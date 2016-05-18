@@ -1,0 +1,14 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Fully restore villager support
+
+Fixes:
+* Fix flipped armor slots in gui
+
+Lib additions:
+* Add loot table injection helpers
+
+Lib changes:
+* Don't register oredict entries with a wildcard meta value. It proved to be incompatible with too many things.
+* Move rgb color transformation to server-safe helpers
