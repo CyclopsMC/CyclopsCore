@@ -58,7 +58,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     @Override
-    public void addListener(ICrafting listener) {
+    public void addListener(IContainerListener listener) {
         super.addListener(listener);
         if(!MinecraftHelpers.isClientSide()) {
             initializeValues();

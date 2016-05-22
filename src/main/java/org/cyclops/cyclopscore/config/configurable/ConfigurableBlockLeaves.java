@@ -100,14 +100,14 @@ public abstract class ConfigurableBlockLeaves extends BlockLeaves implements ICo
     }
     
     @Override
-    public boolean isNormalCube(IBlockState blockState) {
+    public boolean isNormalCube(IBlockState blockState, IBlockAccess world, BlockPos blockPos) {
         return false;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess world, BlockPos blockPos, EnumFacing side) {
-        return !(isTranslucent(blockState)) || super.shouldSideBeRendered(blockState, world, blockPos, side);
+        return !(blockState.isTranslucent()) || super.shouldSideBeRendered(blockState, world, blockPos, side);
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

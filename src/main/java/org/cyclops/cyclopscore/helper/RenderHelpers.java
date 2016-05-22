@@ -5,9 +5,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.particle.EntityDiggingFX;
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleDigging;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
@@ -134,15 +134,14 @@ public class RenderHelpers {
 
     /**
      * A custom way of spawning block hit effects.
-     * @param effectRenderer The effect renderer.
+     * @param particleManager The effect renderer.
      * @param world The world.
      * @param blockState The blockstate to render particles for.
      * @param pos The position.
      * @param side The hit side.
      */
-    public static void addBlockHitEffects(EffectRenderer effectRenderer, World world, IBlockState blockState, BlockPos pos, EnumFacing side)  {
-        Block block = blockState.getBlock();
-        if (block.getRenderType(blockState) != EnumBlockRenderType.INVISIBLE) {
+    public static void addBlockHitEffects(ParticleManager particleManager, World world, IBlockState blockState, BlockPos pos, EnumFacing side)  {
+        if (blockState.getRenderType() != EnumBlockRenderType.INVISIBLE) {
             int i = pos.getX();
             int j = pos.getY();
             int k = pos.getZ();
@@ -159,8 +158,8 @@ public class RenderHelpers {
             if (side == EnumFacing.WEST)  d0 = (double)i + bb.minX - (double)f;
             if (side == EnumFacing.EAST)  d0 = (double)i + bb.maxX + (double)f;
 
-            EntityFX fx = new EntityDiggingFX.Factory().getEntityFX(-1, world, d0, d1, d2, 0.0D, 0.0D, 0.0D, Block.getStateId(blockState));
-            effectRenderer.addEffect(fx);
+            Particle fx = new ParticleDigging.Factory().getEntityFX(-1, world, d0, d1, d2, 0.0D, 0.0D, 0.0D, Block.getStateId(blockState));
+            particleManager.addEffect(fx);
         }
     }
 

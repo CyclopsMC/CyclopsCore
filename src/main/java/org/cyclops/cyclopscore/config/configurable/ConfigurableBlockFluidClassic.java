@@ -9,8 +9,8 @@ import net.minecraftforge.fluids.BlockFluidClassic;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.cyclops.cyclopscore.block.component.EntityDropParticleFXBlockComponent;
 import org.cyclops.cyclopscore.block.component.IEntityDropParticleFXBlock;
+import org.cyclops.cyclopscore.block.component.ParticleDropBlockComponent;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 
 import javax.annotation.Nullable;
@@ -30,7 +30,7 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
     protected boolean hasGui = false;
     
     @SideOnly(Side.CLIENT)
-    protected EntityDropParticleFXBlockComponent entityDropParticleFXBlockComponent;
+    protected ParticleDropBlockComponent particleDropBlockComponent;
     
     /**
      * Make a new blockState instance.
@@ -84,7 +84,7 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
      */
     @SideOnly(Side.CLIENT)
     public ConfigurableBlockFluidClassic setParticleColor(float particleRed, float particleGreen, float particleBlue) {
-        entityDropParticleFXBlockComponent = new EntityDropParticleFXBlockComponent(particleRed, particleGreen, particleBlue);
+        particleDropBlockComponent = new ParticleDropBlockComponent(particleRed, particleGreen, particleBlue);
         return this;
     }
     
@@ -95,8 +95,8 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
      */
     public void randomDisplayTick(World world, BlockPos blockPos, IBlockState blockState, Random rand) {
         super.randomDisplayTick(blockState, world, blockPos, rand);
-        if(entityDropParticleFXBlockComponent != null)
-            entityDropParticleFXBlockComponent.randomDisplayTick(world, blockPos, blockState, rand);
+        if(particleDropBlockComponent != null)
+            particleDropBlockComponent.randomDisplayTick(world, blockPos, blockState, rand);
     }
 
 }

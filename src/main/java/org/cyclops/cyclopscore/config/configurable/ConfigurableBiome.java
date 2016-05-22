@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.configurable;
 
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import org.cyclops.cyclopscore.config.extendedconfig.BiomeConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
@@ -10,7 +10,7 @@ import org.cyclops.cyclopscore.helper.L10NHelpers;
  * @author rubensworks
  *
  */
-public class ConfigurableBiome extends BiomeGenBase implements IConfigurable {
+public class ConfigurableBiome extends Biome implements IConfigurable {
 
     protected BiomeConfig eConfig = null;
     

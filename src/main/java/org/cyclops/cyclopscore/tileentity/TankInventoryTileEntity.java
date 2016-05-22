@@ -110,15 +110,16 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity implem
     }
     
     @Override
-    public void readFromNBT(NBTTagCompound data) {
-        super.readFromNBT(data);
-        tank.readFromNBT(data);
+    public void readFromNBT(NBTTagCompound tag) {
+        super.readFromNBT(tag);
+        tank.readFromNBT(tag);
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound data) {
-        super.writeToNBT(data);
-        tank.writeToNBT(data);
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+        tag = super.writeToNBT(tag);
+        tank.writeToNBT(tag);
+        return tag;
     }
     
     @Override
@@ -207,7 +208,7 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity implem
     @Override
     protected void onSendUpdate() {
     	super.onSendUpdate();
-    	if(getBlock().hasComparatorInputOverride(worldObj.getBlockState(getPos()))) {
+    	if(worldObj.getBlockState(getPos()).hasComparatorInputOverride()) {
     		worldObj.notifyNeighborsOfStateChange(getPos(), this.getBlock());
     	}
     }

@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.client.particle;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.ParticleDrip;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -17,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  */
 @SideOnly(Side.CLIENT)
-public class ExtendedEntityDropParticleFX extends EntityFX {
+public class ExtendedParticleDrop extends ParticleDrip {
 
     /**
      * The height of the current bob
@@ -34,8 +34,8 @@ public class ExtendedEntityDropParticleFX extends EntityFX {
      * @param particleGreen Green color.
      * @param particleBlue Blue color.
      */
-    public ExtendedEntityDropParticleFX(World world, double x, double y, double z, float particleRed, float particleGreen, float particleBlue) {
-        super(world, x, y, z, 0.0D, 0.0D, 0.0D);
+    public ExtendedParticleDrop(World world, double x, double y, double z, float particleRed, float particleGreen, float particleBlue) {
+        super(world, x, y, z, Material.WATER);
         this.motionX = this.motionY = this.motionZ= 0.0D;
 
         this.particleRed = particleRed;
@@ -85,7 +85,7 @@ public class ExtendedEntityDropParticleFX extends EntityFX {
 
         BlockPos blockPos = new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ));
         IBlockState blockState = this.worldObj.getBlockState(blockPos);
-        Material material = blockState.getBlock().getMaterial(blockState);
+        Material material = blockState.getMaterial();
 
         if (material.isLiquid() || material.isSolid()) {
             float h = 1;

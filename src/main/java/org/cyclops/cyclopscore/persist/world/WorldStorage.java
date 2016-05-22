@@ -133,8 +133,9 @@ public abstract class WorldStorage implements INBTProvider {
         }
 
         @Override
-        public void writeToNBT(NBTTagCompound tag) {
+        public NBTTagCompound writeToNBT(NBTTagCompound tag) {
             tag.setTag(KEY, this.tag);
+            return tag;
         }
 
     }

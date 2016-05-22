@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBiome;
@@ -22,7 +22,7 @@ public abstract class BiomeConfig extends ExtendedConfig<BiomeConfig>{
      * @param element The class of this configurable.
      */
     public BiomeConfig(ModBase mod, int defaultId, String namedId,
-            String comment, Class<? extends BiomeGenBase> element) {
+            String comment, Class<? extends Biome> element) {
         super(mod, defaultId > 0, namedId, comment, element);
     }
     

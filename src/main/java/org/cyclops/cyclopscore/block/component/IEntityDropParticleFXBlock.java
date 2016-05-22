@@ -7,7 +7,7 @@ import net.minecraft.world.World;
 import java.util.Random;
 
 /**
- * Interface for the {@link EntityDropParticleFXBlockComponent}.
+ * Interface for the {@link ParticleDropBlockComponent}.
  * @author rubensworks
  *
  */

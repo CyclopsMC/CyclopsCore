@@ -142,12 +142,13 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound tag) {
-        super.writeToNBT(tag);
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+        tag = super.writeToNBT(tag);
         INBTInventory inventory = getInventory();
         if(inventory != null) {
             inventory.writeToNBT(tag);
         }
+        return tag;
     }
     
     protected boolean canAccess(int slot, EnumFacing side) {

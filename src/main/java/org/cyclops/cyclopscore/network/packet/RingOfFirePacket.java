@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.client.particle.EntityFlameFX;
-import net.minecraft.client.particle.EntityLavaFX;
+import net.minecraft.client.particle.ParticleFlame;
+import net.minecraft.client.particle.ParticleLava;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
@@ -55,12 +55,12 @@ public class RingOfFirePacket extends PlayerPositionPacket {
 
             if(world.rand.nextInt(20) == 0) {
                 FMLClientHandler.instance().getClient().effectRenderer.addEffect(
-                        new EntityLavaFX.Factory().getEntityFX(EnumParticleTypes.LAVA.getParticleID(), world, particleX, particleY, particleZ,
+                        new ParticleLava.Factory().getEntityFX(EnumParticleTypes.LAVA.getParticleID(), world, particleX, particleY, particleZ,
                                 0, 0, 0, 0)
                         );
             } else {
                 FMLClientHandler.instance().getClient().effectRenderer.addEffect(
-                        new EntityFlameFX.Factory().getEntityFX(0, world, particleX, particleY, particleZ, particleMotionX, particleMotionY, particleMotionZ)
+                        new ParticleFlame.Factory().getEntityFX(0, world, particleX, particleY, particleZ, particleMotionX, particleMotionY, particleMotionZ)
                         );
             }
         }

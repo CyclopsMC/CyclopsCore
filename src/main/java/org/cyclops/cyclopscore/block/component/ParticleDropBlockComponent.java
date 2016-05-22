@@ -1,11 +1,11 @@
 package org.cyclops.cyclopscore.block.component;
 
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.particle.EntityFX;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.FMLClientHandler;
-import org.cyclops.cyclopscore.client.particle.ExtendedEntityDropParticleFX;
+import org.cyclops.cyclopscore.client.particle.ExtendedParticleDrop;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
 
 import java.util.Random;
@@ -17,7 +17,7 @@ import java.util.Random;
  * @author rubensworks
  *
  */
-public class EntityDropParticleFXBlockComponent implements IEntityDropParticleFXBlock{
+public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock{
     
     protected float particleRed;
     protected float particleGreen;
@@ -32,7 +32,7 @@ public class EntityDropParticleFXBlockComponent implements IEntityDropParticleFX
      * @param particleGreen Green color.
      * @param particleBlue Blue color.
      */
-    public EntityDropParticleFXBlockComponent(float particleRed, float particleGreen, float particleBlue) {
+    public ParticleDropBlockComponent(float particleRed, float particleGreen, float particleBlue) {
         this.particleRed = particleRed;
         this.particleGreen = particleGreen;
         this.particleBlue = particleBlue;
@@ -58,12 +58,12 @@ public class EntityDropParticleFXBlockComponent implements IEntityDropParticleFX
     public void randomDisplayTick(World world, BlockPos blockPos, IBlockState blockState, Random rand) {
         if (rand.nextInt(chance) == 0 &&
                 (offset == 0 || BlockHelpers.doesBlockHaveSolidTopSurface(world, blockPos.add(0, -offset, 0))) &&
-                !world.getBlockState(blockPos.add(0, - offset - 1, 0)).getBlock().getMaterial(world.getBlockState(blockPos.add(0, - offset - 1, 0))).blocksMovement()) {
+                !world.getBlockState(blockPos.add(0, - offset - 1, 0)).getMaterial().blocksMovement()) {
             double px = (double) ((float) blockPos.getX() + rand.nextFloat());
             double py = (double) blockPos.getY() - 0.05D - offset;
             double pz = (double) ((float) blockPos.getZ() + rand.nextFloat());
 
-            EntityFX fx = new ExtendedEntityDropParticleFX(world, px, py, pz, particleRed, particleGreen, particleBlue);
+            Particle fx = new ExtendedParticleDrop(world, px, py, pz, particleRed, particleGreen, particleBlue);
             FMLClientHandler.instance().getClient().effectRenderer.addEffect(fx);
         }
     }

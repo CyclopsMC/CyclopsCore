@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -56,7 +57,7 @@ public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockCon
     }
 
     @Override
-    public boolean isNormalCube(IBlockState blockState) {
+    public boolean isNormalCube(IBlockState blockState, IBlockAccess world, BlockPos pos) {
         return false;
     }
 

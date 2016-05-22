@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -32,14 +32,14 @@ public class WorldHelpers {
      */
     //@SideOnly(Side.SERVER)
     @SuppressWarnings("unchecked")
-    public static void setBiome(World world, BlockPos pos, BiomeGenBase biome) {
+    public static void setBiome(World world, BlockPos pos, Biome biome) {
         Chunk chunk = world.getChunkFromBlockCoords(pos);
         if(chunk != null) {
         	BlockPos c = getChunkLocationFromWorldLocation(pos.getX(), 0, pos.getZ());
             int rx = c.getX();
             int rz = c.getZ();
             byte[] biomeArray = chunk.getBiomeArray();
-            biomeArray[rz << 4 | rx] = (byte)(BiomeGenBase.getIdForBiome(biome) & 255);
+            biomeArray[rz << 4 | rx] = (byte)(Biome.getIdForBiome(biome) & 255);
             chunk.setChunkModified();
             world.getChunkProvider().provideChunk(chunk.xPosition, chunk.zPosition);
             world.markBlockRangeForRenderUpdate(pos, pos);

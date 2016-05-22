@@ -6,7 +6,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -142,7 +141,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     }
 
     @Override
-    public Packet getDescriptionPacket() {
+    public SPacketUpdateTileEntity getUpdatePacket() {
         return new SPacketUpdateTileEntity(getPos(), 1, getNBTTagCompound());
     }
 
@@ -188,12 +187,13 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     }
     
     @Override
-    public void writeToNBT(NBTTagCompound tag) {
-        super.writeToNBT(tag);
+    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
+        tag = super.writeToNBT(tag);
         writeGeneratedFieldsToNBT(tag);
         
         // Separate action for direction
         tag.setInteger("rotation", rotation.ordinal());
+        return tag;
     }
     
     @Override
@@ -223,8 +223,13 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      */
     public NBTTagCompound getNBTTagCompound() {
         NBTTagCompound tag = new NBTTagCompound();
-        writeToNBT(tag);
+        tag = writeToNBT(tag);
         return tag;
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag() {
+        return getNBTTagCompound();
     }
 
     /**
