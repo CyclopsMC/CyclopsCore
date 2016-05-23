@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix crash due to calling of client-side I18n methods
+
+Lib additions:
+* Add getCapability convenience method with DimPos param
