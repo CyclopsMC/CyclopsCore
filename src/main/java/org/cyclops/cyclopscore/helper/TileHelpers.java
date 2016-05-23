@@ -44,6 +44,18 @@ public final class TileHelpers {
 
     /**
      * Safely get a capability from a tile.
+     * @param dimPos The dimensional position of the block providing the tile entity.
+     * @param side The side to get the capability from.
+     * @param capability The capability.
+     * @param <C> The capability instance.
+     * @return The capability or null.
+     */
+    public static <C> C getCapability(DimPos dimPos, EnumFacing side, Capability<C> capability) {
+        return getCapability(dimPos.getWorld(), dimPos.getBlockPos(), side, capability);
+    }
+
+    /**
+     * Safely get a capability from a tile.
      * @param world The world.
      * @param pos The position of the block of the tile entity providing the capability.
      * @param side The side to get the capability from.
