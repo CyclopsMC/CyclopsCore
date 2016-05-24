@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.config.configurable;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.BlockFluidClassic;
@@ -45,6 +46,12 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         fluid.setBlock(this);
         this.fluid = fluid;
+    }
+
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(IBlockState blockState, World worldIn, BlockPos pos) {
+        return NULL_AABB;
     }
 
     @Nullable
