@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.tileentity;
 
-import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -10,9 +9,8 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
 import org.cyclops.cyclopscore.inventory.INBTInventory;
-
-import java.util.Map;
 
 /**
  * A TileEntity with an internal inventory.
@@ -22,10 +20,10 @@ import java.util.Map;
 public abstract class InventoryTileEntityBase extends CyclopsTileEntity implements ISidedInventory {
 
     protected boolean sendUpdateOnInventoryChanged = false;
-    protected final Map<EnumFacing, IItemHandler> sidedInventoryHandlers;
+    protected final EnumFacingMap<IItemHandler> sidedInventoryHandlers;
 
     public InventoryTileEntityBase() {
-        this.sidedInventoryHandlers = Maps.newHashMap();
+        this.sidedInventoryHandlers = EnumFacingMap.newMap();
         for(EnumFacing side : EnumFacing.VALUES) {
             addCapabilitySided(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side, new SidedInvWrapper(this, side));
         }
