@@ -15,7 +15,6 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fml.relauncher.Side;
@@ -68,13 +67,13 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
         FluidStack fluidStack = getFluid(itemStack);
-        FluidStack drained = this.drain(itemStack, FluidContainerRegistry.BUCKET_VOLUME, false);
+        FluidStack drained = this.drain(itemStack, Fluid.BUCKET_VOLUME, false);
         Block block = getFluid().getBlock();
 
         boolean hasBucket = drained != null
-                && (drained.amount == FluidContainerRegistry.BUCKET_VOLUME);
+                && (drained.amount == Fluid.BUCKET_VOLUME);
         boolean hasSpace = fluidStack == null
-                || (fluidStack.amount + FluidContainerRegistry.BUCKET_VOLUME <= getCapacity(itemStack));
+                || (fluidStack.amount + Fluid.BUCKET_VOLUME <= getCapacity(itemStack));
         RayTraceResult movingobjectpositionDrain = this.rayTrace(world, player, false);
         RayTraceResult movingobjectpositionFill = this.rayTrace(world, player, true);
 
@@ -92,7 +91,7 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
                 if (world.getBlockState(blockPos).getBlock() == block && (Integer) world.getBlockState(blockPos).getValue(BlockLiquid.LEVEL) == 0) {
                     if(hasSpace) {
                         world.setBlockToAir(blockPos);
-                        this.fill(itemStack, new FluidStack(getFluid(), FluidContainerRegistry.BUCKET_VOLUME), true);
+                        this.fill(itemStack, new FluidStack(getFluid(), Fluid.BUCKET_VOLUME), true);
                     }
                     return MinecraftHelpers.successAction(itemStack);
                 }
@@ -113,7 +112,7 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
                 }*/
 
                 if (this.tryPlaceContainedLiquid(world, blockPos, block, true)) {
-                    this.drain(itemStack, FluidContainerRegistry.BUCKET_VOLUME, true);
+                    this.drain(itemStack, Fluid.BUCKET_VOLUME, true);
                     return MinecraftHelpers.successAction(itemStack);
                 }
             }

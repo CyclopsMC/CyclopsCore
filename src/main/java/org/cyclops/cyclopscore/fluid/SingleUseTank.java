@@ -106,24 +106,17 @@ public class SingleUseTank extends Tank {
         super.readTankFromNBT(nbt);
         acceptedFluid = FluidRegistry.getFluid(nbt.getString(NBT_ACCEPTED_FLUID));
     }
-    
-    /**
-     * If this tank can accept the given fluid.
-     * @param fluid The fluid that needs to be checked.
-     * @return If this tank can accept it.
-     */
-    public boolean canTankAccept(Fluid fluid) {
-    	return getAcceptedFluid().equals(fluid);
+
+    @Override
+    public boolean canFillFluidType(FluidStack fluid) {
+        Fluid fluidType = fluid != null ? fluid.getFluid() : null;
+        return super.canFillFluidType(fluid) && (fluidType == getAcceptedFluid() || getAcceptedFluid() == null);
     }
-    
-    /**
-     * If this tank can completely contain the given fluid.
-     * @param fluidStack The fluid to try to fill.
-     * @return If this tank can completely contain the given fluid.
-     */
-    public boolean canCompletelyFill(FluidStack fluidStack) {
-    	int amount = (fluidStack != null) ? fluidStack.amount : 0;
-    	return getFluidAmount() + amount <= getCapacity();
+
+    @Override
+    public boolean canDrainFluidType(FluidStack fluid) {
+        Fluid fluidType = fluid != null ? fluid.getFluid() : null;
+        return super.canDrainFluidType(fluid) && (fluidType == getAcceptedFluid() || getAcceptedFluid() == null);
     }
     
 }

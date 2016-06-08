@@ -4,8 +4,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
 import org.cyclops.cyclopscore.fluid.SingleUseTank;
 
 /**
@@ -13,13 +14,13 @@ import org.cyclops.cyclopscore.fluid.SingleUseTank;
  * @author rubensworks
  *
  */
-public abstract class TankInventoryTileEntity extends InventoryTileEntity implements IFluidHandler {
+public abstract class TankInventoryTileEntity extends InventoryTileEntity {
     
     private SingleUseTank tank;
     protected int tankSize;
     private String tankName;
-    private Fluid acceptedFluid = null;
     protected boolean sendUpdateOnTankChanged = false;
+    protected final EnumFacingMap<IFluidHandler> sidedFluidHandlers;
 
     /**
      * Make new tile with a tank that can accept anything and an inventory.
@@ -35,6 +36,11 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity implem
         this.tankName = tankName;
         this.setSendUpdateOnTankChanged(true);
         tank = newTank(tankName, tankSize);
+
+        sidedFluidHandlers = EnumFacingMap.newMap();
+        for(EnumFacing side : EnumFacing.VALUES) {
+            addCapabilitySided(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side, tank);
+        }
     }
 
     /**
@@ -66,6 +72,11 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity implem
         this.tankName = tankName;
         this.setSendUpdateOnTankChanged(true);
         tank = newTank(tankName, tankSize);
+
+        sidedFluidHandlers = EnumFacingMap.newMap();
+        for(EnumFacing side : EnumFacing.VALUES) {
+            addCapabilitySided(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side, tank);
+        }
     }
     
     /**
@@ -80,7 +91,6 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity implem
         this(inventorySize, inventoryName, tankSize, tankName);
         this.tankSize = tankSize;
         this.tankName = tankName;
-        this.acceptedFluid = acceptedFluid;
         tank.setAcceptedFluid(acceptedFluid);
     }
     
@@ -97,7 +107,6 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity implem
         this(inventorySize, inventoryName, stackSize, tankSize, tankName);
         this.tankSize = tankSize;
         this.tankName = tankName;
-        this.acceptedFluid = acceptedFluid;
         tank.setAcceptedFluid(acceptedFluid);
     }
     
@@ -122,11 +131,6 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity implem
         return tag;
     }
     
-    @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        return tank.fill(resource, doFill);
-    }
-    
     /**
      * Fills fluid into internal tanks.
      * @param resource FluidStack representing the Fluid and maximum amount of fluid to be filled.
@@ -134,17 +138,9 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity implem
      * @return Amount of resource that was (or would have been, if simulated) filled.
      */
     public int fill(FluidStack resource, boolean doFill) {
-        return fill(EnumFacing.UP, resource, doFill);
+        return tank.fill(resource, doFill);
     }
 
-    @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource,
-            boolean doDrain) {
-        if (resource == null || !resource.isFluidEqual(tank.getFluid()))
-            return null;
-        return drain(from, resource.amount, doDrain);
-    }
-    
     /**
      * Drains fluid out of internal tanks.
      * @param resource FluidStack representing the Fluid and maximum amount of fluid to be drained.
@@ -153,14 +149,9 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity implem
      *         simulated) drained.
      */
     public FluidStack drain(FluidStack resource, boolean doDrain) {
-        return drain(EnumFacing.DOWN, resource, doDrain);
+        return tank.drain(resource, doDrain);
     }
 
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        return tank.drain(maxDrain, doDrain);
-    }
-    
     /**
      * Drains fluid out of internal tanks.
      * @param maxDrain Maximum amount of fluid to drain.
@@ -169,24 +160,7 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity implem
      *         simulated) drained.
      */
     public FluidStack drain(int maxDrain, boolean doDrain) {
-        return drain(EnumFacing.DOWN, maxDrain, doDrain);
-    }
-
-    @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
-        return tank.getAcceptedFluid() == null || tank.canTankAccept(fluid);
-    }
-
-    @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
-        return tank.getAcceptedFluid() == null || tank.canTankAccept(fluid);
-    }
-
-    @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing from) {
-        FluidTankInfo[] info = new FluidTankInfo[1];
-        info[0] = tank.getInfo();
-        return info;
+        return tank.drain(maxDrain, doDrain);
     }
 
     /**

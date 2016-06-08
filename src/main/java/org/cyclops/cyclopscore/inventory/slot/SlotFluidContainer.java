@@ -64,9 +64,7 @@ public class SlotFluidContainer extends Slot {
                 IFluidContainerItem container = (IFluidContainerItem) itemStack.getItem();
                 fluidStack = container.getFluid(itemStack);
             }
-            if(tank.getAcceptedFluid() != null && fluidStack != null) {
-                return tank.canTankAccept(fluidStack.getFluid());
-            }
+            return tank.canFillFluidType(fluidStack);
         }
         return false;
     }

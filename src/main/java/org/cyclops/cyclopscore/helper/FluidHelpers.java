@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nullable;
 
@@ -27,6 +28,17 @@ public final class FluidHelpers {
     public static FluidStack copy(@Nullable FluidStack fluidStack) {
         if(fluidStack == null) return null;
         return new FluidStack(fluidStack.getFluid(), fluidStack.amount, fluidStack.tag);
+    }
+
+    /**
+     * If this destination can completely contain the given fluid in the given source.
+     * @param source The source of the fluid that has to be moved.
+     * @param destination The target of the fluid that has to be moved.
+     * @return If the destination can completely contain the fluid of the source.
+     */
+    public static boolean canCompletelyFill(IFluidHandler source, IFluidHandler destination) {
+        FluidStack drained = source.drain(Integer.MAX_VALUE, false);
+        return drained != null && destination.fill(drained, false) == drained.amount;
     }
 
 }

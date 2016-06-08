@@ -53,7 +53,7 @@ public abstract class ItemBucketConfig extends ItemConfig {
         IBucketRegistry bucketRegistry = getMod().getRegistryManager().getRegistry(IBucketRegistry.class);
         if(bucketRegistry != null) {
             if (getFluidInstance() != null) {
-                FluidStack fluidStack = FluidRegistry.getFluidStack(getFluidInstance().getName(), FluidContainerRegistry.BUCKET_VOLUME);
+                FluidStack fluidStack = FluidRegistry.getFluidStack(getFluidInstance().getName(), Fluid.BUCKET_VOLUME);
                 FluidContainerRegistry.registerFluidContainer(
                         fluidStack,
                         new ItemStack(item),
