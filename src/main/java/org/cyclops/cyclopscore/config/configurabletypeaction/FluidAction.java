@@ -24,6 +24,7 @@ public class FluidAction extends ConfigurableTypeAction<FluidConfig>{
         
         // Register
         FluidRegistry.registerFluid((Fluid) eConfig.getSubInstance());
+        FluidRegistry.addBucketForFluid((Fluid) eConfig.getSubInstance());
         
         // Add I18N
         //LanguageRegistry.instance().addStringLocalization("fluid.fluids."+eConfig.NAMEDID, eConfig.NAME);

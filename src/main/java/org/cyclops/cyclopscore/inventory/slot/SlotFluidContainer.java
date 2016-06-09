@@ -3,8 +3,7 @@ package org.cyclops.cyclopscore.inventory.slot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidContainerItem;
 import org.cyclops.cyclopscore.fluid.SingleUseTank;
 
@@ -56,15 +55,14 @@ public class SlotFluidContainer extends Slot {
      * @return If the given item is valid.
      */
     public static boolean checkIsItemValid(ItemStack itemStack, SingleUseTank tank) {
-        if(itemStack != null
-                && (itemStack.stackSize == 1 || FluidContainerRegistry.drainFluidContainer(itemStack) == null
-                || FluidContainerRegistry.drainFluidContainer(itemStack).stackSize == 0)) {
-            FluidStack fluidStack = FluidContainerRegistry.getFluidForFilledItem(itemStack);
-            if(fluidStack == null && itemStack.getItem() instanceof IFluidContainerItem) {
-                IFluidContainerItem container = (IFluidContainerItem) itemStack.getItem();
-                fluidStack = container.getFluid(itemStack);
+        if (itemStack != null) {
+            itemStack = itemStack.copy();
+            ItemStack result = FluidUtil.tryEmptyContainer(itemStack.splitStack(1), tank, Integer.MAX_VALUE, null, false);
+            if (result != null) {
+                if (result.stackSize == 0 || itemStack.stackSize == 0) {
+                    return true;
+                }
             }
-            return tank.canFillFluidType(fluidStack);
         }
         return false;
     }

@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nullable;
 
@@ -39,6 +40,38 @@ public final class FluidHelpers {
     public static boolean canCompletelyFill(IFluidHandler source, IFluidHandler destination) {
         FluidStack drained = source.drain(Integer.MAX_VALUE, false);
         return drained != null && destination.fill(drained, false) == drained.amount;
+    }
+
+    /**
+     * Get the fluid contained in a fluid handler.
+     * @param fluidHandler The fluid handler.
+     * @return The fluid.
+     */
+    public static FluidStack getFluid(@Nullable IFluidHandler fluidHandler) {
+        return fluidHandler != null ? fluidHandler.drain(Integer.MAX_VALUE, false) : null;
+    }
+
+    /**
+     * Check if the fluid handler is not empty.
+     * @param fluidHandler The fluid handler.
+     * @return If it is not empty.
+     */
+    public static boolean hasFluid(@Nullable IFluidHandler fluidHandler) {
+        return getFluid(fluidHandler) != null;
+    }
+
+    /**
+     * Get the capacity of a fluid handler.
+     * @param fluidHandler The fluid handler.
+     * @return The capacity.
+     */
+    public static int getCapacity(@Nullable IFluidHandler fluidHandler) {
+        if (fluidHandler != null) {
+            for (IFluidTankProperties properties : fluidHandler.getTankProperties()) {
+                return properties.getCapacity();
+            }
+        }
+        return 0;
     }
 
 }

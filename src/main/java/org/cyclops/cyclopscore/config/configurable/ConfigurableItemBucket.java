@@ -6,6 +6,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
@@ -25,18 +29,22 @@ public class ConfigurableItemBucket extends ItemBucket implements IConfigurableI
     protected ExtendedConfig eConfig = null;
     
     protected boolean canPickUp = true;
+
+    private final FluidStack fluidStack;
     
     /**
      * Make a new bucket instance.
      * @param eConfig Config for this blockState.
      * @param block The fluid blockState it can pick up.
+     * @param fluidStack The filled fluid.
      */
     @SuppressWarnings({ "rawtypes" })
-    public ConfigurableItemBucket(ExtendedConfig eConfig, Block block) {
+    public ConfigurableItemBucket(ExtendedConfig eConfig, Block block, FluidStack fluidStack) {
         super(block);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         setContainerItem(Items.BUCKET);
+        this.fluidStack = fluidStack;
     }
 
     @SuppressWarnings("rawtypes")
@@ -63,5 +71,22 @@ public class ConfigurableItemBucket extends ItemBucket implements IConfigurableI
     public IItemColor getItemColorHandler() {
         return null;
     }
-    
+
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+        return new BucketWrapper(stack);
+    }
+
+    public class BucketWrapper extends FluidBucketWrapper {
+
+        public BucketWrapper(ItemStack container) {
+            super(container);
+        }
+
+        @Nullable
+        @Override
+        public FluidStack getFluid() {
+            return fluidStack;
+        }
+    }
 }

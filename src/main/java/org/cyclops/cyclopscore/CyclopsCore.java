@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore;
 import com.google.common.collect.Maps;
 import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -58,6 +59,7 @@ public class CyclopsCore extends ModBase implements IModVersion {
     public CyclopsCore() {
         super(Reference.MOD_ID, Reference.MOD_NAME);
         putGenericReference(REFKEY_MOD_VERSION, Reference.MOD_VERSION);
+        FluidRegistry.enableUniversalBucket();
     }
 
     @Override
