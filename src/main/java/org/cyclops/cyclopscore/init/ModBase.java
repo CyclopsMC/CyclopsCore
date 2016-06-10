@@ -22,6 +22,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.modcompat.IMCHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
+import org.cyclops.cyclopscore.modcompat.capabilities.CapabilityConstructorRegistry;
 import org.cyclops.cyclopscore.network.PacketHandler;
 import org.cyclops.cyclopscore.persist.world.WorldStorage;
 import org.cyclops.cyclopscore.proxy.ClientProxyComponent;
@@ -61,6 +62,7 @@ public abstract class ModBase {
     private final IKeyRegistry keyRegistry;
     private final PacketHandler packetHandler;
     private final ModCompatLoader modCompatLoader;
+    private final CapabilityConstructorRegistry capabilityConstructorRegistry;
     private final IMCHandler imcHandler;
     private final Debug debug;
 
@@ -79,6 +81,7 @@ public abstract class ModBase {
         this.keyRegistry = new KeyRegistry();
         this.packetHandler = constructPacketHandler();
         this.modCompatLoader = constructModCompatLoader();
+        this.capabilityConstructorRegistry = constructCapabilityConstructorRegistry();
         this.imcHandler = constructIMCHandler();
         this.debug = new Debug(this);
 
@@ -111,6 +114,10 @@ public abstract class ModBase {
 
     protected ModCompatLoader constructModCompatLoader() {
         return new ModCompatLoader(this);
+    }
+
+    protected CapabilityConstructorRegistry constructCapabilityConstructorRegistry() {
+        return new CapabilityConstructorRegistry(this);
     }
 
     protected IMCHandler constructIMCHandler() {
