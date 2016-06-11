@@ -31,11 +31,11 @@ public class CapabilityConstructorRegistry {
             capabilityConstructorsEntity = HashMultimap.create();
     private final Multimap<Class<? extends Item>, ICapabilityConstructor<?, ? extends ItemStack>>
             capabilityConstructorsItem = HashMultimap.create();
-    private final Set<Pair<Class<?>, ICapabilityConstructor<?, ? extends TileEntity>>>
+    private final Set<Pair<Class<?>, ICapabilityConstructor<?, ?>>>
             capabilityConstructorsTileSuper = Sets.newHashSet();
-    private final Set<Pair<Class<?>, ICapabilityConstructor<?, ? extends Entity>>>
+    private final Set<Pair<Class<?>, ICapabilityConstructor<?, ?>>>
             capabilityConstructorsEntitySuper = Sets.newHashSet();
-    private final Set<Pair<Class<?>, ICapabilityConstructor<?, ? extends ItemStack>>>
+    private final Set<Pair<Class<?>, ICapabilityConstructor<?, ?>>>
             capabilityConstructorsItemSuper = Sets.newHashSet();
 
     protected final ModBase mod;
@@ -84,12 +84,12 @@ public class CapabilityConstructorRegistry {
      * Only call this when absolutely required, this will is less efficient than its non-inheritable counterpart.
      * @param clazz The tile class, all subtypes will be checked.
      * @param constructor The capability constructor.
-     * @param <K> The tile type.
+     * @param <K> The capability type.
      * @param <V> The tile type.
      */
-    public <K, V extends TileEntity> void registerInheritableTile(Class<K> clazz, ICapabilityConstructor<?, V> constructor) {
+    public <K, V> void registerInheritableTile(Class<K> clazz, ICapabilityConstructor<?, V> constructor) {
         capabilityConstructorsTileSuper.add(
-                Pair.<Class<?>, ICapabilityConstructor<?, ? extends TileEntity>>of(clazz, constructor));
+                Pair.<Class<?>, ICapabilityConstructor<?, ?>>of(clazz, constructor));
     }
 
     /**
@@ -97,12 +97,12 @@ public class CapabilityConstructorRegistry {
      * Only call this when absolutely required, this will is less efficient than its non-inheritable counterpart.
      * @param clazz The tile class, all subtypes will be checked.
      * @param constructor The capability constructor.
-     * @param <K> The tile type.
-     * @param <V> The tile type.
+     * @param <K> The capability type.
+     * @param <V> The entity type.
      */
-    public <K, V extends Entity> void registerInheritableEntity(Class<K> clazz, ICapabilityConstructor<?, V> constructor) {
+    public <K, V> void registerInheritableEntity(Class<K> clazz, ICapabilityConstructor<?, V> constructor) {
         capabilityConstructorsEntitySuper.add(
-                Pair.<Class<?>, ICapabilityConstructor<?, ? extends Entity>>of(clazz, constructor));
+                Pair.<Class<?>, ICapabilityConstructor<?, ?>>of(clazz, constructor));
     }
 
     /**
@@ -114,7 +114,7 @@ public class CapabilityConstructorRegistry {
      */
     public <T> void registerInheritableItem(Class<T> clazz, ICapabilityConstructor<?, ? extends ItemStack> constructor) {
         capabilityConstructorsItemSuper.add(
-                Pair.<Class<?>, ICapabilityConstructor<?, ? extends ItemStack>>of(clazz, constructor));
+                Pair.<Class<?>, ICapabilityConstructor<?, ?>>of(clazz, constructor));
     }
 
     @SuppressWarnings("unchecked")
@@ -123,13 +123,13 @@ public class CapabilityConstructorRegistry {
     }
 
     protected <T> void onLoad(Multimap<Class<? extends T>, ICapabilityConstructor<?, ? extends T>> allConstructors,
-                              Set<Pair<Class<?>, ICapabilityConstructor<?, ? extends T>>> allInheritableConstructors,
+                              Set<Pair<Class<?>, ICapabilityConstructor<?, ?>>> allInheritableConstructors,
                               T object, AttachCapabilitiesEvent event) {
         onLoad(allConstructors, allInheritableConstructors, object, object, event);
     }
 
     protected <K, V> void onLoad(Multimap<Class<? extends K>, ICapabilityConstructor<?, ? extends V>> allConstructors,
-                                 Set<Pair<Class<?>, ICapabilityConstructor<?, ? extends V>>> allInheritableConstructors,
+                                 Set<Pair<Class<?>, ICapabilityConstructor<?, ?>>> allInheritableConstructors,
                                  K keyObject, V valueObject, AttachCapabilitiesEvent event) {
         Collection<ICapabilityConstructor<?, ? extends V>> constructors = allConstructors.get((Class<? extends K>) keyObject.getClass());
         List<ICapabilityConstructor<?, ? extends V>> toRemoveList = Lists.newArrayList();
@@ -146,13 +146,13 @@ public class CapabilityConstructorRegistry {
         }
 
 
-        List<Pair<Class<?>, ICapabilityConstructor<?, ? extends V>>> toRemoveInheritableList = Lists.newArrayList();
-        for (Pair<Class<?>, ICapabilityConstructor<?, ? extends V>> constructorEntry : allInheritableConstructors) {
+        List<Pair<Class<?>, ICapabilityConstructor<?, ?>>> toRemoveInheritableList = Lists.newArrayList();
+        for (Pair<Class<?>, ICapabilityConstructor<?, ?>> constructorEntry : allInheritableConstructors) {
             if (constructorEntry.getRight().getCapability() == null) {
                 toRemoveInheritableList.add(constructorEntry);
             } else {
                 if (constructorEntry.getLeft().isInstance(keyObject)) {
-                    ICapabilityConstructor<?, ? extends V> constructor = constructorEntry.getRight();
+                    ICapabilityConstructor<?, ?> constructor = constructorEntry.getRight();
                     ICapabilityProvider provider = createProvider(valueObject, constructor);
                     if (provider != null) {
                         ResourceLocation id = new ResourceLocation(getMod().getModId(), constructor.getCapability().getName());
@@ -161,7 +161,7 @@ public class CapabilityConstructorRegistry {
                 }
             }
         }
-        for (Pair<Class<?>, ICapabilityConstructor<?, ? extends V>> toRemove : toRemoveInheritableList) {
+        for (Pair<Class<?>, ICapabilityConstructor<?, ?>> toRemove : toRemoveInheritableList) {
             allInheritableConstructors.remove(toRemove);
         }
 
