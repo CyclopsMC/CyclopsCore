@@ -20,7 +20,8 @@ public class ConfigurableVillager extends VillagerRegistry.VillagerProfession im
     @SuppressWarnings("rawtypes")
     protected ConfigurableVillager(ExtendedConfig eConfig) {
         super(eConfig.getMod()+ ":" + eConfig.getNamedId(),
-                eConfig.getMod() + ":" + eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_SKINS) + eConfig.getNamedId() + ".png");
+                eConfig.getMod() + ":" + eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_SKINS) + eConfig.getNamedId() + ".png",
+                eConfig.getMod() + ":" + eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_SKINS) + eConfig.getNamedId() + "-zombie.png");
         this.setConfig(eConfig);
     }
     
