@@ -8,6 +8,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.inventory.container.ExtendedInventoryContainer;
 import org.cyclops.cyclopscore.inventory.container.button.IButtonActionClient;
@@ -84,11 +85,7 @@ public abstract class GuiContainerExtended extends GuiContainer implements
 
     @Override
     public boolean isPointInRegion(int left, int top, int right, int bottom, int pointX, int pointY) {
-        int k1 = this.guiLeft;
-        int l1 = this.guiTop;
-        pointX -= k1;
-        pointY -= l1;
-        return pointX >= left && pointX < left + right && pointY >= top && pointY < top + bottom;
+        return RenderHelpers.isPointInRegion(left, top, right, bottom, pointX - this.guiLeft, pointY - this.guiTop);
     }
 
     public boolean isPointInRegion(Rectangle region, Point mouse) {

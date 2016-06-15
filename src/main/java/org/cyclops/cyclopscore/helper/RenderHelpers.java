@@ -32,6 +32,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.opengl.GL11;
 
+import java.awt.*;
 import java.util.Random;
 
 /**
@@ -324,6 +325,30 @@ public class RenderHelpers {
                 (int) (colorParts.getLeft() * 255),
                 255
         );
+    }
+
+    /**
+     * Check if a point is inside a region.
+     * @param left Left-top corner x
+     * @param top Left-top corner y
+     * @param width The width
+     * @param height The height
+     * @param pointX The point x
+     * @param pointY The point y
+     * @return If the point is inside the region.
+     */
+    public static boolean isPointInRegion(int left, int top, int width, int height, int pointX, int pointY) {
+        return pointX >= left && pointX < left + width && pointY >= top && pointY < top + height;
+    }
+
+    /**
+     * Check if a point is inside a region.
+     * @param region The region.
+     * @param point The point.
+     * @return If the point is inside the region.
+     */
+    public static boolean isPointInRegion(Rectangle region, Point point) {
+        return isPointInRegion(region.x, region.y, region.width, region.height, point.x, point.y);
     }
 
     /**
