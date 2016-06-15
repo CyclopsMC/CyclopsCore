@@ -28,10 +28,14 @@ public class GuiTextFieldExtended extends GuiTextField {
         minecraft.renderEngine.bindTexture(Images.WIDGETS);
         GlStateManager.color(1, 1, 1, 1);
 
+        xPosition--;
+        yPosition--;
         drawTexturedModalRect(xPosition, yPosition, 0, 0, width / 2, height / 2);//top left
         drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2, 0, width / 2, height / 2);//top right
         drawTexturedModalRect(xPosition, yPosition + height / 2, 0, 20 - height / 2, width / 2, height / 2);//bottom left
         drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2, 200 - width / 2, 20 - height / 2, width / 2, height / 2);//bottom right
+        xPosition++;
+        yPosition++;
     }
 
     @Override
