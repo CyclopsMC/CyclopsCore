@@ -75,7 +75,7 @@ public class CapabilityConstructorRegistry {
      * @param constructor The capability constructor.
      * @param <T> The item type.
      */
-    public <T extends Item> void registerItem(Class<T> clazz, ICapabilityConstructor<?, Item, ItemStack> constructor) {
+    public <T extends Item> void registerItem(Class<T> clazz, ICapabilityConstructor<?, T, ItemStack> constructor) {
         capabilityConstructorsItem.put(clazz, constructor);
     }
 
