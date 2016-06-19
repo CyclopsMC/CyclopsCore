@@ -1,29 +1,27 @@
 package org.cyclops.cyclopscore.modcompat.capabilities;
 
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
 
 /**
- * Constructor for capabilities.
+ * Constructor for capabilities when the host and the host type are equal.
  * @param <C> The capability type
- * @param <T> The host type
  * @param <H> The host that will contain the capability.
  * @author rubensworks
  */
-public interface ICapabilityConstructor<C, T, H> {
+public abstract class SimpleCapabilityConstructor<C, H> implements ICapabilityConstructor<C, H, H> {
+
+    @Nullable
+    @Override
+    public ICapabilityProvider createProvider(H hostType, H host) {
+        return createProvider(host);
+    }
 
     /**
-     * @return A reference to the capability.
-     */
-    public Capability<C> getCapability();
-
-    /**
-     * @param hostType The host type for capabilities.
      * @param host The host for capabilities
      * @return A new capability provider for the given host.
      */
-    public @Nullable ICapabilityProvider createProvider(T hostType, H host);
+    public abstract @Nullable ICapabilityProvider createProvider(H host);
 
 }
