@@ -576,6 +576,8 @@ public abstract class NBTClassType<T> {
     @SuppressWarnings("unchecked")
     public void persistedFieldAction(INBTProvider provider, Field field, NBTTagCompound tag, boolean write) throws IllegalAccessException {
         String name = field.getName();
+        NBTPersist annotation = field.getAnnotation(NBTPersist.class);
+        boolean useDefaultValue = annotation.useDefaultValue();
         Object castTile = field.getDeclaringClass().cast(provider);
         if(write) {
             try {
@@ -596,10 +598,11 @@ public abstract class NBTClassType<T> {
             try {
                 if(tag.hasKey(name)) {
                     object = readPersistedField(name, tag);
-                } else {
+                    field.set(castTile, object);
+                } else if (useDefaultValue) {
                     object = getDefaultValue();
+                    field.set(castTile, object);
                 }
-                field.set(castTile, object);
             }  catch (IllegalArgumentException e) {
                 throw new RuntimeException("Can not read the field " + field.getName() + " as " + object + " in " + castTile + " since it does not exist OR there is a class mismatch.");
             }
