@@ -176,6 +176,10 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
         return getScrollingInventoryContainer().getFilteredItemCount() > getScrollingInventoryContainer().getPageSize();
     }
 
+    public GuiTextField getSearchField() {
+        return searchField;
+    }
+
     protected int getScrollX() {
         return 175;
     }
