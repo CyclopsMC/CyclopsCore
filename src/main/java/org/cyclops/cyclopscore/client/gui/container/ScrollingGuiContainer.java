@@ -97,6 +97,12 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
                 - getScrollingInventoryContainer().getPageSize() + 1;
     }
 
+    protected void scrollRelative(int step) {
+        this.currentScroll = (float)((double)this.currentScroll - (double)step / (double)getScrollStep());
+        this.currentScroll = MathHelper.clamp_float(this.currentScroll, 0.0F, 1.0F);
+        getScrollingInventoryContainer().scrollTo(this.currentScroll);
+    }
+
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
@@ -106,9 +112,7 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
             if (i > 0) i = 1;
             if (i < 0) i = -1;
 
-            this.currentScroll = (float)((double)this.currentScroll - (double)i / (double)getScrollStep());
-            this.currentScroll = MathHelper.clamp_float(this.currentScroll, 0.0F, 1.0F);
-            getScrollingInventoryContainer().scrollTo(this.currentScroll);
+            scrollRelative(i);
         }
     }
 
