@@ -68,14 +68,18 @@ public class LootHelpers {
                 if (poolName == null) {
                     List<LootPool> pools = ObfuscationHelpers.getLootPools(lootTable);
                     for (LootPool pool : pools) {
-                        pool.addEntry(entryItem);
+                        if (!pool.isFrozen()) {
+                            pool.addEntry(entryItem);
+                        }
                     }
                 } else {
                     LootPool lootPool = lootTable.getPool(poolName);
                     if (lootPool == null) {
                         throw new RuntimeException(String.format("Could not find loot pool %s in loot table %s.", poolName, resourceLocation));
                     }
-                    lootPool.addEntry(entryItem);
+                    if (!lootPool.isFrozen()) {
+                        lootPool.addEntry(entryItem);
+                    }
                 }
             }
         }
