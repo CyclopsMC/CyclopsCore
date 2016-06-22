@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Maps;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.ModContainer;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -182,6 +183,13 @@ public class Helpers {
             }
         }
         return MODRESOURCEDOMAIN_TO_MODID.get(modResourceDomain);
+    }
+
+    /**
+     * @return If minecraft is past the POST-init phase.
+     */
+    public static boolean isMinecraftInitialized() {
+        return Loader.instance().getLoaderState().ordinal() > LoaderState.POSTINITIALIZATION.ordinal();
     }
 
 }

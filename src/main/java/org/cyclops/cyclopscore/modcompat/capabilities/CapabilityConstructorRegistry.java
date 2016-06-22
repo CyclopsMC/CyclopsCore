@@ -14,6 +14,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.Collection;
@@ -131,11 +132,15 @@ public class CapabilityConstructorRegistry {
     protected <K, V> void onLoad(Multimap<Class<? extends K>, ICapabilityConstructor<?, ? extends K, ? extends V>> allConstructors,
                                  Set<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors,
                                  K keyObject, V valueObject, AttachCapabilitiesEvent event) {
+        boolean canRemove = Helpers.isMinecraftInitialized();
+
         Collection<ICapabilityConstructor<?, ? extends K, ? extends V>> constructors = allConstructors.get((Class<? extends K>) keyObject.getClass());
         List<ICapabilityConstructor<?, ? extends K, ? extends V>> toRemoveList = Lists.newArrayList();
         for(ICapabilityConstructor<?, ? extends K, ? extends V> constructor : constructors) {
             if (constructor.getCapability() == null) {
-                toRemoveList.add(constructor);
+                if (canRemove) {
+                    toRemoveList.add(constructor);
+                }
             } else {
                 addLoadedCapabilityProvider(event, keyObject, valueObject, constructor);
             }
@@ -148,7 +153,9 @@ public class CapabilityConstructorRegistry {
         List<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> toRemoveInheritableList = Lists.newArrayList();
         for (Pair<Class<?>, ICapabilityConstructor<?, ?, ?>> constructorEntry : allInheritableConstructors) {
             if (constructorEntry.getRight().getCapability() == null) {
-                toRemoveInheritableList.add(constructorEntry);
+                if (canRemove) {
+                    toRemoveInheritableList.add(constructorEntry);
+                }
             } else {
                 if (constructorEntry.getLeft().isInstance(keyObject)) {
                     ICapabilityConstructor<?, ?, ?> constructor = constructorEntry.getRight();
