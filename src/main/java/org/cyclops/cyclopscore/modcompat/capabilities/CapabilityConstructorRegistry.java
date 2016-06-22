@@ -112,7 +112,7 @@ public class CapabilityConstructorRegistry {
      * @param constructor The capability constructor.
      * @param <T> The tile type.
      */
-    public <T> void registerInheritableItem(Class<T> clazz, ICapabilityConstructor<?, ? extends Item, ? extends ItemStack> constructor) {
+    public <T> void registerInheritableItem(Class<T> clazz, ICapabilityConstructor<?, ?, ? extends ItemStack> constructor) {
         capabilityConstructorsItemSuper.add(
                 Pair.<Class<?>, ICapabilityConstructor<?, ?, ?>>of(clazz, constructor));
     }
