@@ -14,6 +14,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -172,7 +173,11 @@ public class CapabilityConstructorRegistry {
         ICapabilityProvider provider = createProvider(keyObject, valueObject, constructor);
         if (provider != null) {
             ResourceLocation id = new ResourceLocation(getMod().getModId(), constructor.getCapability().getName());
-            event.addCapability(id, provider);
+            if (!event.getCapabilities().containsKey(id)) {
+                event.addCapability(id, provider);
+            } else {
+                getMod().getLoggerHelper().log(Level.ERROR, "Duplicate capability registration of " + id + " in " + keyObject);
+            }
         }
     }
 
