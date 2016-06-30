@@ -3,13 +3,9 @@ package org.cyclops.cyclopscore.proxy;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
@@ -78,14 +74,6 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
         commonProxyComponent.registerEventHooks();
         getMod().getLoggerHelper().log(Level.TRACE, "Registered event hooks");
         MinecraftForge.EVENT_BUS.register(getMod().getKeyRegistry());
-    }
-    
-    @Override
-    public void playSound(double x, double y, double z, SoundEvent sound, SoundCategory category, float volume, float frequency) {
-		PositionedSoundRecord record = new PositionedSoundRecord(sound, category,
-				volume, frequency, (float) x, (float) y, (float) z);
-		FMLClientHandler.instance().getClient().getSoundHandler()
-				.playSound(record);
     }
     
 }
