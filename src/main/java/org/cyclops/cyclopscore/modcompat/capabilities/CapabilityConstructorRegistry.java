@@ -17,6 +17,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Registry for capabilities created by this mod.
@@ -194,17 +195,17 @@ public class CapabilityConstructorRegistry {
     protected <K, V> void removeNullCapabilities(Multimap<Class<? extends K>, ICapabilityConstructor<?, ? extends K, ? extends V>> allConstructors,
                                                  Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors) {
         // Normal constructors
+        Multimap<Class<? extends K>, ICapabilityConstructor<?, ? extends K, ? extends V>> toRemoveMap = HashMultimap.create();
         for (Class<? extends K> key : allConstructors.keys()) {
             Collection<ICapabilityConstructor<?, ? extends K, ? extends V>> constructors = allConstructors.get(key);
-            List<ICapabilityConstructor<?, ? extends K, ? extends V>> toRemoveList = Lists.newArrayList();
             for (ICapabilityConstructor<?, ? extends K, ? extends V> constructor : constructors) {
                 if (constructor.getCapability() == null) {
-                    toRemoveList.add(constructor);
+                    toRemoveMap.put(key, constructor);
                 }
             }
-            for (ICapabilityConstructor<?, ? extends K, ? extends V> toRemove : toRemoveList) {
-                constructors.remove(toRemove);
-            }
+        }
+        for (Map.Entry<Class<? extends K>, ICapabilityConstructor<?, ? extends K, ? extends V>> entry : toRemoveMap.entries()) {
+            allConstructors.remove(entry.getKey(), entry.getValue());
         }
 
         // Inheritable constructors
