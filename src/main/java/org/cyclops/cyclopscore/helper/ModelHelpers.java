@@ -73,6 +73,53 @@ public final class ModelHelpers {
             .put(ItemCameraTransforms.TransformType.GUI, GUI)
             .build();
 
+    public static final TRSRTransformation THIRD_PERSON_RIGHT_HAND_ITEM = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+            new Vector3f(0, 0, 0),
+            TRSRTransformation.quatFromXYZDegrees(new Vector3f(0, 0, 0)),
+            new Vector3f(0.55f, 0.55f, 0.55f),
+            null));
+    public static final TRSRTransformation THIRD_PERSON_LEFT_HAND_ITEM = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+            new Vector3f(0, 0, 0),
+            TRSRTransformation.quatFromXYZDegrees(new Vector3f(0, 0, 0)),
+            new Vector3f(0.55f, 0.55f, 0.55f),
+            null));
+    public static final TRSRTransformation FIRST_PERSON_RIGHT_HAND_ITEM = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+            new Vector3f(0, 0, 0),
+            TRSRTransformation.quatFromXYZDegrees(new Vector3f(0, -90, 25)),
+            new Vector3f(0.68F, 0.68F, 0.68F),
+            null));
+    public static final TRSRTransformation FIRST_PERSON_LEFT_HAND_ITEM = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+            new Vector3f(0, 0f, 0),
+            TRSRTransformation.quatFromXYZDegrees(new Vector3f(0, -90, 25)),
+            new Vector3f(0.68F, 0.68F, 0.68F),
+            null));
+    public static final TRSRTransformation GROUND_ITEM = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+            new Vector3f(0, 0, 0),
+            TRSRTransformation.quatFromXYZDegrees(new Vector3f(0, 0, 0)),
+            new Vector3f(0.5f, 0.5f, 0.5f),
+            null));
+    public static final TRSRTransformation FIXED_ITEM = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+            new Vector3f(0, 0, 0),
+            TRSRTransformation.quatFromXYZDegrees(new Vector3f(0, 0, 0)),
+            new Vector3f(1, 1, 1),
+            null));
+    public static final TRSRTransformation GUI_ITEM = TRSRTransformation.blockCenterToCorner(new TRSRTransformation(
+            new Vector3f(0, 0, 0),
+            TRSRTransformation.quatFromXYZDegrees(new Vector3f(0, 0, 0)),
+            new Vector3f(1, 1, 1),
+            null));
+
+    public static final ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation>
+            DEFAULT_PERSPECTIVE_TRANSFORMS_ITEM = new ImmutableMap.Builder<ItemCameraTransforms.TransformType, TRSRTransformation>()
+            .put(ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, THIRD_PERSON_RIGHT_HAND_ITEM)
+            .put(ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, THIRD_PERSON_LEFT_HAND_ITEM)
+            .put(ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, FIRST_PERSON_RIGHT_HAND_ITEM)
+            .put(ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, FIRST_PERSON_LEFT_HAND_ITEM)
+            .put(ItemCameraTransforms.TransformType.GROUND, GROUND_ITEM)
+            .put(ItemCameraTransforms.TransformType.FIXED, FIXED_ITEM)
+            .put(ItemCameraTransforms.TransformType.GUI, GUI_ITEM)
+            .build();
+
     // An empty list^2 for quads.
     public static final Map<EnumFacing, List<BakedQuad>> EMPTY_FACE_QUADS;
     static {
