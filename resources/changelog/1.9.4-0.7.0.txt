@@ -1,0 +1,21 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Don't add elements to frozen loot tables
+
+Lib changes:
+* Make gui constructors for blocks more flexible
+* Add default item perspective transformations
+* Expose scroll controls in scrolling gui
+* Add getter for searchfield to the scrolling container
+* Allow ignoring nbt persisted default values
+* Improve textfield rendering
+* Add helper methods for checking if a point is in a region
+* Automatically register zombie villager skin on villager registration
+* Remove playSound and sendSound from proxies.
+* Extend capability modcompat based on old CommonCapabilities abstractions
+* Support for fluid capabilities in tiles
+* Use optimized map in inventory tiles
+* Add efficient datastructure for mapping EnumFacing to anything
+Includes NBT serialization support.
+* Add highly efficient ExtendedBlockState builder
