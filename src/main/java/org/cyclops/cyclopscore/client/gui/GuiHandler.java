@@ -190,7 +190,12 @@ public class GuiHandler implements IGuiHandler {
                         Constructor<? extends Container> containerConstructor = containerClass.getConstructor(InventoryPlayer.class);
                         return containerConstructor.newInstance(player.inventory);
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        e.printStackTrace();
+                        try {
+                            Constructor<? extends Container> containerConstructor = containerClass.getConstructor(InventoryPlayer.class, World.class, BlockPos.class);
+                            return containerConstructor.newInstance(player.inventory, world, new BlockPos(x, y, z));
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e2) {
+                            e2.printStackTrace();
+                        }
                     }
                     return null;
                 }
@@ -232,7 +237,12 @@ public class GuiHandler implements IGuiHandler {
                             Constructor<? extends GuiScreen> guiConstructor = guiClass.getConstructor(InventoryPlayer.class);
                             return guiConstructor.newInstance(player.inventory);
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                            e.printStackTrace();
+                            try {
+                                Constructor<? extends GuiScreen> guiConstructor = guiClass.getConstructor(InventoryPlayer.class, World.class, BlockPos.class);
+                                return guiConstructor.newInstance(player.inventory, world, new BlockPos(x, y, z));
+                            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e2) {
+                                e2.printStackTrace();
+                            }
                         }
                         return null;
                     }
