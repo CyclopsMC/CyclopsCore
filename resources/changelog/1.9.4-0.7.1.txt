@@ -1,0 +1,4 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Move duplicate capability registration warning to DEBUG level to avoid console spam
