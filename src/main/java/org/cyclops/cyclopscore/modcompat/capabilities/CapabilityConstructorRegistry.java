@@ -172,7 +172,7 @@ public class CapabilityConstructorRegistry {
             if (!event.getCapabilities().containsKey(id)) {
                 event.addCapability(id, provider);
             } else {
-                getMod().getLoggerHelper().log(Level.ERROR, "Duplicate capability registration of " + id + " in " + keyObject);
+                getMod().getLoggerHelper().log(Level.DEBUG, "Duplicate capability registration of " + id + " in " + keyObject);
             }
         }
     }
