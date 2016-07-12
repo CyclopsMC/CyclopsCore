@@ -71,7 +71,7 @@ public class Analytics {
                             }
                         }
                     }
-                }).run();
+                }).start();
             }
         }
     }
