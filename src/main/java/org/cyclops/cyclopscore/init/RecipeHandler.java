@@ -38,6 +38,8 @@ public class RecipeHandler {
 
     @Getter(lazy = true)
     private final Pattern externalRecipesPattern = Pattern.compile("^[^_].*\\.xml");
+    @Getter(lazy = true)
+    private final Pattern externalRecipesOverridesPattern = Pattern.compile("^_override$");
 
     public RecipeHandler(ModBase mod, String... fileNames) {
         this.mod = mod;
@@ -83,7 +85,7 @@ public class RecipeHandler {
                 List<XmlRecipeLoader> loaders = Lists.newLinkedList();
                 for (File childFile : childFiles) {
                     loaders.addAll(registerRecipesForFiles(
-                            childFile, internalLoaders, getExternalRecipesPattern().equals(file.getName())
+                            childFile, internalLoaders, getExternalRecipesOverridesPattern().matcher(file.getName()).matches()
                     ));
                 }
                 return loaders;
@@ -121,7 +123,7 @@ public class RecipeHandler {
         Map<String, XmlRecipeLoader> internalLoaders = Maps.newHashMapWithExpectedSize(getRecipeFiles().size());
         for(String file : getRecipeFiles()) {
             InputStream is = RecipeHandler.class.getResourceAsStream(getRecipesBasePath() + file);
-            internalLoaders.put(file, registerRecipesForFile(is, file, true));
+            internalLoaders.put(file, registerRecipesForFile(is, file, false));
         }
 
         // Load all the externally defined recipes.
