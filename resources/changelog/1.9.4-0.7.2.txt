@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Allow recipe overrides in the _override folder
+
+Fixes:
+* Fixed broken Analytics
