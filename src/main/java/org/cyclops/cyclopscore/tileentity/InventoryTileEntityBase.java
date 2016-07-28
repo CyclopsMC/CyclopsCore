@@ -8,6 +8,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
 import org.cyclops.cyclopscore.inventory.INBTInventory;
@@ -24,6 +25,7 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
 
     public InventoryTileEntityBase() {
         this.sidedInventoryHandlers = EnumFacingMap.newMap();
+        addCapabilitySided(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null, new InvWrapper(this));
         for(EnumFacing side : EnumFacing.VALUES) {
             addCapabilitySided(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side, new SidedInvWrapper(this, side));
         }
