@@ -67,12 +67,10 @@ public final class ItemStackHelpers {
             }
 
             itemStack.stackSize -= i;
+            ItemStack dropStack = itemStack.copy();
+            dropStack.stackSize = i;
             EntityItem entityitem = new EntityItem(world, x + (double)offsetX, y + (double)offsetY,
-                    z + (double)offsetZ, new ItemStack(itemStack.getItem(), i, itemStack.getMetadata()));
-
-            if (itemStack.hasTagCompound()) {
-                entityitem.getEntityItem().setTagCompound((NBTTagCompound)itemStack.getTagCompound().copy());
-            }
+                    z + (double)offsetZ, dropStack);
 
             float motion = 0.05F;
             entityitem.motionX = RANDOM.nextGaussian() * (double)motion;
