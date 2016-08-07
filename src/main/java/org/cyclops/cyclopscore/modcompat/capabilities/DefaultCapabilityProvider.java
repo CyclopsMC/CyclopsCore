@@ -12,8 +12,8 @@ import java.util.Objects;
  */
 public class DefaultCapabilityProvider<T> implements ICapabilityProvider {
 
-    private final Capability<T> capabilityType;
-    private final T capability;
+    protected final Capability<T> capabilityType;
+    protected final T capability;
 
     public DefaultCapabilityProvider(Capability<T> capabilityType, T capability) {
         this.capabilityType = Objects.requireNonNull(capabilityType);
