@@ -52,6 +52,10 @@ public class ConfigurableType {
      * Potion effect type.
      */
     public static final ConfigurableType POTION = new ConfigurableType(true, PotionConfig.class, new PotionAction(), ConfigurableTypeCategory.POTION);
+    /**
+     * Capability type.
+     */
+    public static final ConfigurableType CAPABILITY = new ConfigurableType(false, CapabilityConfig.class, new CapabilityAction(), "capability");
 
     /**
      * Dummy type, only used for configs that refer to nothing.
