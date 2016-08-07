@@ -1,10 +1,12 @@
 package org.cyclops.cyclopscore.helper.obfuscation;
 
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
+import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -72,6 +74,21 @@ public class ObfuscationHelpers {
      */
     public static ResourceLocation getParticleTexture() {
         return ReflectionHelper.getPrivateValue(ParticleManager.class, null, ObfuscationData.PARTICLE_TEXTURES);
+    }
+
+    /**
+     * Get the capabilities of the given entity.
+     * @param entity The entity.
+     * @return The capability dispatcher.
+     */
+    public static CapabilityDispatcher getEntityCapabilities(Entity entity) {
+        Field field = ReflectionHelper.findField(Entity.class, ObfuscationData.ENTITY_CAPABILITIES);
+        try {
+            return (CapabilityDispatcher) field.get(entity);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 	
 }

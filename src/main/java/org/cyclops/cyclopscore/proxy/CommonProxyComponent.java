@@ -8,6 +8,7 @@ import org.cyclops.cyclopscore.event.ConfigChangedEventHook;
 import org.cyclops.cyclopscore.event.PlayerRingOfFire;
 import org.cyclops.cyclopscore.item.IBucketRegistry;
 import org.cyclops.cyclopscore.network.PacketHandler;
+import org.cyclops.cyclopscore.network.packet.SendPlayerCapabilitiesPacket;
 import org.cyclops.cyclopscore.world.gen.IRetroGenRegistry;
 
 /**
@@ -33,7 +34,7 @@ public abstract class CommonProxyComponent implements ICommonProxy {
 
     @Override
     public void registerPacketHandlers(PacketHandler packetHandler) {
-
+        packetHandler.register(SendPlayerCapabilitiesPacket.class);
     }
 
     @Override
