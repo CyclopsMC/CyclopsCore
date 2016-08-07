@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.helper.obfuscation;
 
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.potion.Potion;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -62,6 +64,14 @@ public class ObfuscationHelpers {
      */
     public static List<LootPool> getLootPools(LootTable lootTable) {
         return ReflectionHelper.getPrivateValue(LootTable.class, lootTable, ObfuscationData.LOOTTABLE_POOLS);
+    }
+
+    /**
+     * Get the private 'particleTextures' field from {@link net.minecraft.client.particle.ParticleManager}.
+     * @return The private 'particleTextures' field.
+     */
+    public static ResourceLocation getParticleTexture() {
+        return ReflectionHelper.getPrivateValue(ParticleManager.class, null, ObfuscationData.PARTICLE_TEXTURES);
     }
 	
 }

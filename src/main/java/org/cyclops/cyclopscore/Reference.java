@@ -21,6 +21,9 @@ public final class Reference {
     public static final String MOD_BAUBLES = "Baubles";
     public static final String MOD_VERSION_CHECKER = "VersionChecker";
 
+    // Paths
+    public static final String TEXTURE_PATH_PARTICLES = "textures/particles/";
+
     // Dependencies
     public static final String MOD_DEPENDENCIES =
               "required-after:Forge@[12.16.0.1846,);";

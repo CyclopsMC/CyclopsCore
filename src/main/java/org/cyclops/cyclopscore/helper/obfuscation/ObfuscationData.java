@@ -28,5 +28,10 @@ public class ObfuscationData {
      * Field from net.minecraft.world.storage.loot.LootTable.
      */
     public static final String[] LOOTTABLE_POOLS = new String[] { "pools", "field_186466_c", "c" };
+
+    /**
+     * Field from net.minecraft.client.particle.EffectRenderer.
+     */
+    public static final String[] PARTICLE_TEXTURES = new String[] { "PARTICLE_TEXTURES", "field_110737_b", "b" };
 	
 }
