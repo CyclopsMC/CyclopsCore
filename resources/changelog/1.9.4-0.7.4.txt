@@ -1,0 +1,10 @@
+As always, don't forget to backup your world before updating!
+
+Lib Additions:
+* Port SerializableCapabilityProvider
+* Port CapabilityConfig
+* Port SendPlayerCapabilitiesPacket
+* Port ParticleBlur
+
+Fixes:
+* Correctly copy itemstack when dropping them as entities
