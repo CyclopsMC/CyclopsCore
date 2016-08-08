@@ -69,8 +69,12 @@ public class InfoBookParser {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
-                return new CraftingRecipeAppendix(infoBook,
-                        CraftingHelpers.findCraftingRecipe(createStack(node, infoBook.getMod().getRecipeHandler()), getIndex(node)));
+                try {
+                    return new CraftingRecipeAppendix(infoBook,
+                            CraftingHelpers.findCraftingRecipe(createStack(node, infoBook.getMod().getRecipeHandler()), getIndex(node)));
+                } catch (IllegalArgumentException e) {
+                    throw new InvalidAppendixException(e.getMessage());
+                }
             }
 
         });
@@ -78,8 +82,12 @@ public class InfoBookParser {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
-                return new FurnaceRecipeAppendix(infoBook,
+                try {
+                    return new FurnaceRecipeAppendix(infoBook,
                         CraftingHelpers.findFurnaceRecipe(createStack(node, infoBook.getMod().getRecipeHandler()), getIndex(node)));
+                } catch (IllegalArgumentException e) {
+                    throw new InvalidAppendixException(e.getMessage());
+                }
             }
 
         });
@@ -89,7 +97,11 @@ public class InfoBookParser {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, ItemStack itemStack) throws InvalidAppendixException {
-                return new CraftingRecipeAppendix(infoBook, CraftingHelpers.findCraftingRecipe(itemStack, 0));
+                try {
+                    return new CraftingRecipeAppendix(infoBook, CraftingHelpers.findCraftingRecipe(itemStack, 0));
+                } catch (IllegalArgumentException e) {
+                    throw new InvalidAppendixException(e.getMessage());
+                }
             }
 
         });
@@ -97,7 +109,11 @@ public class InfoBookParser {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, ItemStack itemStack) throws InvalidAppendixException {
-                return new FurnaceRecipeAppendix(infoBook, CraftingHelpers.findFurnaceRecipe(itemStack, 0));
+                try {
+                    return new FurnaceRecipeAppendix(infoBook, CraftingHelpers.findFurnaceRecipe(itemStack, 0));
+                } catch (IllegalArgumentException e) {
+                    throw new InvalidAppendixException(e.getMessage());
+                }
             }
 
         });
