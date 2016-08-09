@@ -9,6 +9,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
@@ -85,6 +86,9 @@ public abstract class ItemGui extends ConfigurableItem implements IGuiContainerP
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
+		if (player instanceof FakePlayer || (player != null && player.getClass().getName().equals("ffba04.blockhologram.dummy.DummyPlayer"))) {
+			return new ActionResult<>(EnumActionResult.FAIL, itemStack);
+		}
 		openGuiForItemIndex(world, player, player.inventory.currentItem);
 		return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
 	}
