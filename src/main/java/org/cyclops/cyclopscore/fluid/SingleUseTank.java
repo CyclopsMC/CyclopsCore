@@ -63,7 +63,16 @@ public class SingleUseTank extends Tank {
     	}
     	return drained;
     }
-    
+
+    @Override
+    public FluidStack drain(FluidStack resource, boolean doDrain) {
+        FluidStack drained = super.drain(resource, doDrain);
+        if(drained != null) {
+            sendUpdate();
+        }
+        return drained;
+    }
+
     protected void sendUpdate() {
     	// TODO: generalize this to accept ITankUpdateListeners if this would be necessary later.
     	if(!(tile instanceof TankInventoryTileEntity) || ((TankInventoryTileEntity) tile).isSendUpdateOnTankChanged()) {
