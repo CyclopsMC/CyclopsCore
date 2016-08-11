@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Correctly sync fluid draining to client in all cases
+* Disable right-clicking from hologram mod
+* Fix crash when finding invalid crafting/furnace recipes in infobooks
