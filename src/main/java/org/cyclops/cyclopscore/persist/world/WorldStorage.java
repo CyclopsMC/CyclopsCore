@@ -17,6 +17,8 @@ import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
  */
 public abstract class WorldStorage implements INBTProvider {
 
+    private static String KEY = "WorldStorageData";
+
     protected final ModBase mod;
     @Delegate
     private INBTProvider nbtProviderComponent = new NBTProviderComponent(this);
@@ -74,25 +76,29 @@ public abstract class WorldStorage implements INBTProvider {
 
     protected abstract String getDataId();
 
-    private NBTDataHolder getDataHolder() {
+    private NBTDataHolder initDataHolder(boolean loading) {
         String dataId = mod.getModId() + "_" + getDataId();
         NBTDataHolder data = (NBTDataHolder) FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].
                 loadItemData(NBTDataHolder.class, dataId);
         if(data == null) {
             data = new NBTDataHolder(dataId);
             FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].setItemData(dataId, data);
+        } else if (loading) {
+            NBTTagCompound tempTag = data.getTempTagAndReset();
+            if (tempTag != null) {
+                readFromNBT(tempTag);
+            }
         }
+        data.setParentStorage(this);
         return data;
     }
 
     private synchronized void loadData() {
-        readFromNBT(getDataHolder().tag);
+        initDataHolder(true);
     }
 
     private synchronized void saveData() {
-        NBTDataHolder data = getDataHolder();
-        writeToNBT(data.tag);
-        data.setDirty(true);
+        initDataHolder(false);
     }
 
     /**
@@ -114,9 +120,8 @@ public abstract class WorldStorage implements INBTProvider {
      */
     public static class NBTDataHolder extends WorldSavedData {
 
-        private static String KEY = "WorldStorageData";
-
-        public NBTTagCompound tag;
+        private WorldStorage parentStorage = null;
+        private NBTTagCompound tempTag = null;
 
         /**
          * Make a new instance.
@@ -124,20 +129,40 @@ public abstract class WorldStorage implements INBTProvider {
          */
         public NBTDataHolder(String key) {
             super(key);
-            this.tag = new NBTTagCompound();
         }
 
         @Override
         public void readFromNBT(NBTTagCompound tag) {
-            this.tag = tag.getCompoundTag(KEY);
+            if (parentStorage == null) {
+                this.tempTag = tag.getCompoundTag(KEY);
+            } else {
+                parentStorage.readFromNBT(tag.getCompoundTag(KEY));
+            }
         }
 
         @Override
         public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-            tag.setTag(KEY, this.tag);
+            NBTTagCompound dataTag = new NBTTagCompound();
+            parentStorage.writeToNBT(dataTag);
+            tag.setTag(KEY, dataTag);
             return tag;
         }
 
+        @Override
+        public boolean isDirty() {
+            // If this proves to be too inefficient, add a decent implementation for this.
+            return true;
+        }
+
+        public void setParentStorage(WorldStorage parentStorage) {
+            this.parentStorage = parentStorage;
+        }
+
+        public NBTTagCompound getTempTagAndReset() {
+            NBTTagCompound tempTag = this.tempTag;
+            this.tempTag = null;
+            return tempTag;
+        }
     }
 
 }
