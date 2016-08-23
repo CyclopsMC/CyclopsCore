@@ -5,7 +5,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.cyclops.cyclopscore.fluid.SingleUseTank;
+import org.cyclops.cyclopscore.helper.FluidHelpers;
 
 /**
  * Slots that will accept buckets and {@link IFluidContainerItem}.
@@ -57,12 +59,8 @@ public class SlotFluidContainer extends Slot {
     public static boolean checkIsItemValid(ItemStack itemStack, SingleUseTank tank) {
         if (itemStack != null) {
             itemStack = itemStack.copy();
-            ItemStack result = FluidUtil.tryEmptyContainer(itemStack.splitStack(1), tank, Integer.MAX_VALUE, null, false);
-            if (result != null) {
-                if (result.stackSize == 0 || itemStack.stackSize == 0) {
-                    return true;
-                }
-            }
+            IFluidHandler fluidHandler = FluidUtil.getFluidHandler(itemStack.splitStack(1));
+            return fluidHandler != null && tank.canFillFluidType(FluidHelpers.getFluid(fluidHandler));
         }
         return false;
     }
