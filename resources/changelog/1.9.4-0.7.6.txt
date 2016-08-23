@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix fluid container slot not accepting anything when inner tank is full
+* Ensure WorldStorage saving on server crashes.
+
