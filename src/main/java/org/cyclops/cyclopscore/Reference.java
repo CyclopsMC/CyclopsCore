@@ -24,6 +24,9 @@ public final class Reference {
     // Paths
     public static final String TEXTURE_PATH_PARTICLES = "textures/particles/";
 
+    // MOD ID's
+    public static final String MOD_WAILA = "Waila";
+
     // Dependencies
     public static final String MOD_DEPENDENCIES =
               "required-after:Forge@[12.16.0.1846,);";

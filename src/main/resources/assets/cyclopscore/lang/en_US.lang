@@ -6,6 +6,7 @@ general.cyclopscore.info.disabled=Disabled
 general.cyclopscore.version.updateAvailable=Update available
 general.cyclopscore.version.download=Download
 general.cyclopscore.version.clickToDownload=Click to download
+gui.waila.cyclopscore.logConfig=Logs
 
 # Chat messages
 chat.cyclopscore.command.invalidArguments=Invalid Arguments

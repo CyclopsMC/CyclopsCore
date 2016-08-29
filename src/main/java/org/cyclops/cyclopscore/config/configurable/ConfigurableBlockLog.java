@@ -76,6 +76,12 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
         return eConfig;
     }
 
+    @Nullable
+    @Override
+    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
+        return new ItemStack(this, 1, 0);
+    }
+
     @Override
     public List<ItemStack> getDrops(IBlockAccess world, BlockPos blockPos, IBlockState blockStatedata, int fortune) {
         List<ItemStack> drops = new ArrayList<ItemStack>();

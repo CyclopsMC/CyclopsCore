@@ -17,6 +17,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.versionchecker.VersionCheckerModCompat;
+import org.cyclops.cyclopscore.modcompat.waila.WailaModCompat;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 import org.cyclops.cyclopscore.tracking.Analytics;
 import org.cyclops.cyclopscore.tracking.IModVersion;
@@ -65,6 +66,7 @@ public class CyclopsCore extends ModBase implements IModVersion {
     @Override
     protected void loadModCompats(ModCompatLoader modCompatLoader) {
         modCompatLoader.addModCompat(new VersionCheckerModCompat());
+        modCompatLoader.addModCompat(new WailaModCompat());
     }
 
     @Override

@@ -1,8 +1,14 @@
 repositories {
     mavenCentral()
+    maven {
+        name "Mobius Repo"
+        url "http://mobiusstrip.eu/maven"
+    }
 }
 
 dependencies {
+    deobfCompile "mcp.mobius.waila:Waila:${config.waila_version}" // http://mobiusstrip.eu/maven/mcp/mobius/waila/Waila/
+
     // Project lombok
     provided "org.projectlombok:lombok:1.16.4"
     testCompile "junit:junit:4.12"
