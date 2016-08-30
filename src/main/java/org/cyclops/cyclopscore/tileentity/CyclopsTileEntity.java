@@ -274,19 +274,21 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capabilities.containsKey(Pair.<Capability<?>, EnumFacing>of(capability, facing))
-                || (facing != null && capabilities.containsKey(Pair.<Capability<?>, EnumFacing>of(capability, null)))
+        return (capabilities != null && capabilities.containsKey(Pair.<Capability<?>, EnumFacing>of(capability, facing)))
+                || (facing != null && capabilities != null && capabilities.containsKey(Pair.<Capability<?>, EnumFacing>of(capability, null)))
                 || super.hasCapability(capability, facing);
     }
 
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        Object value = capabilities.get(Pair.<Capability<?>, EnumFacing>of(capability, facing));
-        if(value == null && facing != null) {
-            value = capabilities.get(Pair.<Capability<?>, EnumFacing>of(capability, null));
-        }
-        if(value != null) {
-            return (T) value;
+        if (capabilities != null) {
+            Object value = capabilities.get(Pair.<Capability<?>, EnumFacing>of(capability, facing));
+            if (value == null && facing != null) {
+                value = capabilities.get(Pair.<Capability<?>, EnumFacing>of(capability, null));
+            }
+            if (value != null) {
+                return (T) value;
+            }
         }
         return super.getCapability(capability, facing);
     }
