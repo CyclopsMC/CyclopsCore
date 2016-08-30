@@ -38,6 +38,7 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity {
         tank = newTank(tankName, tankSize);
 
         sidedFluidHandlers = EnumFacingMap.newMap();
+        addCapabilityInternal(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, tank);
         for(EnumFacing side : EnumFacing.VALUES) {
             addCapabilitySided(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side, tank);
         }

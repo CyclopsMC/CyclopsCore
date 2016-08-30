@@ -25,7 +25,7 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
 
     public InventoryTileEntityBase() {
         this.sidedInventoryHandlers = EnumFacingMap.newMap();
-        addCapabilitySided(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null, new InvWrapper(this));
+        addCapabilityInternal(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new InvWrapper(this));
         for(EnumFacing side : EnumFacing.VALUES) {
             addCapabilitySided(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side, new SidedInvWrapper(this, side));
         }
