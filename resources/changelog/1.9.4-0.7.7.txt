@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Add sideless fluid capability to fluid tiles
+* Fix tile init crash during capability initialization, Closes #23
+* Correctly display logs in Waila tooltip
