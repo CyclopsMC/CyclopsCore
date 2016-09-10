@@ -1,12 +1,11 @@
 package org.cyclops.cyclopscore.tileentity;
 
-import com.google.common.collect.Maps;
 import net.minecraft.util.EnumFacing;
+import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
 import org.cyclops.cyclopscore.helper.DirectionHelpers;
 import org.cyclops.cyclopscore.inventory.SimpleInventory;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * A TileEntity with a static internal inventory.
@@ -16,7 +15,7 @@ import java.util.Map;
 public abstract class InventoryTileEntity extends InventoryTileEntityBase {
     
     protected SimpleInventory inventory;
-    protected Map<EnumFacing, int[]> slotSides;
+    protected EnumFacingMap<int[]> slotSides;
     
     /**
      * Make new tile with an inventory.
@@ -26,7 +25,7 @@ public abstract class InventoryTileEntity extends InventoryTileEntityBase {
      */
     public InventoryTileEntity(int inventorySize, String inventoryName, int stackSize) {
         inventory = new SimpleInventory(inventorySize , inventoryName, stackSize);
-        slotSides = Maps.newHashMap();
+        slotSides = EnumFacingMap.newMap();
         for(EnumFacing side : DirectionHelpers.DIRECTIONS) {
             slotSides.put(side, new int[0]);
         }
