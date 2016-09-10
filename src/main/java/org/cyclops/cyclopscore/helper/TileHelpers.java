@@ -4,7 +4,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import org.cyclops.cyclopscore.datastructure.DimPos;
 
@@ -63,7 +62,7 @@ public final class TileHelpers {
      * @param <C> The capability instance.
      * @return The capability or null.
      */
-    public static <C> C getCapability(World world, BlockPos pos, EnumFacing side, Capability<C> capability) {
+    public static <C> C getCapability(IBlockAccess world, BlockPos pos, EnumFacing side, Capability<C> capability) {
         TileEntity tile = TileHelpers.getSafeTile(world, pos, TileEntity.class);
         if(tile != null && tile.hasCapability(capability, side)) {
             return tile.getCapability(capability, side);
