@@ -29,7 +29,7 @@ public class ItemBlockMetadata extends ItemBlock {
      */
     public ItemBlockMetadata(Block block) {
         super(block);
-        this.setHasSubtypes(true);
+        this.setHasSubtypes(block.getBlockState().getValidStates().size() > 1);
         informationProvider = new InformationProviderComponent(block);
         if(block instanceof IBlockRarityProvider) {
             rarityProvider = (IBlockRarityProvider) block;
