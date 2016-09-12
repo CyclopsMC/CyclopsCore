@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.tileentity;
 
+import com.google.common.collect.Lists;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -10,8 +11,14 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
+import org.cyclops.commoncapabilities.api.capability.inventorystate.CombinedInventoryState;
+import org.cyclops.commoncapabilities.api.capability.inventorystate.IInventoryState;
+import org.cyclops.commoncapabilities.api.capability.inventorystate.ItemHandlerModifiableInventoryState;
+import org.cyclops.cyclopscore.Capabilities;
 import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
 import org.cyclops.cyclopscore.inventory.INBTInventory;
+
+import java.util.List;
 
 /**
  * A TileEntity with an internal inventory.
@@ -25,10 +32,32 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
 
     public InventoryTileEntityBase() {
         this.sidedInventoryHandlers = EnumFacingMap.newMap();
+        if (Capabilities.INVENTORY_STATE != null) {
+            addInventoryStateInventoryWrappers();
+        } else {
+            addRegularInventoryWrappers();
+        }
+    }
+
+    protected void addRegularInventoryWrappers() {
         addCapabilityInternal(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new InvWrapper(this));
         for(EnumFacing side : EnumFacing.VALUES) {
             addCapabilitySided(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side, new SidedInvWrapper(this, side));
         }
+    }
+
+    protected void addInventoryStateInventoryWrappers() {
+        List<IInventoryState> inventoryStates = Lists.newLinkedList();
+        ItemHandlerModifiableInventoryState invWrapper = new ItemHandlerModifiableInventoryState(new InvWrapper(this));
+        addCapabilityInternal(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, invWrapper);
+        inventoryStates.add(invWrapper);
+        for(EnumFacing side : EnumFacing.VALUES) {
+            ItemHandlerModifiableInventoryState sidedInvWrapper =
+                    new ItemHandlerModifiableInventoryState(new SidedInvWrapper(this, side));
+            addCapabilitySided(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side, sidedInvWrapper);
+            inventoryStates.add(sidedInvWrapper);
+        }
+        addCapabilityInternal(Capabilities.INVENTORY_STATE, new CombinedInventoryState(inventoryStates));
     }
     
     /**
