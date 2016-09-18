@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.tileentity;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import lombok.experimental.Delegate;
 import net.minecraft.block.state.IBlockState;
@@ -20,6 +21,7 @@ import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
 import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
 import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -46,7 +48,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     private boolean shouldSendUpdate = false;
     private int sendUpdateBackoff = 0;
     private final boolean ticking;
-    private final Map<Pair<Capability<?>, EnumFacing>, Object> capabilities = Maps.newHashMap();
+    private Map<Pair<Capability<?>, EnumFacing>, Object> capabilities = Maps.newHashMap();
 
     public CyclopsTileEntity() {
         sendUpdateBackoff = (int) Math.round(Math.random() * getUpdateBackoffTicks()); // Random backoff so not all TE's will be updated at once.
@@ -211,7 +213,9 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      * When the tile is loaded or created.
      */
     public void onLoad() {
-
+        if (capabilities instanceof HashMap) {
+            capabilities = ImmutableMap.copyOf(capabilities);
+        }
     }
     
     /**
@@ -293,10 +297,25 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
         return super.getCapability(capability, facing);
     }
 
+    /**
+     * Add a sideless capability.
+     * This can only be called at tile construction time!
+     * @param capability The capability type.
+     * @param value The capability.
+     * @param <T> The capability type.
+     */
     public <T> void addCapabilityInternal(Capability<T> capability, T value) {
         capabilities.put(Pair.<Capability<?>, EnumFacing>of(capability, null), value);
     }
 
+    /**
+     * Add a sided capability.
+     * This can only be called at tile construction time!
+     * @param capability The capability type.
+     * @param facing The side for the capability.
+     * @param value The capability.
+     * @param <T> The capability type.
+     */
     public <T> void addCapabilitySided(Capability<T> capability, EnumFacing facing, T value) {
         capabilities.put(Pair.<Capability<?>, EnumFacing>of(capability, facing), value);
     }
