@@ -117,7 +117,7 @@ public final class BlockHelpers {
         if(item == null) {
             return null;
         }
-        return new ItemStack(item, 1, blockState.getBlock().getMetaFromState(blockState));
+        return new ItemStack(item, 1, item.getHasSubtypes() ? blockState.getBlock().damageDropped(blockState) : 0);
     }
 
     /**
