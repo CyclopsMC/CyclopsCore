@@ -40,7 +40,7 @@ public abstract class NBTClassType<T> {
     /**
      * A map of all the types to their persist actions.
      */
-    public static Map<Class<?>, NBTClassType<?>> NBTYPES = new HashMap<Class<?>, NBTClassType<?>>(); 
+    public static Map<Class<?>, NBTClassType<?>> NBTYPES = new IdentityHashMap<>();
     static {
         NBTYPES.put(Integer.class, new NBTClassType<Integer>() {
 
