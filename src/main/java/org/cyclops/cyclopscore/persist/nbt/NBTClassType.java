@@ -487,6 +487,49 @@ public abstract class NBTClassType<T> {
             }
         });
     }
+
+    /**
+     * Get the serialization class for the given object.
+     * @param clazz The class of the object.
+     * @param <T> The object type
+     * @return The serialization class.
+     */
+    public static <T> NBTClassType<T> getClassType(Class<T> clazz) {
+        return (NBTClassType<T>) NBTYPES.get(clazz);
+    }
+
+    /**
+     * Write the given object to NBT.
+     * @param clazz The class of the object.
+     * @param name The NBT key name to write to.
+     * @param instance The instance to serialize.
+     * @param tag The NBT tag to write in.
+     * @param <T> The class type.
+     * @param <I> The object type.
+     */
+    public static <T, I extends T> void writeNbt(Class<T> clazz, String name, I instance, NBTTagCompound tag) {
+        NBTClassType<T> serializationClass = getClassType(clazz);
+        if (serializationClass == null) {
+            throw new RuntimeException("No valid NBT serialization was found for " + instance + " of type " + clazz);
+        }
+        serializationClass.writePersistedField(name, instance, tag);
+    }
+
+    /**
+     * Read an object from NBT.
+     * @param clazz The class of the object.
+     * @param name The NBT key name to read from.
+     * @param tag The NBT tag to read in.
+     * @param <T> The class type.
+     * @return The read object.
+     */
+    public static <T> T readNbt(Class<T> clazz, String name, NBTTagCompound tag) {
+        NBTClassType<T> serializationClass = getClassType(clazz);
+        if (serializationClass == null) {
+            throw new RuntimeException("No valid NBT serialization was found type " + clazz);
+        }
+        return serializationClass.readPersistedField(name, tag);
+    }
     
     private static boolean isImplementsInterface(Class<?> clazz, Class<?> interfaceClazz) {
     	try {
