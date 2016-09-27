@@ -52,7 +52,7 @@ public abstract class GuiContainerExtended extends GuiContainer implements
     }
 
     protected ResourceLocation constructResourceLocation() {
-        return new ResourceLocation(container.getGuiProvider().getMod().getModId(), getGuiTexture());
+        return new ResourceLocation(container.getGuiProvider().getModGui().getModId(), getGuiTexture());
     }
 
     /**

@@ -35,6 +35,6 @@ public interface IGuiContainerProvider {
     /**
      * @return The mod providing this interface.
      */
-    public ModBase getMod();
+    public ModBase getModGui();
 	
 }

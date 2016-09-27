@@ -52,7 +52,7 @@ public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockCon
     }
 
     @Override
-    public ModBase getMod() {
+    public ModBase getModGui() {
         return getConfig().getMod();
     }
 

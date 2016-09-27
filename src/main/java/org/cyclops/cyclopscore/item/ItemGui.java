@@ -40,7 +40,7 @@ public abstract class ItemGui extends ConfigurableItem implements IGuiContainerP
 	}
 
     @Override
-    public ModBase getMod() {
+    public ModBase getModGui() {
         return eConfig.getMod();
     }
     
