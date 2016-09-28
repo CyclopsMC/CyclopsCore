@@ -105,7 +105,7 @@ public class GuiNumberField extends GuiTextFieldExtended {
         }
         arrowDown.enabled = true;
         try {
-            if (getInt() == 0) {
+            if (positiveOnly && getInt() == 0) {
                 arrowDown.enabled = false;
             }
         } catch (NumberFormatException e ) {
