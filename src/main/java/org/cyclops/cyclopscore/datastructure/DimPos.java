@@ -24,4 +24,14 @@ public class DimPos implements Comparable<DimPos> {
         }
         return compareDim;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof DimPos && compareTo((DimPos) o) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * world.provider.getDimension() + blockPos.hashCode();
+    }
 }
