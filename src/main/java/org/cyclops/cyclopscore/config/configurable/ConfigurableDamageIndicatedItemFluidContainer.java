@@ -177,7 +177,7 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
 
     @Override
     public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
-        return EnumActionResult.FAIL;
+        return EnumActionResult.PASS;
     }
 
     @Override
