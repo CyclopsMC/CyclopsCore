@@ -131,6 +131,10 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity {
         tank.writeToNBT(tag);
         return tag;
     }
+
+    protected boolean isUpdateInventoryHashOnTankContentsChanged() {
+        return false;
+    }
     
     /**
      * Fills fluid into internal tanks.
@@ -170,6 +174,13 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity {
      */
     public boolean isSendUpdateOnTankChanged() {
         return sendUpdateOnTankChanged;
+    }
+
+    public void onTankChanged() {
+        sendUpdate();
+        if (isUpdateInventoryHashOnTankContentsChanged()) {
+            updateInventoryHash();
+        }
     }
 
     /**

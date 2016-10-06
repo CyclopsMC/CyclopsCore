@@ -76,7 +76,11 @@ public class SingleUseTank extends Tank {
     protected void sendUpdate() {
     	// TODO: generalize this to accept ITankUpdateListeners if this would be necessary later.
     	if(!(tile instanceof TankInventoryTileEntity) || ((TankInventoryTileEntity) tile).isSendUpdateOnTankChanged()) {
-    		tile.sendUpdate();
+            if (tile instanceof TankInventoryTileEntity) {
+                ((TankInventoryTileEntity) tile).onTankChanged();
+            } else {
+                tile.sendUpdate();
+            }
     	}
     }
 

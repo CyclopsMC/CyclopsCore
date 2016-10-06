@@ -81,10 +81,14 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
         onInventoryChanged();
     }
 
+    protected void updateInventoryHash() {
+        inventoryHash = RAND.nextInt();
+    }
+
     protected void onInventoryChanged() {
         if(isSendUpdateOnInventoryChanged())
             sendUpdate();
-        inventoryHash = RAND.nextInt();
+        updateInventoryHash();
     }
 
     @Override
