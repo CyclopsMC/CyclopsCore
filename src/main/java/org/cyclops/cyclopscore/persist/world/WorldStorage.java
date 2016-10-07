@@ -61,6 +61,7 @@ public abstract class WorldStorage implements INBTProvider {
      * @param event The received event.
      */
     public void onStartedEvent(FMLServerStartedEvent event) {
+        reset();
         loadData();
         afterLoad();
     }
