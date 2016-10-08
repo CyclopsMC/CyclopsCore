@@ -1,0 +1,22 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add DimPos hashCode
+* Add helper methods to read/write classes from/to NBT
+* Add more capability helpers
+* Add IInventoryState capability to inventories
+
+Changes:
+* Rename IGuiContainerProvider#getMod to getModGui
+* Improve efficiency of NBT class type map retrieval
+* Bake tile capabilities after loading for improved efficiency
+* Improve inventory side slot retrieval efficiency
+* Make getCapability in TileHelpers world type less strict
+
+Fixes:
+* Fix WorldStorage not resetting when changing games/worlds
+* Let processing continue when right clicking with a fluid container item
+* Fix commands breaking help command
+* Fix non-positive number fields disabling arrows when 0
+* Fix incorrect blockstate to itemstack conversion
+* Correctly set ItemBlock hasSubtypes field based on the number of blockstates
