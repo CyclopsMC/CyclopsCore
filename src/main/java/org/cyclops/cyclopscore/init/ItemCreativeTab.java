@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.init;
 
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 
 /**
@@ -18,6 +19,10 @@ public class ItemCreativeTab extends CreativeTabs {
 
     @Override
     public Item getTabIconItem() {
-        return item.getObject();
+        Item i = item.getObject();
+        if (i == null) {
+            i = Item.getItemFromBlock(Blocks.BARRIER);
+        }
+        return i;
     }
 }

@@ -28,6 +28,6 @@ public class ItemConfigReference implements IObjectReference<Item> {
                         itemConfigClass.getName());
             }
         }
-        return itemConfig.getItemInstance();
+        return itemConfig != null ? itemConfig.getItemInstance() : null;
     }
 }
