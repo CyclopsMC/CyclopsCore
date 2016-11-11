@@ -27,6 +27,7 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
     private final List<E> visibleItems;
     private final IItemPredicate<E> itemSearchPredicate;
     private String lastSearchString = "";
+    private int firstElement = 0;
 
     /**
      * Make a new instance.
@@ -65,6 +66,10 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
         return getFilteredItems().size();
     }
 
+    public int getFirstElement() {
+        return this.firstElement;
+    }
+
     /**
      * @return The maximum amount of columns to show.
      */
@@ -86,7 +91,7 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
     public void scrollTo(float scroll) {
         onScroll();
         int elements = (getFilteredItemCount() + getColumns() - 1) - getPageSize() * getColumns();
-        int firstElement = (int)((double)(scroll * (float)elements) + 0.5D);
+        firstElement = (int)((double)(scroll * (float)elements) + 0.5D);
         firstElement -= firstElement % getScrollStepSize();
         if(firstElement < 0) firstElement = 0;
         for(int i = 0; i < getPageSize(); i++) {

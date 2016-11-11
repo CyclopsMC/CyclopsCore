@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
+import com.google.common.collect.Lists;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import org.cyclops.cyclopscore.inventory.container.ScrollingInventoryContainer;
@@ -8,6 +10,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Gui for an inventory container that has a scrollbar and search field.
@@ -150,7 +153,16 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
             getScrollingInventoryContainer().scrollTo(this.currentScroll);
         }
 
+        // Temporarily swap slot list, to avoid rendering all slots (which would include the hidden ones)
+        List<Slot> oldSlots = this.inventorySlots.inventorySlots;
+        int startIndex = getScrollingInventoryContainer().getFirstElement();
+        List<Slot> newSlots = Lists.newArrayList();
+        newSlots.addAll(oldSlots.subList(startIndex, Math.min(oldSlots.size(), startIndex
+                + (getScrollingInventoryContainer().getPageSize() * getScrollingInventoryContainer().getColumns()))));
+        newSlots.addAll(oldSlots.subList(getScrollingInventoryContainer().getUnfilteredItemCount(), oldSlots.size()));
+        this.inventorySlots.inventorySlots = newSlots;
         super.drawScreen(mouseX, mouseY, partialTicks);
+        this.inventorySlots.inventorySlots = oldSlots;
     }
 
     @Override
