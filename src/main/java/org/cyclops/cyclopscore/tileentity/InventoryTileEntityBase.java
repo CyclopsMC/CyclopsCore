@@ -152,6 +152,12 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
     }
 
     @Override
+    public void markDirty() {
+        updateInventoryHash();
+        super.markDirty();
+    }
+
+    @Override
     public void readFromNBT(NBTTagCompound tag) {
         super.readFromNBT(tag);
         INBTInventory inventory = getInventory();
