@@ -1,0 +1,10 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+
+Changes:
+* Increase FPS when rendering scrollable guis with many slots. Only the slots that are actually visible will be rendered now.
+
+Fixes:
+* Correctly update state hash when inventory is marked as dirty
+* Make creative tab icons null-safe
