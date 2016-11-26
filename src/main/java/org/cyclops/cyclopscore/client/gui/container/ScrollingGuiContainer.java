@@ -153,16 +153,27 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
             getScrollingInventoryContainer().scrollTo(this.currentScroll);
         }
 
-        // Temporarily swap slot list, to avoid rendering all slots (which would include the hidden ones)
-        List<Slot> oldSlots = this.inventorySlots.inventorySlots;
-        int startIndex = getScrollingInventoryContainer().getFirstElement();
-        List<Slot> newSlots = Lists.newArrayList();
-        newSlots.addAll(oldSlots.subList(startIndex, Math.min(oldSlots.size(), startIndex
-                + (getScrollingInventoryContainer().getPageSize() * getScrollingInventoryContainer().getColumns()))));
-        newSlots.addAll(oldSlots.subList(getScrollingInventoryContainer().getUnfilteredItemCount(), oldSlots.size()));
-        this.inventorySlots.inventorySlots = newSlots;
-        super.drawScreen(mouseX, mouseY, partialTicks);
-        this.inventorySlots.inventorySlots = oldSlots;
+        if (isSubsetRenderSlots()) {
+            // Temporarily swap slot list, to avoid rendering all slots (which would include the hidden ones)
+            List<Slot> oldSlots = this.inventorySlots.inventorySlots;
+            int startIndex = getScrollingInventoryContainer().getFirstElement();
+            List<Slot> newSlots = Lists.newArrayList();
+            newSlots.addAll(oldSlots.subList(startIndex, Math.min(oldSlots.size(), startIndex
+                    + (getScrollingInventoryContainer().getPageSize() * getScrollingInventoryContainer().getColumns()))));
+            newSlots.addAll(oldSlots.subList(getScrollingInventoryContainer().getUnfilteredItemCount(), oldSlots.size()));
+            this.inventorySlots.inventorySlots = newSlots;
+            super.drawScreen(mouseX, mouseY, partialTicks);
+            this.inventorySlots.inventorySlots = oldSlots;
+        } else {
+            super.drawScreen(mouseX, mouseY, partialTicks);
+        }
+    }
+
+    /**
+     * @return If the optimization should be done for only rendering the visible slots. Default: false
+     */
+    protected boolean isSubsetRenderSlots() {
+        return false;
     }
 
     @Override
