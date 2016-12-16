@@ -601,7 +601,8 @@ public abstract class NBTClassType<T> {
         try {
             action.persistedFieldAction(provider, field, tag, write);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException("Could not access field " + fieldName + " in " + provider.getClass());
+            e.printStackTrace();
+            throw new RuntimeException("Could not access field " + fieldName + " in " + provider.getClass() + " " + e.getMessage());
         }
         
         field.setAccessible(wasAccessible);
@@ -634,7 +635,7 @@ public abstract class NBTClassType<T> {
                     }
                 }
             } catch (IllegalArgumentException e) {
-                throw new RuntimeException("Can not write the field " + field.getName() + " in " + castTile + " since it does not exist.");
+                throw new RuntimeException("Can not write the field " + field.getName() + " in " + castTile + " since it does not exist. " + e.getMessage());
             }
         } else {
             T object = null;
@@ -647,7 +648,8 @@ public abstract class NBTClassType<T> {
                     field.set(castTile, object);
                 }
             }  catch (IllegalArgumentException e) {
-                throw new RuntimeException("Can not read the field " + field.getName() + " as " + object + " in " + castTile + " since it does not exist OR there is a class mismatch.");
+                e.printStackTrace();
+                throw new RuntimeException("Can not read the field " + field.getName() + " as " + object + " in " + castTile + " since it does not exist OR there is a class mismatch. " + e.getMessage());
             }
 
         }
