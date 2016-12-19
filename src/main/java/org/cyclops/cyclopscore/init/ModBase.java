@@ -11,10 +11,10 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
@@ -387,13 +387,13 @@ public abstract class ModBase {
 
         // Remap all matching blocks and items.
         for (FMLMissingMappingsEvent.MissingMapping missingMapping : event.get()) {
-            if (missingMapping.resourceLocation.getResourceDomain().equals(Reference.MOD_ID)) {
+            if (missingMapping.resourceLocation.getResourceDomain().equals(getModId())) {
                 Block block = blockMappings.get(missingMapping.resourceLocation.getResourcePath());
                 Item item = itemMappings.get(missingMapping.resourceLocation.getResourcePath());
-                if (block != null) {
+                if (block != null && missingMapping.type == GameRegistry.Type.BLOCK) {
                     missingMapping.remap(block);
                 }
-                if (item != null) {
+                if (item != null && missingMapping.type == GameRegistry.Type.ITEM) {
                     missingMapping.remap(item);
                 }
             }

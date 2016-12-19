@@ -195,6 +195,16 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
         return canAccess(slot, side);
     }
 
+    @Override
+    public boolean isEmpty() {
+        return getInventory().isEmpty();
+    }
+
+    @Override
+    public boolean isUsableByPlayer(EntityPlayer player) {
+        return getInventory().isUsableByPlayer(player);
+    }
+
     /**
      * If this tile should send blockState updates when the inventory has changed.
      * @return If it should send blockState updates.

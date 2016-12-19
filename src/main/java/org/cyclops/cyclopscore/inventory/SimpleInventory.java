@@ -39,6 +39,9 @@ public class SimpleInventory implements INBTInventory {
      */
     public SimpleInventory(int size, String name, int stackLimit) {
         _contents = new ItemStack[size];
+        for (int i = 0; i < _contents.length; i++) {
+            _contents[i] = ItemStack.EMPTY;
+        }
         _name = name;
         _stackLimit = stackLimit;
     }
