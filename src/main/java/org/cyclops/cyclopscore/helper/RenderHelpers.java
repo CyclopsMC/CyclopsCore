@@ -159,7 +159,7 @@ public class RenderHelpers {
             if (side == EnumFacing.WEST)  d0 = (double)i + bb.minX - (double)f;
             if (side == EnumFacing.EAST)  d0 = (double)i + bb.maxX + (double)f;
 
-            Particle fx = new ParticleDigging.Factory().getEntityFX(-1, world, d0, d1, d2, 0.0D, 0.0D, 0.0D, Block.getStateId(blockState));
+            Particle fx = new ParticleDigging.Factory().createParticle(-1, world, d0, d1, d2, 0.0D, 0.0D, 0.0D, Block.getStateId(blockState));
             particleManager.addEffect(fx);
         }
     }

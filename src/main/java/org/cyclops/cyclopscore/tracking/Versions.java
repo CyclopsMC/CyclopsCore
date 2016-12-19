@@ -167,13 +167,13 @@ public class Versions {
                     chat.appendText(String.format(": %s ", triple.getMiddle().getVersion()));
                     chat.appendSibling(downloadComponent);
 
-                    player.addChatComponentMessage(chat);
+                    player.sendMessage(chat);
 
                     chat = new TextComponentString("");
                     chat.appendSibling(modNameComponent);
                     chat.appendText(TextFormatting.WHITE + " ");
                     chat.appendText(triple.getMiddle().getInfo());
-                    player.addChatComponentMessage(chat);
+                    player.sendMessage(chat);
                 }
             }
             displayed = true;

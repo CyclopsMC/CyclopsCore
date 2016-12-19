@@ -6,7 +6,6 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.oredict.OreDictionary;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,7 +17,7 @@ public class CraftingHelpers {
     @SuppressWarnings("unchecked")
     public static IRecipe findCraftingRecipe(ItemStack itemStack, int index) throws IllegalArgumentException {
         int indexAttempt = index;
-        for(IRecipe recipe : (List<IRecipe>) CraftingManager.getInstance().getRecipeList()) {
+        for(IRecipe recipe : CraftingManager.getInstance().getRecipeList()) {
             if(itemStacksEqual(recipe.getRecipeOutput(), itemStack) && indexAttempt-- == 0) {
                 return recipe;
             }
@@ -30,7 +29,7 @@ public class CraftingHelpers {
     @SuppressWarnings("unchecked")
     public static Map.Entry<ItemStack, ItemStack> findFurnaceRecipe(ItemStack itemStack, int index) throws IllegalArgumentException {
         int indexAttempt = index;
-        for(Map.Entry<ItemStack, ItemStack> recipe : ((Map<ItemStack, ItemStack>) FurnaceRecipes.instance().
+        for(Map.Entry<ItemStack, ItemStack> recipe : (FurnaceRecipes.instance().
                 getSmeltingList()).entrySet()) {
             if(itemStacksEqual(recipe.getValue(), itemStack) && indexAttempt-- == 0) {
                 return recipe;

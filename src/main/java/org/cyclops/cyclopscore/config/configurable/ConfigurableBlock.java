@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -71,10 +72,10 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
 
     @SuppressWarnings("unchecked")
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
-                                     int meta, EntityLivingBase placer) {
-        IBlockState blockState = super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
-        for(IProperty property : blockState.getPropertyNames()) {
+    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+                                     int meta, EntityLivingBase placer, EnumHand hand) {
+        IBlockState blockState = super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
+        for(IProperty property : blockState.getPropertyKeys()) {
             if(property.getName().equals("facing")) {
                 blockState.withProperty(property, placer.getHorizontalFacing());
             }

@@ -72,13 +72,13 @@ public class SimpleInventory implements INBTInventory {
     @Override
     public ItemStack decrStackSize(int slotId, int count) {
         if (slotId < _contents.length && _contents[slotId] != null) {
-            if (_contents[slotId].stackSize > count) {
+            if (_contents[slotId].getCount() > count) {
                 ItemStack result = _contents[slotId].splitStack(count);
                 onInventoryChanged();
                 return result;
             }
             ItemStack stack = _contents[slotId];
-            _contents[slotId] = null;
+            _contents[slotId] = ItemStack.EMPTY;
             onInventoryChanged();
             return stack;
         }
@@ -92,8 +92,8 @@ public class SimpleInventory implements INBTInventory {
         }
         this._contents[slotId] = itemstack;
 
-        if (itemstack != null && itemstack.stackSize > this.getInventoryStackLimit()) {
-            itemstack.stackSize = this.getInventoryStackLimit();
+        if (itemstack != null && itemstack.getCount() > this.getInventoryStackLimit()) {
+            itemstack.setCount(this.getInventoryStackLimit());
         }
         onInventoryChanged();
     }
@@ -108,7 +108,7 @@ public class SimpleInventory implements INBTInventory {
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer entityplayer) {
+    public boolean isUsableByPlayer(EntityPlayer entityplayer) {
         return true;
     }
 
@@ -136,7 +136,7 @@ public class SimpleInventory implements INBTInventory {
         NBTTagList nbttaglist = data.getTagList(tag, MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
         
         for (int j = 0; j < _contents.length; ++j)
-            _contents[j] = null;
+            _contents[j] = ItemStack.EMPTY;
 
         for (int j = 0; j < nbttaglist.tagCount(); ++j) {
             NBTTagCompound slot = nbttaglist.getCompoundTagAt(j);
@@ -147,7 +147,7 @@ public class SimpleInventory implements INBTInventory {
                 index = slot.getByte("Slot");
             }
             if (index >= 0 && index < _contents.length) {
-                _contents[index] = ItemStack.loadItemStackFromNBT(slot);
+                _contents[index] = new ItemStack(slot);
             }
         }
     }
@@ -165,7 +165,7 @@ public class SimpleInventory implements INBTInventory {
     public void writeToNBT(NBTTagCompound data, String tag) {
         NBTTagList slots = new NBTTagList();
         for (byte index = 0; index < _contents.length; ++index) {
-            if (_contents[index] != null && _contents[index].stackSize > 0) {
+            if (_contents[index] != null && _contents[index].getCount() > 0) {
                 NBTTagCompound slot = new NBTTagCompound();
                 slots.appendTag(slot);
                 slot.setByte("Slot", index);
@@ -177,12 +177,8 @@ public class SimpleInventory implements INBTInventory {
 
     @Override
     public ItemStack removeStackFromSlot(int slotId) {
-        if (this._contents[slotId] == null) {
-            return null;
-        }
-
         ItemStack stackToTake = this._contents[slotId];
-        this._contents[slotId] = null;
+        this._contents[slotId] = ItemStack.EMPTY;
         return stackToTake;
     }
 
@@ -217,7 +213,7 @@ public class SimpleInventory implements INBTInventory {
     @Override
     public void clear() {
         for(int i = 0; i < getSizeInventory(); i++) {
-            _contents[i] = null;
+            _contents[i] = ItemStack.EMPTY;
         }
     }
 

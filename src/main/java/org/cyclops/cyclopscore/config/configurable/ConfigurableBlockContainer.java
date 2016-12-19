@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
@@ -95,10 +96,10 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
 
     @SuppressWarnings("unchecked")
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
-                                     int meta, EntityLivingBase placer) {
-        IBlockState blockState = super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
-        for(IProperty property : blockState.getPropertyNames()) {
+    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+                                     int meta, EntityLivingBase placer, EnumHand hand) {
+        IBlockState blockState = super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
+        for(IProperty property : blockState.getPropertyKeys()) {
             if(property.getName().equals("facing")) {
                 blockState = blockState.withProperty(property, placer.getHorizontalFacing());
             }
@@ -218,7 +219,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         if(entity != null) {
             CyclopsTileEntity tile = (CyclopsTileEntity) world.getTileEntity(blockPos);
 
-            if(stack.getTagCompound() != null) {
+            if(tile != null && stack.getTagCompound() != null) {
                 stack.getTagCompound().setInteger("x", blockPos.getX());
                 stack.getTagCompound().setInteger("y", blockPos.getY());
                 stack.getTagCompound().setInteger("z", blockPos.getZ());

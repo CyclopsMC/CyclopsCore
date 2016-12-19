@@ -220,7 +220,7 @@ public abstract class PacketCodec extends PacketBase {
 				try {
 					if(input.readBoolean()) {
 						NBTTagCompound tag = CompressedStreamTools.read(input, new NBTSizeTracker(2097152L));
-						return ItemStack.loadItemStackFromNBT(tag);
+						return new ItemStack(tag);
 					} else {
 						return null;
 					}

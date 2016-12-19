@@ -52,7 +52,7 @@ public class DirectionHelpers {
      * @return The {@link net.minecraft.util.EnumFacing} the entity is facing.
      */
     public static EnumFacing getEntityFacingDirection(EntityLivingBase entity) {
-        int facingDirection = MathHelper.floor_double((entity.rotationYaw * 4F) / 360F + 0.5D) & 3;
+        int facingDirection = MathHelper.floor((entity.rotationYaw * 4F) / 360F + 0.5D) & 3;
         return ENTITYFACING[facingDirection];
     }
 

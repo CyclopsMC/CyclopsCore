@@ -1,10 +1,12 @@
 package org.cyclops.cyclopscore.helper;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.item.IInformationProvider;
 import org.cyclops.cyclopscore.persist.nbt.INBTSerializable;
@@ -26,27 +28,14 @@ public final class L10NHelpers {
     /**
      * Localize a key that has values in language files.
      *
-     * @param key The key of the language file entry.
-     * @return The localized string.
-     */
-    public static String localize(String key) {
-        if(MinecraftHelpers.isModdedEnvironment()) {
-            return I18n.translateToLocal(key);
-        } else {
-            return key;
-        }
-    }
-
-    /**
-     * Localize a key that has values in language files.
-     *
      * @param key    The key of the language file entry.
      * @param params The parameters of the formatting
      * @return The localized string.
      */
+    @SideOnly(Side.CLIENT)
     public static String localize(String key, Object... params) {
         if(MinecraftHelpers.isModdedEnvironment()) {
-            return I18n.translateToLocalFormatted(key, params);
+            return I18n.format(key, params);
         } else {
             return String.format("%s: %s", key, Arrays.toString(params));
         }
@@ -87,7 +76,7 @@ public final class L10NHelpers {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void addOptionalInfo(List list, String prefix) {
         String key = prefix + ".info";
-        if (I18n.canTranslate(key)) {
+        if (I18n.hasKey(key)) {
             if (MinecraftHelpers.isShifted()) {
                 String localized = localize(key);
                 list.addAll(StringHelpers.splitLines(localized, MAX_TOOLTIP_LINE_LENGTH,

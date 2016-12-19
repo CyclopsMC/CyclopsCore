@@ -80,8 +80,8 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     protected Slot addSlotToContainer(Slot slot) {
-        slot.xDisplayPosition += offsetX;
-        slot.yDisplayPosition += offsetY;
+        slot.xPos += offsetX;
+        slot.yPos += offsetY;
         return super.addSlotToContainer(slot);
     }
     
@@ -137,7 +137,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
         ItemStack stack = null;
-        Slot slot = (Slot) inventorySlots.get(slotID);
+        Slot slot = inventorySlots.get(slotID);
         int slots = getSizeInventory();
         
         if(slot != null && slot.getHasStack()) {
@@ -152,17 +152,17 @@ public abstract class InventoryContainer extends Container implements IButtonCli
                 return null;
             }
             
-            if(stackInSlot.stackSize == 0) {
-                slot.putStack(null);
+            if(stackInSlot.getCount() == 0) {
+                slot.putStack(ItemStack.EMPTY);
             } else {
                 slot.onSlotChanged();
             }
 
-            if(stackInSlot.stackSize == stack.stackSize) {
+            if(stackInSlot.getCount() == stack.getCount()) {
                 return null;
             }
 
-            slot.onPickupFromSlot(player, stackInSlot);
+            slot.onTake(player, stackInSlot);
         }
         
         return stack;
@@ -182,21 +182,21 @@ public abstract class InventoryContainer extends Container implements IButtonCli
         ItemStack existingStack;
 
         if (stack.isStackable()) {
-            while (stack.stackSize > 0 && (!reverse && slotIndex < slotRange || reverse && slotIndex >= slotStart)) {
-                slot = (Slot) this.inventorySlots.get(slotIndex);
+            while (stack.getCount() > 0 && (!reverse && slotIndex < slotRange || reverse && slotIndex >= slotStart)) {
+                slot = this.inventorySlots.get(slotIndex);
                 int maxSlotSize = Math.min(slot.getSlotStackLimit(), maxStack);
                 existingStack = slot.getStack();
 
-                if (slot.isItemValid(stack) && existingStack != null && existingStack.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getItemDamage() == existingStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, existingStack)) {
-                    int existingSize = existingStack.stackSize + stack.stackSize;
+                if (slot.isItemValid(stack) && !existingStack.isEmpty() && existingStack.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getItemDamage() == existingStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, existingStack)) {
+                    int existingSize = existingStack.getCount() + stack.getCount();
                     if (existingSize <= maxSlotSize) {
-                        stack.stackSize = 0;
-                        existingStack.stackSize = existingSize;
+                        stack.setCount(0);
+                        existingStack.setCount(existingSize);
                         slot.onSlotChanged();
                         successful = true;
-                    } else if (existingStack.stackSize < maxSlotSize) {
-                        stack.stackSize -= maxSlotSize - existingStack.stackSize;
-                        existingStack.stackSize = maxSlotSize;
+                    } else if (existingStack.getCount() < maxSlotSize) {
+                        stack.shrink(maxSlotSize - existingStack.getCount());
+                        existingStack.setCount(maxSlotSize);
                         slot.onSlotChanged();
                         successful = true;
                     }
@@ -210,24 +210,24 @@ public abstract class InventoryContainer extends Container implements IButtonCli
             }
         }
 
-        if (stack.stackSize > 0) {
+        if (stack.getCount() > 0) {
             if (reverse) {
                 slotIndex = slotRange - 1;
             } else {
                 slotIndex = slotStart;
             }
 
-            while (stack.stackSize > 0 && (!reverse && slotIndex < slotRange || reverse && slotIndex >= slotStart)) {
-                slot = (Slot) this.inventorySlots.get(slotIndex);
+            while (stack.getCount() > 0 && (!reverse && slotIndex < slotRange || reverse && slotIndex >= slotStart)) {
+                slot = this.inventorySlots.get(slotIndex);
                 existingStack = slot.getStack();
 
-                if (slot.isItemValid(stack) && existingStack == null) {
-                    int placedAmount = Math.min(stack.stackSize, slot.getSlotStackLimit());
+                if (slot.isItemValid(stack) && existingStack.isEmpty()) {
+                    int placedAmount = Math.min(stack.getCount(), slot.getSlotStackLimit());
                     ItemStack toPut = stack.copy();
-                    toPut.stackSize = placedAmount;
+                    toPut.setCount(placedAmount);
                     slot.putStack(toPut);
                     slot.onSlotChanged();
-                    stack.stackSize -= placedAmount;
+                    stack.shrink(placedAmount);
                     successful = true;
                 }
 
@@ -252,7 +252,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
 
     @Override
     public ItemStack slotClick(int slotId, int arg, ClickType clickType, EntityPlayer player) {
-        Slot slot = slotId < 0 ? null : (Slot) this.inventorySlots.get(slotId);
+        Slot slot = slotId < 0 ? null : this.inventorySlots.get(slotId);
         // Phantom slot code based on Buildcraft
         if(slot instanceof SlotExtended && ((SlotExtended) slot).isPhantom()) {
             return slotClickPhantom(slot, arg, clickType, player);
@@ -265,7 +265,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
 
         if (mouseButton == 2) {
             if (((SlotExtended) slot).isAdjustable()) {
-                slot.putStack(null);
+                slot.putStack(ItemStack.EMPTY);
             }
         } else if (mouseButton == 0 || mouseButton == 1) {
             InventoryPlayer playerInv = player.inventory;
@@ -273,17 +273,17 @@ public abstract class InventoryContainer extends Container implements IButtonCli
             ItemStack stackSlot = slot.getStack();
             ItemStack stackHeld = playerInv.getItemStack();
 
-            if (stackSlot != null) {
+            if (!stackSlot.isEmpty()) {
                 stack = stackSlot.copy();
             }
 
-            if (stackSlot == null) {
-                if (stackHeld != null && slot.isItemValid(stackHeld)) {
+            if (stackSlot.isEmpty()) {
+                if (!stackHeld.isEmpty() && slot.isItemValid(stackHeld)) {
                     fillPhantomSlot(slot, stackHeld, mouseButton, clickType);
                 }
-            } else if (stackHeld == null) {
+            } else if (stackHeld.isEmpty()) {
                 adjustPhantomSlot(slot, mouseButton, clickType);
-                slot.onPickupFromSlot(player, playerInv.getItemStack());
+                slot.onTake(player, playerInv.getItemStack());
             } else if (slot.isItemValid(stackHeld)) {
                 if (ItemStack.areItemStacksEqual(stackSlot, stackHeld)) {
                     adjustPhantomSlot(slot, mouseButton, clickType);
@@ -302,19 +302,19 @@ public abstract class InventoryContainer extends Container implements IButtonCli
         ItemStack stackSlot = slot.getStack();
         int stackSize;
         if (clickType == ClickType.QUICK_MOVE) {
-            stackSize = mouseButton == 0 ? (stackSlot.stackSize + 1) / 2 : stackSlot.stackSize * 2;
+            stackSize = mouseButton == 0 ? (stackSlot.getCount() + 1) / 2 : stackSlot.getCount() * 2;
         } else {
-            stackSize = mouseButton == 0 ? stackSlot.stackSize - 1 : stackSlot.stackSize + 1;
+            stackSize = mouseButton == 0 ? stackSlot.getCount() - 1 : stackSlot.getCount() + 1;
         }
 
         if (stackSize > slot.getSlotStackLimit()) {
             stackSize = slot.getSlotStackLimit();
         }
 
-        stackSlot.stackSize = stackSize;
+        stackSlot.setCount(stackSize);
 
-        if (stackSlot.stackSize <= 0) {
-            slot.putStack(null);
+        if (stackSlot.getCount() <= 0) {
+            slot.putStack(ItemStack.EMPTY);
         }
     }
 
@@ -322,12 +322,12 @@ public abstract class InventoryContainer extends Container implements IButtonCli
         if (!((SlotExtended) slot).isAdjustable()) {
             return;
         }
-        int stackSize = mouseButton == 0 ? stackHeld.stackSize : 1;
+        int stackSize = mouseButton == 0 ? stackHeld.getCount() : 1;
         if (stackSize > slot.getSlotStackLimit()) {
             stackSize = slot.getSlotStackLimit();
         }
         ItemStack phantomStack = stackHeld.copy();
-        phantomStack.stackSize = stackSize;
+        phantomStack.setCount(stackSize);
 
         slot.putStack(phantomStack);
     }

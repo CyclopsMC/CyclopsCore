@@ -75,7 +75,7 @@ public class GuiNumberField extends GuiTextFieldExtended {
     }
 
     protected int getDiffAmount() {
-        return Minecraft.getMinecraft().thePlayer.isSneaking() ? 10 : 1;
+        return Minecraft.getMinecraft().player.isSneaking() ? 10 : 1;
     }
 
     protected void increase() {

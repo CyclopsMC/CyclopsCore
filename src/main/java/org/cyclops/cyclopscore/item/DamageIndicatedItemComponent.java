@@ -4,9 +4,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.ItemFluidContainer;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.ItemFluidContainer;
 
 import java.util.List;
 
@@ -50,15 +52,15 @@ public class DamageIndicatedItemComponent{
      * @param meta The meta data for the item to add.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void getSubItems(Item item, CreativeTabs tab, List itemList, Fluid fluid, int meta) {
+    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> itemList, Fluid fluid, int meta) {
         // Add the 'full' container.
         ItemStack itemStackFull = new ItemStack(this.item, 1, meta);
-        this.item.fill(itemStackFull, new FluidStack(fluid, this.item.getCapacity(itemStackFull)), true);
+        IFluidHandlerItemCapacity fluidHanderFull = (IFluidHandlerItemCapacity) FluidUtil.getFluidHandler(itemStackFull);
+        fluidHanderFull.fill(new FluidStack(fluid, fluidHanderFull.getCapacity()), true);
         itemList.add(itemStackFull);
         
         // Add the 'empty' container.
         ItemStack itemStackEmpty = new ItemStack(item, 1, meta);
-        this.item.fill(itemStackEmpty, new FluidStack(fluid, 0), true);
         itemList.add(itemStackEmpty);
     }
     
@@ -69,9 +71,11 @@ public class DamageIndicatedItemComponent{
      */
     public String getInfo(ItemStack itemStack) {
         int amount = 0;
-        if(item.getFluid(itemStack) != null)
-            amount = item.getFluid(itemStack).amount;
-        return getInfo(item.getFluid(itemStack), amount, item.getCapacity(itemStack));
+        IFluidHandlerItemCapacity fluidHander = (IFluidHandlerItemCapacity) FluidUtil.getFluidHandler(itemStack);
+        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack);
+        if(fluidStack != null)
+            amount = fluidStack.amount;
+        return getInfo(fluidStack, amount, fluidHander.getCapacity());
     }
     
     /**
@@ -109,9 +113,11 @@ public class DamageIndicatedItemComponent{
      */
     public double getDurability(ItemStack itemStack) {
         double amount = 0;
-        double capacity = item.getCapacity(itemStack);
-        if(item.getFluid(itemStack) != null)
-            amount = item.getFluid(itemStack).amount;
+        IFluidHandlerItemCapacity fluidHander = (IFluidHandlerItemCapacity) FluidUtil.getFluidHandler(itemStack);
+        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack);
+        double capacity = fluidHander.getCapacity();
+        if(fluidStack.getFluid() != null)
+            amount = fluidStack.amount;
         return (capacity - amount) / capacity;
     }
     

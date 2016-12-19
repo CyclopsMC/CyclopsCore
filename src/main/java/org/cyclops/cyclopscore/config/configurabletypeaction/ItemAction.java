@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -8,6 +7,7 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
@@ -19,7 +19,6 @@ import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * The action used for {@link ItemConfig}.
@@ -76,7 +75,7 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
     public static void handleItemModel(Item item, String namedId, CreativeTabs tab, String modId, IModelProviderConfig modelProvider) {
         if(MinecraftHelpers.isClientSide()) {
             if(item.getHasSubtypes()) {
-                List<ItemStack> itemStacks = Lists.newLinkedList();
+                NonNullList<ItemStack> itemStacks = NonNullList.create();
                 item.getSubItems(item, tab, itemStacks);
                 for(ItemStack itemStack : itemStacks) {
                     String itemName = modelProvider.getModelName(itemStack);

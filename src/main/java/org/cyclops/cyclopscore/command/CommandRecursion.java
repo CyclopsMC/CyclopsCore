@@ -53,7 +53,7 @@ public class CommandRecursion extends CommandMod {
             recursionDepth++;
 
         if(recursionDepth == 42 - 1) {
-            icommandsender.addChatMessage(new TextComponentString("You just lost The Game"));
+            icommandsender.sendMessage(new TextComponentString("You just lost The Game"));
         }
         processCommandHelp(icommandsender, astring);
     }

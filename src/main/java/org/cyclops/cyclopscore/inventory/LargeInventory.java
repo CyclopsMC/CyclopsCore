@@ -31,7 +31,7 @@ public class LargeInventory extends SimpleInventory {
         NBTTagList nbttaglist = data.getTagList(tag, MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
 
         for (int j = 0; j < _contents.length; ++j)
-            _contents[j] = null;
+            _contents[j] = ItemStack.EMPTY;
 
         for (int j = 0; j < nbttaglist.tagCount(); ++j) {
             NBTTagCompound slot = nbttaglist.getCompoundTagAt(j);
@@ -42,7 +42,7 @@ public class LargeInventory extends SimpleInventory {
                 index = slot.getInteger("Slot");
             }
             if (index >= 0 && index < _contents.length) {
-                _contents[index] = ItemStack.loadItemStackFromNBT(slot);
+                _contents[index] = new ItemStack(slot);
             }
         }
     }
@@ -55,7 +55,7 @@ public class LargeInventory extends SimpleInventory {
     public void writeToNBT(NBTTagCompound data, String tag) {
         NBTTagList slots = new NBTTagList();
         for (int index = 0; index < _contents.length; ++index) {
-            if (_contents[index] != null && _contents[index].stackSize > 0) {
+            if (_contents[index] != null && _contents[index].getCount() > 0) {
                 NBTTagCompound slot = new NBTTagCompound();
                 slots.appendTag(slot);
                 slot.setInteger("Slot", index);

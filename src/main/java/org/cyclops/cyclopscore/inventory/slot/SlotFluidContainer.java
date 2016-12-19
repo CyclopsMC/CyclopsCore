@@ -4,13 +4,12 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.cyclops.cyclopscore.fluid.SingleUseTank;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
 
 /**
- * Slots that will accept buckets and {@link IFluidContainerItem}.
+ * Slots that will accept buckets and fluid containers.
  * @author rubensworks
  *
  */

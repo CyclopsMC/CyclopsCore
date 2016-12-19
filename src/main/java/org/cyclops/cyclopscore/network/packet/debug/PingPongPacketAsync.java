@@ -40,7 +40,7 @@ public class PingPongPacketAsync extends PacketCodec {
 	}
 
 	protected void log(EntityPlayer player, String message) {
-		player.addChatComponentMessage(new TextComponentString(message));
+		player.sendMessage(new TextComponentString(message));
 	}
 
 	protected PingPongPacketAsync newPacket() {

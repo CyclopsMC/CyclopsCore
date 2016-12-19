@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.recipe.custom.component;
 
 import lombok.Getter;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 import org.cyclops.cyclopscore.datastructure.Wrapper;
 
@@ -17,7 +18,7 @@ import java.util.Objects;
 public class OreDictItemStackRecipeComponent extends ItemStackRecipeComponent {
 
     @Getter private final String key;
-    private final Wrapper<List<ItemStack>> itemStacks;
+    private final Wrapper<NonNullList<ItemStack>> itemStacks;
 
     public OreDictItemStackRecipeComponent(String key) {
         super(null);

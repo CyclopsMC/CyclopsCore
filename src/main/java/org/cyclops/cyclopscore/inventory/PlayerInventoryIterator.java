@@ -27,12 +27,12 @@ public class PlayerInventoryIterator implements Iterator<ItemStack>{
 
     @Override
     public boolean hasNext() {
-        return i < player.inventory.mainInventory.length;
+        return i < player.inventory.mainInventory.size();
     }
 
     @Override
     public ItemStack next() {
-        return player.inventory.mainInventory[i++];
+        return player.inventory.mainInventory.get(i++);
     }
     
     /**
@@ -45,8 +45,8 @@ public class PlayerInventoryIterator implements Iterator<ItemStack>{
 
     @Override
     public void remove() {
-        if(i - 1 >= 0 && i - 1 < player.inventory.mainInventory.length)
-            player.inventory.mainInventory[i - 1] = null;
+        if(i - 1 >= 0 && i - 1 < player.inventory.mainInventory.size())
+            player.inventory.mainInventory.set(i - 1, ItemStack.EMPTY);
     }
 
     /**
@@ -54,8 +54,8 @@ public class PlayerInventoryIterator implements Iterator<ItemStack>{
      * @param itemStack The itemstack to place.
      */
     public void replace(ItemStack itemStack) {
-        if(i - 1 >= 0 && i - 1 < player.inventory.mainInventory.length)
-            player.inventory.mainInventory[i - 1] = itemStack;
+        if(i - 1 >= 0 && i - 1 < player.inventory.mainInventory.size())
+            player.inventory.mainInventory.set(i - 1, itemStack);
     }
 
 }

@@ -54,8 +54,9 @@ public class CommandMod implements ICommand {
     protected ModBase getMod() {
         return this.mod;
     }
-    
-    protected List<String> getAliases() {
+
+    @Override
+    public List<String> getAliases() {
         return aliases;
     }
     
@@ -75,11 +76,11 @@ public class CommandMod implements ICommand {
 
     @Override
     public int compareTo(ICommand o) {
-        return this.getCommandName().compareTo(o.getCommandName());
+        return this.getName().compareTo(o.getName());
     }
 
     @Override
-    public String getCommandName() {
+    public String getName() {
         return mod.getModId();
     }
 
@@ -87,22 +88,16 @@ public class CommandMod implements ICommand {
      * @return Recursively returns the whole command string up to the current subcommand.
      */
     public String getFullCommand() {
-        return getCommandName();
+        return getName();
     }
 
     @Override
-    public String getCommandUsage(ICommandSender icommandsender) {
+    public String getUsage(ICommandSender icommandsender) {
         String command = "/" + getFullCommand();
         Iterator<String> it = getSubcommands().keySet().iterator();
         return it.hasNext() ?
                 joinStrings(command + " <", it, " | ", ">") :
                 command;
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Override
-    public List<String> getCommandAliases() {
-        return this.getAliases();
     }
     
     protected String[] shortenArgumentList(String[] astring) {
@@ -122,7 +117,7 @@ public class CommandMod implements ICommand {
      *                          to what wrong.
      */
     public void processCommandHelp(ICommandSender icommandsender, String[] astring) throws CommandException {
-        throw new WrongUsageException(getCommandUsage(icommandsender));
+        throw new WrongUsageException(getUsage(icommandsender));
     }
 
     @Override
@@ -142,18 +137,18 @@ public class CommandMod implements ICommand {
 
     @Override
     public boolean checkPermission(MinecraftServer server, ICommandSender icommandsender) {
-        return icommandsender.canCommandSenderUseCommand(FMLCommonHandler.instance().getMinecraftServerInstance().getOpPermissionLevel(), getCommandName());
+        return icommandsender.canUseCommand(FMLCommonHandler.instance().getMinecraftServerInstance().getOpPermissionLevel(), getName());
     }
 
     @SuppressWarnings("rawtypes")
     @Override
-    public List getTabCompletionOptions(MinecraftServer server, ICommandSender icommandsender,
+    public List getTabCompletions(MinecraftServer server, ICommandSender icommandsender,
             String[] astring, BlockPos blockPos) {
         if(astring.length != 0) {
             ICommand subcommand = getSubcommands().get(astring[0]);
             if(subcommand != null) {
                 String[] asubstring = shortenArgumentList(astring);
-                return subcommand.getTabCompletionOptions(server, icommandsender, asubstring, blockPos);
+                return subcommand.getTabCompletions(server, icommandsender, asubstring, blockPos);
             } else {
                 return getSubCommands(astring[0]);
             }
@@ -190,6 +185,6 @@ public class CommandMod implements ICommand {
     }
 
     protected void printLineToChat(ICommandSender sender, String line) {
-        sender.addChatMessage(new TextComponentString(line));
+        sender.sendMessage(new TextComponentString(line));
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,7 +23,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.world.gen.WorldGeneratorTree;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -86,7 +86,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public void getSubBlocks(Item item, CreativeTabs creativeTabs, List list) {
+    public void getSubBlocks(Item item, CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         list.add(new ItemStack(item, 1, 0));
     }
 

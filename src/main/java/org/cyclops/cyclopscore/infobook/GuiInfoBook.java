@@ -358,15 +358,15 @@ public abstract class GuiInfoBook extends GuiScreen {
     }
 
     public int getTick() {
-        return (int) mc.theWorld.getWorldTime();
+        return (int) mc.world.getWorldTime();
     }
 
     @Override
     public void updateScreen() {
         super.updateScreen();
 
-        if(!this.mc.thePlayer.isEntityAlive() || this.mc.thePlayer.isDead) {
-            this.mc.thePlayer.closeScreen();
+        if(!this.mc.player.isEntityAlive() || this.mc.player.isDead) {
+            this.mc.player.closeScreen();
         }
     }
 

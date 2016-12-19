@@ -122,11 +122,11 @@ public final class PacketHandler {
             final Minecraft mc = Minecraft.getMinecraft();
             IThreadListener thread = FMLCommonHandler.instance().getWorldThread(ctx.getClientHandler());
             if (packet.isAsync()) {
-                packet.actionClient(mc.theWorld, mc.thePlayer);
+                packet.actionClient(mc.world, mc.player);
             } else {
                 thread.addScheduledTask(new Runnable() {
                     public void run() {
-                        packet.actionClient(mc.theWorld, mc.thePlayer);
+                        packet.actionClient(mc.world, mc.player);
                     }
                 });
             }
@@ -145,7 +145,7 @@ public final class PacketHandler {
             }
 
             EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-            packet.actionServer(player.worldObj, player);
+            packet.actionServer(player.world, player);
             return null;
         }
     }

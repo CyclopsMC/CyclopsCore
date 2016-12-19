@@ -25,10 +25,10 @@ public final class Reference {
     public static final String TEXTURE_PATH_PARTICLES = "textures/particles/";
 
     // MOD ID's
-    public static final String MOD_WAILA = "Waila";
+    public static final String MOD_WAILA = "waila";
 
     // Dependencies
     public static final String MOD_DEPENDENCIES =
-              "required-after:Forge@[12.16.0.1846,);";
+              "required-after:forge@[13.19.1.2189,);";
 
 }

@@ -1,11 +1,11 @@
 package org.cyclops.cyclopscore.helper;
 
-import com.google.common.collect.Lists;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -59,16 +59,16 @@ public final class ItemStackHelpers {
         float offsetY = RANDOM.nextFloat() * 0.8F + 0.1F;
         float offsetZ = RANDOM.nextFloat() * 0.8F + 0.1F;
 
-        while (itemStack.stackSize > 0) {
+        while (itemStack.getCount() > 0) {
             int i = RANDOM.nextInt(21) + 10;
 
-            if (i > itemStack.stackSize) {
-                i = itemStack.stackSize;
+            if (i > itemStack.getCount()) {
+                i = itemStack.getCount();
             }
 
-            itemStack.stackSize -= i;
             ItemStack dropStack = itemStack.copy();
-            dropStack.stackSize = i;
+            itemStack.shrink(i);
+            dropStack.setCount(i);
             EntityItem entityitem = new EntityItem(world, x + (double)offsetX, y + (double)offsetY,
                     z + (double)offsetZ, dropStack);
 
@@ -76,7 +76,7 @@ public final class ItemStackHelpers {
             entityitem.motionX = RANDOM.nextGaussian() * (double)motion;
             entityitem.motionY = RANDOM.nextGaussian() * (double)motion + 0.2D;
             entityitem.motionZ = RANDOM.nextGaussian() * (double)motion;
-            world.spawnEntityInWorld(entityitem);
+            world.spawnEntity(entityitem);
         }
     }
 
@@ -106,7 +106,7 @@ public final class ItemStackHelpers {
             entityitem.motionZ += d3;
 
             entityitem.setNoPickupDelay();
-            world.spawnEntityInWorld(entityitem);
+            world.spawnEntity(entityitem);
         }
     }
 
@@ -135,7 +135,7 @@ public final class ItemStackHelpers {
      * @return The list of variants.
      */
     public static List<ItemStack> getVariants(ItemStack itemStack) {
-        List<ItemStack> output = Lists.newLinkedList();
+        NonNullList<ItemStack> output = NonNullList.create();
         if(itemStack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
             itemStack.getItem().getSubItems(itemStack.getItem(), null, output);
         } else {
@@ -185,7 +185,7 @@ public final class ItemStackHelpers {
      * @return If they are completely equal.
      */
     public static boolean areItemStacksIdentical(ItemStack a, ItemStack b) {
-        return ItemStack.areItemStacksEqual(a, b) && ((a == null && b == null) || (a != null && a.stackSize == b.stackSize));
+        return ItemStack.areItemStacksEqual(a, b) && ((a.isEmpty() && b.isEmpty()) || (!a.isEmpty() && a.getCount() == b.getCount()));
     }
 
 }

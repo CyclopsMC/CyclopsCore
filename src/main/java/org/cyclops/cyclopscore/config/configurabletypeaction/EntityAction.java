@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.cyclops.cyclopscore.config.extendedconfig.EntityConfig;
@@ -27,6 +28,7 @@ public class EntityAction<T extends Entity> extends ConfigurableTypeAction<Entit
         
         // Register
         EntityRegistry.registerModEntity(
+                new ResourceLocation(eConfig.getMod().getModId(), eConfig.getSubUniqueName()),
                 eConfig.getElement(),
                 eConfig.getSubUniqueName(),
                 Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY),

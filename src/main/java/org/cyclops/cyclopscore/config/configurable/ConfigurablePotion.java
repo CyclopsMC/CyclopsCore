@@ -66,7 +66,7 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
     }
 
     public int getAmplifier(EntityLivingBase entity, Potion potion) {
-        return entity.getActivePotionEffect(potion).getAmplifier();
+        return entity != null ? entity.getActivePotionEffect(potion).getAmplifier() : 0;
     }
 
     public int getAmplifier(EntityLivingBase entity) {

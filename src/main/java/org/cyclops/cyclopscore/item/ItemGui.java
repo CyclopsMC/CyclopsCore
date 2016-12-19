@@ -85,8 +85,9 @@ public abstract class ItemGui extends ConfigurableItem implements IGuiContainerP
     }
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
-		if (player instanceof FakePlayer || (player != null && player.getClass().getName().equals("ffba04.blockhologram.dummy.DummyPlayer"))) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+		ItemStack itemStack = player.getHeldItem(hand);
+		if (player instanceof FakePlayer || (player.getClass().getName().equals("ffba04.blockhologram.dummy.DummyPlayer"))) {
 			return new ActionResult<>(EnumActionResult.FAIL, itemStack);
 		}
 		openGuiForItemIndex(world, player, player.inventory.currentItem);

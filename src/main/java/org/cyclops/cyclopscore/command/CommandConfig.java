@@ -34,7 +34,7 @@ public class CommandConfig extends CommandMod {
     }
 
     @Override
-    protected List<String> getAliases() {
+    public List<String> getAliases() {
         List<String> list = new LinkedList<String>();
         list.add(NAME);
         return list;
@@ -54,7 +54,7 @@ public class CommandConfig extends CommandMod {
     public void processCommandHelp(ICommandSender icommandsender, String[] astring) throws CommandException {
         Iterator<String> it = getSubcommands().keySet().iterator();
         if (it.hasNext())
-            icommandsender.addChatMessage(new TextComponentString(joinStrings(it, ", ")));
+            icommandsender.sendMessage(new TextComponentString(joinStrings(it, ", ")));
         else
             throw new CommandException(L10NHelpers.localize("chat.cyclopscore.command.noConfigsFound"));
     }

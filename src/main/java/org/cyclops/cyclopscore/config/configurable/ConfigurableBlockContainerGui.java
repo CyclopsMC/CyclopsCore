@@ -4,7 +4,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
@@ -62,8 +61,8 @@ public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockCon
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityplayer, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
-        super.onBlockActivated(world, blockPos, blockState, entityplayer, hand, heldItem, side, hitX, hitY, hitZ);
+    public boolean onBlockActivated(World world, BlockPos blockPos, IBlockState blockState, EntityPlayer entityplayer, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+        super.onBlockActivated(world, blockPos, blockState, entityplayer, hand, side, hitX, hitY, hitZ);
 
         // Drop through if the player is sneaking
         if (entityplayer.isSneaking()) {
@@ -94,12 +93,12 @@ public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockCon
 	@SuppressWarnings("unchecked")
 	@SideOnly(Side.CLIENT)
 	public void tryCloseClientGui(World world) {
-    	if(Minecraft.getMinecraft().thePlayer.openContainer instanceof TileInventoryContainer<?>) {
+    	if(Minecraft.getMinecraft().player.openContainer instanceof TileInventoryContainer<?>) {
     		TileInventoryContainer<? extends InventoryTileEntity> container =
     				(TileInventoryContainer<? extends InventoryTileEntity>) Minecraft.getMinecraft()
-    				.thePlayer.openContainer;
+    				.player.openContainer;
     		if(container.getTile() == null || container.getTile().isInvalid()) {
-    			Minecraft.getMinecraft().thePlayer.closeScreen();
+    			Minecraft.getMinecraft().player.closeScreen();
     		}
     	}
 	}

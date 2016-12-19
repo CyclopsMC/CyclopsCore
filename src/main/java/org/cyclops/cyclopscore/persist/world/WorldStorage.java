@@ -79,11 +79,11 @@ public abstract class WorldStorage implements INBTProvider {
 
     private NBTDataHolder initDataHolder(boolean loading) {
         String dataId = mod.getModId() + "_" + getDataId();
-        NBTDataHolder data = (NBTDataHolder) FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].
-                loadItemData(NBTDataHolder.class, dataId);
+        NBTDataHolder data = (NBTDataHolder) FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0].
+                loadData(NBTDataHolder.class, dataId);
         if(data == null) {
             data = new NBTDataHolder(dataId);
-            FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[0].setItemData(dataId, data);
+            FMLCommonHandler.instance().getMinecraftServerInstance().worlds[0].setData(dataId, data);
         } else if (loading) {
             NBTTagCompound tempTag = data.getTempTagAndReset();
             if (tempTag != null) {

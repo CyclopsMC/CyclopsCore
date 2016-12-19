@@ -57,7 +57,7 @@ public class CommandConfigSet extends CommandConfig {
         if (astring.length == 0) {
             processCommandHelp(icommandsender, astring);
         } else if (astring.length > 1) {
-            icommandsender.addChatMessage(new TextComponentString(L10NHelpers.localize("chat.cyclopscore.command.onlyOneValue")));
+            icommandsender.sendMessage(new TextComponentString(L10NHelpers.localize("chat.cyclopscore.command.onlyOneValue")));
         } else {
             Object newValue = Helpers.tryParse(astring[0], config.getValue());
             if(newValue != null) {
@@ -66,10 +66,10 @@ public class CommandConfigSet extends CommandConfig {
                 config.getCallback().run(newValue);
                 config.save(configuration, true);
                 configuration.save();
-                icommandsender.addChatMessage(new TextComponentString(L10NHelpers.localize("chat.cyclopscore.command.updatedValue",
+                icommandsender.sendMessage(new TextComponentString(L10NHelpers.localize("chat.cyclopscore.command.updatedValue",
                         name, newValue.toString())));
             } else {
-                icommandsender.addChatMessage(new TextComponentString(L10NHelpers.localize("chat.cyclopscore.command.invalidNewValue")));
+                icommandsender.sendMessage(new TextComponentString(L10NHelpers.localize("chat.cyclopscore.command.invalidNewValue")));
             }
         }
     }

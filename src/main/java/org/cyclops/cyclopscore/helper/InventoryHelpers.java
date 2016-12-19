@@ -21,7 +21,7 @@ public class InventoryHelpers {
 	 */
 	public static void clearInventory(IInventory inventory) {
 	    for (int i = 0; i < inventory.getSizeInventory(); i++) {
-	        inventory.setInventorySlotContents(i, null);
+	        inventory.setInventorySlotContents(i, ItemStack.EMPTY);
 	    }
 	}
 	
@@ -35,11 +35,11 @@ public class InventoryHelpers {
 	 */
 	public static void tryReAddToStack(EntityPlayer player, @Nullable ItemStack originalStack, ItemStack newStackPart) {
 		if (!player.capabilities.isCreativeMode) {
-        	if(originalStack != null && --originalStack.copy().stackSize == 0) {
+        	if(originalStack != null && originalStack.getCount() - 1 == 0) {
         		player.inventory.setInventorySlotContents(player.inventory.currentItem, newStackPart);
         	} else {
                 if(originalStack != null) {
-					--originalStack.stackSize;
+					originalStack.shrink(1);
 				}
         		if(!player.inventory.addItemStackToInventory(newStackPart)) {
         			player.dropItem(newStackPart, false);
@@ -77,7 +77,7 @@ public class InventoryHelpers {
         NBTTagList nbttaglist = data.getTagList(tagName, MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
         
         for(int j = 0; j < inventory.getSizeInventory(); j++) {
-        	inventory.setInventorySlotContents(j, null);
+        	inventory.setInventorySlotContents(j, ItemStack.EMPTY);
         }
 
         for(int j = 0; j < nbttaglist.tagCount(); j++) {
@@ -89,7 +89,7 @@ public class InventoryHelpers {
                 index = slot.getByte("Slot");
             }
             if(index >= 0 && index < inventory.getSizeInventory()) {
-            	inventory.setInventorySlotContents(index, ItemStack.loadItemStackFromNBT(slot));
+            	inventory.setInventorySlotContents(index, new ItemStack(slot));
             }
         }
     }
@@ -104,7 +104,7 @@ public class InventoryHelpers {
         NBTTagList slots = new NBTTagList();
         for(byte index = 0; index < inventory.getSizeInventory(); ++index) {
         	ItemStack itemStack = inventory.getStackInSlot(index);
-            if(itemStack != null && itemStack.stackSize > 0) {
+            if(!itemStack.isEmpty() && itemStack.getCount() > 0) {
                 NBTTagCompound slot = new NBTTagCompound();
                 slot.setInteger("index", index);
                 slots.appendTag(slot);
@@ -121,7 +121,7 @@ public class InventoryHelpers {
 	 * @return The item stack.
 	 */
 	public static ItemStack getItemFromIndex(EntityPlayer player, int itemIndex) {
-		return player.inventory.mainInventory[itemIndex];
+		return player.inventory.mainInventory.get(itemIndex);
 	}
 
 	/**
@@ -145,14 +145,14 @@ public class InventoryHelpers {
      */
     public static boolean addToSlot(IInventory inventory, int slot, ItemStack itemStack, boolean simulate) {
         ItemStack produceStack = inventory.getStackInSlot(slot);
-        if(produceStack == null) {
+        if(produceStack.isEmpty()) {
         	inventory.setInventorySlotContents(slot, itemStack);
             return true;
         } else {
             if(produceStack.getItem() == itemStack.getItem()
-               && produceStack.getMaxStackSize() >= produceStack.stackSize + itemStack.stackSize) {
+               && produceStack.getMaxStackSize() >= produceStack.getCount() + itemStack.getCount()) {
 				if(!simulate) {
-					produceStack.stackSize += itemStack.stackSize;
+					produceStack.grow(itemStack.getCount());
 				}
                 return true;
             }

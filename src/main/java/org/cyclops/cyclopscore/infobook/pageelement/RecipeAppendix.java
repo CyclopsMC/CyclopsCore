@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -8,6 +7,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.ConfigHandler;
@@ -54,7 +54,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
     protected ItemStack prepareItemStack(ItemStack itemStack, int tick) {
         if(itemStack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
-            List<ItemStack> itemStacks = Lists.newLinkedList();
+            NonNullList<ItemStack> itemStacks = NonNullList.create();
             itemStack.getItem().getSubItems(itemStack.getItem(), null, itemStacks);
             if(itemStacks.isEmpty()) return itemStack;
             return itemStacks.get(tick % itemStacks.size());

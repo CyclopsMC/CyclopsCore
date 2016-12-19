@@ -96,12 +96,12 @@ public class WorldGenMinableExtended extends WorldGenMinable implements IRetroGe
             double d9 = rand.nextDouble() * (double)this.blocksPerVein / 16.0D;
             double d10 = (double)(MathHelper.sin((float) l * (float) Math.PI / (float) this.blocksPerVein) + 1.0F) * d9 + 1.0D;
             double d11 = (double)(MathHelper.sin((float) l * (float) Math.PI / (float) this.blocksPerVein) + 1.0F) * d9 + 1.0D;
-            int i1 = MathHelper.floor_double(d6 - d10 / 2.0D);
-            int j1 = MathHelper.floor_double(d7 - d11 / 2.0D);
-            int k1 = MathHelper.floor_double(d8 - d10 / 2.0D);
-            int l1 = MathHelper.floor_double(d6 + d10 / 2.0D);
-            int i2 = MathHelper.floor_double(d7 + d11 / 2.0D);
-            int j2 = MathHelper.floor_double(d8 + d10 / 2.0D);
+            int i1 = MathHelper.floor(d6 - d10 / 2.0D);
+            int j1 = MathHelper.floor(d7 - d11 / 2.0D);
+            int k1 = MathHelper.floor(d8 - d10 / 2.0D);
+            int l1 = MathHelper.floor(d6 + d10 / 2.0D);
+            int i2 = MathHelper.floor(d7 + d11 / 2.0D);
+            int j2 = MathHelper.floor(d8 + d10 / 2.0D);
 
             for (int cx = i1; cx <= l1; ++cx) {
                 double d12 = ((double)cx + 0.5D - d6) / (d10 / 2.0D);

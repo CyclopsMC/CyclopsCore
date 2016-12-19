@@ -5,16 +5,20 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.ItemFluidContainer;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 /**
- * This extension on {@link ItemFluidContainer} will show a damage indicator depending on how full
+ * This extension on {@link ItemFluidContainer} with a fluid capability will show a damage indicator depending on how full
  * the container is. This can be used to hold certain amounts of Fluids in an Item.
  * When this item is available in a CreativeTab, it will add itself as a full and an empty container.
  * 
@@ -37,7 +41,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
      *          The Fluid instance this container must hold.
      */
     public DamageIndicatedItemFluidContainer(int capacity, Fluid fluid) {
-        super(0, capacity);
+        super(capacity);
         this.fluid = fluid;
         init();
     }
@@ -46,45 +50,13 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
         component = new DamageIndicatedItemComponent(this);
     }
     
-    @Override
-    public FluidStack drain(ItemStack container, int maxDrain, boolean doDrain) {
-        if(container != null && container.getTagCompound() != null && container.getTagCompound().getCompoundTag("Fluid") != null) {
-            // Fix for Thermal Expansion
-            FluidStack stack = FluidStack.loadFluidStackFromNBT(container.getTagCompound().getCompoundTag("Fluid"));
-            if(stack != null && stack.amount <= 0) {
-                stack.amount = 0;
-                NBTTagCompound fluidTag = container.getTagCompound().getCompoundTag("Fluid");
-                fluidTag.setInteger("Amount", 0);
-                return stack;
-            }
-        }
-        if(container != null) {
-            FluidStack fluidStack = super.drain(container, maxDrain, doDrain);
-            if ((container.getTagCompound() == null || container.getTagCompound().getCompoundTag("Fluid") == null)) {
-                fill(container, new FluidStack(fluid, 0), true);
-            }
-            return fluidStack;
-        } else {
-            return null;
-        }
-    }
-    
-    @Override
-    public int fill(ItemStack container, FluidStack resource, boolean doFill) {
-        int capacityOld = capacity;
-        capacity = getCapacity(container);
-        int filled = super.fill(container, resource, doFill);
-        capacity = capacityOld;
-        return filled;
-    }
-    
     @SuppressWarnings({ "rawtypes"})
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item item, CreativeTabs tab, List itemList) {
+    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> itemList) {
         component.getSubItems(item, tab, itemList, fluid, 0);
     }
-    
+
     @Override
     public String getInfo(ItemStack itemStack) {
         return component.getInfo(itemStack);
@@ -129,8 +101,14 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
      * @return If it could be drained.
      */
     public boolean canDrain(int amount, ItemStack itemStack) {
-    	FluidStack simulatedDrain = drain(itemStack, amount, false);
+        IFluidHandler fluidHandler = FluidUtil.getFluidHandler(itemStack);
+        if (fluidHandler == null) return false;
+    	FluidStack simulatedDrain = fluidHandler.drain(amount, false);
     	return simulatedDrain != null && simulatedDrain.amount == amount;
     }
 
+    @Override
+    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+        return new FluidHandlerCapacityItemStack(stack, capacity);
+    }
 }

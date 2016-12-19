@@ -10,6 +10,7 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.IWorldNameable;
@@ -22,6 +23,8 @@ import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 import org.cyclops.cyclopscore.tileentity.TileEntityNBTStorage;
 import org.lwjgl.input.Keyboard;
+
+import javax.annotation.Nullable;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -98,7 +101,7 @@ public class MinecraftHelpers {
      * @param z Z coordinate.
      * @return the entity that was spawned.
      */
-    public static Entity spawnCreature(World world, String entityName, double x, double y, double z) {
+    public static Entity spawnCreature(World world, @Nullable ResourceLocation entityName, double x, double y, double z) {
         return ItemMonsterPlacer.spawnCreature(world, entityName, x, y, z);
     }
     
@@ -109,7 +112,7 @@ public class MinecraftHelpers {
      * @param blockPos The position.
      */
     public static void dropItems(World world, ItemStack stack, BlockPos blockPos) {
-        if (stack.stackSize > 0) {
+        if (stack.getCount() > 0) {
             float offsetMultiply = 0.7F;
             double offsetX = (world.rand.nextFloat() * offsetMultiply) + (1.0F - offsetMultiply) * 0.5D;
             double offsetY = (world.rand.nextFloat() * offsetMultiply) + (1.0F - offsetMultiply) * 0.5D;
@@ -118,7 +121,7 @@ public class MinecraftHelpers {
                     blockPos.getZ() + offsetZ, stack);
             entityitem.setPickupDelay(10);
     
-            world.spawnEntityInWorld(entityitem);
+            world.spawnEntity(entityitem);
         }
     }
     
@@ -131,7 +134,7 @@ public class MinecraftHelpers {
     public static void dropItems(World world, IInventory inventory, BlockPos blockPos) {
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
             ItemStack itemStack = inventory.getStackInSlot(i);
-            if (itemStack != null && itemStack.stackSize > 0)
+            if (!itemStack.isEmpty() && itemStack.getCount() > 0)
                 dropItems(world, inventory.getStackInSlot(i).copy(), blockPos);
         }
     }

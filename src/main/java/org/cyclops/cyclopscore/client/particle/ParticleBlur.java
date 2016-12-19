@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL11;
 public class ParticleBlur extends Particle {
 	
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			Reference.MOD_ID, Reference.TEXTURE_PATH_PARTICLES + "particleBlur.png");
+			Reference.MOD_ID, Reference.TEXTURE_PATH_PARTICLES + "particle_blur.png");
 	private static final int MAX_VIEW_DISTANCE = 30;
 	
 	private int scaleLife;
@@ -74,7 +74,7 @@ public class ParticleBlur extends Particle {
 	}
 	
 	private void validateDistance() {
-		EntityLivingBase renderentity = FMLClientHandler.instance().getClient().thePlayer;
+		EntityLivingBase renderentity = FMLClientHandler.instance().getClient().player;
 		int visibleDistance = MAX_VIEW_DISTANCE;
 		
 		if(!FMLClientHandler.instance().getClient().gameSettings.fancyGraphics) {

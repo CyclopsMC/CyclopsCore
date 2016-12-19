@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A config that refers to a {@link IConfigurable}. Every unique {@link IConfigurable} must have one
@@ -51,7 +52,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
     public ExtendedConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<?> element) {
         this.mod = mod;
     	this.enabled = enabled;
-    	this.namedId = namedId;
+    	this.namedId = namedId.toLowerCase(Locale.ROOT);
     	this.comment = comment;
     	this.element = element;
         try {

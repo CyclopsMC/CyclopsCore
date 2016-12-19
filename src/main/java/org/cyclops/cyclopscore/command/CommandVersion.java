@@ -22,12 +22,12 @@ public class CommandVersion extends CommandMod {
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] parts, BlockPos blockPos) {
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] parts, BlockPos blockPos) {
         return null;
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] parts) {
-        sender.addChatMessage(new TextComponentString(getMod().getReferenceValue(ModBase.REFKEY_MOD_VERSION)));
+        sender.sendMessage(new TextComponentString(getMod().getReferenceValue(ModBase.REFKEY_MOD_VERSION)));
     }
 }

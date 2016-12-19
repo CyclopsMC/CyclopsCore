@@ -16,7 +16,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
@@ -24,6 +25,7 @@ import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 import org.cyclops.cyclopscore.item.DamageIndicatedItemFluidContainer;
+import org.cyclops.cyclopscore.item.IFluidHandlerItemCapacity;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -65,15 +67,17 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStack, World world, EntityPlayer player, EnumHand hand) {
-        FluidStack fluidStack = getFluid(itemStack);
-        FluidStack drained = this.drain(itemStack, Fluid.BUCKET_VOLUME, false);
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack itemStack = player.getHeldItem(hand);
+        IFluidHandlerItemCapacity fluidHandler = (IFluidHandlerItemCapacity) FluidUtil.getFluidHandler(itemStack);
+        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack);
+        FluidStack drained = fluidHandler.drain(Fluid.BUCKET_VOLUME, false);
         Block block = getFluid().getBlock();
 
         boolean hasBucket = drained != null
                 && (drained.amount == Fluid.BUCKET_VOLUME);
         boolean hasSpace = fluidStack == null
-                || (fluidStack.amount + Fluid.BUCKET_VOLUME <= getCapacity(itemStack));
+                || (fluidStack.amount + Fluid.BUCKET_VOLUME <= fluidHandler.getCapacity());
         RayTraceResult movingobjectpositionDrain = this.rayTrace(world, player, false);
         RayTraceResult movingobjectpositionFill = this.rayTrace(world, player, true);
 
@@ -88,10 +92,10 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
                 /*if (!player.canPlayerEdit(blockPos, movingobjectpositionFill.sideHit, itemStack)) {
                     return itemStack;
                 }*/
-                if (world.getBlockState(blockPos).getBlock() == block && (Integer) world.getBlockState(blockPos).getValue(BlockLiquid.LEVEL) == 0) {
+                if (world.getBlockState(blockPos).getBlock() == block && world.getBlockState(blockPos).getValue(BlockLiquid.LEVEL) == 0) {
                     if(hasSpace) {
                         world.setBlockToAir(blockPos);
-                        this.fill(itemStack, new FluidStack(getFluid(), Fluid.BUCKET_VOLUME), true);
+                        fluidHandler.fill(new FluidStack(getFluid(), Fluid.BUCKET_VOLUME), true);
                     }
                     return MinecraftHelpers.successAction(itemStack);
                 }
@@ -112,7 +116,7 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
                 }*/
 
                 if (this.tryPlaceContainedLiquid(world, blockPos, block, true)) {
-                    this.drain(itemStack, Fluid.BUCKET_VOLUME, true);
+                    fluidHandler.drain(Fluid.BUCKET_VOLUME, true);
                     return MinecraftHelpers.successAction(itemStack);
                 }
             }
@@ -176,7 +180,7 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
     }
 
     @Override
-    public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
         return EnumActionResult.PASS;
     }
 
@@ -198,11 +202,11 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
         FluidStack drained = null;
         while(it.hasNext() && amount > 0) {
             ItemStack current = it.next();
-            if(current != null && current != itemStack && current.getItem() instanceof IFluidContainerItem) {
-                IFluidContainerItem containerItem = (IFluidContainerItem) current.getItem();
-                FluidStack totalFluid = containerItem.getFluid(current);
+            if(current != null && current != itemStack && FluidUtil.getFluidHandler(current) != null) {
+                IFluidHandler containerItem = FluidUtil.getFluidHandler(current);
+                FluidStack totalFluid = FluidUtil.getFluidContained(current);
                 if(totalFluid != null && totalFluid.getFluid() == fluid) {
-                    FluidStack thisDrained = containerItem.drain(current, amount, doDrain);
+                    FluidStack thisDrained = containerItem.drain(amount, doDrain);
                     if (thisDrained != null && thisDrained.getFluid() == fluid) {
                         if (drained == null) {
                             drained = thisDrained;
@@ -231,8 +235,8 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
     public boolean canConsume(int amount, ItemStack itemStack, @Nullable EntityPlayer player) {
         if(canDrain(amount, itemStack)) return true;
         int availableAmount = 0;
-        if(getFluid(itemStack) != null) {
-            availableAmount = getFluid(itemStack).amount;
+        if(FluidUtil.getFluidContained(itemStack) != null) {
+            availableAmount = FluidUtil.getFluidContained(itemStack).amount;
         }
         return player != null && drainFromOthers(amount - availableAmount, itemStack, getFluid(), player, false) != null;
     }
@@ -246,9 +250,9 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
      * @return The fluid that was drained.
      */
     public FluidStack consume(int amount, ItemStack itemStack, @Nullable EntityPlayer player) {
-        boolean doDrain = player == null || (!player.capabilities.isCreativeMode && !player.worldObj.isRemote);
+        boolean doDrain = player == null || (!player.capabilities.isCreativeMode && !player.world.isRemote);
         if (amount == 0) return null;
-        FluidStack drained = drain(itemStack, amount, doDrain);
+        FluidStack drained = FluidUtil.getFluidHandler(itemStack).drain(amount, doDrain);
         if (drained != null && drained.amount == amount) return drained;
         int drainedAmount = (drained == null ? 0 : drained.amount);
         int toDrain = amount - drainedAmount;
