@@ -1,9 +1,9 @@
-package org.cyclops.cyclopscore.item;
+package org.cyclops.cyclopscore.capability.fluid;
 
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 /**
- * An ItemStack fluid handler with a mutable capacity.
+ * An item fluid handler with a mutable capacity.
  * @author rubensworks
  */
 public interface IFluidHandlerItemCapacity extends IFluidHandlerItem {

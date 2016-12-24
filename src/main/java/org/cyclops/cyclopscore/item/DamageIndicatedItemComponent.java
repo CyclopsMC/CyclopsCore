@@ -9,6 +9,8 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
+import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
+import org.cyclops.cyclopscore.helper.FluidHelpers;
 
 import java.util.List;
 
@@ -55,7 +57,7 @@ public class DamageIndicatedItemComponent{
     public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> itemList, Fluid fluid, int meta) {
         // Add the 'full' container.
         ItemStack itemStackFull = new ItemStack(this.item, 1, meta);
-        IFluidHandlerItemCapacity fluidHanderFull = (IFluidHandlerItemCapacity) FluidUtil.getFluidHandler(itemStackFull);
+        IFluidHandlerItemCapacity fluidHanderFull = FluidHelpers.getFluidHandlerItemCapacity(itemStackFull);
         fluidHanderFull.fill(new FluidStack(fluid, fluidHanderFull.getCapacity()), true);
         itemList.add(itemStackFull);
         
@@ -71,7 +73,7 @@ public class DamageIndicatedItemComponent{
      */
     public String getInfo(ItemStack itemStack) {
         int amount = 0;
-        IFluidHandlerItemCapacity fluidHander = (IFluidHandlerItemCapacity) FluidUtil.getFluidHandler(itemStack);
+        IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack);
         FluidStack fluidStack = FluidUtil.getFluidContained(itemStack);
         if(fluidStack != null)
             amount = fluidStack.amount;
@@ -112,12 +114,10 @@ public class DamageIndicatedItemComponent{
      * @return The displayed durability.
      */
     public double getDurability(ItemStack itemStack) {
-        double amount = 0;
-        IFluidHandlerItemCapacity fluidHander = (IFluidHandlerItemCapacity) FluidUtil.getFluidHandler(itemStack);
+        IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack);
         FluidStack fluidStack = FluidUtil.getFluidContained(itemStack);
         double capacity = fluidHander.getCapacity();
-        if(fluidStack.getFluid() != null)
-            amount = fluidStack.amount;
+        double amount = FluidHelpers.getAmount(fluidStack);
         return (capacity - amount) / capacity;
     }
     

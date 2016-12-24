@@ -1,8 +1,11 @@
 package org.cyclops.cyclopscore.helper;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidTankProperties;
+import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
+import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
 
 import javax.annotation.Nullable;
 
@@ -72,6 +75,15 @@ public final class FluidHelpers {
             }
         }
         return 0;
+    }
+
+    /**
+     * @param itemStack The itemstack
+     * @return The item capacity fluid handler.
+     */
+    public static @Nullable IFluidHandlerItemCapacity getFluidHandlerItemCapacity(ItemStack itemStack) {
+        return itemStack.hasCapability(FluidHandlerItemCapacityConfig.CAPABILITY, null)
+                ? itemStack.getCapability(FluidHandlerItemCapacityConfig.CAPABILITY, null) : null;
     }
 
 }

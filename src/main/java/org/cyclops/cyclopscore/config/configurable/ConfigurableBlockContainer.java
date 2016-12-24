@@ -260,19 +260,25 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         Item item = getItemDropped(blockState, new Random(), fortune);
         if(item != null && isDropBlockItem(world, pos, blockState, fortune)) {
             ItemStack itemStack = new ItemStack(item, 1, damageDropped(blockState));
-            if(isKeepNBTOnDrop()) {
-                if (TileEntityNBTStorage.TAG != null) {
-                    itemStack.setTagCompound(TileEntityNBTStorage.TAG);
-                }
-                if (TileEntityNBTStorage.NAME != null) {
-                    itemStack.setStackDisplayName(TileEntityNBTStorage.NAME);
-                }
+            if (TileEntityNBTStorage.TILE != null) {
+                tileDataToItemStack(TileEntityNBTStorage.TILE, itemStack);
             }
             drops.add(itemStack);
         }
         
         MinecraftHelpers.postDestroyBlock(world, pos);
         return drops;
+    }
+
+    protected void tileDataToItemStack(CyclopsTileEntity tile, ItemStack itemStack) {
+        if(isKeepNBTOnDrop()) {
+            if (TileEntityNBTStorage.TAG != null) {
+                itemStack.setTagCompound(TileEntityNBTStorage.TAG);
+            }
+            if (TileEntityNBTStorage.NAME != null) {
+                itemStack.setStackDisplayName(TileEntityNBTStorage.NAME);
+            }
+        }
     }
 
     /**

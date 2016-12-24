@@ -36,7 +36,7 @@ public class ItemBlockNBT extends ItemBlockMetadata {
 
             if (tile != null && stack.getTagCompound() != null) {
                 tile.readFromNBT(stack.getTagCompound());
-                readAdditionalInfo(tile, stack);
+                itemStackDataToTile(stack, tile);
             }
 
             return true;
@@ -50,7 +50,7 @@ public class ItemBlockNBT extends ItemBlockMetadata {
      * @param tile The tile that is being created.
      * @param itemStack The item that is placed.
      */
-    protected void readAdditionalInfo(TileEntity tile, ItemStack itemStack) {
+    protected void itemStackDataToTile(ItemStack itemStack, TileEntity tile) {
     	
     }
 

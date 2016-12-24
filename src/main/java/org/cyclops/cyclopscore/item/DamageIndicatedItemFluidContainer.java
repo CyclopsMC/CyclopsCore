@@ -14,6 +14,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacity;
 
 import java.util.List;
 
@@ -109,6 +110,6 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-        return new FluidHandlerCapacityItemStack(stack, capacity);
+        return new FluidHandlerItemCapacity(stack, capacity);
     }
 }

@@ -85,7 +85,7 @@ public class ConfigurableBlockConnectedTexture extends ConfigurableBlock {
         textureMap.put("background", new ResourceLocation(mod, base));
         textureMap.put("border", new ResourceLocation(mod, base + "_border"));
         textureMap.put("corner", new ResourceLocation(mod, base + "_corner"));
-        textureMap.put("innerCorner", new ResourceLocation(mod, base + "_innerCorner"));
+        textureMap.put("inner_corner", new ResourceLocation(mod, base + "_inner_corner"));
     }
 
     /**

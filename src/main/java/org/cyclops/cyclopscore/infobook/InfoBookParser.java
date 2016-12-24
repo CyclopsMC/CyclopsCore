@@ -65,7 +65,7 @@ public class InfoBookParser {
             }
 
         });
-        registerFactory("craftingRecipe", new IAppendixFactory() {
+        registerFactory("crafting_recipe", new IAppendixFactory() {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
@@ -78,7 +78,7 @@ public class InfoBookParser {
             }
 
         });
-        registerFactory("furnaceRecipe", new IAppendixFactory() {
+        registerFactory("furnace_recipe", new IAppendixFactory() {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
@@ -93,7 +93,7 @@ public class InfoBookParser {
         });
 
         // Appendix item factories
-        registerFactory("craftingRecipe", new IAppendixItemFactory() {
+        registerFactory("crafting_recipe", new IAppendixItemFactory() {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, ItemStack itemStack) throws InvalidAppendixException {
@@ -105,7 +105,7 @@ public class InfoBookParser {
             }
 
         });
-        registerFactory("furnaceRecipe", new IAppendixItemFactory() {
+        registerFactory("furnace_recipe", new IAppendixItemFactory() {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, ItemStack itemStack) throws InvalidAppendixException {

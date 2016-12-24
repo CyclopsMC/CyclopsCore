@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
 import org.cyclops.cyclopscore.command.*;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -125,6 +126,12 @@ public class CyclopsCore extends ModBase implements IModVersion {
     @Override
     public void onGeneralConfigsRegister(ConfigHandler configHandler) {
         configHandler.add(new GeneralConfig());
+    }
+
+    @Override
+    public void onMainConfigsRegister(ConfigHandler configHandler) {
+        super.onMainConfigsRegister(configHandler);
+        configHandler.add(new FluidHandlerItemCapacityConfig());
     }
 
     /**

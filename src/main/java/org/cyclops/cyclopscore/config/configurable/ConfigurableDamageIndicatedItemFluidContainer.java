@@ -20,12 +20,13 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.helper.FluidHelpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 import org.cyclops.cyclopscore.item.DamageIndicatedItemFluidContainer;
-import org.cyclops.cyclopscore.item.IFluidHandlerItemCapacity;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -69,7 +70,7 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         ItemStack itemStack = player.getHeldItem(hand);
-        IFluidHandlerItemCapacity fluidHandler = (IFluidHandlerItemCapacity) FluidUtil.getFluidHandler(itemStack);
+        IFluidHandlerItemCapacity fluidHandler = FluidHelpers.getFluidHandlerItemCapacity(itemStack);
         FluidStack fluidStack = FluidUtil.getFluidContained(itemStack);
         FluidStack drained = fluidHandler.drain(Fluid.BUCKET_VOLUME, false);
         Block block = getFluid().getBlock();
