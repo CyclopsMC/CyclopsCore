@@ -8,6 +8,7 @@ import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.GuiConfigEntries.CategoryEntry;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCategory;
+import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
 	 */
 	public GuiConfigOverviewBase(ModBase mod, GuiScreen parentScreen) {
 		super(parentScreen, getConfigElements(mod), mod.getModId(), false, false,
-			GuiConfig.getAbridgedConfigPath(mod.getConfigHandler().getConfig().toString()));
+			mod.getModName() + " " + L10NHelpers.localize("general.cyclopscore.config"));
 	}
 
 	public abstract ModBase getMod();
@@ -79,7 +80,7 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
                     	|| this.owningScreen.allRequireWorldRestart, 
                     this.configElement.requiresMcRestart()
                     	|| this.owningScreen.allRequireMcRestart,
-                    GuiConfig.getAbridgedConfigPath(mod.getConfigHandler().getConfig().toString()));
+                    	mod.getModName() + " " + L10NHelpers.localize("general.cyclopscore.config") + " > " + L10NHelpers.localize(this.category));
         }
 		
 	}

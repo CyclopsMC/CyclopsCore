@@ -31,3 +31,31 @@ multiblock.cyclopscore.error.hollow.air=Position %s must be hollow.
 
 # Vanilla additions
 tile.air.name=Air
+
+# Config Screens
+general.cyclopscore.config=configuration
+
+item=Item settings
+block=Block settings
+fluid=Fluid settings
+entity=Entity settings
+general=General settings
+worldgeneration=World generation settings
+enchantment=Enchantment settings
+mob=Mob settings
+biome=Biome generation settings
+machine=Machine settings
+potion=Potion settings
+core=Core settings
+mod compat=Mod compatibility settings
+
+general.analytics=Send anonymous analytics
+general.anonymousAnalyticsID=Anonymous id
+general.crashOnInvalidRecipe=Crash on invalid Recipe
+general.crashOnModCompatCrash=Crash on Compatibility issue
+general.debug=Develop mode
+general.minimumPotionTypesArraySize=Minimal size of potion array
+general.version=Version
+general.versionChecker=Enable version check
+
+Waila=Enable Waila

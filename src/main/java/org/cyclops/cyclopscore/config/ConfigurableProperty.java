@@ -41,9 +41,26 @@ public @interface ConfigurableProperty {
     boolean requiresWorldRestart() default false;
     
     /**
-     * @return If this configurables requires minecraft to restart.
+     * @return If this configurable requires minecraft to restart.
      */
     boolean requiresMcRestart() default false;
+    
+	/**
+     * @return If this configurable will be shown in the gui.
+     */
+    boolean showInGui() default true;
+    
+	/**
+     * The minimal value of the field, as a integer.
+     * @return The minimal value.
+     */
+	int minimalValue() default Integer.MIN_VALUE;
+    
+	/**
+     * The maximal value of the field, as a integer.
+     * @return The maximal value.
+     */
+	int maximalValue() default Integer.MAX_VALUE;
     
     /**
      * @return The optional callback when the property has been changed.
