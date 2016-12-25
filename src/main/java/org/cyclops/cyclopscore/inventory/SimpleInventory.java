@@ -249,7 +249,7 @@ public class SimpleInventory implements INBTInventory {
     @Override
     public boolean isEmpty() {
         for(int i = 0; i < getSizeInventory(); i++) {
-            if(getStackInSlot(i) != null) {
+            if(!getStackInSlot(i).isEmpty()) {
                 return false;
             }
         }
