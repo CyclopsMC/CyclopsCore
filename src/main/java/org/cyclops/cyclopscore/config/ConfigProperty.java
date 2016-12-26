@@ -345,45 +345,45 @@ public final class ConfigProperty {
 		this.requiresMcRestart = requiresMcRestart;
 	}
 
-	/**
-	 * @param showInGui the showInGui to set
-	 */
-	public void setShowInGui(boolean showInGui) {
-		this.showInGui = showInGui;
-	}
+    /**
+     * @param showInGui the showInGui to set
+     */
+    public void setShowInGui(boolean showInGui) {
+        this.showInGui = showInGui;
+    }
 
-	/**
-	 * @return if item is shown in config GUI
-	 */
-	public boolean showInGui() {
-		return showInGui;
-	}
+    /**
+     * @return if item is shown in config GUI
+     */
+    public boolean showInGui() {
+        return showInGui;
+    }
 
-	/**
-	 * @return the minValue
-	 */
-	public int getMinValue() {
-		return minValue;
-	}
+    /**
+     * @return the minValue
+     */
+    public int getMinValue() {
+        return minValue;
+    }
 
-	/**
-	 * @param minValue minimal value of parameter
-	 */
-	public void setMinValue(int minValue) {
-		this.minValue = minValue;
-	}
+    /**
+     * @param minValue minimal value of parameter
+     */
+    public void setMinValue(int minValue) {
+        this.minValue = minValue;
+    }
 
-	/**
-	 * @return the maxValue
-	 */
-	public int getMaxValue() {
-		return maxValue;
-	}
+    /**
+     * @return the maxValue
+     */
+    public int getMaxValue() {
+        return maxValue;
+    }
 
-	/**
-	 * @param maxValue maximal value of parameter
-	 */
-	public void setMaxValue(int maxValue) {
-		this.maxValue = maxValue;
-	}
+    /**
+     * @param maxValue maximal value of parameter
+     */
+    public void setMaxValue(int maxValue) {
+        this.maxValue = maxValue;
+    }
 }
