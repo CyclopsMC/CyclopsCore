@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.configurable.IConfigurable;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.lwjgl.Sys;
 
 import java.lang.reflect.Field;
 
@@ -299,14 +300,22 @@ public final class ConfigProperty {
             additionalProperty.setRequiresWorldRestart(isRequiresWorldRestart());
             additionalProperty.setRequiresMcRestart(isRequiresMcRestart());
         }
-					
-		if(value instanceof Integer || value instanceof Double){
-			additionalProperty.setMinValue(getMinValue());
-			additionalProperty.setMaxValue(getMaxValue());
-		}
-		
-		additionalProperty.setShowInGui(showInGui());		
-    }
+
+        if (value instanceof Integer || value instanceof Double) {
+        	additionalProperty.setMinValue(getMinValue());
+        	additionalProperty.setMaxValue(getMaxValue());
+        }
+
+        additionalProperty.setShowInGui(showInGui());
+		additionalProperty.setLanguageKey(getLanguageKey());
+	}
+
+	/**
+	 * @return the LanguageKey
+	 */
+	public String getLanguageKey() {
+		return "config." + mod.getModId() + "." + getName().replaceAll("\\s", "");
+	}    
 
 	/**
 	 * @return the requiresWorldRestart
@@ -339,18 +348,16 @@ public final class ConfigProperty {
 	/**
 	 * @param showInGui the showInGui to set
 	 */
-    public void setShowInGui(boolean showInGui)
-    {
-        this.showInGui = showInGui;
-    }
+	public void setShowInGui(boolean showInGui) {
+		this.showInGui = showInGui;
+	}
 
 	/**
 	 * @return if item is shown in config GUI
 	 */
-    public boolean showInGui()
-    {
-        return showInGui;
-    }
+	public boolean showInGui() {
+		return showInGui;
+	}
 
 	/**
 	 * @return the minValue
@@ -358,7 +365,7 @@ public final class ConfigProperty {
 	public int getMinValue() {
 		return minValue;
 	}
-	
+
 	/**
 	 * @param minValue minimal value of parameter
 	 */
@@ -372,7 +379,7 @@ public final class ConfigProperty {
 	public int getMaxValue() {
 		return maxValue;
 	}
-	
+
 	/**
 	 * @param maxValue maximal value of parameter
 	 */

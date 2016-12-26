@@ -33,42 +33,45 @@ multiblock.cyclopscore.error.hollow.air=Position %s must be hollow.
 tile.air.name=Air
 
 # Config Screens
-general.cyclopscore.config=configuration
+config.cyclopscore=configuration
 
-item=Item settings
-item.tooltip=Change settings of items
-block=Block settings
-block.tooltip=Change block settings
-fluid=Fluid settings
-fluid.tooltip=Change fluid settings
-entity=Entity settings
-entity.tooltip=Change entity settings
-general=General settings
-general.tooltip=Change general mod settings
-worldgeneration=World generation settings
-worldgeneration.tooltip=Change world generation settings
-enchantment=Enchantment settings
-enchantment.tooltip=Change enchantment settings
-mob=Mob settings
-mob.tooltip=Change mob settings
-biome=Biome generation settings
-biome.tooltip=Change biome generation settings
-machine=Machine settings
-machine.tooltip=Change machine settings
-potion=Potion settings
-potion.tooltip=Change potion settings
-core=Core settings
-core.tooltip=Change core settings
-mod compat=Mod compatibility settings
-mod compat.tooltip=Change mod compatibility settings
+## Config categories
+config.cyclopscore.item=Item settings
+config.cyclopscore.item.tooltip=Change settings of items
+config.cyclopscore.block=Block settings
+config.cyclopscore.block.tooltip=Change block settings
+config.cyclopscore.fluid=Fluid settings
+config.cyclopscore.fluid.tooltip=Change fluid settings
+config.cyclopscore.entity=Entity settings
+config.cyclopscore.entity.tooltip=Change entity settings
+config.cyclopscore.general=General settings
+config.cyclopscore.general.tooltip=Change general mod settings
+config.cyclopscore.worldgeneration=World generation settings
+config.cyclopscore.worldgeneration.tooltip=Change world generation settings
+config.cyclopscore.enchantment=Enchantment settings
+config.cyclopscore.enchantment.tooltip=Change enchantment settings
+config.cyclopscore.mob=Mob settings
+config.cyclopscore.mob.tooltip=Change mob settings
+config.cyclopscore.biome=Biome generation settings
+config.cyclopscore.biome.tooltip=Change biome generation settings
+config.cyclopscore.machine=Machine settings
+config.cyclopscore.machine.tooltip=Change machine settings
+config.cyclopscore.potion=Potion settings
+config.cyclopscore.potion.tooltip=Change potion settings
+config.cyclopscore.core=Core settings
+config.cyclopscore.core.tooltip=Change core settings
+config.cyclopscore.modcompat=Mod compatibility settings
+config.cyclopscore.modcompat.tooltip=Change mod compatibility settings
 
-general.analytics=Send anonymous analytics
-general.anonymousAnalyticsID=Anonymous id
-general.crashOnInvalidRecipe=Crash on invalid Recipe
-general.crashOnModCompatCrash=Crash on Compatibility issue
-general.debug=Develop mode
-general.minimumPotionTypesArraySize=Minimal size of potion array
-general.version=Version
-general.versionChecker=Enable version check
+## General settings
+config.cyclopscore.general.analytics=Send anonymous analytics
+config.cyclopscore.general.anonymousAnalyticsID=Anonymous id
+config.cyclopscore.general.crashOnInvalidRecipe=Crash on invalid Recipe
+config.cyclopscore.general.crashOnModCompatCrash=Crash on Compatibility issue
+config.cyclopscore.general.debug=Develop mode
+config.cyclopscore.general.minimumPotionTypesArraySize=Minimal size of potion array
+config.cyclopscore.general.version=Version
+config.cyclopscore.general.versionChecker=Enable version check
 
-Waila=Enable Waila
+## Mod compatibiliy settings
+config.cyclopscore.Waila=Enable Waila
