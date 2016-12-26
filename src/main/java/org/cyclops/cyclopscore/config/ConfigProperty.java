@@ -296,19 +296,20 @@ public final class ConfigProperty {
             mod.log(Level.ERROR, "Invalid config property class. No match found for '"
                     + name + "': '" + value + "'");
         }
-        if(additionalProperty != null) {
+        
+        if (additionalProperty != null) {
             additionalProperty.setRequiresWorldRestart(isRequiresWorldRestart());
             additionalProperty.setRequiresMcRestart(isRequiresMcRestart());
         }
 
         if (value instanceof Integer || value instanceof Double) {
-        	additionalProperty.setMinValue(getMinValue());
-        	additionalProperty.setMaxValue(getMaxValue());
+            additionalProperty.setMinValue(getMinValue());
+            additionalProperty.setMaxValue(getMaxValue());
         }
 
         additionalProperty.setShowInGui(showInGui());
-		additionalProperty.setLanguageKey(getLanguageKey());
-	}
+        additionalProperty.setLanguageKey(getLanguageKey());
+    }
 
 	/**
 	 * @return the LanguageKey
