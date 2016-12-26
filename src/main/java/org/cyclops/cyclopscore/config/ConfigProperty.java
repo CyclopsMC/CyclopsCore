@@ -29,6 +29,9 @@ public final class ConfigProperty {
     private Field field;
     private boolean requiresWorldRestart;
     private boolean requiresMcRestart;
+    private boolean showInGui;    
+    private int minValue;
+    private int maxValue;	
     
     /**
      * Define a new configurable property.
@@ -296,6 +299,13 @@ public final class ConfigProperty {
             additionalProperty.setRequiresWorldRestart(isRequiresWorldRestart());
             additionalProperty.setRequiresMcRestart(isRequiresMcRestart());
         }
+
+        if (value instanceof Integer || value instanceof Double) {
+            additionalProperty.setMinValue(getMinValue());
+            additionalProperty.setMaxValue(getMaxValue());
+        }
+
+        additionalProperty.setShowInGui(showInGui());
     }
 
 	/**
@@ -325,4 +335,46 @@ public final class ConfigProperty {
 	public void setRequiresMcRestart(boolean requiresMcRestart) {
 		this.requiresMcRestart = requiresMcRestart;
 	}
+
+    /**
+     * @param showInGui the showInGui to set
+     */
+    public void setShowInGui(boolean showInGui) {
+        this.showInGui = showInGui;
+    }
+
+    /**
+     * @return if item is shown in config GUI
+     */
+    public boolean showInGui() {
+        return showInGui;
+    }
+
+    /**
+     * @return the minValue
+     */
+    public int getMinValue() {
+        return minValue;
+    }
+
+    /**
+     * @param minValue minimal value of parameter
+     */
+    public void setMinValue(int minValue) {
+        this.minValue = minValue;
+    }
+
+    /**
+     * @return the maxValue
+     */
+    public int getMaxValue() {
+        return maxValue;
+    }
+
+    /**
+     * @param maxValue maximal value of parameter
+     */
+    public void setMaxValue(int maxValue) {
+        this.maxValue = maxValue;
+    }
 }
