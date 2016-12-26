@@ -119,6 +119,7 @@ public class ModCompatLoader implements IInitListener {
                 compat.isEnabled());
         property.setRequiresMcRestart(true);
         property.setComment(compat.getComment());
+        property.setLanguageKey("config." + mod.getModId() + "." + id.replaceAll("\\s", ""));       
         boolean enabled = property.getBoolean(true);
         if(config.hasChanged()) {
         	config.save();

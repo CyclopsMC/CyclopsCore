@@ -306,7 +306,15 @@ public final class ConfigProperty {
         }
 
         additionalProperty.setShowInGui(showInGui());
+        additionalProperty.setLanguageKey(getLanguageKey());
     }
+
+	/**
+	 * @return the LanguageKey
+	 */
+	public String getLanguageKey() {
+		return "config." + mod.getModId() + "." + getName().replaceAll("\\s", "");
+	}    
 
 	/**
 	 * @return the requiresWorldRestart
