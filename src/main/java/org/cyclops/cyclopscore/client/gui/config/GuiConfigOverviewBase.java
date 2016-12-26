@@ -29,7 +29,7 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
 	 */
 	public GuiConfigOverviewBase(ModBase mod, GuiScreen parentScreen) {
 		super(parentScreen, getConfigElements(mod), mod.getModId(), false, false,
-		         L10NHelpers.localize("config.cyclopscore", mod.getModName()));
+		         L10NHelpers.localize("config." + mod.getModId(), mod.getModName()));
 	}
 
 	public abstract ModBase getMod();
@@ -80,7 +80,7 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
                     	|| this.owningScreen.allRequireWorldRestart, 
                     this.configElement.requiresMcRestart()
                     	|| this.owningScreen.allRequireMcRestart,
-                    mod.getModName() + " " + L10NHelpers.localize("config.cyclopscore") + " > " + L10NHelpers.localize("config." + mod.getModId() + "." + this.category.replaceAll("\\s", "")));
+                    L10NHelpers.localize("config.cyclopscore", mod.getModName()) + " > " + L10NHelpers.localize("config." + mod.getModId() + "." + this.category.replaceAll("\\s", "")));
         }
 		
 	}
