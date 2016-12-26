@@ -29,7 +29,7 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
 	 */
 	public GuiConfigOverviewBase(ModBase mod, GuiScreen parentScreen) {
 		super(parentScreen, getConfigElements(mod), mod.getModId(), false, false,
-		        mod.getModName() + " " + L10NHelpers.localize("config.cyclopscore"));
+		         L10NHelpers.localize("config.cyclopscore", mod.getModName()));
 	}
 
 	public abstract ModBase getMod();

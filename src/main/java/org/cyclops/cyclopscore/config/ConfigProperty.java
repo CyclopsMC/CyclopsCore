@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.configurable.IConfigurable;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.init.ModBase;
-import org.lwjgl.Sys;
 
 import java.lang.reflect.Field;
 
