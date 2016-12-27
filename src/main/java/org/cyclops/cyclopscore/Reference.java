@@ -14,7 +14,7 @@ public final class Reference {
     public static final String MOD_BUILD_NUMBER = "@BUILD_NUMBER@";
     public static final String MOD_MC_VERSION = "@MC_VERSION@";
     public static final String GA_TRACKING_ID = "UA-65307010-1";
-    public static final String VERSION_URL = "https://raw.githubusercontent.com/CyclopsMC/Versions/master/1.9/CyclopsCore.txt";
+    public static final String VERSION_URL = "https://raw.githubusercontent.com/CyclopsMC/Versions/master/1.11/CyclopsCore.txt";
 
     // Mod ID's
     public static final String MOD_VANILLA = "Minecraft";
@@ -29,6 +29,6 @@ public final class Reference {
 
     // Dependencies
     public static final String MOD_DEPENDENCIES =
-              "required-after:forge@[13.19.1.2189,);";
+              "required-after:forge@[13.20.0.2201,);";
 
 }
