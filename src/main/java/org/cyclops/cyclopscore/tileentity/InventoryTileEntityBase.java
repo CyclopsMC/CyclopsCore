@@ -59,7 +59,7 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
     @Override
     public ItemStack getStackInSlot(int slotId) {
         if(slotId >= getSizeInventory() || slotId < 0)
-            return null;
+            return ItemStack.EMPTY;
         return getInventory().getStackInSlot(slotId);
     }
 
