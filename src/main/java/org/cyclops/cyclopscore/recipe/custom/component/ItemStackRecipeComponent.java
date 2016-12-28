@@ -31,15 +31,15 @@ public class ItemStackRecipeComponent implements IRecipeInput, IRecipeOutput, IR
     }
 
     protected boolean equals(ItemStack a, ItemStack b) {
-        return (a == null && b == null) ||
-                (a != null && b != null && a.getItem().equals(b.getItem()) &&
+        return (a.isEmpty() && b.isEmpty()) ||
+                (!a.isEmpty() && !b.isEmpty() && a.getItem().equals(b.getItem()) &&
                         (a.getItemDamage() == b.getItemDamage() ||
                                 a.getItemDamage() == META_WILDCARD || b.getItemDamage() == META_WILDCARD));
     }
 
     @Override
     public int hashCode() {
-        return itemStack != null ? itemStack.getItem().hashCode() + 876 : 0;
+        return !itemStack.isEmpty() ? itemStack.getItem().hashCode() + 876 : 0;
     }
 
     public List<ItemStack> getItemStacks() {

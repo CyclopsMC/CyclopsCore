@@ -24,7 +24,7 @@ public class DefaultItemTypeHandler implements IItemTypeHandler {
 	@Override
 	public Object getItem(RecipeHandler recipeHandler, Node itemNode) throws XmlRecipeLoader.XmlRecipeException {
 		String element = itemNode.getTextContent();
-		if(element == null || element.isEmpty()) return null;
+		if(element == null || element.isEmpty()) return ItemStack.EMPTY;
 		
 		int amount = 1;
 		Node amountNode = itemNode.getAttributes().getNamedItem("amount");
