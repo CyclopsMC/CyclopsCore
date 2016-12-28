@@ -31,7 +31,7 @@ public class CubeDetector {
 	private List<? extends IDetectionListener> listeners;
 	private List<ISizeValidator> sizeValidators = Lists.newLinkedList();
 	
-	private Map<Block, Integer> blockOccurences;
+	private Map<Block, Integer> blockOccurences = Maps.newHashMap();
 
 	/**
 	 * Make a new instance.
