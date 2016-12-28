@@ -136,7 +136,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
-        ItemStack stack = null;
+        ItemStack stack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(slotID);
         int slots = getSizeInventory();
         
@@ -146,10 +146,10 @@ public abstract class InventoryContainer extends Container implements IButtonCli
 
             if(slotID < slots) { // Click in tile -> player inventory
                 if(!mergeItemStack(stackInSlot, getSlotStart(slotID, slots, true), getSlotRange(slotID, inventorySlots.size(), true), true)) {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             } else if(!mergeItemStack(stackInSlot, getSlotStart(slotID, 0, false), getSlotRange(slotID, slots, false), false)) { // Click in player inventory -> tile
-                return null;
+                return ItemStack.EMPTY;
             }
             
             if(stackInSlot.getCount() == 0) {
@@ -159,7 +159,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
             }
 
             if(stackInSlot.getCount() == stack.getCount()) {
-                return null;
+                return ItemStack.EMPTY;
             }
 
             slot.onTake(player, stackInSlot);
@@ -261,7 +261,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     private ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickType, EntityPlayer player) {
-        ItemStack stack = null;
+        ItemStack stack = ItemStack.EMPTY;
 
         if (mouseButton == 2) {
             if (((SlotExtended) slot).isAdjustable()) {

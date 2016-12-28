@@ -11,6 +11,7 @@ import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A basic inventory implementation.
@@ -85,7 +86,7 @@ public class SimpleInventory implements INBTInventory {
             onInventoryChanged();
             return stack;
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -93,9 +94,9 @@ public class SimpleInventory implements INBTInventory {
         if (slotId >= _contents.length) {
             return;
         }
-        this._contents[slotId] = itemstack;
+        this._contents[slotId] = Objects.requireNonNull(itemstack);
 
-        if (itemstack != null && itemstack.getCount() > this.getInventoryStackLimit()) {
+        if (!itemstack.isEmpty() && itemstack.getCount() > this.getInventoryStackLimit()) {
             itemstack.setCount(this.getInventoryStackLimit());
         }
         onInventoryChanged();
