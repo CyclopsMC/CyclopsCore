@@ -56,7 +56,7 @@ public class SlotFluidContainer extends Slot {
      * @return If the given item is valid.
      */
     public static boolean checkIsItemValid(ItemStack itemStack, SingleUseTank tank) {
-        if (itemStack != null) {
+        if (!itemStack.isEmpty()) {
             itemStack = itemStack.copy();
             IFluidHandler fluidHandler = FluidUtil.getFluidHandler(itemStack.splitStack(1));
             return fluidHandler != null && tank.canFillFluidType(FluidHelpers.getFluid(fluidHandler));

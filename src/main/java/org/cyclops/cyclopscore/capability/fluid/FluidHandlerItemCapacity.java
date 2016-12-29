@@ -39,6 +39,13 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
         return tag.hasKey("capacity", MinecraftHelpers.NBTTag_Types.NBTTagInt.ordinal()) ? tag.getInteger("capacity") : this.capacity;
     }
 
+    @Nullable
+    @Override
+    public FluidStack getFluid() {
+        this.capacity = getCapacity(); // Force overriding protected capacity field as soon as possible.
+        return super.getFluid();
+    }
+
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
         return capability == FluidHandlerItemCapacityConfig.CAPABILITY || super.hasCapability(capability, facing);
@@ -61,14 +68,16 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
             } else {
                 nbt.setString("Empty", "");
             }
-            nbt.setInteger("Capacity", instance.getCapacity());
+            nbt.setInteger("capacity", instance.getCapacity());
             return nbt;
         }
 
         @Override
         public void readNBT(Capability<FluidHandlerItemCapacity> capability, FluidHandlerItemCapacity instance, EnumFacing side, NBTBase nbt) {
             NBTTagCompound tags = (NBTTagCompound) nbt;
-            instance.setCapacity(tags.getInteger("Capacity"));
+            if (tags.hasKey("capacity", MinecraftHelpers.NBTTag_Types.NBTTagInt.ordinal())) {
+                instance.setCapacity(tags.getInteger("capacity"));
+            }
             FluidStack fluid = FluidStack.loadFluidStackFromNBT(tags);
             instance.setFluid(fluid);
         }
