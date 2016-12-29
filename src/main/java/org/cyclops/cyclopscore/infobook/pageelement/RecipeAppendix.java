@@ -48,7 +48,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     }
 
     protected ItemStack prepareItemStacks(List<ItemStack> itemStacks, int tick) {
-        if(itemStacks.size() == 0) return null;
+        if(itemStacks.size() == 0) return ItemStack.EMPTY;
         return prepareItemStack(itemStacks.get(tick % itemStacks.size()).copy(), tick);
     }
 
@@ -166,7 +166,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         public void update(int x, int y, ItemStack itemStack, GuiInfoBook gui) {
             this.itemStack = itemStack;
             InfoSection target = null;
-            if(this.itemStack != null) {
+            if(!this.itemStack.isEmpty()) {
                 ExtendedConfig<?> config = ConfigHandler.getConfigFromItem(itemStack.getItem());
                 if (config != null) {
                     Pair<InfoSection, Integer> pair = InfoBookParser.configLinks.get(config.getFullUnlocalizedName());
