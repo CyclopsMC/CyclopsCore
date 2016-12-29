@@ -56,7 +56,7 @@ public class ConnectedBlockModel extends DynamicBaseModel {
         TextureAtlasSprite backgroundTexture = getParticleTexture();
         TextureAtlasSprite sideTexture = block.getTexture("border");
         TextureAtlasSprite cornerTexture = block.getTexture("corner");
-        TextureAtlasSprite innerCornerTexture= block.getTexture("innerCorner");
+        TextureAtlasSprite innerCornerTexture= block.getTexture("inner_corner");
 
         // Loop over all sides
         for (EnumFacing facing : EnumFacing.values()) {
