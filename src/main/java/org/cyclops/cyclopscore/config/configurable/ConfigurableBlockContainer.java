@@ -261,7 +261,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         if(item != null && isDropBlockItem(world, pos, blockState, fortune)) {
             ItemStack itemStack = new ItemStack(item, 1, damageDropped(blockState));
             if (TileEntityNBTStorage.TILE != null) {
-                tileDataToItemStack(TileEntityNBTStorage.TILE, itemStack);
+                itemStack = tileDataToItemStack(TileEntityNBTStorage.TILE, itemStack);
             }
             drops.add(itemStack);
         }
@@ -270,7 +270,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         return drops;
     }
 
-    protected void tileDataToItemStack(CyclopsTileEntity tile, ItemStack itemStack) {
+    protected ItemStack tileDataToItemStack(CyclopsTileEntity tile, ItemStack itemStack) {
         if(isKeepNBTOnDrop()) {
             if (TileEntityNBTStorage.TAG != null) {
                 itemStack.setTagCompound(TileEntityNBTStorage.TAG);
@@ -279,6 +279,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
                 itemStack.setStackDisplayName(TileEntityNBTStorage.NAME);
             }
         }
+        return itemStack;
     }
 
     /**

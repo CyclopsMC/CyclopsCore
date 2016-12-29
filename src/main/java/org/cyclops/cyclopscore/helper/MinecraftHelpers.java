@@ -210,6 +210,7 @@ public class MinecraftHelpers {
             // Cache
             CyclopsTileEntity ecTile = ((CyclopsTileEntity) tile);
             TileEntityNBTStorage.TAG = ecTile.getNBTTagCompound();
+            TileEntityNBTStorage.TILE = ecTile;
             block.writeAdditionalInfo(tile, TileEntityNBTStorage.TAG);
 
             ecTile.destroy();

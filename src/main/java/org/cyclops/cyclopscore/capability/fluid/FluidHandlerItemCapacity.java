@@ -7,6 +7,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+import org.cyclops.cyclopscore.helper.ItemStackHelpers;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import javax.annotation.Nullable;
 
@@ -26,12 +28,15 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
 
     @Override
     public void setCapacity(int capacity) {
+        NBTTagCompound tag = ItemStackHelpers.getSafeTagCompound(getContainer());
         this.capacity = capacity;
+        tag.setInteger("capacity", capacity);
     }
 
     @Override
     public int getCapacity() {
-        return this.capacity;
+        NBTTagCompound tag = ItemStackHelpers.getSafeTagCompound(getContainer());
+        return tag.hasKey("capacity", MinecraftHelpers.NBTTag_Types.NBTTagInt.ordinal()) ? tag.getInteger("capacity") : this.capacity;
     }
 
     @Override

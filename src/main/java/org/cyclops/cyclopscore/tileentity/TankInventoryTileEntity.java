@@ -5,8 +5,6 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
 import org.cyclops.cyclopscore.fluid.SingleUseTank;
 
 /**
@@ -20,7 +18,6 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity {
     protected int tankSize;
     private String tankName;
     protected boolean sendUpdateOnTankChanged = false;
-    protected final EnumFacingMap<IFluidHandler> sidedFluidHandlers;
 
     /**
      * Make new tile with a tank that can accept anything and an inventory.
@@ -37,7 +34,6 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity {
         this.setSendUpdateOnTankChanged(true);
         tank = newTank(tankName, tankSize);
 
-        sidedFluidHandlers = EnumFacingMap.newMap();
         addCapabilityInternal(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, tank);
         for(EnumFacing side : EnumFacing.VALUES) {
             addCapabilitySided(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side, tank);
@@ -74,7 +70,7 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity {
         this.setSendUpdateOnTankChanged(true);
         tank = newTank(tankName, tankSize);
 
-        sidedFluidHandlers = EnumFacingMap.newMap();
+        addCapabilityInternal(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, tank);
         for(EnumFacing side : EnumFacing.VALUES) {
             addCapabilitySided(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side, tank);
         }
