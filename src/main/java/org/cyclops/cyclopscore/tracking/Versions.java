@@ -167,13 +167,19 @@ public class Versions {
                     chat.appendText(String.format(": %s ", triple.getMiddle().getVersion()));
                     chat.appendSibling(downloadComponent);
 
-                    player.addChatComponentMessage(chat);
+                    try {
+                        player.addChatComponentMessage(chat);
 
-                    chat = new TextComponentString("");
-                    chat.appendSibling(modNameComponent);
-                    chat.appendText(TextFormatting.WHITE + " ");
-                    chat.appendText(triple.getMiddle().getInfo());
-                    player.addChatComponentMessage(chat);
+                        chat = new TextComponentString("");
+                        chat.appendSibling(modNameComponent);
+                        chat.appendText(TextFormatting.WHITE + " ");
+                        chat.appendText(triple.getMiddle().getInfo());
+                        player.addChatComponentMessage(chat);
+                    } catch (NullPointerException e) {
+                        // The player SMP connection can rarely be null at this point,
+                        // let's retry in the next tick.
+                        return;
+                    }
                 }
             }
             displayed = true;
