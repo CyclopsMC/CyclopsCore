@@ -187,7 +187,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
         @Override
         public boolean isVisible() {
-            return super.isVisible() && itemStack != null;
+            return super.isVisible() && !itemStack.isEmpty();
         }
 
     }

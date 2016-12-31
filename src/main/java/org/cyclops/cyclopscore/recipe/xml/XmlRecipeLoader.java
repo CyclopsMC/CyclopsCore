@@ -159,7 +159,7 @@ public class XmlRecipeLoader {
 					"Could not find a recipe type handler of type '%s'", type));
 		}
 		ItemStack output = handler.loadRecipe(recipeHandler, recipe);
-		if(output != null) {
+		if(!output.isEmpty()) {
 			ExtendedConfig<?> config = ConfigHandler.getConfigFromItem(output.getItem());
 			for (String tag : getTags(recipe)) {
 				getMod().getRecipeHandler().getTaggedOutput().put(tag, output);

@@ -218,7 +218,7 @@ public class InfoBookParser {
         NodeList tags = sectionElement.getElementsByTagName("tag");
         NodeList paragraphs = sectionElement.getElementsByTagName("paragraph");
         NodeList appendixes = sectionElement.getElementsByTagName("appendix");
-        NodeList appendixLists = sectionElement.getElementsByTagName("appendixList");
+        NodeList appendixLists = sectionElement.getElementsByTagName("appendix_list");
         ArrayList<String> paragraphList = Lists.newArrayListWithCapacity(paragraphs.getLength());
         ArrayList<SectionAppendix> appendixList = Lists.newArrayListWithCapacity(appendixes.getLength());
         ArrayList<String> tagList = Lists.newArrayListWithCapacity(tags.getLength());
