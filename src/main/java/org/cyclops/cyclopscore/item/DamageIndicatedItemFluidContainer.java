@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -85,6 +86,11 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     @Override
     public double getDurabilityForDisplay(ItemStack itemStack) {
     	return component.getDurability(itemStack);
+    }
+
+    @Override
+    public int getRGBDurabilityForDisplay(ItemStack stack) {
+        return MathHelper.hsvToRGB(Math.max(0.0F, 1 - (float) component.getDurability(stack)) / 3.0F, 1.0F, 1.0F);
     }
     
     /**
