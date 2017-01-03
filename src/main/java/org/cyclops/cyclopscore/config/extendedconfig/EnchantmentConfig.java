@@ -31,6 +31,11 @@ public abstract class EnchantmentConfig extends ExtendedConfig<EnchantmentConfig
 	}
     
     @Override
+    public String getFullUnlocalizedName() {
+        return "enchantment." + getMod().getModId() + "." + getNamedId();
+    }
+
+    @Override
 	public ConfigurableType getHolderType() {
 		return ConfigurableType.ENCHANTMENT;
 	}
