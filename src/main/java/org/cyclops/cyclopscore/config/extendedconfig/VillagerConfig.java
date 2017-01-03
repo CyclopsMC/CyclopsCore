@@ -30,6 +30,11 @@ public abstract class VillagerConfig extends ExtendedConfig<VillagerConfig> {
 	}
     
     @Override
+    public String getFullUnlocalizedName() {
+        return "entity.Villager." + getNamedId();
+    }
+
+    @Override
 	public ConfigurableType getHolderType() {
 		return ConfigurableType.VILLAGER;
 	}
