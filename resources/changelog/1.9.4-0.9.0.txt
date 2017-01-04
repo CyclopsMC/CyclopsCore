@@ -1,0 +1,14 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Added category tootlips
+* Added localization for configuration gui
+* Added extra options to the configurable property annotation
+
+Changes:
+* Add more information to NBTClassType crashes
+
+Fixes:
+* Fix rare cube detection crash
+* Fix nbt field inaccessibility, Closes #33
+* Fix rare version checker crash when player connection is null, Closes #31
