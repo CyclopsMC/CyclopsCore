@@ -31,7 +31,7 @@ public class CubeDetector {
 	private List<? extends IDetectionListener> listeners;
 	private List<ISizeValidator> sizeValidators = Lists.newLinkedList();
 	
-	private Map<Block, Integer> blockOccurences = Maps.newHashMap();
+	private final Map<Block, Integer> blockOccurences = Maps.newHashMap();
 
 	/**
 	 * Make a new instance.
@@ -275,7 +275,7 @@ public class CubeDetector {
 	protected L10NHelpers.UnlocalizedString validateDimensionEdges(World world, final int[][] dimensionEgdes,
 			final boolean valid, final IValidationAction action, final BlockPos excludeLocation) {
 		// Init the blockState occurences counter on zero for all blocks.
-		blockOccurences = Maps.newHashMap();
+		blockOccurences.clear();
 		for(AllowedBlock block : allowedBlocks) {
 			blockOccurences.put(block.getBlock(), 0);
 		}
