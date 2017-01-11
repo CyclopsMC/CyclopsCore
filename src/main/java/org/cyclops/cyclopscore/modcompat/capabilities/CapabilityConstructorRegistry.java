@@ -151,13 +151,13 @@ public class CapabilityConstructorRegistry {
 
     protected <T> void onLoad(Map<Class<? extends T>, List<ICapabilityConstructor<?, ? extends T, ? extends T>>> allConstructors,
                               Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors,
-                              T object, AttachCapabilitiesEvent event) {
-        onLoad(allConstructors, allInheritableConstructors, object, object, event);
+                              T object, AttachCapabilitiesEvent event, Class<? extends T> baseClass) {
+        onLoad(allConstructors, allInheritableConstructors, object, object, event, baseClass);
     }
 
     protected <K, V> void onLoad(Map<Class<? extends K>, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allConstructors,
                                  Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors,
-                                 K keyObject, V valueObject, AttachCapabilitiesEvent event) {
+                                 K keyObject, V valueObject, AttachCapabilitiesEvent event, Class<? extends K> baseClass) {
         boolean initialized = baked || Helpers.isMinecraftInitialized();
         if (!baked && Helpers.isMinecraftInitialized()) {
             bake();
@@ -176,7 +176,7 @@ public class CapabilityConstructorRegistry {
         // Inheritable constructors
         for (Pair<Class<?>, ICapabilityConstructor<?, ?, ?>> constructorEntry : allInheritableConstructors) {
             if ((initialized || constructorEntry.getRight().getCapability() != null)
-                    && constructorEntry.getLeft().isInstance(keyObject)) {
+                    && (keyObject == baseClass || constructorEntry.getLeft() == keyObject || constructorEntry.getLeft().isInstance(keyObject))) {
                 addLoadedCapabilityProvider(event, keyObject, valueObject, constructorEntry.getRight());
             }
         }
@@ -196,17 +196,17 @@ public class CapabilityConstructorRegistry {
 
     @SubscribeEvent
     public void onTileLoad(AttachCapabilitiesEvent.TileEntity event) {
-        onLoad(capabilityConstructorsTile, capabilityConstructorsTileSuper, event.getTileEntity(), event);
+        onLoad(capabilityConstructorsTile, capabilityConstructorsTileSuper, event.getTileEntity(), event, TileEntity.class);
     }
 
     @SubscribeEvent
     public void onEntityLoad(AttachCapabilitiesEvent.Entity event) {
-        onLoad(capabilityConstructorsEntity, capabilityConstructorsEntitySuper, event.getEntity(), event);
+        onLoad(capabilityConstructorsEntity, capabilityConstructorsEntitySuper, event.getEntity(), event, Entity.class);
     }
 
     @SubscribeEvent
     public void onItemStackLoad(AttachCapabilitiesEvent.Item event) {
-        onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getItem(), event.getItemStack(), event);
+        onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getItem(), event.getItemStack(), event, Item.class);
     }
 
     protected <K, V> void removeNullCapabilities(Map<Class<? extends K>, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allConstructors,
