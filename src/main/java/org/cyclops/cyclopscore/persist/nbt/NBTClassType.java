@@ -625,6 +625,7 @@ public abstract class NBTClassType<T> {
         Object castTile = field.getDeclaringClass().cast(provider);
         if(write) {
             try {
+                field.setAccessible(true); // At least one coremod seems to reset this for some reason, so force enable it again.
                 T object = (T) field.get(castTile);
                 if(object != null) {
                     try {
@@ -642,9 +643,11 @@ public abstract class NBTClassType<T> {
             try {
                 if(tag.hasKey(name)) {
                     object = readPersistedField(name, tag);
+                    field.setAccessible(true); // At least one coremod seems to reset this for some reason, so force enable it again.
                     field.set(castTile, object);
                 } else if (useDefaultValue) {
                     object = getDefaultValue();
+                    field.setAccessible(true); // At least one coremod seems to reset this for some reason, so force enable it again.
                     field.set(castTile, object);
                 }
             }  catch (IllegalArgumentException e) {

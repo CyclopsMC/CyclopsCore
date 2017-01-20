@@ -93,6 +93,9 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
                         field);
                 configProperty.setRequiresWorldRestart(annotation.requiresWorldRestart());
                 configProperty.setRequiresMcRestart(annotation.requiresMcRestart());
+                configProperty.setShowInGui(annotation.showInGui());
+                configProperty.setMinValue(annotation.minimalValue());
+                configProperty.setMaxValue(annotation.maximalValue());                
                 configProperties.add(configProperty);
             }
         }

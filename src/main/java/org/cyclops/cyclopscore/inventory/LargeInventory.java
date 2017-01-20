@@ -13,6 +13,13 @@ import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 public class LargeInventory extends SimpleInventory {
 
     /**
+     * Default constructor for NBT persistence, don't call this yourself.
+     */
+    public LargeInventory() {
+        this(0, "", 0);
+    }
+
+    /**
      * Make a new instance.
      * @param size The amount of slots in the inventory.
      * @param name The name of the inventory, used for NBT storage.
@@ -30,7 +37,7 @@ public class LargeInventory extends SimpleInventory {
     public void readFromNBT(NBTTagCompound data, String tag) {
         NBTTagList nbttaglist = data.getTagList(tag, MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
 
-        for (int j = 0; j < _contents.length; ++j)
+        for (int j = 0; j < getSizeInventory(); ++j)
             _contents[j] = ItemStack.EMPTY;
 
         for (int j = 0; j < nbttaglist.tagCount(); ++j) {
@@ -41,7 +48,7 @@ public class LargeInventory extends SimpleInventory {
             } else {
                 index = slot.getInteger("Slot");
             }
-            if (index >= 0 && index < _contents.length) {
+            if (index >= 0 && index < getSizeInventory()) {
                 _contents[index] = new ItemStack(slot);
             }
         }
@@ -54,12 +61,13 @@ public class LargeInventory extends SimpleInventory {
      */
     public void writeToNBT(NBTTagCompound data, String tag) {
         NBTTagList slots = new NBTTagList();
-        for (int index = 0; index < _contents.length; ++index) {
-            if (_contents[index] != null && _contents[index].getCount() > 0) {
+        for (int index = 0; index < getSizeInventory(); ++index) {
+            ItemStack itemStack = getStackInSlot(index);
+            if (!itemStack.isEmpty() && itemStack.getCount() > 0) {
                 NBTTagCompound slot = new NBTTagCompound();
                 slots.appendTag(slot);
                 slot.setInteger("Slot", index);
-                _contents[index].writeToNBT(slot);
+                itemStack.writeToNBT(slot);
             }
         }
         data.setTag(tag, slots);

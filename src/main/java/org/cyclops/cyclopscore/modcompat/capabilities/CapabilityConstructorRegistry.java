@@ -24,12 +24,12 @@ import java.util.Map;
  * @author rubensworks
  */
 public class CapabilityConstructorRegistry {
-    private Multimap<Class<? extends TileEntity>, ICapabilityConstructor<?, ? extends TileEntity, ? extends TileEntity>>
-            capabilityConstructorsTile = HashMultimap.create();
-    private Multimap<Class<? extends Entity>, ICapabilityConstructor<?, ? extends Entity, ? extends Entity>>
-            capabilityConstructorsEntity = HashMultimap.create();
-    private Multimap<Class<? extends Item>, ICapabilityConstructor<?, ? extends Item, ? extends ItemStack>>
-            capabilityConstructorsItem = HashMultimap.create();
+    private final Map<Class<? extends TileEntity>, List<ICapabilityConstructor<?, ? extends TileEntity, ? extends TileEntity>>>
+            capabilityConstructorsTile = Maps.newIdentityHashMap();
+    private final Map<Class<? extends Entity>, List<ICapabilityConstructor<?, ? extends Entity, ? extends Entity>>>
+            capabilityConstructorsEntity = Maps.newIdentityHashMap();
+    private final Map<Class<? extends Item>, List<ICapabilityConstructor<?, ? extends Item, ? extends ItemStack>>>
+            capabilityConstructorsItem = Maps.newIdentityHashMap();
     private Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>>
             capabilityConstructorsTileSuper = Sets.newHashSet();
     private Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>>
@@ -63,7 +63,12 @@ public class CapabilityConstructorRegistry {
      */
     public <T extends TileEntity> void registerTile(Class<T> clazz, ICapabilityConstructor<?, T, T> constructor) {
         checkNotBaked();
-        capabilityConstructorsTile.put(clazz, constructor);
+        List<ICapabilityConstructor<?, ? extends TileEntity, ? extends TileEntity>> constructors = capabilityConstructorsTile.get(clazz);
+        if (constructors == null) {
+            constructors = Lists.newArrayList();
+            capabilityConstructorsTile.put(clazz, constructors);
+        }
+        constructors.add(constructor);
     }
 
     /**
@@ -74,7 +79,12 @@ public class CapabilityConstructorRegistry {
      */
     public <T extends Entity> void registerEntity(Class<T> clazz, ICapabilityConstructor<?, T, T> constructor) {
         checkNotBaked();
-        capabilityConstructorsEntity.put(clazz, constructor);
+        List<ICapabilityConstructor<?, ? extends Entity, ? extends Entity>> constructors = capabilityConstructorsEntity.get(clazz);
+        if (constructors == null) {
+            constructors = Lists.newArrayList();
+            capabilityConstructorsEntity.put(clazz, constructors);
+        }
+        constructors.add(constructor);
     }
 
     /**
@@ -85,7 +95,12 @@ public class CapabilityConstructorRegistry {
      */
     public <T extends Item> void registerItem(Class<T> clazz, ICapabilityConstructor<?, T, ItemStack> constructor) {
         checkNotBaked();
-        capabilityConstructorsItem.put(clazz, constructor);
+        List<ICapabilityConstructor<?, ? extends Item, ? extends ItemStack>> constructors = capabilityConstructorsItem.get(clazz);
+        if (constructors == null) {
+            constructors = Lists.newArrayList();
+            capabilityConstructorsItem.put(clazz, constructors);
+        }
+        constructors.add(constructor);
     }
 
     /**
@@ -134,15 +149,15 @@ public class CapabilityConstructorRegistry {
         return capabilityConstructor.createProvider((K) hostType, (H) host);
     }
 
-    protected <T> void onLoad(Multimap<Class<? extends T>, ICapabilityConstructor<?, ? extends T, ? extends T>> allConstructors,
+    protected <T> void onLoad(Map<Class<? extends T>, List<ICapabilityConstructor<?, ? extends T, ? extends T>>> allConstructors,
                               Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors,
-                              T object, AttachCapabilitiesEvent event) {
-        onLoad(allConstructors, allInheritableConstructors, object, object, event);
+                              T object, AttachCapabilitiesEvent event, Class<? extends T> baseClass) {
+        onLoad(allConstructors, allInheritableConstructors, object, object, event, baseClass);
     }
 
-    protected <K, V> void onLoad(Multimap<Class<? extends K>, ICapabilityConstructor<?, ? extends K, ? extends V>> allConstructors,
+    protected <K, V> void onLoad(Map<Class<? extends K>, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allConstructors,
                                  Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors,
-                                 K keyObject, V valueObject, AttachCapabilitiesEvent event) {
+                                 K keyObject, V valueObject, AttachCapabilitiesEvent event, Class<? extends K> baseClass) {
         boolean initialized = baked || Helpers.isMinecraftInitialized();
         if (!baked && Helpers.isMinecraftInitialized()) {
             bake();
@@ -150,16 +165,18 @@ public class CapabilityConstructorRegistry {
 
         // Normal constructors
         Collection<ICapabilityConstructor<?, ? extends K, ? extends V>> constructors = allConstructors.get((Class<? extends K>) keyObject.getClass());
-        for(ICapabilityConstructor<?, ? extends K, ? extends V> constructor : constructors) {
-            if (initialized || constructor.getCapability() != null) {
-                addLoadedCapabilityProvider(event, keyObject, valueObject, constructor);
+        if (constructors != null) {
+            for (ICapabilityConstructor<?, ? extends K, ? extends V> constructor : constructors) {
+                if (initialized || constructor.getCapability() != null) {
+                    addLoadedCapabilityProvider(event, keyObject, valueObject, constructor);
+                }
             }
         }
 
         // Inheritable constructors
         for (Pair<Class<?>, ICapabilityConstructor<?, ?, ?>> constructorEntry : allInheritableConstructors) {
             if ((initialized || constructorEntry.getRight().getCapability() != null)
-                    && constructorEntry.getLeft().isInstance(keyObject)) {
+                    && (keyObject == baseClass || constructorEntry.getLeft() == keyObject || constructorEntry.getLeft().isInstance(keyObject))) {
                 addLoadedCapabilityProvider(event, keyObject, valueObject, constructorEntry.getRight());
             }
         }
@@ -179,24 +196,24 @@ public class CapabilityConstructorRegistry {
 
     @SubscribeEvent
     public void onTileLoad(AttachCapabilitiesEvent.TileEntity event) {
-        onLoad(capabilityConstructorsTile, capabilityConstructorsTileSuper, event.getTileEntity(), event);
+        onLoad(capabilityConstructorsTile, capabilityConstructorsTileSuper, event.getTileEntity(), event, TileEntity.class);
     }
 
     @SubscribeEvent
     public void onEntityLoad(AttachCapabilitiesEvent.Entity event) {
-        onLoad(capabilityConstructorsEntity, capabilityConstructorsEntitySuper, event.getEntity(), event);
+        onLoad(capabilityConstructorsEntity, capabilityConstructorsEntitySuper, event.getEntity(), event, Entity.class);
     }
 
     @SubscribeEvent
     public void onItemStackLoad(AttachCapabilitiesEvent.Item event) {
-        onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getItem(), event.getItemStack(), event);
+        onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getItem(), event.getItemStack(), event, Item.class);
     }
 
-    protected <K, V> void removeNullCapabilities(Multimap<Class<? extends K>, ICapabilityConstructor<?, ? extends K, ? extends V>> allConstructors,
+    protected <K, V> void removeNullCapabilities(Map<Class<? extends K>, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allConstructors,
                                                  Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors) {
         // Normal constructors
         Multimap<Class<? extends K>, ICapabilityConstructor<?, ? extends K, ? extends V>> toRemoveMap = HashMultimap.create();
-        for (Class<? extends K> key : allConstructors.keys()) {
+        for (Class<? extends K> key : allConstructors.keySet()) {
             Collection<ICapabilityConstructor<?, ? extends K, ? extends V>> constructors = allConstructors.get(key);
             for (ICapabilityConstructor<?, ? extends K, ? extends V> constructor : constructors) {
                 if (constructor.getCapability() == null) {
@@ -205,7 +222,8 @@ public class CapabilityConstructorRegistry {
             }
         }
         for (Map.Entry<Class<? extends K>, ICapabilityConstructor<?, ? extends K, ? extends V>> entry : toRemoveMap.entries()) {
-            allConstructors.remove(entry.getKey(), entry.getValue());
+            List<ICapabilityConstructor<?, ? extends K, ? extends V>> constructors = allConstructors.get(entry.getKey());
+            constructors.remove(entry.getValue());
         }
 
         // Inheritable constructors
@@ -232,9 +250,6 @@ public class CapabilityConstructorRegistry {
         removeNullCapabilities(capabilityConstructorsItem, capabilityConstructorsItemSuper);
 
         // Bake all collections
-        capabilityConstructorsTile = ImmutableMultimap.copyOf(capabilityConstructorsTile);
-        capabilityConstructorsEntity = ImmutableMultimap.copyOf(capabilityConstructorsEntity);
-        capabilityConstructorsItem = ImmutableMultimap.copyOf(capabilityConstructorsItem);
         capabilityConstructorsTileSuper = ImmutableList.copyOf(capabilityConstructorsTileSuper);
         capabilityConstructorsEntitySuper = ImmutableList.copyOf(capabilityConstructorsEntitySuper);
         capabilityConstructorsItemSuper = ImmutableList.copyOf(capabilityConstructorsItemSuper);
