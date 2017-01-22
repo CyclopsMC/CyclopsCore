@@ -141,7 +141,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
         int slots = getSizeInventory();
         
         if(slot != null && slot.getHasStack()) {
-            ItemStack stackInSlot = slot.getStack();
+            ItemStack stackInSlot = slot.getStack().copy();
             stack = stackInSlot.copy();
 
             if(slotID < slots) { // Click in tile -> player inventory
@@ -155,7 +155,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
             if(stackInSlot.getCount() == 0) {
                 slot.putStack(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.putStack(stackInSlot);
             }
 
             if(stackInSlot.getCount() == stack.getCount()) {
@@ -185,19 +185,19 @@ public abstract class InventoryContainer extends Container implements IButtonCli
             while (stack.getCount() > 0 && (!reverse && slotIndex < slotRange || reverse && slotIndex >= slotStart)) {
                 slot = this.inventorySlots.get(slotIndex);
                 int maxSlotSize = Math.min(slot.getSlotStackLimit(), maxStack);
-                existingStack = slot.getStack();
+                existingStack = slot.getStack().copy();
 
                 if (slot.isItemValid(stack) && !existingStack.isEmpty() && existingStack.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getItemDamage() == existingStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, existingStack)) {
                     int existingSize = existingStack.getCount() + stack.getCount();
                     if (existingSize <= maxSlotSize) {
                         stack.setCount(0);
                         existingStack.setCount(existingSize);
-                        slot.onSlotChanged();
+                        slot.putStack(existingStack);
                         successful = true;
                     } else if (existingStack.getCount() < maxSlotSize) {
                         stack.shrink(maxSlotSize - existingStack.getCount());
                         existingStack.setCount(maxSlotSize);
-                        slot.onSlotChanged();
+                        slot.putStack(existingStack);
                         successful = true;
                     }
                 }
@@ -219,14 +219,13 @@ public abstract class InventoryContainer extends Container implements IButtonCli
 
             while (stack.getCount() > 0 && (!reverse && slotIndex < slotRange || reverse && slotIndex >= slotStart)) {
                 slot = this.inventorySlots.get(slotIndex);
-                existingStack = slot.getStack();
+                existingStack = slot.getStack().copy();
 
                 if (slot.isItemValid(stack) && existingStack.isEmpty()) {
                     int placedAmount = Math.min(stack.getCount(), slot.getSlotStackLimit());
                     ItemStack toPut = stack.copy();
                     toPut.setCount(placedAmount);
                     slot.putStack(toPut);
-                    slot.onSlotChanged();
                     stack.shrink(placedAmount);
                     successful = true;
                 }
