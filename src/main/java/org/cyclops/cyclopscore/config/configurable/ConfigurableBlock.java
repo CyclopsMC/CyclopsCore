@@ -71,10 +71,10 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
 
     @SuppressWarnings("unchecked")
     @Override
-    public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
+    public IBlockState getStateForPlacement(World worldIn, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ,
                                      int meta, EntityLivingBase placer) {
-        IBlockState blockState = super.onBlockPlaced(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
-        for(IProperty property : blockState.getPropertyNames()) {
+        IBlockState blockState = super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
+        for(IProperty property : blockState.getPropertyKeys()) {
             if(property.getName().equals("facing")) {
                 blockState.withProperty(property, placer.getHorizontalFacing());
             }

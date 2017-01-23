@@ -67,7 +67,7 @@ public class ExtendedParticleDrop extends ParticleDrip {
             this.setParticleTextureIndex(112);
         }
 
-        this.moveEntity(this.motionX, this.motionY, this.motionZ);
+        this.move(this.motionX, this.motionY, this.motionZ);
         this.motionX *= 0.9800000190734863D;
         this.motionY *= 0.9800000190734863D;
         this.motionZ *= 0.9800000190734863D;
@@ -83,16 +83,16 @@ public class ExtendedParticleDrop extends ParticleDrip {
             this.motionZ *= 0.699999988079071D;
         }
 
-        BlockPos blockPos = new BlockPos(MathHelper.floor_double(this.posX), MathHelper.floor_double(this.posY), MathHelper.floor_double(this.posZ));
-        IBlockState blockState = this.worldObj.getBlockState(blockPos);
+        BlockPos blockPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY), MathHelper.floor(this.posZ));
+        IBlockState blockState = this.world.getBlockState(blockPos);
         Material material = blockState.getMaterial();
 
         if (material.isLiquid() || material.isSolid()) {
             float h = 1;
-            if(worldObj.getBlockState(blockPos).getBlock() instanceof BlockLiquid) {
-                h = BlockLiquid.getLiquidHeightPercent((Integer) this.worldObj.getBlockState(blockPos).getValue(BlockLiquid.LEVEL));
+            if(world.getBlockState(blockPos).getBlock() instanceof BlockLiquid) {
+                h = BlockLiquid.getLiquidHeightPercent((Integer) this.world.getBlockState(blockPos).getValue(BlockLiquid.LEVEL));
             }
-            double d0 = (double) ((float) (MathHelper.floor_double(this.posY) + 1) - h);
+            double d0 = (double) ((float) (MathHelper.floor(this.posY) + 1) - h);
 
             if (this.posY < d0) {
                 this.setExpired();

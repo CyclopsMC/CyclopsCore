@@ -80,8 +80,8 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     protected Slot addSlotToContainer(Slot slot) {
-        slot.xDisplayPosition += offsetX;
-        slot.yDisplayPosition += offsetY;
+        slot.xPos += offsetX;
+        slot.yPos += offsetY;
         return super.addSlotToContainer(slot);
     }
     

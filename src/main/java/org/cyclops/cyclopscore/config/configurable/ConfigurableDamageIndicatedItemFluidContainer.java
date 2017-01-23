@@ -246,7 +246,7 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
      * @return The fluid that was drained.
      */
     public FluidStack consume(int amount, ItemStack itemStack, @Nullable EntityPlayer player) {
-        boolean doDrain = player == null || (!player.capabilities.isCreativeMode && !player.worldObj.isRemote);
+        boolean doDrain = player == null || (!player.capabilities.isCreativeMode && !player.world.isRemote);
         if (amount == 0) return null;
         FluidStack drained = drain(itemStack, amount, doDrain);
         if (drained != null && drained.amount == amount) return drained;

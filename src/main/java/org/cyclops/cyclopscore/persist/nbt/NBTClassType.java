@@ -376,7 +376,7 @@ public abstract class NBTClassType<T> {
 
             @SideOnly(Side.CLIENT)
             protected World getClientWorld() {
-                return Minecraft.getMinecraft().theWorld;
+                return Minecraft.getMinecraft().world;
             }
 
             @Override
@@ -385,10 +385,10 @@ public abstract class NBTClassType<T> {
                 int dim = dimPos.getInteger("dim");
                 World world;
                 if(!MinecraftHelpers.isClientSide()) {
-                    if (FMLCommonHandler.instance().getMinecraftServerInstance().worldServers.length >= dim) {
+                    if (FMLCommonHandler.instance().getMinecraftServerInstance().worlds.length >= dim) {
                         dim = 0;
                     }
-                    world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServers[dim];
+                    world = FMLCommonHandler.instance().getMinecraftServerInstance().worlds[dim];
                 } else {
                     world = getClientWorld();
                     if(world.provider.getDimension() != dim) {

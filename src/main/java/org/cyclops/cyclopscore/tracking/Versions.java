@@ -168,13 +168,13 @@ public class Versions {
                     chat.appendSibling(downloadComponent);
 
                     try {
-                        player.addChatComponentMessage(chat);
+                        player.sendStatusMessage(chat);
 
                         chat = new TextComponentString("");
                         chat.appendSibling(modNameComponent);
                         chat.appendText(TextFormatting.WHITE + " ");
                         chat.appendText(triple.getMiddle().getInfo());
-                        player.addChatComponentMessage(chat);
+                        player.sendStatusMessage(chat);
                     } catch (NullPointerException e) {
                         // The player SMP connection can rarely be null at this point,
                         // let's retry in the next tick.

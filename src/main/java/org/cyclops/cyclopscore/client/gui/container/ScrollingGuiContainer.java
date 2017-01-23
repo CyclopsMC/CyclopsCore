@@ -102,7 +102,7 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
 
     protected void scrollRelative(int step) {
         this.currentScroll = (float)((double)this.currentScroll - (double)step / (double)getScrollStep());
-        this.currentScroll = MathHelper.clamp_float(this.currentScroll, 0.0F, 1.0F);
+        this.currentScroll = MathHelper.clamp(this.currentScroll, 0.0F, 1.0F);
         getScrollingInventoryContainer().scrollTo(this.currentScroll);
     }
 
@@ -149,7 +149,7 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
 
         if (this.isScrolling) {
             this.currentScroll = ((float)(mouseY - j1) - 7.5F) / ((float)(l1 - j1) - 15.0F);
-            this.currentScroll = MathHelper.clamp_float(this.currentScroll, 0.0F, 1.0F);
+            this.currentScroll = MathHelper.clamp(this.currentScroll, 0.0F, 1.0F);
             getScrollingInventoryContainer().scrollTo(this.currentScroll);
         }
 

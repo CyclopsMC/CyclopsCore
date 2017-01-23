@@ -40,4 +40,4 @@ deploy:
     on:
       all_branches: true
       repo: CyclopsMC/CyclopsCore
-      condition: "$TRAVIS_BRANCH =~ ^(master|release).*$"
+      condition: "$TRAVIS_BRANCH =~ ^(master|release|deploy).*$"

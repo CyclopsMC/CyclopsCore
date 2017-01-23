@@ -74,7 +74,7 @@ public class ParticleBlur extends Particle {
 	}
 	
 	private void validateDistance() {
-		EntityLivingBase renderentity = FMLClientHandler.instance().getClient().thePlayer;
+		EntityLivingBase renderentity = FMLClientHandler.instance().getClient().player;
 		int visibleDistance = MAX_VIEW_DISTANCE;
 		
 		if(!FMLClientHandler.instance().getClient().gameSettings.fancyGraphics) {

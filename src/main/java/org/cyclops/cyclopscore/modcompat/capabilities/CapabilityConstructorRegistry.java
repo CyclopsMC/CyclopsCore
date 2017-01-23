@@ -176,7 +176,7 @@ public class CapabilityConstructorRegistry {
         // Inheritable constructors
         for (Pair<Class<?>, ICapabilityConstructor<?, ?, ?>> constructorEntry : allInheritableConstructors) {
             if ((initialized || constructorEntry.getRight().getCapability() != null)
-                    && (keyObject == baseClass || constructorEntry.getLeft() == keyObject || constructorEntry.getLeft().isInstance(keyObject))) {
+                    && (constructorEntry.getLeft() == baseClass || constructorEntry.getLeft() == keyObject.getClass() || constructorEntry.getLeft().isInstance(keyObject))) {
                 addLoadedCapabilityProvider(event, keyObject, valueObject, constructorEntry.getRight());
             }
         }

@@ -76,7 +76,7 @@ public final class ItemStackHelpers {
             entityitem.motionX = RANDOM.nextGaussian() * (double)motion;
             entityitem.motionY = RANDOM.nextGaussian() * (double)motion + 0.2D;
             entityitem.motionZ = RANDOM.nextGaussian() * (double)motion;
-            world.spawnEntityInWorld(entityitem);
+            world.spawnEntity(entityitem);
         }
     }
 
@@ -106,7 +106,7 @@ public final class ItemStackHelpers {
             entityitem.motionZ += d3;
 
             entityitem.setNoPickupDelay();
-            world.spawnEntityInWorld(entityitem);
+            world.spawnEntity(entityitem);
         }
     }
 

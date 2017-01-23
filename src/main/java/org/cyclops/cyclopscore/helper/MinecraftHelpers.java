@@ -118,7 +118,7 @@ public class MinecraftHelpers {
                     blockPos.getZ() + offsetZ, stack);
             entityitem.setPickupDelay(10);
     
-            world.spawnEntityInWorld(entityitem);
+            world.spawnEntity(entityitem);
         }
     }
     

@@ -69,7 +69,7 @@ public class EntityHelpers {
         if (canSpawn == Result.ALLOW || (canSpawn == Result.DEFAULT)) { //  && entityliving.getCanSpawnHere()
             if (!ForgeEventFactory.doSpecialSpawn(entityLiving, world, (float) entityLiving.posX,
 					(float) entityLiving.posY, (float) entityLiving.posZ)) {
-            	world.spawnEntityInWorld(entityLiving);
+            	world.spawnEntity(entityLiving);
                 return true;
             }
         }
@@ -100,7 +100,7 @@ public class EntityHelpers {
 				int current;
 				current = EntityXPOrb.getXPSplit(xp);
 				xp -= current;
-				world.spawnEntityInWorld(new EntityXPOrb(world, player.posX, player.posY + 0.5D, player.posZ + 0.5D, current));
+				world.spawnEntity(new EntityXPOrb(world, player.posX, player.posY + 0.5D, player.posZ + 0.5D, current));
 			}
 		}
 	}

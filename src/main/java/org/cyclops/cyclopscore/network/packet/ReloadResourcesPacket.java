@@ -34,7 +34,7 @@ public class ReloadResourcesPacket extends PacketCodec {
 		long start = System.currentTimeMillis();
 		Minecraft.getMinecraft().refreshResources();
 		long end = System.currentTimeMillis();
-		player.addChatMessage(new TextComponentString(String.format("Reloaded all resources in %s ms", end - start)));
+		player.sendMessage(new TextComponentString(String.format("Reloaded all resources in %s ms", end - start)));
 	}
 
 	@Override

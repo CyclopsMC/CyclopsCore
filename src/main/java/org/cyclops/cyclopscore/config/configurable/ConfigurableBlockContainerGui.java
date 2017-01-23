@@ -94,12 +94,12 @@ public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockCon
 	@SuppressWarnings("unchecked")
 	@SideOnly(Side.CLIENT)
 	public void tryCloseClientGui(World world) {
-    	if(Minecraft.getMinecraft().thePlayer.openContainer instanceof TileInventoryContainer<?>) {
+    	if(Minecraft.getMinecraft().player.openContainer instanceof TileInventoryContainer<?>) {
     		TileInventoryContainer<? extends InventoryTileEntity> container =
     				(TileInventoryContainer<? extends InventoryTileEntity>) Minecraft.getMinecraft()
-    				.thePlayer.openContainer;
+    				.player.openContainer;
     		if(container.getTile() == null || container.getTile().isInvalid()) {
-    			Minecraft.getMinecraft().thePlayer.closeScreen();
+    			Minecraft.getMinecraft().player.closeScreen();
     		}
     	}
 	}

@@ -55,12 +55,12 @@ public class RingOfFirePacket extends PlayerPositionPacket {
 
             if(world.rand.nextInt(20) == 0) {
                 FMLClientHandler.instance().getClient().effectRenderer.addEffect(
-                        new ParticleLava.Factory().getEntityFX(EnumParticleTypes.LAVA.getParticleID(), world, particleX, particleY, particleZ,
+                        new ParticleLava.Factory().createParticle(EnumParticleTypes.LAVA.getParticleID(), world, particleX, particleY, particleZ,
                                 0, 0, 0, 0)
                         );
             } else {
                 FMLClientHandler.instance().getClient().effectRenderer.addEffect(
-                        new ParticleFlame.Factory().getEntityFX(0, world, particleX, particleY, particleZ, particleMotionX, particleMotionY, particleMotionZ)
+                        new ParticleFlame.Factory().createParticle(0, world, particleX, particleY, particleZ, particleMotionX, particleMotionY, particleMotionZ)
                         );
             }
         }

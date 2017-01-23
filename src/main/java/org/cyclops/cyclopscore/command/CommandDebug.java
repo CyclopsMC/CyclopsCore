@@ -45,7 +45,7 @@ public class CommandDebug extends CommandMod {
     }
 
     @Override
-    protected List<String> getAliases() {
+    public List<String> getAliases() {
         List<String> list = new LinkedList<String>();
         list.add(NAME);
         return list;
@@ -65,7 +65,7 @@ public class CommandDebug extends CommandMod {
     public void processCommandHelp(ICommandSender icommandsender, String[] astring) throws CommandException {
         Iterator<String> it = getSubcommands().keySet().iterator();
         if (it.hasNext())
-            icommandsender.addChatMessage(new TextComponentString(joinStrings(it, ", ")));
+            icommandsender.sendMessage(new TextComponentString(joinStrings(it, ", ")));
         else
             throw new CommandException("empty");
     }
@@ -80,13 +80,13 @@ public class CommandDebug extends CommandMod {
         }
 
         @Override
-        public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] parts, BlockPos blockPos) {
+        public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] parts, BlockPos blockPos) {
             return null;
         }
 
         @Override
         public void execute(MinecraftServer server, ICommandSender sender, String[] parts) {
-            sender.addChatMessage(new TextComponentString(String.format("Sending %s from client to server...", packet.getClass())));
+            sender.sendMessage(new TextComponentString(String.format("Sending %s from client to server...", packet.getClass())));
             CyclopsCore._instance.getPacketHandler().sendToPlayer(packet, (EntityPlayerMP) sender.getCommandSenderEntity());
         }
     }
