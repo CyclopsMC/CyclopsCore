@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.config.configurable;
 import net.minecraft.world.biome.Biome;
 import org.cyclops.cyclopscore.config.extendedconfig.BiomeConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.helper.L10NHelpers;
 
 /**
  * A simple configurable for Biomes, will auto-register itself after construction.
@@ -28,7 +29,7 @@ public class ConfigurableBiome extends Biome implements IConfigurable {
     }
 
     protected static Properties constructProperties(BiomeConfig eConfig) {
-        return new Properties(eConfig.getUnlocalizedName());
+        return new Properties(L10NHelpers.localize(eConfig.getUnlocalizedName()));
     }
     
     @SuppressWarnings("rawtypes")
