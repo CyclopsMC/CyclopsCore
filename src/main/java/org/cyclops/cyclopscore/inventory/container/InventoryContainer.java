@@ -8,7 +8,6 @@ import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.inventory.IValueNotifier;
 import org.cyclops.cyclopscore.inventory.container.button.IButtonActionServer;
@@ -60,7 +59,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     @Override
     public void addListener(IContainerListener listener) {
         super.addListener(listener);
-        if(!MinecraftHelpers.isClientSide()) {
+        if(!player.getEntityWorld().isRemote) {
             initializeValues();
         }
     }
@@ -360,7 +359,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     @Override
     public void setValue(int valueId, NBTTagCompound value) {
         if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
-            if (!MinecraftHelpers.isClientSide()) { // server -> client
+            if (!player.getEntityWorld().isRemote) { // server -> client
                 CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(valueId, value), (EntityPlayerMP) player);
             } else { // client -> server
                 CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(valueId, value));
