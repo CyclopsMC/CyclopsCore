@@ -71,6 +71,9 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     
     @Override
     public int fill(ItemStack container, FluidStack resource, boolean doFill) {
+        if (fluid != null && resource != null && fluid != resource.getFluid()) {
+            return 0;
+        }
         int capacityOld = capacity;
         capacity = getCapacity(container);
         int filled = super.fill(container, resource, doFill);
