@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import org.cyclops.cyclopscore.helper.ItemStackHelpers;
@@ -18,12 +19,21 @@ import javax.annotation.Nullable;
  */
 public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements IFluidHandlerItemCapacity {
 
+    private final Fluid fluid;
+
     /**
      * @param container The container itemStack, data is stored on it directly as NBT.
      * @param capacity  The maximum capacity of this fluid tank.
+     * @param fluid
      */
-    public FluidHandlerItemCapacity(ItemStack container, int capacity) {
+    public FluidHandlerItemCapacity(ItemStack container, int capacity, Fluid fluid) {
         super(container, capacity);
+        this.fluid = fluid;
+    }
+
+    @Override
+    public boolean canFillFluidType(FluidStack resource) {
+        return fluid == null || resource == null || fluid == resource.getFluid();
     }
 
     @Override

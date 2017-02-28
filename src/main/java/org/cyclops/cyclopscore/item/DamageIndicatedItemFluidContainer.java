@@ -51,7 +51,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     private void init() {
         component = new DamageIndicatedItemComponent(this);
     }
-    
+
     @SuppressWarnings({ "rawtypes"})
     @Override
     @SideOnly(Side.CLIENT)
@@ -116,6 +116,6 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
 
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
-        return new FluidHandlerItemCapacity(stack, capacity);
+        return new FluidHandlerItemCapacity(stack, capacity, getFluid());
     }
 }

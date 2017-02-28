@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add IndexedInventory to expose slotless item handler
+
+Fixes:
+* Improve efficiency of CapabilityConstructorRegistry
+* Fix rare NPE in CubeDetector
