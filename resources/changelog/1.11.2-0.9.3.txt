@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix fluid container items being fillable with non-matching fluids, Closes CyclopsMC/EvilCraft#527
+* Fix gui client-server value sync variables
