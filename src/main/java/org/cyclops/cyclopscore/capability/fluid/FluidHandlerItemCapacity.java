@@ -24,7 +24,15 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
     /**
      * @param container The container itemStack, data is stored on it directly as NBT.
      * @param capacity  The maximum capacity of this fluid tank.
-     * @param fluid
+     */
+    public FluidHandlerItemCapacity(ItemStack container, int capacity) {
+        this(container, capacity, null);
+    }
+
+    /**
+     * @param container The container itemStack, data is stored on it directly as NBT.
+     * @param capacity  The maximum capacity of this fluid tank.
+     * @param fluid     The accepted fluid.
      */
     public FluidHandlerItemCapacity(ItemStack container, int capacity, Fluid fluid) {
         super(container, capacity);
