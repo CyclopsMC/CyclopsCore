@@ -5,15 +5,14 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.Achievement;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
-import org.cyclops.cyclopscore.infobook.pageelement.CraftingRecipeAppendix;
-import org.cyclops.cyclopscore.infobook.pageelement.FurnaceRecipeAppendix;
-import org.cyclops.cyclopscore.infobook.pageelement.ImageAppendix;
-import org.cyclops.cyclopscore.infobook.pageelement.SectionAppendix;
+import org.cyclops.cyclopscore.infobook.pageelement.*;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.recipe.xml.ConfigRecipeConditionHandler;
@@ -41,6 +40,7 @@ public class InfoBookParser {
     private static final Map<String, IAppendixFactory> APPENDIX_FACTORIES = Maps.newHashMap();
     private static final Set<String> IGNORED_APPENDIX_FACTORIES = Sets.newHashSet();
     private static final Map<String, IAppendixItemFactory> APPENDIX_LIST_FACTORIES = Maps.newHashMap();
+    private static final Map<String, IRewardFactory> REWARD_FACTORIES = Maps.newHashMap();
 
     static {
         // Infosection factories
@@ -91,6 +91,51 @@ public class InfoBookParser {
             }
 
         });
+        InfoBookParser.registerFactory("achievement_rewards", new InfoBookParser.IAppendixFactory() {
+
+            @Override
+            public SectionAppendix create(IInfoBook infoBook, Element node) throws InfoBookParser.InvalidAppendixException {
+                List<Achievement> achievements = Lists.newArrayList();
+                List<IReward> rewards = Lists.newArrayList();
+                String achievementRewardsId = node.getAttribute("id");
+
+                NodeList children = node.getChildNodes();
+                for (int i = 0; i < children.getLength(); i++) {
+                    if (children.item(i) instanceof Element) {
+                        Element child = (Element) children.item(i);
+                        NodeList subChildren = child.getChildNodes();
+                        if (child.getNodeName().equals("achievements")) {
+                            for (int j = 0; j < subChildren.getLength(); j++) {
+                                if (subChildren.item(j) instanceof Element) {
+                                    Element achievementNode = (Element) subChildren.item(j);
+                                    String achievementId = achievementNode.getAttribute("id");
+                                    if (!achievementId.isEmpty()) {
+                                        Achievement achievement = (Achievement) StatList.getOneShotStat(achievementId);
+                                        if (achievement == null) {
+                                            throw new InfoBookParser.InvalidAppendixException(String.format("Could not find an achievement by id '%s'", achievementId));
+                                        }
+                                        achievements.add(achievement);
+                                    }
+                                }
+                            }
+                        } else if (child.getNodeName().equals("rewards")) {
+                            for (int j = 0; j < subChildren.getLength(); j++) {
+                                if (subChildren.item(j) instanceof Element) {
+                                    Element rewardNode = (Element) subChildren.item(j);
+                                    String rewardType = rewardNode.getAttribute("type");
+                                    rewards.add(createReward(infoBook, rewardType, rewardNode));
+                                }
+                            }
+                        }
+                    }
+                }
+                if (achievementRewardsId == null || achievementRewardsId.isEmpty()) {
+                    throw new InfoBookParser.InvalidAppendixException("Every achievement rewards tag must have a unique id attribute");
+                }
+                AchievementRewards achievementRewards = new AchievementRewards(achievementRewardsId, achievements, rewards);
+                return new AchievementRewardsAppendix(infoBook, achievementRewards);
+            }
+        });
 
         // Appendix item factories
         registerFactory("craftingRecipe", new IAppendixItemFactory() {
@@ -116,6 +161,18 @@ public class InfoBookParser {
                 }
             }
 
+        });
+
+        // Reward factories
+        registerFactory("item", new IRewardFactory() {
+            @Override
+            public IReward create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
+                ItemStack itemStack = InfoBookParser.createStack(node, infoBook.getMod().getRecipeHandler());
+                if (itemStack.getMetadata() == OreDictionary.WILDCARD_VALUE) {
+                    itemStack.setItemDamage(0);
+                }
+                return new RewardItem(itemStack);
+            }
         });
     }
 
@@ -158,6 +215,17 @@ public class InfoBookParser {
     public static void registerFactory(String name, IAppendixItemFactory factory) {
         if(APPENDIX_LIST_FACTORIES.put(name, factory) != null) {
             throw new RuntimeException(String.format("An appendix item factory with name %s was registered while another one already existed!", name));
+        }
+    }
+
+    /**
+     * Register a new reward factory.
+     * @param name The unique name for this factory, make sure to namespace this to your mod to avoid collisions.
+     * @param factory The factory
+     */
+    public static void registerFactory(String name, IRewardFactory factory) {
+        if(REWARD_FACTORIES.put(name, factory) != null) {
+            throw new RuntimeException(String.format("A reward factory with name %s was registered while another one already existed!", name));
         }
     }
 
@@ -320,6 +388,15 @@ public class InfoBookParser {
             throw new InfoBookException("No appendix list of type '" + type + "' was found.");
         }
         return factory.create(infoBook, itemStack);
+    }
+
+    protected static IReward createReward(IInfoBook infoBook, String type, Element node) throws InvalidAppendixException {
+        if(type == null) type = "";
+        IRewardFactory factory = REWARD_FACTORIES.get(type);
+        if(factory == null) {
+            throw new InfoBookException("No reward factory of type '" + type + "' was found.");
+        }
+        return factory.create(infoBook, node);
     }
 
     public static interface IInfoSectionFactory {
