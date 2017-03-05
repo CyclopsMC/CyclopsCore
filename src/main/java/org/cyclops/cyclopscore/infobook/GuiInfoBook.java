@@ -257,6 +257,7 @@ public abstract class GuiInfoBook extends GuiScreen {
             nextSection = ((AdvancedButton) button).getTarget();
             nextPage = 0;
             if(nextSection != infoBook.getCurrentSection()) infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
+            ((AdvancedButton) button).onClick();
         } else {
             super.actionPerformed(button);
         }
@@ -355,6 +356,11 @@ public abstract class GuiInfoBook extends GuiScreen {
 
     public void renderToolTip(ItemStack itemStack, int x, int y) {
         super.renderToolTip(itemStack, x, y);
+    }
+
+    @Override
+    public void drawHoveringText(List<String> textLines, int x, int y) {
+        super.drawHoveringText(textLines, x, y);
     }
 
     public int getTick() {

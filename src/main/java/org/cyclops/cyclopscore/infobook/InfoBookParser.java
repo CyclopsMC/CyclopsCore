@@ -173,8 +173,12 @@ public class InfoBookParser {
 
     public static ItemStack createStack(Element node, RecipeHandler recipeHandler) throws InvalidAppendixException {
         int meta = OreDictionary.WILDCARD_VALUE;
+        int amount = 1;
         if(!node.getAttribute("meta").isEmpty()) {
             meta = Integer.parseInt(node.getAttribute("meta"));
+        }
+        if(!node.getAttribute("amount").isEmpty()) {
+            amount = Integer.parseInt(node.getAttribute("amount"));
         }
         if("true".equals(node.getAttribute("predefined"))) {
             ItemStack itemStack = recipeHandler.getPredefinedItem(node.getTextContent());
@@ -187,7 +191,7 @@ public class InfoBookParser {
         if(item == null) {
             throw new InvalidAppendixException("Invalid item " + node.getTextContent());
         }
-        return new ItemStack(item, 1, meta);
+        return new ItemStack(item, amount, meta);
     }
 
     /**

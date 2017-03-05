@@ -49,6 +49,15 @@ public class AdvancedButton extends GuiButton {
         }
     }
 
+    /**
+     * Render the button tooltip.
+     * @param mx Mouse x.
+     * @param my Mouse Y.
+     */
+    public void renderTooltip(int mx, int my) {
+
+    }
+
     protected boolean isHover(int mouseX, int mouseY) {
         return mouseX >= this.xPosition && mouseY >= this.yPosition &&
                 mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
@@ -60,6 +69,10 @@ public class AdvancedButton extends GuiButton {
 
     public InfoSection getTarget() {
         return this.target;
+    }
+
+    public void onClick() {
+
     }
 
     public static class Enum {

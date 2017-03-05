@@ -67,6 +67,10 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     }
 
     protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButton.Enum buttonEnum) {
+        renderItemForButton(gui, x, y, itemStack, mx, my, renderOverlays, buttonEnum != null ? renderItemHolders.get(buttonEnum) : null);
+    }
+
+    public static void renderItemForButton(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, ItemButton button) {
         if(renderOverlays) gui.drawOuterBorder(x, y, SLOT_SIZE, SLOT_SIZE, 1, 1, 1, 0.2f);
 
         RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
@@ -82,10 +86,10 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         GlStateManager.popMatrix();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
-        if(buttonEnum != null && renderOverlays) renderItemHolders.get(buttonEnum).update(x, y, itemStack, gui);
+        if(button != null && renderOverlays) button.update(x, y, itemStack, gui);
     }
 
-    protected void renderItemTooltip(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my) {
+    public static void renderItemTooltip(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my) {
         GlStateManager.pushMatrix();
         if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && itemStack != null ) {
             gui.renderToolTip(itemStack, mx, my);
@@ -134,7 +138,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
     protected void renderToolTips(GuiInfoBook gui, int mx, int my) {
         for(ItemButton renderItemHolder : renderItemHolders.values()) {
-            renderItemTooltip(gui, renderItemHolder.xPosition, renderItemHolder.yPosition, renderItemHolder.getItemStack(), mx, my);
+            renderItemHolder.renderTooltip(mx, my);
         }
     }
 
@@ -148,7 +152,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         infoSection.addAdvancedButtons(getPage(), renderItemHolders.values());
     }
 
-    protected static class ItemButton extends AdvancedButton {
+    public static class ItemButton extends AdvancedButton {
 
         @Getter private ItemStack itemStack;
 
@@ -190,6 +194,10 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
             return super.isVisible() && itemStack != null;
         }
 
+        @Override
+        public void renderTooltip(int mx, int my) {
+            RecipeAppendix.renderItemTooltip(gui, xPosition, yPosition, getItemStack(), mx, my);
+        }
     }
 
 }
