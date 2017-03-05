@@ -33,12 +33,12 @@ public class RewardItem implements IReward<RecipeAppendix.ItemButton> {
 
     @Override
     public int getWidth() {
-        return SLOT_SIZE + 2;
+        return SLOT_SIZE + 4;
     }
 
     @Override
     public int getHeight() {
-        return SLOT_SIZE + 2;
+        return SLOT_SIZE + 4;
     }
 
     @Override

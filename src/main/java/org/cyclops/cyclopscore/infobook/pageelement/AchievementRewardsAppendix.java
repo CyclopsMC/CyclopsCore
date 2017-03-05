@@ -118,6 +118,7 @@ public class AchievementRewardsAppendix extends SectionAppendix {
                 allAchievementsValid = false;
             }
             renderButtonHolders.get(achievements[i]).update(x + offsetX, y + offsetY, "", null, gui);
+            offsetX += SLOT_SIZE + SLOT_PADDING * 2;
         }
 
         boolean taken = achievementRewards.isObtained(Minecraft.getMinecraft().thePlayer);
