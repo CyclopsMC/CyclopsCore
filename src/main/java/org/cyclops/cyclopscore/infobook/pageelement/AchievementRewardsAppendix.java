@@ -274,6 +274,11 @@ public class AchievementRewardsAppendix extends SectionAppendix {
         public void onClick() {
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
             boolean canObtain = true;
+            for (Achievement achievement : achievementRewards.getAchievements()) {
+                if (!Minecraft.getMinecraft().thePlayer.getStatFileWriter().hasAchievementUnlocked(achievement)) {
+                    canObtain = false;
+                }
+            }
             for (IReward reward : achievementRewards.getRewards()) {
                 if (!reward.canObtain(player)) {
                     canObtain = false;
