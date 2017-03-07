@@ -8,6 +8,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Achievement;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
@@ -260,6 +263,18 @@ public class InfoBookParser {
             throw new InvalidAppendixException("Invalid item " + node.getTextContent());
         }
         return new ItemStack(item, amount, meta);
+    }
+
+    public static FluidStack createFluidStack(Element node, RecipeHandler recipeHandler) throws InvalidAppendixException {
+        int amount = Fluid.BUCKET_VOLUME;
+        if(!node.getAttribute("amount").isEmpty()) {
+            amount = Integer.parseInt(node.getAttribute("amount"));
+        }
+        Fluid fluid = FluidRegistry.getFluid(node.getTextContent());
+        if(fluid == null) {
+            throw new InvalidAppendixException("Invalid fluid " + node.getTextContent());
+        }
+        return new FluidStack(fluid, amount);
     }
 
     /**
