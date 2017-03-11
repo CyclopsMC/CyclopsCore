@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.configurable.IConfigurable;
@@ -237,6 +238,18 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
                 return null;
             }
         }
+    }
+
+    /**
+     * Get the config from a given fluid.
+     * @param fluid The fluid, possibly IConfigurable.
+     * @return The config or null.
+     */
+    public static @Nullable ExtendedConfig<?> getConfigFromFluid(Fluid fluid) {
+        if(fluid instanceof IConfigurable) {
+            return ((IConfigurable) fluid).getConfig();
+        }
+        return null;
     }
     
 }
