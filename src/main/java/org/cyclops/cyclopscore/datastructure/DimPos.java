@@ -37,6 +37,11 @@ public class DimPos implements Comparable<DimPos> {
         return world;
     }
 
+    public boolean isLoaded() {
+        World world = getWorld();
+        return world != null && world.isBlockLoaded(getBlockPos());
+    }
+
     @Override
     public int compareTo(DimPos o) {
         int compareDim = Integer.compare(getDimensionId(),
