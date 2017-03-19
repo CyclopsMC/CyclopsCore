@@ -20,7 +20,7 @@ import java.util.*;
  */
 public class InfoSection {
 
-    public static final int Y_OFFSET = 16;
+    //public static final int Y_OFFSET = 16;
     private static final int TITLE_LINES = 3;
     private static final int APPENDIX_OFFSET_LINE = 1;
     private static final int LINK_INDENT = 8;
@@ -53,9 +53,10 @@ public class InfoSection {
      * Add all links from the given map to this section, starting from page 0.
      * @param maxLines The maximum amount of lines per page.
      * @param lineHeight The line height.
+     * @param yOffset The y gui offset.
      * @param softLinks The map of links.
      */
-    protected void addLinks(int maxLines, int lineHeight, Map<String, Pair<InfoSection, Integer>> softLinks) {
+    protected void addLinks(int maxLines, int lineHeight, int yOffset, Map<String, Pair<InfoSection, Integer>> softLinks) {
         int linesOnPage = 0;
         if(isTitlePage(0)) {
             linesOnPage += TITLE_LINES;
@@ -70,7 +71,7 @@ public class InfoSection {
                 links.add(pageLinks);
                 pageLinks = Lists.newArrayListWithCapacity(maxLines);
             }
-            pageLinks.add(new HyperLink(entry.getValue().getRight(), Y_OFFSET + (linesOnPage - 1) * lineHeight, entry.getValue().getLeft(), entry.getKey()));
+            pageLinks.add(new HyperLink(entry.getValue().getRight(), yOffset + (linesOnPage - 1) * lineHeight, entry.getValue().getLeft(), entry.getKey()));
         }
         paragraphs.add(lines.toString());
         links.add(pageLinks);
@@ -96,14 +97,15 @@ public class InfoSection {
      * @param width Section width
      * @param maxLines The maximum amount of lines per page.
      * @param lineHeight The line height.
+     * @param yOffset The y gui offset.
      */
     @SuppressWarnings("unchecked")
-    public void bakeSection(FontRenderer fontRenderer, int width, int maxLines, int lineHeight) {
+    public void bakeSection(FontRenderer fontRenderer, int width, int maxLines, int lineHeight, int yOffset) {
         if(paragraphs.size() == 0 && shouldAddIndex()) {
             // linkedmap to make sure the contents are sorted by insertion order.
             Map<String, Pair<InfoSection, Integer>> softLinks = Maps.newLinkedHashMap();
             constructAllLinks(this, softLinks, 0, 2);
-            addLinks(maxLines, lineHeight, softLinks);
+            addLinks(maxLines, lineHeight, yOffset, softLinks);
         }
 
         // Localize paragraphs and fit them into materialized paragraphs.
@@ -265,13 +267,16 @@ public class InfoSection {
      * @param gui The gui.
      * @param x X.
      * @param y Y.
+     * @param yOffset The y offset.
      * @param width The width of the page.
      * @param height The height of the page.
      * @param page The page to render.
      * @param mx Mouse X.
      * @param my Mouse Y.
+     * @param footnoteOffsetX Footnote offset x
+     * @param footnoteOffsetY Footnote offset y
      */
-    public void drawScreen(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
+    public void drawScreen(GuiInfoBook gui, int x, int y, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
         if(page < getPages()) {
             FontRenderer fontRenderer = gui.getFontRenderer();
             boolean oldUnicode = fontRenderer.getUnicodeFlag();
@@ -280,23 +285,23 @@ public class InfoSection {
 
             // Draw text content
             String content = getLocalizedPageString(page);
-            if (content != null) fontRenderer.drawSplitString(content, x, y + Y_OFFSET, width, 0);
+            if (content != null) fontRenderer.drawSplitString(content, x, y + yOffset, width, 0);
 
             // Draw title if on first page
             if (isTitlePage(page)) {
-                gui.drawScaledCenteredString(getLocalizedTitle(), x, y + Y_OFFSET + 10, width, 1.5f, width, Helpers.RGBToInt(120, 20, 30));
-                gui.drawHorizontalRule(x + width / 2, y + Y_OFFSET);
-                gui.drawHorizontalRule(x + width / 2, y + Y_OFFSET + 21);
+                gui.drawScaledCenteredString(getLocalizedTitle(), x, y + yOffset + 10, width, 1.5f, width, Helpers.RGBToInt(120, 20, 30));
+                gui.drawHorizontalRule(x + width / 2, y + yOffset);
+                gui.drawHorizontalRule(x + width / 2, y + yOffset + 21);
             }
             fontRenderer.setUnicodeFlag(oldUnicode);
 
             // Draw current page/section indication
-            gui.drawScaledCenteredString(getLocalizedTitle() + " - " + (page + 1) +  "/" + getPages(), x + ((page % 2 == 0) ? 10 : -10), y + height - Y_OFFSET, width, 0.6f, (int) (width * 0.75f), Helpers.RGBToInt(190, 190, 190));
+            gui.drawScaledCenteredString(getLocalizedTitle() + " - " + (page + 1) +  "/" + getPages(), x + (((page % 2 == 0) ? 1 : -1) * footnoteOffsetX), y + height + footnoteOffsetY, width, 0.6f, (int) (width * 0.75f), Helpers.RGBToInt(190, 190, 190));
 
             // Draw appendixes
             for (SectionAppendix appendix : appendixes) {
                 if (appendix.getPage() == page) {
-                    appendix.drawScreen(gui, x, y + Y_OFFSET + getAppendixOffsetLine(fontRenderer, appendix), width,
+                    appendix.drawScreen(gui, x, y + yOffset + getAppendixOffsetLine(fontRenderer, appendix), width,
                             height, page, mx, my, true);
                 }
             }
@@ -320,7 +325,7 @@ public class InfoSection {
             // Post draw appendixes
             for (SectionAppendix appendix : appendixes) {
                 if (appendix.getPage() == page) {
-                    appendix.drawScreen(gui, x, y + Y_OFFSET + getAppendixOffsetLine(fontRenderer, appendix), width,
+                    appendix.drawScreen(gui, x, y + getAppendixOffsetLine(fontRenderer, appendix), width,
                             height, page, mx, my, false);
                 }
             }

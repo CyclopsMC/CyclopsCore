@@ -204,7 +204,7 @@ public class AchievementRewardsAppendix extends SectionAppendix {
             if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE) {
                 List<String> lines = Lists.newArrayList();
                 lines.add(achievement.getStatName().getFormattedText());
-                lines.add(achievement.getDescription());
+                lines.add(TextFormatting.GRAY.toString() + achievement.getDescription());
                 gui.drawHoveringText(lines, mx, my);
             }
             GlStateManager.popMatrix();

@@ -53,10 +53,10 @@ public abstract class GuiInfoBook extends GuiScreen {
     protected final ItemStack itemStack;
     protected final ResourceLocation texture;
 
-    private NextPageButton buttonNextPage;
-    private NextPageButton buttonPreviousPage;
-    private NextPageButton buttonParent;
-    private NextPageButton buttonBack;
+    protected NextPageButton buttonNextPage;
+    protected NextPageButton buttonPreviousPage;
+    protected NextPageButton buttonParent;
+    protected NextPageButton buttonBack;
 
     private InfoSection nextSection;
     private int nextPage;
@@ -84,6 +84,26 @@ public abstract class GuiInfoBook extends GuiScreen {
     protected abstract int getGuiHeight();
     protected abstract int getPageWidth();
 
+    protected int getPageYOffset() {
+        return 16;
+    }
+
+    protected int getFootnoteOffsetX() {
+        return 10;
+    }
+
+    protected int getFootnoteOffsetY() {
+        return 0;
+    }
+
+    protected int getPrevNextOffsetY() {
+        return 0;
+    }
+
+    protected int getPrevNextOffsetX() {
+        return 0;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
@@ -93,8 +113,8 @@ public abstract class GuiInfoBook extends GuiScreen {
         left = (width - getGuiWidth()) / 2;
         top = (height - getGuiHeight()) / 2;
 
-        this.buttonList.add(this.buttonNextPage = new NextPageButton(BUTTON_NEXT, left + getPageWidth() + 100, top + 156, 0, 180, 18, 13, this));
-        this.buttonList.add(this.buttonPreviousPage = new NextPageButton(BUTTON_PREVIOUS, left + 23, top + 156, 0, 193, 18, 13, this));
+        this.buttonList.add(this.buttonNextPage = new NextPageButton(BUTTON_NEXT, left + getPageWidth() + 100 + getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 180, 18, 13, this));
+        this.buttonList.add(this.buttonPreviousPage = new NextPageButton(BUTTON_PREVIOUS, left + 23 - getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 193, 18, 13, this));
         this.buttonList.add(this.buttonParent = new NextPageButton(BUTTON_PARENT, left + 2, top + 2, 36, 180, 8, 8, this));
         this.buttonList.add(this.buttonBack = new NextPageButton(BUTTON_BACK, left + getPageWidth() + 127, top + 2, 0, 223, 13, 18, this));
         this.updateGui();
@@ -110,7 +130,7 @@ public abstract class GuiInfoBook extends GuiScreen {
         for(int innerPage = page; innerPage <= page + getPages() - 1; innerPage++) {
             for (HyperLink link : infoBook.getCurrentSection().getLinks(innerPage)) {
                 int xOffset = getOffsetXForPageWithWidths(innerPage % getPages());
-                this.buttonList.add(new TextOverlayButton(nextId++, link, left + xOffset + link.getX(), top + InfoSection.Y_OFFSET / 2 + link.getY(),
+                this.buttonList.add(new TextOverlayButton(nextId++, link, left + xOffset + link.getX(), top + getPageYOffset() / 2 + link.getY(),
                         InfoSection.getFontHeight(getFontRenderer()), this));
             }
             this.buttonList.addAll(infoBook.getCurrentSection().getAdvancedButtons(innerPage));
@@ -140,11 +160,11 @@ public abstract class GuiInfoBook extends GuiScreen {
         drawTexturedModalRectMirrored(left + getPageWidth() - 1, top, 0, 0, getPageWidth(), getGuiHeight());
         int width = getPageWidth() - getOffsetXTotal();
         for(int i = 0; i < getPages(); i++) {
-            infoBook.getCurrentSection().drawScreen(this, left + getOffsetXForPageWithWidths(i), top, width, getGuiHeight(), infoBook.getCurrentPage() + i, x, y);
+            infoBook.getCurrentSection().drawScreen(this, left + getOffsetXForPageWithWidths(i), top, getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, x, y, getFootnoteOffsetX(), getFootnoteOffsetY());
         }
         super.drawScreen(x, y, f);
         for(int i = 0; i < getPages(); i++) {
-            infoBook.getCurrentSection().postDrawScreen(this, left + getOffsetXForPageWithWidths(i), top, width, getGuiHeight(), infoBook.getCurrentPage() + i, x, y);
+            infoBook.getCurrentSection().postDrawScreen(this, left + getOffsetXForPageWithWidths(i), top + getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, x, y);
         }
     }
 
@@ -179,7 +199,7 @@ public abstract class GuiInfoBook extends GuiScreen {
         mc.fontRendererObj.setUnicodeFlag(true);
         int width = getPageWidth() - getOffsetXTotal();
         int lineHeight = InfoSection.getFontHeight(getFontRenderer());
-        int maxLines = (getGuiHeight() - 2 * InfoSection.Y_OFFSET - 5) / lineHeight;
+        int maxLines = (getGuiHeight() - 2 * getPageYOffset() - 5) / lineHeight;
 
         // Bake current and all reachable sections.
         List<InfoSection> infoSectionsToBake = Lists.newLinkedList();
@@ -187,7 +207,7 @@ public abstract class GuiInfoBook extends GuiScreen {
         getPreviousSections(infoSectionsToBake);
         getNextSections(infoSectionsToBake);
         for(InfoSection infoSection : infoSectionsToBake) {
-            if(infoSection != null) infoSection.bakeSection(getFontRenderer(), width, maxLines, lineHeight);
+            if(infoSection != null) infoSection.bakeSection(getFontRenderer(), width, maxLines, lineHeight, getPageYOffset());
         }
 
         updateButtons();
