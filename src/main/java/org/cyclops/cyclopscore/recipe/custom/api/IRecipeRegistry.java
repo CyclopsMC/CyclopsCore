@@ -18,8 +18,9 @@ public interface IRecipeRegistry<M extends IMachine<M, I, O, P>, I extends IReci
 	/**
      * Registers the given recipe with this registry.
      * @param recipe A recipe that should be registered.
+     * @return The registered recipe
      */
-    public void registerRecipe(IRecipe<I, O, P> recipe);
+    public IRecipe<I, O, P> registerRecipe(IRecipe<I, O, P> recipe);
     
     /**
      * Registers a new recipe with the given properties with this registry.
@@ -27,16 +28,18 @@ public interface IRecipeRegistry<M extends IMachine<M, I, O, P>, I extends IReci
      * @param input The input of the recipe.
      * @param output The output of the recipe.
      * @param properties Additional properties of the recipe.
+     * @return The registered recipe
      */
-    public void registerRecipe(String namedId, I input, O output, P properties);
+    public IRecipe<I, O, P> registerRecipe(String namedId, I input, O output, P properties);
     
     /**
      * Registers a new recipe with the given properties with this registry.
      * @param input The input of the recipe.
      * @param output The output of the recipe.
      * @param properties Additional properties of the recipe.
+     * @return The registered recipe
      */
-    public void registerRecipe(I input, O output, P properties);
+    public IRecipe<I, O, P> registerRecipe(I input, O output, P properties);
     
     /**
      * Returns the first recipe whose named id matches the given named id.

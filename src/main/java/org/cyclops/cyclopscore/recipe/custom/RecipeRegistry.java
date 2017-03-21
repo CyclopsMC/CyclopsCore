@@ -32,18 +32,19 @@ public class RecipeRegistry<M extends IMachine<M, I, O, P>, I extends IRecipeInp
     }
 
     @Override
-	public void registerRecipe(IRecipe<I, O, P> recipe) {
+	public IRecipe<I, O, P> registerRecipe(IRecipe<I, O, P> recipe) {
         getMod().getRegistryManager().getRegistry(ISuperRecipeRegistry.class).getRecipes(machine).add(recipe);
+        return recipe;
     }
 
     @Override
-    public void registerRecipe(String namedId, I input, O output, P properties) {
-        registerRecipe(new Recipe<I, O, P>(namedId, input, output, properties));
+    public IRecipe<I, O, P> registerRecipe(String namedId, I input, O output, P properties) {
+        return registerRecipe(new Recipe<I, O, P>(namedId, input, output, properties));
     }
 
     @Override
-    public void registerRecipe(I input, O output, P properties) {
-        registerRecipe(new Recipe<I, O, P>(input, output, properties));
+    public IRecipe<I, O, P> registerRecipe(I input, O output, P properties) {
+        return registerRecipe(new Recipe<I, O, P>(input, output, properties));
     }
 
     @Override

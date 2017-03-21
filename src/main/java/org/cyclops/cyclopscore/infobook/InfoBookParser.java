@@ -18,6 +18,13 @@ import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.*;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
+import org.cyclops.cyclopscore.recipe.custom.component.DummyPropertiesComponent;
+import org.cyclops.cyclopscore.recipe.custom.component.ItemStackRecipeComponent;
+import org.cyclops.cyclopscore.recipe.custom.component.ItemStacksRecipeComponent;
 import org.cyclops.cyclopscore.recipe.xml.ConfigRecipeConditionHandler;
 import org.cyclops.cyclopscore.recipe.xml.IRecipeConditionHandler;
 import org.w3c.dom.Document;
@@ -141,24 +148,24 @@ public class InfoBookParser {
         });
 
         // Appendix item factories
-        registerFactory("craftingRecipe", new IAppendixItemFactory() {
+        registerFactory("craftingRecipe", new IAppendixItemFactory<ItemStacksRecipeComponent, ItemStackRecipeComponent, DummyPropertiesComponent>() {
 
             @Override
-            public SectionAppendix create(IInfoBook infoBook, ItemStack itemStack) throws InvalidAppendixException {
+            public SectionAppendix create(IInfoBook infoBook, IRecipe<ItemStacksRecipeComponent, ItemStackRecipeComponent, DummyPropertiesComponent> recipe) throws InvalidAppendixException {
                 try {
-                    return new CraftingRecipeAppendix(infoBook, CraftingHelpers.findCraftingRecipe(itemStack, 0));
+                    return new CraftingRecipeAppendix(infoBook, CraftingHelpers.findCraftingRecipe(recipe.getOutput().getItemStack(), 0));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }
             }
 
         });
-        registerFactory("furnaceRecipe", new IAppendixItemFactory() {
+        registerFactory("furnaceRecipe", new IAppendixItemFactory<ItemStackRecipeComponent, ItemStackRecipeComponent, DummyPropertiesComponent>() {
 
             @Override
-            public SectionAppendix create(IInfoBook infoBook, ItemStack itemStack) throws InvalidAppendixException {
+            public SectionAppendix create(IInfoBook infoBook, IRecipe<ItemStackRecipeComponent, ItemStackRecipeComponent, DummyPropertiesComponent> recipe) throws InvalidAppendixException {
                 try {
-                    return new FurnaceRecipeAppendix(infoBook, CraftingHelpers.findFurnaceRecipe(itemStack, 0));
+                    return new FurnaceRecipeAppendix(infoBook, CraftingHelpers.findFurnaceRecipe(recipe.getOutput().getItemStack(), 0));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }
@@ -358,10 +365,10 @@ public class InfoBookParser {
             for (int j = 0; j < appendixLists.getLength(); j++) {
                 Element appendixListNode = (Element) appendixLists.item(j);
                 String type = appendixListNode.getAttribute("type");
-                Collection<ItemStack> itemStacks = mod.getRecipeHandler().getTaggedOutput().get(appendixListNode.getTextContent());
-                for(ItemStack itemStack : itemStacks) {
+                Collection<IRecipe> recipes = mod.getRecipeHandler().getTaggedRecipes().get(type + ":" + appendixListNode.getTextContent());
+                for(IRecipe recipe : recipes) {
                     try {
-                        appendixList.add(createAppendix(infoBook, type, itemStack));
+                        appendixList.add(createAppendix(infoBook, type, recipe));
                     } catch (InvalidAppendixException e) {
                         // Skip this appendix.
                         infoBook.getMod().log(Level.WARN, e.getMessage());
@@ -396,13 +403,13 @@ public class InfoBookParser {
         return factory.create(infoBook, node);
     }
 
-    protected static SectionAppendix createAppendix(IInfoBook infoBook, String type, ItemStack itemStack) throws InvalidAppendixException {
+    protected static SectionAppendix createAppendix(IInfoBook infoBook, String type, IRecipe recipe) throws InvalidAppendixException {
         if(type == null) type = "";
         IAppendixItemFactory factory = APPENDIX_LIST_FACTORIES.get(type);
         if(factory == null) {
             throw new InfoBookException("No appendix list of type '" + type + "' was found.");
         }
-        return factory.create(infoBook, itemStack);
+        return factory.create(infoBook, recipe);
     }
 
     protected static IReward createReward(IInfoBook infoBook, String type, Element node) throws InvalidAppendixException {
@@ -428,9 +435,9 @@ public class InfoBookParser {
 
     }
 
-    public static interface IAppendixItemFactory {
+    public static interface IAppendixItemFactory<I extends IRecipeInput, O extends IRecipeOutput, P extends IRecipeProperties> {
 
-        public SectionAppendix create(IInfoBook infoBook, ItemStack itemStack) throws InvalidAppendixException;
+        public SectionAppendix create(IInfoBook infoBook, IRecipe<I, O, P> recipe) throws InvalidAppendixException;
 
     }
 
