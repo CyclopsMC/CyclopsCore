@@ -18,7 +18,7 @@ public final class Reference {
 
     // Mod ID's
     public static final String MOD_VANILLA = "Minecraft";
-    public static final String MOD_BAUBLES = "Baubles";
+    public static final String MOD_BAUBLES = "baubles";
     public static final String MOD_VERSION_CHECKER = "VersionChecker";
 
     // Paths
