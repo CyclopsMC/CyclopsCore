@@ -244,7 +244,8 @@ public class CubeDetector {
 	protected L10NHelpers.UnlocalizedString validateAllowedBlockConditions(World world, BlockPos location) {
 		Block block = world.getBlockState(location).getBlock();
 		if(blockInfo.containsKey(block)) {
-			int occurences = blockOccurences.get(block);
+			Integer occurences = blockOccurences.get(block);
+			if (occurences == null) occurences = 0;
 			AllowedBlock allowed = blockInfo.get(block);
 
 			for(IBlockCountValidator validator : allowed.getCountValidators()) {
