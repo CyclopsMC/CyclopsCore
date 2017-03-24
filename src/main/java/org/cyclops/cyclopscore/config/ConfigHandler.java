@@ -40,8 +40,12 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
     
     @Override
     public boolean add(ExtendedConfig e) {
-    	configDictionary.put(e.getNamedId(), e);
+    	addToConfigDictionary(e);
     	return super.add(e);
+    }
+
+    public void addToConfigDictionary(ExtendedConfig e) {
+        configDictionary.put(e.getNamedId(), e);
     }
     
     /**
