@@ -1,0 +1,14 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add method to DimPos to check if that position is loaded
+
+Changes:
+* Store world as a weak reference in DimPos
+This avoids world memory leaks.
+
+Lib additions:
+* Add registry for mapping items to achievements
+* Add support for fluids components in recipe appendix
+* Add achievement rewards system for infobooks
+* Open up infobook interface API for Integrated Dynamics

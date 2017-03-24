@@ -2,12 +2,10 @@ package org.cyclops.cyclopscore.recipe.xml;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
-import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.config.ConfigHandler;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -158,12 +156,10 @@ public class XmlRecipeLoader {
 			throw new XmlRecipeException(String.format(
 					"Could not find a recipe type handler of type '%s'", type));
 		}
-		ItemStack output = handler.loadRecipe(recipeHandler, recipe);
-		if(!output.isEmpty()) {
-			ExtendedConfig<?> config = ConfigHandler.getConfigFromItem(output.getItem());
+		IRecipe recipeHolder = handler.loadRecipe(recipeHandler, recipe);
+		if(recipeHolder != null) {
 			for (String tag : getTags(recipe)) {
-				getMod().getRecipeHandler().getTaggedOutput().put(tag, output);
-				getMod().getRecipeHandler().getTaggedConfigurablesOutput().put(tag, config);
+				getMod().getRecipeHandler().getTaggedRecipes().put(handler.getCategoryId() + ":" + tag, recipeHolder);
 			}
 		}
     }

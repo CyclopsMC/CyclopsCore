@@ -23,9 +23,10 @@ import java.util.Map.Entry;
 public class ShapedRecipeTypeHandler extends GridRecipeTypeHandler {
 
 	@Override
-	protected void handleIO(RecipeHandler recipeHandler, Element input, ItemStack output) throws XmlRecipeLoader.XmlRecipeException {
+	protected List<Object> handleIO(RecipeHandler recipeHandler, Element input, ItemStack output) throws XmlRecipeLoader.XmlRecipeException {
 		Element inputGrid = (Element) input.getElementsByTagName("grid").item(0);
 		NodeList gridRows = inputGrid.getElementsByTagName("gridrow");
+		List<Object> inputs = Lists.newArrayList();
 		
 		// First valid character for recipes.
         char parameterCounter = 65;
@@ -46,6 +47,7 @@ public class ShapedRecipeTypeHandler extends GridRecipeTypeHandler {
 				if(item == null) {
 					parameterLine += " ";
 				} else {
+					inputs.add(item);
 					if(!parameters.containsKey(item)) {
                         parameters.put(item, parameterCounter++);
                     }
@@ -69,6 +71,7 @@ public class ShapedRecipeTypeHandler extends GridRecipeTypeHandler {
         
         // Register with the recipe lines we just constructed.
         GameRegistry.addRecipe(new ShapedOreRecipe(output, true, lines.toArray()));
+		return inputs;
 	}
 
 }

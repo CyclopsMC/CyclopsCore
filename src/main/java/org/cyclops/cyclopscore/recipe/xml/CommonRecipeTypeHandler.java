@@ -5,6 +5,9 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.cyclops.cyclopscore.init.RecipeHandler;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
 import org.w3c.dom.Node;
 
 import java.util.Map;
@@ -15,7 +18,7 @@ import java.util.Map;
  * @author rubensworks
  *
  */
-public abstract class CommonRecipeTypeHandler implements IRecipeTypeHandler, IItemTypeHandler {
+public abstract class CommonRecipeTypeHandler<I extends IRecipeInput, O extends IRecipeOutput, P extends IRecipeProperties> implements IRecipeTypeHandler<I, O, P>, IItemTypeHandler {
 
 	private static final Map<String, IItemTypeHandler> ITEM_TYPE_HANDLERS = Maps.newHashMap();
 	protected static final String DEFAULT_ITEM_TYPE = "default";

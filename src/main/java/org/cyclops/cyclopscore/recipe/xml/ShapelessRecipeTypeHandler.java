@@ -18,7 +18,7 @@ import java.util.List;
 public class ShapelessRecipeTypeHandler extends GridRecipeTypeHandler {
 
 	@Override
-	protected void handleIO(RecipeHandler recipeHandler, Element input, ItemStack output)
+	protected List<Object> handleIO(RecipeHandler recipeHandler, Element input, ItemStack output)
 			throws XmlRecipeLoader.XmlRecipeException {
 		List<Object> inputs = Lists.newLinkedList();
 		NodeList inputNodes = input.getElementsByTagName("item");
@@ -26,6 +26,7 @@ public class ShapelessRecipeTypeHandler extends GridRecipeTypeHandler {
 			inputs.add(getItem(recipeHandler, inputNodes.item(i)));
 		}
 		GameRegistry.addRecipe(new ShapelessOreRecipe(output, inputs.toArray()));
+		return inputs;
 	}
 
 }

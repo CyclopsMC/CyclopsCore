@@ -3,6 +3,10 @@ package org.cyclops.cyclopscore.recipe.xml;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.cyclops.cyclopscore.init.RecipeHandler;
+import org.cyclops.cyclopscore.recipe.custom.Recipe;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
+import org.cyclops.cyclopscore.recipe.custom.component.DummyPropertiesComponent;
+import org.cyclops.cyclopscore.recipe.custom.component.ItemStackRecipeComponent;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -10,10 +14,15 @@ import org.w3c.dom.Node;
  * Recipe type handler for smelting recipes.
  * @author rubensworks
  */
-public class SmeltingRecipeTypeHandler extends CommonRecipeTypeHandler {
+public class SmeltingRecipeTypeHandler extends CommonRecipeTypeHandler<ItemStackRecipeComponent, ItemStackRecipeComponent, DummyPropertiesComponent> {
 
 	@Override
-	public ItemStack loadRecipe(RecipeHandler recipeHandler, Node recipe) {
+	public String getCategoryId() {
+		return "furnaceRecipe";
+	}
+
+	@Override
+	public IRecipe<ItemStackRecipeComponent, ItemStackRecipeComponent, DummyPropertiesComponent> loadRecipe(RecipeHandler recipeHandler, Node recipe) {
 		Element recipeElement = (Element) recipe;
 		Element input = (Element) recipeElement.getElementsByTagName("input").item(0);
 		Element output = (Element) recipeElement.getElementsByTagName("output").item(0);
@@ -26,7 +35,11 @@ public class SmeltingRecipeTypeHandler extends CommonRecipeTypeHandler {
 		}
 		
 		GameRegistry.addSmelting(inputItem, outputItem, xp);
-        return outputItem;
+        return new Recipe<>(
+				new ItemStackRecipeComponent(inputItem),
+				new ItemStackRecipeComponent(outputItem),
+				new DummyPropertiesComponent()
+		);
 	}
 
 }

@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.RecipeSorter;
 import org.cyclops.cyclopscore.GeneralConfig;
 import org.cyclops.cyclopscore.Reference;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
 import org.cyclops.cyclopscore.recipe.event.ObservableShapedRecipe;
 import org.cyclops.cyclopscore.recipe.event.ObservableShapelessRecipe;
 import org.cyclops.cyclopscore.recipe.xml.*;
@@ -27,8 +27,7 @@ import java.util.regex.Pattern;
 @Data
 public class RecipeHandler {
 
-    private final Multimap<String, ItemStack> taggedOutput = LinkedListMultimap.create();
-    private final Multimap<String, ExtendedConfig<?>> taggedConfigurablesOutput = LinkedListMultimap.create();
+    private final Multimap<String, IRecipe> taggedRecipes = LinkedListMultimap.create();
     private final Map<String, IRecipeTypeHandler> recipeTypeHandlers = Maps.newHashMap();
     private final Map<String, IRecipeConditionHandler> recipeConditionHandlers = Maps.newHashMap();
     private final Map<String, ItemStack> predefinedItems = Maps.newHashMap();

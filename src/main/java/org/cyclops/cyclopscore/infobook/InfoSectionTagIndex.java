@@ -31,11 +31,11 @@ public class InfoSectionTagIndex extends InfoSection {
         addSoftLinks(InfoBookParser.configLinks, getParent());
     }
 
-    public void bakeSection(FontRenderer fontRenderer, int width, int maxLines, int lineHeight) {
+    public void bakeSection(FontRenderer fontRenderer, int width, int maxLines, int lineHeight, int yOffset) {
         if(paragraphs.size() == 0) {
-            addLinks(maxLines, lineHeight, InfoBookParser.configLinks);
+            addLinks(maxLines, lineHeight, yOffset, InfoBookParser.configLinks);
         }
-        super.bakeSection(fontRenderer, width, maxLines, lineHeight);
+        super.bakeSection(fontRenderer, width, maxLines, lineHeight, yOffset);
     }
 
     protected boolean shouldAddIndex() {
