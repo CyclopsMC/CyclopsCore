@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix rare crash during cube detection, Closes CyclopsMC/ColossalChests#70
+* Update to latest Baubles API version to fix crash
+
+Lib changes:
+* Expose configurability of infobook gui placement
