@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix rare crash during cube detection, Closes CyclopsMC/ColossalChests#70
+
+Lib changes:
+* Use tagged recipes instead of tagged recipe output stacks for improved expressivity for appendixes
+* Expose configurability of infobook gui placement
+
