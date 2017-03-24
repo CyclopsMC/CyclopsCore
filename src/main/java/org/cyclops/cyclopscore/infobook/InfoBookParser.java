@@ -14,6 +14,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.helpers.Strings;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.*;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -49,7 +50,8 @@ public class InfoBookParser {
     private static final Map<String, IInfoSectionFactory> SECTION_FACTORIES = Maps.newHashMap();
     private static final Map<String, IAppendixFactory> APPENDIX_FACTORIES = Maps.newHashMap();
     private static final Set<String> IGNORED_APPENDIX_FACTORIES = Sets.newHashSet();
-    private static final Map<String, IAppendixItemFactory> APPENDIX_LIST_FACTORIES = Maps.newHashMap();
+    private static final Map<String, IAppendixListFactory> APPENDIX_LIST_FACTORIES = Maps.newHashMap();
+    private static final Map<String, IAppendixItemFactory> APPENDIX_RECIPELIST_FACTORIES = Maps.newHashMap();
     private static final Map<String, IRewardFactory> REWARD_FACTORIES = Maps.newHashMap();
 
     static {
@@ -147,6 +149,25 @@ public class InfoBookParser {
             }
         });
 
+        // Appendix list factories
+        registerFactory("default", new IAppendixListFactory() {
+            @Override
+            public List<SectionAppendix> create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
+                List<SectionAppendix> appendixList = Lists.newArrayList();
+                String type = node.getAttribute("type");
+                Collection<IRecipe> recipes = infoBook.getMod().getRecipeHandler().getTaggedRecipes().get(type + ":" + node.getTextContent());
+                for (IRecipe recipe : recipes) {
+                    try {
+                        appendixList.add(createAppendix(infoBook, type, recipe));
+                    } catch (InvalidAppendixException e) {
+                        // Skip this appendix.
+                        infoBook.getMod().log(Level.WARN, e.getMessage());
+                    }
+                }
+                return appendixList;
+            }
+        });
+
         // Appendix item factories
         registerFactory("craftingRecipe", new IAppendixItemFactory<ItemStacksRecipeComponent, ItemStackRecipeComponent, DummyPropertiesComponent>() {
 
@@ -223,6 +244,17 @@ public class InfoBookParser {
      * @param factory The factory
      */
     public static void registerFactory(String name, IAppendixItemFactory factory) {
+        if(APPENDIX_RECIPELIST_FACTORIES.put(name, factory) != null) {
+            throw new RuntimeException(String.format("An appendix item factory with name %s was registered while another one already existed!", name));
+        }
+    }
+
+    /**
+     * Register a new appendix list factory.
+     * @param name The unique name for this factory, make sure to namespace this to your mod to avoid collisions.
+     * @param factory The factory
+     */
+    public static void registerFactory(String name, IAppendixListFactory factory) {
         if(APPENDIX_LIST_FACTORIES.put(name, factory) != null) {
             throw new RuntimeException(String.format("An appendix item factory with name %s was registered while another one already existed!", name));
         }
@@ -364,11 +396,11 @@ public class InfoBookParser {
             }
             for (int j = 0; j < appendixLists.getLength(); j++) {
                 Element appendixListNode = (Element) appendixLists.item(j);
-                String type = appendixListNode.getAttribute("type");
-                Collection<IRecipe> recipes = mod.getRecipeHandler().getTaggedRecipes().get(type + ":" + appendixListNode.getTextContent());
-                for(IRecipe recipe : recipes) {
+                String factoryType = appendixListNode.getAttribute("factory");
+                if (Strings.isEmpty(factoryType)) factoryType = "default";
+                if (Strings.isNotEmpty(factoryType)) {
                     try {
-                        appendixList.add(createAppendix(infoBook, type, recipe));
+                        appendixList.addAll(createAppendixes(infoBook, factoryType, appendixListNode));
                     } catch (InvalidAppendixException e) {
                         // Skip this appendix.
                         infoBook.getMod().log(Level.WARN, e.getMessage());
@@ -405,11 +437,20 @@ public class InfoBookParser {
 
     protected static SectionAppendix createAppendix(IInfoBook infoBook, String type, IRecipe recipe) throws InvalidAppendixException {
         if(type == null) type = "";
-        IAppendixItemFactory factory = APPENDIX_LIST_FACTORIES.get(type);
+        IAppendixItemFactory factory = APPENDIX_RECIPELIST_FACTORIES.get(type);
         if(factory == null) {
             throw new InfoBookException("No appendix list of type '" + type + "' was found.");
         }
         return factory.create(infoBook, recipe);
+    }
+
+    protected static List<SectionAppendix> createAppendixes(IInfoBook infoBook, String factory, Element node) throws InvalidAppendixException {
+        if(factory == null) factory = "";
+        IAppendixListFactory factoryInstance = APPENDIX_LIST_FACTORIES.get(factory);
+        if(factoryInstance == null) {
+            throw new InfoBookException("No appendix list of factory '" + factory + "' was found.");
+        }
+        return factoryInstance.create(infoBook, node);
     }
 
     protected static IReward createReward(IInfoBook infoBook, String type, Element node) throws InvalidAppendixException {
@@ -432,6 +473,12 @@ public class InfoBookParser {
     public static interface IAppendixFactory {
 
         public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException;
+
+    }
+
+    public static interface IAppendixListFactory {
+
+        public List<SectionAppendix> create(IInfoBook infoBook, Element node) throws InvalidAppendixException;
 
     }
 
