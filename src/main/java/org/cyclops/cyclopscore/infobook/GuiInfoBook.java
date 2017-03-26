@@ -69,7 +69,11 @@ public abstract class GuiInfoBook extends GuiScreen {
         this.infoBook = infoBook;
         this.texture = texture;
         if(infoBook.getCurrentSection() == null) {
-            infoBook.setCurrentSection(infoBook.getMod().getRegistryManager().getRegistry(IInfoBookRegistry.class).getRoot(infoBook));
+            InfoSection root = infoBook.getMod().getRegistryManager().getRegistry(IInfoBookRegistry.class).getRoot(infoBook);
+            if (root == null) {
+                throw new IllegalStateException("Could not find the root of infobook " + infoBook);
+            }
+            infoBook.setCurrentSection(root);
             infoBook.setCurrentPage(0);
         }
     }

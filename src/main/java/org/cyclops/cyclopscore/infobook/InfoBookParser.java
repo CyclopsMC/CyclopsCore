@@ -33,6 +33,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.annotation.Nullable;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -320,17 +321,18 @@ public class InfoBookParser {
      * Initialize the given infobook from the given xml file.
      * @param infoBook The infobook to register.
      * @param path The path to the xml file of the book.
+     * @param parent The parent section.
      * @return The root of the infobook.
      */
-    public static InfoSection initializeInfoBook(IInfoBook infoBook, String path) {
+    public static InfoSection initializeInfoBook(IInfoBook infoBook, String path, @Nullable InfoSection parent) {
         try {
             InputStream is = InfoBookParser.class.getResourceAsStream(path);
             StreamSource stream = new StreamSource(is);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(stream.getInputStream());
-            InfoSection root = buildSection(infoBook, null, 0, doc.getDocumentElement());
-            root.registerSection(new InfoSectionTagIndex(infoBook, root));
+            InfoSection root = buildSection(infoBook, parent, 0, doc.getDocumentElement());
+            if (parent == null) root.registerSection(new InfoSectionTagIndex(infoBook, root));
             return root;
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
@@ -348,8 +350,10 @@ public class InfoBookParser {
         ArrayList<String> paragraphList = Lists.newArrayListWithCapacity(paragraphs.getLength());
         ArrayList<SectionAppendix> appendixList = Lists.newArrayListWithCapacity(appendixes.getLength());
         ArrayList<String> tagList = Lists.newArrayListWithCapacity(tags.getLength());
+        String sectionName = sectionElement.getAttribute("name");
         InfoSection section = createSection(infoBook, parent, childIndex, sectionElement.getAttribute("type"),
-                sectionElement.getAttribute("name"), paragraphList, appendixList, tagList);
+                sectionName, paragraphList, appendixList, tagList);
+        infoBook.addSection(sectionName, section);
 
         if(sections.getLength() > 0) {
             int subChildIndex = 0;

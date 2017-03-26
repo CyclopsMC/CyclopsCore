@@ -16,6 +16,14 @@ public interface IInfoBookRegistry extends IRegistry {
     public void registerInfoBook(IInfoBook infoBook, String path);
 
     /**
+     * Register a new section to the given section of the given infobook.
+     * @param infoBook The infobook to register to.
+     * @param parentSection The section to register this new section to.
+     * @param sectionPath The path to the xml file of the section to register.
+     */
+    public void registerSection(IInfoBook infoBook, String parentSection, String sectionPath);
+
+    /**
      * Get the root of the given book.
      * @param infoBook The info book to get the root from.
      * @return The root section.

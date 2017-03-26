@@ -16,6 +16,8 @@ public interface IInfoBook {
     public void setCurrentSection(InfoSection section);
     public int getCurrentPage();
     public InfoSection getCurrentSection();
+    public void addSection(String sectionName, InfoSection section);
+    public InfoSection getSection(String sectionName);
 
     public EvictingStack<InfoSection.Location> getHistory();
 
