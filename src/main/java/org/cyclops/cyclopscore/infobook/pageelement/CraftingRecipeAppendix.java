@@ -54,8 +54,8 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
 
     @Override
     public void bakeElement(InfoSection infoSection) {
-        for(int i = 0; i < 9; i++) renderItemHolders.put(INPUT[i], new ItemButton());
-        renderItemHolders.put(RESULT, new ItemButton());
+        for(int i = 0; i < 9; i++) renderItemHolders.put(INPUT[i], new ItemButton(getInfoBook()));
+        renderItemHolders.put(RESULT, new ItemButton(getInfoBook()));
         super.bakeElement(infoSection);
     }
 

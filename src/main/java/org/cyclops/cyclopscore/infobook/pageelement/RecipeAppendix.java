@@ -20,7 +20,10 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
-import org.cyclops.cyclopscore.infobook.*;
+import org.cyclops.cyclopscore.infobook.AdvancedButton;
+import org.cyclops.cyclopscore.infobook.GuiInfoBook;
+import org.cyclops.cyclopscore.infobook.IInfoBook;
+import org.cyclops.cyclopscore.infobook.InfoSection;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -245,10 +248,11 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
     public static abstract class ElementButton<E> extends AdvancedButton {
 
+        private final IInfoBook infoBook;
         private E element;
 
-        public ElementButton() {
-
+        public ElementButton(IInfoBook infoBook) {
+            this.infoBook = infoBook;
         }
 
         public E getElement() {
@@ -268,7 +272,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
             if(this.element != null) {
                 ExtendedConfig<?> config = getConfigFromElement(element);
                 if (config != null) {
-                    Pair<InfoSection, Integer> pair = InfoBookParser.configLinks.get(config.getFullUnlocalizedName());
+                    Pair<InfoSection, Integer> pair = this.infoBook.getConfigLinks().get(config.getFullUnlocalizedName());
                     if(pair != null) {
                         target = pair.getLeft();
                     }
@@ -294,6 +298,10 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
     public static class ItemButton extends ElementButton<ItemStack> {
 
+        public ItemButton(IInfoBook infoBook) {
+            super(infoBook);
+        }
+
         @Override
         public void renderTooltip(int mx, int my) {
             RecipeAppendix.renderItemTooltip(gui, xPosition, yPosition, getElement(), mx, my);
@@ -306,6 +314,10 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     }
 
     public static class FluidButton extends ElementButton<FluidStack> {
+
+        public FluidButton(IInfoBook infoBook) {
+            super(infoBook);
+        }
 
         @Override
         protected ExtendedConfig<?> getConfigFromElement(FluidStack element) {

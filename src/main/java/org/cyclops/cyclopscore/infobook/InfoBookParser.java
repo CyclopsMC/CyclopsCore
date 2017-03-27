@@ -12,7 +12,6 @@ import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.helpers.Strings;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
@@ -272,8 +271,6 @@ public class InfoBookParser {
         }
     }
 
-    public static Map<String, Pair<InfoSection, Integer>> configLinks;
-
     public static int getIndex(Element node) {
         int index = 0;
         if(!node.getAttribute("index").isEmpty()) {
@@ -332,7 +329,15 @@ public class InfoBookParser {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(stream.getInputStream());
             InfoSection root = buildSection(infoBook, parent, 0, doc.getDocumentElement());
-            if (parent == null) root.registerSection(new InfoSectionTagIndex(infoBook, root));
+            InfoSectionTagIndex tagIndex;
+            if (parent == null) {
+                tagIndex = new InfoSectionTagIndex(infoBook, root);
+                root.registerSection(tagIndex);
+                infoBook.setTagIndex(tagIndex);
+            } else {
+                tagIndex = infoBook.getTagIndex();
+            }
+            tagIndex.addSoftLinks(root);
             return root;
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
@@ -375,14 +380,22 @@ public class InfoBookParser {
                 if(tag.hasAttribute("type")) {
                     type = tag.getAttribute("type");
                 }
-                IRecipeConditionHandler conditionHandler = mod.getRecipeHandler().getRecipeConditionHandlers().get(type);
-                if(!conditionHandler.isSatisfied(mod.getRecipeHandler(), tag.getTextContent())) {
+
+                ModBase modRecipe = mod;
+                if (tagString.contains(":")) {
+                    String[] split = tagString.split(":");
+                    modRecipe = ModBase.get(split[0]);
+                    tagString = split[1];
+                }
+
+                IRecipeConditionHandler conditionHandler = modRecipe.getRecipeHandler().getRecipeConditionHandlers().get(type);
+                if(!conditionHandler.isSatisfied(modRecipe.getRecipeHandler(), tagString)) {
                     return null;
                 }
                 // Yes, I know this isn't very clean, I am currently more interested in eating grapes than abstracting
                 // this whole conditional system.
                 if(conditionHandler instanceof ConfigRecipeConditionHandler) {
-                    tagList.add(tagString);
+                    tagList.add(tag.getTextContent());
                 }
             }
             for (int j = 0; j < paragraphs.getLength(); j++) {

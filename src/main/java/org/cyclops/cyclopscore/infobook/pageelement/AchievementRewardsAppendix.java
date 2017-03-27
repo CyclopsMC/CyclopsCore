@@ -171,7 +171,7 @@ public class AchievementRewardsAppendix extends SectionAppendix {
     public void bakeElement(InfoSection infoSection) {
         renderButtonHolders.put(COLLECT, new CollectButton(achievementRewards, getInfoBook()));
         for (int i = 0; i < achievementRewards.getRewards().size(); i++) {
-            renderButtonHolders.put(rewards[i], achievementRewards.getRewards().get(i).createButton());
+            renderButtonHolders.put(rewards[i], achievementRewards.getRewards().get(i).createButton(getInfoBook()));
         }
         for (int i = 0; i < achievementRewards.getAchievements().size(); i++) {
             renderButtonHolders.put(achievements[i], new AchievementButton(achievementRewards.getAchievements().get(i)));
