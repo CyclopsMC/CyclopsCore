@@ -108,6 +108,10 @@ public abstract class GuiInfoBook extends GuiScreen {
         return 0;
     }
 
+    public int getTitleColor() {
+        return Helpers.RGBToInt(120, 20, 30);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
