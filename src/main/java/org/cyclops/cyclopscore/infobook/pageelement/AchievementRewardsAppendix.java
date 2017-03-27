@@ -14,6 +14,7 @@ import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
+import org.cyclops.cyclopscore.init.ModBase;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -25,6 +26,8 @@ import java.util.Map;
  * @author rubensworks
  */
 public class AchievementRewardsAppendix extends SectionAppendix {
+
+    public static final ModBase.EnumReferenceKey<Boolean> REFKEY_REWARDS = ModBase.EnumReferenceKey.create("rewards", Boolean.class);
 
     private static final int SLOT_SIZE = 16;
     private static final int SLOT_PADDING = 2;
@@ -38,6 +41,7 @@ public class AchievementRewardsAppendix extends SectionAppendix {
 
     private final AchievementRewards achievementRewards;
     private final int height;
+    private final boolean enableRewards;
 
     /**
      * This map holds advanced buttons that have a unique identifier.
@@ -77,6 +81,8 @@ public class AchievementRewardsAppendix extends SectionAppendix {
         }
 
         height = Math.max(row_max_y, max_height);
+
+        this.enableRewards = infoBook.getMod().getReferenceValue(REFKEY_REWARDS);
     }
 
     @Override

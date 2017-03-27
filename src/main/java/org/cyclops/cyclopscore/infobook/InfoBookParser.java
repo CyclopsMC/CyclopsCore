@@ -107,45 +107,49 @@ public class InfoBookParser {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InfoBookParser.InvalidAppendixException {
-                List<Achievement> achievements = Lists.newArrayList();
-                List<IReward> rewards = Lists.newArrayList();
-                String achievementRewardsId = node.getAttribute("id");
+                if (infoBook.getMod().getReferenceValue(AchievementRewardsAppendix.REFKEY_REWARDS)) {
+                    List<Achievement> achievements = Lists.newArrayList();
+                    List<IReward> rewards = Lists.newArrayList();
+                    String achievementRewardsId = node.getAttribute("id");
 
-                NodeList children = node.getChildNodes();
-                for (int i = 0; i < children.getLength(); i++) {
-                    if (children.item(i) instanceof Element) {
-                        Element child = (Element) children.item(i);
-                        NodeList subChildren = child.getChildNodes();
-                        if (child.getNodeName().equals("achievements")) {
-                            for (int j = 0; j < subChildren.getLength(); j++) {
-                                if (subChildren.item(j) instanceof Element) {
-                                    Element achievementNode = (Element) subChildren.item(j);
-                                    String achievementId = achievementNode.getAttribute("id");
-                                    if (!achievementId.isEmpty()) {
-                                        Achievement achievement = (Achievement) StatList.getOneShotStat(achievementId);
-                                        if (achievement == null) {
-                                            throw new InfoBookParser.InvalidAppendixException(String.format("Could not find an achievement by id '%s'", achievementId));
+                    NodeList children = node.getChildNodes();
+                    for (int i = 0; i < children.getLength(); i++) {
+                        if (children.item(i) instanceof Element) {
+                            Element child = (Element) children.item(i);
+                            NodeList subChildren = child.getChildNodes();
+                            if (child.getNodeName().equals("achievements")) {
+                                for (int j = 0; j < subChildren.getLength(); j++) {
+                                    if (subChildren.item(j) instanceof Element) {
+                                        Element achievementNode = (Element) subChildren.item(j);
+                                        String achievementId = achievementNode.getAttribute("id");
+                                        if (!achievementId.isEmpty()) {
+                                            Achievement achievement = (Achievement) StatList.getOneShotStat(achievementId);
+                                            if (achievement == null) {
+                                                throw new InfoBookParser.InvalidAppendixException(String.format("Could not find an achievement by id '%s'", achievementId));
+                                            }
+                                            achievements.add(achievement);
                                         }
-                                        achievements.add(achievement);
                                     }
                                 }
-                            }
-                        } else if (child.getNodeName().equals("rewards")) {
-                            for (int j = 0; j < subChildren.getLength(); j++) {
-                                if (subChildren.item(j) instanceof Element) {
-                                    Element rewardNode = (Element) subChildren.item(j);
-                                    String rewardType = rewardNode.getAttribute("type");
-                                    rewards.add(createReward(infoBook, rewardType, rewardNode));
+                            } else if (child.getNodeName().equals("rewards")) {
+                                for (int j = 0; j < subChildren.getLength(); j++) {
+                                    if (subChildren.item(j) instanceof Element) {
+                                        Element rewardNode = (Element) subChildren.item(j);
+                                        String rewardType = rewardNode.getAttribute("type");
+                                        rewards.add(createReward(infoBook, rewardType, rewardNode));
+                                    }
                                 }
                             }
                         }
                     }
+                    if (achievementRewardsId == null || achievementRewardsId.isEmpty()) {
+                        throw new InfoBookParser.InvalidAppendixException("Every achievement rewards tag must have a unique id attribute");
+                    }
+                    AchievementRewards achievementRewards = new AchievementRewards(achievementRewardsId, achievements, rewards);
+                    return new AchievementRewardsAppendix(infoBook, achievementRewards);
+                } else {
+                    return null;
                 }
-                if (achievementRewardsId == null || achievementRewardsId.isEmpty()) {
-                    throw new InfoBookParser.InvalidAppendixException("Every achievement rewards tag must have a unique id attribute");
-                }
-                AchievementRewards achievementRewards = new AchievementRewards(achievementRewardsId, achievements, rewards);
-                return new AchievementRewardsAppendix(infoBook, achievementRewards);
             }
         });
 
@@ -405,7 +409,10 @@ public class InfoBookParser {
             for (int j = 0; j < appendixes.getLength(); j++) {
                 try {
                     Element appendix = (Element) appendixes.item(j);
-                    appendixList.add(createAppendix(infoBook, appendix.getAttribute("type"), appendix));
+                    SectionAppendix sectionAppendix = createAppendix(infoBook, appendix.getAttribute("type"), appendix);
+                    if (sectionAppendix != null) {
+                        appendixList.add(sectionAppendix);
+                    }
                 } catch (InvalidAppendixException e) {
                     // Skip this appendix.
                     infoBook.getMod().log(Level.WARN, e.getMessage());
