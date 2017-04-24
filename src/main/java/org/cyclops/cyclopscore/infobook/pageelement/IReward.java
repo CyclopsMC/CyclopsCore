@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 import net.minecraft.entity.player.EntityPlayer;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
+import org.cyclops.cyclopscore.infobook.IInfoBook;
 
 /**
  * A reward instance.
@@ -34,9 +35,10 @@ public interface IReward<B extends AdvancedButton> {
     public int getHeight();
 
     /**
+     * @param infoBook The infobook instance.
      * @return Factory for a button for this reward.
      */
-    public B createButton();
+    public B createButton(IInfoBook infoBook);
 
     /**
      * Draw the reward.

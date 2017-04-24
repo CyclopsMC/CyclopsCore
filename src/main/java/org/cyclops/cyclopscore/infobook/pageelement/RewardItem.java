@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.cyclops.cyclopscore.helper.ItemStackHelpers;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
+import org.cyclops.cyclopscore.infobook.IInfoBook;
 
 /**
  * An item reward.
@@ -42,8 +43,8 @@ public class RewardItem implements IReward<RecipeAppendix.ItemButton> {
     }
 
     @Override
-    public RecipeAppendix.ItemButton createButton() {
-        return new RecipeAppendix.ItemButton();
+    public RecipeAppendix.ItemButton createButton(IInfoBook infoBook) {
+        return new RecipeAppendix.ItemButton(infoBook);
     }
 
     @Override

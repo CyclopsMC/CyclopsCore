@@ -8,7 +8,9 @@ import net.minecraft.block.Block;
 import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -25,6 +27,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
+import org.cyclops.cyclopscore.infobook.pageelement.AchievementRewardsAppendix;
 import org.cyclops.cyclopscore.modcompat.IMCHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.capabilities.CapabilityConstructorRegistry;
@@ -159,6 +162,7 @@ public abstract class ModBase {
         putGenericReference(REFKEY_DEBUGCONFIG, false);
         putGenericReference(REFKEY_CRASH_ON_INVALID_RECIPE, false);
         putGenericReference(REFKEY_CRASH_ON_MODCOMPAT_CRASH, false);
+        putGenericReference(AchievementRewardsAppendix.REFKEY_REWARDS, true);
     }
 
     /**
@@ -470,6 +474,20 @@ public abstract class ModBase {
     @Override
     public boolean equals(Object object) {
         return object == this;
+    }
+
+    /**
+     * Get the mod by id.
+     * @param modId The mod id.
+     * @return The mod instance or null.
+     */
+    public static ModBase get(String modId) {
+        ModContainer modContainer = Loader.instance().getIndexedModList().get(modId);
+        Object mod = modContainer.getMod();
+        if (mod instanceof ModBase) {
+            return (ModBase) mod;
+        }
+        return null;
     }
 
     /**

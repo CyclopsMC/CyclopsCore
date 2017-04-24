@@ -10,11 +10,20 @@ import java.util.Map;
  */
 public class InfoBookRegistry implements IInfoBookRegistry {
 
-    private final Map<IInfoBook, InfoSection> bookRoots = Maps.newHashMap();
+    private final Map<IInfoBook, InfoSection> bookRoots = Maps.newIdentityHashMap();
 
     @Override
     public void registerInfoBook(IInfoBook infoBook, String path) {
-        bookRoots.put(infoBook, InfoBookParser.initializeInfoBook(infoBook, path));
+        bookRoots.put(infoBook, InfoBookParser.initializeInfoBook(infoBook, path, null));
+    }
+
+    @Override
+    public void registerSection(IInfoBook infoBook, String parentSection, String sectionPath) {
+        InfoSection section = infoBook.getSection(parentSection);
+        if (section == null) {
+            throw new IllegalArgumentException(String.format("Could not find section '%s' in infobook '%s'.", parentSection, infoBook));
+        }
+        section.registerSection(InfoBookParser.initializeInfoBook(infoBook, sectionPath, section));
     }
 
     @Override

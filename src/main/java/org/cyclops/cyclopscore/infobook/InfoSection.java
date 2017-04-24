@@ -289,7 +289,7 @@ public class InfoSection {
 
             // Draw title if on first page
             if (isTitlePage(page)) {
-                gui.drawScaledCenteredString(getLocalizedTitle(), x, y + yOffset + 10, width, 1.5f, width, Helpers.RGBToInt(120, 20, 30));
+                gui.drawScaledCenteredString(getLocalizedTitle(), x, y + yOffset + 10, width, 1.5f, width, gui.getTitleColor());
                 gui.drawHorizontalRule(x + width / 2, y + yOffset);
                 gui.drawHorizontalRule(x + width / 2, y + yOffset + 21);
             }

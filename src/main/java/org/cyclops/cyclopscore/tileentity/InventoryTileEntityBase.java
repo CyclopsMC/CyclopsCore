@@ -103,7 +103,7 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
 
     @Override
     public ITextComponent getDisplayName() {
-        return null;
+        return getInventory().getDisplayName();
     }
 
     @Override

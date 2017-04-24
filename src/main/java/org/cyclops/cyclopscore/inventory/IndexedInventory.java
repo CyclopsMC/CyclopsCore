@@ -85,7 +85,9 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
         ItemStack oldStack = getStackInSlot(slotId);
         if (!oldStack.isEmpty()) {
             TIntObjectMap<ItemStack> stacks = index.get(oldStack.getItem());
-            stacks.remove(slotId);
+            if (stacks != null) {
+                stacks.remove(slotId);
+            }
         }
         if (!itemStack.isEmpty()) {
             TIntObjectMap<ItemStack> stacks = index.get(itemStack.getItem());
