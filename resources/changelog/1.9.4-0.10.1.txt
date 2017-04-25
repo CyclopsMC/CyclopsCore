@@ -1,0 +1,13 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Add null-check during IndexInventory slot contents setting
+* Fix crash when right-clicking on inventories in spectator mode, Closes CyclopsMC/IntegratedDynamics#164
+
+Lib changes:
+* Make infobook rewards disableable
+* Make infobook title colors configurable
+* Scope infobook appendix tags by mod
+* Allow infobook sections to be registered afterwards
+* Add appendix list factory abstraction
+* Add option to add custom config dictionary entries
