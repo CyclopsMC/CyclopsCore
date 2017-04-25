@@ -27,8 +27,6 @@ import java.util.Map;
  */
 public class AchievementRewardsAppendix extends SectionAppendix {
 
-    public static final ModBase.EnumReferenceKey<Boolean> REFKEY_REWARDS = ModBase.EnumReferenceKey.create("rewards", Boolean.class);
-
     private static final int SLOT_SIZE = 16;
     private static final int SLOT_PADDING = 2;
 
@@ -82,7 +80,7 @@ public class AchievementRewardsAppendix extends SectionAppendix {
 
         height = Math.max(row_max_y, max_height);
 
-        this.enableRewards = infoBook.getMod().getReferenceValue(REFKEY_REWARDS);
+        this.enableRewards = infoBook.getMod().getReferenceValue(ModBase.REFKEY_INFOBOOK_REWARDS);
     }
 
     @Override

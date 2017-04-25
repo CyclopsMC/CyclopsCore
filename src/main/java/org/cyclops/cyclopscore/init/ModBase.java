@@ -22,7 +22,6 @@ import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
-import org.cyclops.cyclopscore.infobook.pageelement.AchievementRewardsAppendix;
 import org.cyclops.cyclopscore.modcompat.IMCHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.capabilities.CapabilityConstructorRegistry;
@@ -52,6 +51,7 @@ public abstract class ModBase {
     public static final EnumReferenceKey<Boolean> REFKEY_DEBUGCONFIG = EnumReferenceKey.create("debug_config", Boolean.class);
     public static final EnumReferenceKey<Boolean> REFKEY_CRASH_ON_INVALID_RECIPE = EnumReferenceKey.create("crash_on_invalid_recipe", Boolean.class);
     public static final EnumReferenceKey<Boolean> REFKEY_CRASH_ON_MODCOMPAT_CRASH = EnumReferenceKey.create("crash_on_modcompat_crash", Boolean.class);
+    public static final EnumReferenceKey<Boolean> REFKEY_INFOBOOK_REWARDS = EnumReferenceKey.create("rewards", Boolean.class);
 
     private final String modId, modName;
     private final LoggerHelper loggerHelper;
@@ -157,7 +157,7 @@ public abstract class ModBase {
         putGenericReference(REFKEY_DEBUGCONFIG, false);
         putGenericReference(REFKEY_CRASH_ON_INVALID_RECIPE, false);
         putGenericReference(REFKEY_CRASH_ON_MODCOMPAT_CRASH, false);
-        putGenericReference(AchievementRewardsAppendix.REFKEY_REWARDS, true);
+        putGenericReference(REFKEY_INFOBOOK_REWARDS, true);
     }
 
     /**
