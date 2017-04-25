@@ -107,7 +107,7 @@ public class InfoBookParser {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InfoBookParser.InvalidAppendixException {
-                if (infoBook.getMod().getReferenceValue(AchievementRewardsAppendix.REFKEY_REWARDS)) {
+                if (infoBook.getMod().getReferenceValue(ModBase.REFKEY_INFOBOOK_REWARDS)) {
                     List<Achievement> achievements = Lists.newArrayList();
                     List<IReward> rewards = Lists.newArrayList();
                     String achievementRewardsId = node.getAttribute("id");
