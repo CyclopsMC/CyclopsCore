@@ -8,6 +8,12 @@ general.cyclopscore.version.download=Download
 general.cyclopscore.version.clickToDownload=Click to download
 gui.waila.cyclopscore.logConfig=Logs
 
+# Infobook
+infobook.cyclopscore.next_page=Next page
+infobook.cyclopscore.previous_page=Previous page
+infobook.cyclopscore.parent_section=Parent section
+infobook.cyclopscore.last_page=Last visited page
+
 # Chat messages
 chat.cyclopscore.command.invalidArguments=Invalid Arguments
 chat.cyclopscore.command.invalidSubcommand=Invalid Subcommand
