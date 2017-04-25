@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix infobook-related server crash
+* Fix fluid localization key
+
