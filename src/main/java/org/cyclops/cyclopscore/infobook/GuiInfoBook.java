@@ -16,10 +16,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.InventoryHelpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.network.packet.RequestPlayerNbtPacket;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
@@ -76,6 +78,9 @@ public abstract class GuiInfoBook extends GuiScreen {
             infoBook.setCurrentSection(root);
             infoBook.setCurrentPage(0);
         }
+
+        // Request an up-to-date persisted player NBT tag to make sure our achievement reward status is synced.
+        CyclopsCore._instance.getPacketHandler().sendToServer(new RequestPlayerNbtPacket());
     }
 
     /**

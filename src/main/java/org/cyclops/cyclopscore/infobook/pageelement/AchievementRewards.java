@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.Achievement;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.Reference;
+import org.cyclops.cyclopscore.helper.EntityHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.network.packet.AchievementRewardsObtainPacket;
 
@@ -46,12 +47,7 @@ public class AchievementRewards {
     }
 
     public boolean isObtained(EntityPlayer player) {
-        NBTTagCompound tag = player.getEntityData();
-        if (tag != null) {
-            NBTTagCompound persistedTag = tag.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
-            return persistedTag != null && persistedTag.getBoolean(getNbtTagKey());
-        }
-        return false;
+        return EntityHelpers.getPersistedPlayerNbt(player).getBoolean(getNbtTagKey());
     }
 
     public void obtain(EntityPlayer player) {
