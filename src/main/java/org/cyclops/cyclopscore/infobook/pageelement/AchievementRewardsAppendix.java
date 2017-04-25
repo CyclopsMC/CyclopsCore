@@ -69,7 +69,7 @@ public class AchievementRewardsAppendix extends SectionAppendix {
                 max_width = Math.max(x, max_width);
                 max_height = Math.max(row_max_y, max_height);
                 x = 0;
-                row_max_y= 0;
+                row_max_y = 0;
             }
             rewardPositions[i] = new Point(x, y);
             x += reward.getWidth();
@@ -78,7 +78,7 @@ public class AchievementRewardsAppendix extends SectionAppendix {
             achievements[i] = AdvancedButton.Enum.create();
         }
 
-        height = Math.max(row_max_y, max_height);
+        height = y + Math.max(row_max_y, max_height);
 
         this.enableRewards = infoBook.getMod().getReferenceValue(ModBase.REFKEY_INFOBOOK_REWARDS);
     }
@@ -95,7 +95,7 @@ public class AchievementRewardsAppendix extends SectionAppendix {
 
     @Override
     protected int getHeight() {
-        return height + ((achievementRewards.getAchievements().size() * (SLOT_SIZE + SLOT_PADDING)) / MAX_WIDTH + 1) * (SLOT_SIZE + SLOT_PADDING) + 23;
+        return height + ((int) Math.ceil((achievementRewards.getAchievements().size() * (SLOT_SIZE + SLOT_PADDING * 2)) / MAX_WIDTH + 1) * (SLOT_SIZE + SLOT_PADDING * 2)) + 23;
     }
 
     @Override
