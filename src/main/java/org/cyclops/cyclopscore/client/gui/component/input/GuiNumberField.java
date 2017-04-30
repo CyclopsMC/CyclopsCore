@@ -13,7 +13,8 @@ public class GuiNumberField extends GuiTextFieldExtended {
     private final boolean arrows;
     private GuiButtonArrow arrowUp;
     private GuiButtonArrow arrowDown;
-    private boolean positiveOnly = true;
+    private int minValue = Integer.MIN_VALUE;
+    private int maxValue = Integer.MAX_VALUE;
 
     public GuiNumberField(int componentId, FontRenderer fontrenderer, int x, int y, int width, int height, boolean arrows, boolean background) {
         super(componentId, fontrenderer, x, y, width, height, background);
@@ -34,7 +35,21 @@ public class GuiNumberField extends GuiTextFieldExtended {
     }
 
     public void setPositiveOnly(boolean positiveOnly) {
-        this.positiveOnly = positiveOnly;
+        setMinValue(positiveOnly ? 0 : Integer.MIN_VALUE);
+    }
+
+    /**
+     * @param minValue The minimal value (inclusive)
+     */
+    public void setMinValue(int minValue) {
+        this.minValue = minValue;
+    }
+
+    /**
+     * @param maxValue The maximal value (inclusive)
+     */
+    public void setMaxValue(int maxValue) {
+        this.maxValue = maxValue;
     }
 
     public int getInt() throws NumberFormatException {
@@ -67,11 +82,7 @@ public class GuiNumberField extends GuiTextFieldExtended {
     }
 
     protected int validateNumber(int number) {
-        if(this.positiveOnly) {
-            return Math.max(number, 0);
-        } else {
-            return number;
-        }
+        return Math.max(this.minValue, Math.min(this.maxValue, number));
     }
 
     protected int getDiffAmount() {
@@ -104,9 +115,13 @@ public class GuiNumberField extends GuiTextFieldExtended {
             super.mouseClicked(mouseX, mouseY, mouseButton);
         }
         arrowDown.enabled = true;
+        arrowUp.enabled = true;
         try {
-            if (positiveOnly && getInt() == 0) {
+            if (getInt() <= this.minValue) {
                 arrowDown.enabled = false;
+            }
+            if (getInt() >= this.maxValue) {
+                arrowUp.enabled = false;
             }
         } catch (NumberFormatException e ) {
 
