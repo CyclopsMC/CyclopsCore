@@ -147,13 +147,7 @@ public class RecipeRegistry<M extends IMachine<M, I, O, P>, I extends IRecipeInp
 
     @Override
     public List<IRecipe<I, O, P>> allRecipes() {
-        return findRecipes(new RecipeMatcher<M, IRecipe<I,O,P>>() {
-            @SuppressWarnings("rawtypes")
-			@Override
-            public boolean matches(IMachine machine, IRecipe recipeToMatch) {
-                return true;
-            }
-        });
+        return (List<IRecipe<I, O, P>>) (List) getMod().getRegistryManager().getRegistry(ISuperRecipeRegistry.class).getRecipes(machine);
     }
 
     @Override
