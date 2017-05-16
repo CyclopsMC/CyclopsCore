@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
@@ -9,7 +11,7 @@ import org.cyclops.cyclopscore.infobook.IInfoBook;
  * A reward instance.
  * @author rubensworks
  */
-public interface IReward<B extends AdvancedButton> {
+public interface IReward {
     /**
      * If the given player in its current state is able to obtain this reward.
      * @param player The player.
@@ -38,7 +40,8 @@ public interface IReward<B extends AdvancedButton> {
      * @param infoBook The infobook instance.
      * @return Factory for a button for this reward.
      */
-    public B createButton(IInfoBook infoBook);
+    @SideOnly(Side.CLIENT)
+    public AdvancedButton createButton(IInfoBook infoBook);
 
     /**
      * Draw the reward.
@@ -52,5 +55,6 @@ public interface IReward<B extends AdvancedButton> {
      * @param my Mouse Y.
      * @param button The button of this reward.
      */
-    public void drawElementInner(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, B button);
+    @SideOnly(Side.CLIENT)
+    public void drawElementInner(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button);
 }

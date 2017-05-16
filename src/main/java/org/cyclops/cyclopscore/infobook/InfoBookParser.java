@@ -103,7 +103,7 @@ public class InfoBookParser {
             }
 
         });
-        InfoBookParser.registerFactory("achievement_rewards", new InfoBookParser.IAppendixFactory() {
+        registerFactory("achievement_rewards", new InfoBookParser.IAppendixFactory() {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InfoBookParser.InvalidAppendixException {

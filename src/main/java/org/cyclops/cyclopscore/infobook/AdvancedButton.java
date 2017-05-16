@@ -2,6 +2,8 @@ package org.cyclops.cyclopscore.infobook;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.helper.Helpers;
 
 /**
@@ -29,6 +31,7 @@ public class AdvancedButton extends GuiButton {
      * @param target The target section.
      * @param gui The gui.
      */
+    @SideOnly(Side.CLIENT)
     public void update(int x, int y, String displayName, InfoSection target, GuiInfoBook gui) {
         this.xPosition = x;
         this.yPosition = y;
@@ -41,6 +44,7 @@ public class AdvancedButton extends GuiButton {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
         if(isVisible() && isHover(mouseX, mouseY)) {
             minecraft.fontRendererObj.drawString(("§n") +
@@ -54,6 +58,7 @@ public class AdvancedButton extends GuiButton {
      * @param mx Mouse x.
      * @param my Mouse Y.
      */
+    @SideOnly(Side.CLIENT)
     public void renderTooltip(int mx, int my) {
 
     }
