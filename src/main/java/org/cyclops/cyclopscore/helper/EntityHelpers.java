@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -101,6 +102,21 @@ public class EntityHelpers {
 				world.spawnEntity(new EntityXPOrb(world, player.posX, player.posY + 0.5D, player.posZ + 0.5D, current));
 			}
 		}
+	}
+
+	/**
+	 * Get the persisted NBT tag from a player.
+	 * @param player The player.
+	 * @return The player's persisted NBT tag.
+	 */
+	public static NBTTagCompound getPersistedPlayerNbt(EntityPlayer player) {
+		NBTTagCompound tag = player.getEntityData();
+		NBTTagCompound persistedTag = tag.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+		if (persistedTag == null) {
+			persistedTag = new NBTTagCompound();
+			tag.setTag(EntityPlayer.PERSISTED_NBT_TAG, persistedTag);
+		}
+		return persistedTag;
 	}
 
 }

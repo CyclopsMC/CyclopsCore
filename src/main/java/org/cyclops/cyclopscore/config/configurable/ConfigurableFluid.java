@@ -35,4 +35,9 @@ public abstract class ConfigurableFluid extends Fluid implements IConfigurable{
         return eConfig;
     }
 
+    @Override
+    public String getUnlocalizedName() {
+        return this.unlocalizedName;
+    }
+
 }

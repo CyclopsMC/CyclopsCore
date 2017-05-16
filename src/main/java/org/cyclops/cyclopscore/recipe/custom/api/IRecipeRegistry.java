@@ -21,7 +21,7 @@ public interface IRecipeRegistry<M extends IMachine<M, I, O, P>, I extends IReci
      * @return The registered recipe
      */
     public IRecipe<I, O, P> registerRecipe(IRecipe<I, O, P> recipe);
-    
+
     /**
      * Registers a new recipe with the given properties with this registry.
      * @param namedId A unique name for the given recipe.
@@ -31,7 +31,7 @@ public interface IRecipeRegistry<M extends IMachine<M, I, O, P>, I extends IReci
      * @return The registered recipe
      */
     public IRecipe<I, O, P> registerRecipe(String namedId, I input, O output, P properties);
-    
+
     /**
      * Registers a new recipe with the given properties with this registry.
      * @param input The input of the recipe.
@@ -40,6 +40,32 @@ public interface IRecipeRegistry<M extends IMachine<M, I, O, P>, I extends IReci
      * @return The registered recipe
      */
     public IRecipe<I, O, P> registerRecipe(I input, O output, P properties);
+
+    /**
+     * Remove a given recipe from this registry.
+     * @param recipe A recipe that should be registered.
+     * @return The removed recipe
+     */
+    public IRecipe<I, O, P> unregisterRecipe(IRecipe<I, O, P> recipe);
+
+    /**
+     * Remove a recipe with the given properties from this registry.
+     * @param namedId A unique name for the given recipe.
+     * @param input The input of the recipe.
+     * @param output The output of the recipe.
+     * @param properties Additional properties of the recipe.
+     * @return The removed recipe
+     */
+    public IRecipe<I, O, P> unregisterRecipe(String namedId, I input, O output, P properties);
+
+    /**
+     * Remove a recipe with the given properties from this registry.
+     * @param input The input of the recipe.
+     * @param output The output of the recipe.
+     * @param properties Additional properties of the recipe.
+     * @return The removed recipe
+     */
+    public IRecipe<I, O, P> unregisterRecipe(I input, O output, P properties);
     
     /**
      * Returns the first recipe whose named id matches the given named id.

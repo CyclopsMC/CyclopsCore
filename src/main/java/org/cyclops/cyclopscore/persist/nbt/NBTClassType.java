@@ -367,7 +367,7 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, DimPos object, NBTTagCompound tag) {
                 NBTTagCompound dimPos = new NBTTagCompound();
-                dimPos.setDouble("dim", object.getWorld().provider.getDimension());
+                dimPos.setDouble("dim", object.getDimensionId());
                 dimPos.setInteger("x", object.getBlockPos().getX());
                 dimPos.setInteger("y", object.getBlockPos().getY());
                 dimPos.setInteger("z", object.getBlockPos().getZ());

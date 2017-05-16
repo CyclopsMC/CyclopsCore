@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.recipe.custom.component;
 
+import lombok.ToString;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
@@ -13,6 +14,7 @@ import java.util.List;
  * and a {@link net.minecraftforge.fluids.FluidStack}.
  * @author immortaleeb
  */
+@ToString
 public class ItemAndFluidStackRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IItemStackRecipeComponent, IFluidStackRecipeComponent {
     private final ItemStackRecipeComponent itemStack;
     private final FluidStackRecipeComponent fluidStack;

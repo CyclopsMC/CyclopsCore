@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleDigging;
 import net.minecraft.client.particle.ParticleManager;
@@ -44,6 +45,7 @@ import java.util.Random;
 public class RenderHelpers {
 
     private static final Random rand = new Random();
+    public static final int SLOT_SIZE = 16;
     
     /**
      * Bind a texture to the rendering engine.
@@ -349,6 +351,17 @@ public class RenderHelpers {
      */
     public static boolean isPointInRegion(Rectangle region, Point point) {
         return isPointInRegion(region.x, region.y, region.width, region.height, point.x, point.y);
+    }
+
+    /**
+     * Check if a point is inside a button's region.
+     * @param button The button.
+     * @param pointX The point x
+     * @param pointY The point y
+     * @return If the point is inside the button's region.
+     */
+    public static boolean isPointInButton(GuiButton button, int pointX, int pointY) {
+        return isPointInRegion(button.xPosition, button.yPosition, button.width, button.height, pointX, pointY);
     }
 
     /**

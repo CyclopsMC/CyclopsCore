@@ -48,6 +48,24 @@ public class RecipeRegistry<M extends IMachine<M, I, O, P>, I extends IRecipeInp
     }
 
     @Override
+    public IRecipe<I, O, P> unregisterRecipe(IRecipe<I, O, P> recipe) {
+        if (getMod().getRegistryManager().getRegistry(ISuperRecipeRegistry.class).getRecipes(machine).remove(recipe)) {
+            return recipe;
+        }
+        return null;
+    }
+
+    @Override
+    public IRecipe<I, O, P> unregisterRecipe(String namedId, I input, O output, P properties) {
+        return unregisterRecipe(new Recipe<I, O, P>(namedId, input, output, properties));
+    }
+
+    @Override
+    public IRecipe<I, O, P> unregisterRecipe(I input, O output, P properties) {
+        return unregisterRecipe(new Recipe<I, O, P>(input, output, properties));
+    }
+
+    @Override
     public IRecipe<I, O, P> findRecipeByNamedId(String namedId) {
         return findRecipe(new RecipePropertyMatcher<M, IRecipe<I, O, P>, String>(namedId) {
             @Override
@@ -129,13 +147,7 @@ public class RecipeRegistry<M extends IMachine<M, I, O, P>, I extends IRecipeInp
 
     @Override
     public List<IRecipe<I, O, P>> allRecipes() {
-        return findRecipes(new RecipeMatcher<M, IRecipe<I,O,P>>() {
-            @SuppressWarnings("rawtypes")
-			@Override
-            public boolean matches(IMachine machine, IRecipe recipeToMatch) {
-                return true;
-            }
-        });
+        return (List<IRecipe<I, O, P>>) (List) getMod().getRegistryManager().getRegistry(ISuperRecipeRegistry.class).getRecipes(machine);
     }
 
     @Override

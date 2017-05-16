@@ -4,10 +4,16 @@ repositories {
         name "Mobius Repo"
         url "http://mobiusstrip.eu/maven"
     }
+    maven {
+        name "Blamejared Maven Repo"
+        url "http://blamejared.com/maven"
+    }
 }
 
 dependencies {
     deobfCompile "mcp.mobius.waila:Waila:${config.waila_version}" // http://mobiusstrip.eu/maven/mcp/mobius/waila/Waila/
+    deobfCompile "MineTweaker3:MineTweaker3-API:${config.minetweakerapi_version}"; // http://blamejared.com/maven/MineTweaker3/MineTweaker3-API/maven-metadata.xml
+    deobfCompile "com.blamejared:MTLib:${config.minetweakerlib_version}"; // http://blamejared.com/maven/com/blamejared/MTLib/maven-metadata.xml
 
     // Project lombok
     provided "org.projectlombok:lombok:1.16.4"

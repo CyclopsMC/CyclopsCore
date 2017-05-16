@@ -5,6 +5,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
+import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 
 /**
@@ -21,14 +22,17 @@ public class DimPos implements Comparable<DimPos> {
     private DimPos(int dimensionId, BlockPos blockPos, World world) {
         this.dimensionId = dimensionId;
         this.blockPos = blockPos;
-        this.worldReference = new WeakReference<>(world);
+        this.worldReference = world != null && world.isRemote ? new WeakReference<>(world) : null;
     }
 
     private DimPos(int dimensionId, BlockPos blockPos) {
         this(dimensionId, blockPos, null);
     }
 
-    public World getWorld() {
+    public @Nullable World getWorld() {
+        if (worldReference == null) {
+            return net.minecraftforge.common.DimensionManager.getWorld(dimensionId);
+        }
         World world = worldReference.get();
         if (world == null) {
             world = net.minecraftforge.common.DimensionManager.getWorld(dimensionId);

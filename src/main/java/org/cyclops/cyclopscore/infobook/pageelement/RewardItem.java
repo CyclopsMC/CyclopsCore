@@ -2,7 +2,10 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.helper.ItemStackHelpers;
+import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 
@@ -10,7 +13,7 @@ import org.cyclops.cyclopscore.infobook.IInfoBook;
  * An item reward.
  * @author rubensworks
  */
-public class RewardItem implements IReward<RecipeAppendix.ItemButton> {
+public class RewardItem implements IReward {
 
     protected static final int SLOT_SIZE = 16;
 
@@ -43,13 +46,15 @@ public class RewardItem implements IReward<RecipeAppendix.ItemButton> {
     }
 
     @Override
-    public RecipeAppendix.ItemButton createButton(IInfoBook infoBook) {
+    @SideOnly(Side.CLIENT)
+    public AdvancedButton createButton(IInfoBook infoBook) {
         return new RecipeAppendix.ItemButton(infoBook);
     }
 
     @Override
-    public void drawElementInner(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, RecipeAppendix.ItemButton button) {
-        RecipeAppendix.renderItemForButton(gui, x, y, itemStack, mx, my, true, button);
+    @SideOnly(Side.CLIENT)
+    public void drawElementInner(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button) {
+        RecipeAppendix.renderItemForButton(gui, x, y, itemStack, mx, my, true, (RecipeAppendix.ItemButton) button);
     }
 
 

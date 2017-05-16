@@ -22,7 +22,11 @@ public final class TileHelpers {
      * @return The tile entity or null.
      */
     public static <T> T getSafeTile(DimPos dimPos, Class<T> targetClazz) {
-        return getSafeTile(dimPos.getWorld(), dimPos.getBlockPos(), targetClazz);
+        World world = dimPos.getWorld();
+        if (world == null) {
+            return null;
+        }
+        return getSafeTile(world, dimPos.getBlockPos(), targetClazz);
     }
 
     /**
@@ -50,7 +54,11 @@ public final class TileHelpers {
      * @return The capability or null.
      */
     public static <C> C getCapability(DimPos dimPos, Capability<C> capability) {
-        return getCapability(dimPos.getWorld(), dimPos.getBlockPos(), null, capability);
+        World world = dimPos.getWorld();
+        if (world == null) {
+            return null;
+        }
+        return getCapability(world, dimPos.getBlockPos(), null, capability);
     }
 
     /**
@@ -62,7 +70,11 @@ public final class TileHelpers {
      * @return The capability or null.
      */
     public static <C> C getCapability(DimPos dimPos, EnumFacing side, Capability<C> capability) {
-        return getCapability(dimPos.getWorld(), dimPos.getBlockPos(), side, capability);
+        World world = dimPos.getWorld();
+        if (world == null) {
+            return null;
+        }
+        return getCapability(world, dimPos.getBlockPos(), side, capability);
     }
 
     /**

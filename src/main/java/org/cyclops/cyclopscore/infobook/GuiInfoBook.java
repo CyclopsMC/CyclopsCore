@@ -16,10 +16,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.cyclops.cyclopscore.helper.Helpers;
-import org.cyclops.cyclopscore.helper.InventoryHelpers;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.helper.*;
+import org.cyclops.cyclopscore.network.packet.RequestPlayerNbtPacket;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
@@ -76,6 +75,9 @@ public abstract class GuiInfoBook extends GuiScreen {
             infoBook.setCurrentSection(root);
             infoBook.setCurrentPage(0);
         }
+
+        // Request an up-to-date persisted player NBT tag to make sure our achievement reward status is synced.
+        CyclopsCore._instance.getPacketHandler().sendToServer(new RequestPlayerNbtPacket());
     }
 
     /**
@@ -174,6 +176,30 @@ public abstract class GuiInfoBook extends GuiScreen {
         for(int i = 0; i < getPages(); i++) {
             infoBook.getCurrentSection().postDrawScreen(this, left + getOffsetXForPageWithWidths(i), top + getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, x, y);
         }
+
+        if (this.buttonNextPage.visible && RenderHelpers.isPointInButton(this.buttonNextPage, x, y)) {
+            drawTooltip(x, y, Lists.newArrayList(L10NHelpers.localize("infobook.cyclopscore.next_page")));
+        }
+        if (this.buttonPreviousPage.visible && RenderHelpers.isPointInButton(this.buttonPreviousPage, x, y)) {
+            drawTooltip(x, y, Lists.newArrayList(L10NHelpers.localize("infobook.cyclopscore.previous_page")));
+        }
+        if (this.buttonBack.visible && RenderHelpers.isPointInButton(this.buttonBack, x, y)) {
+            drawTooltip(x, y, Lists.newArrayList(L10NHelpers.localize("infobook.cyclopscore.last_page")));
+        }
+        if (this.buttonParent.visible && RenderHelpers.isPointInButton(this.buttonParent, x, y)) {
+            drawTooltip(x, y, Lists.newArrayList(L10NHelpers.localize("infobook.cyclopscore.parent_section")));
+        }
+    }
+
+    public void drawTooltip(int mx, int my, List<String> lines) {
+        GlStateManager.pushMatrix();
+        drawHoveringText(lines, mx, my);
+        GlStateManager.popMatrix();
+
+        GlStateManager.disableLighting();
+
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public void drawTexturedModalRectMirrored(int x, int y, int u, int v, int width, int height) {
