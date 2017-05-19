@@ -1,0 +1,16 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+
+Changes:
+* Remove config outdated warning, Closes #50
+* Fix fluid unlocalized names
+
+Fixes:
+* Always load world from DimensionManager on server-side in DimPos. This catches the cases where the world has been unloaded, and as a consequence become Nullable.
+
+Lib additions:
+* Add abstract MineTweaker support for handling recipe registry
+* Allow recipes to be unregistered
+* Add configurable stairs block
+* Allow min and max values to be set in number fields
