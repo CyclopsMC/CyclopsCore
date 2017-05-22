@@ -7,6 +7,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.RecipeSorter;
 import org.cyclops.cyclopscore.GeneralConfig;
 import org.cyclops.cyclopscore.Reference;
+import org.cyclops.cyclopscore.recipe.ShapedOreRecipeNbtSensitive;
+import org.cyclops.cyclopscore.recipe.ShapelessOreRecipeNbtSensitive;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
 import org.cyclops.cyclopscore.recipe.event.ObservableShapedRecipe;
 import org.cyclops.cyclopscore.recipe.event.ObservableShapelessRecipe;
@@ -141,6 +143,10 @@ public class RecipeHandler {
                 RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
         RecipeSorter.register(getMod().getModId() + "observableshaped", ObservableShapedRecipe.class,
                 RecipeSorter.Category.SHAPELESS, "after:forge:shapedore");
+        RecipeSorter.register(getMod().getModId() + "shapeless_nbtsensitive", ShapelessOreRecipeNbtSensitive.class,
+                RecipeSorter.Category.SHAPELESS, "after:forge:shapedore");
+        RecipeSorter.register(getMod().getModId() + "shaped_nbtsensitive", ShapedOreRecipeNbtSensitive.class,
+                RecipeSorter.Category.SHAPED, "after:forge:shapedore");
     }
 
     protected void loadPredefineds(Map<String, ItemStack> predefinedItems, Set<String> predefinedValues) {

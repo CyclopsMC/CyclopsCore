@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 import org.cyclops.cyclopscore.init.RecipeHandler;
+import org.cyclops.cyclopscore.recipe.ShapedOreRecipeNbtSensitive;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -23,7 +23,8 @@ import java.util.Map.Entry;
 public class ShapedRecipeTypeHandler extends GridRecipeTypeHandler {
 
 	@Override
-	protected List<Object> handleIO(RecipeHandler recipeHandler, Element input, ItemStack output) throws XmlRecipeLoader.XmlRecipeException {
+	protected List<Object> handleIO(RecipeHandler recipeHandler, Element input, ItemStack output, boolean nbtSensitive)
+			throws XmlRecipeLoader.XmlRecipeException {
 		Element inputGrid = (Element) input.getElementsByTagName("grid").item(0);
 		NodeList gridRows = inputGrid.getElementsByTagName("gridrow");
 		List<Object> inputs = Lists.newArrayList();
@@ -70,7 +71,7 @@ public class ShapedRecipeTypeHandler extends GridRecipeTypeHandler {
         }
         
         // Register with the recipe lines we just constructed.
-        GameRegistry.addRecipe(new ShapedOreRecipe(output, true, lines.toArray()));
+        GameRegistry.addRecipe(new ShapedOreRecipeNbtSensitive(output, nbtSensitive, true, lines.toArray()));
 		return inputs;
 	}
 
