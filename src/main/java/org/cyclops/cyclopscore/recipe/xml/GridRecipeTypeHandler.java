@@ -32,13 +32,17 @@ public abstract class GridRecipeTypeHandler extends CommonRecipeTypeHandler<Item
 		
 		ItemStack outputItem = (ItemStack) getItem(recipeHandler, output.getElementsByTagName("item").item(0));
 
-		List<Object> itemStacks = handleIO(recipeHandler, input, outputItem);
+		boolean nbtSensitive = recipeElement.getAttributes().getNamedItem("nbt_sensitive") != null
+				&& recipeElement.getAttributes().getNamedItem("nbt_sensitive").getTextContent().equals("true");
+
+		List<Object> itemStacks = handleIO(recipeHandler, input, outputItem, nbtSensitive);
         return new Recipe<>(
 				new ItemStacksRecipeComponent(itemStacks),
 				new ItemStackRecipeComponent(outputItem)
 		);
 	}
 	
-	protected abstract List<Object> handleIO(RecipeHandler recipeHandler, Element input, ItemStack output) throws XmlRecipeLoader.XmlRecipeException;
+	protected abstract List<Object> handleIO(RecipeHandler recipeHandler, Element input, ItemStack output,
+											 boolean nbtSensitive) throws XmlRecipeLoader.XmlRecipeException;
 	
 }
