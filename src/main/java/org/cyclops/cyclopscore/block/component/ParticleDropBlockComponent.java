@@ -55,7 +55,7 @@ public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock{
     }
 
     @Override
-    public void randomDisplayTick(World world, BlockPos blockPos, IBlockState blockState, Random rand) {
+    public void randomDisplayTick(IBlockState blockState, World world, BlockPos blockPos, Random rand) {
         if (rand.nextInt(chance) == 0 &&
                 (offset == 0 || BlockHelpers.doesBlockHaveSolidTopSurface(world, blockPos.add(0, -offset, 0))) &&
                 !world.getBlockState(blockPos.add(0, - offset - 1, 0)).getMaterial().blocksMovement()) {

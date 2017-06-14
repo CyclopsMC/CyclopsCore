@@ -14,10 +14,10 @@ import java.util.Random;
 public interface IEntityDropParticleFXBlock {
     /**
      * Called when a random display tick occurs.
+     * @param blockState The block state.
      * @param world The world.
      * @param blockPos The position.
-     * @param blockState The block state.
      * @param rand Random object.
      */
-    public void randomDisplayTick(World world, BlockPos blockPos, IBlockState blockState, Random rand);
+    public void randomDisplayTick(IBlockState blockState, World world, BlockPos blockPos, Random rand);
 }
