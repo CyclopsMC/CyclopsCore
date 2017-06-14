@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Create zh_CN
+
+Fixes:
+* Update drop particle interface method signature. It didn't match the Block's signature anymore.
