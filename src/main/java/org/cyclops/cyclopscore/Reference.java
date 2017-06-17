@@ -26,6 +26,7 @@ public final class Reference {
 
     // MOD ID's
     public static final String MOD_WAILA = "Waila";
+    public static final String MOD_JEI = "JEI";
 
     // Dependencies
     public static final String MOD_DEPENDENCIES =
