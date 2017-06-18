@@ -56,6 +56,8 @@ public abstract class BaseListModification<T> extends BaseUndoable {
      * which are processing items (like a pulverizer) it should return the name of the
      * the input. Another example would be the name of the enchantmant for a thaumcraft
      * infusion recipe.
+     * @param recipe The recipe
+     * @return The info
      */
     protected abstract String getRecipeInfo(T recipe);
 
@@ -113,6 +115,9 @@ public abstract class BaseListModification<T> extends BaseUndoable {
      * Compares two recipes if they are equal. If the mod does not overwrite equals() in
      * their recipe object, this method should be overwritten by the extending classes to
      * add a custom equals method
+     * @param recipe The recipe
+     * @param otherRecipe The other recipe
+     * @return If equal
      */
     protected boolean equals(T recipe, T otherRecipe) {
         if(recipe == otherRecipe) {
