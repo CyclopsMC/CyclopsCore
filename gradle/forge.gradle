@@ -8,12 +8,16 @@ repositories {
         name "Blamejared Maven Repo"
         url "http://blamejared.com/maven"
     }
+    maven {
+        name 'DVS1 Maven FS'
+        url 'http://dvs1.progwml6.com/files/maven'
+    }
 }
 
 dependencies {
     deobfCompile "mcp.mobius.waila:Waila:${config.waila_version}" // http://mobiusstrip.eu/maven/mcp/mobius/waila/Waila/
     deobfCompile "MineTweaker3:MineTweaker3-API:${config.minetweakerapi_version}"; // http://blamejared.com/maven/MineTweaker3/MineTweaker3-API/maven-metadata.xml
-    deobfCompile "com.blamejared:MTLib:${config.minetweakerlib_version}"; // http://blamejared.com/maven/com/blamejared/MTLib/maven-metadata.xml
+    deobfCompile "mezz.jei:jei_${config.jei_version}:api" // https://dvs1.progwml6.com/jenkins/
 
     // Project lombok
     provided "org.projectlombok:lombok:1.16.4"

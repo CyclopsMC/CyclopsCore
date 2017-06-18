@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Update zh_CN.lang
+
+Fixes:
+* Update drop particle interface method signature
