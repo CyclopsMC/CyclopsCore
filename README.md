@@ -1,6 +1,6 @@
 ## CyclopsCore
 
-[![Build Status](https://travis-ci.org/CyclopsMC/CyclopsCore.svg?branch=master-1.9)](https://travis-ci.org/CyclopsMC/CyclopsCore)
+[![Build Status](https://travis-ci.org/CyclopsMC/CyclopsCore.svg?branch=master-1.11)](https://travis-ci.org/CyclopsMC/CyclopsCore)
 [![Download](https://api.bintray.com/packages/cyclopsmc/dev/CyclopsCore/images/download.svg) ](https://bintray.com/cyclopsmc/dev/CyclopsCore/_latestVersion)
 [![CurseForge](http://cf.way2muchnoise.eu/full_232758_downloads.svg)](http://minecraft.curseforge.com/projects/232758)
 
