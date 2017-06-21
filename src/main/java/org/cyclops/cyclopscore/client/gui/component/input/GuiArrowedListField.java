@@ -27,7 +27,7 @@ public class GuiArrowedListField<E> extends GuiTextFieldExtended {
         if(this.arrows) {
             arrowLeft  = new GuiButtonArrow(0, x, y, GuiButtonArrow.Direction.WEST);
             arrowRight = new GuiButtonArrow(1, x + width, y, GuiButtonArrow.Direction.EAST);
-            arrowRight.xPosition -= arrowRight.width;
+            arrowRight.x -= arrowRight.width;
         }
         setEnableBackgroundDrawing(true);
         this.elements = elements;
@@ -65,15 +65,15 @@ public class GuiArrowedListField<E> extends GuiTextFieldExtended {
     public void drawTextBox(Minecraft minecraft, int mouseX, int mouseY) {
         int offsetX = 0;
         if(arrows) {
-            arrowLeft.drawButton(minecraft, mouseX, mouseY);
-            arrowRight.drawButton(minecraft, mouseX, mouseY);
+            arrowLeft.drawButton(minecraft, mouseX, mouseY, minecraft.getRenderPartialTicks());
+            arrowRight.drawButton(minecraft, mouseX, mouseY, minecraft.getRenderPartialTicks());
             offsetX = arrowLeft.width;
-            xPosition += offsetX;
+            x += offsetX;
             width -= offsetX * 2;
         }
         super.drawTextBox(minecraft, mouseX, mouseY);
         if(arrows) {
-            xPosition -= offsetX;
+            x -= offsetX;
             width += offsetX * 2;
         }
     }
@@ -87,13 +87,15 @@ public class GuiArrowedListField<E> extends GuiTextFieldExtended {
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if(arrowRight.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
             increase();
+            return true;
         } else if(arrowLeft.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
             decrease();
+            return true;
         } else {
-            super.mouseClicked(mouseX, mouseY, mouseButton);
+            return super.mouseClicked(mouseX, mouseY, mouseButton);
         }
     }
 

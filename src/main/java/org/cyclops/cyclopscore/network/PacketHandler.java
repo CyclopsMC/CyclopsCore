@@ -144,7 +144,7 @@ public final class PacketHandler {
                 return null;
             }
 
-            EntityPlayerMP player = ctx.getServerHandler().playerEntity;
+            EntityPlayerMP player = ctx.getServerHandler().player;
             packet.actionServer(player.world, player);
             return null;
         }

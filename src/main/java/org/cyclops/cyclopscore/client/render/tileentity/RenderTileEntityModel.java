@@ -47,7 +47,7 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
     }
 
     @Override
-    public void renderTileEntityAt(T tile, double x, double y, double z, float partialTick, int destroyStage) {
+    public void render(T tile, double x, double y, double z, float partialTick, int destroyStage, float alpha) {
         EnumFacing direction = tile.getRotation();
 
         if (destroyStage >= 0) {

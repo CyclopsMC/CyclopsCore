@@ -77,7 +77,7 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
         if(MinecraftHelpers.isClientSide()) {
             if(item.getHasSubtypes()) {
                 NonNullList<ItemStack> itemStacks = NonNullList.create();
-                item.getSubItems(item, tab, itemStacks);
+                item.getSubItems(tab, itemStacks);
                 for(ItemStack itemStack : itemStacks) {
                     String itemName = modelProvider.getModelName(itemStack);
                     ModelResourceLocation model = new ModelResourceLocation(modId + ":" + itemName, "inventory");

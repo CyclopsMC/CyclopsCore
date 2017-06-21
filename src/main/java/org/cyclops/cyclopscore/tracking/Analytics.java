@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -65,7 +66,7 @@ public class Analytics {
                             try {
                                 URL url = new URL(createRequestURL(pair.getLeft(), pair.getRight()));
                                 //noinspection ResultOfMethodCallIgnored
-                                IOUtils.toString(url); // Just do request, we don't need the output (?)
+                                IOUtils.toString(url, Charset.forName("UTF-8")); // Just do request, we don't need the output (?)
                             } catch (IOException e) {
                                 pair.getLeft().log(Level.WARN, "Could not send tracking info: " + e.toString());
                             }

@@ -25,7 +25,7 @@ public class LocationHelpers {
 	 * @param range The range of the {@link TargetPoint}.
 	 * @return A {@link TargetPoint} with the position and dimension of the entity and the given range.
 	 */
-	public static TargetPoint createTargetPointFromEntityPosition(Entity entity, int range) {
+	public static TargetPoint createTargetPointFromEntity(Entity entity, int range) {
 		return new TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, range);
 	}
 

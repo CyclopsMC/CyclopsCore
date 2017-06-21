@@ -4,6 +4,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Map;
@@ -17,7 +19,7 @@ public class CraftingHelpers {
     @SuppressWarnings("unchecked")
     public static IRecipe findCraftingRecipe(ItemStack itemStack, int index) throws IllegalArgumentException {
         int indexAttempt = index;
-        for(IRecipe recipe : CraftingManager.getInstance().getRecipeList()) {
+        for(IRecipe recipe : CraftingManager.REGISTRY) {
             if(itemStacksEqual(recipe.getRecipeOutput(), itemStack) && indexAttempt-- == 0) {
                 return recipe;
             }
@@ -37,6 +39,16 @@ public class CraftingHelpers {
         }
         throw new IllegalArgumentException("Could not find furnace recipe for " + itemStack.getItem().getUnlocalizedName() +
                 " with index " + index);
+    }
+
+    public static ResourceLocation newRecipeIdentifier(ItemStack output) {
+        ResourceLocation id = new ResourceLocation(Loader.instance().activeModContainer().getModId(),
+                output.getItem().getRegistryName().getResourcePath());
+        int counter = 0;
+        while (CraftingManager.REGISTRY.containsKey(id)) {
+            id = new ResourceLocation(id.getResourceDomain(), id.getResourcePath() + "_" + ++counter);
+        }
+        return id;
     }
 
     public static boolean itemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {

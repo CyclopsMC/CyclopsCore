@@ -3,17 +3,17 @@ package org.cyclops.cyclopscore.infobook;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.Achievement;
-import net.minecraft.stats.StatList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.helpers.Strings;
+import org.apache.logging.log4j.util.Strings;
+import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.*;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -103,12 +103,12 @@ public class InfoBookParser {
             }
 
         });
-        registerFactory("achievement_rewards", new InfoBookParser.IAppendixFactory() {
+        registerFactory("advancement_rewards", new InfoBookParser.IAppendixFactory() {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InfoBookParser.InvalidAppendixException {
                 if (infoBook.getMod().getReferenceValue(ModBase.REFKEY_INFOBOOK_REWARDS)) {
-                    List<Achievement> achievements = Lists.newArrayList();
+                    List<Advancement> advancements = Lists.newArrayList();
                     List<IReward> rewards = Lists.newArrayList();
                     String achievementRewardsId = node.getAttribute("id");
 
@@ -117,17 +117,18 @@ public class InfoBookParser {
                         if (children.item(i) instanceof Element) {
                             Element child = (Element) children.item(i);
                             NodeList subChildren = child.getChildNodes();
-                            if (child.getNodeName().equals("achievements")) {
+                            if (child.getNodeName().equals("advancements")) {
                                 for (int j = 0; j < subChildren.getLength(); j++) {
                                     if (subChildren.item(j) instanceof Element) {
-                                        Element achievementNode = (Element) subChildren.item(j);
-                                        String achievementId = achievementNode.getAttribute("id");
+                                        Element advancementNode = (Element) subChildren.item(j);
+                                        String achievementId = advancementNode.getAttribute("id");
                                         if (!achievementId.isEmpty()) {
-                                            Achievement achievement = (Achievement) StatList.getOneShotStat(achievementId);
-                                            if (achievement == null) {
-                                                throw new InfoBookParser.InvalidAppendixException(String.format("Could not find an achievement by id '%s'", achievementId));
+                                            Advancement advancement = AdvancementHelpers
+                                                    .getAdvancement(new ResourceLocation(achievementId));
+                                            if (advancement == null) {
+                                                throw new InfoBookParser.InvalidAppendixException(String.format("Could not find an advancement by id '%s'", achievementId));
                                             }
-                                            achievements.add(achievement);
+                                            advancements.add(advancement);
                                         }
                                     }
                                 }
@@ -143,10 +144,10 @@ public class InfoBookParser {
                         }
                     }
                     if (achievementRewardsId == null || achievementRewardsId.isEmpty()) {
-                        throw new InfoBookParser.InvalidAppendixException("Every achievement rewards tag must have a unique id attribute");
+                        throw new InfoBookParser.InvalidAppendixException("Every advancement rewards tag must have a unique id attribute");
                     }
-                    AchievementRewards achievementRewards = new AchievementRewards(achievementRewardsId, achievements, rewards);
-                    return new AchievementRewardsAppendix(infoBook, achievementRewards);
+                    AdvancementRewards advancementRewards = new AdvancementRewards(achievementRewardsId, advancements, rewards);
+                    return new AdvancementRewardsAppendix(infoBook, advancementRewards);
                 } else {
                     return null;
                 }

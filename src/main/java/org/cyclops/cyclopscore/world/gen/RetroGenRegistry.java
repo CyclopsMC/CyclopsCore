@@ -53,13 +53,13 @@ public class RetroGenRegistry implements IRetroGenRegistry {
 				if(retroGen.shouldRetroGen(tag, event.getWorld().provider.getDimension())) {
 					retroGen.retroGenerateChunk(tag, event.getChunk(), random);
 					getMod().log(Level.INFO, "Retrogenerating chunk at "
-                            + event.getChunk().xPosition + ":" + event.getChunk().zPosition);
+                            + event.getChunk().x + ":" + event.getChunk().z);
 					atLeastOneModified = true;
 				}
 			}
 			
 			if(atLeastOneModified) {
-				event.getChunk().setChunkModified();
+				event.getChunk().markDirty();
 			}
 		}
 	}
@@ -69,7 +69,7 @@ public class RetroGenRegistry implements IRetroGenRegistry {
         random.setSeed(world.getSeed());
         long xSeed = random.nextLong() >> 2 + 1L;
         long zSeed = random.nextLong() >> 2 + 1L;
-        long chunkSeed = (xSeed * chunk.xPosition + zSeed * chunk.zPosition) ^ world.getSeed();
+        long chunkSeed = (xSeed * chunk.x + zSeed * chunk.z) ^ world.getSeed();
         random.setSeed(chunkSeed);
 	}
 

@@ -1,11 +1,12 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.stats.Achievement;
 import net.minecraft.util.text.TextFormatting;
+import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
@@ -20,11 +21,11 @@ import java.util.List;
  */
 public class AchievementCollectButton extends AdvancedButton {
 
-    private final AchievementRewards achievementRewards;
+    private final AdvancementRewards advancementRewards;
     private final IInfoBook infoBook;
 
-    public AchievementCollectButton(AchievementRewards achievementRewards, IInfoBook infoBook) {
-        this.achievementRewards = achievementRewards;
+    public AchievementCollectButton(AdvancementRewards advancementRewards, IInfoBook infoBook) {
+        this.advancementRewards = advancementRewards;
         this.infoBook = infoBook;
     }
 
@@ -36,16 +37,14 @@ public class AchievementCollectButton extends AdvancedButton {
     public void renderTooltip(int mx, int my) {
         super.renderTooltip(mx, my);
         GlStateManager.pushMatrix();
-        int x = xPosition;
-        int y = yPosition;
         if(mx >= x && my >= y && mx <= x + width && my <= y + height) {
             List<String> lines = Lists.newArrayList();
-            if (achievementRewards.isObtained(Minecraft.getMinecraft().player)) {
+            if (advancementRewards.isObtained(Minecraft.getMinecraft().player)) {
                 lines.add(TextFormatting.ITALIC + L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collected"));
             } else {
                 lines.add(TextFormatting.BOLD + L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collect"));
                 boolean canObtain = true;
-                for (IReward reward : achievementRewards.getRewards()) {
+                for (IReward reward : advancementRewards.getRewards()) {
                     if (!reward.canObtain(Minecraft.getMinecraft().player)) {
                         canObtain = false;
                     }
@@ -73,24 +72,24 @@ public class AchievementCollectButton extends AdvancedButton {
     public void onClick() {
         EntityPlayer player = Minecraft.getMinecraft().player;
         boolean canObtain = true;
-        for (Achievement achievement : achievementRewards.getAchievements()) {
-            if (!Minecraft.getMinecraft().player.getStatFileWriter().hasAchievementUnlocked(achievement)) {
+        for (Advancement advancement : advancementRewards.getAchievements()) {
+            if (!AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getMinecraft().player, advancement)) {
                 canObtain = false;
             }
         }
-        for (IReward reward : achievementRewards.getRewards()) {
+        for (IReward reward : advancementRewards.getRewards()) {
             if (!reward.canObtain(player)) {
                 canObtain = false;
             }
         }
         if (canObtain) {
-            achievementRewards.obtain(player);
+            advancementRewards.obtain(player);
         }
     }
 
     @Override
     public void update(int x, int y, String displayName, InfoSection target, GuiInfoBook gui) {
         super.update(x, y, displayName, target, gui);
-        this.width = AchievementRewardsAppendix.MAX_WIDTH;
+        this.width = AdvancementRewardsAppendix.MAX_WIDTH;
     }
 }

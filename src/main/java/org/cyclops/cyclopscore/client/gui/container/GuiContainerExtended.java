@@ -104,7 +104,7 @@ public abstract class GuiContainerExtended extends GuiContainer implements
         int yStart;
         
         for(String line : lines) {
-            tempWidth = this.fontRendererObj.getStringWidth(line);
+            tempWidth = this.fontRenderer.getStringWidth(line);
             
             if(tempWidth > tooltipWidth) {
                 tooltipWidth = tempWidth;
@@ -151,7 +151,7 @@ public abstract class GuiContainerExtended extends GuiContainer implements
                 line = "\u00a77" + line;
             }
             
-            this.fontRendererObj.drawStringWithShadow(line, xStart, yStart, -1);
+            this.fontRenderer.drawStringWithShadow(line, xStart, yStart, -1);
             
             if(stringIndex == 0) {
                 yStart += 2;

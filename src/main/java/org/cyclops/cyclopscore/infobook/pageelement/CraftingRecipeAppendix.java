@@ -3,8 +3,10 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.apache.logging.log4j.Level;
@@ -95,15 +97,15 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
      * @param height The original recipe height.
      * @return The reformatted object array.
      */
-    private static Object[] formatShapedGrid(Object[] itemStacksRaw, int width, int height) {
+    private static Object[] formatShapedGrid(NonNullList<Ingredient> itemStacksRaw, int width, int height) {
         int rawIndex = 0;
         Object[] itemStacks = new Object[9];
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
-                itemStacks[y * 3 + x] = itemStacksRaw[rawIndex++];
-                if(rawIndex >= itemStacksRaw.length) break;
+                itemStacks[y * 3 + x] = itemStacksRaw.get(rawIndex++);
+                if(rawIndex >= itemStacksRaw.size()) break;
             }
-            if(rawIndex >= itemStacksRaw.length) break;
+            if(rawIndex >= itemStacksRaw.size()) break;
         }
         return itemStacks;
     }
@@ -115,13 +117,13 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
             itemStacks = formatShapedGrid(((ShapedRecipes) recipe).recipeItems,
                     ((ShapedRecipes) recipe).recipeWidth, ((ShapedRecipes) recipe).recipeHeight);
         } else if(recipe instanceof ShapedOreRecipe) {
-            itemStacks = formatShapedGrid(((ShapedOreRecipe) recipe).getInput(),
+            itemStacks = formatShapedGrid(((ShapedOreRecipe) recipe).getIngredients(),
                     ObfuscationHelpers.getShapedOreRecipeWidth(((ShapedOreRecipe) recipe)),
                     ObfuscationHelpers.getShapedOreRecipeHeight(((ShapedOreRecipe) recipe)));
         } else if(recipe instanceof ShapelessRecipes) {
             itemStacks = ((ShapelessRecipes) recipe).recipeItems.toArray();
         } else if(recipe instanceof ShapelessOreRecipe) {
-            itemStacks = ((ShapelessOreRecipe) recipe).getInput().toArray();
+            itemStacks = ((ShapelessOreRecipe) recipe).getIngredients().toArray();
         } else {
             getInfoBook().getMod().log(Level.ERROR, "Recipe of type " + recipe.getClass() + " is not supported.");
             return Collections.emptyList();

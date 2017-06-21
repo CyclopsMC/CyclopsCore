@@ -195,18 +195,18 @@ public class CapabilityConstructorRegistry {
     }
 
     @SubscribeEvent
-    public void onTileLoad(AttachCapabilitiesEvent.TileEntity event) {
-        onLoad(capabilityConstructorsTile, capabilityConstructorsTileSuper, event.getTileEntity(), event, TileEntity.class);
+    public void onTileLoad(AttachCapabilitiesEvent<TileEntity> event) {
+        onLoad(capabilityConstructorsTile, capabilityConstructorsTileSuper, event.getObject(), event, TileEntity.class);
     }
 
     @SubscribeEvent
-    public void onEntityLoad(AttachCapabilitiesEvent.Entity event) {
-        onLoad(capabilityConstructorsEntity, capabilityConstructorsEntitySuper, event.getEntity(), event, Entity.class);
+    public void onEntityLoad(AttachCapabilitiesEvent<Entity> event) {
+        onLoad(capabilityConstructorsEntity, capabilityConstructorsEntitySuper, event.getObject(), event, Entity.class);
     }
 
     @SubscribeEvent
     public void onItemStackLoad(AttachCapabilitiesEvent.Item event) {
-        onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getItem(), event.getItemStack(), event, Item.class);
+        onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getObject(), event.getItemStack(), event, Item.class);
     }
 
     protected <K, V> void removeNullCapabilities(Map<Class<? extends K>, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allConstructors,

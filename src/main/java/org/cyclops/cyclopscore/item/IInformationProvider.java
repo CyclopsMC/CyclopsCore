@@ -1,8 +1,9 @@
 package org.cyclops.cyclopscore.item;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -36,10 +37,10 @@ public interface IInformationProvider {
     public String getInfo(ItemStack itemStack);
     /**
      * An extended way to provide additional information.
-     * @param itemStack The itemStack that must be given information. 
-     * @param entityPlayer The player that asks for information.
+     * @param itemStack The itemStack that must be given information.
+     * @param world The player that asks for information.
      * @param list The list of information.
-     * @param par4 No idea...
+     * @param flag No idea...
      */
-    public void provideInformation(ItemStack itemStack, EntityPlayer entityPlayer, @SuppressWarnings("rawtypes") List list, boolean par4);
+    public void provideInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag);
 }

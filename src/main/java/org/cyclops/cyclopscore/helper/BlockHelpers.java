@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.helper;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -140,7 +141,7 @@ public final class BlockHelpers {
     public static void addCollisionBoxToList(BlockPos pos, AxisAlignedBB collidingBox, List<AxisAlignedBB> collisions, AxisAlignedBB addingBox) {
         if (addingBox != null) {
             AxisAlignedBB axisalignedbb = addingBox.offset(pos);
-            if (collidingBox.intersectsWith(axisalignedbb)) {
+            if (collidingBox.intersects(axisalignedbb)) {
                 collisions.add(axisalignedbb);
             }
         }
@@ -154,6 +155,18 @@ public final class BlockHelpers {
      */
     public static boolean doesBlockHaveSolidTopSurface(IBlockAccess world, BlockPos blockPos) {
         return world.getBlockState(blockPos.add(0, -1, 0)).isOpaqueCube();
+    }
+
+    /**
+     * If the given block can be displayed in the given creative tab.
+     * @param block The block.
+     * @param creativeTab The creative tab.
+     * @return If it can be displayed.
+     */
+    public static boolean isValidCreativeTab(Block block, @Nullable CreativeTabs creativeTab) {
+        return creativeTab == null
+                || creativeTab == CreativeTabs.SEARCH
+                || block.getCreativeTabToDisplayOn() == creativeTab;
     }
 
 }

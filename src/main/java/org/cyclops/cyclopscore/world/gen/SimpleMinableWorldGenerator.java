@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.world.gen;
 
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -40,5 +40,5 @@ public class SimpleMinableWorldGenerator implements IWorldGenerator {
         	worldGen.loopGenerate(world, random, chunkX * 16, chunkZ * 16);
         }
     }
-	
+
 }

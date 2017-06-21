@@ -24,8 +24,8 @@ public class SlotExtended extends Slot {
     @Setter
     private boolean adjustable = true;
 
-    public SlotExtended(IInventory inventoryIn, int index, int xPosition, int yPosition) {
-        super(inventoryIn, index, xPosition, yPosition);
+    public SlotExtended(IInventory inventoryIn, int index, int x, int y) {
+        super(inventoryIn, index, x, y);
     }
 
     @Override

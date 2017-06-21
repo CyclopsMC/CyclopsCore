@@ -23,7 +23,7 @@ public class GuiNumberField extends GuiTextFieldExtended {
         if(this.arrows) {
             arrowUp = new GuiButtonArrow(0, x, y + height / 2, GuiButtonArrow.Direction.NORTH);
             arrowDown = new GuiButtonArrow(1, x, y + height / 2, GuiButtonArrow.Direction.SOUTH);
-            arrowUp.yPosition -= arrowUp.height;
+            arrowUp.y -= arrowUp.height;
         }
         setEnableBackgroundDrawing(true);
         setText("0");
@@ -68,15 +68,15 @@ public class GuiNumberField extends GuiTextFieldExtended {
     public void drawTextBox(Minecraft minecraft, int mouseX, int mouseY) {
         int offsetX = 0;
         if(arrows) {
-            arrowUp.drawButton(minecraft, mouseX, mouseY);
-            arrowDown.drawButton(minecraft, mouseX, mouseY);
+            arrowUp.drawButton(minecraft, mouseX, mouseY, minecraft.getRenderPartialTicks());
+            arrowDown.drawButton(minecraft, mouseX, mouseY, minecraft.getRenderPartialTicks());
             offsetX = arrowUp.width;
-            xPosition += offsetX;
+            x += offsetX;
             width -= offsetX;
         }
         super.drawTextBox(minecraft, mouseX, mouseY);
         if(arrows) {
-            xPosition -= offsetX;
+            x -= offsetX;
             width += offsetX;
         }
     }
@@ -106,13 +106,14 @@ public class GuiNumberField extends GuiTextFieldExtended {
     }
 
     @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        boolean ret = true;
         if(arrowUp.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
             increase();
         } else if(arrowDown.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
             decrease();
         } else {
-            super.mouseClicked(mouseX, mouseY, mouseButton);
+            ret = super.mouseClicked(mouseX, mouseY, mouseButton);
         }
         arrowDown.enabled = true;
         arrowUp.enabled = true;
@@ -126,6 +127,7 @@ public class GuiNumberField extends GuiTextFieldExtended {
         } catch (NumberFormatException e ) {
 
         }
+        return ret;
     }
 
 }

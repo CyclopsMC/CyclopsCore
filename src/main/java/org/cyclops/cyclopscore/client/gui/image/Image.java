@@ -3,9 +3,9 @@ package org.cyclops.cyclopscore.client.gui.image;
 import lombok.Data;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
@@ -53,7 +53,7 @@ public class Image implements IImage {
     @Override
     public void drawWorldWithAlpha(TextureManager textureManager, float x1, float x2, float y1, float y2, float z, float alpha) {
         GlStateManager.pushMatrix();
-        VertexBuffer worldRenderer = Tessellator.getInstance().getBuffer();
+        BufferBuilder worldRenderer = Tessellator.getInstance().getBuffer();
         worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
         textureManager.bindTexture(getResourceLocation());
         float u1, u2, v1, v2;

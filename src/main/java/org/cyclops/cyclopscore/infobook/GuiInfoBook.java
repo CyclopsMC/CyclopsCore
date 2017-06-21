@@ -7,9 +7,9 @@ import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -76,7 +76,7 @@ public abstract class GuiInfoBook extends GuiScreen {
             infoBook.setCurrentPage(0);
         }
 
-        // Request an up-to-date persisted player NBT tag to make sure our achievement reward status is synced.
+        // Request an up-to-date persisted player NBT tag to make sure our advancement reward status is synced.
         CyclopsCore._instance.getPacketHandler().sendToServer(new RequestPlayerNbtPacket());
     }
 
@@ -206,7 +206,7 @@ public abstract class GuiInfoBook extends GuiScreen {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer worldRenderer = tessellator.getBuffer();
+        BufferBuilder worldRenderer = tessellator.getBuffer();
         worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
         worldRenderer.pos((double) (x + 0), (double) (y + height), (double) this.zLevel).tex((double) ((float) (u + width) * f), (double) ((float) (v + height) * f1)).endVertex();
         worldRenderer.pos((double) (x + width), (double) (y + height), (double) this.zLevel).tex((double) ((float) (u + 0) * f), (double) ((float) (v + height) * f1)).endVertex();
@@ -221,7 +221,7 @@ public abstract class GuiInfoBook extends GuiScreen {
     }
 
     public FontRenderer getFontRenderer() {
-        return this.fontRendererObj;
+        return this.fontRenderer;
     }
 
     public int getBannerWidth() {
@@ -229,8 +229,8 @@ public abstract class GuiInfoBook extends GuiScreen {
     }
 
     private void updateGui() {
-        boolean oldUnicode = mc.fontRendererObj.getUnicodeFlag();
-        mc.fontRendererObj.setUnicodeFlag(true);
+        boolean oldUnicode = mc.fontRenderer.getUnicodeFlag();
+        mc.fontRenderer.setUnicodeFlag(true);
         int width = getPageWidth() - getOffsetXTotal();
         int lineHeight = InfoSection.getFontHeight(getFontRenderer());
         int maxLines = (getGuiHeight() - 2 * getPageYOffset() - 5) / lineHeight;
@@ -245,7 +245,7 @@ public abstract class GuiInfoBook extends GuiScreen {
         }
 
         updateButtons();
-        mc.fontRendererObj.setUnicodeFlag(oldUnicode);
+        mc.fontRenderer.setUnicodeFlag(oldUnicode);
     }
 
     protected void getPreviousSections(List<InfoSection> sections) {
@@ -336,9 +336,9 @@ public abstract class GuiInfoBook extends GuiScreen {
     public void drawScaledCenteredString(String string, int x, int y, int width, float scale, int color) {
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 1.0f);
-        int titleLength = fontRendererObj.getStringWidth(string);
-        int titleHeight = fontRendererObj.FONT_HEIGHT;
-        fontRendererObj.drawString(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+        int titleLength = fontRenderer.getStringWidth(string);
+        int titleHeight = fontRenderer.FONT_HEIGHT;
+        fontRenderer.drawString(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
         GlStateManager.popMatrix();
     }
 
@@ -437,12 +437,12 @@ public abstract class GuiInfoBook extends GuiScreen {
     static class NextPageButton extends GuiButton {
 
         private final GuiInfoBook guiInfoBook;
-        private int x, y;
+        private int textureX, textureY;
 
-        public NextPageButton(int id, int xPosition, int yPosition, int x, int y, int width, int height, GuiInfoBook guiInfoBook) {
-            super(id, xPosition, yPosition, width, height, "");
-            this.x = x;
-            this.y = y;
+        public NextPageButton(int id, int x, int y, int textureX, int textureY, int width, int height, GuiInfoBook guiInfoBook) {
+            super(id, x, y, width, height, "");
+            this.textureX = textureX;
+            this.textureY = textureY;
             this.guiInfoBook = guiInfoBook;
         }
 
@@ -451,8 +451,8 @@ public abstract class GuiInfoBook extends GuiScreen {
          */
         public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
             if (this.visible) {
-                boolean isHover = mouseX >= this.xPosition && mouseY >= this.yPosition &&
-                               mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+                boolean isHover = mouseX >= this.x && mouseY >= this.y &&
+                               mouseX < this.x + this.width && mouseY < this.y + this.height;
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 minecraft.getTextureManager().bindTexture(guiInfoBook.texture);
                 int k = x;
@@ -464,7 +464,7 @@ public abstract class GuiInfoBook extends GuiScreen {
 
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                this.drawTexturedModalRect(this.xPosition, this.yPosition, k, l, width, height);
+                this.drawTexturedModalRect(this.textureX, this.textureY, k, l, width, height);
                 GlStateManager.disableBlend();
             }
         }
@@ -486,7 +486,7 @@ public abstract class GuiInfoBook extends GuiScreen {
             super(id, x, y, 0, height, InfoSection.formatString(L10NHelpers.localize(link.getUnlocalizedName())));
             this.guiInfoBook = guiInfoBook;
             this.link = link;
-            FontRenderer fontRenderer = Minecraft.getMinecraft().fontRendererObj;
+            FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
             boolean oldUnicode = fontRenderer.getUnicodeFlag();
             fontRenderer.setUnicodeFlag(true);
             this.width = fontRenderer.getStringWidth(displayString);
@@ -494,17 +494,17 @@ public abstract class GuiInfoBook extends GuiScreen {
         }
 
         @Override
-        public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
+        public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
-                boolean isHover = mouseX >= this.xPosition && mouseY >= this.yPosition &&
-                        mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+                boolean isHover = mouseX >= this.x && mouseY >= this.y &&
+                        mouseX < this.x + this.width && mouseY < this.y + this.height;
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                boolean oldUnicode = minecraft.fontRendererObj.getUnicodeFlag();
-                minecraft.fontRendererObj.setUnicodeFlag(true);
-                minecraft.fontRendererObj.drawString((isHover ? "§n" : "") +
-                                displayString + "§r", xPosition, yPosition,
+                boolean oldUnicode = minecraft.fontRenderer.getUnicodeFlag();
+                minecraft.fontRenderer.setUnicodeFlag(true);
+                minecraft.fontRenderer.drawString((isHover ? "§n" : "") +
+                                displayString + "§r", x, y,
                         Helpers.RGBToInt(isHover ? 100 : 0, isHover ? 100 : 0, isHover ? 150 : 125));
-                minecraft.fontRendererObj.setUnicodeFlag(oldUnicode);
+                minecraft.fontRenderer.setUnicodeFlag(oldUnicode);
             }
         }
 

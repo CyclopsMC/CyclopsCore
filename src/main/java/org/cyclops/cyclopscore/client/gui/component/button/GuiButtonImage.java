@@ -36,7 +36,7 @@ public class GuiButtonImage extends GuiButtonExtended {
 	}
 
 	protected void drawButtonInner(Minecraft minecraft, int i, int j, boolean mouseOver) {
-        image.draw(this, xPosition + offsetX, yPosition + offsetY);
+        image.draw(this, x + offsetX, y + offsetY);
     }
 
 }

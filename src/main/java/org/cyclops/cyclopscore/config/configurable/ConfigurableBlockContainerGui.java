@@ -15,7 +15,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.inventory.IGuiContainerProviderConfigurable;
-import org.cyclops.cyclopscore.inventory.container.TileInventoryContainer;
+import org.cyclops.cyclopscore.inventory.container.TileInventoryContainerConfigurable;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 import org.cyclops.cyclopscore.tileentity.InventoryTileEntity;
 
@@ -93,9 +93,9 @@ public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockCon
 	@SuppressWarnings("unchecked")
 	@SideOnly(Side.CLIENT)
 	public void tryCloseClientGui(World world) {
-    	if(Minecraft.getMinecraft().player.openContainer instanceof TileInventoryContainer<?>) {
-    		TileInventoryContainer<? extends InventoryTileEntity> container =
-    				(TileInventoryContainer<? extends InventoryTileEntity>) Minecraft.getMinecraft()
+    	if(Minecraft.getMinecraft().player.openContainer instanceof TileInventoryContainerConfigurable<?>) {
+            TileInventoryContainerConfigurable<? extends InventoryTileEntity> container =
+    				(TileInventoryContainerConfigurable<? extends InventoryTileEntity>) Minecraft.getMinecraft()
     				.player.openContainer;
     		if(container.getTile() == null || container.getTile().isInvalid()) {
     			Minecraft.getMinecraft().player.closeScreen();

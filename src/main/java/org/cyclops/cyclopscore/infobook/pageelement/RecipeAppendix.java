@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -64,7 +65,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     protected ItemStack prepareItemStack(ItemStack itemStack, int tick) {
         if(itemStack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
             NonNullList<ItemStack> itemStacks = NonNullList.create();
-            itemStack.getItem().getSubItems(itemStack.getItem(), null, itemStacks);
+            itemStack.getItem().getSubItems(CreativeTabs.SEARCH, itemStacks);
             if(itemStacks.isEmpty()) return itemStack;
             return itemStacks.get(tick % itemStacks.size());
         }
@@ -92,7 +93,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             renderItem.renderItemAndEffectIntoGUI(itemStack, x, y);
             if (renderOverlays)
-                renderItem.renderItemOverlays(Minecraft.getMinecraft().fontRendererObj, itemStack, x, y);
+                renderItem.renderItemOverlays(Minecraft.getMinecraft().fontRenderer, itemStack, x, y);
             RenderHelper.disableStandardItemLighting();
             GlStateManager.popMatrix();
             GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -131,7 +132,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
             TextureAtlasSprite icon = RenderHelpers.getFluidIcon(fluidStack, EnumFacing.UP);
-            VertexBuffer worldRenderer = Tessellator.getInstance().getBuffer();
+            BufferBuilder worldRenderer = Tessellator.getInstance().getBuffer();
             worldRenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
             Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             float minX = x;
@@ -284,9 +285,9 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         protected abstract ExtendedConfig<?> getConfigFromElement(E element);
 
         @Override
-        public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
+        public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
             if(isVisible() && isHover(mouseX, mouseY)) {
-                gui.drawOuterBorder(xPosition, yPosition, 16, 16, 0.392f, 0.392f, 0.6f, 0.9f);
+                gui.drawOuterBorder(x, y, 16, 16, 0.392f, 0.392f, 0.6f, 0.9f);
             }
         }
 
@@ -309,7 +310,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
         @Override
         public void renderTooltip(int mx, int my) {
-            RecipeAppendix.renderItemTooltip(gui, xPosition, yPosition, getElement(), mx, my);
+            RecipeAppendix.renderItemTooltip(gui, x, y, getElement(), mx, my);
         }
 
         @Override
@@ -331,7 +332,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
         @Override
         public void renderTooltip(int mx, int my) {
-            RecipeAppendix.renderFluidTooltip(gui, xPosition, yPosition, getElement(), mx, my);
+            RecipeAppendix.renderFluidTooltip(gui, x, y, getElement(), mx, my);
         }
     }
 

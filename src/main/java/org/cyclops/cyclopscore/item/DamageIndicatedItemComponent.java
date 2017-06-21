@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.item;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -47,14 +47,13 @@ public class DamageIndicatedItemComponent{
     
     /**
      * Add the creative tab items.
-     * @param item The item.
      * @param tab The creative tab to add to.
      * @param itemList The item list to add to.
      * @param fluid The fluid in the container that needs to be added.
      * @param meta The meta data for the item to add.
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> itemList, Fluid fluid, int meta) {
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList, Fluid fluid, int meta) {
         // Add the 'full' container.
         ItemStack itemStackFull = new ItemStack(this.item, 1, meta);
         IFluidHandlerItemCapacity fluidHanderFull = FluidHelpers.getFluidHandlerItemCapacity(itemStackFull);
@@ -99,12 +98,12 @@ public class DamageIndicatedItemComponent{
     /**
      * Add information to the given list for the given item.
      * @param itemStack The {@link ItemStack} to add info for.
-     * @param entityPlayer The player that will see the info.
+     * @param world The player that will see the info.
      * @param list The info list where the info will be added.
-     * @param par4 No idea...
+     * @param flag the tooltip flag
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void addInformation(ItemStack itemStack, EntityPlayer entityPlayer, List list, boolean par4) {
+    public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
         list.add(IInformationProvider.ITEM_PREFIX+((IInformationProvider) itemStack.getItem()).getInfo(itemStack));
     }
     

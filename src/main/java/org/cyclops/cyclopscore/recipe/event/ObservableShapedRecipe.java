@@ -2,7 +2,9 @@ package org.cyclops.cyclopscore.recipe.event;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.util.NonNullList;
 
 /**
  * A shaped recipe that is observable in terms of the recipe output.
@@ -22,9 +24,9 @@ public class ObservableShapedRecipe extends ShapedRecipes {
 	 * @param recipeOutput The recipe output.
 	 * @param observer The observer for the output.
 	 */
-	public ObservableShapedRecipe(int recipeWidth, int recipeHeight,
-			ItemStack[] recipeItems, ItemStack recipeOutput, IRecipeOutputObserver observer) {
-		super(recipeWidth, recipeHeight, recipeItems, recipeOutput);
+	public ObservableShapedRecipe(String group, int recipeWidth, int recipeHeight,
+								  NonNullList<Ingredient> recipeItems, ItemStack recipeOutput, IRecipeOutputObserver observer) {
+		super(group, recipeWidth, recipeHeight, recipeItems, recipeOutput);
 		this.observer = observer;
 	}
 	

@@ -42,12 +42,12 @@ public abstract class DynamicBaseModel implements IPerspectiveAwareModel {
      */
     protected static Vec3d rotate(Vec3d vec, EnumFacing side) {
         switch(side) {
-            case DOWN:  return new Vec3d( vec.xCoord, -vec.yCoord, -vec.zCoord);
-            case UP:    return new Vec3d( vec.xCoord,  vec.yCoord,  vec.zCoord);
-            case NORTH: return new Vec3d( vec.xCoord,  vec.zCoord, -vec.yCoord);
-            case SOUTH: return new Vec3d( vec.xCoord, -vec.zCoord,  vec.yCoord);
-            case WEST:  return new Vec3d(-vec.yCoord,  vec.xCoord,  vec.zCoord);
-            case EAST:  return new Vec3d( vec.yCoord, -vec.xCoord,  vec.zCoord);
+            case DOWN:  return new Vec3d( vec.x, -vec.y, -vec.z);
+            case UP:    return new Vec3d( vec.x,  vec.y,  vec.z);
+            case NORTH: return new Vec3d( vec.x,  vec.z, -vec.y);
+            case SOUTH: return new Vec3d( vec.x, -vec.z,  vec.y);
+            case WEST:  return new Vec3d(-vec.y,  vec.x,  vec.z);
+            case EAST:  return new Vec3d( vec.y, -vec.x,  vec.z);
         }
         return vec;
     }
@@ -60,12 +60,12 @@ public abstract class DynamicBaseModel implements IPerspectiveAwareModel {
      */
     protected static Vec3d revRotate(Vec3d vec, EnumFacing side) {
         switch(side) {
-            case DOWN:  return new Vec3d( vec.xCoord, -vec.yCoord, -vec.zCoord);
-            case UP:    return new Vec3d( vec.xCoord,  vec.yCoord,  vec.zCoord);
-            case NORTH: return new Vec3d( vec.xCoord, -vec.zCoord,  vec.yCoord);
-            case SOUTH: return new Vec3d( vec.xCoord,  vec.zCoord, -vec.yCoord);
-            case WEST:  return new Vec3d( vec.yCoord, -vec.xCoord,  vec.zCoord);
-            case EAST:  return new Vec3d(-vec.yCoord,  vec.xCoord,  vec.zCoord);
+            case DOWN:  return new Vec3d( vec.x, -vec.y, -vec.z);
+            case UP:    return new Vec3d( vec.x,  vec.y,  vec.z);
+            case NORTH: return new Vec3d( vec.x, -vec.z,  vec.y);
+            case SOUTH: return new Vec3d( vec.x,  vec.z, -vec.y);
+            case WEST:  return new Vec3d( vec.y, -vec.x,  vec.z);
+            case EAST:  return new Vec3d(-vec.y,  vec.x,  vec.z);
         }
         return vec;
     }
@@ -222,10 +222,10 @@ public abstract class DynamicBaseModel implements IPerspectiveAwareModel {
         Vec3d v3 = rotate(new Vec3d(x2 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
         Vec3d v4 = rotate(new Vec3d(x2 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
         int[] data =  Ints.concat(
-                vertexToInts((float) v1.xCoord, (float) v1.yCoord, (float) v1.zCoord, shadeColor, texture, uvs[(0 + rotation) % 4][0] * 16, uvs[(0 + rotation) % 4][1] * 16),
-                vertexToInts((float) v2.xCoord, (float) v2.yCoord, (float) v2.zCoord, shadeColor, texture, uvs[(1 + rotation) % 4][0] * 16, uvs[(1 + rotation) % 4][1] * 16),
-                vertexToInts((float) v3.xCoord, (float) v3.yCoord, (float) v3.zCoord, shadeColor, texture, uvs[(2 + rotation) % 4][0] * 16, uvs[(2 + rotation) % 4][1] * 16),
-                vertexToInts((float) v4.xCoord, (float) v4.yCoord, (float) v4.zCoord, shadeColor, texture, uvs[(3 + rotation) % 4][0] * 16, uvs[(3 + rotation) % 4][1] * 16)
+                vertexToInts((float) v1.x, (float) v1.y, (float) v1.z, shadeColor, texture, uvs[(0 + rotation) % 4][0] * 16, uvs[(0 + rotation) % 4][1] * 16),
+                vertexToInts((float) v2.x, (float) v2.y, (float) v2.z, shadeColor, texture, uvs[(1 + rotation) % 4][0] * 16, uvs[(1 + rotation) % 4][1] * 16),
+                vertexToInts((float) v3.x, (float) v3.y, (float) v3.z, shadeColor, texture, uvs[(2 + rotation) % 4][0] * 16, uvs[(2 + rotation) % 4][1] * 16),
+                vertexToInts((float) v4.x, (float) v4.y, (float) v4.z, shadeColor, texture, uvs[(3 + rotation) % 4][0] * 16, uvs[(3 + rotation) % 4][1] * 16)
         );
         ForgeHooksClient.fillNormal(data, side); // This fixes lighting issues when item is rendered in hand/inventory
         quads.add(new BakedQuad(data, -1, side, texture, false, Attributes.DEFAULT_BAKED_FORMAT));

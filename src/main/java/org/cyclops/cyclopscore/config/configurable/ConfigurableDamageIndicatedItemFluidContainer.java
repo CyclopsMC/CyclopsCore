@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -130,7 +131,7 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
             return false;
         } else {
             IBlockState blockState = world.getBlockState(blockPos);
-            Material material = blockState.getBlock().getMaterial(blockState);
+            Material material = blockState.getMaterial();
 
             if (!world.isAirBlock(blockPos) && material.isSolid()) {
                 return false;
@@ -193,9 +194,9 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
     @SuppressWarnings("rawtypes")
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer entityPlayer, List list, boolean par4) {
+    public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
     	L10NHelpers.addOptionalInfo(list, getUnlocalizedName());
-        super.addInformation(itemStack, entityPlayer, list, par4);
+        super.addInformation(itemStack, world, list, flag);
     }
 
     protected FluidStack drainFromOthers(int amount, ItemStack itemStack, Fluid fluid, EntityPlayer player, boolean doDrain) {

@@ -34,16 +34,16 @@ public abstract class GuiButtonExtended extends GuiButton {
 		minecraft.renderEngine.bindTexture(BUTTON_TEXTURES);
 		GlStateManager.color(1, 1, 1, 1);
 
-		drawTexturedModalRect(xPosition, yPosition, 0, 46 + hoverState * 20, width / 2, height / 2);//top left
-		drawTexturedModalRect(xPosition + width / 2, yPosition, 200 - width / 2, 46 + hoverState * 20, width / 2, height / 2);//top right
-		drawTexturedModalRect(xPosition, yPosition + height / 2, 0, 46 + hoverState * 20 + 20 - height / 2, width / 2, height / 2);//bottom left
-		drawTexturedModalRect(xPosition + width / 2, yPosition + height / 2, 200 - width / 2, 46 + hoverState * 20 + 20 - height / 2, width / 2, height / 2);//bottom right
+		drawTexturedModalRect(x, y, 0, 46 + hoverState * 20, width / 2, height / 2);//top left
+		drawTexturedModalRect(x + width / 2, y, 200 - width / 2, 46 + hoverState * 20, width / 2, height / 2);//top right
+		drawTexturedModalRect(x, y + height / 2, 0, 46 + hoverState * 20 + 20 - height / 2, width / 2, height / 2);//bottom left
+		drawTexturedModalRect(x + width / 2, y + height / 2, 200 - width / 2, 46 + hoverState * 20 + 20 - height / 2, width / 2, height / 2);//bottom right
 	}
 	
 	@Override
-	public void drawButton(Minecraft minecraft, int i, int j) {
+	public void drawButton(Minecraft minecraft, int i, int j, float partialTicks) {
         if(visible) {
-	        boolean mouseOver = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
+	        boolean mouseOver = i >= x && j >= y && i < x + width && j < y + height;
 	        int hoverState = getHoverState(mouseOver);
             if(background) {
                 drawBackground(minecraft, hoverState);

@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.recipe.event;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 /**
@@ -20,8 +21,8 @@ public class ObservableShapelessRecipe extends ShapelessOreRecipe {
 	 * @param recipe The recipe.
 	 * @param observer The observer for the output.
 	 */
-	public ObservableShapelessRecipe(ItemStack result, Object[] recipe, IRecipeOutputObserver observer) {
-		super(result, recipe);
+	public ObservableShapelessRecipe(ResourceLocation group, ItemStack result, Object[] recipe, IRecipeOutputObserver observer) {
+		super(group, result, recipe);
 		this.observer = observer;
 	}
 	

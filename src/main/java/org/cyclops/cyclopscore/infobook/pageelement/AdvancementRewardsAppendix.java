@@ -1,12 +1,13 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
+import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.stats.Achievement;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.client.gui.image.Images;
+import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
@@ -19,10 +20,11 @@ import java.awt.*;
 import java.util.Map;
 
 /**
- * An achievement rewards appendix.
+ * An advancement rewards appendix.
+ * TODO: completely rewrite this based on advancements
  * @author rubensworks
  */
-public class AchievementRewardsAppendix extends SectionAppendix {
+public class AdvancementRewardsAppendix extends SectionAppendix {
 
     public static final int SLOT_SIZE = 16;
     private static final int SLOT_PADDING = 2;
@@ -34,7 +36,7 @@ public class AchievementRewardsAppendix extends SectionAppendix {
     private final AdvancedButton.Enum[] achievements;
     private final Point[] rewardPositions;
 
-    private final AchievementRewards achievementRewards;
+    private final AdvancementRewards advancementRewards;
     private final int height;
     private final boolean enableRewards;
 
@@ -45,20 +47,20 @@ public class AchievementRewardsAppendix extends SectionAppendix {
      */
     protected Map<AdvancedButton.Enum, AdvancedButton> renderButtonHolders = Maps.newHashMap();
 
-    public AchievementRewardsAppendix(IInfoBook infoBook, AchievementRewards achievementRewards) {
+    public AdvancementRewardsAppendix(IInfoBook infoBook, AdvancementRewards advancementRewards) {
         super(infoBook);
-        this.achievementRewards = achievementRewards;
-        rewards = new AdvancedButton.Enum[achievementRewards.getRewards().size()];
-        achievements = new AdvancedButton.Enum[achievementRewards.getAchievements().size()];
-        rewardPositions = new Point[achievementRewards.getRewards().size()];
+        this.advancementRewards = advancementRewards;
+        rewards = new AdvancedButton.Enum[advancementRewards.getRewards().size()];
+        achievements = new AdvancedButton.Enum[advancementRewards.getAchievements().size()];
+        rewardPositions = new Point[advancementRewards.getRewards().size()];
         int x = 0;
         int y = 0;
         int row_max_y = 0;
         int max_width = 0;
         int max_height = 0;
 
-        for (int i = 0; i < achievementRewards.getRewards().size(); i++) {
-            IReward reward = achievementRewards.getRewards().get(i);
+        for (int i = 0; i < advancementRewards.getRewards().size(); i++) {
+            IReward reward = advancementRewards.getRewards().get(i);
             rewards[i] = AdvancedButton.Enum.create();
             row_max_y = Math.max(row_max_y, reward.getHeight() + SLOT_PADDING * 2);
             if (x + reward.getWidth() > MAX_WIDTH) {
@@ -71,7 +73,7 @@ public class AchievementRewardsAppendix extends SectionAppendix {
             rewardPositions[i] = new Point(x, y);
             x += reward.getWidth();
         }
-        for (int i = 0; i < achievementRewards.getAchievements().size(); i++) {
+        for (int i = 0; i < advancementRewards.getAchievements().size(); i++) {
             achievements[i] = AdvancedButton.Enum.create();
         }
 
@@ -92,7 +94,7 @@ public class AchievementRewardsAppendix extends SectionAppendix {
 
     @Override
     protected int getHeight() {
-        return height + ((int) Math.ceil((achievementRewards.getAchievements().size() * (SLOT_SIZE + SLOT_PADDING * 2)) / MAX_WIDTH + 1) * (SLOT_SIZE + SLOT_PADDING * 2)) + 23;
+        return height + ((int) Math.ceil((advancementRewards.getAchievements().size() * (SLOT_SIZE + SLOT_PADDING * 2)) / MAX_WIDTH + 1) * (SLOT_SIZE + SLOT_PADDING * 2)) + 23;
     }
 
     @Override
@@ -102,19 +104,19 @@ public class AchievementRewardsAppendix extends SectionAppendix {
         int offsetY = 0;
         gui.drawOuterBorder(x - 1, y - 1, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
         gui.drawTextBanner(x + width / 2, y - 2);
-        gui.drawScaledCenteredString(L10NHelpers.localize("gui.achievements"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
+        gui.drawScaledCenteredString(L10NHelpers.localize("gui.advancements"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
 
-        // Draw achievements
+        // Draw advancements
         offsetY += 10;
         boolean allAchievementsValid = true;
-        for (int i = 0; i < achievementRewards.getAchievements().size(); i++) {
-            Achievement achievement = achievementRewards.getAchievements().get(i);
+        for (int i = 0; i < advancementRewards.getAchievements().size(); i++) {
+            Advancement advancement = advancementRewards.getAchievements().get(i);
             if (offsetX + SLOT_SIZE > MAX_WIDTH) {
                 offsetY += SLOT_SIZE + SLOT_PADDING * 2;
                 offsetX = 0;
             }
-            RecipeAppendix.renderItemForButton(gui, x + offsetX, y + offsetY, achievement.theItemStack, mx, my, true, null);
-            if (Minecraft.getMinecraft().player.getStatFileWriter().hasAchievementUnlocked(achievement)) {
+            RecipeAppendix.renderItemForButton(gui, x + offsetX, y + offsetY, advancement.getDisplay().getIcon(), mx, my, true, null);
+            if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getMinecraft().player, advancement)) {
                 Images.OK.draw(gui, x + offsetX + 1, y + offsetY + 2);
             } else {
                 allAchievementsValid = false;
@@ -123,7 +125,7 @@ public class AchievementRewardsAppendix extends SectionAppendix {
             offsetX += SLOT_SIZE + SLOT_PADDING * 2;
         }
 
-        boolean taken = achievementRewards.isObtained(Minecraft.getMinecraft().player);
+        boolean taken = advancementRewards.isObtained(Minecraft.getMinecraft().player);
 
         // Draw rewards button with fancy hover effect
         offsetY += SLOT_SIZE + SLOT_PADDING * 2 + 6;
@@ -143,8 +145,8 @@ public class AchievementRewardsAppendix extends SectionAppendix {
         offsetY += 10;
 
         // Draw rewards
-        for (int i = 0; i < achievementRewards.getRewards().size(); i++) {
-            achievementRewards.getRewards().get(i).drawElementInner(gui, x + rewardPositions[i].x, y + rewardPositions[i].y + offsetY, width, height, page, mx, my, renderButtonHolders.get(rewards[i]));
+        for (int i = 0; i < advancementRewards.getRewards().size(); i++) {
+            advancementRewards.getRewards().get(i).drawElementInner(gui, x + rewardPositions[i].x, y + rewardPositions[i].y + offsetY, width, height, page, mx, my, renderButtonHolders.get(rewards[i]));
             if (taken) {
                 Images.OK.draw(gui, x + rewardPositions[i].x + 1, y + rewardPositions[i].y + offsetY + 2);
             } else if (!allAchievementsValid) {
@@ -173,12 +175,12 @@ public class AchievementRewardsAppendix extends SectionAppendix {
 
     @Override
     public void bakeElement(InfoSection infoSection) {
-        renderButtonHolders.put(COLLECT, new AchievementCollectButton(achievementRewards, getInfoBook()));
-        for (int i = 0; i < achievementRewards.getRewards().size(); i++) {
-            renderButtonHolders.put(rewards[i], achievementRewards.getRewards().get(i).createButton(getInfoBook()));
+        renderButtonHolders.put(COLLECT, new AchievementCollectButton(advancementRewards, getInfoBook()));
+        for (int i = 0; i < advancementRewards.getRewards().size(); i++) {
+            renderButtonHolders.put(rewards[i], advancementRewards.getRewards().get(i).createButton(getInfoBook()));
         }
-        for (int i = 0; i < achievementRewards.getAchievements().size(); i++) {
-            renderButtonHolders.put(achievements[i], new AchievementButton(achievementRewards.getAchievements().get(i)));
+        for (int i = 0; i < advancementRewards.getAchievements().size(); i++) {
+            renderButtonHolders.put(achievements[i], new AdvancementButton(advancementRewards.getAchievements().get(i)));
         }
         infoSection.addAdvancedButtons(getPage(), renderButtonHolders.values());
     }

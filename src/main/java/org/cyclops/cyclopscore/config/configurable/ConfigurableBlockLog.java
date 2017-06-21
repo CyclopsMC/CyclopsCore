@@ -8,7 +8,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
@@ -20,6 +19,7 @@ import org.cyclops.cyclopscore.block.property.BlockProperty;
 import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
 import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.helper.BlockHelpers;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -77,6 +77,7 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
         return eConfig;
     }
 
+    @SuppressWarnings("deprecation")
     @Nullable
     @Override
     public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
@@ -97,8 +98,9 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public void getSubBlocks(Item item, CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
-        list.add(new ItemStack(item, 1, 0));
+    public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+        if (!BlockHelpers.isValidCreativeTab(this, creativeTabs)) return;
+        list.add(new ItemStack(this, 1, 0));
     }
 
 }

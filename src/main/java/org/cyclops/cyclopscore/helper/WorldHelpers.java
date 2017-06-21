@@ -40,8 +40,8 @@ public class WorldHelpers {
             int rz = c.getZ();
             byte[] biomeArray = chunk.getBiomeArray();
             biomeArray[rz << 4 | rx] = (byte)(Biome.getIdForBiome(biome) & 255);
-            chunk.setChunkModified();
-            world.getChunkProvider().provideChunk(chunk.xPosition, chunk.zPosition);
+            chunk.markDirty();
+            world.getChunkProvider().provideChunk(chunk.x, chunk.z);
             world.markBlockRangeForRenderUpdate(pos, pos);
         } else {
             CyclopsCore.clog(Level.WARN, "Tried changing biome at non-existing chunk for position " + pos);

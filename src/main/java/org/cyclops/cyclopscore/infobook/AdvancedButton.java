@@ -33,8 +33,8 @@ public class AdvancedButton extends GuiButton {
      */
     @SideOnly(Side.CLIENT)
     public void update(int x, int y, String displayName, InfoSection target, GuiInfoBook gui) {
-        this.xPosition = x;
-        this.yPosition = y;
+        this.x = x;
+        this.y = y;
         this.displayString = displayName;
         this.target = target;
         this.gui = gui;
@@ -45,10 +45,10 @@ public class AdvancedButton extends GuiButton {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
+    public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         if(isVisible() && isHover(mouseX, mouseY)) {
-            minecraft.fontRendererObj.drawString(("§n") +
-                            displayString + "§r", xPosition, yPosition,
+            minecraft.fontRenderer.drawString(("§n") +
+                            displayString + "§r", x, y,
                     Helpers.RGBToInt(100, 100, 150));
         }
     }
@@ -64,8 +64,8 @@ public class AdvancedButton extends GuiButton {
     }
 
     protected boolean isHover(int mouseX, int mouseY) {
-        return mouseX >= this.xPosition && mouseY >= this.yPosition &&
-                mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+        return mouseX >= this.x && mouseY >= this.y &&
+                mouseX < this.x + this.width && mouseY < this.y + this.height;
     }
 
     public boolean isVisible() {

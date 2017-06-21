@@ -23,6 +23,7 @@ import org.cyclops.cyclopscore.block.property.BlockProperty;
 import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
 import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.helper.BlockHelpers;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -113,8 +114,9 @@ public abstract class ConfigurableBlockLeaves extends BlockLeaves implements ICo
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public void getSubBlocks(Item item, CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
-        list.add(new ItemStack(item, 1, 0));
+    public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
+        if (!BlockHelpers.isValidCreativeTab(this, creativeTabs)) return;
+        list.add(new ItemStack(this, 1, 0));
     }
 
     @Override

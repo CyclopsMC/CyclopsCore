@@ -361,7 +361,7 @@ public class RenderHelpers {
      * @return If the point is inside the button's region.
      */
     public static boolean isPointInButton(GuiButton button, int pointX, int pointY) {
-        return isPointInRegion(button.xPosition, button.yPosition, button.width, button.height, pointX, pointY);
+        return isPointInRegion(button.x, button.y, button.width, button.height, pointX, pointY);
     }
 
     /**

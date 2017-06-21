@@ -30,7 +30,7 @@ public class CommonProxy extends CommonProxyComponent {
         packetHandler.register(ButtonClickPacket.class);
         packetHandler.register(ValueNotifyPacket.class);
         packetHandler.register(ReloadResourcesPacket.class);
-        packetHandler.register(AchievementRewardsObtainPacket.class);
+        packetHandler.register(AdvancementRewardsObtainPacket.class);
         packetHandler.register(RequestPlayerNbtPacket.class);
         packetHandler.register(SendPlayerNbtPacket.class);
 

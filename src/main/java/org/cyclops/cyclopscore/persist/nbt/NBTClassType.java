@@ -291,9 +291,9 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, Vec3d object, NBTTagCompound tag) {
                 NBTTagCompound vec = new NBTTagCompound();
-                vec.setDouble("x", object.xCoord);
-                vec.setDouble("y", object.yCoord);
-                vec.setDouble("z", object.zCoord);
+                vec.setDouble("x", object.x);
+                vec.setDouble("y", object.y);
+                vec.setDouble("z", object.z);
                 tag.setTag(name, vec);
             }
 

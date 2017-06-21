@@ -4,14 +4,13 @@ import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * An NBT-sensitive variant of {@link ShapelessOreRecipe}
@@ -21,18 +20,18 @@ public class ShapelessOreRecipeNbtSensitive extends ShapelessOreRecipe {
 
     private final boolean nbtSensitive;
 
-    public ShapelessOreRecipeNbtSensitive(Block result, boolean nbtSensitive, Object... recipe) {
-        super(result, recipe);
+    public ShapelessOreRecipeNbtSensitive(ResourceLocation group, Block result, boolean nbtSensitive, Object... recipe) {
+        super(group, result, recipe);
         this.nbtSensitive = nbtSensitive;
     }
 
-    public ShapelessOreRecipeNbtSensitive(Item result, boolean nbtSensitive, Object... recipe) {
-        super(result, recipe);
+    public ShapelessOreRecipeNbtSensitive(ResourceLocation group, Item result, boolean nbtSensitive, Object... recipe) {
+        super(group, result, recipe);
         this.nbtSensitive = nbtSensitive;
     }
 
-    public ShapelessOreRecipeNbtSensitive(ItemStack result, boolean nbtSensitive, Object... recipe) {
-        super(result, recipe);
+    public ShapelessOreRecipeNbtSensitive(ResourceLocation group, ItemStack result, boolean nbtSensitive, Object... recipe) {
+        super(group, result, recipe);
         this.nbtSensitive = nbtSensitive;
     }
 
@@ -40,7 +39,7 @@ public class ShapelessOreRecipeNbtSensitive extends ShapelessOreRecipe {
     @SuppressWarnings("unchecked")
     @Override
     public boolean matches(InventoryCrafting var1, World world) {
-        NonNullList<Object> required = NonNullList.create();
+        NonNullList<Ingredient> required = NonNullList.create();
         required.addAll(input);
 
         for (int x = 0; x < var1.getSizeInventory(); x++)
@@ -50,31 +49,15 @@ public class ShapelessOreRecipeNbtSensitive extends ShapelessOreRecipe {
             if (!slot.isEmpty())
             {
                 boolean inRecipe = false;
-                Iterator<Object> req = required.iterator();
+                Iterator<Ingredient> req = required.iterator();
 
                 while (req.hasNext())
                 {
-                    boolean match = false;
-
-                    Object next = req.next();
-
-                    if (next instanceof ItemStack)
-                    {
-                        match = ShapelessOreRecipeNbtSensitive.matches(nbtSensitive, (ItemStack) next, slot);
-                    }
-                    else if (next instanceof List)
-                    {
-                        Iterator<ItemStack> itr = ((List<ItemStack>)next).iterator();
-                        while (itr.hasNext() && !match)
-                        {
-                            match = ShapelessOreRecipeNbtSensitive.matches(nbtSensitive, itr.next(), slot);
-                        }
-                    }
-
-                    if (match)
+                    Ingredient ingredient = req.next();
+                    if (ingredient.apply(slot) && matches(nbtSensitive, ingredient, slot))
                     {
                         inRecipe = true;
-                        required.remove(next);
+                        req.remove();
                         break;
                     }
                 }
@@ -89,9 +72,13 @@ public class ShapelessOreRecipeNbtSensitive extends ShapelessOreRecipe {
         return required.isEmpty();
     }
 
-    public static boolean matches(boolean nbtSensitive, ItemStack target, ItemStack input) {
-        return OreDictionary.itemMatches(target, input, false)
-                && (!nbtSensitive || (target.hasTagCompound() == input.hasTagCompound()
-                    && (!target.hasTagCompound() || target.getTagCompound().equals(input.getTagCompound()))));
+    public static boolean matches(boolean nbtSensitive, Ingredient target, ItemStack input) {
+        for (ItemStack itemStack : target.getMatchingStacks()) {
+            if ((!nbtSensitive || (input.hasTagCompound() == itemStack.hasTagCompound()
+                    && (!input.hasTagCompound() || input.getTagCompound().equals(itemStack.getTagCompound()))))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

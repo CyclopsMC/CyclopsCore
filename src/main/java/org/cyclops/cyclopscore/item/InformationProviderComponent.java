@@ -1,8 +1,9 @@
 package org.cyclops.cyclopscore.item;
 
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -28,19 +29,19 @@ public class InformationProviderComponent {
     
     /**
      * Add information to the given list for the given item.
-     * @param itemStack The {@link net.minecraft.item.ItemStack} to add info for.
-     * @param entityPlayer The player that will see the info.
+     * @param itemStack The {@link ItemStack} to add info for.
+     * @param world The player that will see the info.
      * @param list The info list where the info will be added.
-     * @param par4 No idea...
+     * @param flag No idea...
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, EntityPlayer entityPlayer, List list, boolean par4) {
+    public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
         if(hasInfo) {
             if(((IInformationProvider) block).getInfo(itemStack) != null) {
                 list.add(IInformationProvider.BLOCK_PREFIX + ((IInformationProvider) block).getInfo(itemStack));
             }
-            ((IInformationProvider) block).provideInformation(itemStack, entityPlayer, list, par4);
+            ((IInformationProvider) block).provideInformation(itemStack, world, list, flag);
         }
     }
 

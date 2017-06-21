@@ -44,7 +44,7 @@ public class GuiButtonArrow extends GuiButtonExtended {
 
     @Override
     protected void drawBackground(Minecraft minecraft, int hoverState) {
-        directionImages[hoverState].draw(this, xPosition, yPosition);
+        directionImages[hoverState].draw(this, x, y);
     }
 
     @Override

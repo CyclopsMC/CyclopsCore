@@ -91,7 +91,7 @@ public class TestPacketCodec {
         packet1.value = new Vec3d(1, 2, 3);
         Vec3PacketCodec packet2 = new Vec3PacketCodec();
         encodeDecode(packet1, packet2);
-        assertThat("Input equals output", packet1.value.xCoord, equalTo(packet2.value.xCoord));
+        assertThat("Input equals output", packet1.value.x, equalTo(packet2.value.x));
     }
 
     @Test

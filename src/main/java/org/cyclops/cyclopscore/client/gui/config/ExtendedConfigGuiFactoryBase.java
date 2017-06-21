@@ -24,6 +24,7 @@ public abstract class ExtendedConfigGuiFactoryBase implements IModGuiFactory {
         return true;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public abstract Class<? extends GuiConfigOverviewBase> mainConfigGuiClass();
 
@@ -42,6 +43,7 @@ public abstract class ExtendedConfigGuiFactoryBase implements IModGuiFactory {
         return null;
     }
  
+    @SuppressWarnings("deprecation")
     @Override
     public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
         return null;

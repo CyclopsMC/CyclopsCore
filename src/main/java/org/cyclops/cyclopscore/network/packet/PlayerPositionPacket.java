@@ -82,7 +82,7 @@ public abstract class PlayerPositionPacket extends PacketCodec {
     @Override
     public void actionServer(World world, EntityPlayerMP player) {
         getModInstance().getPacketHandler().sendToAllAround(create(player, range),
-                LocationHelpers.createTargetPointFromEntityPosition(player, range));
+                LocationHelpers.createTargetPointFromEntity(player, range));
     }
 
     protected abstract PlayerPositionPacket create(EntityPlayer player, int range);

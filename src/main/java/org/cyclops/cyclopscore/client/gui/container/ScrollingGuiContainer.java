@@ -56,7 +56,7 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
             int searchY = getSearchY();
             if(this.searchField == null) {
                 resetFilter = true;
-                this.searchField = new GuiTextField(0, this.fontRendererObj, this.guiLeft + searchX, this.guiTop + searchY, searchWidth, this.fontRendererObj.FONT_HEIGHT);
+                this.searchField = new GuiTextField(0, this.fontRenderer, this.guiLeft + searchX, this.guiTop + searchY, searchWidth, this.fontRenderer.FONT_HEIGHT);
                 this.searchField.setMaxStringLength(64);
                 this.searchField.setMaxStringLength(15);
                 this.searchField.setEnableBackgroundDrawing(false);
@@ -65,11 +65,11 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
                 this.searchField.setCanLoseFocus(true);
                 this.searchField.setText("");
                 this.searchField.width = searchWidth;
-                this.searchField.xPosition = this.guiLeft + (searchX + searchWidth) - this.searchField.width;
+                this.searchField.x = this.guiLeft + (searchX + searchWidth) - this.searchField.width;
             } else {
                 this.searchField.width = searchWidth;
-                this.searchField.xPosition = this.guiLeft + (searchX + searchWidth) - this.searchField.width;
-                this.searchField.yPosition = this.guiTop + searchY;
+                this.searchField.x = this.guiLeft + (searchX + searchWidth) - this.searchField.width;
+                this.searchField.y = this.guiTop + searchY;
             }
         }
 

@@ -1,12 +1,12 @@
 package org.cyclops.cyclopscore.item;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -16,6 +16,7 @@ import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacity;
+import org.cyclops.cyclopscore.helper.ItemStackHelpers;
 
 import java.util.List;
 
@@ -55,8 +56,9 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     @SuppressWarnings({ "rawtypes"})
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> itemList) {
-        component.getSubItems(item, tab, itemList, fluid, 0);
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList) {
+        ItemStackHelpers.isValidCreativeTab(this, tab);
+        component.getSubItems(tab, itemList, fluid, 0);
     }
 
     @Override
@@ -66,16 +68,16 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     
     @SuppressWarnings("rawtypes")
     @Override
-    public void provideInformation(ItemStack itemStack, EntityPlayer entityPlayer, List list, boolean par4) {
+    public void provideInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
         
     }
     
     @SuppressWarnings("rawtypes")
     @SideOnly(Side.CLIENT)
     @Override
-    public void addInformation(ItemStack itemStack, EntityPlayer entityPlayer, List list, boolean par4) {
-        component.addInformation(itemStack, entityPlayer, list, par4);
-        super.addInformation(itemStack, entityPlayer, list, par4);
+    public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
+        component.addInformation(itemStack, world, list, flag);
+        super.addInformation(itemStack, world, list, flag);
     }
     
     @Override

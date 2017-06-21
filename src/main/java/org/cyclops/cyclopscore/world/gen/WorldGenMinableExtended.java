@@ -58,11 +58,11 @@ public class WorldGenMinableExtended extends WorldGenMinable implements IRetroGe
      */
     public void loopGenerate(World world, Random rand, int chunkX, int chunkZ) {
         for(int k = 0; k < veinsPerChunk; k++){
-            int firstBlockXCoord = chunkX + rand.nextInt(16);
-            int firstBlockYCoord = startY + rand.nextInt(endY - startY);
-            int firstBlockZCoord = chunkZ + rand.nextInt(16);
+            int firstBlockx = chunkX + rand.nextInt(16);
+            int firstBlocky = startY + rand.nextInt(endY - startY);
+            int firstBlockz = chunkZ + rand.nextInt(16);
 
-            this.generate(world, rand, new BlockPos(firstBlockXCoord, firstBlockYCoord, firstBlockZCoord));
+            this.generate(world, rand, new BlockPos(firstBlockx, firstBlocky, firstBlockz));
         }
     }
     

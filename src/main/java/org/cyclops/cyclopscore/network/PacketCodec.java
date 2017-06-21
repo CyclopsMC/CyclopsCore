@@ -108,9 +108,9 @@ public abstract class PacketCodec extends PacketBase {
 			@Override
 			public void encode(Object object, ByteArrayDataOutput output) {
 				Vec3d v = (Vec3d)object;
-				output.writeDouble(v.xCoord);
-				output.writeDouble(v.yCoord);
-				output.writeDouble(v.zCoord);
+				output.writeDouble(v.x);
+				output.writeDouble(v.y);
+				output.writeDouble(v.z);
 			}
 
 			@Override

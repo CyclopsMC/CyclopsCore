@@ -29,6 +29,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 
@@ -72,7 +73,7 @@ public class Versions {
                     for (Triple<ModBase, IModVersion, String> triple : versionMods) {
                         try {
                             URL url = new URL(triple.getRight());
-                            String data = IOUtils.toString(url);
+                            String data = IOUtils.toString(url, Charset.forName("UTF-8"));
                             String lines[] = data.split("\\r?\\n");
                             if(lines.length < 3) {
                                 triple.getLeft().log(Level.WARN, "Retrieved invalid version data.");

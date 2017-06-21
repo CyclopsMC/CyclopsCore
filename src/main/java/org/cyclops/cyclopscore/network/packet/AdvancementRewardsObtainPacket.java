@@ -7,26 +7,26 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.infobook.pageelement.AchievementRewards;
+import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
 import org.cyclops.cyclopscore.network.CodecField;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
 /**
- * Packet for obtaining achievement rewards.
+ * Packet for obtaining advancement rewards.
  * @author rubensworks
  *
  */
-public class AchievementRewardsObtainPacket extends PacketCodec {
+public class AdvancementRewardsObtainPacket extends PacketCodec {
 
     @CodecField
-    private String achievementRewardsId;
+    private String advancementRewardsId;
 
-    public AchievementRewardsObtainPacket() {
+    public AdvancementRewardsObtainPacket() {
 
     }
 
-    public AchievementRewardsObtainPacket(String achievementRewardsId) {
-		this.achievementRewardsId = achievementRewardsId;
+    public AdvancementRewardsObtainPacket(String advancementRewardsId) {
+		this.advancementRewardsId = advancementRewardsId;
     }
 
 	@Override
@@ -42,11 +42,11 @@ public class AchievementRewardsObtainPacket extends PacketCodec {
 
 	@Override
 	public void actionServer(World world, EntityPlayerMP player) {
-		AchievementRewards achievementRewards = AchievementRewards.getAchievementRewards(achievementRewardsId);
-		if (achievementRewards != null) {
-			achievementRewards.obtain(player);
+		AdvancementRewards advancementRewards = AdvancementRewards.getAdvancementRewards(advancementRewardsId);
+		if (advancementRewards != null) {
+			advancementRewards.obtain(player);
 		} else {
-			CyclopsCore.clog(Level.WARN, String.format("Received an invalid achievement reward id '%s' from %s.", achievementRewardsId, player.getDisplayNameString()));
+			CyclopsCore.clog(Level.WARN, String.format("Received an invalid advancement reward id '%s' from %s.", advancementRewardsId, player.getDisplayNameString()));
 		}
 	}
 	

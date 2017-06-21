@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -12,6 +13,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
@@ -137,7 +139,7 @@ public final class ItemStackHelpers {
     public static List<ItemStack> getVariants(ItemStack itemStack) {
         NonNullList<ItemStack> output = NonNullList.create();
         if(itemStack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
-            itemStack.getItem().getSubItems(itemStack.getItem(), null, output);
+            itemStack.getItem().getSubItems(CreativeTabs.SEARCH, output);
         } else {
             output.add(itemStack);
         }
@@ -186,6 +188,22 @@ public final class ItemStackHelpers {
      */
     public static boolean areItemStacksIdentical(ItemStack a, ItemStack b) {
         return ItemStack.areItemStacksEqual(a, b) && ((a.isEmpty() && b.isEmpty()) || (!a.isEmpty() && a.getCount() == b.getCount()));
+    }
+
+    /**
+     * If the given item can be displayed in the given creative tab.
+     * @param item The item.
+     * @param creativeTab The creative tab.
+     * @return If it can be displayed.
+     */
+    public static boolean isValidCreativeTab(Item item, @Nullable CreativeTabs creativeTab) {
+        for (CreativeTabs itemTab : item.getCreativeTabs()) {
+            if (itemTab == creativeTab) {
+                return true;
+            }
+        }
+        return creativeTab == null
+                || creativeTab == CreativeTabs.SEARCH;
     }
 
 }

@@ -19,7 +19,7 @@ public class GuiButtonText extends GuiButtonExtended {
      */
     public GuiButtonText(int id, int x, int y,
                          String string) {
-        this(id, x, y, Minecraft.getMinecraft().fontRendererObj.getStringWidth(string) + 6, 16, string, true);
+        this(id, x, y, Minecraft.getMinecraft().fontRenderer.getStringWidth(string) + 6, 16, string, true);
     }
 
 	/**
@@ -39,7 +39,7 @@ public class GuiButtonText extends GuiButtonExtended {
 	}
 
 	protected void drawButtonInner(Minecraft minecraft, int i, int j, boolean mouseOver) {
-        FontRenderer fontrenderer = minecraft.fontRendererObj;
+        FontRenderer fontrenderer = minecraft.fontRenderer;
 
         int color = 0xe0e0e0;
         if(!enabled) {
@@ -48,7 +48,7 @@ public class GuiButtonText extends GuiButtonExtended {
             color = 0xffffa0;
         }
 
-        drawCenteredString(fontrenderer, displayString, xPosition + width / 2, yPosition + (height - 8) / 2, color);
+        drawCenteredString(fontrenderer, displayString, x + width / 2, y + (height - 8) / 2, color);
     }
 
 }
