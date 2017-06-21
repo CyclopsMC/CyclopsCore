@@ -15,7 +15,6 @@ repositories {
 }
 
 dependencies {
-    //deobfCompile "mcp.mobius.waila:Waila:${config.waila_version}" // http://mobiusstrip.eu/maven/mcp/mobius/waila/Waila/
     deobfCompile "MineTweaker3:MineTweaker3-API:${config.minetweakerapi_version}"; // http://blamejared.com/maven/MineTweaker3/MineTweaker3-API/maven-metadata.xml
     deobfCompile "mezz.jei:jei_${config.jei_version}:api" // https://dvs1.progwml6.com/jenkins/
 

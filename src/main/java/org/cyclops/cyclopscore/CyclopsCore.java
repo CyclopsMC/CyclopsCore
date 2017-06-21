@@ -66,7 +66,6 @@ public class CyclopsCore extends ModBase implements IModVersion {
     @Override
     protected void loadModCompats(ModCompatLoader modCompatLoader) {
         modCompatLoader.addModCompat(new VersionCheckerModCompat());
-        //modCompatLoader.addModCompat(new WailaModCompat());
     }
 
     @Override
