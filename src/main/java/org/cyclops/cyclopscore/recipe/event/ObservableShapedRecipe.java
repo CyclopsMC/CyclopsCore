@@ -18,6 +18,7 @@ public class ObservableShapedRecipe extends ShapedRecipes {
 
 	/**
 	 * Make a new instance.
+	 * @param group The recipe name.
 	 * @param recipeWidth The recipe width.
 	 * @param recipeHeight The recipe height.
 	 * @param recipeItems The recipe items.

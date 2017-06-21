@@ -17,6 +17,7 @@ public class ObservableShapelessRecipe extends ShapelessOreRecipe {
 	
 	/**
 	 * Make a new instance.
+	 * @param group The recipe name.
 	 * @param result The result.
 	 * @param recipe The recipe.
 	 * @param observer The observer for the output.

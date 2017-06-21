@@ -305,7 +305,7 @@ public class RenderHelpers {
     }
 
     /**
-     * Get the fluid color to use in {@link net.minecraft.client.renderer.VertexBuffer} rendering.
+     * Get the fluid color to use in {@link net.minecraft.client.renderer.BufferBuilder} rendering.
      * @param fluidStack The fluid stack.
      * @return The RGB colors.
      */
