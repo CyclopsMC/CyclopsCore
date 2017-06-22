@@ -53,7 +53,7 @@ public abstract class PacketBase implements IMessage {
 
 	@Override
 	public void fromBytes(ByteBuf source) {
-		ByteArrayDataInput input = ByteStreams.newDataInput(source.array());
+		ByteArrayDataInput input = ByteStreams.newDataInput(source.hasArray() ? source.array() : new byte[0]);
 		input.skipBytes(1); // skip the packet identifier byte
 		decode(input);
 	}
