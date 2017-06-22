@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.recipe.xml;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.recipe.ShapedOreRecipeNbtSensitive;
@@ -71,9 +71,10 @@ public class ShapedRecipeTypeHandler extends GridRecipeTypeHandler {
             lines.add(entry.getKey());
         }
         
-        // Register with the recipe lines we just constructed.g
-        GameRegistry.register(new ShapedOreRecipeNbtSensitive(CraftingHelpers.newRecipeIdentifier(output),
-				output, nbtSensitive, true, lines.toArray()));
+        // Register with the recipe lines we just constructed.
+		ResourceLocation id = CraftingHelpers.newRecipeIdentifier(output);
+		CraftingHelpers.registerRecipe(id,
+				new ShapedOreRecipeNbtSensitive(id, output, nbtSensitive, true, lines.toArray()));
 		return inputs;
 	}
 

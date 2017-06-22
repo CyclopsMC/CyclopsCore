@@ -6,6 +6,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Map;
@@ -49,6 +50,17 @@ public class CraftingHelpers {
             id = new ResourceLocation(id.getResourceDomain(), id.getResourcePath() + "_" + ++counter);
         }
         return id;
+    }
+
+    /**
+     * Register a crafting recipe.
+     * @param id The recipe id
+     * @param recipe The recipe
+     * @return The recipe
+     */
+    public static IRecipe registerRecipe(ResourceLocation id, IRecipe recipe) {
+        recipe.setRegistryName(id);
+        return GameRegistry.register(recipe);
     }
 
     public static boolean itemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {

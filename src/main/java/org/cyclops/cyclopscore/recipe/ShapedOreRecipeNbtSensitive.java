@@ -54,7 +54,7 @@ public class ShapedOreRecipeNbtSensitive extends ShapedOreRecipe {
                     }
 
                     if (!target.apply(inv.getStackInRowAndColumn(x, y))
-                            || !!ShapelessOreRecipeNbtSensitive.matches(nbtSensitive, target, inv.getStackInRowAndColumn(x, y)))
+                            || !ShapelessOreRecipeNbtSensitive.matches(nbtSensitive, target, inv.getStackInRowAndColumn(x, y)))
                     {
                         return false;
                     }
