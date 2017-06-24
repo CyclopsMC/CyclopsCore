@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableVillager;
 import org.cyclops.cyclopscore.config.extendedconfig.VillagerConfig;
 
@@ -35,7 +34,7 @@ public class VillagerAction extends ConfigurableTypeAction<VillagerConfig>{
 
         // Register
         //register((ConfigurableVillager) eConfig.getSubInstance(), eConfig); // Don't call this, because VillagerRegistry.VillagerProfession already sets registry name
-        GameRegistry.register((ConfigurableVillager) eConfig.getSubInstance());
+        register((ConfigurableVillager) eConfig.getSubInstance(), eConfig);
     }
 
 }

@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.UndisableableConfigException;
@@ -70,6 +70,6 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
      */
     public static <T extends IForgeRegistryEntry> void register(T instance, ExtendedConfig config) {
         instance.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
-        GameRegistry.register(instance);
+        GameRegistry.findRegistry(instance.getRegistryType()).register(instance);
     }
 }

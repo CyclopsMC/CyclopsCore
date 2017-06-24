@@ -6,7 +6,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.Map;
@@ -60,7 +60,8 @@ public class CraftingHelpers {
      */
     public static IRecipe registerRecipe(ResourceLocation id, IRecipe recipe) {
         recipe.setRegistryName(id);
-        return GameRegistry.register(recipe);
+        ForgeRegistries.RECIPES.register(recipe);
+        return recipe;
     }
 
     public static boolean itemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
