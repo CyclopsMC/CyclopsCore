@@ -2,12 +2,8 @@ package org.cyclops.cyclopscore.network;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
 import io.netty.handler.codec.EncoderException;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.ClassUtils;
@@ -29,25 +25,25 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(String.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, ByteArrayDataOutput output) {
-				output.writeUTF((String) object);
+			public void encode(Object object, ExtendedBuffer output) {
+				output.writeString((String) object);
 			}
 
 			@Override
-			public Object decode(ByteArrayDataInput input) {
-				return input.readUTF();
+			public Object decode(ExtendedBuffer input) {
+				return input.readString();
 			}
 		});
 		
 		codecActions.put(double.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, ByteArrayDataOutput output) {
+			public void encode(Object object, ExtendedBuffer output) {
 				output.writeDouble((Double) object);
 			}
 
 			@Override
-			public Object decode(ByteArrayDataInput input) {
+			public Object decode(ExtendedBuffer input) {
 				return input.readDouble();
 			}
 		});
@@ -55,12 +51,12 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(int.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, ByteArrayDataOutput output) {
+			public void encode(Object object, ExtendedBuffer output) {
 				output.writeInt((int) object);
 			}
 
 			@Override
-			public Object decode(ByteArrayDataInput input) {
+			public Object decode(ExtendedBuffer input) {
 				return input.readInt();
 			}
 		});
@@ -68,12 +64,12 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(short.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, ByteArrayDataOutput output) {
+			public void encode(Object object, ExtendedBuffer output) {
 				output.writeShort((Short) object);
 			}
 
 			@Override
-			public Object decode(ByteArrayDataInput input) {
+			public Object decode(ExtendedBuffer input) {
 				return input.readShort();
 			}
 		});
@@ -81,12 +77,12 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(boolean.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, ByteArrayDataOutput output) {
+			public void encode(Object object, ExtendedBuffer output) {
 				output.writeBoolean((Boolean) object);
 			}
 
 			@Override
-			public Object decode(ByteArrayDataInput input) {
+			public Object decode(ExtendedBuffer input) {
 				return input.readBoolean();
 			}
 		});
@@ -94,19 +90,19 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(float.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, ByteArrayDataOutput output) {
+			public void encode(Object object, ExtendedBuffer output) {
 				output.writeFloat((Float) object);
 			}
 
 			@Override
-			public Object decode(ByteArrayDataInput input) {
+			public Object decode(ExtendedBuffer input) {
 				return input.readFloat();
 			}
 		});
 
 		codecActions.put(Vec3d.class, new ICodecAction() {
 			@Override
-			public void encode(Object object, ByteArrayDataOutput output) {
+			public void encode(Object object, ExtendedBuffer output) {
 				Vec3d v = (Vec3d)object;
 				output.writeDouble(v.x);
 				output.writeDouble(v.y);
@@ -114,7 +110,7 @@ public abstract class PacketCodec extends PacketBase {
 			}
 
 			@Override
-			public Object decode(ByteArrayDataInput input) {
+			public Object decode(ExtendedBuffer input) {
 				double x = input.readDouble();
 				double y = input.readDouble();
 				double z = input.readDouble();
@@ -135,7 +131,7 @@ public abstract class PacketCodec extends PacketBase {
 
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
-			public void encode(Object object, ByteArrayDataOutput output) {
+			public void encode(Object object, ExtendedBuffer output) {
 				Map map = (Map) object;
 				output.writeInt(map.size());
 				Set<Map.Entry> entries = map.entrySet();
@@ -144,11 +140,11 @@ public abstract class PacketCodec extends PacketBase {
 				for(Map.Entry entry : entries) {
 					if(keyAction == null) {
 						keyAction = getAction(entry.getKey().getClass());
-						output.writeUTF(entry.getKey().getClass().getName());
+						output.writeString(entry.getKey().getClass().getName());
 					}
 					if(valueAction == null) {
 						valueAction = getAction(entry.getValue().getClass());
-						output.writeUTF(entry.getValue().getClass().getName());
+						output.writeString(entry.getValue().getClass().getName());
 					}
 					keyAction.encode(entry.getKey(), output);
 					valueAction.encode(entry.getValue(), output);
@@ -157,15 +153,15 @@ public abstract class PacketCodec extends PacketBase {
 
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
-			public Object decode(ByteArrayDataInput input) {
+			public Object decode(ExtendedBuffer input) {
 				Map map = Maps.newHashMap();
 				int size = input.readInt();
 				if(size == 0) {
 					return map;
 				}
 				try {
-					ICodecAction keyAction = getAction(Class.forName(input.readUTF()));
-					ICodecAction valueAction = getAction(Class.forName(input.readUTF()));
+					ICodecAction keyAction = getAction(Class.forName(input.readString()));
+					ICodecAction valueAction = getAction(Class.forName(input.readString()));
 					for(int i = 0; i < size; i++) {
 						Object key = keyAction.decode(input);
 						Object value = valueAction.decode(input);
@@ -181,18 +177,14 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(NBTTagCompound.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, ByteArrayDataOutput output) {
-				try {
-					CompressedStreamTools.write((NBTTagCompound) object, output);
-				} catch (IOException ioexception) {
-					throw new EncoderException(ioexception);
-				}
+			public void encode(Object object, ExtendedBuffer output) {
+				output.writeCompoundTag((NBTTagCompound) object);
 			}
 
 			@Override
-			public Object decode(ByteArrayDataInput input) {
+			public Object decode(ExtendedBuffer input) {
 				try {
-					return CompressedStreamTools.read(input, new NBTSizeTracker(2097152L));
+					return input.readCompoundTag();
 				} catch (IOException ioexception) {
 					throw new EncoderException(ioexception);
 				}
@@ -202,28 +194,14 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(ItemStack.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, ByteArrayDataOutput output) {
-				try {
-					output.writeBoolean(object != null);
-					if(object != null) {
-						NBTTagCompound tag = new NBTTagCompound();
-						((ItemStack) object).writeToNBT(tag);
-						CompressedStreamTools.write(tag, output);
-					}
-				} catch (IOException ioexception) {
-					throw new EncoderException(ioexception);
-				}
+			public void encode(Object object, ExtendedBuffer output) {
+				output.writeItemStack((ItemStack) object);
 			}
 
 			@Override
-			public Object decode(ByteArrayDataInput input) {
+			public Object decode(ExtendedBuffer input) {
 				try {
-					if(input.readBoolean()) {
-						NBTTagCompound tag = CompressedStreamTools.read(input, new NBTSizeTracker(2097152L));
-						return new ItemStack(tag);
-					} else {
-						return null;
-					}
+					return input.readItemStack();
 				} catch (IOException ioexception) {
 					throw new EncoderException(ioexception);
 				}
@@ -241,7 +219,7 @@ public abstract class PacketCodec extends PacketBase {
 
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
-			public void encode(Object object, ByteArrayDataOutput output) {
+			public void encode(Object object, ExtendedBuffer output) {
 				List list = (List) object;
 				output.writeInt(list.size());
 				if(list.size() == 0) return;
@@ -251,14 +229,14 @@ public abstract class PacketCodec extends PacketBase {
 					if(value != null) {
 						if (valueAction == null) {
 							valueAction = getAction(value.getClass());
-							output.writeUTF(value.getClass().getName());
+							output.writeString(value.getClass().getName());
 						}
 						output.writeInt(i);
 						valueAction.encode(value, output);
 					}
 				}
                 if(valueAction == null) {
-					output.writeUTF("__noclass");
+					output.writeString("__noclass");
 				} else {
 					output.writeInt(-1);
 				}
@@ -266,7 +244,7 @@ public abstract class PacketCodec extends PacketBase {
 
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
-			public Object decode(ByteArrayDataInput input) {
+			public Object decode(ExtendedBuffer input) {
 				List list;
 				int size = input.readInt();
 				if(size == 0) {
@@ -275,7 +253,7 @@ public abstract class PacketCodec extends PacketBase {
 					list = Lists.newArrayListWithExpectedSize(size);
 				}
 				try {
-					String className = input.readUTF();
+					String className = input.readString();
 					if(!className.equals("__noclass")) {
 						ICodecAction valueAction = getAction(Class.forName(className));
                         int i, currentLength = 0;
@@ -375,37 +353,28 @@ public abstract class PacketCodec extends PacketBase {
 	}
 
 	@Override
-	public void encode(final ByteArrayDataOutput output) {
-		loopCodecFields(new ICodecRunnable() {
-			
-			@Override
-			public void run(Field field, ICodecAction action) {
-				Object object = null;
-				try {
-					object = field.get(PacketCodec.this);
-				} catch (IllegalArgumentException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
-				action.encode(object, output);
-			}
-		});
+	public void encode(final ExtendedBuffer output) {
+		loopCodecFields((field, action) -> {
+            Object object = null;
+            try {
+                object = field.get(PacketCodec.this);
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            action.encode(object, output);
+        });
 	}
 
 	@Override
-    public void decode(final ByteArrayDataInput input) {
-		loopCodecFields(new ICodecRunnable() {
-
-			@Override
-			public void run(Field field, ICodecAction action) {
-				Object object = action.decode(input);
-				try {
-					field.set(PacketCodec.this, object);
-				} catch (IllegalArgumentException | IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}
-			
-		});
+    public void decode(final ExtendedBuffer input) {
+		loopCodecFields((field, action) -> {
+            Object object = action.decode(input);
+            try {
+                field.set(PacketCodec.this, object);
+            } catch (IllegalArgumentException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        });
 	}
 	
 	private interface ICodecAction {
@@ -415,14 +384,14 @@ public abstract class PacketCodec extends PacketBase {
 		 * @param object The object to encode into the output.
 		 * @param output The byte array to encode to.
 		 */
-		public void encode(Object object, ByteArrayDataOutput output);
+		public void encode(Object object, ExtendedBuffer output);
 
 		/**
 		 * Decode from the input.
 		 * @param input The byte array to decode from.
 		 * @return The object to return after reading it from the input.
 		 */
-	    public Object decode(ByteArrayDataInput input);
+	    public Object decode(ExtendedBuffer input);
 	    
 	}
 	

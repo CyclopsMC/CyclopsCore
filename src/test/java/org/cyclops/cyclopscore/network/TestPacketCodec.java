@@ -2,9 +2,7 @@ package org.cyclops.cyclopscore.network;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
+import io.netty.buffer.Unpooled;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
@@ -194,10 +192,9 @@ public class TestPacketCodec {
     }
 
     protected static <T extends PacketCodec> void encodeDecode(T packetIn, T packetOut) {
-        ByteArrayDataOutput output = ByteStreams.newDataOutput();
-        packetIn.encode(output);
-        ByteArrayDataInput input = ByteStreams.newDataInput(output.toByteArray());
-        packetOut.decode(input);
+        ExtendedBuffer buffer = new ExtendedBuffer(Unpooled.buffer());
+        packetIn.encode(buffer);
+        packetOut.decode(buffer);
     }
 
     public static class StringPacketCodec extends SimplePacketCodec {

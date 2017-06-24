@@ -1,8 +1,5 @@
 package org.cyclops.cyclopscore.network;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -28,13 +25,13 @@ public abstract class PacketBase implements IMessage {
 	 * Encode this packet.
 	 * @param output The byte array to encode to.
 	 */
-	public abstract void encode(ByteArrayDataOutput output);
+	public abstract void encode(ExtendedBuffer output);
 
 	/**
 	 * Decode for this packet.
 	 * @param input The byte array to decode from.
 	 */
-    public abstract void decode(ByteArrayDataInput input);
+    public abstract void decode(ExtendedBuffer input);
 
 	/**
 	 * Actions for client-side.
@@ -53,15 +50,12 @@ public abstract class PacketBase implements IMessage {
 
 	@Override
 	public void fromBytes(ByteBuf source) {
-		ByteArrayDataInput input = ByteStreams.newDataInput(source.hasArray() ? source.array() : new byte[0]);
-		input.skipBytes(1); // skip the packet identifier byte
-		decode(input);
+		decode(new ExtendedBuffer(source));
 	}
 
 	@Override
 	public void toBytes(ByteBuf target) {
-		ByteArrayDataOutput output = ByteStreams.newDataOutput();
-		encode(output);
-		target.writeBytes(output.toByteArray());
+		encode(new ExtendedBuffer(target));
 	}
+
 }
