@@ -4,16 +4,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.Data;
-import net.minecraft.block.Block;
 import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.Level;
@@ -23,9 +20,7 @@ import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.client.key.KeyRegistry;
 import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.config.ConfigHandler;
-import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
-import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.modcompat.IMCHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
@@ -367,40 +362,6 @@ public abstract class ModBase {
     public void onServerStopping(FMLServerStoppingEvent event) {
         for(WorldStorage worldStorage : worldStorages) {
             worldStorage.onStoppingEvent(event);
-        }
-    }
-
-    @Mod.EventHandler
-    public void onMissingMappings(FMLMissingMappingsEvent event) {
-        // Since 1.11 requires lowercase for all resource location
-        // and cyclops mods used camelCase for all id's,
-        // we now consistently remap every id to underscore_based id's.
-
-        // TODO: remove me in MC 1.12
-        // Find all blocks and items that could require remapping
-        Map<String, Block> blockMappings = Maps.newHashMap();
-        Map<String, Item> itemMappings = Maps.newHashMap();
-        for (ExtendedConfig extendedConfig : getConfigHandler().getProcessedConfigs()) {
-            String id = extendedConfig.getNamedId().replaceAll("_", "");
-            if (extendedConfig instanceof BlockConfig) {
-                blockMappings.put(id, ((BlockConfig) extendedConfig).getBlockInstance());
-            } else if (extendedConfig instanceof ItemConfig) {
-                itemMappings.put(id, ((ItemConfig) extendedConfig).getItemInstance());
-            }
-        }
-
-        // Remap all matching blocks and items.
-        for (FMLMissingMappingsEvent.MissingMapping missingMapping : event.get()) {
-            if (missingMapping.resourceLocation.getResourceDomain().equals(getModId())) {
-                Block block = blockMappings.get(missingMapping.resourceLocation.getResourcePath());
-                Item item = itemMappings.get(missingMapping.resourceLocation.getResourcePath());
-                if (block != null && missingMapping.type == GameRegistry.Type.BLOCK) {
-                    missingMapping.remap(block);
-                }
-                if (item != null && missingMapping.type == GameRegistry.Type.ITEM) {
-                    missingMapping.remap(item);
-                }
-            }
         }
     }
 
