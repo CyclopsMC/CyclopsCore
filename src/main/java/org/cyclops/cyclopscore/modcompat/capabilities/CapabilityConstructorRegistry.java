@@ -205,8 +205,8 @@ public class CapabilityConstructorRegistry {
     }
 
     @SubscribeEvent
-    public void onItemStackLoad(AttachCapabilitiesEvent.Item event) {
-        onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getObject(), event.getItemStack(), event, Item.class);
+    public void onItemStackLoad(AttachCapabilitiesEvent<ItemStack> event) {
+        onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getObject().getItem(), event.getObject(), event, Item.class);
     }
 
     protected <K, V> void removeNullCapabilities(Map<Class<? extends K>, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allConstructors,

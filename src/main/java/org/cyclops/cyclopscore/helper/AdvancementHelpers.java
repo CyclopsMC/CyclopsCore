@@ -15,7 +15,7 @@ public class AdvancementHelpers {
 
     public static boolean hasAdvancementUnlocked(EntityPlayer player, Advancement advancement) {
         if (player instanceof EntityPlayerMP) {
-            return ((EntityPlayerMP) player).getAdvancements().getProgress(advancement).func_192108_b();
+            return ((EntityPlayerMP) player).getAdvancements().getProgress(advancement).isDone();
         }
         return false; // TODO
     }

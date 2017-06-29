@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
+import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -8,10 +9,17 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.config.configurable.IConfigurableItem;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.IModelProviderConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
@@ -19,6 +27,7 @@ import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * The action used for {@link ItemConfig}.
@@ -26,6 +35,12 @@ import javax.annotation.Nullable;
  * @see ConfigurableTypeAction
  */
 public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
+
+    private static final List<ExtendedConfig> MODEL_ENTRIES = Lists.newArrayList();
+
+    static {
+        MinecraftForge.EVENT_BUS.register(ItemAction.class);
+    }
 
     /**
      * Registers an item.
@@ -71,32 +86,9 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
         	IGuiContainerProvider gui = (IGuiContainerProvider) item;
         	eConfig.getMod().getGuiHandler().registerGUI(gui, GuiHandler.GuiType.ITEM);
         }
-    }
 
-    public static void handleItemModel(Item item, String namedId, CreativeTabs tab, String modId, IModelProviderConfig modelProvider) {
         if(MinecraftHelpers.isClientSide()) {
-            if(item.getHasSubtypes()) {
-                NonNullList<ItemStack> itemStacks = NonNullList.create();
-                item.getSubItems(tab, itemStacks);
-                for(ItemStack itemStack : itemStacks) {
-                    String itemName = modelProvider.getModelName(itemStack);
-                    ModelResourceLocation model = new ModelResourceLocation(modId + ":" + itemName, "inventory");
-                    ModelBakery.registerItemVariants(item, model);
-                    Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, itemStack.getMetadata(), model);
-                }
-            } else {
-                Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0,
-                        new ModelResourceLocation(modId + ":" + namedId, "inventory"));
-            }
-        }
-    }
-
-    @Override
-    public void polish(ItemConfig config) {
-        if(MinecraftHelpers.isClientSide()) {
-            Item item = config.getItemInstance();
-            handleItemModel(item, config.getNamedId(), config.getTargetTab(),
-                    config.getMod().getModId(), config);
+            handleItemModel(eConfig);
             if (item instanceof IConfigurableItem) {
                 IConfigurableItem configurableItem = (IConfigurableItem) item;
                 IItemColor itemColorHandler = configurableItem.getItemColorHandler();
@@ -104,6 +96,46 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
                     Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColorHandler, item);
                 }
             }
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public static void onModelRegistryLoad(ModelRegistryEvent event) {
+        for (ExtendedConfig entry : MODEL_ENTRIES) {
+            Item item = null;
+            IModelProviderConfig modelProvider = null;
+            if (entry instanceof ItemConfig) {
+                item = ((ItemConfig) entry).getItemInstance();
+                modelProvider = (IModelProviderConfig) entry;
+            } else if (entry instanceof BlockConfig) {
+                item = Item.getItemFromBlock(((BlockConfig) entry).getBlockInstance());
+                modelProvider = (IModelProviderConfig) entry;
+            } else {
+                throw new IllegalStateException("An unsupported config was registered to the model loader: "
+                        + entry.getNamedId());
+            }
+
+            String modId = item.getRegistryName().getResourceDomain();
+            if(item.getHasSubtypes()) {
+                NonNullList<ItemStack> itemStacks = NonNullList.create();
+                item.getSubItems(item.getCreativeTab(), itemStacks);
+                for(ItemStack itemStack : itemStacks) {
+                    String itemName = modelProvider.getModelName(itemStack);
+                    ModelResourceLocation model = new ModelResourceLocation(modId + ":" + itemName, "inventory");
+                    ModelBakery.registerItemVariants(item, model);
+                    ModelLoader.setCustomModelResourceLocation(item, itemStack.getMetadata(), model);
+                }
+            } else {
+                ModelLoader.setCustomModelResourceLocation(item, 0,
+                        new ModelResourceLocation(modId + ":" + item.getRegistryName().getResourcePath(), "inventory"));
+            }
+        }
+    }
+
+    public static void handleItemModel(ExtendedConfig extendedConfig) {
+        if(MinecraftHelpers.isClientSide()) {
+            MODEL_ENTRIES.add(extendedConfig);
         }
     }
 

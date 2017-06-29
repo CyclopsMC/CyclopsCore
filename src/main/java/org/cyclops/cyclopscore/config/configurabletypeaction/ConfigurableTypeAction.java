@@ -2,12 +2,14 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.UndisableableConfigException;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+
+import java.util.Objects;
 
 /**
  * An action that is used to register Configurables.
@@ -26,10 +28,10 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
     public void commonRun(ExtendedConfig<C> eConfig, Configuration config) {
     	if(eConfig.isDisableable()) {
     		preRun(eConfig.downCast(), config, true);
-    	}
-        if(eConfig.isEnabled()) {
+        }
+        if (eConfig.isEnabled()) {
             postRun(eConfig.downCast(), config);
-        } else if(!eConfig.isDisableable()) {
+        } else if (!eConfig.isDisableable()) {
             throw new UndisableableConfigException(eConfig);
         } else {
             onSkipRegistration(eConfig);
@@ -69,7 +71,19 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
      * @param <T> The type to register.
      */
     public static <T extends IForgeRegistryEntry> void register(T instance, ExtendedConfig config) {
+        register(Objects.requireNonNull(config.getRegistry(),
+                "Tried registering a config for which no registry exists: " + config.getNamedId()), instance, config);
+    }
+
+    /**
+     * Register the {@link IForgeRegistryEntry}.
+     * @param registry The registry.
+     * @param instance The instance.
+     * @param config The corresponding config.
+     * @param <T> The type to register.
+     */
+    public static <T extends IForgeRegistryEntry<T>> void register(IForgeRegistry<T> registry, T instance, ExtendedConfig config) {
         instance.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
-        GameRegistry.findRegistry(instance.getRegistryType()).register(instance);
+        config.getMod().getConfigHandler().registerToRegistry(registry, instance);
     }
 }

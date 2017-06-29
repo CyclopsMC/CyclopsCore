@@ -1,25 +1,30 @@
 package org.cyclops.cyclopscore.config;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.base.Supplier;
+import com.google.common.collect.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.configurable.IConfigurable;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.init.IInitListener;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.RecipeHandler;
 
 import javax.annotation.Nullable;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Create config file and register items and blocks from the given ExtendedConfigs.
@@ -27,7 +32,7 @@ import java.util.Set;
  *
  */
 @SuppressWarnings("rawtypes")
-@EqualsAndHashCode(callSuper = true, exclude = {"config", "mod"})
+@EqualsAndHashCode(callSuper=false)
 @Data
 public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
 
@@ -37,6 +42,19 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
     private final Map<String, ExtendedConfig> configDictionary = Maps.newHashMap();
     private final Set<String> categories = Sets.newHashSet();
     private final Map<String, ConfigProperty> commandableProperties = Maps.newHashMap();
+    private final Multimap<Class<?>, IForgeRegistryEntry<?>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<Class<?>, Collection<IForgeRegistryEntry<?>>>newIdentityHashMap(), new Supplier<List<IForgeRegistryEntry<?>>>() {
+        // Compiler complains when this is replaced with a lambda :-(
+        @Override
+        public List<IForgeRegistryEntry<?>> get() {
+            return Lists.newArrayList();
+        }
+    });
+    private boolean registryEventPassed = false;
+
+    public ConfigHandler(ModBase mod) {
+        this.mod = mod;
+        MinecraftForge.EVENT_BUS.register(this);
+    }
     
     @Override
     public boolean add(ExtendedConfig e) {
@@ -94,8 +112,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
                 }
                 
                 // Register the element depending on the type.
-                ConfigurableType type = eConfig.getHolderType();
-                type.getElementTypeAction().commonRun(eConfig, config);
+                eConfig.getHolderType().getElementTypeAction().commonRun(eConfig, config);
                 
                 if(eConfig.isEnabled()) {
 	                // Call the listener
@@ -254,6 +271,46 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
             return ((IConfigurable) fluid).getConfig();
         }
         return null;
+    }
+
+    /**
+     * Register the given entry to the given registry.
+     * This method will safely wait until the correct registry event for registering the entry.
+     * @param registry The registry.
+     * @param entry The entry.
+     * @param <V> The entry type.
+     */
+    public <V extends IForgeRegistryEntry<V>> void registerToRegistry(IForgeRegistry<V> registry, IForgeRegistryEntry<V> entry) {
+        if (this.registryEventPassed) {
+            throw new IllegalStateException(String.format("Tried registering %s after its registration event.",
+                    entry.getRegistryName()));
+        }
+        registryEntriesHolder.put(registry.getRegistrySuperType(), entry);
+    }
+
+    @SubscribeEvent
+    public void onRegistryEvent(RegistryEvent.Register event) {
+        this.registryEventPassed = true;
+        IForgeRegistry registry = event.getRegistry();
+        registryEntriesHolder.get(registry.getRegistrySuperType()).forEach(registry::register);
+
+        if (event.getRegistry() == ForgeRegistries.RECIPES) {
+            // Register recipes
+            RecipeHandler recipeHandler = getMod().getRecipeHandler();
+            if (recipeHandler != null) {
+                recipeHandler.registerRecipes(getMod().getConfigFolder());
+            }
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof ConfigHandler && ((ConfigHandler) o).getMod().equals(this.getMod());
+    }
+
+    @Override
+    public int hashCode() {
+        return 1 + this.getMod().hashCode();
     }
     
 }

@@ -2,9 +2,7 @@ package org.cyclops.cyclopscore.recipe.xml;
 
 import com.google.common.collect.Lists;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.recipe.ShapelessOreRecipeNbtSensitive;

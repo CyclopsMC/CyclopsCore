@@ -5,9 +5,11 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableItem;
@@ -113,6 +115,11 @@ public abstract class ItemConfig extends ExtendedConfig<ItemConfig> implements I
      */
     public CreativeTabs getTargetTab() {
         return getMod().getDefaultCreativeTab();
+    }
+
+    @Override
+    public IForgeRegistry<?> getRegistry() {
+        return ForgeRegistries.ITEMS;
     }
 
 }

@@ -300,12 +300,6 @@ public abstract class ModBase {
             proxy.registerPacketHandlers(getPacketHandler());
             proxy.registerTickHandlers();
         }
-
-        // Register recipes
-        RecipeHandler recipeHandler = getRecipeHandler();
-        if(recipeHandler != null) {
-            recipeHandler.registerRecipes(getConfigFolder());
-        }
     }
 
     /**

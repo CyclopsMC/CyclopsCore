@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.block.property;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Maps;
@@ -14,6 +13,7 @@ import net.minecraftforge.common.property.IUnlistedProperty;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * An efficient builder for extended blockstates when many properties need to be applied all at once.
@@ -53,7 +53,7 @@ public class ExtendedBlockStateBuilder {
         if (unlistedProperties.get(property) == value) {
             return this;
         }
-        unlistedProperties.put(property, Optional.fromNullable(value));
+        unlistedProperties.put(property, Optional.ofNullable(value));
         return this;
     }
 
@@ -123,7 +123,7 @@ public class ExtendedBlockStateBuilder {
             if(value == null) {
                 throw new IllegalArgumentException("Cannot get unlisted property " + property + " as it does not exist in " + getBlock().getBlockState());
             }
-            return property.getType().cast(value.orNull());
+            return property.getType().cast(value.orElse(null));
         }
     }
 

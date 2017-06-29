@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableEnchantment;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -46,6 +48,11 @@ public abstract class EnchantmentConfig extends ExtendedConfig<EnchantmentConfig
      */
     public ConfigurableEnchantment getEnchantment() {
         return (ConfigurableEnchantment) this.getSubInstance();
+    }
+
+    @Override
+    public IForgeRegistry<?> getRegistry() {
+        return ForgeRegistries.ENCHANTMENTS;
     }
 
 }

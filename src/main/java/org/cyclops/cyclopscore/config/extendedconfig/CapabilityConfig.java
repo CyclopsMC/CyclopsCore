@@ -1,8 +1,11 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
+
+import javax.annotation.Nullable;
 
 /**
  * Config for capabilities.
@@ -59,5 +62,11 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
 
     public Class<? extends T> getImplementation() {
         return implementation;
+    }
+
+    @Nullable
+    @Override
+    public IForgeRegistry<?> getRegistry() {
+        return null;
     }
 }

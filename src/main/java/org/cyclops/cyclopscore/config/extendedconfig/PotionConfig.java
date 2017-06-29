@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.potion.Potion;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurable.ConfigurablePotion;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -41,6 +43,11 @@ public abstract class PotionConfig extends ExtendedConfig<PotionConfig> {
      */
     public ConfigurablePotion getPotion() {
         return (ConfigurablePotion) this.getSubInstance();
+    }
+
+    @Override
+    public IForgeRegistry<?> getRegistry() {
+        return ForgeRegistries.POTIONS;
     }
 
 }

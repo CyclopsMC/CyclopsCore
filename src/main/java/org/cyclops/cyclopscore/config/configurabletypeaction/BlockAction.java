@@ -4,11 +4,11 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
@@ -52,7 +52,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
         if(itemBlockClass != null) {
             try {
                 ItemBlock item = itemBlockClass.getConstructor(Block.class).newInstance(block);
-                register(item, config);
+                register(ForgeRegistries.ITEMS, item, config);
             } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -118,14 +118,9 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
         /*if(eConfig.isMultipartEnabled()) {
             ForgeMultipartHelper.registerMicroblock(eConfig);
         }*/
-    }
 
-    @Override
-    public void polish(BlockConfig config) {
         if (MinecraftHelpers.isClientSide()) {
-            Block block = config.getBlockInstance();
-            ItemAction.handleItemModel(Item.getItemFromBlock(block), config.getNamedId(),
-                    config.getTargetTab(), config.getMod().getModId(), config);
+            ItemAction.handleItemModel(eConfig);
             if(block instanceof IConfigurableBlock) {
                 IConfigurableBlock configurableBlock = (IConfigurableBlock) block;
                 IBlockColor blockColorHandler = configurableBlock.getBlockColorHandler();

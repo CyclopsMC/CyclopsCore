@@ -2,12 +2,14 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.*;
 import org.cyclops.cyclopscore.config.configurable.IConfigurable;
 import org.cyclops.cyclopscore.init.IInitListener;
 import org.cyclops.cyclopscore.init.ModBase;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -297,5 +299,13 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
     @SuppressWarnings("unchecked")
     public C downCast() {
         return (C) this;
+    }
+
+    /**
+     * @return The optional registry in which this should be registered.
+     */
+    @Nullable
+    public IForgeRegistry<?> getRegistry() {
+        return null;
     }
 }

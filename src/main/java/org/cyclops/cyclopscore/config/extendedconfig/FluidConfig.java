@@ -2,8 +2,11 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
+
+import javax.annotation.Nullable;
 
 /**
  * Config for fluids.
@@ -56,4 +59,9 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig> {
         return new ResourceLocation(getMod().getModId(), "blocks/" + getNamedId() + "_flow");
     }
 
+    @Nullable
+    @Override
+    public IForgeRegistry<?> getRegistry() {
+        return null;
+    }
 }

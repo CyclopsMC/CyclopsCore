@@ -11,7 +11,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.model.Attributes;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
+import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.ModelHelpers;
@@ -25,7 +25,7 @@ import java.util.List;
  * A model that can be used as a basis for flexible baked models.
  * @author rubensworks
  */
-public abstract class DynamicBaseModel implements IPerspectiveAwareModel {
+public abstract class DynamicBaseModel implements IBakedModel {
 
     // Rotation UV coordinates
     protected static final float[][] ROTATION_UV = {{1, 0}, {1, 1}, {0, 1}, {0, 0}};
@@ -258,7 +258,10 @@ public abstract class DynamicBaseModel implements IPerspectiveAwareModel {
 
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-        return IPerspectiveAwareModel.MapWrapper.handlePerspective(this, ModelHelpers.DEFAULT_PERSPECTIVE_TRANSFORMS, cameraTransformType);
+        TRSRTransformation tr = ModelHelpers.DEFAULT_PERSPECTIVE_TRANSFORMS.get(cameraTransformType);
+        Matrix4f mat = null;
+        if(tr != null && !tr.equals(TRSRTransformation.identity())) mat = TRSRTransformation.blockCornerToCenter(tr).getMatrix();
+        return Pair.of(this, mat);
     }
 
     @Override

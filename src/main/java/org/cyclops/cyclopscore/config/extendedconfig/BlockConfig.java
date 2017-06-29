@@ -9,8 +9,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -133,6 +135,11 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
             this.dynamicBlockVariantLocation = resourceLocations.getLeft();
             this.dynamicItemVariantLocation  = resourceLocations.getRight();
         }
+    }
+
+    @Override
+    public IForgeRegistry<?> getRegistry() {
+        return ForgeRegistries.BLOCKS;
     }
 
 }

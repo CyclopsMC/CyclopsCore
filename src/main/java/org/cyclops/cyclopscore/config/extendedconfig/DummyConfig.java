@@ -1,7 +1,10 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
+
+import javax.annotation.Nullable;
 
 /**
  * Dummy config.
@@ -34,4 +37,9 @@ public class DummyConfig extends ExtendedConfig<DummyConfig>{
 		return getNamedId();
 	}
 
+	@Nullable
+	@Override
+	public IForgeRegistry<?> getRegistry() {
+		return null;
+	}
 }

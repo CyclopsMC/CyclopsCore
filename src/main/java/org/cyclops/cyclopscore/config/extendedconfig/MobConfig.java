@@ -5,8 +5,10 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -79,5 +81,10 @@ public abstract class MobConfig<T extends Entity> extends ExtendedConfig<MobConf
      */
     @SideOnly(Side.CLIENT)
     public abstract Render<? super T> getRender(RenderManager renderManager);
+
+    @Override
+    public IForgeRegistry<?> getRegistry() {
+        return ForgeRegistries.ENTITIES;
+    }
 
 }
