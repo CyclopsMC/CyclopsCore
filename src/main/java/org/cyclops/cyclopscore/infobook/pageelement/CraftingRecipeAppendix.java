@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
+import com.google.common.collect.Lists;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -10,14 +11,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.helper.obfuscation.ObfuscationHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Shaped recipes.
@@ -71,7 +68,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
         ItemStack result = prepareItemStack(recipe.getRecipeOutput(), tick);
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
-                grid[i + j * 3] = prepareItemStacks(getItemStacks(i + j * 3), tick);
+                grid[i + j * 3] = prepareItemStacks(Lists.newArrayList(getItemStacks(i + j * 3).getMatchingStacks()), tick);
             }
         }
 
@@ -97,12 +94,12 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
      * @param height The original recipe height.
      * @return The reformatted object array.
      */
-    private static Object[] formatShapedGrid(NonNullList<Ingredient> itemStacksRaw, int width, int height) {
+    private static NonNullList<Ingredient> formatShapedGrid(NonNullList<Ingredient> itemStacksRaw, int width, int height) {
         int rawIndex = 0;
-        Object[] itemStacks = new Object[9];
+        NonNullList<Ingredient> itemStacks = NonNullList.withSize(width * height, Ingredient.EMPTY);
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
-                itemStacks[y * 3 + x] = itemStacksRaw.get(rawIndex++);
+                itemStacks.set(y * 3 + x, itemStacksRaw.get(rawIndex++));
                 if(rawIndex >= itemStacksRaw.size()) break;
             }
             if(rawIndex >= itemStacksRaw.size()) break;
@@ -111,27 +108,24 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
     }
 
     @SuppressWarnings("unchecked")
-    protected List<ItemStack> getItemStacks(int index) {
-        Object[] itemStacks;
+    protected Ingredient getItemStacks(int index) {
+        NonNullList<Ingredient> ingredients;
+
         if(recipe instanceof ShapedRecipes) {
-            itemStacks = formatShapedGrid(((ShapedRecipes) recipe).recipeItems,
+            ingredients = formatShapedGrid(((ShapedRecipes) recipe).recipeItems,
                     ((ShapedRecipes) recipe).recipeWidth, ((ShapedRecipes) recipe).recipeHeight);
         } else if(recipe instanceof ShapedOreRecipe) {
-            itemStacks = formatShapedGrid(((ShapedOreRecipe) recipe).getIngredients(),
-                    ObfuscationHelpers.getShapedOreRecipeWidth(((ShapedOreRecipe) recipe)),
-                    ObfuscationHelpers.getShapedOreRecipeHeight(((ShapedOreRecipe) recipe)));
-        } else if(recipe instanceof ShapelessRecipes) {
-            itemStacks = ((ShapelessRecipes) recipe).recipeItems.toArray();
-        } else if(recipe instanceof ShapelessOreRecipe) {
-            itemStacks = ((ShapelessOreRecipe) recipe).getIngredients().toArray();
+            ingredients = formatShapedGrid(recipe.getIngredients(),
+                    ((ShapedOreRecipe) recipe).getWidth(),
+                    ((ShapedOreRecipe) recipe).getHeight());
+        } else if(recipe instanceof ShapelessRecipes || recipe instanceof ShapelessOreRecipe) {
+            ingredients = recipe.getIngredients();
         } else {
             getInfoBook().getMod().log(Level.ERROR, "Recipe of type " + recipe.getClass() + " is not supported.");
-            return Collections.emptyList();
+            return Ingredient.EMPTY;
         }
-        if(itemStacks.length <= index) return Collections.emptyList();
-        Object element = itemStacks[index];
-        if(element == null) return Collections.emptyList();
-        return element instanceof ItemStack ? Collections.singletonList((ItemStack) element) : (List<ItemStack>) element;
+        if(ingredients.size() <= index) return Ingredient.EMPTY;
+        return ingredients.get(index);
     }
 
 }
