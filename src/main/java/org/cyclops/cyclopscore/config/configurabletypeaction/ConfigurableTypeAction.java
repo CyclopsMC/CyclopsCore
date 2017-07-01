@@ -9,7 +9,9 @@ import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.UndisableableConfigException;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 
 /**
  * An action that is used to register Configurables.
@@ -71,8 +73,19 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
      * @param <T> The type to register.
      */
     public static <T extends IForgeRegistryEntry> void register(T instance, ExtendedConfig config) {
+        register(instance, config, null);
+    }
+
+    /**
+     * Register the {@link IForgeRegistryEntry}.
+     * @param instance The instance.
+     * @param config The corresponding config.
+     * @param callback A callback that will be called when the entry is registered.
+     * @param <T> The type to register.
+     */
+    public static <T extends IForgeRegistryEntry> void register(T instance, ExtendedConfig config, @Nullable Callable<?> callback) {
         register(Objects.requireNonNull(config.getRegistry(),
-                "Tried registering a config for which no registry exists: " + config.getNamedId()), instance, config);
+                "Tried registering a config for which no registry exists: " + config.getNamedId()), instance, config, callback);
     }
 
     /**
@@ -83,7 +96,19 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
      * @param <T> The type to register.
      */
     public static <T extends IForgeRegistryEntry<T>> void register(IForgeRegistry<T> registry, T instance, ExtendedConfig config) {
+        register(registry, instance, config, null);
+    }
+
+    /**
+     * Register the {@link IForgeRegistryEntry}.
+     * @param registry The registry.
+     * @param instance The instance.
+     * @param config The corresponding config.
+     * @param callback A callback that will be called when the entry is registered.
+     * @param <T> The type to register.
+     */
+    public static <T extends IForgeRegistryEntry<T>> void register(IForgeRegistry<T> registry, T instance, ExtendedConfig config, @Nullable Callable<?> callback) {
         instance.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
-        config.getMod().getConfigHandler().registerToRegistry(registry, instance);
+        config.getMod().getConfigHandler().registerToRegistry(registry, instance, callback);
     }
 }

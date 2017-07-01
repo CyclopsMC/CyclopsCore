@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.configurable.IConfigurable;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
@@ -25,6 +26,7 @@ import org.cyclops.cyclopscore.init.RecipeHandler;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.Callable;
 
 /**
  * Create config file and register items and blocks from the given ExtendedConfigs.
@@ -42,10 +44,10 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
     private final Map<String, ExtendedConfig> configDictionary = Maps.newHashMap();
     private final Set<String> categories = Sets.newHashSet();
     private final Map<String, ConfigProperty> commandableProperties = Maps.newHashMap();
-    private final Multimap<Class<?>, IForgeRegistryEntry<?>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<Class<?>, Collection<IForgeRegistryEntry<?>>>newIdentityHashMap(), new Supplier<List<IForgeRegistryEntry<?>>>() {
+    private final Multimap<Class<?>, Pair<IForgeRegistryEntry<?>, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<Class<?>, Collection<Pair<IForgeRegistryEntry<?>, Callable<?>>>>newIdentityHashMap(), new Supplier<List<Pair<IForgeRegistryEntry<?>, Callable<?>>>>() {
         // Compiler complains when this is replaced with a lambda :-(
         @Override
-        public List<IForgeRegistryEntry<?>> get() {
+        public List<Pair<IForgeRegistryEntry<?>, Callable<?>>> get() {
             return Lists.newArrayList();
         }
     });
@@ -278,21 +280,44 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
      * This method will safely wait until the correct registry event for registering the entry.
      * @param registry The registry.
      * @param entry The entry.
+     * @param callback A callback that will be called when the entry is registered.
      * @param <V> The entry type.
      */
-    public <V extends IForgeRegistryEntry<V>> void registerToRegistry(IForgeRegistry<V> registry, IForgeRegistryEntry<V> entry) {
+    public <V extends IForgeRegistryEntry<V>> void registerToRegistry(IForgeRegistry<V> registry,
+                                                                      IForgeRegistryEntry<V> entry,
+                                                                      @Nullable Callable<?> callback) {
         if (this.registryEventPassed) {
             throw new IllegalStateException(String.format("Tried registering %s after its registration event.",
                     entry.getRegistryName()));
         }
-        registryEntriesHolder.put(registry.getRegistrySuperType(), entry);
+        registryEntriesHolder.put(registry.getRegistrySuperType(), Pair.of(entry, callback));
+    }
+
+    /**
+     * Register the given entry to the given registry.
+     * This method will safely wait until the correct registry event for registering the entry.
+     * @param registry The registry.
+     * @param entry The entry.
+     * @param <V> The entry type.
+     */
+    public <V extends IForgeRegistryEntry<V>> void registerToRegistry(IForgeRegistry<V> registry, IForgeRegistryEntry<V> entry) {
+        registerToRegistry(registry, entry, null);
     }
 
     @SubscribeEvent
     public void onRegistryEvent(RegistryEvent.Register event) {
         this.registryEventPassed = true;
         IForgeRegistry registry = event.getRegistry();
-        registryEntriesHolder.get(registry.getRegistrySuperType()).forEach(registry::register);
+        registryEntriesHolder.get(registry.getRegistrySuperType()).forEach((pair) -> {
+            registry.register(pair.getLeft());
+            try {
+                if (pair.getRight() != null) {
+                    pair.getRight().call();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
         if (event.getRegistry() == ForgeRegistries.RECIPES) {
             // Register recipes
