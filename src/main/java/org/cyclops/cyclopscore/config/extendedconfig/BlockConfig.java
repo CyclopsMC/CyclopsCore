@@ -16,6 +16,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.configurabletypeaction.BlockAction;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.item.ItemBlockMetadata;
@@ -112,7 +113,7 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
      * @return The pair of block resource location and item resource location.
      */
     @SideOnly(Side.CLIENT)
-    protected Pair<ModelResourceLocation, ModelResourceLocation> registerDynamicModel() {
+    public Pair<ModelResourceLocation, ModelResourceLocation> registerDynamicModel() {
         String blockName = getMod().getModId() + ":" + getNamedId();
         final ModelResourceLocation blockLocation = new ModelResourceLocation(blockName, "normal");
         ModelResourceLocation itemLocation = new ModelResourceLocation(blockName, "inventory");
@@ -131,9 +132,7 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
         super.onRegistered();
         if(MinecraftHelpers.isClientSide() && getBlockInstance() instanceof IDynamicModelElement &&
                 ((IDynamicModelElement) getBlockInstance()).hasDynamicModel()) {
-            Pair<ModelResourceLocation, ModelResourceLocation> resourceLocations = registerDynamicModel();
-            this.dynamicBlockVariantLocation = resourceLocations.getLeft();
-            this.dynamicItemVariantLocation  = resourceLocations.getRight();
+            BlockAction.handleDynamicBlockModel(this);
         }
     }
 

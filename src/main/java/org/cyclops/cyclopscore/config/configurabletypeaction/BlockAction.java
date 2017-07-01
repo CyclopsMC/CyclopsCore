@@ -1,16 +1,24 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
+import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
@@ -22,6 +30,7 @@ import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 /**
  * The action used for {@link BlockConfig}.
@@ -29,6 +38,12 @@ import java.lang.reflect.InvocationTargetException;
  * @see ConfigurableTypeAction
  */
 public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
+
+    private static final List<BlockConfig> MODEL_ENTRIES = Lists.newArrayList();
+
+    static {
+        MinecraftForge.EVENT_BUS.register(BlockAction.class);
+    }
 
     /**
      * Registers a block.
@@ -129,6 +144,21 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
                 }
             }
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent
+    public static void onModelRegistryLoad(ModelRegistryEvent event) {
+        for (BlockConfig config : MODEL_ENTRIES) {
+            Pair<ModelResourceLocation, ModelResourceLocation> resourceLocations = config.registerDynamicModel();
+            config.dynamicBlockVariantLocation = resourceLocations.getLeft();
+            config.dynamicItemVariantLocation  = resourceLocations.getRight();
+        }
+
+    }
+
+    public static void handleDynamicBlockModel(BlockConfig extendedConfig) {
+        MODEL_ENTRIES.add(extendedConfig);
     }
 
 }
