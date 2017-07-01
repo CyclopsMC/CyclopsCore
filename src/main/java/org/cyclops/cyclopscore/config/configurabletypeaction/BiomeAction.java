@@ -32,8 +32,9 @@ public class BiomeAction extends ConfigurableTypeAction<BiomeConfig>{
         eConfig.save();
         
         // Register biome
-        register(eConfig.getBiome(), eConfig);
-        eConfig.registerBiomeDictionary();
+        register(eConfig.getBiome(), eConfig, () -> {
+            eConfig.registerBiomeDictionary();
+            return null;
+        });
     }
-
 }
