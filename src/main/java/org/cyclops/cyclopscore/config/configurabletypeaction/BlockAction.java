@@ -31,6 +31,7 @@ import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * The action used for {@link BlockConfig}.
@@ -52,7 +53,18 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
      * @param creativeTabs The creative tab this block will reside in.
      */
     public static void register(Block block, ExtendedConfig config, @Nullable CreativeTabs creativeTabs) {
-        register(block, null, config, creativeTabs);
+        register(block, config, creativeTabs, null);
+    }
+
+    /**
+     * Registers a block.
+     * @param block The block instance.
+     * @param config The config.
+     * @param creativeTabs The creative tab this block will reside in.
+     * @param callback A callback that will be called when the entry is registered.
+     */
+    public static void register(Block block, ExtendedConfig config, @Nullable CreativeTabs creativeTabs, @Nullable Callable<?> callback) {
+        register(block, null, config, creativeTabs, callback);
     }
 
     /**
@@ -63,11 +75,23 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
      * @param creativeTabs The creative tab this block will reside in.
      */
     public static void register(Block block, @Nullable Class<? extends ItemBlock> itemBlockClass, ExtendedConfig config, @Nullable CreativeTabs creativeTabs) {
+        register(block, itemBlockClass, config, creativeTabs, null);
+    }
+
+    /**
+     * Registers a block.
+     * @param block The block instance.
+     * @param itemBlockClass The optional item block class.
+     * @param config The config.
+     * @param creativeTabs The creative tab this block will reside in.
+     * @param callback A callback that will be called when the entry is registered.
+     */
+    public static void register(Block block, @Nullable Class<? extends ItemBlock> itemBlockClass, ExtendedConfig config, @Nullable CreativeTabs creativeTabs, @Nullable Callable<?> callback) {
         register(block, config);
         if(itemBlockClass != null) {
             try {
                 ItemBlock item = itemBlockClass.getConstructor(Block.class).newInstance(block);
-                register(ForgeRegistries.ITEMS, item, config);
+                register(ForgeRegistries.ITEMS, item, config, callback);
             } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -101,7 +125,13 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
         Block block = (Block) eConfig.getSubInstance();
 
         // Register block and set creative tab.
-        register(block, eConfig.getItemBlockClass(), eConfig, eConfig.getTargetTab());
+        register(block, eConfig.getItemBlockClass(), eConfig, eConfig.getTargetTab(), () -> {
+            // Register optional ore dictionary ID
+            if(eConfig.getOreDictionaryId() != null) {
+                OreDictionary.registerOre(eConfig.getOreDictionaryId(), new ItemStack((Block)eConfig.getSubInstance()));
+            }
+            return null;
+        });
 
         // Also register tile entity
         GuiHandler.GuiType guiType = GuiHandler.GuiType.BLOCK;
@@ -121,11 +151,6 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
         if(block instanceof IConfigurableBlock && ((IConfigurableBlock) block).hasGui()) {
             IGuiContainerProvider gui = (IGuiContainerProvider) block;
             eConfig.getMod().getGuiHandler().registerGUI(gui, guiType);
-        }
-        
-        // Register optional ore dictionary ID
-        if(eConfig.getOreDictionaryId() != null) {
-            OreDictionary.registerOre(eConfig.getOreDictionaryId(), new ItemStack((Block)eConfig.getSubInstance()));
         }
         
         // Register third-party mod blockState parts.

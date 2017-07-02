@@ -40,7 +40,7 @@ public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, I
 
         // To increase performance, first check if the comparing stack is not null before
         // potentially matching it with the whole oredict.
-        if (that.getIngredient() != null) {
+        if (!that.getIngredient().isEmpty()) {
             for (ItemStack itemStack : getItemStacks()) {
                 if (equals(itemStack, that.getIngredient())) {
                     return true;
