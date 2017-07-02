@@ -9,9 +9,12 @@ import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.property.ExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.ArrayUtils;
@@ -50,6 +53,7 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
     private final Map<IProperty, ArrayList<Comparable>> propertyValues;
     private final Comparator<IProperty> propertyComparator;
     private final Comparator<IUnlistedProperty> unlistedPropertyComparator;
+    private TreeSet<IProperty> ignoredProperties;
 
     public BlockPropertyManagerComponent(Block block, Comparator<IProperty> propertyComparator,
                                          Comparator<IUnlistedProperty> unlistedPropertyComparator) {
@@ -66,6 +70,10 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
             this.propertyValues = preprocessPropertyValues(this.properties);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
+        }
+
+        if (MinecraftHelpers.isClientSide() && ignoredProperties.size() != 0) {
+            MinecraftForge.EVENT_BUS.register(this);
         }
     }
 
@@ -85,7 +93,7 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
         TreeSet<IProperty> sortedProperties = Sets.newTreeSet(getPropertyComparator());
         Set<IProperty> metaExclusions = Sets.newHashSet();
         TreeSet<IUnlistedProperty> sortedUnlistedProperties = Sets.newTreeSet(getUnlistedPropertyComparator());
-        TreeSet<IProperty> ignoredProperties = Sets.newTreeSet(getPropertyComparator());
+        ignoredProperties = Sets.newTreeSet(getPropertyComparator());
         for(Class<?> clazz = block.getClass(); clazz != null; clazz = clazz.getSuperclass()) {
             for(Field field : clazz.getDeclaredFields()) {
                 if(field.isAnnotationPresent(BlockProperty.class)) {
@@ -123,17 +131,14 @@ public class BlockPropertyManagerComponent implements IBlockPropertyManager {
             }
         }
 
-        if (MinecraftHelpers.isClientSide() && ignoredProperties.size() != 0) {
-            ignoreProperties(ignoredProperties);
-        }
-
         IProperty[] properties = new IProperty[sortedProperties.size()];
         IUnlistedProperty[] unlistedProperties = new IUnlistedProperty[sortedUnlistedProperties.size()];
         return Triple.of(sortedProperties.toArray(properties), sortedUnlistedProperties.toArray(unlistedProperties), metaExclusions);
     }
 
     @SideOnly(Side.CLIENT)
-    protected void ignoreProperties(TreeSet<IProperty> ignoredProperties) {
+    @SubscribeEvent
+    public void onModelRegistryLoad(ModelRegistryEvent event) {
         IProperty[] ignoredPropertiesArray = new IProperty[ignoredProperties.size()];
         ignoredProperties.toArray(ignoredPropertiesArray);
         ModelLoader.setCustomStateMapper(block,
