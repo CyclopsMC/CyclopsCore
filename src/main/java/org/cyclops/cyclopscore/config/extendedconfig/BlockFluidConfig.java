@@ -5,8 +5,11 @@ import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.item.Item;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.BlockFluidClassic;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -36,6 +39,9 @@ public abstract class BlockFluidConfig extends BlockConfig {
         if (MinecraftHelpers.isClientSide()) {
             fluidLocation = new ModelResourceLocation(mod.getModId() + ":" + getNamedId(), "fluid");
         }
+        if (MinecraftHelpers.isClientSide()) {
+            MinecraftForge.EVENT_BUS.register(this);
+        }
     }
 
     @Override
@@ -43,11 +49,9 @@ public abstract class BlockFluidConfig extends BlockConfig {
         return (BlockFluidClassic) super.getBlockInstance();
     }
 
-    @Override
     @SideOnly(Side.CLIENT)
-    public void onRegistered() {
-        super.onRegistered();
-
+    @SubscribeEvent
+    public void onModelRegistryLoad(ModelRegistryEvent event) {
         // Handle registration for fluid rendering
         BlockFluidClassic blockInstance = getBlockInstance();
         Item fluid = Item.getItemFromBlock(blockInstance);
