@@ -23,8 +23,8 @@ import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
 import org.cyclops.cyclopscore.recipe.custom.component.DummyPropertiesComponent;
-import org.cyclops.cyclopscore.recipe.custom.component.ItemStackRecipeComponent;
-import org.cyclops.cyclopscore.recipe.custom.component.ItemStacksRecipeComponent;
+import org.cyclops.cyclopscore.recipe.custom.component.IngredientRecipeComponent;
+import org.cyclops.cyclopscore.recipe.custom.component.IngredientsRecipeComponent;
 import org.cyclops.cyclopscore.recipe.xml.ConfigRecipeConditionHandler;
 import org.cyclops.cyclopscore.recipe.xml.IRecipeConditionHandler;
 import org.w3c.dom.Document;
@@ -174,24 +174,24 @@ public class InfoBookParser {
         });
 
         // Appendix item factories
-        registerFactory("crafting_recipe", new IAppendixItemFactory<ItemStacksRecipeComponent, ItemStackRecipeComponent, DummyPropertiesComponent>() {
+        registerFactory("crafting_recipe", new IAppendixItemFactory<IngredientsRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent>() {
 
             @Override
-            public SectionAppendix create(IInfoBook infoBook, IRecipe<ItemStacksRecipeComponent, ItemStackRecipeComponent, DummyPropertiesComponent> recipe) throws InvalidAppendixException {
+            public SectionAppendix create(IInfoBook infoBook, IRecipe<IngredientsRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent> recipe) throws InvalidAppendixException {
                 try {
-                    return new CraftingRecipeAppendix(infoBook, CraftingHelpers.findCraftingRecipe(recipe.getOutput().getItemStack(), 0));
+                    return new CraftingRecipeAppendix(infoBook, CraftingHelpers.findCraftingRecipe(recipe.getOutput().getIngredient(), 0));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }
             }
 
         });
-        registerFactory("furnace_recipe", new IAppendixItemFactory<ItemStackRecipeComponent, ItemStackRecipeComponent, DummyPropertiesComponent>() {
+        registerFactory("furnace_recipe", new IAppendixItemFactory<IngredientRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent>() {
 
             @Override
-            public SectionAppendix create(IInfoBook infoBook, IRecipe<ItemStackRecipeComponent, ItemStackRecipeComponent, DummyPropertiesComponent> recipe) throws InvalidAppendixException {
+            public SectionAppendix create(IInfoBook infoBook, IRecipe<IngredientRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent> recipe) throws InvalidAppendixException {
                 try {
-                    return new FurnaceRecipeAppendix(infoBook, CraftingHelpers.findFurnaceRecipe(recipe.getOutput().getItemStack(), 0));
+                    return new FurnaceRecipeAppendix(infoBook, CraftingHelpers.findFurnaceRecipe(recipe.getOutput().getIngredient(), 0));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }

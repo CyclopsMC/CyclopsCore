@@ -4,6 +4,8 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import lombok.Data;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.NonNullList;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
@@ -18,30 +20,28 @@ import java.util.List;
  * @author immortaleeb
  */
 @Data
-public class ItemStacksRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IItemStacksRecipeComponent {
+public class IngredientsRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IItemStacksRecipeComponent {
 
-    private final List<ItemStackRecipeComponent> itemStacks;
+    private final List<IngredientRecipeComponent> itemStacks;
 
-    public ItemStacksRecipeComponent(List<Object> itemStacks) {
-        this.itemStacks = Lists.transform(itemStacks, new Function<Object, ItemStackRecipeComponent>() {
+    public IngredientsRecipeComponent(NonNullList<Ingredient> ingredients) {
+        this.itemStacks = Lists.transform(ingredients, new Function<Ingredient, IngredientRecipeComponent>() {
             @Nullable
             @Override
-            public ItemStackRecipeComponent apply(Object input) {
-                return input instanceof String
-                        ? new OreDictItemStackRecipeComponent((String) input)
-                        : new ItemStackRecipeComponent((ItemStack) input);
+            public IngredientRecipeComponent apply(Ingredient input) {
+                return new IngredientRecipeComponent(input);
             }
         });
     }
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof ItemStacksRecipeComponent)) return false;
-        ItemStacksRecipeComponent that = (ItemStacksRecipeComponent)object;
+        if (!(object instanceof IngredientsRecipeComponent)) return false;
+        IngredientsRecipeComponent that = (IngredientsRecipeComponent)object;
         return equals(this.itemStacks, that.itemStacks);
     }
 
-    protected boolean equals(List<ItemStackRecipeComponent> a, List<ItemStackRecipeComponent> b) {
+    protected boolean equals(List<IngredientRecipeComponent> a, List<IngredientRecipeComponent> b) {
         if (a.size() == b.size()) {
             for (int i = 0; i < a.size(); i++) {
                 if (!a.get(i).equals(b.get(i))) {
@@ -56,18 +56,18 @@ public class ItemStacksRecipeComponent implements IRecipeInput, IRecipeOutput, I
     @Override
     public int hashCode() {
         int hash = 876;
-        for (ItemStackRecipeComponent itemStack : itemStacks) {
+        for (IngredientRecipeComponent itemStack : itemStacks) {
             hash |= itemStack.hashCode();
         }
         return hash;
     }
 
     public List<ItemStack> getItemStacks() {
-        return Lists.transform(itemStacks, new Function<ItemStackRecipeComponent, ItemStack>() {
+        return Lists.transform(itemStacks, new Function<IngredientRecipeComponent, ItemStack>() {
             @Nullable
             @Override
-            public ItemStack apply(@Nullable ItemStackRecipeComponent input) {
-                return input.getItemStack();
+            public ItemStack apply(@Nullable IngredientRecipeComponent input) {
+                return input.getIngredient();
             }
         });
     }

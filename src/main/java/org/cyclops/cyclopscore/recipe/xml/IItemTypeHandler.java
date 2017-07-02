@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.recipe.xml;
 
+import net.minecraft.item.crafting.Ingredient;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.w3c.dom.Node;
 
@@ -15,9 +16,9 @@ public interface IItemTypeHandler {
 	 * @param recipeHandler The handler.
 	 * @param itemNode The node containing info about this item, for example
 	 * "&lt;item&gt;evilcraft:darkGem&lt;/item&gt;"
-	 * @return An item stack for this item or a string representing an ore dict id.
+	 * @return An ingredient.
 	 * @throws XmlRecipeLoader.XmlRecipeException If an error occured
 	 */
-	public Object getItem(RecipeHandler recipeHandler, Node itemNode) throws XmlRecipeLoader.XmlRecipeException;
+	public Ingredient getIngredient(RecipeHandler recipeHandler, Node itemNode) throws XmlRecipeLoader.XmlRecipeException;
 	
 }

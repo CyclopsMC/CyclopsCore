@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.recipe.custom.component;
 
 import lombok.ToString;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
@@ -15,26 +16,26 @@ import java.util.List;
  * @author immortaleeb
  */
 @ToString
-public class ItemAndFluidStackRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IItemStackRecipeComponent, IFluidStackRecipeComponent {
-    private final ItemStackRecipeComponent itemStack;
+public class IngredientAndFluidStackRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IItemStackRecipeComponent, IFluidStackRecipeComponent {
+    private final IngredientRecipeComponent ingredient;
     private final FluidStackRecipeComponent fluidStack;
 
-    public ItemAndFluidStackRecipeComponent(ItemStack itemStack, FluidStack fluidStack) {
-        this.itemStack = new ItemStackRecipeComponent(itemStack);
+    public IngredientAndFluidStackRecipeComponent(Ingredient ingredient, FluidStack fluidStack) {
+        this.ingredient = new IngredientRecipeComponent(ingredient);
         this.fluidStack = new FluidStackRecipeComponent(fluidStack);
     }
 
-    public ItemAndFluidStackRecipeComponent(String key, FluidStack fluidStack) {
-        this.itemStack = new OreDictItemStackRecipeComponent(key);
+    public IngredientAndFluidStackRecipeComponent(ItemStack itemStack, FluidStack fluidStack) {
+        this.ingredient = new IngredientRecipeComponent(itemStack);
         this.fluidStack = new FluidStackRecipeComponent(fluidStack);
     }
 
-    public ItemStack getItemStack() {
-        return itemStack.getItemStack();
+    public ItemStack getIngredient() {
+        return ingredient.getIngredient();
     }
 
     public List<ItemStack> getItemStacks() {
-        return itemStack.getItemStacks();
+        return ingredient.getItemStacks();
     }
 
     public FluidStack getFluidStack() {
@@ -44,19 +45,19 @@ public class ItemAndFluidStackRecipeComponent implements IRecipeInput, IRecipeOu
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof ItemAndFluidStackRecipeComponent)) return false;
+        if (!(o instanceof IngredientAndFluidStackRecipeComponent)) return false;
 
-        ItemAndFluidStackRecipeComponent that = (ItemAndFluidStackRecipeComponent) o;
+        IngredientAndFluidStackRecipeComponent that = (IngredientAndFluidStackRecipeComponent) o;
 
         if (!fluidStack.equals(that.fluidStack)) return false;
-        if (!itemStack.equals(that.itemStack)) return false;
+        if (!ingredient.equals(that.ingredient)) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = itemStack.hashCode();
+        int result = ingredient.hashCode();
         result = 31 * result + fluidStack.hashCode();
         return result;
     }

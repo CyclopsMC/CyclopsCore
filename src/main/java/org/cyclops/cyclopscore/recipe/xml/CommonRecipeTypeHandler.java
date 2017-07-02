@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.recipe.xml;
 
 import com.google.common.collect.Maps;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -38,7 +39,7 @@ public abstract class CommonRecipeTypeHandler<I extends IRecipeInput, O extends 
 	}
 	
 	@Override
-	public Object getItem(RecipeHandler recipeHandler, Node itemNode) throws XmlRecipeLoader.XmlRecipeException {
+	public Ingredient getIngredient(RecipeHandler recipeHandler, Node itemNode) throws XmlRecipeLoader.XmlRecipeException {
 		String type = DEFAULT_ITEM_TYPE;
 		Node typeAttribute = itemNode.getAttributes().getNamedItem("type");
 		if(typeAttribute != null) {
@@ -47,13 +48,13 @@ public abstract class CommonRecipeTypeHandler<I extends IRecipeInput, O extends 
 		return getItem(recipeHandler, itemNode, type);
 	}
 	
-	protected Object getItem(RecipeHandler recipeHandler, Node itemNode, String type) throws XmlRecipeLoader.XmlRecipeException {
+	protected Ingredient getItem(RecipeHandler recipeHandler, Node itemNode, String type) throws XmlRecipeLoader.XmlRecipeException {
 		IItemTypeHandler handler = ITEM_TYPE_HANDLERS.get(type);
 		if(handler == null) {
 			throw new XmlRecipeLoader.XmlRecipeException(String.format(
 					"Could not find an item type handler of type '%s'", type));
 		}
-		return handler.getItem(recipeHandler, itemNode);
+		return handler.getIngredient(recipeHandler, itemNode);
 	}
 
 	protected FluidStack getFluid(RecipeHandler recipeHandler, Node fluidNode) throws XmlRecipeLoader.XmlRecipeException {

@@ -46,7 +46,7 @@ public class CraftingHelpers {
         ResourceLocation id = new ResourceLocation(Loader.instance().activeModContainer().getModId(),
                 output.getItem().getRegistryName().getResourcePath());
         int counter = 0;
-        while (CraftingManager.REGISTRY.containsKey(id)) {
+        while (ForgeRegistries.RECIPES.containsKey(id)) {
             id = new ResourceLocation(id.getResourceDomain(), id.getResourcePath() + "_" + ++counter);
         }
         return id;
