@@ -2,10 +2,12 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
+import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import org.cyclops.cyclopscore.helper.obfuscation.ObfuscationHelpers;
 
 /**
  * Helpers related to advancements
@@ -26,6 +28,10 @@ public class AdvancementHelpers {
 
     public static AdvancementManager getAdvancementManager() {
         return FMLCommonHandler.instance().getMinecraftServerInstance().getAdvancementManager();
+    }
+
+    public static <T extends ICriterionTrigger> T registerCriteriaTrigger(T criterion) {
+        return ObfuscationHelpers.registerCriteriaTrigger(criterion);
     }
 
 }

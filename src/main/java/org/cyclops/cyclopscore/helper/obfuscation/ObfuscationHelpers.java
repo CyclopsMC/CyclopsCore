@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.helper.obfuscation;
 
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.potion.Potion;
@@ -11,6 +13,8 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
@@ -89,6 +93,24 @@ public class ObfuscationHelpers {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Call the private static `register` from @link{CriteriaTriggers}
+     * @param criterion The criterion.
+     * @param <T> The criterion type.
+     * @return The registered instance.
+     */
+    public static <T extends ICriterionTrigger> T registerCriteriaTrigger(T criterion) {
+        Method method = ReflectionHelper.findMethod(CriteriaTriggers.class,
+                ObfuscationData.CRITERIATRIGGERS_REGISTER[0], ObfuscationData.CRITERIATRIGGERS_REGISTER[1],
+                ICriterionTrigger.class);
+        try {
+            return (T) method.invoke(null, criterion);
+        } catch (SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 	
 }

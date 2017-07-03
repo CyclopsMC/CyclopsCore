@@ -38,5 +38,10 @@ public class ObfuscationData {
      * Field from {@link net.minecraft.entity.Entity}.
      */
     public static final String[] ENTITY_CAPABILITIES = new String[] { "capabilities" };
+
+    /**
+     * Field from net.minecraft.advancements.CriteriaTriggers
+     */
+    public static final String[] CRITERIATRIGGERS_REGISTER = new String[] { "register", "func_192118_a" };
 	
 }
