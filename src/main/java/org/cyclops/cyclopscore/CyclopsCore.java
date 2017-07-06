@@ -89,6 +89,7 @@ public class CyclopsCore extends ModBase implements IModVersion {
     @Override
     public final void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
+        Advancements.load();
     }
 
     @Mod.EventHandler
