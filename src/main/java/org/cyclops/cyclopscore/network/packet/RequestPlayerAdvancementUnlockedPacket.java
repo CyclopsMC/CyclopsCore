@@ -47,6 +47,7 @@ public class RequestPlayerAdvancementUnlockedPacket extends PacketCodec {
 		Advancement advancement = AdvancementHelpers.getAdvancement(new ResourceLocation(advancementId));
 		if (advancement == null) {
 			CyclopsCore.clog(Level.ERROR, "Received an invalid advancement " + advancementId + " from " + player.getName());
+			return;
 		}
 		CyclopsCore._instance.getPacketHandler().sendToPlayer(
 				new SendPlayerAdvancementUnlockedPacket(advancementId, AdvancementHelpers

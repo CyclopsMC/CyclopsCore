@@ -446,17 +446,15 @@ public abstract class GuiInfoBook extends GuiScreen {
             this.guiInfoBook = guiInfoBook;
         }
 
-        /**
-         * Draws this button to the screen.
-         */
-        public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
+        @Override
+        public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.x && mouseY >= this.y &&
                                mouseX < this.x + this.width && mouseY < this.y + this.height;
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 minecraft.getTextureManager().bindTexture(guiInfoBook.texture);
-                int k = x;
-                int l = y;
+                int k = textureX;
+                int l = textureY;
 
                 if (isHover) {
                     k += width;
@@ -464,7 +462,7 @@ public abstract class GuiInfoBook extends GuiScreen {
 
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                this.drawTexturedModalRect(this.textureX, this.textureY, k, l, width, height);
+                this.drawTexturedModalRect(this.x, this.y, k, l, width, height);
                 GlStateManager.disableBlend();
             }
         }
