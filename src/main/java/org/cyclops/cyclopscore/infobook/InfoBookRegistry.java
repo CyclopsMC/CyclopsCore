@@ -47,6 +47,8 @@ public class InfoBookRegistry implements IInfoBookRegistry {
         if (event.getRegistry() == ForgeRegistries.RECIPES) {
             for (Map.Entry<IInfoBook, String> entry : bookPaths.entrySet()) {
                 bookRoots.put(entry.getKey(), InfoBookParser.initializeInfoBook(entry.getKey(), entry.getValue(), null));
+                // Reset the infobook history
+                entry.getKey().setCurrentSection(null);
             }
 
         }
