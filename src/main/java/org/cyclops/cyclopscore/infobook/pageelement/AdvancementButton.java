@@ -3,7 +3,9 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.lwjgl.opengl.GL11;
 
@@ -14,10 +16,10 @@ import java.util.List;
  */
 public class AdvancementButton extends AdvancedButton {
 
-    private final Advancement advancement;
+    private final ResourceLocation advancementId;
 
-    public AdvancementButton(Advancement advancement) {
-        this.advancement = advancement;
+    public AdvancementButton(ResourceLocation advancementId) {
+        this.advancementId = advancementId;
     }
 
     @Override
@@ -31,8 +33,11 @@ public class AdvancementButton extends AdvancedButton {
         GlStateManager.pushMatrix();
         if(mx >= x && my >= y && mx <= x + AdvancementRewardsAppendix.SLOT_SIZE && my <= y + AdvancementRewardsAppendix.SLOT_SIZE) {
             List<String> lines = Lists.newArrayList();
-            lines.add(advancement.getDisplay().getTitle().getFormattedText());
-            lines.add(TextFormatting.GRAY.toString() + advancement.getDisplay().getDescription().getFormattedText());
+            Advancement advancement = AdvancementHelpers.getAdvancement(advancementId);
+            if (advancement != null) {
+                lines.add(advancement.getDisplay().getTitle().getFormattedText());
+                lines.add(TextFormatting.GRAY.toString() + advancement.getDisplay().getDescription().getFormattedText());
+            }
             gui.drawHoveringText(lines, mx, my);
         }
         GlStateManager.popMatrix();

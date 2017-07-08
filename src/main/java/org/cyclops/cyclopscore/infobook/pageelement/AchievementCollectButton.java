@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
@@ -72,7 +72,7 @@ public class AchievementCollectButton extends AdvancedButton {
     public void onClick() {
         EntityPlayer player = Minecraft.getMinecraft().player;
         boolean canObtain = true;
-        for (Advancement advancement : advancementRewards.getAchievements()) {
+        for (ResourceLocation advancement : advancementRewards.getAdvancements()) {
             if (!AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getMinecraft().player, advancement)) {
                 canObtain = false;
             }

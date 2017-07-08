@@ -4,8 +4,10 @@ import com.google.common.collect.Maps;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -21,24 +23,26 @@ import java.util.Map;
 
 /**
  * An advancement rewards appendix.
- * TODO: completely rewrite this based on advancements
  * @author rubensworks
  */
 public class AdvancementRewardsAppendix extends SectionAppendix {
 
     public static final int SLOT_SIZE = 16;
     private static final int SLOT_PADDING = 2;
-
     public static final int MAX_WIDTH = 80;
+    private static final int ADVANCEMENT_INFO_REQUEST_TIMEOUT = 60;
 
     private static final AdvancedButton.Enum COLLECT = AdvancedButton.Enum.create();
     private final AdvancedButton.Enum[] rewards;
-    private final AdvancedButton.Enum[] achievements;
+    private final AdvancedButton.Enum[] advancements;
     private final Point[] rewardPositions;
 
     private final AdvancementRewards advancementRewards;
     private final int height;
     private final boolean enableRewards;
+
+    private boolean errored = false;
+    private long lastAdvancementInfoRequest = -1;
 
     /**
      * This map holds advanced buttons that have a unique identifier.
@@ -51,7 +55,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         super(infoBook);
         this.advancementRewards = advancementRewards;
         rewards = new AdvancedButton.Enum[advancementRewards.getRewards().size()];
-        achievements = new AdvancedButton.Enum[advancementRewards.getAchievements().size()];
+        advancements = new AdvancedButton.Enum[advancementRewards.getAdvancements().size()];
         rewardPositions = new Point[advancementRewards.getRewards().size()];
         int x = 0;
         int y = 0;
@@ -73,8 +77,8 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
             rewardPositions[i] = new Point(x, y);
             x += reward.getWidth();
         }
-        for (int i = 0; i < advancementRewards.getAchievements().size(); i++) {
-            achievements[i] = AdvancedButton.Enum.create();
+        for (int i = 0; i < advancementRewards.getAdvancements().size(); i++) {
+            advancements[i] = AdvancedButton.Enum.create();
         }
 
         height = y + Math.max(row_max_y, max_height);
@@ -94,12 +98,21 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
 
     @Override
     protected int getHeight() {
-        return height + ((int) Math.ceil((advancementRewards.getAchievements().size() * (SLOT_SIZE + SLOT_PADDING * 2)) / MAX_WIDTH + 1) * (SLOT_SIZE + SLOT_PADDING * 2)) + 23;
+        return height + ((int) Math.ceil((advancementRewards.getAdvancements().size() * (SLOT_SIZE + SLOT_PADDING * 2)) / MAX_WIDTH + 1) * (SLOT_SIZE + SLOT_PADDING * 2)) + 23;
+    }
+
+    protected void requestAdvancementInfo() {
+        if (Minecraft.getMinecraft().world.getTotalWorldTime() - lastAdvancementInfoRequest > ADVANCEMENT_INFO_REQUEST_TIMEOUT) {
+            advancementRewards.getAdvancements().forEach(AdvancementHelpers::requestAdvancementUnlockInfo);
+            lastAdvancementInfoRequest = Minecraft.getMinecraft().world.getWorldTime();
+        }
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     protected void drawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
+        requestAdvancementInfo();
+
         int offsetX = 0;
         int offsetY = 0;
         gui.drawOuterBorder(x - 1, y - 1, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
@@ -109,20 +122,29 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         // Draw advancements
         offsetY += 10;
         boolean allAchievementsValid = true;
-        for (int i = 0; i < advancementRewards.getAchievements().size(); i++) {
-            Advancement advancement = advancementRewards.getAchievements().get(i);
-            if (offsetX + SLOT_SIZE > MAX_WIDTH) {
-                offsetY += SLOT_SIZE + SLOT_PADDING * 2;
-                offsetX = 0;
+        if (!errored) {
+            for (int i = 0; i < advancementRewards.getAdvancements().size(); i++) {
+                ResourceLocation advancementId = advancementRewards.getAdvancements().get(i);
+                Advancement advancement = AdvancementHelpers.getAdvancement(advancementId);
+                if (advancement == null) {
+                    getInfoBook().getMod().getLoggerHelper().log(Level.WARN,
+                            String.format("Could not find an advancement by id '%s'", advancementId));
+                    this.errored = true;
+                } else {
+                    if (offsetX + SLOT_SIZE > MAX_WIDTH) {
+                        offsetY += SLOT_SIZE + SLOT_PADDING * 2;
+                        offsetX = 0;
+                    }
+                    RecipeAppendix.renderItemForButton(gui, x + offsetX, y + offsetY, advancement.getDisplay().getIcon(), mx, my, true, null);
+                    if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getMinecraft().player, advancementId)) {
+                        Images.OK.draw(gui, x + offsetX + 1, y + offsetY + 2);
+                    } else {
+                        allAchievementsValid = false;
+                    }
+                    renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, "", null, gui);
+                    offsetX += SLOT_SIZE + SLOT_PADDING * 2;
+                }
             }
-            RecipeAppendix.renderItemForButton(gui, x + offsetX, y + offsetY, advancement.getDisplay().getIcon(), mx, my, true, null);
-            if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getMinecraft().player, advancement)) {
-                Images.OK.draw(gui, x + offsetX + 1, y + offsetY + 2);
-            } else {
-                allAchievementsValid = false;
-            }
-            renderButtonHolders.get(achievements[i]).update(x + offsetX, y + offsetY, "", null, gui);
-            offsetX += SLOT_SIZE + SLOT_PADDING * 2;
         }
 
         boolean taken = advancementRewards.isObtained(Minecraft.getMinecraft().player);
@@ -179,8 +201,8 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         for (int i = 0; i < advancementRewards.getRewards().size(); i++) {
             renderButtonHolders.put(rewards[i], advancementRewards.getRewards().get(i).createButton(getInfoBook()));
         }
-        for (int i = 0; i < advancementRewards.getAchievements().size(); i++) {
-            renderButtonHolders.put(achievements[i], new AdvancementButton(advancementRewards.getAchievements().get(i)));
+        for (int i = 0; i < advancementRewards.getAdvancements().size(); i++) {
+            renderButtonHolders.put(advancements[i], new AdvancementButton(advancementRewards.getAdvancements().get(i)));
         }
         infoSection.addAdvancedButtons(getPage(), renderButtonHolders.values());
     }

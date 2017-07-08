@@ -33,6 +33,8 @@ public class CommonProxy extends CommonProxyComponent {
         packetHandler.register(AdvancementRewardsObtainPacket.class);
         packetHandler.register(RequestPlayerNbtPacket.class);
         packetHandler.register(SendPlayerNbtPacket.class);
+        packetHandler.register(RequestPlayerAdvancementUnlockedPacket.class);
+        packetHandler.register(SendPlayerAdvancementUnlockedPacket.class);
 
         // Register debug packets
         packetHandler.register(PingPongPacketAsync.class);

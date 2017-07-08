@@ -2,9 +2,9 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
 import lombok.Data;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.EntityHelpers;
@@ -26,12 +26,12 @@ public class AdvancementRewards {
     public static String NBT_KEY_OBTAINED_PREFIX = Reference.MOD_ID + ":" + "obtainedAdvancements:";
 
     private final String id;
-    private final List<Advancement> achievements;
+    private final List<ResourceLocation> advancements;
     private final List<IReward> rewards;
 
-    public AdvancementRewards(String id, List<Advancement> achievements, List<IReward> rewards) {
+    public AdvancementRewards(String id, List<ResourceLocation> advancements, List<IReward> rewards) {
         this.id = id;
-        this.achievements = achievements;
+        this.advancements = advancements;
         this.rewards = rewards;
         if (ACHIEVEMENT_REWARDS.put(id, this) != null) {
             throw new IllegalArgumentException(String.format("Duplicate advancements rewards id '%s' was found.", id));
