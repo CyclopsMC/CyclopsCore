@@ -79,6 +79,8 @@ public class EnchantmentHelpers {
 	    	NBTTagCompound compound = enchlist.getCompoundTagAt(enchantmentListID);
 	        compound.setShort("lvl", (short) level);
 	    }
+		NBTTagCompound tag = ItemStackHelpers.getSafeTagCompound(itemStack);
+		tag.setTag("ench", enchlist);
 	}
 
 	/**
@@ -91,9 +93,9 @@ public class EnchantmentHelpers {
 	 * @param level The new level of the enchantment on the given item
 	 */
 	public static void setEnchantmentLevel(ItemStack itemStack, Enchantment enchantment, int level) {
-	    NBTTagList enchlist = itemStack.getEnchantmentTagList();
-	    if(level <= 0 || enchlist != null) {
-	    	setEnchantmentLevel(itemStack, Enchantment.getEnchantmentID(enchantment), level);
+		int existingIndex;
+	    if((existingIndex = doesEnchantApply(itemStack, enchantment)) >= 0) {
+	    	setEnchantmentLevel(itemStack, existingIndex, level);
 	    } else {
 	    	itemStack.addEnchantment(enchantment, level);
 	    }
