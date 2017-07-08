@@ -96,7 +96,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
      */
     private static NonNullList<Ingredient> formatShapedGrid(NonNullList<Ingredient> itemStacksRaw, int width, int height) {
         int rawIndex = 0;
-        NonNullList<Ingredient> itemStacks = NonNullList.withSize(width * height, Ingredient.EMPTY);
+        NonNullList<Ingredient> itemStacks = NonNullList.withSize(9, Ingredient.EMPTY);
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
                 itemStacks.set(y * 3 + x, itemStacksRaw.get(rawIndex++));
