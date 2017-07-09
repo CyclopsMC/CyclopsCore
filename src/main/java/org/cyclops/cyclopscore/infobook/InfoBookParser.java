@@ -159,7 +159,8 @@ public class InfoBookParser {
                         appendixList.add(createAppendix(infoBook, type, recipe));
                     } catch (InvalidAppendixException e) {
                         // Skip this appendix.
-                        infoBook.getMod().log(Level.WARN, e.getMessage());
+                        e.setState(infoBook, null);
+                        infoBook.getMod().log(Level.WARN, e.toString());
                     }
                 }
                 return appendixList;
@@ -409,7 +410,8 @@ public class InfoBookParser {
                     }
                 } catch (InvalidAppendixException e) {
                     // Skip this appendix.
-                    infoBook.getMod().log(Level.WARN, e.getMessage());
+                    e.setState(infoBook, parent);
+                    infoBook.getMod().log(Level.WARN, e.toString());
                 }
             }
             for (int j = 0; j < appendixLists.getLength(); j++) {
@@ -421,7 +423,8 @@ public class InfoBookParser {
                         appendixList.addAll(createAppendixes(infoBook, factoryType, appendixListNode));
                     } catch (InvalidAppendixException e) {
                         // Skip this appendix.
-                        infoBook.getMod().log(Level.WARN, e.getMessage());
+                        e.setState(infoBook, parent);
+                        infoBook.getMod().log(Level.WARN, e.toString());
                     }
                 }
             }
@@ -516,10 +519,24 @@ public class InfoBookParser {
 
     public static class InvalidAppendixException extends Exception {
 
+        private IInfoBook infoBook;
+        private InfoSection section;
+
         public InvalidAppendixException(String message) {
             super(message);
         }
 
+        public void setState(IInfoBook infoBook, @Nullable InfoSection section) {
+            this.infoBook = infoBook;
+            this.section = section;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("Invalid appendix %s from mod %s in an infobook: %s",
+                    section != null ? section.getUnlocalizedName() : "<root>",
+                    infoBook.getMod(), getLocalizedMessage());
+        }
     }
 
 }

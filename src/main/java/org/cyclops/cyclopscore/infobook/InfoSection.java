@@ -28,7 +28,7 @@ public class InfoSection {
     @Getter private final IInfoBook infoBook;
     private InfoSection parent;
     private int childIndex;
-    private String unlocalizedName;
+    @Getter private String unlocalizedName;
     private List<InfoSection> sections = Lists.newLinkedList();
     private List<List<HyperLink>> links = Lists.newLinkedList();
     private List<SectionAppendix> appendixes;
