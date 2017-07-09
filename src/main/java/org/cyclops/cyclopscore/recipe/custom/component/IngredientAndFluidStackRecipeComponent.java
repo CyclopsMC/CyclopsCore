@@ -16,7 +16,7 @@ import java.util.List;
  * @author immortaleeb
  */
 @ToString
-public class IngredientAndFluidStackRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IItemStackRecipeComponent, IFluidStackRecipeComponent {
+public class IngredientAndFluidStackRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IIngredientRecipeComponent, IFluidStackRecipeComponent {
     private final IngredientRecipeComponent ingredient;
     private final FluidStackRecipeComponent fluidStack;
 
@@ -30,8 +30,14 @@ public class IngredientAndFluidStackRecipeComponent implements IRecipeInput, IRe
         this.fluidStack = new FluidStackRecipeComponent(fluidStack);
     }
 
-    public ItemStack getIngredient() {
+    @Override
+    public Ingredient getIngredient() {
         return ingredient.getIngredient();
+    }
+
+    @Override
+    public ItemStack getFirstItemStack() {
+        return ingredient.getFirstItemStack();
     }
 
     public List<ItemStack> getItemStacks() {

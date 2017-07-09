@@ -12,5 +12,5 @@ public interface IItemStacksRecipeComponent {
     /**
      * @return Returns the ItemStack held by this recipe component.
      */
-    public List<ItemStack> getItemStacks();
+    public List<ItemStack> getIngredients();
 }

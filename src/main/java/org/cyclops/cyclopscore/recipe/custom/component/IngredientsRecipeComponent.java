@@ -12,6 +12,7 @@ import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A {@link org.cyclops.cyclopscore.recipe.custom.api.IRecipe} component (input, output or properties) that holds
@@ -22,10 +23,10 @@ import java.util.List;
 @Data
 public class IngredientsRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IItemStacksRecipeComponent {
 
-    private final List<IngredientRecipeComponent> itemStacks;
+    private final List<IngredientRecipeComponent> ingredients;
 
     public IngredientsRecipeComponent(NonNullList<Ingredient> ingredients) {
-        this.itemStacks = Lists.transform(ingredients, new Function<Ingredient, IngredientRecipeComponent>() {
+        this.ingredients = Lists.transform(ingredients, new Function<Ingredient, IngredientRecipeComponent>() {
             @Nullable
             @Override
             public IngredientRecipeComponent apply(Ingredient input) {
@@ -38,7 +39,7 @@ public class IngredientsRecipeComponent implements IRecipeInput, IRecipeOutput, 
     public boolean equals(Object object) {
         if (!(object instanceof IngredientsRecipeComponent)) return false;
         IngredientsRecipeComponent that = (IngredientsRecipeComponent)object;
-        return equals(this.itemStacks, that.itemStacks);
+        return equals(this.ingredients, that.ingredients);
     }
 
     protected boolean equals(List<IngredientRecipeComponent> a, List<IngredientRecipeComponent> b) {
@@ -56,19 +57,16 @@ public class IngredientsRecipeComponent implements IRecipeInput, IRecipeOutput, 
     @Override
     public int hashCode() {
         int hash = 876;
-        for (IngredientRecipeComponent itemStack : itemStacks) {
+        for (IngredientRecipeComponent itemStack : ingredients) {
             hash |= itemStack.hashCode();
         }
         return hash;
     }
 
-    public List<ItemStack> getItemStacks() {
-        return Lists.transform(itemStacks, new Function<IngredientRecipeComponent, ItemStack>() {
-            @Nullable
-            @Override
-            public ItemStack apply(@Nullable IngredientRecipeComponent input) {
-                return input.getIngredient();
-            }
-        });
+    public List<ItemStack> getIngredients() {
+        return ingredients.stream()
+                .map(IngredientRecipeComponent::getItemStacks)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 }

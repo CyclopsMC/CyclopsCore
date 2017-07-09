@@ -19,7 +19,7 @@ import java.util.Objects;
  * @author immortaleeb
  */
 @Data
-public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IItemStackRecipeComponent {
+public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IIngredientRecipeComponent {
 
     private static final int META_WILDCARD = OreDictionary.WILDCARD_VALUE;
 
@@ -35,21 +35,19 @@ public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, I
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof IngredientRecipeComponent)) return false;
-        IngredientRecipeComponent that = (IngredientRecipeComponent)object;
+        if (!(object instanceof IIngredientRecipeComponent)) return false;
+        IIngredientRecipeComponent that = (IIngredientRecipeComponent)object;
 
-        // To increase performance, first check if the comparing stack is not null before
-        // potentially matching it with the whole oredict.
-        if (!that.getIngredient().isEmpty()) {
-            for (ItemStack itemStack : getItemStacks()) {
-                if (equals(itemStack, that.getIngredient())) {
-                    return true;
-                }
-            }
-            return false;
+        if (this.getIngredient() == Ingredient.EMPTY && that.getIngredient() == Ingredient.EMPTY) {
+            return true;
         }
 
-        return getItemStacks().isEmpty();
+        for (ItemStack itemStack : getItemStacks()) {
+            if (that.getIngredient().apply(itemStack.isEmpty() ? null : itemStack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     protected boolean equals(ItemStack a, ItemStack b) {
@@ -61,15 +59,21 @@ public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, I
 
     @Override
     public int hashCode() {
-        return !getIngredient().isEmpty() ? getIngredient().getItem().hashCode() + 876 : 0;
+        return getItemStacks().stream().map(ItemStack::getItem).mapToInt(Object::hashCode).sum() + 876;
     }
 
     public List<ItemStack> getItemStacks() {
-        return Lists.newArrayList(getIngredient());
+        return Lists.newArrayList(getIngredient().getMatchingStacks());
     }
 
     @Override
-    public ItemStack getIngredient() {
-        return this.ingredient.getMatchingStacks().length > 0 ? this.ingredient.getMatchingStacks()[0] : ItemStack.EMPTY;
+    public Ingredient getIngredient() {
+        return this.ingredient;
+    }
+
+    @Override
+    public ItemStack getFirstItemStack() {
+        ItemStack[] itemStacks = this.ingredient.getMatchingStacks();
+        return itemStacks.length > 0 ? itemStacks[0] : ItemStack.EMPTY;
     }
 }

@@ -173,7 +173,7 @@ public class InfoBookParser {
             @Override
             public SectionAppendix create(IInfoBook infoBook, IRecipe<IngredientsRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent> recipe) throws InvalidAppendixException {
                 try {
-                    return new CraftingRecipeAppendix(infoBook, CraftingHelpers.findCraftingRecipe(recipe.getOutput().getIngredient(), 0));
+                    return new CraftingRecipeAppendix(infoBook, CraftingHelpers.findCraftingRecipe(recipe.getOutput().getFirstItemStack(), 0));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }
@@ -185,7 +185,7 @@ public class InfoBookParser {
             @Override
             public SectionAppendix create(IInfoBook infoBook, IRecipe<IngredientRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent> recipe) throws InvalidAppendixException {
                 try {
-                    return new FurnaceRecipeAppendix(infoBook, CraftingHelpers.findFurnaceRecipe(recipe.getOutput().getIngredient(), 0));
+                    return new FurnaceRecipeAppendix(infoBook, CraftingHelpers.findFurnaceRecipe(recipe.getOutput().getFirstItemStack(), 0));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }
