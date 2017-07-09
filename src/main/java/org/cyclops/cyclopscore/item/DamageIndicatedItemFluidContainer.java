@@ -55,7 +55,6 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
 
     @SuppressWarnings({ "rawtypes"})
     @Override
-    @SideOnly(Side.CLIENT)
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList) {
         ItemStackHelpers.isValidCreativeTab(this, tab);
         component.getSubItems(tab, itemList, fluid, 0);
