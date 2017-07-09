@@ -128,7 +128,7 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    protected void drawCurrentScreen(int mouseX, int mouseY, float partialTicks) {
         boolean flag = Mouse.isButtonDown(0);
         int k = this.guiLeft;
         int l = this.guiTop;
@@ -162,10 +162,10 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
                     + (getScrollingInventoryContainer().getPageSize() * getScrollingInventoryContainer().getColumns()))));
             newSlots.addAll(oldSlots.subList(getScrollingInventoryContainer().getUnfilteredItemCount(), oldSlots.size()));
             this.inventorySlots.inventorySlots = newSlots;
-            super.drawScreen(mouseX, mouseY, partialTicks);
+            super.drawCurrentScreen(mouseX, mouseY, partialTicks);
             this.inventorySlots.inventorySlots = oldSlots;
         } else {
-            super.drawScreen(mouseX, mouseY, partialTicks);
+            super.drawCurrentScreen(mouseX, mouseY, partialTicks);
         }
     }
 

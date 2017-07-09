@@ -68,6 +68,17 @@ public abstract class GuiContainerExtended extends GuiContainer implements
         super.initGui();
     }
 
+    @Override
+    public final void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        this.drawDefaultBackground();
+        this.drawCurrentScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+    }
+
+    protected void drawCurrentScreen(int mouseX, int mouseY, float partialTicks) {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
     protected int getBaseXSize() {
         return 176;
     }
@@ -91,7 +102,7 @@ public abstract class GuiContainerExtended extends GuiContainer implements
     public boolean isPointInRegion(Rectangle region, Point mouse) {
     	return isPointInRegion(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
     }
-    
+
     public void drawTooltip(List<String> lines, int x, int y) {
         GlStateManager.pushMatrix();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
