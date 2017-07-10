@@ -4,6 +4,8 @@ import com.google.common.collect.Sets;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.ICriterionTrigger;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientAdvancementManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ResourceLocation;
@@ -37,11 +39,18 @@ public class AdvancementHelpers {
     }
 
     public static Advancement getAdvancement(ResourceLocation resourceLocation) {
-        return getAdvancementManager().getAdvancement(resourceLocation);
+        if (MinecraftHelpers.isClientSide()) {
+            return getAdvancementManagerClient().getAdvancementList().getAdvancement(resourceLocation);
+        }
+        return getAdvancementManagerServer().getAdvancement(resourceLocation);
     }
 
-    public static AdvancementManager getAdvancementManager() {
+    public static AdvancementManager getAdvancementManagerServer() {
         return FMLCommonHandler.instance().getMinecraftServerInstance().getAdvancementManager();
+    }
+
+    public static ClientAdvancementManager getAdvancementManagerClient() {
+        return Minecraft.getMinecraft().player.connection.getAdvancementManager();
     }
 
     public static <T extends ICriterionTrigger> T registerCriteriaTrigger(T criterion) {
