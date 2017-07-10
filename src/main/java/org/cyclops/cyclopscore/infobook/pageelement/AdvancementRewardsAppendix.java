@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -122,28 +121,24 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         // Draw advancements
         offsetY += 10;
         boolean allAchievementsValid = true;
-        if (!errored) {
-            for (int i = 0; i < advancementRewards.getAdvancements().size(); i++) {
-                ResourceLocation advancementId = advancementRewards.getAdvancements().get(i);
-                Advancement advancement = AdvancementHelpers.getAdvancement(advancementId);
-                if (advancement == null) {
-                    getInfoBook().getMod().getLoggerHelper().log(Level.WARN,
-                            String.format("Could not find an advancement by id '%s'", advancementId));
-                    this.errored = true;
-                } else {
-                    if (offsetX + SLOT_SIZE > MAX_WIDTH) {
-                        offsetY += SLOT_SIZE + SLOT_PADDING * 2;
-                        offsetX = 0;
-                    }
-                    RecipeAppendix.renderItemForButton(gui, x + offsetX, y + offsetY, advancement.getDisplay().getIcon(), mx, my, true, null);
-                    if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getMinecraft().player, advancementId)) {
-                        Images.OK.draw(gui, x + offsetX + 1, y + offsetY + 2);
-                    } else {
-                        allAchievementsValid = false;
-                    }
-                    renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, "", null, gui);
-                    offsetX += SLOT_SIZE + SLOT_PADDING * 2;
+        for (int i = 0; i < advancementRewards.getAdvancements().size(); i++) {
+            ResourceLocation advancementId = advancementRewards.getAdvancements().get(i);
+            Advancement advancement = AdvancementHelpers.getAdvancement(advancementId);
+            if (advancement == null) {
+                allAchievementsValid = false;
+            } else {
+                if (offsetX + SLOT_SIZE > MAX_WIDTH) {
+                    offsetY += SLOT_SIZE + SLOT_PADDING * 2;
+                    offsetX = 0;
                 }
+                RecipeAppendix.renderItemForButton(gui, x + offsetX, y + offsetY, advancement.getDisplay().getIcon(), mx, my, true, null);
+                if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getMinecraft().player, advancementId)) {
+                    Images.OK.draw(gui, x + offsetX + 1, y + offsetY + 2);
+                } else {
+                    allAchievementsValid = false;
+                }
+                renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, "", null, gui);
+                offsetX += SLOT_SIZE + SLOT_PADDING * 2;
             }
         }
 
