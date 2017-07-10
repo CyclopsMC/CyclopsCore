@@ -1,0 +1,25 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add advancement criterion for when a gui container is opened
+* Add criterion trigger for obtaining a mod item
+* Add item crafted advancement criterion trigger
+* Add abstract implementation of advancement criterion triggers
+* Add helper to register advancement criterions
+
+Changes:
+* Rewrite XML and super recipe system to be based on ingredients instead of itemstacks
+* Remove client-side-only annotation on getSubItems/getSubBlocks methods
+* Improve ingredient components in recipe system
+* Improve error logging for infobook errors
+* Allow registry registration callbacks
+
+Fixes:
+* Fix tooltips and darkened background in gui's
+* Fix enchantment level setting not working
+* Fix block oredict registrations happening at wrong times
+* Fix fluid registration interacting with ModelLoader outside of event
+* Fix BlockPropertyManagerComponent interacting with ModelLoader before its event, this caused texture breakage in other mods.
+* Fix block model registration
+* Fix crafting appendix crash because of new ingredient-based recipes in 1.12
+* Fix biome dictionary registration
