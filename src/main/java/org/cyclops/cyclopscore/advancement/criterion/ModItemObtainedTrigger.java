@@ -8,6 +8,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import org.cyclops.cyclopscore.Reference;
@@ -28,9 +29,9 @@ public class ModItemObtainedTrigger extends BaseCriterionTrigger<ItemStack, ModI
     }
 
     @SubscribeEvent
-    public void onPickup(PlayerEvent.ItemPickupEvent event) {
-        if (event.player != null && event.player instanceof EntityPlayerMP) {
-            this.trigger((EntityPlayerMP) event.player, event.pickedUp.getItem());
+    public void onPickup(EntityItemPickupEvent event) {
+        if (event.getEntityPlayer() != null && event.getEntityPlayer() instanceof EntityPlayerMP) {
+            this.trigger((EntityPlayerMP) event.getEntityPlayer(), event.getItem().getItem());
         }
     }
 
