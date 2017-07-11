@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Revert "Make MinecraftHelpers.isClientSide() safer on different threads", fixes GUI's sometimes not opening in SMP
+* Fix incorrect recipe identifiers for multiple equal output items
