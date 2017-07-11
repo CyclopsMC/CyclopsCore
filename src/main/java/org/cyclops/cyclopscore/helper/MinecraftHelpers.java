@@ -162,7 +162,7 @@ public class MinecraftHelpers {
 	 */
 	public static boolean isClientSide() {
         if(isModdedEnvironment()) {
-            return FMLCommonHandler.instance().getSide() == Side.CLIENT;
+            return FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
         }
         return true;
 	}
