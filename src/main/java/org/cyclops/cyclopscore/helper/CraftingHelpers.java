@@ -47,7 +47,7 @@ public class CraftingHelpers {
                 output.getItem().getRegistryName().getResourcePath());
         int counter = 0;
         while (ForgeRegistries.RECIPES.containsKey(id)) {
-            id = new ResourceLocation(id.getResourceDomain(), id.getResourcePath() + "_" + ++counter);
+            id = new ResourceLocation(id.getResourceDomain(), output.getItem().getRegistryName().getResourcePath() + "_" + ++counter);
         }
         return id;
     }
