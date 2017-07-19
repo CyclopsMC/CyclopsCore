@@ -85,7 +85,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
      * @param callback A callback that will be called when the entry is registered.
      */
     public static void register(Block block, @Nullable Class<? extends ItemBlock> itemBlockClass, ExtendedConfig config, @Nullable CreativeTabs creativeTabs, @Nullable Callable<?> callback) {
-        register(block, config);
+        register(block, config, (Callable<?>) null); // Delay onForgeRegistered callback until item has been registered
         if(itemBlockClass != null) {
             try {
                 ItemBlock item = itemBlockClass.getConstructor(Block.class).newInstance(block);
@@ -124,6 +124,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
 
         // Register block and set creative tab.
         register(block, eConfig.getItemBlockClass(), eConfig, eConfig.getTargetTab(), () -> {
+            eConfig.onForgeRegistered(); // Manually call after item has been registered
             // Register optional ore dictionary ID
             if(eConfig.getOreDictionaryId() != null) {
                 OreDictionary.registerOre(eConfig.getOreDictionaryId(), new ItemStack((Block)eConfig.getSubInstance()));
