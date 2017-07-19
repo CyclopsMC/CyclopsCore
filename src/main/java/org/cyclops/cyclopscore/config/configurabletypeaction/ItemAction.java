@@ -20,6 +20,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
+import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.configurable.IConfigurableBlock;
 import org.cyclops.cyclopscore.config.configurable.IConfigurableItem;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
@@ -133,6 +134,10 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
                 IItemColor itemColorHandler = configurableItem.getItemColorHandler();
                 if (itemColorHandler != null) {
                     Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColorHandler, item);
+                }
+                if (item instanceof IDynamicModelElement && ((IDynamicModelElement) item).hasDynamicModel()) {
+                    ItemConfig itemConfig = (ItemConfig) entry;
+                    itemConfig.dynamicItemVariantLocation = itemConfig.registerDynamicModel();
                 }
             }
             if(block instanceof IConfigurableBlock) {

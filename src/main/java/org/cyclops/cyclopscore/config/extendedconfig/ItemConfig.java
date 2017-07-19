@@ -10,7 +10,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
-import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableItem;
 import org.cyclops.cyclopscore.config.configurable.IConfigurable;
@@ -88,7 +87,7 @@ public abstract class ItemConfig extends ExtendedConfig<ItemConfig> implements I
      * @return The item resource location.
      */
     @SideOnly(Side.CLIENT)
-    protected ModelResourceLocation registerDynamicModel() {
+    public ModelResourceLocation registerDynamicModel() {
         String blockName = getMod().getModId() + ":" + getNamedId();
         ModelResourceLocation itemLocation = new ModelResourceLocation(blockName, "inventory");
         ModelLoader.setCustomModelResourceLocation(getItemInstance(), 0, itemLocation);
@@ -103,10 +102,6 @@ public abstract class ItemConfig extends ExtendedConfig<ItemConfig> implements I
 	            OreDictionary.registerOre(getOreDictionaryId(), new ItemStack(this.getItemInstance()));
 	        }
     	}
-        if(MinecraftHelpers.isClientSide() && getItemInstance() instanceof IDynamicModelElement &&
-                ((IDynamicModelElement) getItemInstance()).hasDynamicModel()) {
-            this.dynamicItemVariantLocation  = registerDynamicModel();
-        }
     }
 
     /**
