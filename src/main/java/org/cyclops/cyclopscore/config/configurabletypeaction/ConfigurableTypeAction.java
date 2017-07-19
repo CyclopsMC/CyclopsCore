@@ -108,7 +108,9 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
      * @param <T> The type to register.
      */
     public static <T extends IForgeRegistryEntry<T>> void register(IForgeRegistry<T> registry, T instance, ExtendedConfig config, @Nullable Callable<?> callback) {
-        instance.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
+        if (instance.getRegistryName() == null) {
+            instance.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
+        }
         config.getMod().getConfigHandler().registerToRegistry(registry, instance, callback);
     }
 }

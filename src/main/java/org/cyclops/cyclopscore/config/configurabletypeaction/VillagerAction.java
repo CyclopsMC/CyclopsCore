@@ -33,7 +33,6 @@ public class VillagerAction extends ConfigurableTypeAction<VillagerConfig>{
         eConfig.save();
 
         // Register
-        //register((ConfigurableVillager) eConfig.getSubInstance(), eConfig); // Don't call this, because VillagerRegistry.VillagerProfession already sets registry name
         register((ConfigurableVillager) eConfig.getSubInstance(), eConfig);
     }
 
