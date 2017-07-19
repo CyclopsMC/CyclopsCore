@@ -102,30 +102,35 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
     @SuppressWarnings("unchecked")
     public void loadConfig() {
         for(ExtendedConfig<?> eConfig : this) {
-            addCategory(eConfig.getHolderType().getCategory());
-            if(!eConfig.isHardDisabled()) {
-                // Save additional properties
-                for(ConfigProperty configProperty : eConfig.configProperties) {
-                    categories.add(configProperty.getCategory());
-                    configProperty.save(config);
-                    if(configProperty.isCommandable()) {
-                        commandableProperties.put(configProperty.getName(), configProperty);
+            try {
+                addCategory(eConfig.getHolderType().getCategory());
+                if (!eConfig.isHardDisabled()) {
+                    // Save additional properties
+                    for (ConfigProperty configProperty : eConfig.configProperties) {
+                        categories.add(configProperty.getCategory());
+                        configProperty.save(config);
+                        if (configProperty.isCommandable()) {
+                            commandableProperties.put(configProperty.getName(), configProperty);
+                        }
+                    }
+
+                    // Register the element depending on the type.
+                    eConfig.getHolderType().getElementTypeAction().commonRun(eConfig, config);
+
+                    if (eConfig.isEnabled()) {
+                        // Call the listener
+                        eConfig.onRegistered();
+
+                        mod.log(Level.TRACE, "Registered " + eConfig.getNamedId());
+                        processedConfigs.add(eConfig);
+
+                        // Register as init listener.
+                        mod.addInitListeners(new ConfigInitListener(eConfig));
                     }
                 }
-                
-                // Register the element depending on the type.
-                eConfig.getHolderType().getElementTypeAction().commonRun(eConfig, config);
-                
-                if(eConfig.isEnabled()) {
-	                // Call the listener
-	                eConfig.onRegistered();
-	
-	                mod.log(Level.TRACE, "Registered " + eConfig.getNamedId());
-	                processedConfigs.add(eConfig);
-	                
-	                // Register as init listener.
-	                mod.addInitListeners(new ConfigInitListener(eConfig));
-                }
+            } catch (Exception e) {
+                e.printStackTrace(); // Forge seems to silently ignore these errors, so let's print them manually.
+                throw e;
             }
         }
         
