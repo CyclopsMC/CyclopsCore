@@ -29,8 +29,13 @@ public abstract class GridRecipeTypeHandler extends CommonRecipeTypeHandler<Ingr
 		Element recipeElement = (Element) recipe;
 		Element input = (Element) recipeElement.getElementsByTagName("input").item(0);
 		Element output = (Element) recipeElement.getElementsByTagName("output").item(0);
-		
-		ItemStack outputItemStack = getIngredient(recipeHandler, output.getElementsByTagName("item").item(0)).getMatchingStacks()[0];
+
+		ItemStack[] outputStacks = getIngredient(recipeHandler, output.getElementsByTagName("item").item(0)).getMatchingStacks();
+		if (outputStacks.length == 0) {
+			throw new XmlRecipeLoader.XmlRecipeException("No matching output stacks were found for '"
+					+ output.getElementsByTagName("item").item(0).getTextContent() + "'");
+		}
+		ItemStack outputItemStack = outputStacks[0];
 
 		NonNullList<Ingredient> ingredients = handleIO(recipeHandler, input, outputItemStack);
         return new Recipe<>(
