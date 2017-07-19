@@ -2,7 +2,9 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -178,4 +180,16 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
         MODEL_ENTRIES.add(extendedConfig);
     }
 
+    @Override
+    public void polish(BlockConfig config) {
+        super.polish(config);
+        Block block = config.getBlockInstance();
+        if(block instanceof IConfigurableBlock) {
+            IConfigurableBlock configurableBlock = (IConfigurableBlock) block;
+            IBlockColor blockColorHandler = configurableBlock.getBlockColorHandler();
+            if (blockColorHandler != null) {
+                Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(blockColorHandler, block);
+            }
+        }
+    }
 }

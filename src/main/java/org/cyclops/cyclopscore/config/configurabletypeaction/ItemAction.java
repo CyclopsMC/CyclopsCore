@@ -5,7 +5,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -21,7 +20,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
-import org.cyclops.cyclopscore.config.configurable.IConfigurableBlock;
 import org.cyclops.cyclopscore.config.configurable.IConfigurableItem;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
@@ -129,23 +127,9 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
                 ModelLoader.setCustomModelResourceLocation(item, 0,
                         new ModelResourceLocation(modId + ":" + item.getRegistryName().getResourcePath(), "inventory"));
             }
-            if (item instanceof IConfigurableItem) {
-                IConfigurableItem configurableItem = (IConfigurableItem) item;
-                IItemColor itemColorHandler = configurableItem.getItemColorHandler();
-                if (itemColorHandler != null) {
-                    Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColorHandler, item);
-                }
-                if (item instanceof IDynamicModelElement && ((IDynamicModelElement) item).hasDynamicModel()) {
-                    ItemConfig itemConfig = (ItemConfig) entry;
-                    itemConfig.dynamicItemVariantLocation = itemConfig.registerDynamicModel();
-                }
-            }
-            if(block instanceof IConfigurableBlock) {
-                IConfigurableBlock configurableBlock = (IConfigurableBlock) block;
-                IBlockColor blockColorHandler = configurableBlock.getBlockColorHandler();
-                if (blockColorHandler != null) {
-                    Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(blockColorHandler, block);
-                }
+            if (item instanceof IDynamicModelElement && ((IDynamicModelElement) item).hasDynamicModel()) {
+                ItemConfig itemConfig = (ItemConfig) entry;
+                itemConfig.dynamicItemVariantLocation = itemConfig.registerDynamicModel();
             }
         }
     }
@@ -156,4 +140,16 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
         }
     }
 
+    @Override
+    public void polish(ItemConfig config) {
+        super.polish(config);
+        Item item = config.getItemInstance();
+        if (item instanceof IConfigurableItem) {
+            IConfigurableItem configurableItem = (IConfigurableItem) item;
+            IItemColor itemColorHandler = configurableItem.getItemColorHandler();
+            if (itemColorHandler != null) {
+                Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColorHandler, item);
+            }
+        }
+    }
 }
