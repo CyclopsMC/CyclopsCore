@@ -58,4 +58,10 @@ public abstract class BiomeConfig extends ExtendedConfig<BiomeConfig>{
     public IForgeRegistry<?> getRegistry() {
         return ForgeRegistries.BIOMES;
     }
+
+    @Override
+    public void onForgeRegistered() {
+        super.onForgeRegistered();
+        registerBiomeDictionary();
+    }
 }

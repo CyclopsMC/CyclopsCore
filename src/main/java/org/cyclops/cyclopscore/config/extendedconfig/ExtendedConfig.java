@@ -237,7 +237,14 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      * Overridable method that is immediately called after the element of this config is registered.
      */
     public void onRegistered() {
-        
+
+    }
+
+    /**
+     * Overridable method that is immediately called after this element has been registered into a Forge registry.
+     */
+    public void onForgeRegistered() {
+
     }
     
     @Override

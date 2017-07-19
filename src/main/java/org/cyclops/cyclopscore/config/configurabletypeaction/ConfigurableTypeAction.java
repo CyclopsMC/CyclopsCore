@@ -73,7 +73,10 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
      * @param <T> The type to register.
      */
     public static <T extends IForgeRegistryEntry> void register(T instance, ExtendedConfig config) {
-        register(instance, config, null);
+        register(instance, config, () -> {
+            config.onForgeRegistered();
+            return null;
+        });
     }
 
     /**

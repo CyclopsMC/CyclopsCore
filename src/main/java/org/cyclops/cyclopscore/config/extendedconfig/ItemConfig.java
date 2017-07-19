@@ -95,8 +95,8 @@ public abstract class ItemConfig extends ExtendedConfig<ItemConfig> implements I
     }
     
     @Override
-    public void onRegistered() {
-        super.onRegistered();
+    public void onForgeRegistered() {
+        super.onForgeRegistered();
     	if(isEnabled()) {
 	        if(getOreDictionaryId() != null) {
 	            OreDictionary.registerOre(getOreDictionaryId(), new ItemStack(this.getItemInstance()));
