@@ -1,9 +1,11 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -18,6 +20,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
+import org.cyclops.cyclopscore.config.configurable.IConfigurableBlock;
 import org.cyclops.cyclopscore.config.configurable.IConfigurableItem;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
@@ -89,13 +92,6 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
 
         if(MinecraftHelpers.isClientSide()) {
             handleItemModel(eConfig);
-            if (item instanceof IConfigurableItem) {
-                IConfigurableItem configurableItem = (IConfigurableItem) item;
-                IItemColor itemColorHandler = configurableItem.getItemColorHandler();
-                if (itemColorHandler != null) {
-                    Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColorHandler, item);
-                }
-            }
         }
     }
 
@@ -104,12 +100,14 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
     public static void onModelRegistryLoad(ModelRegistryEvent event) {
         for (ExtendedConfig entry : MODEL_ENTRIES) {
             Item item = null;
+            Block block = null;
             IModelProviderConfig modelProvider = null;
             if (entry instanceof ItemConfig) {
                 item = ((ItemConfig) entry).getItemInstance();
                 modelProvider = (IModelProviderConfig) entry;
             } else if (entry instanceof BlockConfig) {
-                item = Item.getItemFromBlock(((BlockConfig) entry).getBlockInstance());
+                block = ((BlockConfig) entry).getBlockInstance();
+                item = Item.getItemFromBlock(block);
                 modelProvider = (IModelProviderConfig) entry;
             } else {
                 throw new IllegalStateException("An unsupported config was registered to the model loader: "
@@ -129,6 +127,20 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
             } else {
                 ModelLoader.setCustomModelResourceLocation(item, 0,
                         new ModelResourceLocation(modId + ":" + item.getRegistryName().getResourcePath(), "inventory"));
+            }
+            if (item instanceof IConfigurableItem) {
+                IConfigurableItem configurableItem = (IConfigurableItem) item;
+                IItemColor itemColorHandler = configurableItem.getItemColorHandler();
+                if (itemColorHandler != null) {
+                    Minecraft.getMinecraft().getItemColors().registerItemColorHandler(itemColorHandler, item);
+                }
+            }
+            if(block instanceof IConfigurableBlock) {
+                IConfigurableBlock configurableBlock = (IConfigurableBlock) block;
+                IBlockColor blockColorHandler = configurableBlock.getBlockColorHandler();
+                if (blockColorHandler != null) {
+                    Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(blockColorHandler, block);
+                }
             }
         }
     }
