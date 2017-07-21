@@ -25,8 +25,8 @@ public class CraftingHelpers {
                 return recipe;
             }
         }
-        throw new IllegalArgumentException("Could not find crafting recipe for " + itemStack.getItem().getUnlocalizedName() +
-                " with index " + index);
+        throw new IllegalArgumentException("Could not find crafting recipe for " + itemStack + "::"
+                + itemStack.getTagCompound() + " with index " + index);
     }
 
     @SuppressWarnings("unchecked")
@@ -38,14 +38,14 @@ public class CraftingHelpers {
                 return recipe;
             }
         }
-        throw new IllegalArgumentException("Could not find furnace recipe for " + itemStack.getItem().getUnlocalizedName() +
-                " with index " + index);
+        throw new IllegalArgumentException("Could not find furnace recipe for " + itemStack + "::"
+                + itemStack.getTagCompound() + " with index " + index);
     }
 
     public static ResourceLocation newRecipeIdentifier(ItemStack output) {
         ResourceLocation id = new ResourceLocation(Loader.instance().activeModContainer().getModId(),
                 output.getItem().getRegistryName().getResourcePath());
-        int counter = 0;
+        int counter = 10;
         while (ForgeRegistries.RECIPES.containsKey(id)) {
             id = new ResourceLocation(id.getResourceDomain(), output.getItem().getRegistryName().getResourcePath() + "_" + ++counter);
         }
