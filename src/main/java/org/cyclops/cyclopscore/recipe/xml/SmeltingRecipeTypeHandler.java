@@ -19,7 +19,7 @@ public class SmeltingRecipeTypeHandler extends CommonRecipeTypeHandler<Ingredien
 
 	@Override
 	public String getCategoryId() {
-		return "furnaceRecipe";
+		return "furnace_recipe";
 	}
 
 	@Override

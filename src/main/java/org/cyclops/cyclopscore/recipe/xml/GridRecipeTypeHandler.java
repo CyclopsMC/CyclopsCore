@@ -21,7 +21,7 @@ public abstract class GridRecipeTypeHandler extends CommonRecipeTypeHandler<Ingr
 
 	@Override
 	public String getCategoryId() {
-		return "craftingRecipe";
+		return "crafting_recipe";
 	}
 
 	@Override
