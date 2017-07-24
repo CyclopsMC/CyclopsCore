@@ -4,6 +4,8 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -40,7 +42,8 @@ public interface IInformationProvider {
      * @param itemStack The itemStack that must be given information.
      * @param world The player that asks for information.
      * @param list The list of information.
-     * @param flag No idea...
+     * @param flag The tooltip flag type.
      */
+    @SideOnly(Side.CLIENT)
     public void provideInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag);
 }
