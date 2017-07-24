@@ -6,8 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 
-import javax.annotation.Nullable;
-
 /**
  * Contains helper methods involving {@link net.minecraft.inventory.IInventory}S.
  * @author immortaleeb
@@ -33,12 +31,12 @@ public class InventoryHelpers {
 	 * @param originalStack The original item stack from which the new item stack originated.
 	 * @param newStackPart The new item stack.
 	 */
-	public static void tryReAddToStack(EntityPlayer player, @Nullable ItemStack originalStack, ItemStack newStackPart) {
+	public static void tryReAddToStack(EntityPlayer player, ItemStack originalStack, ItemStack newStackPart) {
 		if (!player.capabilities.isCreativeMode) {
-        	if(originalStack != null && originalStack.getCount() - 1 == 0) {
+        	if(!originalStack.isEmpty() && originalStack.getCount() == 1) {
         		player.inventory.setInventorySlotContents(player.inventory.currentItem, newStackPart);
         	} else {
-                if(originalStack != null) {
+                if(!originalStack.isEmpty()) {
 					originalStack.shrink(1);
 				}
         		if(!player.inventory.addItemStackToInventory(newStackPart)) {
