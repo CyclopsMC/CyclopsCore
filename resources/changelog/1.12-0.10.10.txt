@@ -1,0 +1,19 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+
+Changes:
+* Add callback to ExtendedConfig for when the Forge registry entry has been registered
+* Manually emit confighandler crashes, as Forge swallows them
+
+Fixes:
+* Fix fluid containers appearing in all creative tabs
+* Fix crashes in SMP
+* Fix InventoryHelpers using null ItemStacks for re-adding stacks to players
+* Fix incorrect recipe type category id's
+* Fix block and item color registration crash
+* Fix block registration callback
+* Improve error logging for invalid grid recipe output items
+* Register dynamic item models at the correct time
+* Fix villager registration crash
+* Fix block and item color crash
