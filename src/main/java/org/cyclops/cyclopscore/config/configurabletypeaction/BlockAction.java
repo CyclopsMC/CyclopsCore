@@ -184,7 +184,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
     public void polish(BlockConfig config) {
         super.polish(config);
         Block block = config.getBlockInstance();
-        if(block instanceof IConfigurableBlock) {
+        if(block instanceof IConfigurableBlock && MinecraftHelpers.isClientSide()) {
             IConfigurableBlock configurableBlock = (IConfigurableBlock) block;
             IBlockColor blockColorHandler = configurableBlock.getBlockColorHandler();
             if (blockColorHandler != null) {

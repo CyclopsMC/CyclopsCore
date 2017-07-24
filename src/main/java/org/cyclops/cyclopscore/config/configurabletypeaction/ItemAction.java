@@ -144,7 +144,7 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
     public void polish(ItemConfig config) {
         super.polish(config);
         Item item = config.getItemInstance();
-        if (item instanceof IConfigurableItem) {
+        if (item instanceof IConfigurableItem && MinecraftHelpers.isClientSide()) {
             IConfigurableItem configurableItem = (IConfigurableItem) item;
             IItemColor itemColorHandler = configurableItem.getItemColorHandler();
             if (itemColorHandler != null) {
