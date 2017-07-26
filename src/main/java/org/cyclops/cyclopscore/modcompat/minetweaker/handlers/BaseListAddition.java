@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.modcompat.minetweaker.handlers;
 
 import minetweaker.MineTweakerAPI;
+import net.minecraftforge.fml.common.Loader;
+import org.cyclops.cyclopscore.Reference;
 
 import java.util.List;
 
@@ -30,7 +32,9 @@ public abstract class BaseListAddition<T> extends BaseListModification<T> {
             if(recipe != null) {
                 if(list.add(recipe)) {
                     successful.add(recipe);
-                    MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(wrapRecipe(recipe) !=null ? wrapRecipe(recipe) : recipe);
+                    if (Loader.isModLoaded(Reference.MOD_JEI)) {
+                        MineTweakerAPI.getIjeiRecipeRegistry().addRecipe(wrapRecipe(recipe) != null ? wrapRecipe(recipe) : recipe);
+                    }
                 } else {
                     MineTweakerAPI.logError(String.format("Error adding %s Recipe for %s", name, getRecipeInfo(recipe)));
                 }
@@ -51,7 +55,9 @@ public abstract class BaseListAddition<T> extends BaseListModification<T> {
                 if(!list.remove(recipe)) {
                     MineTweakerAPI.logError(String.format("Error removing %s Recipe for %s", name, this.getRecipeInfo(recipe)));
                 }else{
-                    MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(wrapRecipe(recipe) != null ? wrapRecipe(recipe) : recipe);
+                    if (Loader.isModLoaded(Reference.MOD_JEI)) {
+                        MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(wrapRecipe(recipe) != null ? wrapRecipe(recipe) : recipe);
+                    }
                 }
             } else {
                 MineTweakerAPI.logError(String.format("Error removing %s Recipe: null object", name));

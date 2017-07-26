@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.modcompat.minetweaker.handlers;
 
 import minetweaker.MineTweakerAPI;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Optional;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.modcompat.jei.IJeiRecipeWrapperWrapper;
@@ -37,7 +38,9 @@ public class RecipeRegistryAddition
                 if (machine.getRecipeRegistry().unregisterRecipe(recipe) == null) {
                     MineTweakerAPI.logError(String.format("Error removing %s Recipe for %s", name, getRecipeInfo(recipe)));
                 } else {
-                    MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(wrapRecipe(recipe) != null ? wrapRecipe(recipe) : recipe);
+                    if (Loader.isModLoaded(Reference.MOD_JEI)) {
+                        MineTweakerAPI.getIjeiRecipeRegistry().removeRecipe(wrapRecipe(recipe) != null ? wrapRecipe(recipe) : recipe);
+                    }
                 }
             } else {
                 MineTweakerAPI.logError(String.format("Error removing %s Recipe: null object", name));

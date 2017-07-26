@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.modcompat.minetweaker.handlers;
 
+import mezz.jei.api.recipe.IRecipeWrapper;
 import minetweaker.MineTweakerAPI;
 import minetweaker.api.item.IItemStack;
 import minetweaker.api.liquid.ILiquidStack;
@@ -7,9 +8,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Optional;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.modcompat.jei.IJeiRecipeWrapperWrapper;
+import org.cyclops.cyclopscore.modcompat.jei.RecipeRegistryJeiRecipeWrapper;
 import org.cyclops.cyclopscore.recipe.custom.api.*;
 
 /**
@@ -21,7 +24,16 @@ public abstract class RecipeRegistryHandler
 
     protected abstract M getMachine();
     protected abstract String getRegistryName();
-    protected abstract IJeiRecipeWrapperWrapper<I, O, P> createJeiWrapperWrapper();
+
+    @Optional.Method(modid = Reference.MOD_JEI)
+    protected IJeiRecipeWrapperWrapper<I, O, P> createJeiWrapperWrapper() {
+        return new IJeiRecipeWrapperWrapper<I, O, P>() {
+            @Override
+            public IRecipeWrapper wrap(IRecipe<I, O, P> recipe) {
+                return RecipeRegistryJeiRecipeWrapper.getJeiRecipeWrapper(recipe);
+            }
+        };
+    }
 
     protected IJeiRecipeWrapperWrapper<I, O, P> createJeiWrapperWrapperSafe() {
         if (!Loader.isModLoaded(Reference.MOD_JEI)) {
