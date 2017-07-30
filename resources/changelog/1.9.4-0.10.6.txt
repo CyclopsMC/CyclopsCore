@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Remove Minetweaker lib dependency which resolves occasional crashes when using MT.
+
