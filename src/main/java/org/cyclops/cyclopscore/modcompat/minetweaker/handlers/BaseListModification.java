@@ -49,7 +49,7 @@ public abstract class BaseListModification<T> extends BaseUndoable {
         return super.getRecipeInfo();
     }
 
-    /**
+    /*
      * This method must be overwritten by the extending classes. It should return
      * the name of the key item, for which the recipe is for. For example for machines
      * which produce new items, it should return the name of the ouput. For machines
@@ -111,7 +111,7 @@ public abstract class BaseListModification<T> extends BaseUndoable {
         return true;
     }
 
-    /**
+    /*
      * Compares two recipes if they are equal. If the mod does not overwrite equals() in
      * their recipe object, this method should be overwritten by the extending classes to
      * add a custom equals method
