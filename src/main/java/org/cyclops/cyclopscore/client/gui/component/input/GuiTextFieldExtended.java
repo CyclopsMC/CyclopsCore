@@ -20,6 +20,10 @@ public class GuiTextFieldExtended extends GuiTextField {
         this.background = background;
     }
 
+    public GuiTextFieldExtended(int componentId, FontRenderer fontrenderer, int x, int y, int width, int height) {
+        this(componentId, fontrenderer, x, y, width, height, false);
+    }
+
     public void setListener(IInputListener listener) {
         this.listener = listener;
     }
@@ -62,4 +66,14 @@ public class GuiTextFieldExtended extends GuiTextField {
         super.drawTextBox();
     }
 
+    @Override
+    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
+        if (mouseButton == 1) {
+            // Select everything
+            this.setCursorPosition(0);
+            this.setSelectionPos(Integer.MAX_VALUE);
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
 }
