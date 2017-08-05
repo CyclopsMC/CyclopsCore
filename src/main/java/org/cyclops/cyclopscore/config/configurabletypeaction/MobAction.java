@@ -30,10 +30,11 @@ public class MobAction<T extends Entity> extends ConfigurableTypeAction<MobConfi
         // Register mob
         Class<? extends EntityLiving> clazz = (Class<? extends EntityLiving>) eConfig.getElement();
         ResourceLocation id = new ResourceLocation(eConfig.getMod().getModId(), eConfig.getSubUniqueName());
+        String name = eConfig.getMod().getModId() + "." + eConfig.getNamedId();
         if(eConfig.hasSpawnEgg()) {
-            EntityRegistry.registerModEntity(id, clazz, eConfig.getNamedId(), Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY), eConfig.getMod(), 80, 3, true, eConfig.getBackgroundEggColor(), eConfig.getForegroundEggColor());
+            EntityRegistry.registerModEntity(id, clazz, name, Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY), eConfig.getMod(), 80, 3, true, eConfig.getBackgroundEggColor(), eConfig.getForegroundEggColor());
         } else {
-            EntityRegistry.registerModEntity(id, clazz, eConfig.getNamedId(), Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY), eConfig.getMod(), 80, 3, true);
+            EntityRegistry.registerModEntity(id, clazz, name, Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY), eConfig.getMod(), 80, 3, true);
         }
     }
 
