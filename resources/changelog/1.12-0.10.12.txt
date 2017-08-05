@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Allow text fields to become fully selected on right-click
+
+Fixes:
+* Correctly configure localized mob names, Closes CyclopsMC/EvilCraft#578
