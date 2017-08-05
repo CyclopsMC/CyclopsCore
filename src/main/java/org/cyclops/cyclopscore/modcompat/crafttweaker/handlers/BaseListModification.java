@@ -1,4 +1,4 @@
-package org.cyclops.cyclopscore.modcompat.minetweaker.handlers;
+package org.cyclops.cyclopscore.modcompat.crafttweaker.handlers;
 
 import mezz.jei.api.recipe.IRecipeWrapper;
 
@@ -19,14 +19,6 @@ public abstract class BaseListModification<T> extends BaseUndoable {
         this.list = list;
         this.recipes = new LinkedList<T>();
         this.successful = new LinkedList<T>();
-    }
-
-    @Override
-    public boolean canUndo() {
-        if(recipes.isEmpty() || successful.isEmpty())
-            return false;
-
-        return true;
     }
 
     @Override

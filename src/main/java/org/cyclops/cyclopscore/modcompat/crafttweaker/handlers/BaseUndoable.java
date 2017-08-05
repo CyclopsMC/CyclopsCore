@@ -1,11 +1,12 @@
-package org.cyclops.cyclopscore.modcompat.minetweaker.handlers;
+package org.cyclops.cyclopscore.modcompat.crafttweaker.handlers;
 
-import minetweaker.IUndoableAction;
+
+import crafttweaker.IAction;
 
 /**
  * Taken from jared's MTlib
  */
-public abstract class BaseUndoable implements IUndoableAction {
+public abstract class BaseUndoable implements IAction {
 
     // Holds the name of the mod / machine this action manipulates
     protected final String name;
@@ -22,18 +23,8 @@ public abstract class BaseUndoable implements IUndoableAction {
     }
 
     @Override
-    public boolean canUndo() {
-        return success;
-    }
-
-    @Override
     public String describe() {
         return String.format("Altering %s Recipe(s) for %s", this.name, this.getRecipeInfo());
-    }
-
-    @Override
-    public String describeUndo() {
-        return String.format("Reverting %s Recipe(s) changes for %s", this.name, this.getRecipeInfo());
     }
 
     @Override
@@ -58,8 +49,4 @@ public abstract class BaseUndoable implements IUndoableAction {
         return name.hashCode();
     }
 
-    @Override
-    public Object getOverrideKey() {
-        return null;
-    }
 }
