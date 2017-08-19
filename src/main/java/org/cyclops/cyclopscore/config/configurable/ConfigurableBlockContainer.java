@@ -196,6 +196,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     
     @Override
     public void breakBlock(World world, BlockPos blockPos, IBlockState blockState) {
+        onPreBlockDestroyed(world, blockPos);
         super.breakBlock(world, blockPos, blockState);
         onPostBlockDestroyed(world, blockPos);
     }
