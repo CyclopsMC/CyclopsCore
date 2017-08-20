@@ -116,7 +116,7 @@ public final class BlockHelpers {
     public static ItemStack getItemStackFromBlockState(IBlockState blockState) {
         Item item = Item.getItemFromBlock(blockState.getBlock());
         if(item == null) {
-            return null;
+            return ItemStack.EMPTY;
         }
         return new ItemStack(item, 1, item.getHasSubtypes() ? blockState.getBlock().damageDropped(blockState) : 0);
     }
