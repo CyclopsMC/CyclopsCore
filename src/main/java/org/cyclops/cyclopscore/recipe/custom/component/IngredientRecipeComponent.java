@@ -47,6 +47,9 @@ public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, I
                 return true;
             }
         }
+        if (getIngredient().apply(that.getFirstItemStack())) {
+            return true;
+        }
         return false;
     }
 
