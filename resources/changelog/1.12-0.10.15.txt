@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix invalid tile entity persistance
+Closes CyclopsMC/EvilCraft#584, closed CyclopsMC/EvilCraft#582
+
