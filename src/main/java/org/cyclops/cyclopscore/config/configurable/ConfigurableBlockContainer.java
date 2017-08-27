@@ -161,7 +161,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
      * @return If the block was destroyed and not air.
      */
     public boolean destroyBlock(World world, BlockPos pos, boolean dropBlock) {
-        onPreBlockDestroyed(world, pos);
+        onPreBlockDestroyedPersistence(world, pos);
         boolean result = world.destroyBlock(pos, dropBlock);
         onPostBlockDestroyed(world, pos);
         return result;
@@ -174,7 +174,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
      * @param player The player destroying the block.
      */
     protected void onPreBlockDestroyed(World world, BlockPos blockPos, EntityPlayer player) {
-        onPreBlockDestroyed(world, blockPos);
+        onPreBlockDestroyedPersistence(world, blockPos);
     }
 
     /**
@@ -183,7 +183,19 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
      * @param blockPos The position of the to-be-destroyed block.
      */
     protected void onPreBlockDestroyed(World world, BlockPos blockPos) {
-    	MinecraftHelpers.preDestroyBlock(this, world, blockPos, saveNBTToDroppedItem());
+
+    }
+
+    /**
+     * Called before the block is broken or destroyed when the tile data needs to be persisted.
+     * @param world The world.
+     * @param blockPos The position of the to-be-destroyed block.
+     */
+    protected void onPreBlockDestroyedPersistence(World world, BlockPos blockPos) {
+        onPreBlockDestroyed(world, blockPos);
+        if (!world.isRemote) {
+            MinecraftHelpers.preDestroyBlock(this, world, blockPos, saveNBTToDroppedItem());
+        }
     }
 
     /**
