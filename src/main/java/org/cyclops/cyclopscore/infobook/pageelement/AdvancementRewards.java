@@ -8,7 +8,6 @@ import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.EntityHelpers;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.network.packet.AdvancementRewardsObtainPacket;
 
 import java.util.List;
@@ -53,7 +52,7 @@ public class AdvancementRewards {
     public void obtain(EntityPlayer player) {
         if (!isObtained(player)) {
             // If client-side, send packet to server, otherwise, obtain the rewards server-side
-            if (MinecraftHelpers.isClientSide()) {
+            if (player.world.isRemote) {
                 CyclopsCore._instance.getPacketHandler().sendToServer(new AdvancementRewardsObtainPacket(id));
             } else {
                 for (IReward reward : getRewards()) {
