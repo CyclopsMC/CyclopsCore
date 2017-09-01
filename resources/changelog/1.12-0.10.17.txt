@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+This is just a version bump because CurseForge is acting derpy and wouldn't accept 0.10.16...
+
+Fixes:
+* Fix rewards not properly being awarded to players in SMP
+
