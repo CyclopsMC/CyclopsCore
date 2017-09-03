@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.config.configurable;
 
 import lombok.experimental.Delegate;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockSapling;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -18,6 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.block.property.BlockProperty;
 import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
 import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
 import org.cyclops.cyclopscore.world.gen.WorldGeneratorTree;
@@ -43,7 +45,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
     @BlockProperty(ignore = true)
     public static final IProperty[] _COMPAT_IGNORED = {TYPE};
 
-    protected ExtendedConfig<?, ?> eConfig = null;
+    protected ExtendedConfig<BlockConfig, Block> eConfig = null;
     protected boolean hasGui = false;
 
     private WorldGeneratorTree treeGenerator;
@@ -54,7 +56,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
      * @param material Material of this blockState.
      * @param treeGenerator The world generator of the tree.
      */
-    public ConfigurableBlockSapling(ExtendedConfig<?, ?> eConfig, Material material, WorldGeneratorTree treeGenerator) {
+    public ConfigurableBlockSapling(ExtendedConfig<BlockConfig, Block> eConfig, Material material, WorldGeneratorTree treeGenerator) {
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         this.treeGenerator = treeGenerator;
@@ -73,12 +75,12 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
         return null;
     }
 
-    private void setConfig(ExtendedConfig<?, ?> eConfig) {
+    private void setConfig(ExtendedConfig<BlockConfig, Block> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?, ?> getConfig() {
+    public ExtendedConfig<BlockConfig, Block> getConfig() {
         return eConfig;
     }
 

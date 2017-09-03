@@ -2,12 +2,14 @@ package org.cyclops.cyclopscore.config.configurable;
 
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 
 import javax.annotation.Nullable;
@@ -20,7 +22,7 @@ import java.util.List;
  */
 public class ConfigurableItemFood extends ItemFood implements IConfigurableItem {
     
-    protected ExtendedConfig<?, ?> eConfig = null;
+    protected ExtendedConfig<ItemConfig, Item> eConfig = null;
     
     /**
      * Make a new blockState instance.
@@ -29,18 +31,18 @@ public class ConfigurableItemFood extends ItemFood implements IConfigurableItem 
      * @param saturationModifier The modifier for the saturation.
      * @param isWolfsFavoriteMeat If this is wolf food.
      */
-    public ConfigurableItemFood(ExtendedConfig<?, ?> eConfig, int healAmount, float saturationModifier, boolean isWolfsFavoriteMeat) {
+    public ConfigurableItemFood(ExtendedConfig<ItemConfig, Item> eConfig, int healAmount, float saturationModifier, boolean isWolfsFavoriteMeat) {
         super(healAmount, saturationModifier, isWolfsFavoriteMeat);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
 
-    private void setConfig(ExtendedConfig<?, ?> eConfig) {
+    private void setConfig(ExtendedConfig<ItemConfig, Item> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?, ?> getConfig() {
+    public ExtendedConfig<ItemConfig, Item> getConfig() {
         return eConfig;
     }
     

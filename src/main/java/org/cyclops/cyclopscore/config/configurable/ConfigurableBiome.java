@@ -37,7 +37,7 @@ public class ConfigurableBiome extends Biome implements IConfigurable {
     }
 
     @Override
-    public ExtendedConfig<?, ?> getConfig() {
+    public ExtendedConfig<BiomeConfig, Biome> getConfig() {
         return eConfig;
     }
 

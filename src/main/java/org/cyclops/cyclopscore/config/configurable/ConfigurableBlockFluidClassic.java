@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurable;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.color.IBlockColor;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.block.component.IEntityDropParticleFXBlock;
 import org.cyclops.cyclopscore.block.component.ParticleDropBlockComponent;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 
 import javax.annotation.Nonnull;
@@ -28,7 +30,7 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
     
 	private Fluid fluid;
 	
-    protected ExtendedConfig<?, ?> eConfig = null;
+    protected ExtendedConfig<BlockConfig, Block> eConfig = null;
     protected boolean hasGui = false;
     
     @SideOnly(Side.CLIENT)
@@ -40,7 +42,7 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
      * @param fluid The fluid this blockState has to represent
      * @param material Material of this blockState.
      */
-    public ConfigurableBlockFluidClassic(ExtendedConfig<?, ?> eConfig, Fluid fluid, Material material) {
+    public ConfigurableBlockFluidClassic(ExtendedConfig<BlockConfig, Block> eConfig, Fluid fluid, Material material) {
         super(fluid, material);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
@@ -73,12 +75,12 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
         return this.fluid;
     }
 
-    private void setConfig(ExtendedConfig<?, ?> eConfig) {
+    private void setConfig(ExtendedConfig<BlockConfig, Block> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?, ?> getConfig() {
+    public ExtendedConfig<BlockConfig, Block> getConfig() {
         return eConfig;
     }
     

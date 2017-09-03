@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.config.configurable;
 
 import com.google.common.collect.Lists;
 import lombok.experimental.Delegate;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.properties.IProperty;
@@ -22,6 +23,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.block.property.BlockProperty;
 import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
 import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
 
@@ -45,14 +47,14 @@ public abstract class ConfigurableBlockLeaves extends BlockLeaves implements ICo
     @BlockProperty(ignore = true)
     public static final IProperty[] _COMPAT = {DECAYABLE, CHECK_DECAY};
 
-    protected ExtendedConfig<?, ?> eConfig = null;
+    protected ExtendedConfig<BlockConfig, Block> eConfig = null;
     protected boolean hasGui = false;
     
     /**
      * Make a new blockState instance.
      * @param eConfig Config for this blockState.
      */
-    public ConfigurableBlockLeaves(ExtendedConfig<?, ?> eConfig) {
+    public ConfigurableBlockLeaves(ExtendedConfig<BlockConfig, Block> eConfig) {
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
@@ -69,12 +71,12 @@ public abstract class ConfigurableBlockLeaves extends BlockLeaves implements ICo
         return hasGui;
     }
 
-    private void setConfig(ExtendedConfig<?, ?> eConfig) {
+    private void setConfig(ExtendedConfig<BlockConfig, Block> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?, ?> getConfig() {
+    public ExtendedConfig<BlockConfig, Block> getConfig() {
         return eConfig;
     }
 

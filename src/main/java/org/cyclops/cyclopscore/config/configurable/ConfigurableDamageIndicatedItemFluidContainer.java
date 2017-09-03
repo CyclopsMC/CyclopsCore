@@ -6,6 +6,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -23,6 +24,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -39,7 +41,7 @@ import java.util.List;
  */
 public abstract class ConfigurableDamageIndicatedItemFluidContainer extends DamageIndicatedItemFluidContainer implements IConfigurable {
 
-    protected ExtendedConfig<?, ?> eConfig = null;
+    protected ExtendedConfig<ItemConfig, Item> eConfig = null;
 
     protected boolean canPickUp = true;
     private boolean placeFluids = false;
@@ -50,18 +52,18 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
      * @param capacity The capacity for the fluid container this item should have.
      * @param fluid The fluid this container should be able to hold.
      */
-    protected ConfigurableDamageIndicatedItemFluidContainer(ExtendedConfig<?, ?> eConfig, int capacity, Fluid fluid) {
+    protected ConfigurableDamageIndicatedItemFluidContainer(ExtendedConfig<ItemConfig, Item> eConfig, int capacity, Fluid fluid) {
         super(capacity, fluid);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
 
-    private void setConfig(ExtendedConfig<?, ?> eConfig) {
+    private void setConfig(ExtendedConfig<ItemConfig, Item> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?, ?> getConfig() {
+    public ExtendedConfig<ItemConfig, Item> getConfig() {
         return eConfig;
     }
 
