@@ -77,7 +77,7 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
         IBlockState blockState = super.getStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer, hand);
         for(IProperty property : blockState.getPropertyKeys()) {
             if(property.getName().equals("facing")) {
-                blockState.withProperty(property, placer.getHorizontalFacing());
+                return blockState.withProperty(property, placer.getHorizontalFacing());
             }
         }
         return blockState;
