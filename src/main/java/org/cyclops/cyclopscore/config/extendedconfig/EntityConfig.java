@@ -50,8 +50,7 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfig<Enti
     @SideOnly(Side.CLIENT)
     public void onRegistered() {
         super.onRegistered();
-        @SuppressWarnings("unchecked")
-        Class<T> clazz = (Class<T>) this.getElement();
+        Class<? extends T> clazz = this.getElement();
         RenderingRegistry.registerEntityRenderingHandler(clazz, new IRenderFactory<T>() {
             @Override
             public Render<? super T> createRenderFor(RenderManager manager) {
