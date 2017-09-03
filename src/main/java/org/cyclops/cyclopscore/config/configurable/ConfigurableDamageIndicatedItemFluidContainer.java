@@ -39,8 +39,7 @@ import java.util.List;
  */
 public abstract class ConfigurableDamageIndicatedItemFluidContainer extends DamageIndicatedItemFluidContainer implements IConfigurable {
 
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<?, ?> eConfig = null;
 
     protected boolean canPickUp = true;
     private boolean placeFluids = false;
@@ -51,15 +50,13 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
      * @param capacity The capacity for the fluid container this item should have.
      * @param fluid The fluid this container should be able to hold.
      */
-    @SuppressWarnings({ "rawtypes" })
-    protected ConfigurableDamageIndicatedItemFluidContainer(ExtendedConfig eConfig, int capacity, Fluid fluid) {
+    protected ConfigurableDamageIndicatedItemFluidContainer(ExtendedConfig<?, ?> eConfig, int capacity, Fluid fluid) {
         super(capacity, fluid);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
 
-    @SuppressWarnings("rawtypes")
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<?, ?> eConfig) {
         this.eConfig = eConfig;
     }
 

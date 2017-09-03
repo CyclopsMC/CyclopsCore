@@ -26,8 +26,7 @@ import java.util.List;
  */
 public class ConfigurableItemBucket extends ItemBucket implements IConfigurableItem {
     
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<?, ?> eConfig = null;
     
     protected boolean canPickUp = true;
 
@@ -39,8 +38,7 @@ public class ConfigurableItemBucket extends ItemBucket implements IConfigurableI
      * @param block The fluid blockState it can pick up.
      * @param fluidStack The filled fluid.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableItemBucket(ExtendedConfig eConfig, Block block, FluidStack fluidStack) {
+    public ConfigurableItemBucket(ExtendedConfig<?, ?> eConfig, Block block, FluidStack fluidStack) {
         super(block);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
@@ -48,8 +46,7 @@ public class ConfigurableItemBucket extends ItemBucket implements IConfigurableI
         this.fluidStack = fluidStack;
     }
 
-    @SuppressWarnings("rawtypes")
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<?, ?> eConfig) {
         this.eConfig = eConfig;
     }
 

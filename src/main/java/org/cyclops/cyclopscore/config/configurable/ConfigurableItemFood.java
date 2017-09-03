@@ -20,8 +20,7 @@ import java.util.List;
  */
 public class ConfigurableItemFood extends ItemFood implements IConfigurableItem {
     
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<?, ?> eConfig = null;
     
     /**
      * Make a new blockState instance.
@@ -30,15 +29,13 @@ public class ConfigurableItemFood extends ItemFood implements IConfigurableItem 
      * @param saturationModifier The modifier for the saturation.
      * @param isWolfsFavoriteMeat If this is wolf food.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableItemFood(ExtendedConfig eConfig, int healAmount, float saturationModifier, boolean isWolfsFavoriteMeat) {
+    public ConfigurableItemFood(ExtendedConfig<?, ?> eConfig, int healAmount, float saturationModifier, boolean isWolfsFavoriteMeat) {
         super(healAmount, saturationModifier, isWolfsFavoriteMeat);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
 
-    @SuppressWarnings("rawtypes")
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<?, ?> eConfig) {
         this.eConfig = eConfig;
     }
 

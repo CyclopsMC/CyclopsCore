@@ -43,8 +43,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
     @BlockProperty(ignore = true)
     public static final IProperty[] _COMPAT_IGNORED = {TYPE};
 
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<?, ?> eConfig = null;
     protected boolean hasGui = false;
 
     private WorldGeneratorTree treeGenerator;
@@ -55,8 +54,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
      * @param material Material of this blockState.
      * @param treeGenerator The world generator of the tree.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableBlockSapling(ExtendedConfig eConfig, Material material, WorldGeneratorTree treeGenerator) {
+    public ConfigurableBlockSapling(ExtendedConfig<?, ?> eConfig, Material material, WorldGeneratorTree treeGenerator) {
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         this.treeGenerator = treeGenerator;
@@ -75,7 +73,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
         return null;
     }
 
-    private void setConfig(@SuppressWarnings("rawtypes") ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<?, ?> eConfig) {
         this.eConfig = eConfig;
     }
 

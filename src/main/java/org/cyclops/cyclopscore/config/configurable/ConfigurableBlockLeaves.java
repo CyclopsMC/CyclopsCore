@@ -45,16 +45,14 @@ public abstract class ConfigurableBlockLeaves extends BlockLeaves implements ICo
     @BlockProperty(ignore = true)
     public static final IProperty[] _COMPAT = {DECAYABLE, CHECK_DECAY};
 
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<?, ?> eConfig = null;
     protected boolean hasGui = false;
     
     /**
      * Make a new blockState instance.
      * @param eConfig Config for this blockState.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableBlockLeaves(ExtendedConfig eConfig) {
+    public ConfigurableBlockLeaves(ExtendedConfig<?, ?> eConfig) {
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
@@ -71,7 +69,7 @@ public abstract class ConfigurableBlockLeaves extends BlockLeaves implements ICo
         return hasGui;
     }
 
-    private void setConfig(@SuppressWarnings("rawtypes") ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<?, ?> eConfig) {
         this.eConfig = eConfig;
     }
 

@@ -41,16 +41,14 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
     @BlockProperty
     public static final IProperty[] _COMPAT = {LOG_AXIS};
 
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<?, ?> eConfig = null;
     protected boolean hasGui = false;
 
     /**
      * Make a new blockState instance.
      * @param eConfig Config for this blockState.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableBlockLog(ExtendedConfig eConfig) {
+    public ConfigurableBlockLog(ExtendedConfig<?, ?> eConfig) {
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
@@ -67,8 +65,7 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<?, ?> eConfig) {
         this.eConfig = eConfig;
     }
 

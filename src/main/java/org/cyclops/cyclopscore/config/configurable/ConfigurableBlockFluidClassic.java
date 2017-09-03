@@ -28,8 +28,7 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
     
 	private Fluid fluid;
 	
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<?, ?> eConfig = null;
     protected boolean hasGui = false;
     
     @SideOnly(Side.CLIENT)
@@ -41,8 +40,7 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
      * @param fluid The fluid this blockState has to represent
      * @param material Material of this blockState.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableBlockFluidClassic(ExtendedConfig eConfig, Fluid fluid, Material material) {
+    public ConfigurableBlockFluidClassic(ExtendedConfig<?, ?> eConfig, Fluid fluid, Material material) {
         super(fluid, material);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
@@ -75,7 +73,7 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
         return this.fluid;
     }
 
-    private void setConfig(@SuppressWarnings("rawtypes") ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<?, ?> eConfig) {
         this.eConfig = eConfig;
     }
 
