@@ -36,12 +36,12 @@ import java.util.concurrent.Callable;
 @SuppressWarnings("rawtypes")
 @EqualsAndHashCode(callSuper=false)
 @Data
-public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
+public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
 
     private final ModBase mod;
     private Configuration config;
-    private final LinkedHashSet<ExtendedConfig> processedConfigs = new LinkedHashSet<ExtendedConfig>();
-    private final Map<String, ExtendedConfig> configDictionary = Maps.newHashMap();
+    private final LinkedHashSet<ExtendedConfig<?>> processedConfigs = new LinkedHashSet<ExtendedConfig<?>>();
+    private final Map<String, ExtendedConfig<?>> configDictionary = Maps.newHashMap();
     private final Set<String> categories = Sets.newHashSet();
     private final Map<String, ConfigProperty> commandableProperties = Maps.newHashMap();
     private final Multimap<Class<?>, Pair<IForgeRegistryEntry<?>, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<Class<?>, Collection<Pair<IForgeRegistryEntry<?>, Callable<?>>>>newIdentityHashMap(), new Supplier<List<Pair<IForgeRegistryEntry<?>, Callable<?>>>>() {
@@ -59,12 +59,12 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
     }
     
     @Override
-    public boolean add(ExtendedConfig e) {
+    public boolean add(ExtendedConfig<?> e) {
     	addToConfigDictionary(e);
     	return super.add(e);
     }
 
-    public void addToConfigDictionary(ExtendedConfig e) {
+    public void addToConfigDictionary(ExtendedConfig<?> e) {
         configDictionary.put(e.getNamedId(), e);
     }
     
@@ -191,7 +191,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
 	 * Get the map of config nameid to config.
 	 * @return The dictionary.
 	 */
-	public Map<String, ExtendedConfig> getDictionary() {
+	public Map<String, ExtendedConfig<?>> getDictionary() {
 		return configDictionary;
 	}
 	
@@ -232,10 +232,9 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig> {
      * @param config The config to check.
      * @return If the given config is enabled.
      */
-    @SuppressWarnings("rawtypes")
-    public static boolean isEnabled(Class<? extends ExtendedConfig> config) {
+    public static boolean isEnabled(Class<? extends ExtendedConfig<?>> config) {
         try {
-            return ((ExtendedConfig)config.getField("_instance").get(null)).isEnabled();
+            return ((ExtendedConfig<?>)config.getField("_instance").get(null)).isEnabled();
         } catch (NullPointerException e1) {
             return false;
         } catch (IllegalArgumentException e2) {

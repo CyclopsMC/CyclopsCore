@@ -228,7 +228,7 @@ public abstract class NBTClassType<T> {
                     NBTClassType keyNBTClassType;
                     NBTClassType valueNBTClassType = null; // Remains null when all map values are null.
                     try {
-                        Class keyType = Class.forName(mapTag.getString("keyType"));
+                        Class<?> keyType = Class.forName(mapTag.getString("keyType"));
                         keyNBTClassType = getType(keyType, map);
                     } catch (ClassNotFoundException e) {
                         CyclopsCore.clog(Level.WARN, "No class found for NBT type map key '" + mapTag.getString("keyType")
@@ -237,7 +237,7 @@ public abstract class NBTClassType<T> {
                     }
                     if(mapTag.hasKey("valueType")) {
                         try {
-                            Class valueType = Class.forName(mapTag.getString("valueType"));
+                            Class<?> valueType = Class.forName(mapTag.getString("valueType"));
                             valueNBTClassType = getType(valueType, map);
                         } catch (ClassNotFoundException e) {
                             CyclopsCore.clog(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
@@ -333,7 +333,7 @@ public abstract class NBTClassType<T> {
 
                 NBTClassType leftElementNBTClassType;
                 try {
-                    Class elementType = Class.forName(pairTag.getString("leftType"));
+                    Class<?> elementType = Class.forName(pairTag.getString("leftType"));
                     leftElementNBTClassType = getType(elementType, Pair.class);
                 } catch (ClassNotFoundException e) {
                     CyclopsCore.clog(Level.WARN, "No class found for NBT type Pair left element '" + pairTag.getString("leftType")
@@ -343,7 +343,7 @@ public abstract class NBTClassType<T> {
 
                 NBTClassType rightElementNBTClassType;
                 try {
-                    Class elementType = Class.forName(pairTag.getString("rightType"));
+                    Class<?> elementType = Class.forName(pairTag.getString("rightType"));
                     rightElementNBTClassType = getType(elementType, Pair.class);
                 } catch (ClassNotFoundException e) {
                     CyclopsCore.clog(Level.WARN, "No class found for NBT type Pair right element '" + pairTag.getString("rightType")
@@ -457,7 +457,7 @@ public abstract class NBTClassType<T> {
                     NBTClassType valueNBTClassType = null; // Remains null when all map values are null.
                     if(mapTag.hasKey("valueType")) {
                         try {
-                            Class valueType = Class.forName(mapTag.getString("valueType"));
+                            Class<?> valueType = Class.forName(mapTag.getString("valueType"));
                             valueNBTClassType = getType(valueType, map);
                         } catch (ClassNotFoundException e) {
                             CyclopsCore.clog(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
@@ -699,7 +699,7 @@ public abstract class NBTClassType<T> {
             if(list.tagCount() > 0) {
                 NBTClassType elementNBTClassType;
                 try {
-                    Class elementType = Class.forName(collectionTag.getString("elementType"));
+                    Class<?> elementType = Class.forName(collectionTag.getString("elementType"));
                     elementNBTClassType = getType(elementType, collection);
                 } catch (ClassNotFoundException e) {
                     CyclopsCore.clog(Level.WARN, "No class found for NBT type collection element '" + collectionTag.getString("elementType")

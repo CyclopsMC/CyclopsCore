@@ -32,8 +32,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
     private boolean enabled;
     @Getter private final String namedId;
     @Getter private final String comment;
-    @SuppressWarnings("rawtypes")
-    @Getter private final Class element;
+    @Getter private final Class<?> element;
 
     private IConfigurable overriddenSubInstance;
     
@@ -113,7 +112,6 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
 	/**
      * Save this config inside the correct element and inside the implementation if itself.
      */
-    @SuppressWarnings("unchecked")
     public void save() {
         try {
             // Save inside the self-implementation
@@ -129,7 +127,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
 
             // Save inside the unique instance this config refers to (only if such an instance exists!)
             if (getOverriddenSubInstance() == null && this.getHolderType().hasUniqueInstance()) {
-                Constructor constructor = this.getElement().getDeclaredConstructor(ExtendedConfig.class);
+                Constructor<?> constructor = this.getElement().getDeclaredConstructor(ExtendedConfig.class);
                 if(constructor == null) {
                     throw new CyclopsCoreConfigException(String.format("The class %s requires a constructor with " +
                             "ExtendedConfig as single parameter.", this.getElement()));
@@ -204,7 +202,6 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      * Will return the instance of the object this config refers to
      * @return instance of sub object
      */
-    @SuppressWarnings("unchecked")
     public IConfigurable getSubInstance() {
         if(getOverriddenSubInstance() != null) {
             return getOverriddenSubInstance();

@@ -99,7 +99,6 @@ public class InfoSection {
      * @param lineHeight The line height.
      * @param yOffset The y gui offset.
      */
-    @SuppressWarnings("unchecked")
     public void bakeSection(FontRenderer fontRenderer, int width, int maxLines, int lineHeight, int yOffset) {
         if(paragraphs.size() == 0 && shouldAddIndex()) {
             // linkedmap to make sure the contents are sorted by insertion order.

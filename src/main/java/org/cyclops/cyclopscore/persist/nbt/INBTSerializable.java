@@ -33,12 +33,11 @@ public interface INBTSerializable {
 	 */
 	public void fromNBT(NBTTagCompound tag);
 
-    @SuppressWarnings("unchecked")
     @EqualsAndHashCode(callSuper = false)
     @Data
     public static class SelfNBTClassType extends NBTClassType<INBTSerializable> {
 
-        private final Class fieldType;
+        private final Class<?> fieldType;
 
         @Override
         public void writePersistedField(String name, INBTSerializable object, NBTTagCompound tag) {
@@ -59,7 +58,7 @@ public interface INBTSerializable {
         @Override
         public INBTSerializable readPersistedField(String name, NBTTagCompound tag) {
             try {
-                Constructor constructor = fieldType.getConstructor();
+                Constructor<?> constructor = fieldType.getConstructor();
                 if(constructor == null) {
                     throw new RuntimeException("The NBT serializable " + name + " of class " + fieldType + " must " +
                             "have a constructor without parameters.");

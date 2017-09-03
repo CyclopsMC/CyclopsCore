@@ -23,7 +23,6 @@ import javax.annotation.Nullable;
  */
 public class ConfigurableBlockStairs extends BlockStairs implements IConfigurableBlock, IDynamicModelElement {
 
-    @SuppressWarnings("rawtypes")
     protected BlockConfig eConfig = null;
     protected boolean hasGui = false;
 
@@ -32,8 +31,7 @@ public class ConfigurableBlockStairs extends BlockStairs implements IConfigurabl
      * @param eConfig Config for this blockState.
      * @param modelState The base model of the stairs
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableBlockStairs(ExtendedConfig eConfig, IBlockState modelState) {
+    public ConfigurableBlockStairs(ExtendedConfig<BlockConfig> eConfig, IBlockState modelState) {
         super(modelState);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
@@ -53,12 +51,12 @@ public class ConfigurableBlockStairs extends BlockStairs implements IConfigurabl
         return null;
     }
 
-    private void setConfig(@SuppressWarnings("rawtypes") ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
         this.eConfig = (BlockConfig) eConfig;
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<BlockConfig> getConfig() {
         return eConfig;
     }
 

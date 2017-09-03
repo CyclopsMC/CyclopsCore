@@ -34,7 +34,6 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
 
 	public abstract ModBase getMod();
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static List<IConfigElement> getConfigElements(ModBase mod) {
 		List<IConfigElement> list = new ArrayList<IConfigElement>();
 		for(String category : mod.getConfigHandler().getCategories()) {
@@ -58,13 +57,11 @@ public abstract class GuiConfigOverviewBase extends GuiConfig {
 		 * @param entries The gui entries.
 		 * @param element The config element for this category.
 		 */
-		@SuppressWarnings("rawtypes")
 		public ExtendedCategoryEntry(GuiConfig config, GuiConfigEntries entries,
 				IConfigElement element) {
 			super(config, entries, element);
         }
 		
-		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
         protected GuiScreen buildChildScreen() {
             ModBase mod = ((GuiConfigOverviewBase) this.owningScreen).getMod();

@@ -56,7 +56,6 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         return (propertyManager = new BlockPropertyManagerComponent(this)).createDelegatedBlockState();
     }
 
-    @SuppressWarnings("rawtypes")
     protected BlockConfig eConfig = null;
     
     protected Random random;
@@ -75,8 +74,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
      * @param material Material of this blockState.
      * @param tileEntity The class of the tile entity this blockState holds.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableBlockContainer(ExtendedConfig eConfig, Material material, Class<? extends CyclopsTileEntity> tileEntity) {
+    public ConfigurableBlockContainer(ExtendedConfig<BlockConfig> eConfig, Material material, Class<? extends CyclopsTileEntity> tileEntity) {
         super(material);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
@@ -120,8 +118,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         return this.tileEntity;
     }
 
-    @SuppressWarnings("rawtypes")
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
         this.eConfig = (BlockConfig) eConfig;
     }
 

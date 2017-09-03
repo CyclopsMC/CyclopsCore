@@ -31,7 +31,6 @@ public class WorldHelpers {
      * @param biome The biome to change to.
      */
     //@SideOnly(Side.SERVER)
-    @SuppressWarnings("unchecked")
     public static void setBiome(World world, BlockPos pos, Biome biome) {
         Chunk chunk = world.getChunkFromBlockCoords(pos);
         if(chunk != null) {

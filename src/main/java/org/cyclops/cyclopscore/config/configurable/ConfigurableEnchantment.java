@@ -30,13 +30,12 @@ public class ConfigurableEnchantment extends Enchantment implements IConfigurabl
         this.setName(eConfig.getUnlocalizedName());
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<EnchantmentConfig> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<EnchantmentConfig> getConfig() {
         return eConfig;
     }
     

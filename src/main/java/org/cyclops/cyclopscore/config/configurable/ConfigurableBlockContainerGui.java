@@ -11,6 +11,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -35,8 +36,7 @@ public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockCon
      * @param material Material of this blockState.
      * @param tileEntity The class of the tile entity this blockState holds.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableBlockContainerGui(ExtendedConfig eConfig,
+    public ConfigurableBlockContainerGui(ExtendedConfig<BlockConfig> eConfig,
             Material material, Class<? extends CyclopsTileEntity> tileEntity) {
         super(eConfig, material, tileEntity);
         this.hasGui = true;

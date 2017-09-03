@@ -191,7 +191,6 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
         return true;
     }
 
-    @SuppressWarnings("rawtypes")
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {

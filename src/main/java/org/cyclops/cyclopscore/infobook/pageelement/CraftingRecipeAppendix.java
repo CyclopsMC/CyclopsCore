@@ -107,7 +107,6 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
         return itemStacks;
     }
 
-    @SuppressWarnings("unchecked")
     protected Ingredient getItemStacks(int index) {
         NonNullList<Ingredient> ingredients;
 

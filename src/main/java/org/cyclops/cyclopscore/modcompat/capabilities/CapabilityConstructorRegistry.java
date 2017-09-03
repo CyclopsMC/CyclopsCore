@@ -151,13 +151,13 @@ public class CapabilityConstructorRegistry {
 
     protected <T> void onLoad(Map<Class<? extends T>, List<ICapabilityConstructor<?, ? extends T, ? extends T>>> allConstructors,
                               Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors,
-                              T object, AttachCapabilitiesEvent event, Class<? extends T> baseClass) {
+                              T object, AttachCapabilitiesEvent<?> event, Class<? extends T> baseClass) {
         onLoad(allConstructors, allInheritableConstructors, object, object, event, baseClass);
     }
 
     protected <K, V> void onLoad(Map<Class<? extends K>, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allConstructors,
                                  Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors,
-                                 K keyObject, V valueObject, AttachCapabilitiesEvent event, Class<? extends K> baseClass) {
+                                 K keyObject, V valueObject, AttachCapabilitiesEvent<?> event, Class<? extends K> baseClass) {
         boolean initialized = baked || Helpers.isMinecraftInitialized();
         if (!baked && Helpers.isMinecraftInitialized()) {
             bake();
@@ -182,7 +182,7 @@ public class CapabilityConstructorRegistry {
         }
     }
 
-    protected <K, V> void addLoadedCapabilityProvider(AttachCapabilitiesEvent event, K keyObject, V valueObject, ICapabilityConstructor<?, ?, ?> constructor) {
+    protected <K, V> void addLoadedCapabilityProvider(AttachCapabilitiesEvent<?> event, K keyObject, V valueObject, ICapabilityConstructor<?, ?, ?> constructor) {
         ICapabilityProvider provider = createProvider(keyObject, valueObject, constructor);
         if (provider != null) {
             ResourceLocation id = new ResourceLocation(getMod().getModId(), constructor.getCapability().getName());

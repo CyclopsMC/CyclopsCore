@@ -15,6 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableItem;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.Helpers.IDType;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -33,8 +34,7 @@ public abstract class ItemGui extends ConfigurableItem implements IGuiContainerP
      * Make a new item instance.
      * @param eConfig Config for this blockState.
      */
-    @SuppressWarnings({ "rawtypes" })
-	protected ItemGui(ExtendedConfig eConfig) {
+	protected ItemGui(ExtendedConfig<ItemConfig> eConfig) {
 		super(eConfig);
 		this.guiID = Helpers.getNewId(eConfig.getMod(), IDType.GUI);
 	}

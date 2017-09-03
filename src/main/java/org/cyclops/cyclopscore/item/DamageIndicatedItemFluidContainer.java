@@ -53,7 +53,6 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
         component = new DamageIndicatedItemComponent(this);
     }
 
-    @SuppressWarnings({ "rawtypes"})
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList) {
         if (!ItemStackHelpers.isValidCreativeTab(this, tab)) return;
@@ -65,14 +64,12 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
         return component.getInfo(itemStack);
     }
     
-    @SuppressWarnings("rawtypes")
     @Override
     @SideOnly(Side.CLIENT)
     public void provideInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
         
     }
     
-    @SuppressWarnings("rawtypes")
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {

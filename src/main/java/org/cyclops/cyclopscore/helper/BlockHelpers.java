@@ -32,12 +32,11 @@ public final class BlockHelpers {
      * @param <T> The type of value to fetch.
      * @return The value.
      */
-    @SuppressWarnings("unchecked")
-    public static <T> T getSafeBlockStateProperty(@Nullable IBlockState state, IProperty property, T fallback) {
+    public static <T extends Comparable<T>> T getSafeBlockStateProperty(@Nullable IBlockState state, IProperty<T> property, T fallback) {
         if(state == null) {
             return fallback;
         }
-        Comparable value;
+        T value;
         try {
             value = state.getValue(property);
         } catch (IllegalArgumentException e) {
@@ -46,7 +45,7 @@ public final class BlockHelpers {
         if(value == null) {
             return fallback;
         }
-        return (T) value;
+        return value;
     }
 
     /**

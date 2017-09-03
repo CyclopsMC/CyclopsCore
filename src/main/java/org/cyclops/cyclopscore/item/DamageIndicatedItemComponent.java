@@ -52,7 +52,6 @@ public class DamageIndicatedItemComponent{
      * @param fluid The fluid in the container that needs to be added.
      * @param meta The meta data for the item to add.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList, Fluid fluid, int meta) {
         // Add the 'full' container.
         ItemStack itemStackFull = new ItemStack(this.item, 1, meta);
@@ -102,7 +101,6 @@ public class DamageIndicatedItemComponent{
      * @param list The info list where the info will be added.
      * @param flag the tooltip flag
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
         list.add(IInformationProvider.ITEM_PREFIX+((IInformationProvider) itemStack.getItem()).getInfo(itemStack));
     }

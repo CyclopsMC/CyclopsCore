@@ -39,7 +39,6 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
         return (propertyManager = new BlockPropertyManagerComponent(this)).createDelegatedBlockState();
     }
 
-    @SuppressWarnings("rawtypes")
     protected BlockConfig eConfig = null;
     protected boolean hasGui = false;
     protected int pass = 0;
@@ -50,8 +49,7 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
      * @param eConfig Config for this blockState.
      * @param material Material of this blockState.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableBlock(ExtendedConfig eConfig, Material material) {
+    public ConfigurableBlock(ExtendedConfig<BlockConfig> eConfig, Material material) {
         super(material);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
@@ -83,12 +81,12 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
         return blockState;
     }
 
-    private void setConfig(@SuppressWarnings("rawtypes") ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
         this.eConfig = (BlockConfig) eConfig;
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<BlockConfig> getConfig() {
         return eConfig;
     }
 

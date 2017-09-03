@@ -140,9 +140,8 @@ public class CommandMod implements ICommand {
         return icommandsender.canUseCommand(FMLCommonHandler.instance().getMinecraftServerInstance().getOpPermissionLevel(), getName());
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public List getTabCompletions(MinecraftServer server, ICommandSender icommandsender,
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender icommandsender,
             String[] astring, BlockPos blockPos) {
         if(astring.length != 0) {
             ICommand subcommand = getSubcommands().get(astring[0]);

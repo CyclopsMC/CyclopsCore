@@ -21,8 +21,7 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
 
     private final ResourceLocation resource;
 
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<PotionConfig> eConfig = null;
 
     /**
      * Make a new Enchantment instance
@@ -47,13 +46,12 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
         return super.getStatusIconIndex();
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<PotionConfig> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<PotionConfig> getConfig() {
         return eConfig;
     }
 

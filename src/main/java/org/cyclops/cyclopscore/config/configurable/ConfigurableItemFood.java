@@ -47,7 +47,6 @@ public class ConfigurableItemFood extends ItemFood implements IConfigurableItem 
         return eConfig;
     }
     
-    @SuppressWarnings("rawtypes")
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {

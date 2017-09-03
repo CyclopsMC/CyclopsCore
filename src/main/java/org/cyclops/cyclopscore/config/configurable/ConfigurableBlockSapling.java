@@ -84,7 +84,6 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
         return eConfig;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         if (!BlockHelpers.isValidCreativeTab(this, creativeTabs)) return;

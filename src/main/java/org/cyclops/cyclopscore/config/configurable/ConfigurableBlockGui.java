@@ -7,6 +7,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -27,8 +28,7 @@ public abstract class ConfigurableBlockGui extends ConfigurableBlock implements 
      * @param eConfig Config for this blockState.
      * @param material Material of this blockState.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableBlockGui(ExtendedConfig eConfig, Material material) {
+    public ConfigurableBlockGui(ExtendedConfig<BlockConfig> eConfig, Material material) {
         super(eConfig, material);
         this.hasGui = true;
         if(hasGui()) {
