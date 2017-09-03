@@ -36,12 +36,12 @@ import java.util.concurrent.Callable;
 @SuppressWarnings("rawtypes")
 @EqualsAndHashCode(callSuper=false)
 @Data
-public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
+public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?, ?>> {
 
     private final ModBase mod;
     private Configuration config;
-    private final LinkedHashSet<ExtendedConfig<?>> processedConfigs = new LinkedHashSet<ExtendedConfig<?>>();
-    private final Map<String, ExtendedConfig<?>> configDictionary = Maps.newHashMap();
+    private final LinkedHashSet<ExtendedConfig<?, ?>> processedConfigs = new LinkedHashSet<ExtendedConfig<?, ?>>();
+    private final Map<String, ExtendedConfig<?, ?>> configDictionary = Maps.newHashMap();
     private final Set<String> categories = Sets.newHashSet();
     private final Map<String, ConfigProperty> commandableProperties = Maps.newHashMap();
     private final Multimap<Class<?>, Pair<IForgeRegistryEntry<?>, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<Class<?>, Collection<Pair<IForgeRegistryEntry<?>, Callable<?>>>>newIdentityHashMap(), new Supplier<List<Pair<IForgeRegistryEntry<?>, Callable<?>>>>() {
@@ -59,12 +59,12 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
     }
     
     @Override
-    public boolean add(ExtendedConfig<?> e) {
+    public boolean add(ExtendedConfig<?, ?> e) {
     	addToConfigDictionary(e);
     	return super.add(e);
     }
 
-    public void addToConfigDictionary(ExtendedConfig<?> e) {
+    public void addToConfigDictionary(ExtendedConfig<?, ?> e) {
         configDictionary.put(e.getNamedId(), e);
     }
     
@@ -101,7 +101,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
      */
     @SuppressWarnings("unchecked")
     public void loadConfig() {
-        for(ExtendedConfig<?> eConfig : this) {
+        for(ExtendedConfig<?, ?> eConfig : this) {
             try {
                 addCategory(eConfig.getHolderType().getCategory());
                 if (!eConfig.isHardDisabled()) {
@@ -146,7 +146,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
      */
     @SuppressWarnings("unchecked")
     public void polishConfigs() {
-        for(ExtendedConfig<?> eConfig : processedConfigs) {
+        for(ExtendedConfig<?, ?> eConfig : processedConfigs) {
             ConfigurableType type = eConfig.getHolderType();
             type.getElementTypeAction().polish(eConfig);
         }
@@ -158,7 +158,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
      */
     @SuppressWarnings("unchecked")
 	public void syncProcessedConfigs() {
-    	for(ExtendedConfig<?> eConfig : processedConfigs) {
+    	for(ExtendedConfig<?, ?> eConfig : processedConfigs) {
     		// Re-save additional properties
             for(ConfigProperty configProperty : eConfig.configProperties) {
                 configProperty.save(config, false);
@@ -191,7 +191,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
 	 * Get the map of config nameid to config.
 	 * @return The dictionary.
 	 */
-	public Map<String, ExtendedConfig<?>> getDictionary() {
+	public Map<String, ExtendedConfig<?, ?>> getDictionary() {
 		return configDictionary;
 	}
 	
@@ -202,13 +202,13 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
 	 */
 	public static class ConfigInitListener implements IInitListener {
 
-		private ExtendedConfig<?> config;
+		private ExtendedConfig<?, ?> config;
 		
 		/**
 		 * Make a new instance.
 		 * @param config The config.
 		 */
-		public ConfigInitListener(ExtendedConfig<?> config) {
+		public ConfigInitListener(ExtendedConfig<?, ?> config) {
 			this.config = config;
 		}
 		
@@ -232,9 +232,9 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
      * @param config The config to check.
      * @return If the given config is enabled.
      */
-    public static boolean isEnabled(Class<? extends ExtendedConfig<?>> config) {
+    public static boolean isEnabled(Class<? extends ExtendedConfig<?, ?>> config) {
         try {
-            return ((ExtendedConfig<?>)config.getField("_instance").get(null)).isEnabled();
+            return ((ExtendedConfig<?, ?>)config.getField("_instance").get(null)).isEnabled();
         } catch (NullPointerException e1) {
             return false;
         } catch (IllegalArgumentException e2) {
@@ -254,7 +254,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
      * @param item The item, possibly IConfigurable.
      * @return The config or null.
      */
-    public static @Nullable ExtendedConfig<?> getConfigFromItem(Item item) {
+    public static @Nullable ExtendedConfig<?, ?> getConfigFromItem(Item item) {
         if(item instanceof IConfigurable) {
             return ((IConfigurable) item).getConfig();
         } else {
@@ -272,7 +272,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
      * @param fluid The fluid, possibly IConfigurable.
      * @return The config or null.
      */
-    public static @Nullable ExtendedConfig<?> getConfigFromFluid(Fluid fluid) {
+    public static @Nullable ExtendedConfig<?, ?> getConfigFromFluid(Fluid fluid) {
         if(fluid instanceof IConfigurable) {
             return ((IConfigurable) fluid).getConfig();
         }

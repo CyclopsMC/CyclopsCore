@@ -32,12 +32,12 @@ public class ConfigurableBiome extends Biome implements IConfigurable {
         return new Properties(L10NHelpers.localize(eConfig.getUnlocalizedName()));
     }
     
-    private void setConfig(ExtendedConfig<BiomeConfig> eConfig) {
+    private void setConfig(ExtendedConfig<BiomeConfig, Biome> eConfig) {
         this.eConfig = (BiomeConfig)eConfig;
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<BiomeConfig, Biome> getConfig() {
         return eConfig;
     }
 

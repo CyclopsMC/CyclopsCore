@@ -21,7 +21,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class ItemConfig extends ExtendedConfig<ItemConfig> implements IModelProviderConfig {
+public abstract class ItemConfig extends ExtendedConfig<ItemConfig, Item> implements IModelProviderConfig {
 
     @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicItemVariantLocation;
 

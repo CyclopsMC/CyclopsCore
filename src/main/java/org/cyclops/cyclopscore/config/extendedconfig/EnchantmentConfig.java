@@ -12,7 +12,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class EnchantmentConfig extends ExtendedConfig<EnchantmentConfig>{
+public abstract class EnchantmentConfig extends ExtendedConfig<EnchantmentConfig, Enchantment>{
 	
     /**
      * Make a new instance.

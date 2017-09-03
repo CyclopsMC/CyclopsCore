@@ -14,7 +14,7 @@ import org.cyclops.cyclopscore.helper.L10NHelpers;
  */
 public class ConfigurableEnchantment extends Enchantment implements IConfigurable {
 
-    protected ExtendedConfig<EnchantmentConfig> eConfig = null;
+    protected ExtendedConfig<EnchantmentConfig, Enchantment> eConfig = null;
     
     /**
      * Make a new Enchantment instance
@@ -23,19 +23,19 @@ public class ConfigurableEnchantment extends Enchantment implements IConfigurabl
      * @param type The type of enchantment
      * @param slots The equipment types on which the enchantment can occur.
      */
-    protected ConfigurableEnchantment(ExtendedConfig<EnchantmentConfig> eConfig, Enchantment.Rarity rarity,
+    protected ConfigurableEnchantment(ExtendedConfig<EnchantmentConfig, Enchantment> eConfig, Enchantment.Rarity rarity,
                                       EnumEnchantmentType type, EntityEquipmentSlot[] slots) {
         super(rarity, type, slots);
         this.setConfig(eConfig);
         this.setName(eConfig.getUnlocalizedName());
     }
     
-    private void setConfig(ExtendedConfig<EnchantmentConfig> eConfig) {
+    private void setConfig(ExtendedConfig<EnchantmentConfig, Enchantment> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<EnchantmentConfig> getConfig() {
+    public ExtendedConfig<EnchantmentConfig, Enchantment> getConfig() {
         return eConfig;
     }
     

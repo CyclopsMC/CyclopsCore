@@ -10,7 +10,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class FluidAction extends ConfigurableTypeAction<FluidConfig>{
+public class FluidAction extends ConfigurableTypeAction<FluidConfig, Fluid>{
 
     @Override
     public void preRun(FluidConfig eConfig, Configuration config, boolean startup) {

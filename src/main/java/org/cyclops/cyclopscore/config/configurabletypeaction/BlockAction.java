@@ -38,7 +38,7 @@ import java.util.concurrent.Callable;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
+public class BlockAction extends ConfigurableTypeAction<BlockConfig, Block> {
 
     private static final List<BlockConfig> MODEL_ENTRIES = Lists.newArrayList();
 
@@ -52,7 +52,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
      * @param config The config.
      * @param creativeTabs The creative tab this block will reside in.
      */
-    public static void register(Block block, ExtendedConfig config, @Nullable CreativeTabs creativeTabs) {
+    public static void register(Block block, ExtendedConfig<BlockConfig, Block> config, @Nullable CreativeTabs creativeTabs) {
         register(block, config, creativeTabs, null);
     }
 
@@ -63,7 +63,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
      * @param creativeTabs The creative tab this block will reside in.
      * @param callback A callback that will be called when the entry is registered.
      */
-    public static void register(Block block, ExtendedConfig config, @Nullable CreativeTabs creativeTabs, @Nullable Callable<?> callback) {
+    public static void register(Block block, ExtendedConfig<BlockConfig, Block> config, @Nullable CreativeTabs creativeTabs, @Nullable Callable<?> callback) {
         register(block, null, config, creativeTabs, callback);
     }
 
@@ -74,7 +74,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
      * @param config The config.
      * @param creativeTabs The creative tab this block will reside in.
      */
-    public static void register(Block block, @Nullable Class<? extends ItemBlock> itemBlockClass, ExtendedConfig config, @Nullable CreativeTabs creativeTabs) {
+    public static void register(Block block, @Nullable Class<? extends ItemBlock> itemBlockClass, ExtendedConfig<BlockConfig, Block> config, @Nullable CreativeTabs creativeTabs) {
         register(block, itemBlockClass, config, creativeTabs, null);
     }
 
@@ -86,7 +86,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
      * @param creativeTabs The creative tab this block will reside in.
      * @param callback A callback that will be called when the entry is registered.
      */
-    public static void register(Block block, @Nullable Class<? extends ItemBlock> itemBlockClass, ExtendedConfig config, @Nullable CreativeTabs creativeTabs, @Nullable Callable<?> callback) {
+    public static void register(Block block, @Nullable Class<? extends ItemBlock> itemBlockClass, ExtendedConfig<BlockConfig, Block> config, @Nullable CreativeTabs creativeTabs, @Nullable Callable<?> callback) {
         register(block, config, (Callable<?>) null); // Delay onForgeRegistered callback until item has been registered
         if(itemBlockClass != null) {
             try {

@@ -58,7 +58,7 @@ public class InfoSectionTagIndex extends InfoSection {
                 throw new IllegalArgumentException("The tag " + tag + " occurs multiple times.");
             }
 
-            ExtendedConfig<?> config = mod.getConfigHandler().getDictionary().get(tag);
+            ExtendedConfig<?, ?> config = mod.getConfigHandler().getDictionary().get(tag);
             if(config != null) {
                 softLinks.put(config.getFullUnlocalizedName(), Pair.of(section, 0));
             }

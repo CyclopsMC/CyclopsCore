@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurable;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.IBakedModel;
@@ -31,7 +32,7 @@ public class ConfigurableBlockStairs extends BlockStairs implements IConfigurabl
      * @param eConfig Config for this blockState.
      * @param modelState The base model of the stairs
      */
-    public ConfigurableBlockStairs(ExtendedConfig<BlockConfig> eConfig, IBlockState modelState) {
+    public ConfigurableBlockStairs(ExtendedConfig<BlockConfig, Block> eConfig, IBlockState modelState) {
         super(modelState);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
@@ -51,12 +52,12 @@ public class ConfigurableBlockStairs extends BlockStairs implements IConfigurabl
         return null;
     }
 
-    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
+    private void setConfig(ExtendedConfig<BlockConfig, Block> eConfig) {
         this.eConfig = (BlockConfig) eConfig;
     }
 
     @Override
-    public ExtendedConfig<BlockConfig> getConfig() {
+    public ExtendedConfig<BlockConfig, Block> getConfig() {
         return eConfig;
     }
 

@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
  * @see ExtendedConfig
  *
  */
-public class DummyConfig extends ExtendedConfig<DummyConfig>{
+public class DummyConfig extends ExtendedConfig<DummyConfig, Object>{
 
     /**
      * Make a new instance.

@@ -12,6 +12,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
  */
 public interface IConfigurable {
 
-    public ExtendedConfig<?> getConfig();
+    public ExtendedConfig<?, ?> getConfig();
 
 }

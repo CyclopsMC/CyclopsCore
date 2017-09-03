@@ -49,7 +49,7 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
      * @param eConfig Config for this blockState.
      * @param material Material of this blockState.
      */
-    public ConfigurableBlock(ExtendedConfig<BlockConfig> eConfig, Material material) {
+    public ConfigurableBlock(ExtendedConfig<BlockConfig, Block> eConfig, Material material) {
         super(material);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
@@ -81,12 +81,12 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
         return blockState;
     }
 
-    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
+    private void setConfig(ExtendedConfig<BlockConfig, Block> eConfig) {
         this.eConfig = (BlockConfig) eConfig;
     }
 
     @Override
-    public ExtendedConfig<BlockConfig> getConfig() {
+    public ExtendedConfig<BlockConfig, Block> getConfig() {
         return eConfig;
     }
 

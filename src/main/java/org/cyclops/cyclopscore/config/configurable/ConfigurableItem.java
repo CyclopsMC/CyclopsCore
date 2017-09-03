@@ -33,18 +33,18 @@ public class ConfigurableItem extends Item implements IConfigurableItem, IDynami
      * Make a new item instance.
      * @param eConfig Config for this blockState.
      */
-    public ConfigurableItem(ExtendedConfig<ItemConfig> eConfig) {
+    public ConfigurableItem(ExtendedConfig<ItemConfig, Item> eConfig) {
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         if(MinecraftHelpers.isClientSide() && hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
     }
 
-    private void setConfig(ExtendedConfig<ItemConfig> eConfig) {
+    private void setConfig(ExtendedConfig<ItemConfig, Item> eConfig) {
         this.eConfig = (ItemConfig) eConfig;
     }
 
     @Override
-    public ExtendedConfig<ItemConfig> getConfig() {
+    public ExtendedConfig<ItemConfig, Item> getConfig() {
         return eConfig;
     }
     

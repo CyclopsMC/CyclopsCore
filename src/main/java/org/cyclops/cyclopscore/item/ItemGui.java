@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -34,7 +35,7 @@ public abstract class ItemGui extends ConfigurableItem implements IGuiContainerP
      * Make a new item instance.
      * @param eConfig Config for this blockState.
      */
-	protected ItemGui(ExtendedConfig<ItemConfig> eConfig) {
+	protected ItemGui(ExtendedConfig<ItemConfig, Item> eConfig) {
 		super(eConfig);
 		this.guiID = Helpers.getNewId(eConfig.getMod(), IDType.GUI);
 	}

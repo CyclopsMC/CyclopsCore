@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.config.configurable;
 
 import lombok.experimental.Delegate;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockTorch;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.properties.IProperty;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.block.property.BlockProperty;
 import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
 import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 
 import javax.annotation.Nullable;
@@ -31,16 +33,14 @@ public class ConfigurableBlockTorch extends BlockTorch implements IConfigurableB
     @BlockProperty
     public static final IProperty[] _COMPAT = {FACING};
 
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<BlockConfig, Block> eConfig = null;
     protected boolean hasGui = false;
 
     /**
      * Make a new blockState instance.
      * @param eConfig Config for this blockState.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableBlockTorch(ExtendedConfig eConfig) {
+    public ConfigurableBlockTorch(ExtendedConfig<BlockConfig, Block> eConfig) {
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         this.setHardness(0.0F);
@@ -60,13 +60,12 @@ public class ConfigurableBlockTorch extends BlockTorch implements IConfigurableB
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<BlockConfig, Block> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<BlockConfig, Block> getConfig() {
         return eConfig;
     }
 

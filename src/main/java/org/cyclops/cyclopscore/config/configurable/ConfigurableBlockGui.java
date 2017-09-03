@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurable;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -28,7 +29,7 @@ public abstract class ConfigurableBlockGui extends ConfigurableBlock implements 
      * @param eConfig Config for this blockState.
      * @param material Material of this blockState.
      */
-    public ConfigurableBlockGui(ExtendedConfig<BlockConfig> eConfig, Material material) {
+    public ConfigurableBlockGui(ExtendedConfig<BlockConfig, Block> eConfig, Material material) {
         super(eConfig, material);
         this.hasGui = true;
         if(hasGui()) {

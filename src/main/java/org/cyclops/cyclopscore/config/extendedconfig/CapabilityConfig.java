@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfig<T>> {
+public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfig<T>, T> {
 
     private final Class<T> type;
     private final Capability.IStorage<T> storage;

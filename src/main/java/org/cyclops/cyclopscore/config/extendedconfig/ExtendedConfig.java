@@ -25,14 +25,14 @@ import java.util.Locale;
  * @param <C> Class of the extension of ExtendedConfig
  *
  */
-public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
-	Comparable<ExtendedConfig<C>>, IInitListener {
+public abstract class ExtendedConfig<C extends ExtendedConfig<C, E>, E> implements
+	Comparable<ExtendedConfig<C, E>>, IInitListener {
 
     @Getter private final ModBase mod;
     private boolean enabled;
     @Getter private final String namedId;
     @Getter private final String comment;
-    @Getter private final Class<?> element;
+    @Getter private final Class<? extends E> element;
 
     private IConfigurable overriddenSubInstance;
     
@@ -50,7 +50,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      * @param comment a comment that can be added to the config file line
      * @param element the class for the element this config is for
      */
-    public ExtendedConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<?> element) {
+    public ExtendedConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends E> element) {
         this.mod = mod;
     	this.enabled = enabled;
     	this.namedId = namedId.toLowerCase(Locale.ROOT);
@@ -127,12 +127,12 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
 
             // Save inside the unique instance this config refers to (only if such an instance exists!)
             if (getOverriddenSubInstance() == null && this.getHolderType().hasUniqueInstance()) {
-                Constructor<?> constructor = this.getElement().getDeclaredConstructor(ExtendedConfig.class);
+                Constructor<? extends E> constructor = this.getElement().getDeclaredConstructor(ExtendedConfig.class);
                 if(constructor == null) {
                     throw new CyclopsCoreConfigException(String.format("The class %s requires a constructor with " +
                             "ExtendedConfig as single parameter.", this.getElement()));
                 }
-                Object instance = constructor.newInstance(this);
+                E instance = constructor.newInstance(this);
 
                 Field field = this.getElement().getDeclaredField("_instance");
                 field.setAccessible(true);
@@ -250,7 +250,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
     }
     
     @Override
-    public int compareTo(ExtendedConfig<C> o) {
+    public int compareTo(ExtendedConfig<C, E> o) {
         return getNamedId().compareTo(o.getNamedId());
     }
     

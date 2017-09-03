@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class FluidConfig extends ExtendedConfig<FluidConfig> {
+public abstract class FluidConfig extends ExtendedConfig<FluidConfig, Fluid> {
 
     /**
      * Make a new instance.
