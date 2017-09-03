@@ -17,7 +17,6 @@ import java.util.Map;
  */
 public class CraftingHelpers {
 
-    @SuppressWarnings("unchecked")
     public static IRecipe findCraftingRecipe(ItemStack itemStack, int index) throws IllegalArgumentException {
         int indexAttempt = index;
         for(IRecipe recipe : CraftingManager.REGISTRY) {
@@ -29,7 +28,6 @@ public class CraftingHelpers {
                 + itemStack.getTagCompound() + " with index " + index);
     }
 
-    @SuppressWarnings("unchecked")
     public static Map.Entry<ItemStack, ItemStack> findFurnaceRecipe(ItemStack itemStack, int index) throws IllegalArgumentException {
         int indexAttempt = index;
         for(Map.Entry<ItemStack, ItemStack> recipe : (FurnaceRecipes.instance().

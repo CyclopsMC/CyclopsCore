@@ -26,9 +26,9 @@ public class DefaultSidedCapabilityProvider<T> implements ICapabilityProvider {
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T2> T2 getCapability(Capability<T2> capability, EnumFacing facing) {
         if(hasCapability(capability, facing)) {
-            return (T) capabilities.get(facing).getValue();
+            return (T2) capabilities.get(facing).getValue();
         }
         return null;
     }

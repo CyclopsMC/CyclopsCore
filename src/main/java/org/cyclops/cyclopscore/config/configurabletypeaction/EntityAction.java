@@ -16,20 +16,20 @@ import org.cyclops.cyclopscore.helper.Helpers;
 public class EntityAction<T extends Entity> extends ConfigurableTypeAction<EntityConfig<T>>{
 
     @Override
-    public void preRun(EntityConfig eConfig, Configuration config, boolean startup) {
+    public void preRun(EntityConfig<T> eConfig, Configuration config, boolean startup) {
         
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void postRun(EntityConfig eConfig, Configuration config) {
+    public void postRun(EntityConfig<T> eConfig, Configuration config) {
         // Save the config inside the correct element
         eConfig.save();
         
         // Register
         EntityRegistry.registerModEntity(
                 new ResourceLocation(eConfig.getMod().getModId(), eConfig.getSubUniqueName()),
-                eConfig.getElement(),
+                (Class<? extends Entity>) eConfig.getElement(),
                 eConfig.getSubUniqueName(),
                 Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY),
                 eConfig.getMod(),

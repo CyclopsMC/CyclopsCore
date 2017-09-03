@@ -57,7 +57,7 @@ public abstract class ModBase {
     private final LoggerHelper loggerHelper;
     private final Set<IInitListener> initListeners;
     private final ConfigHandler configHandler;
-    private final Map<EnumReferenceKey, Object> genericReference = Maps.newHashMap();
+    private final Map<EnumReferenceKey<?>, Object> genericReference = Maps.newHashMap();
     private final List<WorldStorage> worldStorages = Lists.newLinkedList();
     private final GuiHandler guiHandler;
     private final RegistryManager registryManager;

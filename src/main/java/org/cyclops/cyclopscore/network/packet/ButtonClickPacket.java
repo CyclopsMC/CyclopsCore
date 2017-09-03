@@ -41,7 +41,7 @@ public class ButtonClickPacket extends PacketCodec {
 	@Override
 	public void actionServer(World world, EntityPlayerMP player) {
 		if(player.openContainer instanceof IButtonClickAcceptor) {
-			((IButtonClickAcceptor) player.openContainer).onButtonClick(buttonId);
+			((IButtonClickAcceptor<?>) player.openContainer).onButtonClick(buttonId);
 		}
 	}
 	

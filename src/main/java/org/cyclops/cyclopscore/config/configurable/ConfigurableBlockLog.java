@@ -96,7 +96,6 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
         return false;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         if (!BlockHelpers.isValidCreativeTab(this, creativeTabs)) return;

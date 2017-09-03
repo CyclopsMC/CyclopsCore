@@ -114,7 +114,6 @@ public abstract class GuiInfoBook extends GuiScreen {
         return Helpers.RGBToInt(120, 20, 30);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui() {
         this.buttonList.clear();

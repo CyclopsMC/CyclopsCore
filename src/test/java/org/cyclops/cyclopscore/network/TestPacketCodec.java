@@ -249,7 +249,7 @@ public class TestPacketCodec {
 
     public static class ListPacketCodec extends SimplePacketCodec {
         @CodecField
-        public List value;
+        public List<String> value;
     }
 
 }

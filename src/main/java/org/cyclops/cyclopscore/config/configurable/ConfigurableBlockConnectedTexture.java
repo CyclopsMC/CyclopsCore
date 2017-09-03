@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.block.property.BlockProperty;
 import org.cyclops.cyclopscore.client.model.ConnectedBlockModel;
 import org.cyclops.cyclopscore.client.model.DirectionCorner;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
@@ -67,7 +68,7 @@ public class ConfigurableBlockConnectedTexture extends ConfigurableBlock {
      * @param eConfig  Config for this blockState.
      * @param material Material of this blockState.
      */
-    public ConfigurableBlockConnectedTexture(ExtendedConfig eConfig, Material material) {
+    public ConfigurableBlockConnectedTexture(ExtendedConfig<BlockConfig> eConfig, Material material) {
         super(eConfig, material);
 
         if(MinecraftHelpers.isClientSide()) {

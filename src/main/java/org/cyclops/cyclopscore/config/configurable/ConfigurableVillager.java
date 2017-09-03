@@ -17,21 +17,19 @@ public class ConfigurableVillager extends VillagerRegistry.VillagerProfession im
      * Make a new instance of a villager.
      * @param eConfig The config for this villager.
      */
-    @SuppressWarnings("rawtypes")
-    protected ConfigurableVillager(ExtendedConfig eConfig) {
+    protected ConfigurableVillager(ExtendedConfig<VillagerConfig> eConfig) {
         super(eConfig.getMod()+ ":" + eConfig.getNamedId(),
                 eConfig.getMod() + ":" + eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_SKINS) + eConfig.getNamedId() + ".png",
                 eConfig.getMod() + ":" + eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_SKINS) + eConfig.getNamedId() + "-zombie.png");
         this.setConfig(eConfig);
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<VillagerConfig> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<VillagerConfig> getConfig() {
         return eConfig;
     }
 

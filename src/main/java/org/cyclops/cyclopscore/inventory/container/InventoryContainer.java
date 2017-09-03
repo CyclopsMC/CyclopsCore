@@ -29,7 +29,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
             EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
     protected static final int ITEMBOX = 18;
 
-    private final Map<Integer, IButtonActionServer> buttonActions = Maps.newHashMap();
+    private final Map<Integer, IButtonActionServer<InventoryContainer>> buttonActions = Maps.newHashMap();
     private final Map<Integer, NBTTagCompound> values = Maps.newHashMap();
     private int nextValueId = 0;
     private IValueNotifiable guiValueListener = null;
@@ -342,7 +342,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
 
     @Override
     public void onButtonClick(int buttonId) {
-        IButtonActionServer action;
+        IButtonActionServer<InventoryContainer> action;
         if((action = buttonActions.get(buttonId)) != null) {
             action.onAction(buttonId, this);
         }

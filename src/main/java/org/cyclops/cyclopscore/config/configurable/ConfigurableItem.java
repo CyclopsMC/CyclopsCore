@@ -27,31 +27,27 @@ import java.util.List;
  */
 public class ConfigurableItem extends Item implements IConfigurableItem, IDynamicModelElement {
     
-    @SuppressWarnings("rawtypes")
     protected ItemConfig eConfig = null;
     
     /**
      * Make a new item instance.
      * @param eConfig Config for this blockState.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableItem(ExtendedConfig eConfig) {
+    public ConfigurableItem(ExtendedConfig<ItemConfig> eConfig) {
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         if(MinecraftHelpers.isClientSide() && hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @SuppressWarnings("rawtypes")
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<ItemConfig> eConfig) {
         this.eConfig = (ItemConfig) eConfig;
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<ItemConfig> getConfig() {
         return eConfig;
     }
     
-    @SuppressWarnings("rawtypes")
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {

@@ -37,7 +37,6 @@ public class ItemBlockMetadata extends ItemBlock {
         }
     }
     
-    @SuppressWarnings("rawtypes")
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {

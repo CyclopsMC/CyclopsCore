@@ -101,7 +101,7 @@ public class ObfuscationHelpers {
      * @param <T> The criterion type.
      * @return The registered instance.
      */
-    public static <T extends ICriterionTrigger> T registerCriteriaTrigger(T criterion) {
+    public static <T extends ICriterionTrigger<?>> T registerCriteriaTrigger(T criterion) {
         Method method = ReflectionHelper.findMethod(CriteriaTriggers.class,
                 ObfuscationData.CRITERIATRIGGERS_REGISTER[0], ObfuscationData.CRITERIATRIGGERS_REGISTER[1],
                 ICriterionTrigger.class);

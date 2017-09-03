@@ -135,7 +135,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
         });
 
         // Also register tile entity
-        GuiHandler.GuiType guiType = GuiHandler.GuiType.BLOCK;
+        GuiHandler.GuiType<Void> guiType = GuiHandler.GuiType.BLOCK;
         if(eConfig.getHolderType().equals(ConfigurableType.BLOCKCONTAINER)) {
             ConfigurableBlockContainer container = (ConfigurableBlockContainer) block;
             // This alternative registration is required to remain compatible with old worlds.

@@ -112,7 +112,6 @@ public abstract class ConfigurableBlockLeaves extends BlockLeaves implements ICo
         return !(blockState.isTranslucent()) || super.shouldSideBeRendered(blockState, world, blockPos, side);
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public void getSubBlocks(CreativeTabs creativeTabs, NonNullList<ItemStack> list) {
         if (!BlockHelpers.isValidCreativeTab(this, creativeTabs)) return;

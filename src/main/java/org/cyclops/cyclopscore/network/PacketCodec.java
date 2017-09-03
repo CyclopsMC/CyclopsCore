@@ -217,10 +217,9 @@ public abstract class PacketCodec extends PacketBase {
 			// 	id + value
 			// -1
 
-			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
 			public void encode(Object object, ExtendedBuffer output) {
-				List list = (List) object;
+				List<?> list = (List<?>) object;
 				output.writeInt(list.size());
 				if(list.size() == 0) return;
 				ICodecAction valueAction = null;
@@ -290,7 +289,7 @@ public abstract class PacketCodec extends PacketBase {
         public List<Field> getNewValue(Void key) {
 			List<Field> fieldList = Lists.newLinkedList();
 
-			Class clazz = PacketCodec.this.getClass();
+			Class<?> clazz = PacketCodec.this.getClass();
 			for (; clazz != PacketCodec.class && clazz != null; clazz = clazz.getSuperclass()) {
 				Field[] fields = clazz.getDeclaredFields();
 

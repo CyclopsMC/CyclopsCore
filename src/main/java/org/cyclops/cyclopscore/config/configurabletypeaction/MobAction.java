@@ -17,13 +17,13 @@ import org.cyclops.cyclopscore.helper.Helpers;
 public class MobAction<T extends Entity> extends ConfigurableTypeAction<MobConfig<T>>{
 
     @Override
-    public void preRun(MobConfig eConfig, Configuration config, boolean startup) {
+    public void preRun(MobConfig<T> eConfig, Configuration config, boolean startup) {
         
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void postRun(MobConfig eConfig, Configuration config) {
+    public void postRun(MobConfig<T> eConfig, Configuration config) {
         // Save the config inside the correct element
         eConfig.save();
         

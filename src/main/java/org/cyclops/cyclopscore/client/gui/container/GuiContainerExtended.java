@@ -29,7 +29,7 @@ import java.util.Map;
 public abstract class GuiContainerExtended extends GuiContainer implements
         IButtonClickAcceptorClient<GuiContainerExtended, ExtendedInventoryContainer>, IValueNotifiable {
 
-    private final Map<Integer, IButtonActionClient> buttonActions = Maps.newHashMap();
+    private final Map<Integer, IButtonActionClient<GuiContainerExtended, ExtendedInventoryContainer>> buttonActions = Maps.newHashMap();
 
     protected ExtendedInventoryContainer container;
     protected ResourceLocation texture;
@@ -210,7 +210,7 @@ public abstract class GuiContainerExtended extends GuiContainer implements
 
     @Override
     public void onButtonClick(int buttonId) {
-        IButtonActionClient action;
+        IButtonActionClient<GuiContainerExtended, ExtendedInventoryContainer> action;
         if((action = buttonActions.get(buttonId)) != null) {
             action.onAction(buttonId, this, getContainer());
         }

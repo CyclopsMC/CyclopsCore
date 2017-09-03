@@ -24,7 +24,7 @@ public class CommandReloadResources extends CommandMod {
     }
 
     @Override
-    public List getTabCompletions(MinecraftServer server, ICommandSender icommandsender, String[] astring, BlockPos blockPos) {
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender icommandsender, String[] astring, BlockPos blockPos) {
         return null;
     }
 

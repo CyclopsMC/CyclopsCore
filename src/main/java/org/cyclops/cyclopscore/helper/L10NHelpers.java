@@ -70,8 +70,7 @@ public final class L10NHelpers {
      * @param list   The list to add the lines to.
      * @param prefix The I18N key prefix, being the unlocalized name of blocks or items.
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public static void addOptionalInfo(List list, String prefix) {
+    public static void addOptionalInfo(List<String> list, String prefix) {
         String key = prefix + ".info";
         if (I18n.canTranslate(key)) {
             if (MinecraftHelpers.isShifted()) {

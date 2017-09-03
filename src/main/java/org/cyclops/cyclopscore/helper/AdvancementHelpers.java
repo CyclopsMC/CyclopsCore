@@ -53,7 +53,7 @@ public class AdvancementHelpers {
         return Minecraft.getMinecraft().player.connection.getAdvancementManager();
     }
 
-    public static <T extends ICriterionTrigger> T registerCriteriaTrigger(T criterion) {
+    public static <T extends ICriterionTrigger<?>> T registerCriteriaTrigger(T criterion) {
         return ObfuscationHelpers.registerCriteriaTrigger(criterion);
     }
 

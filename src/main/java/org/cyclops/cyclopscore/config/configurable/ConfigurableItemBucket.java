@@ -58,7 +58,6 @@ public class ConfigurableItemBucket extends ItemBucket implements IConfigurableI
         return eConfig;
     }
     
-    @SuppressWarnings("rawtypes")
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {

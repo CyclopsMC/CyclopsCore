@@ -34,7 +34,6 @@ public class InformationProviderComponent {
      * @param list The info list where the info will be added.
      * @param flag No idea...
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
         if(hasInfo) {
