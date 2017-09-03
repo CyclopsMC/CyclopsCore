@@ -10,7 +10,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.CapabilityConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class CapabilityAction<T> extends ConfigurableTypeAction<CapabilityConfig<T>> {
+public class CapabilityAction<T> extends ConfigurableTypeAction<CapabilityConfig<T>, T> {
 
     @Override
     public void preRun(CapabilityConfig<T> eConfig, Configuration config, boolean startup) {

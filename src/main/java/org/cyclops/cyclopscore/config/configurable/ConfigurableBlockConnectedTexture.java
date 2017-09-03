@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.config.configurable;
 
 import com.google.common.collect.Maps;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.IBlockState;
@@ -68,7 +70,7 @@ public class ConfigurableBlockConnectedTexture extends ConfigurableBlock {
      * @param eConfig  Config for this blockState.
      * @param material Material of this blockState.
      */
-    public ConfigurableBlockConnectedTexture(ExtendedConfig<BlockConfig> eConfig, Material material) {
+    public ConfigurableBlockConnectedTexture(ExtendedConfig<BlockConfig, Block> eConfig, Material material) {
         super(eConfig, material);
 
         if(MinecraftHelpers.isClientSide()) {

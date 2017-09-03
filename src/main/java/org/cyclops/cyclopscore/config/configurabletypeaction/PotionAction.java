@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
+import net.minecraft.potion.Potion;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.cyclops.cyclopscore.config.extendedconfig.PotionConfig;
@@ -9,7 +10,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.PotionConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class PotionAction extends ConfigurableTypeAction<PotionConfig> {
+public class PotionAction extends ConfigurableTypeAction<PotionConfig, Potion> {
 
     @Override
     public void preRun(PotionConfig eConfig, Configuration config, boolean startup) {

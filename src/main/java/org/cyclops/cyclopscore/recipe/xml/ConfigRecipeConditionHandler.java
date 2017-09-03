@@ -12,7 +12,7 @@ public class ConfigRecipeConditionHandler implements IRecipeConditionHandler {
 
 	@Override
 	public boolean isSatisfied(RecipeHandler recipeHandler, String param) {
-		ExtendedConfig<?> config = recipeHandler.getMod().getConfigHandler().getDictionary().get(param);
+		ExtendedConfig<?, ?> config = recipeHandler.getMod().getConfigHandler().getDictionary().get(param);
 		return config != null && config.isEnabled();
 	}
 

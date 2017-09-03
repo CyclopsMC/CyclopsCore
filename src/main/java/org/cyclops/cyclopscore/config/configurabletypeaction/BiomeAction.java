@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
+import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.cyclops.cyclopscore.config.extendedconfig.BiomeConfig;
@@ -9,7 +10,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.BiomeConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class BiomeAction extends ConfigurableTypeAction<BiomeConfig>{
+public class BiomeAction extends ConfigurableTypeAction<BiomeConfig, Biome>{
 
     @Override
     public void preRun(BiomeConfig eConfig, Configuration config, boolean startup) {

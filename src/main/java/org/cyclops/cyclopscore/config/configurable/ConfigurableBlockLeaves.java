@@ -76,7 +76,7 @@ public abstract class ConfigurableBlockLeaves extends BlockLeaves implements ICo
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<?, ?> getConfig() {
         return eConfig;
     }
 

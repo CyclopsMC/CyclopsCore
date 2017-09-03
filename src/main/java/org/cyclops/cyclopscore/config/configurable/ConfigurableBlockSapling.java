@@ -80,7 +80,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<?, ?> getConfig() {
         return eConfig;
     }
 

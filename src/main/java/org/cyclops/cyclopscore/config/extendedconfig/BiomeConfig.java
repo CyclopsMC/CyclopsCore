@@ -13,7 +13,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class BiomeConfig extends ExtendedConfig<BiomeConfig>{
+public abstract class BiomeConfig extends ExtendedConfig<BiomeConfig, Biome>{
 
     /**
      * Make a new instance.

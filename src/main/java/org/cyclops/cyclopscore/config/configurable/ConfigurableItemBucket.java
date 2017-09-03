@@ -54,7 +54,7 @@ public class ConfigurableItemBucket extends ItemBucket implements IConfigurableI
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<?, ?> getConfig() {
         return eConfig;
     }
     

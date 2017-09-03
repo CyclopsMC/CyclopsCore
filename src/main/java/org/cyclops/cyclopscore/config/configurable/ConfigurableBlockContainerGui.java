@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurable;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -36,7 +37,7 @@ public abstract class ConfigurableBlockContainerGui extends ConfigurableBlockCon
      * @param material Material of this blockState.
      * @param tileEntity The class of the tile entity this blockState holds.
      */
-    public ConfigurableBlockContainerGui(ExtendedConfig<BlockConfig> eConfig,
+    public ConfigurableBlockContainerGui(ExtendedConfig<BlockConfig, Block> eConfig,
             Material material, Class<? extends CyclopsTileEntity> tileEntity) {
         super(eConfig, material, tileEntity);
         this.hasGui = true;

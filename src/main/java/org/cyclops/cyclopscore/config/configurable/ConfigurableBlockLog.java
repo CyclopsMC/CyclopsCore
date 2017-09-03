@@ -73,7 +73,7 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<?, ?> getConfig() {
         return eConfig;
     }
 

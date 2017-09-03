@@ -22,7 +22,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class EntityConfig<T extends Entity> extends ExtendedConfig<EntityConfig<T>>{
+public abstract class EntityConfig<T extends Entity> extends ExtendedConfig<EntityConfig<T>, T>{
 
     /**
      * Make a new instance.
@@ -32,7 +32,7 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfig<Enti
      * @param comment The comment to add in the config file for this configurable.
      * @param element The class of this configurable.
      */
-    public EntityConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends Entity> element) {
+    public EntityConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends T> element) {
         super(mod, enabled, namedId, comment, element);
     }
     

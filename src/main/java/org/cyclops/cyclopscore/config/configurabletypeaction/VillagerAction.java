@@ -10,7 +10,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.VillagerConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class VillagerAction extends ConfigurableTypeAction<VillagerConfig>{
+public class VillagerAction extends ConfigurableTypeAction<VillagerConfig, ConfigurableVillager>{
 
     @Override
     public void preRun(VillagerConfig eConfig, Configuration config, boolean startup) {

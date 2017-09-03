@@ -271,7 +271,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
             this.element = element;
             InfoSection target = null;
             if(this.element != null) {
-                ExtendedConfig<?> config = getConfigFromElement(element);
+                ExtendedConfig<?, ?> config = getConfigFromElement(element);
                 if (config != null) {
                     Pair<InfoSection, Integer> pair = this.infoBook.getConfigLinks().get(config.getFullUnlocalizedName());
                     if(pair != null) {
@@ -282,7 +282,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
             super.update(x, y, "empty", target, gui);
         }
 
-        protected abstract ExtendedConfig<?> getConfigFromElement(E element);
+        protected abstract ExtendedConfig<?, ?> getConfigFromElement(E element);
 
         @Override
         public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
@@ -314,7 +314,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         }
 
         @Override
-        protected ExtendedConfig<?> getConfigFromElement(ItemStack element) {
+        protected ExtendedConfig<?, ?> getConfigFromElement(ItemStack element) {
             return ConfigHandler.getConfigFromItem(element.getItem());
         }
     }
@@ -326,7 +326,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         }
 
         @Override
-        protected ExtendedConfig<?> getConfigFromElement(FluidStack element) {
+        protected ExtendedConfig<?, ?> getConfigFromElement(FluidStack element) {
             return ConfigHandler.getConfigFromFluid(element.getFluid());
         }
 

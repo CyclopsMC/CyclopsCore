@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class VillagerConfig extends ExtendedConfig<VillagerConfig> {
+public abstract class VillagerConfig extends ExtendedConfig<VillagerConfig, ConfigurableVillager> {
 
     /**
      * Make a new instance.

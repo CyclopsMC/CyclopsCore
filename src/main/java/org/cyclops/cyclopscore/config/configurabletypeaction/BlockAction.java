@@ -38,7 +38,7 @@ import java.util.concurrent.Callable;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
+public class BlockAction extends ConfigurableTypeAction<BlockConfig, Block> {
 
     private static final List<BlockConfig> MODEL_ENTRIES = Lists.newArrayList();
 

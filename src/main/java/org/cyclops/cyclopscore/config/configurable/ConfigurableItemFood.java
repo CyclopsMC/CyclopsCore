@@ -43,7 +43,7 @@ public class ConfigurableItemFood extends ItemFood implements IConfigurableItem 
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<?, ?> getConfig() {
         return eConfig;
     }
     

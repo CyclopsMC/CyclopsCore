@@ -66,7 +66,7 @@ public class ConfigurableBlockTorch extends BlockTorch implements IConfigurableB
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<?, ?> getConfig() {
         return eConfig;
     }
 

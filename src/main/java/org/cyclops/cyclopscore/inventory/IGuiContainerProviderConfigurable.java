@@ -12,6 +12,6 @@ public interface IGuiContainerProviderConfigurable extends IGuiContainerProvider
     /**
      * @return The configurable config.
      */
-    public ExtendedConfig<?> getConfig();
+    public ExtendedConfig<?, ?> getConfig();
 	
 }

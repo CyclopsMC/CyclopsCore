@@ -12,7 +12,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class PotionConfig extends ExtendedConfig<PotionConfig> {
+public abstract class PotionConfig extends ExtendedConfig<PotionConfig, Potion> {
 
     /**
      * Make a new instance.

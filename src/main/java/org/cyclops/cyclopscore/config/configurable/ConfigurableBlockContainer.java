@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.config.configurable;
 
 import lombok.experimental.Delegate;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -74,7 +75,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
      * @param material Material of this blockState.
      * @param tileEntity The class of the tile entity this blockState holds.
      */
-    public ConfigurableBlockContainer(ExtendedConfig<BlockConfig> eConfig, Material material, Class<? extends CyclopsTileEntity> tileEntity) {
+    public ConfigurableBlockContainer(ExtendedConfig<BlockConfig, Block> eConfig, Material material, Class<? extends CyclopsTileEntity> tileEntity) {
         super(material);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
@@ -118,7 +119,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         return this.tileEntity;
     }
 
-    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
+    private void setConfig(ExtendedConfig<BlockConfig, Block> eConfig) {
         this.eConfig = (BlockConfig) eConfig;
     }
 

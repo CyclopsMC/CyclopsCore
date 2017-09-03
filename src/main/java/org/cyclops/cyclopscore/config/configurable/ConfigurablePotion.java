@@ -21,7 +21,7 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
 
     private final ResourceLocation resource;
 
-    protected ExtendedConfig<PotionConfig> eConfig = null;
+    protected ExtendedConfig<PotionConfig, Potion> eConfig = null;
 
     /**
      * Make a new Enchantment instance
@@ -30,7 +30,7 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
      * @param color The color of the potion.
      * @param iconIndex The sprite index of the icon.
      */
-    protected ConfigurablePotion(ExtendedConfig<PotionConfig> eConfig, boolean badEffect, int color, int iconIndex) {
+    protected ConfigurablePotion(ExtendedConfig<PotionConfig, Potion> eConfig, boolean badEffect, int color, int iconIndex) {
         super(badEffect, color);
         this.setConfig(eConfig);
         this.setPotionName(eConfig.getUnlocalizedName());
@@ -46,12 +46,12 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
         return super.getStatusIconIndex();
     }
 
-    private void setConfig(ExtendedConfig<PotionConfig> eConfig) {
+    private void setConfig(ExtendedConfig<PotionConfig, Potion> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<PotionConfig> getConfig() {
+    public ExtendedConfig<PotionConfig, Potion> getConfig() {
         return eConfig;
     }
 

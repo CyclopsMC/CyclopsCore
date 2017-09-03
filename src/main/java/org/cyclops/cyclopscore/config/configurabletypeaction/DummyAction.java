@@ -8,7 +8,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.DummyConfig;
  * @author rubensworks
  *
  */
-public class DummyAction extends ConfigurableTypeAction<DummyConfig> {
+public class DummyAction extends ConfigurableTypeAction<DummyConfig, Object> {
 
     @Override
     public void preRun(DummyConfig eConfig, Configuration config, boolean startup) {

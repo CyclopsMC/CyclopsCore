@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
+import net.minecraft.enchantment.Enchantment;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.cyclops.cyclopscore.config.extendedconfig.EnchantmentConfig;
@@ -9,7 +10,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.EnchantmentConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class EnchantmentAction extends ConfigurableTypeAction<EnchantmentConfig>{
+public class EnchantmentAction extends ConfigurableTypeAction<EnchantmentConfig, Enchantment>{
 
     @Override
     public void preRun(EnchantmentConfig eConfig, Configuration config, boolean startup) {

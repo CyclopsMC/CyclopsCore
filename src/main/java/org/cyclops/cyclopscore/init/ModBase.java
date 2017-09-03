@@ -380,7 +380,7 @@ public abstract class ModBase {
      * The registration order is always kept.
      * @param extendedConfig The config to register.
      */
-    public final void registerConfig(ExtendedConfig<?> extendedConfig) {
+    public final void registerConfig(ExtendedConfig<?, ?> extendedConfig) {
         getConfigHandler().add(extendedConfig);
     }
 

@@ -26,7 +26,7 @@ import org.cyclops.cyclopscore.item.ItemBlockMetadata;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements IModelProviderConfig {
+public abstract class BlockConfig extends ExtendedConfig<BlockConfig, Block> implements IModelProviderConfig {
 
     @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicBlockVariantLocation;
     @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicItemVariantLocation;

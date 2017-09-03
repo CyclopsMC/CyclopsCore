@@ -80,7 +80,7 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<?, ?> getConfig() {
         return eConfig;
     }
     

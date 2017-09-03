@@ -36,9 +36,9 @@ import java.util.List;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
+public class ItemAction extends ConfigurableTypeAction<ItemConfig, Item>{
 
-    private static final List<ExtendedConfig<?>> MODEL_ENTRIES = Lists.newArrayList();
+    private static final List<ExtendedConfig<?, ?>> MODEL_ENTRIES = Lists.newArrayList();
 
     static {
         MinecraftForge.EVENT_BUS.register(ItemAction.class);
@@ -50,7 +50,7 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
      * @param config The config.
      * @param creativeTabs The creative tab this block will reside in.
      */
-    public static void register(Item item, ExtendedConfig<?> config, @Nullable CreativeTabs creativeTabs) {
+    public static void register(Item item, ExtendedConfig<?, ?> config, @Nullable CreativeTabs creativeTabs) {
         register(item, config);
 
         if(creativeTabs != null) {
@@ -97,7 +97,7 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public static void onModelRegistryLoad(ModelRegistryEvent event) {
-        for (ExtendedConfig<?> entry : MODEL_ENTRIES) {
+        for (ExtendedConfig<?, ?> entry : MODEL_ENTRIES) {
             Item item = null;
             Block block = null;
             IModelProviderConfig modelProvider = null;
@@ -134,7 +134,7 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
         }
     }
 
-    public static void handleItemModel(ExtendedConfig<?> extendedConfig) {
+    public static void handleItemModel(ExtendedConfig<?, ?> extendedConfig) {
         if(MinecraftHelpers.isClientSide()) {
             MODEL_ENTRIES.add(extendedConfig);
         }

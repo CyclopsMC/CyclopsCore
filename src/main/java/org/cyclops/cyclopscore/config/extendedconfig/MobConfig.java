@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -18,7 +18,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class MobConfig<T extends Entity> extends ExtendedConfig<MobConfig<T>> {
+public abstract class MobConfig<T extends EntityLiving> extends ExtendedConfig<MobConfig<T>, T> {
 
     /**
      * Make a new instance.
@@ -28,7 +28,7 @@ public abstract class MobConfig<T extends Entity> extends ExtendedConfig<MobConf
      * @param comment The comment to add in the config file for this configurable.
      * @param element The class of this configurable.
      */
-    public MobConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<?> element) {
+    public MobConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends T> element) {
         super(mod, enabled, namedId, comment, element);
     }
     

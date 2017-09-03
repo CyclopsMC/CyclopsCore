@@ -11,25 +11,25 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public class ConfigurableVillager extends VillagerRegistry.VillagerProfession implements IConfigurable {
 
-    protected ExtendedConfig<VillagerConfig> eConfig = null;
+    protected ExtendedConfig<VillagerConfig, ConfigurableVillager> eConfig = null;
     
     /**
      * Make a new instance of a villager.
      * @param eConfig The config for this villager.
      */
-    protected ConfigurableVillager(ExtendedConfig<VillagerConfig> eConfig) {
+    protected ConfigurableVillager(ExtendedConfig<VillagerConfig, ConfigurableVillager> eConfig) {
         super(eConfig.getMod()+ ":" + eConfig.getNamedId(),
                 eConfig.getMod() + ":" + eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_SKINS) + eConfig.getNamedId() + ".png",
                 eConfig.getMod() + ":" + eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_SKINS) + eConfig.getNamedId() + "-zombie.png");
         this.setConfig(eConfig);
     }
     
-    private void setConfig(ExtendedConfig<VillagerConfig> eConfig) {
+    private void setConfig(ExtendedConfig<VillagerConfig, ConfigurableVillager> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<VillagerConfig> getConfig() {
+    public ExtendedConfig<VillagerConfig, ConfigurableVillager> getConfig() {
         return eConfig;
     }
 
