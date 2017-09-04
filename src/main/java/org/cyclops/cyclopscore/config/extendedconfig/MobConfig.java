@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -18,7 +18,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class MobConfig<T extends EntityLiving> extends ExtendedConfig<MobConfig<T>> {
+public abstract class MobConfig<T extends EntityLivingBase> extends ExtendedConfig<MobConfig<T>> {
 
     /**
      * Make a new instance.
