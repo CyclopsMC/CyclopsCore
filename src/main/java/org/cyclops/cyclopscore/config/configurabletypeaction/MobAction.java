@@ -27,7 +27,7 @@ public class MobAction<T extends EntityLivingBase> extends ConfigurableTypeActio
         
         // Register mob
         @SuppressWarnings("unchecked")
-        Class<? extends EntityLivingBase> clazz = (Class<? extends EntityLivingBase>) eConfig.getElement();
+        Class<? extends T> clazz = (Class<? extends T>) eConfig.getElement();
 
         ResourceLocation id = new ResourceLocation(eConfig.getMod().getModId(), eConfig.getSubUniqueName());
         String name = eConfig.getMod().getModId() + "." + eConfig.getNamedId();

@@ -26,7 +26,7 @@ public class EntityAction<T extends Entity> extends ConfigurableTypeAction<Entit
         eConfig.save();
         
         @SuppressWarnings("unchecked")
-        Class<? extends Entity> clazz = (Class<? extends Entity>) eConfig.getElement();
+        Class<? extends T> clazz = (Class<? extends T>) eConfig.getElement();
 
         // Register
         EntityRegistry.registerModEntity(
