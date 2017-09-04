@@ -14,6 +14,7 @@ import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 
 import javax.annotation.Nullable;
@@ -26,8 +27,7 @@ import java.util.List;
  */
 public class ConfigurableItemBucket extends ItemBucket implements IConfigurableItem {
     
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<ItemConfig> eConfig = null;
     
     protected boolean canPickUp = true;
 
@@ -39,8 +39,7 @@ public class ConfigurableItemBucket extends ItemBucket implements IConfigurableI
      * @param block The fluid blockState it can pick up.
      * @param fluidStack The filled fluid.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableItemBucket(ExtendedConfig eConfig, Block block, FluidStack fluidStack) {
+    public ConfigurableItemBucket(ExtendedConfig<ItemConfig> eConfig, Block block, FluidStack fluidStack) {
         super(block);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
@@ -48,13 +47,12 @@ public class ConfigurableItemBucket extends ItemBucket implements IConfigurableI
         this.fluidStack = fluidStack;
     }
 
-    @SuppressWarnings("rawtypes")
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<ItemConfig> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<ItemConfig> getConfig() {
         return eConfig;
     }
     

@@ -20,16 +20,18 @@ public class EntityAction<T extends Entity> extends ConfigurableTypeAction<Entit
         
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void postRun(EntityConfig<T> eConfig, Configuration config) {
         // Save the config inside the correct element
         eConfig.save();
         
+        @SuppressWarnings("unchecked")
+        Class<? extends T> clazz = (Class<? extends T>) eConfig.getElement();
+
         // Register
         EntityRegistry.registerModEntity(
                 new ResourceLocation(eConfig.getMod().getModId(), eConfig.getSubUniqueName()),
-                (Class<? extends Entity>) eConfig.getElement(),
+                clazz,
                 eConfig.getSubUniqueName(),
                 Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY),
                 eConfig.getMod(),

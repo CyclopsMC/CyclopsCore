@@ -18,6 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.block.property.BlockProperty;
 import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
 import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
 
@@ -41,16 +42,14 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
     @BlockProperty
     public static final IProperty[] _COMPAT = {LOG_AXIS};
 
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<BlockConfig> eConfig = null;
     protected boolean hasGui = false;
 
     /**
      * Make a new blockState instance.
      * @param eConfig Config for this blockState.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableBlockLog(ExtendedConfig eConfig) {
+    public ConfigurableBlockLog(ExtendedConfig<BlockConfig> eConfig) {
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
@@ -67,13 +66,12 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
         return null;
     }
 
-    @SuppressWarnings("rawtypes")
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<BlockConfig> getConfig() {
         return eConfig;
     }
 

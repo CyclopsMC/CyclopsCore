@@ -123,7 +123,7 @@ public class RecipeRegistry<M extends IMachine<M, I, O, P>, I extends IRecipeInp
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public IRecipe<I, O, P> findRecipe(IRecipeMatcher<M, IRecipe<I, O, P>> recipeMatcher) {
         for (IRecipe r : getMod().getRegistryManager().getRegistry(ISuperRecipeRegistry.class).getRecipes(machine)) {
-            IRecipe<I, O, P> recipe = (IRecipe<I, O, P>)r;
+            IRecipe<I, O, P> recipe = r;
             if (recipeMatcher.matches(machine, recipe))
                 return recipe;
         }
@@ -137,7 +137,7 @@ public class RecipeRegistry<M extends IMachine<M, I, O, P>, I extends IRecipeInp
         List<IRecipe<I, O, P>> results = new ArrayList<IRecipe<I, O, P>>();
 
         for (IRecipe r : getMod().getRegistryManager().getRegistry(ISuperRecipeRegistry.class).getRecipes(machine)) {
-            IRecipe<I, O, P> recipe = (IRecipe<I, O, P>)r;
+            IRecipe<I, O, P> recipe = r;
             if (recipeMatcher.matches(machine, recipe))
                 results.add(recipe);
         }
@@ -147,7 +147,7 @@ public class RecipeRegistry<M extends IMachine<M, I, O, P>, I extends IRecipeInp
 
     @Override
     public List<IRecipe<I, O, P>> allRecipes() {
-        return (List<IRecipe<I, O, P>>) (List) getMod().getRegistryManager().getRegistry(ISuperRecipeRegistry.class).getRecipes(machine);
+        return (List) getMod().getRegistryManager().getRegistry(ISuperRecipeRegistry.class).getRecipes(machine);
     }
 
     @Override

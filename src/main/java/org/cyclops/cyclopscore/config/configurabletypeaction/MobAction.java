@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -14,21 +13,22 @@ import org.cyclops.cyclopscore.helper.Helpers;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class MobAction<T extends Entity> extends ConfigurableTypeAction<MobConfig<T>>{
+public class MobAction<T extends EntityLivingBase> extends ConfigurableTypeAction<MobConfig<T>>{
 
     @Override
     public void preRun(MobConfig<T> eConfig, Configuration config, boolean startup) {
         
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void postRun(MobConfig<T> eConfig, Configuration config) {
         // Save the config inside the correct element
         eConfig.save();
         
         // Register mob
-        Class<? extends EntityLiving> clazz = (Class<? extends EntityLiving>) eConfig.getElement();
+        @SuppressWarnings("unchecked")
+        Class<? extends T> clazz = (Class<? extends T>) eConfig.getElement();
+
         ResourceLocation id = new ResourceLocation(eConfig.getMod().getModId(), eConfig.getSubUniqueName());
         String name = eConfig.getMod().getModId() + "." + eConfig.getNamedId();
         if(eConfig.hasSpawnEgg()) {

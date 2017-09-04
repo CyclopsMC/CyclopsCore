@@ -34,13 +34,13 @@ public abstract class ScrollingGuiContainer extends GuiContainerExtended {
      *
      * @param container The container to make the GUI for.
      */
-    public ScrollingGuiContainer(ScrollingInventoryContainer container) {
+    public ScrollingGuiContainer(ScrollingInventoryContainer<?> container) {
         super(container);
         this.allowUserInput = true;
     }
 
-    protected ScrollingInventoryContainer getScrollingInventoryContainer() {
-        return (ScrollingInventoryContainer) this.inventorySlots;
+    protected ScrollingInventoryContainer<?> getScrollingInventoryContainer() {
+        return (ScrollingInventoryContainer<?>) this.inventorySlots;
     }
 
     @Override

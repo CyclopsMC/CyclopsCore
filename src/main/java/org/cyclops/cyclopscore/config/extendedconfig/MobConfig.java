@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -18,7 +18,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class MobConfig<T extends Entity> extends ExtendedConfig<MobConfig<T>> {
+public abstract class MobConfig<T extends EntityLivingBase> extends ExtendedConfig<MobConfig<T>> {
 
     /**
      * Make a new instance.
@@ -28,7 +28,7 @@ public abstract class MobConfig<T extends Entity> extends ExtendedConfig<MobConf
      * @param comment The comment to add in the config file for this configurable.
      * @param element The class of this configurable.
      */
-    public MobConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<?> element) {
+    public MobConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends T> element) {
         super(mod, enabled, namedId, comment, element);
     }
     
@@ -47,7 +47,7 @@ public abstract class MobConfig<T extends Entity> extends ExtendedConfig<MobConf
     public void onRegistered() {
         super.onRegistered();
         @SuppressWarnings("unchecked")
-        Class<T> clazz = (Class<T>) this.getElement();
+        Class<? extends T> clazz = (Class<? extends T>) this.getElement();
         RenderingRegistry.registerEntityRenderingHandler(clazz, new IRenderFactory<T>() {
             @Override
             public Render<? super T> createRenderFor(RenderManager manager) {
