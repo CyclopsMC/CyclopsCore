@@ -1,8 +1,5 @@
 package org.cyclops.cyclopscore.capability.fluid;
 
-import javax.annotation.Nullable;
-
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 /**
@@ -13,7 +10,5 @@ public interface IFluidHandlerItemCapacity extends IFluidHandlerItem {
 
     public void setCapacity(int capacity);
     public int getCapacity();
-    @Nullable public FluidStack getFluid();
-    public void setFluid(FluidStack fluid);
 
 }

@@ -65,13 +65,6 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
     }
 
     @Override
-    public void setFluid(FluidStack fluid) {
-        // We need this override because it's protected in FluidHandlerItemStack,
-        // but IFluidHandlerItemCapacity needs it to be public.
-        super.setFluid(fluid);
-    }
-
-    @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
         return capability == FluidHandlerItemCapacityConfig.CAPABILITY || super.hasCapability(capability, facing);
     }
@@ -87,7 +80,7 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
         @Override
         public NBTBase writeNBT(Capability<IFluidHandlerItemCapacity> capability, IFluidHandlerItemCapacity instance, EnumFacing side) {
             NBTTagCompound nbt = new NBTTagCompound();
-            FluidStack fluid = instance.getFluid();
+            FluidStack fluid = ((FluidHandlerItemCapacity)instance).getFluid();
             if (fluid != null) {
                 fluid.writeToNBT(nbt);
             } else {
@@ -104,7 +97,7 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
                 instance.setCapacity(tags.getInteger("capacity"));
             }
             FluidStack fluid = FluidStack.loadFluidStackFromNBT(tags);
-            instance.setFluid(fluid);
+            ((FluidHandlerItemCapacity)instance).setFluid(fluid);
         }
     }
 }
