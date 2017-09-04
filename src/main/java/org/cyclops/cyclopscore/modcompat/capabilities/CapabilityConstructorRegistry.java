@@ -164,7 +164,7 @@ public class CapabilityConstructorRegistry {
         }
 
         // Normal constructors
-        Collection<ICapabilityConstructor<?, ? extends K, ? extends V>> constructors = allConstructors.get((Class<? extends K>) keyObject.getClass());
+        Collection<ICapabilityConstructor<?, ? extends K, ? extends V>> constructors = allConstructors.get(keyObject.getClass());
         if (constructors != null) {
             for (ICapabilityConstructor<?, ? extends K, ? extends V> constructor : constructors) {
                 if (initialized || constructor.getCapability() != null) {

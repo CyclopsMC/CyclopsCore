@@ -23,6 +23,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -39,8 +40,7 @@ import java.util.List;
  */
 public abstract class ConfigurableDamageIndicatedItemFluidContainer extends DamageIndicatedItemFluidContainer implements IConfigurable {
 
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<ItemConfig> eConfig = null;
 
     protected boolean canPickUp = true;
     private boolean placeFluids = false;
@@ -51,20 +51,18 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
      * @param capacity The capacity for the fluid container this item should have.
      * @param fluid The fluid this container should be able to hold.
      */
-    @SuppressWarnings({ "rawtypes" })
-    protected ConfigurableDamageIndicatedItemFluidContainer(ExtendedConfig eConfig, int capacity, Fluid fluid) {
+    protected ConfigurableDamageIndicatedItemFluidContainer(ExtendedConfig<ItemConfig> eConfig, int capacity, Fluid fluid) {
         super(capacity, fluid);
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
 
-    @SuppressWarnings("rawtypes")
-    private void setConfig(ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<ItemConfig> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<ItemConfig> getConfig() {
         return eConfig;
     }
 

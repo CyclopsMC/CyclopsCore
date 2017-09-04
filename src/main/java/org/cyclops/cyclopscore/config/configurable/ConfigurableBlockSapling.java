@@ -18,6 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.block.property.BlockProperty;
 import org.cyclops.cyclopscore.block.property.BlockPropertyManagerComponent;
 import org.cyclops.cyclopscore.block.property.IBlockPropertyManager;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
 import org.cyclops.cyclopscore.world.gen.WorldGeneratorTree;
@@ -43,8 +44,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
     @BlockProperty(ignore = true)
     public static final IProperty[] _COMPAT_IGNORED = {TYPE};
 
-    @SuppressWarnings("rawtypes")
-    protected ExtendedConfig eConfig = null;
+    protected ExtendedConfig<BlockConfig> eConfig = null;
     protected boolean hasGui = false;
 
     private WorldGeneratorTree treeGenerator;
@@ -55,8 +55,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
      * @param material Material of this blockState.
      * @param treeGenerator The world generator of the tree.
      */
-    @SuppressWarnings({ "rawtypes" })
-    public ConfigurableBlockSapling(ExtendedConfig eConfig, Material material, WorldGeneratorTree treeGenerator) {
+    public ConfigurableBlockSapling(ExtendedConfig<BlockConfig> eConfig, Material material, WorldGeneratorTree treeGenerator) {
         this.setConfig(eConfig);
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         this.treeGenerator = treeGenerator;
@@ -75,12 +74,12 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
         return null;
     }
 
-    private void setConfig(@SuppressWarnings("rawtypes") ExtendedConfig eConfig) {
+    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<?> getConfig() {
+    public ExtendedConfig<BlockConfig> getConfig() {
         return eConfig;
     }
 

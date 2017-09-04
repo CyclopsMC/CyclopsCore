@@ -109,7 +109,7 @@ public final class PacketHandler {
      * @param packet The packet.
      * @return The minecraft packet.
      */
-    public Packet toMcPacket(PacketBase packet) {
+    public Packet<?> toMcPacket(PacketBase packet) {
         return networkWrapper.getPacketFrom(packet);
     }
     

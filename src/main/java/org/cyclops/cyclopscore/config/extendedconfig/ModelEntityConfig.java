@@ -26,7 +26,7 @@ public abstract class ModelEntityConfig<T extends Entity> extends EntityConfig<T
      * @param comment The comment to add in the config file for this configurable.
      * @param element The class of this configurable.
      */
-    public ModelEntityConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends Entity> element) {
+    public ModelEntityConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends T> element) {
         super(mod, enabled, namedId, comment, element);
     }
     
