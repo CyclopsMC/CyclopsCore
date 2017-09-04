@@ -10,7 +10,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.CapabilityConfig;
  * @author rubensworks
  *
  */
-public class FluidHandlerItemCapacityConfig extends CapabilityConfig {
+public class FluidHandlerItemCapacityConfig extends CapabilityConfig<IFluidHandlerItemCapacity> {
 
     /**
      * The unique instance.

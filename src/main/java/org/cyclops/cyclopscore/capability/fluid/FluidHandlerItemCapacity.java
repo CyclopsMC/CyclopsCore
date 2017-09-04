@@ -75,12 +75,12 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
         return capability == FluidHandlerItemCapacityConfig.CAPABILITY ? (T) this : super.getCapability(capability, facing);
     }
 
-    public static class Storage implements Capability.IStorage<FluidHandlerItemCapacity> {
+    public static class Storage implements Capability.IStorage<IFluidHandlerItemCapacity> {
 
         @Override
-        public NBTBase writeNBT(Capability<FluidHandlerItemCapacity> capability, FluidHandlerItemCapacity instance, EnumFacing side) {
+        public NBTBase writeNBT(Capability<IFluidHandlerItemCapacity> capability, IFluidHandlerItemCapacity instance, EnumFacing side) {
             NBTTagCompound nbt = new NBTTagCompound();
-            FluidStack fluid = instance.getFluid();
+            FluidStack fluid = ((FluidHandlerItemCapacity)instance).getFluid();
             if (fluid != null) {
                 fluid.writeToNBT(nbt);
             } else {
@@ -91,13 +91,13 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
         }
 
         @Override
-        public void readNBT(Capability<FluidHandlerItemCapacity> capability, FluidHandlerItemCapacity instance, EnumFacing side, NBTBase nbt) {
+        public void readNBT(Capability<IFluidHandlerItemCapacity> capability, IFluidHandlerItemCapacity instance, EnumFacing side, NBTBase nbt) {
             NBTTagCompound tags = (NBTTagCompound) nbt;
             if (tags.hasKey("capacity", MinecraftHelpers.NBTTag_Types.NBTTagInt.ordinal())) {
                 instance.setCapacity(tags.getInteger("capacity"));
             }
             FluidStack fluid = FluidStack.loadFluidStackFromNBT(tags);
-            instance.setFluid(fluid);
+            ((FluidHandlerItemCapacity)instance).setFluid(fluid);
         }
     }
 }
