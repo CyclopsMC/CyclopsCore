@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix invalid tile entity persistence
+  This fixes issues where dropped machines lose NBT information
+  Closes CyclopsMC/EvilCraft#584, closed CyclopsMC/EvilCraft#582
