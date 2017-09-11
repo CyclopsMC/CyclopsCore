@@ -14,13 +14,12 @@ import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
 import org.cyclops.cyclopscore.command.*;
 import org.cyclops.cyclopscore.config.ConfigHandler;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseVersionable;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.versionchecker.VersionCheckerModCompat;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 import org.cyclops.cyclopscore.tracking.Analytics;
-import org.cyclops.cyclopscore.tracking.IModVersion;
 import org.cyclops.cyclopscore.tracking.Versions;
 
 import java.util.Map;
@@ -37,7 +36,7 @@ import java.util.Map;
         dependencies = Reference.MOD_DEPENDENCIES,
         guiFactory = "org.cyclops.cyclopscore.GuiConfigOverview$ExtendedConfigGuiFactory"
 )
-public class CyclopsCore extends ModBase implements IModVersion {
+public class CyclopsCore extends ModBaseVersionable {
 
     /**
      * The proxy of this mod, depending on 'side' a different proxy will be inside this field.
@@ -52,13 +51,8 @@ public class CyclopsCore extends ModBase implements IModVersion {
     @Mod.Instance(value = Reference.MOD_ID)
     public static CyclopsCore _instance;
 
-    private boolean versionInfo = false;
-    private String version;
-    private String info;
-    private String updateUrl;
-
     public CyclopsCore() {
-        super(Reference.MOD_ID, Reference.MOD_NAME);
+        super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION);
         putGenericReference(REFKEY_MOD_VERSION, Reference.MOD_VERSION);
         FluidRegistry.enableUniversalBucket();
     }
@@ -150,36 +144,4 @@ public class CyclopsCore extends ModBase implements IModVersion {
         CyclopsCore._instance.log(level, message);
     }
 
-    @Override
-    public void setVersionInfo(String version, String info, String updateUrl) {
-        versionInfo = true;
-        this.version = version;
-        this.info = info;
-        this.updateUrl = updateUrl;
-    }
-
-    @Override
-    public boolean isVersionInfo() {
-        return versionInfo;
-    }
-
-    @Override
-    public String getVersion() {
-        return version;
-    }
-
-    @Override
-    public String getInfo() {
-        return info;
-    }
-
-    @Override
-    public String getUpdateUrl() {
-        return updateUrl;
-    }
-
-    @Override
-    public boolean needsUpdate() {
-        return getVersion() != null && !Reference.MOD_VERSION.equals(getVersion());
-    }
 }

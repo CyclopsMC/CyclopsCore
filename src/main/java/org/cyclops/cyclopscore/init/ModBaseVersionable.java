@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.init;
 
+import net.minecraftforge.fml.common.versioning.ArtifactVersion;
+import net.minecraftforge.fml.common.versioning.DefaultArtifactVersion;
 import org.cyclops.cyclopscore.tracking.IModVersion;
 
 /**
@@ -48,7 +50,9 @@ public abstract class ModBaseVersionable extends ModBase implements IModVersion 
 
     @Override
     public boolean needsUpdate() {
-        return getVersion() != null && !getReferenceValue(REFKEY_MOD_VERSION).equals(getVersion());
+        ArtifactVersion currentVersion = new DefaultArtifactVersion(getReferenceValue(REFKEY_MOD_VERSION));
+        ArtifactVersion newVersion = new DefaultArtifactVersion(getVersion());
+        return getVersion() != null && currentVersion.compareTo(newVersion) < 0;
     }
 
 }
