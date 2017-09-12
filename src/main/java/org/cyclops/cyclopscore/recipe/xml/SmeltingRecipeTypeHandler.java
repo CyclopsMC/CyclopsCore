@@ -30,9 +30,9 @@ public class SmeltingRecipeTypeHandler extends CommonRecipeTypeHandler<Ingredien
 		
 		ItemStack inputItem = getSafeItem(getIngredient(recipeHandler, input.getElementsByTagName("item").item(0)));
 		ItemStack outputItem = getSafeItem(getIngredient(recipeHandler, output.getElementsByTagName("item").item(0)));
-		int xp = 0;
+		float xp = 0;
 		if(output.getElementsByTagName("xp").getLength() > 0) {
-			xp = Integer.parseInt(output.getElementsByTagName("xp").item(0).getTextContent());
+			xp = Float.parseFloat(output.getElementsByTagName("xp").item(0).getTextContent());
 		}
 		
 		GameRegistry.addSmelting(inputItem, outputItem, xp);
