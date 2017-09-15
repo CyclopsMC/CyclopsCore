@@ -9,26 +9,26 @@ import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
  * @author rubensworks
  *
  */
-public abstract class ConfigurableFluid extends Fluid implements IConfigurable{
+public abstract class ConfigurableFluid extends Fluid implements IConfigurable<FluidConfig>{
     
-    protected ExtendedConfig<FluidConfig> eConfig = null;
+    protected FluidConfig eConfig = null;
     
     /**
      * Make a new fluid instance.
      * @param eConfig Config for this blockState.
      */
     protected ConfigurableFluid(ExtendedConfig<FluidConfig> eConfig) {
-        super(eConfig.getNamedId(), eConfig.downCast().getIconLocationStill(), eConfig.downCast().getIconLocationFlow());
-        this.setConfig(eConfig);
+        super(eConfig.getNamedId(), ((FluidConfig)eConfig).getIconLocationStill(), ((FluidConfig)eConfig).getIconLocationFlow());
+        this.setConfig((FluidConfig)eConfig); // TODO change eConfig to just be a FluidConfig
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
 
-    private void setConfig(ExtendedConfig<FluidConfig> eConfig) {
+    private void setConfig(FluidConfig eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<FluidConfig> getConfig() {
+    public FluidConfig getConfig() {
         return eConfig;
     }
 

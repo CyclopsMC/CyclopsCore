@@ -41,7 +41,7 @@ public abstract class ItemConfig extends ExtendedConfig<ItemConfig> implements I
     }
 
     @Override
-    protected IConfigurable initSubInstance() {
+    protected IConfigurable<ItemConfig> initSubInstance() {
         return this.getElement() == null ? new ConfigurableItem(this) : super.initSubInstance();
     }
 

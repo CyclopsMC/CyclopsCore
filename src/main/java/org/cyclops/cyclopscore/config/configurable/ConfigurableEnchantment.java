@@ -12,9 +12,9 @@ import org.cyclops.cyclopscore.helper.L10NHelpers;
  * @author rubensworks
  *
  */
-public class ConfigurableEnchantment extends Enchantment implements IConfigurable {
+public class ConfigurableEnchantment extends Enchantment implements IConfigurable<EnchantmentConfig> {
 
-    protected ExtendedConfig<EnchantmentConfig> eConfig = null;
+    protected EnchantmentConfig eConfig = null;
     
     /**
      * Make a new Enchantment instance
@@ -26,22 +26,22 @@ public class ConfigurableEnchantment extends Enchantment implements IConfigurabl
     protected ConfigurableEnchantment(ExtendedConfig<EnchantmentConfig> eConfig, Enchantment.Rarity rarity,
                                       EnumEnchantmentType type, EntityEquipmentSlot[] slots) {
         super(rarity, type, slots);
-        this.setConfig(eConfig);
+        this.setConfig((EnchantmentConfig)eConfig); // TODO change eConfig to just be an EnchantmentConfig
         this.setName(eConfig.getUnlocalizedName());
     }
     
-    private void setConfig(ExtendedConfig<EnchantmentConfig> eConfig) {
+    private void setConfig(EnchantmentConfig eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<EnchantmentConfig> getConfig() {
+    public EnchantmentConfig getConfig() {
         return eConfig;
     }
     
     @Override
     public String getTranslatedName(int level) {
-        String enchantmentName = L10NHelpers.localize("enchantment." + eConfig.getMod().getModId() + "." + eConfig.downCast().getNamedId());
+        String enchantmentName = L10NHelpers.localize("enchantment." + eConfig.getMod().getModId() + "." + eConfig.getNamedId());
         return enchantmentName + " " + L10NHelpers.localize("enchantment.level." + level);
     }
 

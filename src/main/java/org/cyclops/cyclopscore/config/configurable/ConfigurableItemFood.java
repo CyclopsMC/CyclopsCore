@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class ConfigurableItemFood extends ItemFood implements IConfigurableItem {
     
-    protected ExtendedConfig<ItemConfig> eConfig = null;
+    protected ItemConfig eConfig = null;
     
     /**
      * Make a new blockState instance.
@@ -32,16 +32,16 @@ public class ConfigurableItemFood extends ItemFood implements IConfigurableItem 
      */
     public ConfigurableItemFood(ExtendedConfig<ItemConfig> eConfig, int healAmount, float saturationModifier, boolean isWolfsFavoriteMeat) {
         super(healAmount, saturationModifier, isWolfsFavoriteMeat);
-        this.setConfig(eConfig);
+        this.setConfig((ItemConfig)eConfig); // TODO change eConfig to just be an ItemConfig
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
 
-    private void setConfig(ExtendedConfig<ItemConfig> eConfig) {
+    private void setConfig(ItemConfig eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<ItemConfig> getConfig() {
+    public ItemConfig getConfig() {
         return eConfig;
     }
     

@@ -10,7 +10,7 @@ import org.cyclops.cyclopscore.helper.L10NHelpers;
  * @author rubensworks
  *
  */
-public class ConfigurableBiome extends Biome implements IConfigurable {
+public class ConfigurableBiome extends Biome implements IConfigurable<BiomeConfig> {
 
     protected BiomeConfig eConfig = null;
     
@@ -37,7 +37,7 @@ public class ConfigurableBiome extends Biome implements IConfigurable {
     }
 
     @Override
-    public ExtendedConfig<BiomeConfig> getConfig() {
+    public BiomeConfig getConfig() {
         return eConfig;
     }
 

@@ -34,7 +34,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
     @Getter private final String comment;
     @Getter private final Class<?> element;
 
-    private IConfigurable overriddenSubInstance;
+    private IConfigurable<C> overriddenSubInstance;
     
     /**
      * A list of {@link ConfigProperty} that can contain additional settings for this configurable.
@@ -190,11 +190,11 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      * This is only called once.
      * @return A sub-instance that will become a singleton.
      */
-    protected IConfigurable initSubInstance() {
+    protected IConfigurable<C> initSubInstance() {
         return null;
     }
 
-    private IConfigurable getOverriddenSubInstance() {
+    private IConfigurable<C> getOverriddenSubInstance() {
         return this.overriddenSubInstance;
     }
 
@@ -202,7 +202,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      * Will return the instance of the object this config refers to
      * @return instance of sub object
      */
-    public IConfigurable getSubInstance() {
+    public IConfigurable<C> getSubInstance() {
         if(getOverriddenSubInstance() != null) {
             return getOverriddenSubInstance();
         }
@@ -213,7 +213,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
             if(method == null) {
                 throw new CyclopsCoreConfigException("There exists no static getInstance method for  " + this);
             }
-            return (IConfigurable) method.invoke(null);
+            return (IConfigurable<C>) method.invoke(null);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
         	// Only possible in development mode
         	e1.printStackTrace();
@@ -301,6 +301,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      * @return The downcasted config.
      */
     @SuppressWarnings("unchecked")
+    @Deprecated
     public C downCast() {
         return (C) this;
     }

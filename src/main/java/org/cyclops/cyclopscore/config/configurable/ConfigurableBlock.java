@@ -51,7 +51,7 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
      */
     public ConfigurableBlock(ExtendedConfig<BlockConfig> eConfig, Material material) {
         super(material);
-        this.setConfig(eConfig);
+        this.setConfig((BlockConfig)eConfig); // TODO change eConfig to just be a BlockConfig
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         if(MinecraftHelpers.isClientSide() && hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
     }
@@ -81,12 +81,12 @@ public class ConfigurableBlock extends Block implements IConfigurableBlock, IDyn
         return blockState;
     }
 
-    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
-        this.eConfig = (BlockConfig) eConfig;
+    private void setConfig(BlockConfig eConfig) {
+        this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<BlockConfig> getConfig() {
+    public BlockConfig getConfig() {
         return eConfig;
     }
 

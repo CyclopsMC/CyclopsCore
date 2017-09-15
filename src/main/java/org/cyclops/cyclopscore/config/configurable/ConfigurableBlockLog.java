@@ -42,7 +42,7 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
     @BlockProperty
     public static final IProperty[] _COMPAT = {LOG_AXIS};
 
-    protected ExtendedConfig<BlockConfig> eConfig = null;
+    protected BlockConfig eConfig = null;
     protected boolean hasGui = false;
 
     /**
@@ -50,7 +50,7 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
      * @param eConfig Config for this blockState.
      */
     public ConfigurableBlockLog(ExtendedConfig<BlockConfig> eConfig) {
-        this.setConfig(eConfig);
+        this.setConfig((BlockConfig)eConfig); // TODO change eConfig to just be a BlockConfig
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
 
@@ -66,12 +66,12 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
         return null;
     }
 
-    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
+    private void setConfig(BlockConfig eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<BlockConfig> getConfig() {
+    public BlockConfig getConfig() {
         return eConfig;
     }
 

@@ -17,11 +17,11 @@ import org.cyclops.cyclopscore.init.ModBase;
  * A configurable potion effect.
  * @author rubensworks
  */
-public abstract class ConfigurablePotion extends Potion implements IConfigurable {
+public abstract class ConfigurablePotion extends Potion implements IConfigurable<PotionConfig> {
 
     private final ResourceLocation resource;
 
-    protected ExtendedConfig<PotionConfig> eConfig = null;
+    protected PotionConfig eConfig = null;
 
     /**
      * Make a new Enchantment instance
@@ -32,7 +32,7 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
      */
     protected ConfigurablePotion(ExtendedConfig<PotionConfig> eConfig, boolean badEffect, int color, int iconIndex) {
         super(badEffect, color);
-        this.setConfig(eConfig);
+        this.setConfig((PotionConfig)eConfig); // TODO change eConfig to just be a PotionConfig
         this.setPotionName(eConfig.getUnlocalizedName());
         this.setIconIndex(iconIndex % 8, iconIndex / 8);
         this.resource = new ResourceLocation(eConfig.getMod().getModId(), eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "potions.png");
@@ -46,12 +46,12 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
         return super.getStatusIconIndex();
     }
 
-    private void setConfig(ExtendedConfig<PotionConfig> eConfig) {
+    private void setConfig(PotionConfig eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<PotionConfig> getConfig() {
+    public PotionConfig getConfig() {
         return eConfig;
     }
 

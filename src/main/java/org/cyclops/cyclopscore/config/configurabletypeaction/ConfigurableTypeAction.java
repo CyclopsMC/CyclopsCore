@@ -27,12 +27,12 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
      * @param eConfig The config to be registered.
      * @param config The config file reference.
      */
-    public void commonRun(ExtendedConfig<C> eConfig, Configuration config) {
-    	if(eConfig.isDisableable()) {
-    		preRun(eConfig.downCast(), config, true);
+    public void commonRun(C eConfig, Configuration config) {
+        if(eConfig.isDisableable()) {
+            preRun(eConfig, config, true);
         }
         if (eConfig.isEnabled()) {
-            postRun(eConfig.downCast(), config);
+            postRun(eConfig, config);
         } else if (!eConfig.isDisableable()) {
             throw new UndisableableConfigException(eConfig);
         } else {
@@ -40,7 +40,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
         }
     }
     
-    protected void onSkipRegistration(ExtendedConfig<C> eConfig) {
+    protected void onSkipRegistration(C eConfig) {
         eConfig.getMod().log(Level.TRACE, "Skipped registering " + eConfig.getNamedId());
     }
     
