@@ -76,7 +76,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
      */
     public ConfigurableBlockContainer(ExtendedConfig<BlockConfig> eConfig, Material material, Class<? extends CyclopsTileEntity> tileEntity) {
         super(material);
-        this.setConfig(eConfig);
+        this.setConfig((BlockConfig)eConfig); // TODO change eConfig to just be a BlockConfig
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         this.random = new Random();
         this.tileEntity = tileEntity;
@@ -118,8 +118,8 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         return this.tileEntity;
     }
 
-    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
-        this.eConfig = (BlockConfig) eConfig;
+    private void setConfig(BlockConfig eConfig) {
+        this.eConfig = eConfig;
     }
 
     @Override

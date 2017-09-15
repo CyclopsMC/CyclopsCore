@@ -10,8 +10,8 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
  * @author rubensworks
  *
  */
-public interface IConfigurable {
+public interface IConfigurable<C extends ExtendedConfig<C>> {
 
-    public ExtendedConfig<?> getConfig();
+    public C getConfig();
 
 }

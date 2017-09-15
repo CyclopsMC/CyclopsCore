@@ -6,11 +6,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
+
 /**
  * Configurable blocks.
  * @author rubensworks
  */
-public interface IConfigurableBlock extends IConfigurable {
+public interface IConfigurableBlock extends IConfigurable<BlockConfig> {
 
     /**
      * If this block has a corresponding GUI.

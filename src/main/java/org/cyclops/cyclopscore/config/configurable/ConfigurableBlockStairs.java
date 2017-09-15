@@ -33,7 +33,7 @@ public class ConfigurableBlockStairs extends BlockStairs implements IConfigurabl
      */
     public ConfigurableBlockStairs(ExtendedConfig<BlockConfig> eConfig, IBlockState modelState) {
         super(modelState);
-        this.setConfig(eConfig);
+        this.setConfig((BlockConfig)eConfig); // TODO change eConfig to just be a BlockConfig
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         if(MinecraftHelpers.isClientSide() && hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
         this.useNeighborBrightness = true;
@@ -51,12 +51,12 @@ public class ConfigurableBlockStairs extends BlockStairs implements IConfigurabl
         return null;
     }
 
-    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
-        this.eConfig = (BlockConfig) eConfig;
+    private void setConfig(BlockConfig eConfig) {
+        this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<BlockConfig> getConfig() {
+    public BlockConfig getConfig() {
         return eConfig;
     }
 

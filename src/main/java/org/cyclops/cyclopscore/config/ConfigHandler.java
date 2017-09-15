@@ -256,11 +256,11 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
      */
     public static @Nullable ExtendedConfig<?> getConfigFromItem(Item item) {
         if(item instanceof IConfigurable) {
-            return ((IConfigurable) item).getConfig();
+            return ((IConfigurable<?>) item).getConfig();
         } else {
             Block block = Block.getBlockFromItem(item);
-            if(block != Blocks.AIR && block instanceof IConfigurable) {
-                return ((IConfigurable) block).getConfig();
+            if(block != Blocks.AIR && block instanceof IConfigurable<?>) {
+                return ((IConfigurable<?>) block).getConfig();
             } else {
                 return null;
             }
@@ -273,8 +273,8 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
      * @return The config or null.
      */
     public static @Nullable ExtendedConfig<?> getConfigFromFluid(Fluid fluid) {
-        if(fluid instanceof IConfigurable) {
-            return ((IConfigurable) fluid).getConfig();
+        if(fluid instanceof IConfigurable<?>) {
+            return ((IConfigurable<?>) fluid).getConfig();
         }
         return null;
     }

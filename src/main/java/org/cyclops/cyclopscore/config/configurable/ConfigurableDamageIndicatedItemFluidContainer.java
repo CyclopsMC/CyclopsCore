@@ -38,9 +38,9 @@ import java.util.List;
  * @author rubensworks
  *
  */
-public abstract class ConfigurableDamageIndicatedItemFluidContainer extends DamageIndicatedItemFluidContainer implements IConfigurable {
+public abstract class ConfigurableDamageIndicatedItemFluidContainer extends DamageIndicatedItemFluidContainer implements IConfigurable<ItemConfig> {
 
-    protected ExtendedConfig<ItemConfig> eConfig = null;
+    protected ItemConfig eConfig = null;
 
     protected boolean canPickUp = true;
     private boolean placeFluids = false;
@@ -53,16 +53,16 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
      */
     protected ConfigurableDamageIndicatedItemFluidContainer(ExtendedConfig<ItemConfig> eConfig, int capacity, Fluid fluid) {
         super(capacity, fluid);
-        this.setConfig(eConfig);
+        this.setConfig((ItemConfig)eConfig); // TODO change eConfig to just be an ItemConfig
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
     }
 
-    private void setConfig(ExtendedConfig<ItemConfig> eConfig) {
+    private void setConfig(ItemConfig eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<ItemConfig> getConfig() {
+    public ItemConfig getConfig() {
         return eConfig;
     }
 

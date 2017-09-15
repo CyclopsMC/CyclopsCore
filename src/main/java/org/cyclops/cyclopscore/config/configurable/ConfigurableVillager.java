@@ -9,9 +9,9 @@ import org.cyclops.cyclopscore.init.ModBase;
  * Villager that can hold ExtendedConfigs
  * @author rubensworks
  */
-public class ConfigurableVillager extends VillagerRegistry.VillagerProfession implements IConfigurable {
+public class ConfigurableVillager extends VillagerRegistry.VillagerProfession implements IConfigurable<VillagerConfig> {
 
-    protected ExtendedConfig<VillagerConfig> eConfig = null;
+    protected VillagerConfig eConfig = null;
     
     /**
      * Make a new instance of a villager.
@@ -21,15 +21,15 @@ public class ConfigurableVillager extends VillagerRegistry.VillagerProfession im
         super(eConfig.getMod()+ ":" + eConfig.getNamedId(),
                 eConfig.getMod() + ":" + eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_SKINS) + eConfig.getNamedId() + ".png",
                 eConfig.getMod() + ":" + eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_SKINS) + eConfig.getNamedId() + "-zombie.png");
-        this.setConfig(eConfig);
+        this.setConfig((VillagerConfig)eConfig); // TODO change eConfig to just be a VillagerConfig
     }
     
-    private void setConfig(ExtendedConfig<VillagerConfig> eConfig) {
+    private void setConfig(VillagerConfig eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<VillagerConfig> getConfig() {
+    public VillagerConfig getConfig() {
         return eConfig;
     }
 

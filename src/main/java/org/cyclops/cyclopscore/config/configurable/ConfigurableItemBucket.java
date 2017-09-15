@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class ConfigurableItemBucket extends ItemBucket implements IConfigurableItem {
     
-    protected ExtendedConfig<ItemConfig> eConfig = null;
+    protected ItemConfig eConfig = null;
     
     protected boolean canPickUp = true;
 
@@ -41,18 +41,18 @@ public class ConfigurableItemBucket extends ItemBucket implements IConfigurableI
      */
     public ConfigurableItemBucket(ExtendedConfig<ItemConfig> eConfig, Block block, FluidStack fluidStack) {
         super(block);
-        this.setConfig(eConfig);
+        this.setConfig((ItemConfig)eConfig); // TODO change eConfig to just be an ItemConfig
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         setContainerItem(Items.BUCKET);
         this.fluidStack = fluidStack;
     }
 
-    private void setConfig(ExtendedConfig<ItemConfig> eConfig) {
+    private void setConfig(ItemConfig eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<ItemConfig> getConfig() {
+    public ItemConfig getConfig() {
         return eConfig;
     }
     

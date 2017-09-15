@@ -29,7 +29,7 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
     
 	private Fluid fluid;
 	
-    protected ExtendedConfig<BlockConfig> eConfig = null;
+    protected BlockConfig eConfig = null;
     protected boolean hasGui = false;
     
     @SideOnly(Side.CLIENT)
@@ -43,7 +43,7 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
      */
     public ConfigurableBlockFluidClassic(ExtendedConfig<BlockConfig> eConfig, Fluid fluid, Material material) {
         super(fluid, material);
-        this.setConfig(eConfig);
+        this.setConfig((BlockConfig)eConfig); // TODO change eConfig to just be a BlockConfig
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         fluid.setBlock(this);
         this.fluid = fluid;
@@ -74,12 +74,12 @@ public abstract class ConfigurableBlockFluidClassic extends BlockFluidClassic im
         return this.fluid;
     }
 
-    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
+    private void setConfig(BlockConfig eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<BlockConfig> getConfig() {
+    public BlockConfig getConfig() {
         return eConfig;
     }
     

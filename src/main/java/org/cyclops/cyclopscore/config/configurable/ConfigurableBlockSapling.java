@@ -44,7 +44,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
     @BlockProperty(ignore = true)
     public static final IProperty[] _COMPAT_IGNORED = {TYPE};
 
-    protected ExtendedConfig<BlockConfig> eConfig = null;
+    protected BlockConfig eConfig = null;
     protected boolean hasGui = false;
 
     private WorldGeneratorTree treeGenerator;
@@ -56,7 +56,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
      * @param treeGenerator The world generator of the tree.
      */
     public ConfigurableBlockSapling(ExtendedConfig<BlockConfig> eConfig, Material material, WorldGeneratorTree treeGenerator) {
-        this.setConfig(eConfig);
+        this.setConfig((BlockConfig)eConfig); // TODO change eConfig to just be a BlockConfig
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         this.treeGenerator = treeGenerator;
         setSoundType(SoundType.GROUND);
@@ -74,12 +74,12 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
         return null;
     }
 
-    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
+    private void setConfig(BlockConfig eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<BlockConfig> getConfig() {
+    public BlockConfig getConfig() {
         return eConfig;
     }
 

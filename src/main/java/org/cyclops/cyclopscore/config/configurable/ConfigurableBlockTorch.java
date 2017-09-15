@@ -32,7 +32,7 @@ public class ConfigurableBlockTorch extends BlockTorch implements IConfigurableB
     @BlockProperty
     public static final IProperty[] _COMPAT = {FACING};
 
-    protected ExtendedConfig<BlockConfig> eConfig = null;
+    protected BlockConfig eConfig = null;
     protected boolean hasGui = false;
 
     /**
@@ -40,7 +40,7 @@ public class ConfigurableBlockTorch extends BlockTorch implements IConfigurableB
      * @param eConfig Config for this blockState.
      */
     public ConfigurableBlockTorch(ExtendedConfig<BlockConfig> eConfig) {
-        this.setConfig(eConfig);
+        this.setConfig((BlockConfig)eConfig); // TODO change eConfig to just be a BlockConfig
         this.setUnlocalizedName(eConfig.getUnlocalizedName());
         this.setHardness(0.0F);
         this.setLightLevel(0.9375F);
@@ -59,12 +59,12 @@ public class ConfigurableBlockTorch extends BlockTorch implements IConfigurableB
         return null;
     }
 
-    private void setConfig(ExtendedConfig<BlockConfig> eConfig) {
+    private void setConfig(BlockConfig eConfig) {
         this.eConfig = eConfig;
     }
 
     @Override
-    public ExtendedConfig<BlockConfig> getConfig() {
+    public BlockConfig getConfig() {
         return eConfig;
     }
 
