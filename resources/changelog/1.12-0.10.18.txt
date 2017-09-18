@@ -1,0 +1,11 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Update CraftTweaker compat
+
+Changes:
+* Don't notify version update if current version is higher than latest version, Closes #70
+
+Lib changes:
+* Improve type parameters in configuration system
+* Support non-integral XP values from smelting recipes
