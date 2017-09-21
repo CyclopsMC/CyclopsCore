@@ -5,6 +5,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumHand;
 
 /**
  * Contains helper methods involving {@link net.minecraft.inventory.IInventory}S.
@@ -111,7 +112,7 @@ public class InventoryHelpers {
         }
         data.setTag(tagName, slots);
     }
-	
+
 	/**
 	 * Get the item stack from the given index in the player inventory.
 	 * @param player The player.
@@ -119,7 +120,19 @@ public class InventoryHelpers {
 	 * @return The item stack.
 	 */
 	public static ItemStack getItemFromIndex(EntityPlayer player, int itemIndex) {
-		return player.inventory.mainInventory.get(itemIndex);
+		return getItemFromIndex(player, itemIndex, EnumHand.MAIN_HAND);
+	}
+	
+	/**
+	 * Get the item stack from the given index in the player inventory.
+	 * @param player The player.
+	 * @param itemIndex The index of the item in the inventory.
+	 * @param hand The hand the item is in.
+	 * @return The item stack.
+	 */
+	public static ItemStack getItemFromIndex(EntityPlayer player, int itemIndex, EnumHand hand) {
+		return EnumHand.MAIN_HAND.equals(hand)
+				? player.inventory.mainInventory.get(itemIndex) : player.getHeldItemOffhand();
 	}
 
 	/**

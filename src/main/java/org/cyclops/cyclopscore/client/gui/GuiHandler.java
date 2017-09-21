@@ -6,11 +6,13 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
@@ -179,7 +181,7 @@ public class GuiHandler implements IGuiHandler {
         /**
          * An item.
          */
-        public static final GuiType<Integer> ITEM = GuiType.create(true);
+        public static final GuiType<Pair<Integer, EnumHand>> ITEM = GuiType.create(true);
 
         static {
             BLOCK.setContainerConstructor(new IContainerConstructor<Void>() {
@@ -214,15 +216,20 @@ public class GuiHandler implements IGuiHandler {
                     return null;
                 }
             });
-            ITEM.setContainerConstructor(new IContainerConstructor<Integer>() {
+            ITEM.setContainerConstructor(new IContainerConstructor<Pair<Integer, EnumHand>>() {
                 @Override
                 public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z,
-                                                  Class<? extends Container> containerClass, Integer data) {
+                                                  Class<? extends Container> containerClass, Pair<Integer, EnumHand> data) {
                     try {
-                        Constructor<? extends Container> containerConstructor = containerClass.getConstructor(EntityPlayer.class, int.class);
-                        return containerConstructor.newInstance(player, data);
-                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                        e.printStackTrace();
+                        Constructor<? extends Container> containerConstructor = containerClass.getConstructor(EntityPlayer.class, int.class, EnumHand.class);
+                        return containerConstructor.newInstance(player, data.getLeft(), data.getRight());
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e0) {
+                        try {
+                            Constructor<? extends Container> containerConstructor = containerClass.getConstructor(EntityPlayer.class, int.class);
+                            return containerConstructor.newInstance(player, data.getLeft());
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                            e.printStackTrace();
+                        }
                     }
                     return null;
                 }
@@ -261,15 +268,20 @@ public class GuiHandler implements IGuiHandler {
                         return null;
                     }
                 });
-                ITEM.setGuiConstructor(new IGuiConstructor<Integer>() {
+                ITEM.setGuiConstructor(new IGuiConstructor<Pair<Integer, EnumHand>>() {
                     @Override
                     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z,
-                                                      Class<? extends GuiScreen> guiClass, Integer data) {
+                                                      Class<? extends GuiScreen> guiClass, Pair<Integer, EnumHand> data) {
                         try {
-                            Constructor<? extends GuiScreen> guiConstructor = guiClass.getConstructor(EntityPlayer.class, int.class);
-                            return guiConstructor.newInstance(player, data);
-                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                            e.printStackTrace();
+                            Constructor<? extends GuiScreen> guiConstructor = guiClass.getConstructor(EntityPlayer.class, int.class, EnumHand.class);
+                            return guiConstructor.newInstance(player, data.getLeft(), data.getRight());
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e0) {
+                            try {
+                                Constructor<? extends GuiScreen> guiConstructor = guiClass.getConstructor(EntityPlayer.class, int.class);
+                                return guiConstructor.newInstance(player, data.getLeft());
+                            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                                e.printStackTrace();
+                            }
                         }
                         return null;
                     }

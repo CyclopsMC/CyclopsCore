@@ -12,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableItem;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
@@ -66,15 +67,27 @@ public abstract class ItemGui extends ConfigurableItem implements IGuiContainerP
 		}
 		return super.onDroppedByPlayer(itemstack, player);
 	}
+
+	/**
+	 * Open the gui for a certain item index in the player inventory.
+	 * @param world The world.
+	 * @param player The player.
+	 * @param itemIndex The item index in the player inventory.
+	 */
+	@Deprecated
+	public void openGuiForItemIndex(World world, EntityPlayer player, int itemIndex) {
+		openGuiForItemIndex(world, player, itemIndex, EnumHand.MAIN_HAND);
+	}
     
     /**
      * Open the gui for a certain item index in the player inventory.
      * @param world The world.
      * @param player The player.
      * @param itemIndex The item index in the player inventory.
+	 * @param hand The hand the player is using.
      */
-    public void openGuiForItemIndex(World world, EntityPlayer player, int itemIndex) {
-		getConfig().getMod().getGuiHandler().setTemporaryData(GuiHandler.GuiType.ITEM, itemIndex);
+    public void openGuiForItemIndex(World world, EntityPlayer player, int itemIndex, EnumHand hand) {
+		getConfig().getMod().getGuiHandler().setTemporaryData(GuiHandler.GuiType.ITEM, Pair.of(itemIndex, hand));
     	if(!world.isRemote || isClientSideOnlyGui()) {
     		player.openGui(getConfig().getMod(), getGuiID(), world, (int) player.posX, (int) player.posY, (int) player.posZ);
     	}
@@ -90,7 +103,7 @@ public abstract class ItemGui extends ConfigurableItem implements IGuiContainerP
 		if (player instanceof FakePlayer || (player.getClass().getName().equals("ffba04.blockhologram.dummy.DummyPlayer"))) {
 			return new ActionResult<>(EnumActionResult.FAIL, itemStack);
 		}
-		openGuiForItemIndex(world, player, player.inventory.currentItem);
+		openGuiForItemIndex(world, player, player.inventory.currentItem, hand);
 		return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
 	}
 
