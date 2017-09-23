@@ -6,13 +6,11 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.CyclopsCore;
 
 import java.util.Map;
 
 /**
- * An inventory that adds an index to a regular inventory.
+ * An inventory that adds an index from item to slot on a regular inventory.
  * @author rubensworks
  *
  */
@@ -88,6 +86,9 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
             if (stacks != null) {
                 stacks.remove(slotId);
             }
+            if (stacks.isEmpty()) {
+                index.remove(oldStack.getItem());
+            }
         }
         if (!itemStack.isEmpty()) {
             TIntObjectMap<ItemStack> stacks = index.get(itemStack.getItem());
@@ -113,7 +114,7 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
                 }
             }
         }
-        if (slotId == lastEmptySlot && oldStack.isEmpty() && itemStack.isEmpty()) {
+        if (slotId == lastEmptySlot && oldStack.isEmpty() && !itemStack.isEmpty()) {
             // Search backwards
             int oldLastEmptySlot = lastEmptySlot;
             lastEmptySlot = -1;
@@ -159,9 +160,11 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
             lastNonEmptySlot = slotId;
         }
 
-        if (firstEmptySlot == firstNonEmptySlot) CyclopsCore.clog(Level.WARN, String.format(
+        // This is unit-tested, so this *should not* be able to happen.
+        // If it happens, trigger a crash!
+        if (firstEmptySlot == firstNonEmptySlot) throw new IllegalStateException(String.format(
                 "Indexed inventory at inconsistent with first empty %s and first non-empty %s.", firstEmptySlot, firstNonEmptySlot));
-        if (lastEmptySlot == lastNonEmptySlot) CyclopsCore.clog(Level.WARN, String.format(
+        if (lastEmptySlot == lastNonEmptySlot) throw new IllegalStateException(String.format(
                 "Indexed inventory at inconsistent with last empty %s and last non-empty %s.", lastEmptySlot, lastNonEmptySlot));
     }
 
