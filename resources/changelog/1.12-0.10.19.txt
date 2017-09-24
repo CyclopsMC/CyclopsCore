@@ -1,0 +1,10 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+
+Changes:
+* Don't nag to update the mod that you're currently in the development environment of
+
+Fixes:
+* Fix inconsistency in IndexedInventory (used by Colossal Chests), Closes #60
+* Fix items with guis not being usable in off hand
