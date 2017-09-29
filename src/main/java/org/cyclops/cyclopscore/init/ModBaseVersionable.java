@@ -51,9 +51,12 @@ public abstract class ModBaseVersionable extends ModBase implements IModVersion 
     @Override
     public boolean needsUpdate() {
         String currentVersionString = getReferenceValue(REFKEY_MOD_VERSION);
-        if("@VERSION@".equals(currentVersionString)) return false; // we're in this mod's dev environment
+        String latestVersionString = getVersion();
+        if (latestVersionString == null || "@VERSION@".equals(currentVersionString)) {
+            return false; // We're running offline or in this mod's dev environment
+        }
         ArtifactVersion currentVersion = new DefaultArtifactVersion(currentVersionString);
-        ArtifactVersion newVersion = new DefaultArtifactVersion(getVersion());
+        ArtifactVersion newVersion = new DefaultArtifactVersion(latestVersionString);
         return getVersion() != null && currentVersion.compareTo(newVersion) < 0;
     }
 
