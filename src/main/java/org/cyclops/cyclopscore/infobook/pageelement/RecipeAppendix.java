@@ -19,6 +19,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
@@ -73,14 +74,26 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     }
 
     protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButton.Enum buttonEnum) {
-        renderItem(gui, x, y, itemStack, mx, my, true, buttonEnum);
+        renderItem(gui, x, y, itemStack, mx, my, buttonEnum, 1.0F);
     }
 
     protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButton.Enum buttonEnum) {
-        renderItemForButton(gui, x, y, itemStack, mx, my, renderOverlays, buttonEnum != null ? (ItemButton) renderItemHolders.get(buttonEnum) : null);
+        renderItem(gui, x, y, itemStack, mx, my, renderOverlays, buttonEnum, 1.0F);
+    }
+
+    protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButton.Enum buttonEnum, float chance) {
+        renderItem(gui, x, y, itemStack, mx, my, true, buttonEnum, chance);
+    }
+
+    protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButton.Enum buttonEnum, float chance) {
+        renderItemForButton(gui, x, y, itemStack, mx, my, renderOverlays, buttonEnum != null ? (ItemButton) renderItemHolders.get(buttonEnum) : null, chance);
     }
 
     public static void renderItemForButton(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, ItemButton button) {
+        renderItemForButton(gui, x, y, itemStack, mx, my, renderOverlays, button, 1.0F);
+    }
+
+    public static void renderItemForButton(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, ItemButton button, float chance) {
         if(renderOverlays) gui.drawOuterBorder(x, y, SLOT_SIZE, SLOT_SIZE, 1, 1, 1, 0.2f);
 
         if (itemStack != null) {
@@ -97,6 +110,12 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
             RenderHelper.disableStandardItemLighting();
             GlStateManager.popMatrix();
             GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+            if (chance != 1.0F) {
+                String chanceString = chance * 100F + "%";
+                gui.drawScaledCenteredString(chanceString, x - 3, y + 4, gui.getFontRenderer().getStringWidth(chanceString), 1f, 18, 0);
+                gui.drawScaledCenteredString(chanceString, x - 4, y + 3, gui.getFontRenderer().getStringWidth(chanceString), 1f, 18, Helpers.RGBToInt(255, 255, 255));
+            }
 
             if (button != null && renderOverlays) button.update(x, y, itemStack, gui);
         }

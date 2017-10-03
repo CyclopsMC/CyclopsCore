@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.recipe.custom.component;
 import lombok.ToString;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
@@ -11,50 +12,45 @@ import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
 import java.util.List;
 
 /**
- * A {@link org.cyclops.cyclopscore.recipe.custom.api.IRecipe} component that holds an {@link net.minecraft.item.ItemStack}
- * and a {@link net.minecraftforge.fluids.FluidStack}.
+ * A {@link org.cyclops.cyclopscore.recipe.custom.api.IRecipe} component that holds {@link ItemStack}s
+ * and a {@link FluidStack}.
  * @author immortaleeb
  */
 @ToString
-public class IngredientAndFluidStackRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IIngredientRecipeComponent, IFluidStackRecipeComponent {
-    private final IngredientRecipeComponent ingredient;
+public class IngredientsAndFluidStackRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IItemStacksRecipeComponent, IFluidStackRecipeComponent {
+    private final IngredientsRecipeComponent ingredient;
     private final FluidStackRecipeComponent fluidStack;
     private float chance;
 
-    public IngredientAndFluidStackRecipeComponent(Ingredient ingredient, FluidStack fluidStack) {
-        this.ingredient = new IngredientRecipeComponent(ingredient);
+    public IngredientsAndFluidStackRecipeComponent(NonNullList<Ingredient> ingredient, FluidStack fluidStack) {
+        this.ingredient = new IngredientsRecipeComponent(ingredient);
         this.fluidStack = new FluidStackRecipeComponent(fluidStack);
     }
 
-    public IngredientAndFluidStackRecipeComponent(ItemStack itemStack, FluidStack fluidStack) {
-        this.ingredient = new IngredientRecipeComponent(itemStack);
+    public IngredientsAndFluidStackRecipeComponent(List<IngredientRecipeComponent> ingredientComponents, FluidStack fluidStack) {
+        this.ingredient = new IngredientsRecipeComponent(ingredientComponents);
         this.fluidStack = new FluidStackRecipeComponent(fluidStack);
     }
 
     @Override
-    public Ingredient getIngredient() {
-        return ingredient.getIngredient();
-    }
-
-    @Override
-    public ItemStack getFirstItemStack() {
-        return ingredient.getFirstItemStack();
-    }
-
-    public List<ItemStack> getItemStacks() {
-        return ingredient.getItemStacks();
+    public List<ItemStack> getIngredients() {
+        return ingredient.getIngredients();
     }
 
     public FluidStack getFluidStack() {
         return fluidStack.getFluidStack();
     }
 
+    public List<IngredientRecipeComponent> getSubIngredientComponents() {
+        return this.ingredient.getSubIngredientComponents();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof IngredientAndFluidStackRecipeComponent)) return false;
+        if (!(o instanceof IngredientsAndFluidStackRecipeComponent)) return false;
 
-        IngredientAndFluidStackRecipeComponent that = (IngredientAndFluidStackRecipeComponent) o;
+        IngredientsAndFluidStackRecipeComponent that = (IngredientsAndFluidStackRecipeComponent) o;
 
         if (!fluidStack.equals(that.fluidStack)) return false;
         if (!ingredient.equals(that.ingredient)) return false;
@@ -77,4 +73,5 @@ public class IngredientAndFluidStackRecipeComponent implements IRecipeInput, IRe
     public float getChance() {
         return 0;
     }
+
 }

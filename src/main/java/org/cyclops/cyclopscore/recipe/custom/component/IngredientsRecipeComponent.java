@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class IngredientsRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IItemStacksRecipeComponent {
 
     private final List<IngredientRecipeComponent> ingredients;
+    private float chance;
 
     public IngredientsRecipeComponent(NonNullList<Ingredient> ingredients) {
         this.ingredients = Lists.transform(ingredients, new Function<Ingredient, IngredientRecipeComponent>() {
@@ -33,6 +34,10 @@ public class IngredientsRecipeComponent implements IRecipeInput, IRecipeOutput, 
                 return new IngredientRecipeComponent(input);
             }
         });
+    }
+
+    public IngredientsRecipeComponent(List<IngredientRecipeComponent> ingredients) {
+        this.ingredients = ingredients;
     }
 
     @Override
@@ -68,5 +73,9 @@ public class IngredientsRecipeComponent implements IRecipeInput, IRecipeOutput, 
                 .map(IngredientRecipeComponent::getItemStacks)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
+    }
+
+    public List<IngredientRecipeComponent> getSubIngredientComponents() {
+        return this.ingredients;
     }
 }

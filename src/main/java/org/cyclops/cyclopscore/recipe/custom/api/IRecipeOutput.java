@@ -6,4 +6,7 @@ package org.cyclops.cyclopscore.recipe.custom.api;
  * @author immortaleeb
  */
 public interface IRecipeOutput {
+
+    public float getChance();
+
 }

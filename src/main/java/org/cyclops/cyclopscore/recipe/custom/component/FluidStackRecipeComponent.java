@@ -15,6 +15,7 @@ import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
 @Data
 public class FluidStackRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IFluidStackRecipeComponent {
     private final FluidStack fluidStack;
+    private float chance;
 
     @Override
     public boolean equals(Object object) {

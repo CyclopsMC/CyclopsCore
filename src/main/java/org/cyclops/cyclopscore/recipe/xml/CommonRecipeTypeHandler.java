@@ -70,5 +70,14 @@ public abstract class CommonRecipeTypeHandler<I extends IRecipeInput, O extends 
 		}
 		return new FluidStack(fluid, amount);
 	}
+
+	protected float getChance(RecipeHandler recipeHandler, Node ingredientNode) throws XmlRecipeLoader.XmlRecipeException {
+		float chance = 1.0F;
+		Node chanceNode = ingredientNode.getAttributes().getNamedItem("chance");
+		if(chanceNode != null) {
+			chance = Float.parseFloat(chanceNode.getTextContent());
+		}
+		return chance;
+	}
 	
 }
