@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Allow XML recipe outputs to have chances
+
+Fixes:
+* Fix version checker crash when running offline, Closes #76
+
