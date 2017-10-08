@@ -71,7 +71,7 @@ public class IngredientsAndFluidStackRecipeComponent implements IRecipeInput, IR
 
     @Override
     public float getChance() {
-        return 0;
+        return this.chance;
     }
 
 }
