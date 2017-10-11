@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.modcompat.capabilities;
 
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 import javax.annotation.Nullable;
@@ -12,12 +11,7 @@ import javax.annotation.Nullable;
  * @param <H> The host that will contain the capability.
  * @author rubensworks
  */
-public interface ICapabilityConstructor<C, T, H> {
-
-    /**
-     * @return A reference to the capability.
-     */
-    public Capability<C> getCapability();
+public interface ICapabilityConstructor<C, T, H> extends ICapabilityTypeGetter<C> {
 
     /**
      * @param hostType The host type for capabilities.

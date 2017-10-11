@@ -10,17 +10,22 @@ import net.minecraftforge.common.util.INBTSerializable;
  */
 public class SerializableCapabilityProvider<T> extends DefaultCapabilityProvider<T> implements INBTSerializable<NBTBase> {
 
+    public SerializableCapabilityProvider(ICapabilityTypeGetter<T> capabilityGetter, T capability) {
+        super(capabilityGetter, capability);
+    }
+
+    @Deprecated
     public SerializableCapabilityProvider(Capability<T> capabilityType, T capability) {
         super(capabilityType, capability);
     }
 
     @Override
     public NBTBase serializeNBT() {
-        return capabilityType.writeNBT(capability, null);
+        return this.getCapabilityType().writeNBT(capability, null);
     }
 
     @Override
     public void deserializeNBT(NBTBase nbt) {
-        capabilityType.readNBT(capability, null, nbt);
+        this.getCapabilityType().readNBT(capability, null, nbt);
     }
 }

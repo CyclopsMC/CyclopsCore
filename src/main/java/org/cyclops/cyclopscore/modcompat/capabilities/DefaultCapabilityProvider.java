@@ -12,17 +12,29 @@ import java.util.Objects;
  */
 public class DefaultCapabilityProvider<T> implements ICapabilityProvider {
 
-    protected final Capability<T> capabilityType;
+    protected final ICapabilityTypeGetter<T> capabilityGetter;
     protected final T capability;
 
-    public DefaultCapabilityProvider(Capability<T> capabilityType, T capability) {
-        this.capabilityType = Objects.requireNonNull(capabilityType);
+    public DefaultCapabilityProvider(ICapabilityTypeGetter<T> capabilityGetter, T capability) {
+        this.capabilityGetter = Objects.requireNonNull(capabilityGetter);
         this.capability = Objects.requireNonNull(capability);
+    }
+
+    @Deprecated
+    public DefaultCapabilityProvider(Capability<T> capabilityType, T capability) {
+        Objects.requireNonNull(capabilityType,
+                "The given capability can not be null, this is probably being called too early during init");
+        this.capabilityGetter = () -> capabilityType;
+        this.capability = Objects.requireNonNull(capability);
+    }
+
+    public Capability<T> getCapabilityType() {
+        return capabilityGetter.getCapability();
     }
 
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return this.capabilityType == capability;
+        return this.getCapabilityType() == capability;
     }
 
     @Override
