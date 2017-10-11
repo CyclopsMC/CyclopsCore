@@ -7,13 +7,19 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.property.IExtendedBlockState;
 import net.minecraftforge.common.property.IUnlistedProperty;
+import net.minecraftforge.fml.common.Optional;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cyclops.commoncapabilities.api.capability.block.BlockCapabilities;
+import org.cyclops.cyclopscore.datastructure.DimPos;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -166,6 +172,84 @@ public final class BlockHelpers {
         return creativeTab == null
                 || creativeTab == CreativeTabs.SEARCH
                 || block.getCreativeTabToDisplayOn() == creativeTab;
+    }
+
+    /**
+     * Safely get a capability from a block.
+     * @param dimPos The dimensional position of the block.
+     * @param capability The capability.
+     * @param <C> The capability instance.
+     * @return The capability or null.
+     */
+    @Optional.Method(modid = "commoncapabilities")
+    public static <C> C getCapability(DimPos dimPos, Capability<C> capability) {
+        World world = dimPos.getWorld();
+        if (world == null) {
+            return null;
+        }
+        return getCapability(world, dimPos.getBlockPos(), null, capability);
+    }
+
+    /**
+     * Safely get a capability from a block.
+     * @param dimPos The dimensional position of the block.
+     * @param side The side to get the capability from.
+     * @param capability The capability.
+     * @param <C> The capability instance.
+     * @return The capability or null.
+     */
+    @Optional.Method(modid = "commoncapabilities")
+    public static <C> C getCapability(DimPos dimPos, EnumFacing side, Capability<C> capability) {
+        World world = dimPos.getWorld();
+        if (world == null) {
+            return null;
+        }
+        return getCapability(world, dimPos.getBlockPos(), side, capability);
+    }
+
+    /**
+     * Safely get a capability from a block.
+     * @param world The world.
+     * @param pos The position of the block providing the capability.
+     * @param side The side to get the capability from.
+     * @param capability The capability.
+     * @param <C> The capability instance.
+     * @return The capability or null.
+     */
+    @Optional.Method(modid = "commoncapabilities")
+    public static <C> C getCapability(World world, BlockPos pos, EnumFacing side, Capability<C> capability) {
+        return getCapability((IBlockAccess) world, pos, side, capability);
+    }
+
+    /**
+     * Safely get a capability from a block.
+     * @param world The world.
+     * @param pos The position of the block providing the capability.
+     * @param capability The capability.
+     * @param <C> The capability instance.
+     * @return The capability or null.
+     */
+    @Optional.Method(modid = "commoncapabilities")
+    public static <C> C getCapability(IBlockAccess world, BlockPos pos, Capability<C> capability) {
+        return getCapability(world, pos, null, capability);
+    }
+
+    /**
+     * Safely get a capability from a block.
+     * @param world The world.
+     * @param pos The position of the block providing the capability.
+     * @param side The side to get the capability from.
+     * @param capability The capability.
+     * @param <C> The capability instance.
+     * @return The capability or null.
+     */
+    @Optional.Method(modid = "commoncapabilities")
+    public static <C> C getCapability(IBlockAccess world, BlockPos pos, EnumFacing side, Capability<C> capability) {
+        IBlockState blockState = world.getBlockState(pos);
+        if(BlockCapabilities.getInstance().hasCapability(blockState, capability, world, pos, side)) {
+            return BlockCapabilities.getInstance().getCapability(blockState, capability, world, pos, side);
+        }
+        return null;
     }
 
 }

@@ -1,11 +1,18 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Maps;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState;
 import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.cyclops.commoncapabilities.api.capability.block.BlockCapabilities;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.HashMap;
@@ -190,6 +197,27 @@ public class Helpers {
      */
     public static boolean isMinecraftInitialized() {
         return Loader.instance().getLoaderState().ordinal() > LoaderState.POSTINITIALIZATION.ordinal();
+    }
+
+    /**
+     * Safely get a capability from a tile or block.
+     * The capability of the tile will be checked first,
+     * only if it was not found, the block will be checked.
+     * @param world The world.
+     * @param pos The position of the tile or block providing the capability.
+     * @param side The side to get the capability from.
+     * @param capability The capability.
+     * @param <C> The capability instance.
+     * @return The capability or null.
+     */
+    @Optional.Method(modid = "commoncapabilities")
+    public static <C> C getTileOrBlockCapability(IBlockAccess world, BlockPos pos, EnumFacing side,
+                                                 Capability<C> capability) {
+        C instance = TileHelpers.getCapability(world, pos, side, capability);
+        if (instance == null) {
+            return BlockHelpers.getCapability(world, pos, side, capability);
+        }
+        return instance;
     }
 
 }
