@@ -68,7 +68,8 @@ public class GuiTextFieldExtended extends GuiTextField {
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        if (mouseButton == 1) {
+        if (mouseButton == 1 && mouseX >= this.x && mouseX < this.x + this.width
+                && mouseY >= this.y && mouseY < this.y + this.height) {
             // Select everything
             this.setCursorPosition(0);
             this.setSelectionPos(Integer.MAX_VALUE);
