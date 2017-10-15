@@ -1,0 +1,11 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix incorrect capability mapping to sides on rotation, Closes CyclopsMC/EvilCraft#598
+* Fix being able to take items out of phantom slots, Closes CyclopsMC/IntegratedDynamics#297
+* Fix all text fields becoming selected when right clicking
+* Fix recipe components always having a zero chance
+
+Lib changes:
+* Add a reference-based DefaultCapabilityProvider constructor
+  This makes it possible for instances to be created even before capabilities have been initialized.
