@@ -28,12 +28,21 @@ public class DirectionHelpers {
      * the blockState and the second argument is the side for which the texture is called.
      */
     public static EnumFacing[][] TEXTURESIDE_ORIENTATION = {
-        {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST}, // DOWN
-        {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST}, // UP
-        {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST}, // NORTH
-        {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.SOUTH, EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.WEST}, // SOUTH
-        {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.EAST, EnumFacing.WEST, EnumFacing.NORTH, EnumFacing.SOUTH}, // WEST
-        {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.WEST, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.NORTH}, // EAST
+            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST}, // DOWN
+            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST}, // UP
+            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST}, // NORTH
+            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.SOUTH, EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.WEST}, // SOUTH
+            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.EAST, EnumFacing.WEST, EnumFacing.NORTH, EnumFacing.SOUTH}, // WEST
+            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.WEST, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.NORTH}, // EAST
+    };
+    private static EnumFacing[][] FACING_ROTATIONS = {
+            // DOWN, UP, NORTH, SOUTH, WEST, EAST
+            {EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.UP, EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.WEST}, // DOWN
+            {EnumFacing.SOUTH, EnumFacing.NORTH, EnumFacing.DOWN, EnumFacing.UP, EnumFacing.WEST, EnumFacing.EAST}, // UP
+            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST}, // NORTH
+            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.SOUTH, EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.WEST}, // SOUTH
+            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.EAST, EnumFacing.WEST, EnumFacing.NORTH, EnumFacing.SOUTH}, // WEST
+            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.WEST, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.NORTH}, // EAST
     };
 
     /**
@@ -72,5 +81,17 @@ public class DirectionHelpers {
      */
     public static EnumFacing getEnumFacingFromZSing(int zSign) {
     	return zSign > 0 ? EnumFacing.SOUTH : EnumFacing.NORTH;
+    }
+
+    /**
+     * Transform the given facing based on a rotation.
+     * The default rotation is {@link EnumFacing#NORTH},
+     * which means no transformation.
+     * @param facing The facing to transform.
+     * @param rotation The rotation.
+     * @return The transformed facing.
+     */
+    public static EnumFacing transformFacingForRotation(EnumFacing facing, EnumFacing rotation) {
+        return FACING_ROTATIONS[rotation.ordinal()][facing.ordinal()];
     }
 }

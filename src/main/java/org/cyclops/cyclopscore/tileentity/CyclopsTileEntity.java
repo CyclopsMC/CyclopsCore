@@ -17,6 +17,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
+import org.cyclops.cyclopscore.helper.DirectionHelpers;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
 import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
 import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
@@ -276,9 +277,17 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
         return (ConfigurableBlockContainer) this.getBlockType();
     }
 
+    protected EnumFacing transformFacingForRotation(EnumFacing facing) {
+        if (facing == null) {
+            return null;
+        }
+        return DirectionHelpers.transformFacingForRotation(facing, getRotation());
+    }
+
     @Override
     public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return (capabilities != null && capabilities.containsKey(Pair.<Capability<?>, EnumFacing>of(capability, facing)))
+        return (capabilities != null && capabilities.containsKey(Pair.<Capability<?>,
+                    EnumFacing>of(capability, transformFacingForRotation(facing))))
                 || (facing != null && capabilities != null && capabilities.containsKey(Pair.<Capability<?>, EnumFacing>of(capability, null)))
                 || super.hasCapability(capability, facing);
     }
@@ -286,7 +295,8 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     @Override
     public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
         if (capabilities != null) {
-            Object value = capabilities.get(Pair.<Capability<?>, EnumFacing>of(capability, facing));
+            Object value = capabilities.get(Pair.<Capability<?>,
+                    EnumFacing>of(capability, transformFacingForRotation(facing)));
             if (value == null && facing != null) {
                 value = capabilities.get(Pair.<Capability<?>, EnumFacing>of(capability, null));
             }
