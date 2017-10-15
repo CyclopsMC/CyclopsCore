@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.inventory.slot;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -33,4 +34,8 @@ public class SlotExtended extends Slot {
         return isEnabled() && inventory.isItemValidForSlot(getSlotIndex(), stack);
     }
 
+    @Override
+    public boolean canTakeStack(EntityPlayer playerIn) {
+        return super.canTakeStack(playerIn) && !isPhantom();
+    }
 }
