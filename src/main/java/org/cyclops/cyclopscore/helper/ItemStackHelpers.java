@@ -228,4 +228,33 @@ public final class ItemStackHelpers {
                 || creativeTab == CreativeTabs.SEARCH;
     }
 
+    /**
+     * Get all subitems of an item.
+     * This is based on {@link Item#getSubItems(CreativeTabs, NonNullList)}.
+     * @param itemStack The given item.
+     * @return The sub items.
+     */
+    public static NonNullList<ItemStack> getSubItems(ItemStack itemStack) {
+        NonNullList<ItemStack> subItems = NonNullList.create();
+        itemStack.getItem().getSubItems(CreativeTabs.SEARCH, subItems);
+        return subItems;
+    }
+
+    /**
+     * If the given stack has a wildcard meta value,
+     * return a list of all its subitems,
+     * otherwise return a list with as single element itself.
+     * @param itemStack The given item.
+     * @return The sub items.
+     */
+    public static NonNullList<ItemStack> getSubItemsIfWildcardMeta(ItemStack itemStack) {
+        if (itemStack.getMetadata() == OreDictionary.WILDCARD_VALUE) {
+            NonNullList<ItemStack> subItems = NonNullList.create();
+            itemStack.getItem().getSubItems(CreativeTabs.SEARCH, subItems);
+            return subItems;
+        } else {
+            return NonNullList.withSize(1, itemStack);
+        }
+    }
+
 }
