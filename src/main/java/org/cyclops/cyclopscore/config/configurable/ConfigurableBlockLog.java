@@ -23,8 +23,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Block that extends from a clog that can hold ExtendedConfigs
@@ -83,10 +81,8 @@ public class ConfigurableBlockLog extends BlockLog implements IConfigurableBlock
     }
 
     @Override
-    public List<ItemStack> getDrops(IBlockAccess world, BlockPos blockPos, IBlockState blockStatedata, int fortune) {
-        List<ItemStack> drops = new ArrayList<ItemStack>();
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos blockPos, IBlockState blockStatedata, int fortune) {
         drops.add(new ItemStack(this, 1, 0));
-        return drops;
     }
 
     @Override
