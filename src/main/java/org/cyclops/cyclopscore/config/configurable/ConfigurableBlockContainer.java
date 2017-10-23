@@ -18,6 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
@@ -40,8 +41,6 @@ import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 import org.cyclops.cyclopscore.tileentity.TileEntityNBTStorage;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -265,8 +264,7 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
     }
     
     @Override
-    public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState blockState, int fortune) {
-        List<ItemStack> drops = new ArrayList<ItemStack>();
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState blockState, int fortune) {
         Item item = getItemDropped(blockState, new Random(), fortune);
         if(item != null && isDropBlockItem(world, pos, blockState, fortune)) {
             ItemStack itemStack = new ItemStack(item, 1, damageDropped(blockState));
@@ -277,7 +275,6 @@ public class ConfigurableBlockContainer extends BlockContainer implements IConfi
         }
         
         MinecraftHelpers.postDestroyBlock(world, pos);
-        return drops;
     }
 
     protected ItemStack tileDataToItemStack(CyclopsTileEntity tile, ItemStack itemStack) {
