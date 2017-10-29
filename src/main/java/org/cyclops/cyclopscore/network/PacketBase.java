@@ -51,6 +51,7 @@ public abstract class PacketBase implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf source) {
 		decode(new ExtendedBuffer(source));
+		source.release();
 	}
 
 	@Override
