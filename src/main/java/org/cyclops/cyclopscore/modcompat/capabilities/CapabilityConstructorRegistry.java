@@ -1,6 +1,11 @@
 package org.cyclops.cyclopscore.modcompat.capabilities;
 
-import com.google.common.collect.*;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -206,7 +211,9 @@ public class CapabilityConstructorRegistry {
 
     @SubscribeEvent
     public void onItemStackLoad(AttachCapabilitiesEvent<ItemStack> event) {
-        onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getObject().getItem(), event.getObject(), event, Item.class);
+        if (!event.getObject().isEmpty()) {
+            onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getObject().getItem(), event.getObject(), event, Item.class);
+        }
     }
 
     protected <K, V> void removeNullCapabilities(Map<Class<? extends K>, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allConstructors,
