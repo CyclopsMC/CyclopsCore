@@ -1,0 +1,10 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Compress PNGs
+* Fix performance issue when attaching ItemStack capabilities, Closes #77
+  The problem was that empty ItemStacks were doing expensive getItemFromBlock calls for AIR in getItem when they are empty.
+* Override the non-deprecated version of getDrops
+
+Fixes:
+* Fix netty leak, Closes #82
