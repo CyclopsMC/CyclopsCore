@@ -34,7 +34,8 @@ import java.util.Map;
         useMetadata = true,
         version = Reference.MOD_VERSION,
         dependencies = Reference.MOD_DEPENDENCIES,
-        guiFactory = "org.cyclops.cyclopscore.GuiConfigOverview$ExtendedConfigGuiFactory"
+        guiFactory = "org.cyclops.cyclopscore.GuiConfigOverview$ExtendedConfigGuiFactory",
+        certificateFingerprint = Reference.MOD_FINGERPRINT
 )
 public class CyclopsCore extends ModBaseVersionable {
 

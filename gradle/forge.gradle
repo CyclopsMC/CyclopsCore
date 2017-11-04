@@ -32,6 +32,7 @@ minecraft {
     replace "@MC_VERSION@", project.config.minecraft_version
     replace "@FORGE_VERSION@", project.config.forge_version
     replace "@BUILD_NUMBER@", project.buildnumber
+    replace "@FINGERPRINT@", project.config.fingerprint
 
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
