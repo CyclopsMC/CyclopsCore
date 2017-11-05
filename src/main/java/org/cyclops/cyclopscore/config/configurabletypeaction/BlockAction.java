@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -74,7 +74,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
      * @param config The config.
      * @param creativeTabs The creative tab this block will reside in.
      */
-    public static void register(Block block, @Nullable Class<? extends ItemBlock> itemBlockClass, ExtendedConfig<BlockConfig> config, @Nullable CreativeTabs creativeTabs) {
+    public static void register(Block block, @Nullable Class<? extends Item> itemBlockClass, ExtendedConfig<BlockConfig> config, @Nullable CreativeTabs creativeTabs) {
         register(block, itemBlockClass, config, creativeTabs, null);
     }
 
@@ -86,11 +86,11 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
      * @param creativeTabs The creative tab this block will reside in.
      * @param callback A callback that will be called when the entry is registered.
      */
-    public static void register(Block block, @Nullable Class<? extends ItemBlock> itemBlockClass, ExtendedConfig<BlockConfig> config, @Nullable CreativeTabs creativeTabs, @Nullable Callable<?> callback) {
+    public static void register(Block block, @Nullable Class<? extends Item> itemBlockClass, ExtendedConfig<BlockConfig> config, @Nullable CreativeTabs creativeTabs, @Nullable Callable<?> callback) {
         register(block, config, (Callable<?>) null); // Delay onForgeRegistered callback until item has been registered
         if(itemBlockClass != null) {
             try {
-                ItemBlock item = itemBlockClass.getConstructor(Block.class).newInstance(block);
+                Item item = itemBlockClass.getConstructor(Block.class).newInstance(block);
                 register(ForgeRegistries.ITEMS, item, config, callback);
             } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();

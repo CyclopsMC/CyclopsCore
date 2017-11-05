@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMapperBase;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
@@ -71,7 +70,7 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
      * If hasSubTypes() returns true this method can be overwritten to define another ItemBlock class
      * @return the ItemBlock class to use for the target blockState.
      */
-    public Class<? extends ItemBlock> getItemBlockClass() {
+    public Class<? extends Item> getItemBlockClass() {
         return ItemBlockMetadata.class;
     }
     
