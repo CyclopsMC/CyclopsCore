@@ -12,6 +12,9 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
+
+import javax.annotation.Nonnull;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -99,6 +102,16 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
     }
 
     /**
+     * Get the item corresponding to the block.
+     * Will return Items.AIR rather than null if there isn't one.
+     * @return The item.
+     */
+    @Nonnull
+    public Item getItemInstance() {
+        return Item.getItemFromBlock(getBlockInstance());
+    }
+
+    /**
      * Get the creative tab for this item.
      * @return The creative tab, by default the value in {@link org.cyclops.cyclopscore.init.ModBase#getDefaultCreativeTab()}.
      */
@@ -122,7 +135,7 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
                 return blockLocation;
             }
         });
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(getBlockInstance()), 0, itemLocation);
+        ModelLoader.setCustomModelResourceLocation(getItemInstance(), 0, itemLocation);
         return Pair.of(blockLocation, itemLocation);
     }
 

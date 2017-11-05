@@ -106,7 +106,7 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
                 modelProvider = (IModelProviderConfig) entry;
             } else if (entry instanceof BlockConfig) {
                 block = ((BlockConfig) entry).getBlockInstance();
-                item = Item.getItemFromBlock(block);
+                item = ((BlockConfig) entry).getItemInstance();
                 modelProvider = (IModelProviderConfig) entry;
             } else {
                 throw new IllegalStateException("An unsupported config was registered to the model loader: "

@@ -28,6 +28,6 @@ public class BlockItemConfigReference implements IObjectReference<Item> {
                         blockConfigClass.getName());
             }
         }
-        return blockConfig != null ? Item.getItemFromBlock(blockConfig.getBlockInstance()) : null;
+        return blockConfig != null ? blockConfig.getItemInstance() : null;
     }
 }

@@ -54,7 +54,7 @@ public abstract class BlockFluidConfig extends BlockConfig {
     public void onModelRegistryLoad(ModelRegistryEvent event) {
         // Handle registration for fluid rendering
         BlockFluidClassic blockInstance = getBlockInstance();
-        Item fluid = Item.getItemFromBlock(blockInstance);
+        Item fluid = getItemInstance();
 
         ModelBakery.registerItemVariants(fluid, fluidLocation);
 
