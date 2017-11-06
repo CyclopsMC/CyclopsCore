@@ -6,7 +6,7 @@
 
 Library mod for several other [mods](https://github.com/CyclopsMC).
 
-All stable releases (including deobfuscated builds) can be found on [CurseForge](http://minecraft.curseforge.com/mc-mods/232758-cyclops-core/files).
+All stable releases (including deobfuscated builds) can be found on [CurseForge](https://minecraft.curseforge.com/projects/cyclops-core/files).
 
 ### Using CyclopsCore
 
