@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Add safety for rendering FluidStacks with null Fluids, Closes #90
+
