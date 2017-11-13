@@ -233,15 +233,16 @@ public class RenderHelpers {
     public static TextureAtlasSprite getFluidIcon(FluidStack fluid, EnumFacing side) {
         Block defaultBlock = Blocks.WATER;
         Block block = defaultBlock;
-        if(fluid.getFluid().getBlock() != null) {
+        Fluid fluidType = fluid.getFluid();
+        if(fluidType != null && fluidType.getBlock() != null) {
             block = fluid.getFluid().getBlock();
         }
 
         if(side == null) side = EnumFacing.UP;
 
-        TextureAtlasSprite icon = TEXTURE_GETTER.apply(fluid.getFluid().getFlowing(fluid));
+        TextureAtlasSprite icon = fluidType != null ? TEXTURE_GETTER.apply(fluidType.getFlowing(fluid)) : null;
         if(icon == null || (side == EnumFacing.UP || side == EnumFacing.DOWN)) {
-            icon = TEXTURE_GETTER.apply(fluid.getFluid().getStill(fluid));
+            icon = fluidType != null ? TEXTURE_GETTER.apply(fluidType.getStill(fluid)) : null;
         }
         if(icon == null) {
             icon = getBlockIcon(block);
