@@ -1,0 +1,12 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Sign jars
+
+Fixes:
+* Fix problem when logging into a world with Forge >= 14.23.0.2538
+  Revert "Fix netty leak, Closes #82"
+  This is Forge's duty to release (MinecraftForge/MinecraftForge#4510), not
+  ours. Fixes CyclopsMC/IntegratedDynamics#364 and
+  fixes CyclopsMC/EverlastingAbilities#59.
+* Fix curseforge URL in mcmod.info
