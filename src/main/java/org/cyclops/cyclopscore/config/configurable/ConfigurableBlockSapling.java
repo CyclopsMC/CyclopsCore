@@ -99,7 +99,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
         world.setBlockToAir(pos);
 
         if(!treeGenerator.growTree(world, rand, pos)) {
-            world.setBlockState(pos, getDefaultState(), 4);
+            world.setBlockState(pos, state, 4);
         }
     }
 
