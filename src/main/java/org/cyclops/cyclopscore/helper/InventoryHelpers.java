@@ -6,6 +6,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Contains helper methods involving {@link net.minecraft.inventory.IInventory}S.
@@ -145,6 +147,49 @@ public class InventoryHelpers {
 	public static boolean addToSlot(IInventory inventory, int slot, ItemStack itemStack) {
 		return addToSlot(inventory, slot, itemStack, false);
 	}
+
+	/**
+	 * Tries to merge the given stacks.
+	 * @param itemStack The stack to mutate and add to.
+	 * @param toAdd The stack to add.
+	 * @return The remainder of the added stack
+	 */
+	public static ItemStack addToStack(ItemStack itemStack, ItemStack toAdd) {
+		toAdd = toAdd.copy();
+		if (ItemStack.areItemStackTagsEqual(toAdd, itemStack)
+				&& ItemStack.areItemsEqual(toAdd, itemStack)
+				&& itemStack.getCount() < itemStack.getMaxStackSize()) {
+			int toAddCount = Math.min(itemStack.getMaxStackSize() - itemStack.getCount(), toAdd.getCount());
+			itemStack.grow(toAddCount);
+			toAdd.shrink(toAddCount);
+		}
+		return toAdd;
+	}
+
+	/**
+	 * Try to add the given item to the given slot.
+	 * @param inventory The inventory.
+	 * @param slot The slot to add to.
+	 * @param itemStack The item to try to put in the production slot.
+	 * @param simulate If the operation should be simulated.
+	 * @return The remaining itemstack that could not be added anymore.
+	 */
+	public static ItemStack fillSlot(IInventory inventory, int slot, ItemStack itemStack, boolean simulate) {
+		ItemStack produceStack = inventory.getStackInSlot(slot);
+		if(produceStack.isEmpty()) {
+			if (!simulate) {
+				inventory.setInventorySlotContents(slot, itemStack);
+			}
+			return ItemStack.EMPTY;
+		} else {
+			produceStack = produceStack.copy();
+			ItemStack remainder = addToStack(produceStack, itemStack);
+			if (!simulate && remainder.getCount() != itemStack.getCount()) {
+				inventory.setInventorySlotContents(slot, produceStack);
+			}
+			return remainder;
+		}
+	}
 	
 	/**
      * Try to add the given item to the given slot.
@@ -155,20 +200,41 @@ public class InventoryHelpers {
      * @return If the item could be added or joined in the production slot.
      */
     public static boolean addToSlot(IInventory inventory, int slot, ItemStack itemStack, boolean simulate) {
-        ItemStack produceStack = inventory.getStackInSlot(slot);
-        if(produceStack.isEmpty()) {
-        	inventory.setInventorySlotContents(slot, itemStack);
-            return true;
-        } else {
-            if(produceStack.getItem() == itemStack.getItem()
-               && produceStack.getMaxStackSize() >= produceStack.getCount() + itemStack.getCount()) {
-				if(!simulate) {
-					produceStack.grow(itemStack.getCount());
-				}
-                return true;
-            }
-        }
-        return false;
+        return fillSlot(inventory, slot, itemStack, simulate).isEmpty();
     }
+
+	/**
+	 * Try to add the given item to any of the given slots.
+	 * @param inventory The inventory.
+	 * @param slots The slots
+	 * @param itemStacks The items to try to put in the inventory.
+	 * @param simulate If the operation should be simulated.
+	 * @return The remaining itemstack that could not be added anymore.
+	 */
+	public static NonNullList<ItemStack> addToInventory(IInventory inventory, int[] slots, NonNullList<ItemStack> itemStacks, boolean simulate) {
+		NonNullList<ItemStack> remaining = NonNullList.create();
+		for (ItemStack itemStack : itemStacks) {
+			for (int i = 0; i < slots.length; i++) {
+				int slot = slots[i];
+				itemStack = fillSlot(inventory, slot, itemStack, simulate);
+				if (simulate) {
+					// We blacklist this slot in the next iteration,
+					// because in simulation, we don't fill the actual slot,
+					// so it could occur that only one slot is empty,
+					// and two different item outputs of this recipe want to fill that slot.
+					// Note: this is a heuristic, and may be to pessimistic in some cases.
+					slots = ArrayUtils.remove(slots, i);
+					i--;
+				}
+				if (itemStack.isEmpty()) {
+					break;
+				}
+			}
+			if (!itemStack.isEmpty()) {
+				remaining.add(itemStack);
+			}
+		}
+		return remaining;
+	}
 
 }
