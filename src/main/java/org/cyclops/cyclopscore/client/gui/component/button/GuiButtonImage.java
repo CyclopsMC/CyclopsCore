@@ -10,7 +10,7 @@ import org.cyclops.cyclopscore.client.gui.image.IImage;
  */
 public class GuiButtonImage extends GuiButtonExtended {
 
-    private final IImage image;
+    private IImage image;
     private final int offsetX, offsetY;
 
 	/**
@@ -35,8 +35,22 @@ public class GuiButtonImage extends GuiButtonExtended {
         this.offsetY = offsetY;
 	}
 
+	/**
+	 * Make a new instance.
+	 * @param id The ID.
+	 * @param x X
+	 * @param y Y
+	 * @param image The image to render
+	 */
+	public GuiButtonImage(int id, int x, int y, IImage image) {
+		this(id, x, y, image.getWidth(), image.getHeight(), image, 0, 0, false);
+	}
+
 	protected void drawButtonInner(Minecraft minecraft, int i, int j, boolean mouseOver) {
         image.draw(this, x + offsetX, y + offsetY);
     }
 
+	public void setImage(IImage image) {
+		this.image = image;
+	}
 }

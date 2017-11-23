@@ -80,4 +80,14 @@ public class Image implements IImage {
         this.drawWorldWithAlpha(textureManager, 0, x2, 0, y2, alpha);
     }
 
+    @Override
+    public int getWidth() {
+        return this.sheetWidth;
+    }
+
+    @Override
+    public int getHeight() {
+        return this.sheetHeight;
+    }
+
 }

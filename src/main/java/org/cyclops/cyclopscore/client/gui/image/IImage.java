@@ -77,4 +77,14 @@ public interface IImage {
      */
     public void drawWorldWithAlpha(TextureManager textureManager, float x2, float y2, float alpha);
 
+    /**
+     * @return The width in pixels.
+     */
+    public int getWidth();
+
+    /**
+     * @return The height in pixels.
+     */
+    public int getHeight();
+
 }
