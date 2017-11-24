@@ -7,8 +7,12 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import org.cyclops.cyclopscore.client.gui.container.GuiContainerExtended;
 
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Helpers related to guis.
@@ -118,6 +122,45 @@ public class GuiHelpers {
 
             gui.drawTexturedModalRect(x, y, textureX, textureY, scaledWidth, scaledHeight);
         }
+    }
+
+    /**
+     * Render a tooltip if the mouse if in the bounding box defined by the given position, width and height.
+     * The tooltip lines supplier can return an optional list.
+     * @param gui The gui to render in.
+     * @param x The gui x position, excluding gui left.
+     * @param y The gui y position, excluding gui top.
+     * @param width The area width.
+     * @param height The area height.
+     * @param mouseX The mouse x position.
+     * @param mouseY The mouse y position.
+     * @param linesSupplier A supplier for the optional tooltip lines to render.
+     *                      No tooltip will be rendered when the optional value is absent.
+     *                      This will only be called when needed.
+     */
+    public static void renderTooltipOptional(GuiContainerExtended gui, int x, int y, int width, int height,
+                                             int mouseX, int mouseY, Supplier<Optional<List<String>>> linesSupplier) {
+        if(gui.isPointInRegion(x, y, width, height, mouseX, mouseY)) {
+            linesSupplier.get().ifPresent(
+                    lines -> gui.drawTooltip(lines, mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop()));
+        }
+    }
+
+    /**
+     * Render a tooltip if the mouse if in the bounding box defined by the given position, width and height.
+     * @param gui The gui to render in.
+     * @param x The gui x position, excluding gui left.
+     * @param y The gui y position, excluding gui top.
+     * @param width The area width.
+     * @param height The area height.
+     * @param mouseX The mouse x position.
+     * @param mouseY The mouse y position.
+     * @param linesSupplier A supplier for the tooltip lines to render.
+     *                      This will only be called when needed.
+     */
+    public static void renderTooltip(GuiContainerExtended gui, int x, int y, int width, int height,
+                                     int mouseX, int mouseY, Supplier<List<String>> linesSupplier) {
+        renderTooltipOptional(gui, x, y, width, height, mouseX, mouseY, () -> Optional.of(linesSupplier.get()));
     }
 
     /**
