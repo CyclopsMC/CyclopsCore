@@ -10,10 +10,13 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import net.minecraftforge.oredict.OreDictionary;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 
 import javax.annotation.Nullable;
+
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Random;
 
@@ -188,6 +191,41 @@ public final class ItemStackHelpers {
      */
     public static boolean areItemStacksIdentical(ItemStack a, ItemStack b) {
         return ItemStack.areItemStacksEqual(a, b) && ((a.isEmpty() && b.isEmpty()) || (!a.isEmpty() && a.getCount() == b.getCount()));
+    }
+
+    private static final Field capabilities;
+    static {
+        try {
+            capabilities = ItemStack.class.getDeclaredField("capabilities");
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
+        capabilities.setAccessible(true);
+    }
+    private static final int EMPTY_COMPOUND_HASH_CODE = new NBTTagCompound().hashCode();
+
+    /**
+     * Get a hash code would satisfy the requirements of {@link Object#hashCode}
+     * if {@link ItemStack#areItemStacksEqual} stood in for {@link Object#equals}.
+     * @param stack The itemstack.
+     * @return The hash code.
+     */
+    public static int getItemStackHashCode(ItemStack stack) {
+        if(stack.isEmpty()) return ItemStack.EMPTY.hashCode();
+        int result = 1;
+        result = 37 * result + stack.getCount();
+        result = 37 * result + stack.getItem().hashCode();
+        result = 37 * result + stack.getItemDamage();
+        NBTTagCompound tagCompound = stack.getTagCompound();
+        result = 37 * result + (tagCompound != null ? tagCompound.hashCode() : 0);
+        CapabilityDispatcher caps;
+        try {
+            caps = (CapabilityDispatcher) capabilities.get(stack);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        result = 37 * result + (caps != null ? caps.serializeNBT().hashCode() : EMPTY_COMPOUND_HASH_CODE);
+        return result;
     }
 
     /**
