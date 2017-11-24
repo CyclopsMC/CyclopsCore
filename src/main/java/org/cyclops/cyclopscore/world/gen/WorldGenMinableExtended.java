@@ -121,17 +121,7 @@ public class WorldGenMinableExtended extends WorldGenMinable implements IRetroGe
 	                    	            Block oldBlock = oldBlockState.getBlock();
 	                    	            if(oldBlock != null
 	                    	            		&& oldBlockState != state
-	                    	            		&& oldBlock.isReplaceableOreGen(oldBlockState, chunk.getWorld(), blockPos, new Predicate<IBlockState>() {
-                                            @Override
-                                            public boolean apply(@Nullable IBlockState input) {
-                                                return input.equals(oldBlockState);
-                                            }
-
-                                            @Override
-                                            public boolean equals(@Nullable Object object) {
-                                                return object.equals(oldBlockState);
-                                            }
-                                        })
+	                    	            		&& oldBlock.isReplaceableOreGen(oldBlockState, chunk.getWorld(), blockPos, oldBlockState::equals)
 	                    	            		&& !oldBlock.hasTileEntity(oldBlockState)) { // We do not replace TE's, even if they are replacable.
 	                    	            	storage.set(x, y & 15, z, oldBlockState);
 	                    	            }
