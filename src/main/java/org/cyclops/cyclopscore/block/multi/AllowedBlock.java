@@ -52,4 +52,8 @@ public class AllowedBlock {
 		return object instanceof AllowedBlock && getBlock().equals(((AllowedBlock)object).getBlock());
 	}
 	
+	@Override
+	public int hashCode() {
+		return 37 + getBlock().hashCode();
+	}
 }
