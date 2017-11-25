@@ -185,9 +185,11 @@ public final class ItemStackHelpers {
      * @param a The first itemstack.
      * @param b The second itemstack.
      * @return If they are completely equal.
+     * @deprecated Use {@link ItemStack#areItemStacksEqual} instead.
      */
+    @Deprecated // TODO remove in 1.13
     public static boolean areItemStacksIdentical(ItemStack a, ItemStack b) {
-        return ItemStack.areItemStacksEqual(a, b) && ((a.isEmpty() && b.isEmpty()) || (!a.isEmpty() && a.getCount() == b.getCount()));
+        return ItemStack.areItemStacksEqual(a, b);
     }
 
     /**
