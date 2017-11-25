@@ -193,6 +193,26 @@ public final class ItemStackHelpers {
     }
 
     /**
+     * Get a hash code would satisfy the requirements of {@link Object#hashCode}
+     * if {@link ItemStack#areItemStacksEqual} stood in for {@link Object#equals}.
+     * @param stack The itemstack.
+     * @return The hash code.
+     */
+    public static int getItemStackHashCode(ItemStack stack) {
+        if(stack.isEmpty()) return ItemStack.EMPTY.hashCode();
+        int result = 1;
+        result = 37 * result + stack.getCount();
+        result = 37 * result + stack.getItem().hashCode();
+        result = 37 * result + stack.getItemDamage();
+        NBTTagCompound tagCompound = stack.getTagCompound();
+        result = 37 * result + (tagCompound != null ? tagCompound.hashCode() : 0);
+        // Not factoring in capability compatibility. Doing so would require either reflection (slow)
+        // or an access transformer, it's highly unlikely that it'd be the only difference between
+        // many ItemStacks in practice, and occasional hash code collisions are okay.
+        return result;
+    }
+
+    /**
      * If the given item can be displayed in the given creative tab.
      * @param item The item.
      * @param creativeTab The creative tab.
