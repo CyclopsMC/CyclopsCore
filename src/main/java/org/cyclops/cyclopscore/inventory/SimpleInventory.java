@@ -21,6 +21,7 @@ import java.util.Objects;
 public class SimpleInventory implements INBTInventory {
 
     protected final ItemStack[] _contents;
+    // TODO: remove name parameter in 1.13 (make sure NBT serialization happens in a tag dedicated to this inventory)
     private final String _name;
     private final int _stackLimit;
     private final List<IDirtyMarkListener> dirtyMarkListeners = Lists.newLinkedList();
