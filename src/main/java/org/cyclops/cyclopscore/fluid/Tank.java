@@ -13,7 +13,19 @@ import net.minecraftforge.fluids.FluidTank;
  */
 public class Tank extends FluidTank {
 
+    // TODO: remove name parameter in 1.13
     private final String name;
+
+    /**
+     * Make a new fluid tank.
+     * @param capacity The capacity (mB) for the tank.
+     * @param tile The {@link TileEntity} that uses this tank.
+     */
+    public Tank(int capacity, TileEntity tile) {
+        super(capacity);
+        this.name = "tank";
+        this.tile = tile;
+    }
 
     /**
      * Make a new fluid tank.
@@ -21,6 +33,7 @@ public class Tank extends FluidTank {
      * @param capacity The capacity (mB) for the tank.
      * @param tile The {@link TileEntity} that uses this tank.
      */
+    @Deprecated // TODO: remove in 1.13
     public Tank(String name, int capacity, TileEntity tile) {
         super(capacity);
         this.name = name;

@@ -12,11 +12,11 @@ import org.cyclops.cyclopscore.fluid.SingleUseTank;
  * @author rubensworks
  *
  */
-public abstract class TankInventoryTileEntity extends InventoryTileEntity {
+public abstract class TankInventoryTileEntity extends InventoryTileEntity implements SingleUseTank.IUpdateListener {
     
     private SingleUseTank tank;
     protected int tankSize;
-    private String tankName;
+    private String tankName; // TODO: remove name parameter in 1.13
     protected boolean sendUpdateOnTankChanged = false;
 
     /**
@@ -35,9 +35,6 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity {
         tank = newTank(tankName, tankSize);
 
         addCapabilityInternal(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, tank);
-        for(EnumFacing side : EnumFacing.VALUES) {
-            addCapabilitySided(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, side, tank);
-        }
     }
 
     /**
@@ -50,9 +47,14 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity {
     public TankInventoryTileEntity(int inventorySize, String inventoryName, int tankSize, String tankName) {
         this(inventorySize, inventoryName, tankSize, tankName, 64);
     }
-    
+
+    @Deprecated // TODO: remove in 1.13
     protected SingleUseTank newTank(String tankName, int tankSize) {
         return new SingleUseTank(tankName, tankSize, this);
+    }
+
+    protected SingleUseTank newTank(int tankSize) {
+        return new SingleUseTank(tankSize, this);
     }
     
     /**
@@ -168,10 +170,12 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity {
      * If this tile should send blockState updates when the tank has changed.
      * @return If it should send blockState updates.
      */
+    @Deprecated // TODO: remove in 1.13
     public boolean isSendUpdateOnTankChanged() {
         return sendUpdateOnTankChanged;
     }
 
+    @Override
     public void onTankChanged() {
         sendUpdate();
         if (isUpdateInventoryHashOnTankContentsChanged()) {

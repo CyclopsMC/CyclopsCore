@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.fluid;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -11,6 +12,10 @@ import org.cyclops.cyclopscore.tileentity.TankInventoryTileEntity;
  * A simple tank that can accept and drain fluids until the capacity is reached.
  * Only one fluid can be accepted, which must be specified with {@link SingleUseTank#setAcceptedFluid(Fluid)}.
  * Based on the Buildcraft SingleUseTank.
+ *
+ * Implement {@link IUpdateListener} on the given tile
+ * to make it listen to tank changes.
+ *
  * @author rubensworks
  *
  */
@@ -22,7 +27,15 @@ public class SingleUseTank extends Tank {
     public static final String NBT_ACCEPTED_FLUID = "acceptedFluid";
     
     private Fluid acceptedFluid;
-    protected CyclopsTileEntity tile;
+
+    /**
+     * Make a new tank instance.
+     * @param capacity The capacity (mB) for the tank.
+     * @param tile The TileEntity that uses this tank.
+     */
+    public SingleUseTank(int capacity, TileEntity tile) {
+        super(capacity, tile);
+    }
 
     /**
      * Make a new tank instance.
@@ -30,9 +43,9 @@ public class SingleUseTank extends Tank {
      * @param capacity The capacity (mB) for the tank.
      * @param tile The TileEntity that uses this tank.
      */
-    public SingleUseTank(String name, int capacity, CyclopsTileEntity tile) {
+    @Deprecated // TODO: remove in 1.13
+    public SingleUseTank(String name, int capacity, TileEntity tile) {
         super(name, capacity, tile);
-        this.tile = tile;
     }
 
     @Override
@@ -74,12 +87,15 @@ public class SingleUseTank extends Tank {
     }
 
     protected void sendUpdate() {
-    	// TODO: generalize this to accept ITankUpdateListeners if this would be necessary later.
-    	if(!(tile instanceof TankInventoryTileEntity) || ((TankInventoryTileEntity) tile).isSendUpdateOnTankChanged()) {
+        if (tile instanceof IUpdateListener) {
+            ((IUpdateListener) tile).onTankChanged();
+        }
+    	// TODO: remove the block below in 1.13
+    	else if(!(tile instanceof TankInventoryTileEntity) || ((TankInventoryTileEntity) tile).isSendUpdateOnTankChanged()) {
             if (tile instanceof TankInventoryTileEntity) {
                 ((TankInventoryTileEntity) tile).onTankChanged();
-            } else {
-                tile.sendUpdate();
+            } else if (tile instanceof CyclopsTileEntity) {
+                ((CyclopsTileEntity) tile).sendUpdate();
             }
     	}
     }
@@ -130,6 +146,16 @@ public class SingleUseTank extends Tank {
     public boolean canDrainFluidType(FluidStack fluid) {
         Fluid fluidType = fluid != null ? fluid.getFluid() : null;
         return super.canDrainFluidType(fluid) && (fluidType == getAcceptedFluid() || getAcceptedFluid() == null);
+    }
+
+    /**
+     * Implement this on a tile entity to indicate that it should listen to tank changes.
+     */
+    public static interface IUpdateListener {
+        /**
+         * Called when the contents of the tank have changed.
+         */
+        public void onTankChanged();
     }
     
 }
