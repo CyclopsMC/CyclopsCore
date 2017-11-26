@@ -237,4 +237,26 @@ public class InventoryHelpers {
 		return remaining;
 	}
 
+	/**
+	 * Add the given stack to the given list, by attempting
+	 * to increase the stacksize of equal stacks that are already present.
+	 * @param itemStacks The list of stacks.
+	 * @param itemStack The stack to add to the list.
+	 */
+	public static void addStackToList(NonNullList<ItemStack> itemStacks, ItemStack itemStack) {
+		// Try to add the stack to one of the already-present stacks before adding a new element
+		boolean added = false;
+		ItemStack toAdd = itemStack;
+		for (ItemStack existingOutputStack: itemStacks) {
+			toAdd = InventoryHelpers.addToStack(existingOutputStack, toAdd);
+			if (toAdd.isEmpty()) {
+				added = true;
+				break;
+			}
+		}
+		if (!added) {
+			itemStacks.add(toAdd);
+		}
+	}
+
 }
