@@ -31,7 +31,7 @@ public final class FluidHelpers {
      */
     public static FluidStack copy(@Nullable FluidStack fluidStack) {
         if(fluidStack == null) return null;
-        return new FluidStack(fluidStack.getFluid(), fluidStack.amount, fluidStack.tag);
+        return fluidStack.copy();
     }
 
     /**
