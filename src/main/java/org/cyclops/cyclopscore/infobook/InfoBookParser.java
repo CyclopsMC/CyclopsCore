@@ -5,6 +5,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -13,7 +15,15 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.util.Strings;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
-import org.cyclops.cyclopscore.infobook.pageelement.*;
+import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
+import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewardsAppendix;
+import org.cyclops.cyclopscore.infobook.pageelement.CraftingRecipeAppendix;
+import org.cyclops.cyclopscore.infobook.pageelement.FurnaceRecipeAppendix;
+import org.cyclops.cyclopscore.infobook.pageelement.IReward;
+import org.cyclops.cyclopscore.infobook.pageelement.IRewardFactory;
+import org.cyclops.cyclopscore.infobook.pageelement.ImageAppendix;
+import org.cyclops.cyclopscore.infobook.pageelement.RewardItem;
+import org.cyclops.cyclopscore.infobook.pageelement.SectionAppendix;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
@@ -37,7 +47,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * XML parser which will generate the infobook.
@@ -270,6 +284,11 @@ public class InfoBookParser {
         }
     }
 
+    /**
+     * Get the index attribute value of the given node.
+     * @param node An element node.
+     * @return The index attribute
+     */
     public static int getIndex(Element node) {
         int index = 0;
         if(!node.getAttribute("index").isEmpty()) {
@@ -278,6 +297,16 @@ public class InfoBookParser {
         return index;
     }
 
+    /**
+     * Get the itemstack represented by the given node.
+     * Interpreted attributes:
+     * meta: The stack metadata value or wildcard '*', defaults to 0.
+     * amount: the stacksize, defaults to 1.
+     * @param node A node
+     * @param recipeHandler A recipe handler.
+     * @return An itemstack.
+     * @throws InvalidAppendixException If the node was incorrectly structured.
+     */
     public static ItemStack createStack(Element node, RecipeHandler recipeHandler) throws InvalidAppendixException {
         int meta = OreDictionary.WILDCARD_VALUE;
         int amount = 1;
@@ -301,6 +330,150 @@ public class InfoBookParser {
         return new ItemStack(item, amount, meta);
     }
 
+    /**
+     * Get a list of stacks from the given ingredient node.
+     * @param ingredientNode A node that can contain 'item' nodes.
+     * @param recipeHandler A recipe handler.
+     * @return The list of stacks.
+     * @throws InvalidAppendixException If one of the item nodes was invalid
+     */
+    public static NonNullList<ItemStack> createStacksFromIngredient(Element ingredientNode, RecipeHandler recipeHandler)
+            throws InvalidAppendixException {
+        NonNullList<ItemStack> stacks = NonNullList.create();
+        NodeList nodes = ingredientNode.getElementsByTagName("item");
+        for (int i = 0; i < nodes.getLength(); i++) {
+            stacks.add(InfoBookParser.createStack((Element) nodes.item(i), recipeHandler));
+        }
+        return stacks;
+    }
+
+    /**
+     * Get the item from the given ingredient node.
+     * @param ingredientNode A node that can contain 'item' nodes.
+     * @param recipeHandler A recipe handler.
+     * @return The stack.
+     * @throws InvalidAppendixException If not exactly one item node was found or if the item node was invalid.
+     */
+    public static ItemStack createStackFromIngredient(Element ingredientNode, RecipeHandler recipeHandler)
+            throws InvalidAppendixException {
+        NonNullList<ItemStack> stacks = createStacksFromIngredient(ingredientNode, recipeHandler);
+        if (stacks.size() != 1) {
+            throw new InvalidAppendixException("At least one item node is required");
+        }
+        return stacks.get(0);
+    }
+
+    /**
+     * Get the item from the given ingredient node.
+     * @param ingredientNode A node that can contain 'item' nodes.
+     * @param recipeHandler A recipe handler.
+     * @return The valid stack.
+     */
+    public static ItemStack createOptionalStackFromIngredient(Element ingredientNode, RecipeHandler recipeHandler) {
+        return invalidAppendixExceptionThrowableOr(() -> createStackFromIngredient(ingredientNode, recipeHandler), ItemStack.EMPTY);
+    }
+
+    /**
+     * Get a list of stacks from the given ingredient node.
+     * @param ingredientNode A node that can contain 'item' nodes.
+     * @param recipeHandler A recipe handler.
+     * @return The list of valid stacks.
+     */
+    public static NonNullList<ItemStack> createOptionalStacksFromIngredient(Element ingredientNode, RecipeHandler recipeHandler) {
+        NonNullList<ItemStack> stacks = NonNullList.create();
+        NodeList nodes = ingredientNode.getElementsByTagName("item");
+        for (int i = 0; i < nodes.getLength(); i++) {
+            try {
+                stacks.add(createStackFromIngredient((Element) nodes.item(i), recipeHandler));
+            } catch (InvalidAppendixException e) {
+                // Ignore element
+            }
+        }
+        return stacks;
+    }
+
+    /**
+     * Get the ingredient from the given node.
+     * @param node A node
+     * @param recipeHandler A recipe handler
+     * @return An ingredient
+     * @throws InvalidAppendixException If the node was incorrectly structured.
+     */
+    public static Ingredient createIngredient(Element node, RecipeHandler recipeHandler) throws InvalidAppendixException {
+        return Ingredient.fromStacks(createStack(node, recipeHandler));
+    }
+
+    /**
+     * Get a list of ingredients from the given ingredient node.
+     * @param ingredientNode A node that can contain 'item' nodes.
+     * @param recipeHandler A recipe handler.
+     * @return The list of ingredients.
+     * @throws InvalidAppendixException If one of the item nodes was invalid
+     */
+    public static NonNullList<Ingredient> createIngredientsFromIngredient(Element ingredientNode, RecipeHandler recipeHandler)
+            throws InvalidAppendixException {
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+        NodeList nodes = ingredientNode.getElementsByTagName("item");
+        for (int i = 0; i < nodes.getLength(); i++) {
+            ingredients.add(InfoBookParser.createIngredient((Element) nodes.item(i), recipeHandler));
+        }
+        return ingredients;
+    }
+
+    /**
+     * Get the ingredient from the given ingredient node.
+     * @param ingredientNode A node that can contain 'item' nodes.
+     * @param recipeHandler A recipe handler.
+     * @return The valid ingredient.
+     */
+    public static Ingredient createOptionalIngredientFromIngredient(Element ingredientNode, RecipeHandler recipeHandler) {
+        return invalidAppendixExceptionThrowableOr(() -> createIngredientFromIngredient(ingredientNode, recipeHandler), Ingredient.EMPTY);
+    }
+
+    /**
+     * Get a list of ingredients from the given ingredient node.
+     * @param ingredientNode A node that can contain 'item' nodes.
+     * @param recipeHandler A recipe handler.
+     * @return The list of valid ingredients.
+     */
+    public static NonNullList<Ingredient> createOptionalIngredientsFromIngredient(Element ingredientNode, RecipeHandler recipeHandler) {
+        NonNullList<Ingredient> ingredients = NonNullList.create();
+        NodeList nodes = ingredientNode.getElementsByTagName("item");
+        for (int i = 0; i < nodes.getLength(); i++) {
+            try {
+                ingredients.add(createIngredientFromIngredient((Element) nodes.item(i), recipeHandler));
+            } catch (InvalidAppendixException e) {
+                // Ignore element
+            }
+        }
+        return ingredients;
+    }
+
+    /**
+     * Get the ingredient from the given ingredient node.
+     * @param ingredientNode A node that can contain 'item' nodes.
+     * @param recipeHandler A recipe handler.
+     * @return The ingredient.
+     * @throws InvalidAppendixException If not exactly one item node was found or if the item node was invalid.
+     */
+    public static Ingredient createIngredientFromIngredient(Element ingredientNode, RecipeHandler recipeHandler)
+            throws InvalidAppendixException {
+        NonNullList<Ingredient> ingredients = createIngredientsFromIngredient(ingredientNode, recipeHandler);
+        if (ingredients.size() != 1) {
+            throw new InvalidAppendixException("At least one item node is required");
+        }
+        return ingredients.get(0);
+    }
+
+    /**
+     * Get the fluidstack represented by the given node.
+     * Interpreted attributes:
+     * amount: the fluid amount, defaults to 1000.
+     * @param node A node
+     * @param recipeHandler A recipe handler.
+     * @return A fluidstack.
+     * @throws InvalidAppendixException If the node was incorrectly structured.
+     */
     public static FluidStack createFluidStack(Element node, RecipeHandler recipeHandler) throws InvalidAppendixException {
         int amount = Fluid.BUCKET_VOLUME;
         if(!node.getAttribute("amount").isEmpty()) {
@@ -311,6 +484,78 @@ public class InfoBookParser {
             throw new InvalidAppendixException("Invalid fluid " + node.getTextContent());
         }
         return new FluidStack(fluid, amount);
+    }
+
+    /**
+     * Get a list of fluidstacks from the given ingredient node.
+     * @param ingredientNode A node that can contain 'fluid' nodes.
+     * @param recipeHandler A recipe handler.
+     * @return The list of fluidstacks.
+     * @throws InvalidAppendixException If one of the fluid nodes was invalid
+     */
+    public static List<FluidStack> createFluidStacksFromIngredient(Element ingredientNode, RecipeHandler recipeHandler)
+            throws InvalidAppendixException {
+        List<FluidStack> stacks = NonNullList.create();
+        NodeList nodes = ingredientNode.getElementsByTagName("fluid");
+        for (int i = 0; i < nodes.getLength(); i++) {
+            stacks.add(InfoBookParser.createFluidStack((Element) nodes.item(i), recipeHandler));
+        }
+        return stacks;
+    }
+
+    /**
+     * Get the fluidstack from the given ingredient node.
+     * @param ingredientNode A node that can contain 'fluid' nodes.
+     * @param recipeHandler A recipe handler.
+     * @return The ingredient.
+     * @throws InvalidAppendixException If not exactly one fluid node was found or if the fluid node was invalid.
+     */
+    @Nullable
+    public static FluidStack createFluidStackFromIngredient(Element ingredientNode, RecipeHandler recipeHandler)
+            throws InvalidAppendixException {
+        List<FluidStack> stacks = createFluidStacksFromIngredient(ingredientNode, recipeHandler);
+        if (stacks.size() != 1) {
+            throw new InvalidAppendixException("At least one fluid node is required");
+        }
+        return stacks.get(0);
+    }
+
+    /**
+     * Get the fluidstack from the given ingredient node.
+     * @param ingredientNode A node that can contain 'fluid' nodes.
+     * @param recipeHandler A recipe handler.
+     * @return The valid fluidstack.
+     */
+    @Nullable
+    public static FluidStack createOptionalFluidStackFromIngredient(Element ingredientNode, RecipeHandler recipeHandler) {
+        return invalidAppendixExceptionThrowableOr(() -> createFluidStackFromIngredient(ingredientNode, recipeHandler), null);
+    }
+
+    /**
+     * Get a list of fluidstacks from the given ingredient node.
+     * @param ingredientNode A node that can contain 'fluid' nodes.
+     * @param recipeHandler A recipe handler.
+     * @return The list of valid fluidstacks.
+     */
+    public static List<FluidStack> createOptionalFluidStacksFromIngredient(Element ingredientNode, RecipeHandler recipeHandler) {
+        List<FluidStack> stacks = NonNullList.create();
+        NodeList nodes = ingredientNode.getElementsByTagName("fluid");
+        for (int i = 0; i < nodes.getLength(); i++) {
+            try {
+                stacks.add(createFluidStackFromIngredient((Element) nodes.item(i), recipeHandler));
+            } catch (InvalidAppendixException e) {
+                // Ignore element
+            }
+        }
+        return stacks;
+    }
+
+    public static <R> R invalidAppendixExceptionThrowableOr(InvalidAppendixException.IThrower<R> thrower, R fallback) {
+        try {
+            return thrower.run();
+        } catch (InvalidAppendixException e) {
+            return fallback;
+        }
     }
 
     /**
@@ -536,6 +781,10 @@ public class InfoBookParser {
             return String.format("Invalid appendix %s from mod %s in an infobook: %s",
                     section != null ? section.getUnlocalizedName() : "<root>",
                     infoBook.getMod(), getLocalizedMessage());
+        }
+
+        public static interface IThrower<R> {
+            public R run() throws InvalidAppendixException;
         }
     }
 
