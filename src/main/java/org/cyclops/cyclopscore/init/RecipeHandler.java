@@ -64,6 +64,7 @@ public class RecipeHandler {
         recipeConditionHandlers.put("mod", new ModRecipeConditionHandler());
         recipeConditionHandlers.put("oredict", new OreDictConditionHandler());
         recipeConditionHandlers.put("fluid", new FluidConditionHandler());
+        recipeConditionHandlers.put("item", new ItemConditionHandler());
     }
 
     protected XmlRecipeLoader constructXmlRecipeLoader(InputStream is, String fileName) {
