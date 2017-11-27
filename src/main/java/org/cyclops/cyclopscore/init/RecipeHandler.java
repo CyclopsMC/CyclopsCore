@@ -1,6 +1,10 @@
 package org.cyclops.cyclopscore.init;
 
-import com.google.common.collect.*;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.Getter;
 import net.minecraft.item.ItemStack;
@@ -16,7 +20,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -55,6 +63,7 @@ public class RecipeHandler {
         recipeConditionHandlers.put("predefined", new PredefinedRecipeConditionHandler());
         recipeConditionHandlers.put("mod", new ModRecipeConditionHandler());
         recipeConditionHandlers.put("oredict", new OreDictConditionHandler());
+        recipeConditionHandlers.put("fluid", new FluidConditionHandler());
     }
 
     protected XmlRecipeLoader constructXmlRecipeLoader(InputStream is, String fileName) {
