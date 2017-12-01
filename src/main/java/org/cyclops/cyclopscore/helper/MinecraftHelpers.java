@@ -157,7 +157,9 @@ public class MinecraftHelpers {
     }
 
 	/**
-	 * Check if this code is ran on client side.
+	 * Check if this code is ran on client side. Note that you should use
+	 * {@link World#isRemote} rather than this method whenever a World object
+	 * is available.
 	 * @return If we are at client side.
 	 */
 	public static boolean isClientSide() {
