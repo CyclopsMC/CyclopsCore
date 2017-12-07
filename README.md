@@ -1,12 +1,14 @@
 ## CyclopsCore
 
 [![Build Status](https://travis-ci.org/CyclopsMC/CyclopsCore.svg?branch=master-1.11)](https://travis-ci.org/CyclopsMC/CyclopsCore)
-[![Download](https://api.bintray.com/packages/cyclopsmc/dev/CyclopsCore/images/download.svg) ](https://bintray.com/cyclopsmc/dev/CyclopsCore/_latestVersion)
+[![Download](https://img.shields.io/maven-metadata/v/http/cyclopsmc.jfrog.io/cyclopsmc/libs-release/org/cyclops/cyclopscore/CyclopsCore/maven-metadata.xml.svg) ](https://cyclopsmc.jfrog.io/cyclopsmc/libs-release/org/cyclops/cyclopscore/CyclopsCore/)
 [![CurseForge](http://cf.way2muchnoise.eu/full_232758_downloads.svg)](http://minecraft.curseforge.com/projects/232758)
 
 Library mod for several other [mods](https://github.com/CyclopsMC).
 
 All stable releases (including deobfuscated builds) can be found on [CurseForge](https://minecraft.curseforge.com/projects/cyclops-core/files).
+
+[Development builds](https://cyclopsmc.jfrog.io/cyclopsmc/libs-release/org/cyclops/cyclopscore/CyclopsCore/) are hosted by [JFrog Artifactory](https://www.jfrog.com/artifactory/).
 
 ### Using CyclopsCore
 
