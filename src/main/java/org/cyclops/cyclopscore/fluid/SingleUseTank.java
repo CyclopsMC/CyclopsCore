@@ -48,6 +48,17 @@ public class SingleUseTank extends Tank {
         super(name, capacity, tile);
     }
 
+    /**
+     * Make a new tank instance.
+     * @param name The name for the tank, will be used for NBT storage.
+     * @param capacity The capacity (mB) for the tank.
+     * @param tile The TileEntity that uses this tank.
+     */
+    @Deprecated // TODO: remove in 1.13
+    public SingleUseTank(String name, int capacity, CyclopsTileEntity tile) {
+        super(name, capacity, tile);
+    }
+
     @Override
     public int fill(FluidStack resource, boolean doFill) {
         Fluid acceptedFluid = getAcceptedFluid();
