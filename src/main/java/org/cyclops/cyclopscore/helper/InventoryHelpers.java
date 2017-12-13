@@ -155,10 +155,10 @@ public class InventoryHelpers {
 	 * @return The remainder of the added stack
 	 */
 	public static ItemStack addToStack(ItemStack itemStack, ItemStack toAdd) {
-		toAdd = toAdd.copy();
 		if (ItemStack.areItemStackTagsEqual(toAdd, itemStack)
 				&& ItemStack.areItemsEqual(toAdd, itemStack)
 				&& itemStack.getCount() < itemStack.getMaxStackSize()) {
+			toAdd = toAdd.copy();
 			int toAddCount = Math.min(itemStack.getMaxStackSize() - itemStack.getCount(), toAdd.getCount());
 			itemStack.grow(toAddCount);
 			toAdd.shrink(toAddCount);
@@ -255,7 +255,7 @@ public class InventoryHelpers {
 			}
 		}
 		if (!added) {
-			itemStacks.add(toAdd);
+			itemStacks.add(toAdd.copy());
 		}
 	}
 
