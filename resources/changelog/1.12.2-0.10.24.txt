@@ -1,0 +1,22 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix incorrect backwards-compatible SingleUseTank constructor, Closes CyclopsMC/EvilCraft#638
+* If sapling growth fails, keep the current state
+  Fixes CyclopsMC/IntegratedDynamics#390 and
+  fixes HellFirePvP/AstralSorcery#364.
+
+Lib additions:
+* Add item condition handler to recipe handler
+* Add fluid condition handler to recipe handler
+* Add helper methods for creating infobook appendix elements
+* Add helper to add an item to a list and auto-stacks
+* Make tank update listening more generic
+* Add helper method to get ItemStack hashCode
+* Implement hashCode on AllowedBlock
+* Add helpers for rendering gui tooltips
+* Add helper for rendering a progress bar in a gui
+* Add helpers for rendering fluid tanks in guis
+* Add convenience methods to GuiButtonImage
+  It is now possible to use a simplified version of the constructor and change the internal image at a later stage.
+* Add helpers related to (simulate) inventory filling
