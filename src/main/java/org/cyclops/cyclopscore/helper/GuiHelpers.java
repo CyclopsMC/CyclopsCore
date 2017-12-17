@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import org.apache.commons.lang3.tuple.Triple;
 import org.cyclops.cyclopscore.client.gui.container.GuiContainerExtended;
 
 import javax.annotation.Nullable;
@@ -47,7 +48,16 @@ public class GuiHelpers {
                 }
 
                 RenderHelpers.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+
+                // Fluids can have a custom overlay color, use this to render.
+                Triple<Float, Float, Float> colorParts = Helpers.intToRGB(fluidStack.getFluid().getColor(fluidStack));
+                GlStateManager.color(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight());
+
                 gui.drawTexturedModalRect(x, y - textureHeight - verticalOffset + height, icon, width, textureHeight);
+
+                // Reset color when done
+                GlStateManager.color(1, 1, 1, 1);
+
                 verticalOffset = verticalOffset + 16;
             }
         }
