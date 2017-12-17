@@ -22,7 +22,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public abstract class BlockDoorConfig extends BlockConfig {
     /**
-     * @see org.cyclops.cyclopscore.config.extendedconfig.BlockConfig#BlockConfig(ModBase, boolean, String, String, Class)
+     * Make a new instance.
+     * @param mod     The mod instance.
+     * @param enabled If this should is enabled.
+     * @param namedId The unique name ID for the configurable.
+     * @param comment The comment to add in the config file for this configurable.
+     * @param element The class of this configurable.
      */
     public BlockDoorConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends ConfigurableBlockDoor> element) {
         super(mod, enabled, namedId, comment, element);
