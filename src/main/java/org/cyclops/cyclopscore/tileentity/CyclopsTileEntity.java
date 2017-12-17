@@ -16,7 +16,6 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
-import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
 import org.cyclops.cyclopscore.helper.DirectionHelpers;
@@ -24,6 +23,7 @@ import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
 import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
 import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +51,8 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     private boolean shouldSendUpdate = false;
     private int sendUpdateBackoff = 0;
     private final boolean ticking;
-    private Table<Capability<?>, EnumFacing, Object> capabilities = HashBasedTable.create();
+    private Map<Capability<?>, Object> capabilities = new HashMap<>();
+    private Table<Capability<?>, EnumFacing, Object> sidedCapabilities = HashBasedTable.create();
 
     public CyclopsTileEntity() {
         sendUpdateBackoff = (int) Math.round(Math.random() * getUpdateBackoffTicks()); // Random backoff so not all TE's will be updated at once.
@@ -216,8 +217,11 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      * When the tile is loaded or created.
      */
     public void onLoad() {
+        if (sidedCapabilities instanceof HashBasedTable) {
+            sidedCapabilities = ImmutableTable.copyOf(sidedCapabilities);
+        }
         if (capabilities instanceof HashMap) {
-            capabilities = ImmutableTable.copyOf(capabilities);
+            capabilities = ImmutableMap.copyOf(capabilities);
         }
     }
     
@@ -233,6 +237,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     }
 
     @Override
+    @Nonnull
     public NBTTagCompound getUpdateTag() {
         return getNBTTagCompound();
     }
@@ -287,18 +292,19 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return (capabilities != null && capabilities.contains(capability, transformFacingForRotation(facing)))
-                || (facing != null && capabilities != null && capabilities.contains(capability, null))
+    public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
+        return (sidedCapabilities != null && sidedCapabilities.contains(capability, transformFacingForRotation(facing)))
+                || (capabilities != null && capabilities.containsKey(capability))
                 || super.hasCapability(capability, facing);
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        if (capabilities != null) {
-            Object value = capabilities.get(capability, transformFacingForRotation(facing));
+    @SuppressWarnings("unchecked")
+    public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
+        if (sidedCapabilities != null) {
+            Object value = sidedCapabilities.get(capability, transformFacingForRotation(facing));
             if (value == null && facing != null) {
-                value = capabilities.get(capability, null);
+                value = capabilities.get(capability);
             }
             if (value != null) {
                 return (T) value;
@@ -315,7 +321,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      * @param <T> The capability type.
      */
     public <T> void addCapabilityInternal(Capability<T> capability, T value) {
-        capabilities.put(capability, null, value);
+        capabilities.put(capability, value);
     }
 
     /**
@@ -327,17 +333,21 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      * @param <T> The capability type.
      */
     public <T> void addCapabilitySided(Capability<T> capability, EnumFacing facing, T value) {
-        capabilities.put(capability, facing, value);
+        sidedCapabilities.put(capability, facing, value);
     }
 
-    protected Table<Capability<?>, EnumFacing, Object> getCapabilities() {
+    protected Table<Capability<?>, EnumFacing, Object> getSidedCapabilities() {
+        return sidedCapabilities;
+    }
+
+    protected Map<Capability<?>, Object> getCapabilities() {
         return capabilities;
     }
 
     /**
      * Apply this interface on any tile classes that should tick.
      */
-    public static interface ITickingTile extends ITickable {
+    public interface ITickingTile extends ITickable {
 
     }
 
