@@ -1,5 +1,6 @@
 # General
 itemGroup.cyclopscore=Cyclops Core
+general.cyclopscore.dev_world=Dev World
 general.cyclopscore.tooltip.info=<Shift for info>
 general.cyclopscore.info.enabled=§aEnabled
 general.cyclopscore.info.disabled=Disabled
@@ -75,6 +76,7 @@ config.cyclopscore.general.anonymousAnalyticsID=Anonymous id
 config.cyclopscore.general.crashOnInvalidRecipe=Crash on invalid Recipe
 config.cyclopscore.general.crashOnModCompatCrash=Crash on Compatibility issue
 config.cyclopscore.general.debug=Develop mode
+config.cyclopscore.general.devWorldButton=Dev World Button
 config.cyclopscore.general.minimumPotionTypesArraySize=Minimal size of potion array
 config.cyclopscore.general.version=Version
 config.cyclopscore.general.versionChecker=Version check
