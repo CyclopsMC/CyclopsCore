@@ -1,9 +1,6 @@
 package org.cyclops.cyclopscore.tileentity;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Table;
+import com.google.common.collect.*;
 import lombok.experimental.Delegate;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +21,7 @@ import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
 import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
@@ -51,7 +48,8 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     private boolean shouldSendUpdate = false;
     private int sendUpdateBackoff = 0;
     private final boolean ticking;
-    private Map<Capability<?>, Object> capabilities = new HashMap<>();
+    @SuppressWarnings("unchecked")
+    private Map<Capability<?>, Object> innerCapabilities = new IdentityHashMap();
     private Table<Capability<?>, EnumFacing, Object> sidedCapabilities = HashBasedTable.create();
 
     public CyclopsTileEntity() {
@@ -220,9 +218,6 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
         if (sidedCapabilities instanceof HashBasedTable) {
             sidedCapabilities = ImmutableTable.copyOf(sidedCapabilities);
         }
-        if (capabilities instanceof HashMap) {
-            capabilities = ImmutableMap.copyOf(capabilities);
-        }
     }
     
     /**
@@ -237,7 +232,6 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     }
 
     @Override
-    @Nonnull
     public NBTTagCompound getUpdateTag() {
         return getNBTTagCompound();
     }
@@ -293,23 +287,25 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-        return (sidedCapabilities != null && sidedCapabilities.contains(capability, transformFacingForRotation(facing)))
-                || (capabilities != null && capabilities.containsKey(capability))
-                || super.hasCapability(capability, facing);
+        if (facing != null){
+            if (sidedCapabilities.contains(capability, transformFacingForRotation(facing)))
+                return true;
+        }
+        return innerCapabilities.containsKey(capability) || super.hasCapability(capability, facing);
+
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
-        if (sidedCapabilities != null) {
-            Object value = sidedCapabilities.get(capability, transformFacingForRotation(facing));
-            if (value == null && facing != null) {
-                value = capabilities.get(capability);
-            }
-            if (value != null) {
-                return (T) value;
-            }
+        Object value;
+        if (facing != null){
+            value = sidedCapabilities.get(capability, facing);
         }
+        else value = innerCapabilities.get(capability);
+        if (value != null)
+            return (T) value;
+
         return super.getCapability(capability, facing);
     }
 
@@ -321,7 +317,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      * @param <T> The capability type.
      */
     public <T> void addCapabilityInternal(Capability<T> capability, T value) {
-        capabilities.put(capability, value);
+        innerCapabilities.put(capability, value);
     }
 
     /**
@@ -340,14 +336,14 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
         return sidedCapabilities;
     }
 
-    protected Map<Capability<?>, Object> getCapabilities() {
-        return capabilities;
+    protected Map<Capability<?>, Object> getInnerCapabilities() {
+        return innerCapabilities;
     }
 
     /**
      * Apply this interface on any tile classes that should tick.
      */
-    public interface ITickingTile extends ITickable {
+    public static interface ITickingTile extends ITickable {
 
     }
 
