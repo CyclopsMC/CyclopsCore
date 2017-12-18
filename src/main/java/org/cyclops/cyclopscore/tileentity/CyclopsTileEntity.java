@@ -21,7 +21,6 @@ import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
 import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
 
 import javax.annotation.Nonnull;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
@@ -48,8 +47,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     private boolean shouldSendUpdate = false;
     private int sendUpdateBackoff = 0;
     private final boolean ticking;
-    @SuppressWarnings("unchecked")
-    private Map<Capability<?>, Object> innerCapabilities = new IdentityHashMap();
+    private Map<Capability<?>, Object> innerCapabilities = Maps.newIdentityHashMap();
     private Table<Capability<?>, EnumFacing, Object> sidedCapabilities = HashBasedTable.create();
 
     public CyclopsTileEntity() {
@@ -287,22 +285,18 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
 
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, EnumFacing facing) {
-        if (facing != null){
-            if (sidedCapabilities.contains(capability, transformFacingForRotation(facing)))
-                return true;
-        }
-        return innerCapabilities.containsKey(capability) || super.hasCapability(capability, facing);
-
+        return getCapability(capability, facing) != null;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getCapability(@Nonnull Capability<T> capability, EnumFacing facing) {
-        Object value;
+        Object value = null;
         if (facing != null){
             value = sidedCapabilities.get(capability, facing);
         }
-        else value = innerCapabilities.get(capability);
+        if (value == null)
+            value = innerCapabilities.get(capability);
         if (value != null)
             return (T) value;
 

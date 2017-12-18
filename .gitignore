@@ -25,4 +25,3 @@ keystore.jks
 gradle.properties
 build_number.properties
 changelog.txt
-/.idea/
