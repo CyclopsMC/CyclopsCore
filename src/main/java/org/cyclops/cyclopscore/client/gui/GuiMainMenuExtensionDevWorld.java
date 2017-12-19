@@ -75,6 +75,7 @@ public class GuiMainMenuExtensionDevWorld {
 
             WorldSettings worldsettings = new WorldSettings(new Random().nextInt(), GameType.CREATIVE,
                     false, false, WorldType.FLAT);
+            worldsettings.enableCommands();
             worldsettings.setGeneratorOptions(PRESET_FLAT_WORLD);
             String saveName = GuiCreateWorld.getUncollidingSaveDirName(mc.getSaveLoader(), WORLD_NAME_PREFIX);
             mc.launchIntegratedServer(saveName, WORLD_NAME_PREFIX, worldsettings);
