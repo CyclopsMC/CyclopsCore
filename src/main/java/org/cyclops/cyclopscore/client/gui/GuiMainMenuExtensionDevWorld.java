@@ -18,6 +18,7 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.GeneralConfig;
@@ -26,7 +27,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.util.Random;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(Side.CLIENT)
 public class GuiMainMenuExtensionDevWorld {
 
     private static final String WORLD_NAME_PREFIX = "cyclops-dev";
