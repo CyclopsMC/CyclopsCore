@@ -1,0 +1,13 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add main menu button to create a dev world when in dev environment
+* Add support for doors
+
+Changes:
+* Break out getItemInstance() so not everything has to use Item.getItemFromBlock()
+* Let blocks' items be any Item, not just ItemBlock
+* Render fluid tanks in guis using the fluid's color
+
+Fixes:
+* Fix XML recipe oredict ingredients not adhering to stacksizes
