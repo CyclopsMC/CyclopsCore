@@ -14,9 +14,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockDoorConfig;
 
-import java.util.Random;
-
 import javax.annotation.Nullable;
+import java.util.Random;
 
 /**
  * Door blockState that can hold ExtendedConfigs
@@ -37,6 +36,7 @@ public class ConfigurableBlockDoor extends BlockDoor implements IConfigurableBlo
     /**
      * Make a new blockState instance.
      * @param config Config for this blockState.
+     * @param material The door material.
      */
     public ConfigurableBlockDoor(BlockDoorConfig config, Material material) {
         super(material);
