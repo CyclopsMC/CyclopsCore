@@ -15,7 +15,9 @@ repositories {
 }
 
 dependencies {
-    deobfCompile "CraftTweaker2:CraftTweaker2-API:${config.crafttweakerapi_version}"; // http://blamejared.com/maven/CraftTweaker2/CraftTweaker2-API/maven-metadata.xml
+    deobfCompile("CraftTweaker2:CraftTweaker2-API:${config.crafttweakerapi_version}") { // http://blamejared.com/maven/CraftTweaker2/CraftTweaker2-API/maven-metadata.xml
+        exclude group: 'org.ow2.asm', module: 'asm-debug-all'
+    }
     deobfCompile "mezz.jei:jei_${config.jei_version}:api" // https://dvs1.progwml6.com/jenkins/
 
     // Project lombok
