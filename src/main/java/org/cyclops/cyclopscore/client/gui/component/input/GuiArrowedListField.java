@@ -54,6 +54,15 @@ public class GuiArrowedListField<E> extends GuiTextFieldExtended {
         if(listener != null) listener.onChanged();
     }
 
+    public boolean setActiveElement(E element) {
+        int index = this.elements.indexOf(element);
+        if (index < 0) {
+            return false;
+        }
+        setActiveElement(index);
+        return true;
+    }
+
     public E getActiveElement() throws NumberFormatException {
         if(activeElement < 0 || activeElement >= elements.size()) {
             return null;
