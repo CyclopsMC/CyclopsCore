@@ -7,10 +7,10 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -228,7 +228,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
                 vertexToInts((float) v4.x, (float) v4.y, (float) v4.z, shadeColor, texture, uvs[(3 + rotation) % 4][0] * 16, uvs[(3 + rotation) % 4][1] * 16)
         );
         ForgeHooksClient.fillNormal(data, side); // This fixes lighting issues when item is rendered in hand/inventory
-        quads.add(new BakedQuad(data, -1, side, texture, false, Attributes.DEFAULT_BAKED_FORMAT));
+        quads.add(new BakedQuad(data, -1, side, texture, false, DefaultVertexFormats.ITEM));
     }
 
     @Override
