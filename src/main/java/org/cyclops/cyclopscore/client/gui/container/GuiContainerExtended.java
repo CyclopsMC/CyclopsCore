@@ -222,6 +222,15 @@ public abstract class GuiContainerExtended extends GuiContainer implements
     }
 
     /**
+     * Will send client-side onUpdate events for all stored values
+     */
+    protected void refreshValues() {
+        for (int id : getContainer().getValueIds()) {
+            onUpdate(id, getContainer().getValue(id));
+        }
+    }
+
+    /**
      * @return The total gui left offset.
      */
     public int getGuiLeft() {

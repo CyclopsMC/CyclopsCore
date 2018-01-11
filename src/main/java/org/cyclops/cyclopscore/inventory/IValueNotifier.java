@@ -2,6 +2,8 @@ package org.cyclops.cyclopscore.inventory;
 
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.Set;
+
 /**
  * Used for sending values from server to clients in guis.
  * Similar to Minecraft's ICrafting.
@@ -19,6 +21,11 @@ public interface IValueNotifier {
      * @param value The new value.
      */
     void setValue(int valueId, NBTTagCompound value);
+
+    /**
+     * @return All available value ids.
+     */
+    public Set<Integer> getValueIds();
 
     /**
      * Get the value for the given value id.

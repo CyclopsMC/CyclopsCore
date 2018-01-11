@@ -4,7 +4,12 @@ import com.google.common.collect.Maps;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.ClickType;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.IContainerListener;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -17,6 +22,7 @@ import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
 import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A container with inventory.
@@ -370,6 +376,11 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     @Override
     public NBTTagCompound getValue(int valueId) {
         return values.get(valueId);
+    }
+
+    @Override
+    public Set<Integer> getValueIds() {
+        return values.keySet();
     }
 
     @Override
