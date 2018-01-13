@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix models rendering too dark in item-form
+
+Lib changes:
+* Add method to refresh all cached values in a value notifyable guis
+  This new method can be called from within initGui, when for example resizing screens.
+* Allow a certain element to be selected in arrowed list field
