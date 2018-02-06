@@ -4,10 +4,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootEntryItem;
+import net.minecraft.world.storage.loot.LootEntryTable;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.RandomValueRange;
+import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -27,6 +31,7 @@ public class LootHelpers {
     private static final LootHelpers INSTANCE = new LootHelpers();
     private static final Multimap<ResourceLocation, LootPool> INJECT_LOOTPOOLS = MultimapBuilder.ListMultimapBuilder.hashKeys().arrayListValues().build();
     private static final Multimap<Pair<ResourceLocation, String>, LootEntryItem> INJECT_LOOTENTRIES = MultimapBuilder.ListMultimapBuilder.hashKeys().arrayListValues().build();
+    private static final Multimap<ResourceLocation, ResourceLocation> INJECT_LOOTTABLES = MultimapBuilder.ListMultimapBuilder.hashKeys().arrayListValues().build();
 
     public static List<ResourceLocation> VANILLA_LOOT_CHEST_TABLES = Lists.newArrayList(
             LootTableList.CHESTS_ABANDONED_MINESHAFT,
@@ -83,6 +88,11 @@ public class LootHelpers {
                 }
             }
         }
+
+        // Inject loot tables from resource location
+        for (ResourceLocation injectTable : INJECT_LOOTTABLES.get(event.getName())) {
+            injectLootTableDirect(event.getTable(), injectTable);
+        }
     }
 
     /**
@@ -135,6 +145,25 @@ public class LootHelpers {
      */
     public static void addLootPool(ResourceLocation lootTable, LootPool lootPool) {
         INJECT_LOOTPOOLS.put(lootTable, lootPool);
+    }
+
+    /**
+     * Inject the given loot table from a loot table file
+     * into the given targets.
+     * @param source The source loot table file to inject to the targets.
+     * @param targets The targets to inject to.
+     */
+    public static void injectLootTable(ResourceLocation source, ResourceLocation... targets) {
+        LootTableList.register(source);
+        for (ResourceLocation target : targets) {
+            INJECT_LOOTTABLES.put(target, source);
+        }
+    }
+
+    public static void injectLootTableDirect(LootTable target, ResourceLocation source) {
+        target.addPool(new LootPool(new LootEntry[]{
+                new LootEntryTable(source, 1, 0, new LootCondition[0], source.toString())},
+                new LootCondition[0], new RandomValueRange(1), new RandomValueRange(0), source.toString()));
     }
 
 }
