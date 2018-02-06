@@ -54,7 +54,7 @@ public class WeightedItemStack {
      */
     public ItemStack getItemStackWithRandomizedSize(Random random) {
         if(getItemStack() == null) {
-            return null;
+            return ItemStack.EMPTY;
         }
         ItemStack itemStack = getItemStack().copy();
         itemStack.setCount(random.nextInt(itemStack.getCount()) + 1);
