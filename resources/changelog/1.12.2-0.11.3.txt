@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add helper method to inject file-based loot tables
+
+Fixes:
+* Fix WeightedItemStack returning null if inner stack is null
+
