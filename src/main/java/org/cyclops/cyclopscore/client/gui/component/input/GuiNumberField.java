@@ -15,6 +15,7 @@ public class GuiNumberField extends GuiTextFieldExtended {
     private GuiButtonArrow arrowDown;
     private int minValue = Integer.MIN_VALUE;
     private int maxValue = Integer.MAX_VALUE;
+    private boolean isEnabled = true;
 
     public GuiNumberField(int componentId, FontRenderer fontrenderer, int x, int y, int width, int height, boolean arrows, boolean background) {
         super(componentId, fontrenderer, x, y, width, height, background);
@@ -27,6 +28,14 @@ public class GuiNumberField extends GuiTextFieldExtended {
         }
         setEnableBackgroundDrawing(true);
         setText("0");
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        arrowUp.enabled = enabled;
+        arrowDown.enabled = enabled;
+        isEnabled = enabled;
+        super.setEnabled(enabled);
     }
 
     @Override
@@ -107,27 +116,30 @@ public class GuiNumberField extends GuiTextFieldExtended {
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        boolean ret = true;
-        if(arrowUp.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
-            increase();
-        } else if(arrowDown.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
-            decrease();
-        } else {
-            ret = super.mouseClicked(mouseX, mouseY, mouseButton);
-        }
-        arrowDown.enabled = true;
-        arrowUp.enabled = true;
-        try {
-            if (getInt() <= this.minValue) {
-                arrowDown.enabled = false;
+        if (this.isEnabled) {
+            boolean ret = true;
+            if (arrowUp.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
+                increase();
+            } else if (arrowDown.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
+                decrease();
+            } else {
+                ret = super.mouseClicked(mouseX, mouseY, mouseButton);
             }
-            if (getInt() >= this.maxValue) {
-                arrowUp.enabled = false;
-            }
-        } catch (NumberFormatException e ) {
+            arrowDown.enabled = true;
+            arrowUp.enabled = true;
+            try {
+                if (getInt() <= this.minValue) {
+                    arrowDown.enabled = false;
+                }
+                if (getInt() >= this.maxValue) {
+                    arrowUp.enabled = false;
+                }
+            } catch (NumberFormatException e) {
 
+            }
+            return ret;
         }
-        return ret;
+        return false;
     }
 
 }
