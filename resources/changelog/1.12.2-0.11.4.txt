@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix number fields not resetting colors
+* Fix disabled numbered fields still having enabled buttons
