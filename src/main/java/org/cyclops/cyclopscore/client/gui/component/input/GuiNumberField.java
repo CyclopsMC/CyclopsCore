@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.client.gui.component.input;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import org.cyclops.cyclopscore.client.gui.component.button.GuiButtonArrow;
 
 /**
@@ -76,6 +77,7 @@ public class GuiNumberField extends GuiTextFieldExtended {
     @Override
     public void drawTextBox(Minecraft minecraft, int mouseX, int mouseY) {
         int offsetX = 0;
+        GlStateManager.color(1, 1, 1, 1);
         if(arrows) {
             arrowUp.drawButton(minecraft, mouseX, mouseY, minecraft.getRenderPartialTicks());
             arrowDown.drawButton(minecraft, mouseX, mouseY, minecraft.getRenderPartialTicks());
