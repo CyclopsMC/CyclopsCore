@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.Packet;
 import net.minecraft.util.IThreadListener;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -145,7 +146,11 @@ public final class PacketHandler {
             }
 
             EntityPlayerMP player = ctx.getServerHandler().player;
-            packet.actionServer(player.world, player);
+            if (packet.isAsync()) {
+		packet.actionServer(player.world, player);
+	    } else {
+		((WorldServer) player.world).addScheduledTask(() -> packet.actionServer(player.world, player));
+	    }
             return null;
         }
     }
