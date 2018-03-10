@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.config.configurable;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.util.text.TextFormatting;
 import org.cyclops.cyclopscore.config.extendedconfig.EnchantmentConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
@@ -42,7 +43,8 @@ public class ConfigurableEnchantment extends Enchantment implements IConfigurabl
     @Override
     public String getTranslatedName(int level) {
         String enchantmentName = L10NHelpers.localize("enchantment." + eConfig.getMod().getModId() + "." + eConfig.getNamedId());
-        return enchantmentName + " " + L10NHelpers.localize("enchantment.level." + level);
+        return (this.isCurse() ? TextFormatting.RED : "")
+                + enchantmentName + " " + L10NHelpers.localize("enchantment.level." + level);
     }
 
 }
