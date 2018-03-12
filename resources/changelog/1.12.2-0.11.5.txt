@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Localize curse enchants with a red color
+
+Fixes:
+* Make sure synchronous server side packets run in server thread
