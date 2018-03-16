@@ -9,7 +9,10 @@ import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.SlotlessItemHandlerWrapper;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 /**
  * A {@link org.cyclops.commoncapabilities.api.capability.itemhandler.ISlotlessItemHandler}
@@ -33,6 +36,8 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
     public IndexedSlotlessItemHandlerWrapper(IItemHandler itemHandler, IInventoryIndexReference inventory) {
         this(itemHandler, inventory, MovementStrategy.FIRST, MovementStrategy.FIRST);
     }
+
+    // TODO: check if match flags contain ItemMatch.ITEM! If not, iterate over slots in the naive way.
 
     @Override
     protected int getNonFullSlotWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
@@ -63,6 +68,16 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
             }
         }
         return -1;
+    }
+
+    @Override
+    protected Iterator<Integer> getSlotsWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
+        Map<Item, TIntObjectMap<ItemStack>> items = inventory.getIndex();
+        TIntObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
+        if (stacks == null) {
+            return Collections.emptyIterator();
+        }
+        return new IndexIterator(stacks.iterator(), itemStack, matchFlags);
     }
 
     @Override
@@ -115,4 +130,47 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
         public int getLastNonEmptySlot();
 
     }
+
+    public static class IndexIterator implements Iterator<Integer> {
+
+        private final TIntObjectIterator<ItemStack> slotIterator;
+        private final ItemStack prototype;
+        private final int matchFlags;
+        private Integer next;
+
+        public IndexIterator(TIntObjectIterator<ItemStack> slotIterator, ItemStack prototype, int matchFlags) {
+            this.slotIterator = slotIterator;
+            this.prototype = prototype;
+            this.matchFlags = matchFlags;
+            this.next = findNext();
+        }
+
+        protected Integer findNext() {
+            while(slotIterator.hasNext()) {
+                int slot = slotIterator.key();
+                ItemStack itemStack = slotIterator.value();
+                slotIterator.advance();
+                if (ItemMatch.areItemStacksEqual(itemStack, prototype, matchFlags)) {
+                    return slot;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public Integer next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("Slot out of bounds");
+            }
+            Integer next = this.next;
+            this.next = findNext();
+            return next;
+        }
+    }
+
 }
