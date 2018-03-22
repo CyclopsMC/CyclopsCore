@@ -1,0 +1,83 @@
+# General
+itemGroup.cyclopscore=Cyclops Core
+general.cyclopscore.tooltip.info=<Shift для информации>
+general.cyclopscore.info.enabled=§aВключено
+general.cyclopscore.info.disabled=Выключено
+general.cyclopscore.version.updateAvailable=Доступно обновление
+general.cyclopscore.version.download=Скачать
+general.cyclopscore.version.clickToDownload=Нажми, чтобы загрузить
+gui.waila.cyclopscore.logConfig=Журнал ошибок
+
+# Infobook
+infobook.cyclopscore.next_page=Следующая страница
+infobook.cyclopscore.previous_page=Предыдущая страница
+infobook.cyclopscore.parent_section=Родительский раздел
+infobook.cyclopscore.last_page=Последняя посещенная страница
+
+# Chat messages
+chat.cyclopscore.command.invalidArguments=Недопустимый аргумент
+chat.cyclopscore.command.invalidSubcommand=Недопустимая суб-команда
+chat.cyclopscore.command.onlyOneValue=Укажите одно новое значение
+chat.cyclopscore.command.invalidNewValue=Недопустимое новое значение
+chat.cyclopscore.command.updatedValue=Обновлено %s на: %s
+chat.cyclopscore.command.invalidPlayer=Игрок '%s' не найден
+chat.cyclopscore.command.ignitedPlayer=Игрок '%s' горел %s секунд
+chat.cyclopscore.command.noConfigsFound=Не найдены значения конфигурации, которые могут быть установлены
+
+# Multiblock
+multiblock.cyclopscore.error.invalidBlock=%s содержит неверный блок %s.
+multiblock.cyclopscore.error.size.cube=Размеры %s не образуют форму куба, тк размеры его сторон не равны.
+multiblock.cyclopscore.error.size.exact=Обнаружены размеры %s, тогда как ожидалось ровно %s.
+multiblock.cyclopscore.error.size.max=Обнаружены размеры %s, тогда как  ожидался максимально %s.
+multiblock.cyclopscore.error.size.min=Обнаружены размеры %s, тогда как ожидался минимально %s.
+multiblock.cyclopscore.error.blockCount.exact=Ожидался точно %s из %s, тогда как %s был обнаружен.
+multiblock.cyclopscore.error.blockCount.max=Ожидался как максимум %s из %s, тогда как %s был обнаружен.
+multiblock.cyclopscore.error.blockCount.min=Ожидался как минимум %s из %s, тогда как %s был обнаружен.
+multiblock.cyclopscore.error.hollow.air=Позиция %s должна быть пустой.
+
+# Vanilla additions
+tile.air.name=Воздух
+
+# Config Screens
+config.cyclopscore=%s конфигурации
+
+## Config categories
+config.cyclopscore.item=Настройки предметов
+config.cyclopscore.item.tooltip=Настройки предметов
+config.cyclopscore.block=Настройки блоков
+config.cyclopscore.block.tooltip=Настройки блоков
+config.cyclopscore.fluid=Настройки жидкостей
+config.cyclopscore.fluid.tooltip=Настройки жидкостей
+config.cyclopscore.entity=Настройки сущностей
+config.cyclopscore.entity.tooltip=Настройки сущностей
+config.cyclopscore.general=Общие настройки
+config.cyclopscore.general.tooltip=Общие настройки
+config.cyclopscore.worldgeneration=Настройки генерации мира
+config.cyclopscore.worldgeneration.tooltip=Настройки генерации мира
+config.cyclopscore.enchantment=Настройки зачарования
+config.cyclopscore.enchantment.tooltip=Настройки зачарования
+config.cyclopscore.mob=Настройки мобов
+config.cyclopscore.mob.tooltip=Настройки мобов
+config.cyclopscore.biome=Настройки генерации биомов
+config.cyclopscore.biome.tooltip=Настройки генерации биомов
+config.cyclopscore.machine=Настройки механизмов
+config.cyclopscore.machine.tooltip=Настройки механизмов
+config.cyclopscore.potion=Настройки зелий
+config.cyclopscore.potion.tooltip=Настройки зелий
+config.cyclopscore.core=Настройки ядра
+config.cyclopscore.core.tooltip=Настройки ядра
+config.cyclopscore.modcompat=Настройки совместимости с модами
+config.cyclopscore.modcompat.tooltip=Настройки совместимости с модами
+
+## General settings
+config.cyclopscore.general.analytics=Отправлять анонимную статистику
+config.cyclopscore.general.anonymousAnalyticsID=Анонимный id
+config.cyclopscore.general.crashOnInvalidRecipe=Краш на неправильном рецепте
+config.cyclopscore.general.crashOnModCompatCrash=Краш при сбое совместимости
+config.cyclopscore.general.debug=Режим Разработчика
+config.cyclopscore.general.minimumPotionTypesArraySize=Минимальный размер массива зелий
+config.cyclopscore.general.version=Версия
+config.cyclopscore.general.versionChecker=Проверка версии
+
+## Mod compatibility settings
+config.cyclopscore.Waila=Waila
