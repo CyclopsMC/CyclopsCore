@@ -30,6 +30,9 @@ import org.cyclops.cyclopscore.init.ModBase;
 @Sharable
 public final class PacketHandler {
 
+    // Forge's CPacketCustomPayload assumes a max channel name length of 20
+    private static final int MAX_CHANNELNAME_LENGTH = 20;
+
     private SimpleNetworkWrapper networkWrapper = null;
     @SideOnly(Side.CLIENT)
     private HandlerClient handlerClient;
@@ -42,7 +45,8 @@ public final class PacketHandler {
 
     public void init() {
         if(networkWrapper == null) {
-            networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(mod.getModId());
+            networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(mod.getModId()
+                    .substring(0, Math.min(mod.getModId().length(), MAX_CHANNELNAME_LENGTH)));
             if(MinecraftHelpers.isClientSide()) {
                 handlerClient = new HandlerClient();
             }
