@@ -43,6 +43,11 @@ public abstract class IngredientCollectionCollectionWrappedAdapter<T, M, C exten
     }
 
     @Override
+    public boolean contains(T instance) {
+        return getCollection().contains(wrap(instance));
+    }
+
+    @Override
     public void clear() {
         getCollection().clear();
     }
