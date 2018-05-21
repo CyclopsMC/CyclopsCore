@@ -1,0 +1,11 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Create ru_ru.lang
+
+Fixes:
+* Limit packet handler channel names to 20 characters
+  This is because Forge packets in some places assume a max channel name string of 20 characters,
+  but this is not validated at init time.
+  This caused strange crashes where mod packets were being identified as vanilla packets.
+  Closes CyclopsMC/IntegratedDynamics#569
