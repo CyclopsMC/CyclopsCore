@@ -2,8 +2,10 @@ package org.cyclops.cyclopscore.ingredient.collection;
 
 import com.google.common.collect.Sets;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
+import org.cyclops.commoncapabilities.api.ingredient.IngredientInstanceWrapper;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  * An ingredient list collection that internally uses an {@link java.util.HashSet} to store instances.
@@ -15,7 +17,7 @@ import java.util.Collection;
 public class IngredientHashSet<T, M> extends IngredientSet<T, M> {
 
     public IngredientHashSet(IngredientComponent<T, M> component) {
-        this(component, Sets.newHashSet());
+        this(component, (Iterable<? extends T>) Sets.newHashSet());
     }
 
     public IngredientHashSet(IngredientComponent<T, M> component, int expectedSize) {
@@ -25,6 +27,10 @@ public class IngredientHashSet<T, M> extends IngredientSet<T, M> {
     public IngredientHashSet(IngredientComponent<T, M> component, Iterable<? extends T> iterable) {
         super(component, iterable instanceof Collection ? Sets.newHashSetWithExpectedSize(((Collection) iterable).size()) : Sets.newHashSet());
         addAll(iterable);
+    }
+
+    public IngredientHashSet(IngredientComponent<T, M> component, HashSet<IngredientInstanceWrapper<T, M>> set) {
+        super(component, set);
     }
 
 }

@@ -2,8 +2,9 @@ package org.cyclops.cyclopscore.ingredient.collection;
 
 import com.google.common.collect.Sets;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
+import org.cyclops.commoncapabilities.api.ingredient.IngredientInstanceWrapper;
 
-import java.util.LinkedList;
+import java.util.TreeSet;
 
 /**
  * An ingredient list collection that internally uses an {@link java.util.TreeSet} to store instances.
@@ -21,6 +22,10 @@ public class IngredientTreeSet<T, M> extends IngredientSet<T, M> {
     public IngredientTreeSet(IngredientComponent<T, M> component, Iterable<? extends T> iterable) {
         super(component, Sets.newTreeSet());
         addAll(iterable);
+    }
+
+    public IngredientTreeSet(IngredientComponent<T, M> component, TreeSet<IngredientInstanceWrapper<T, M>> set) {
+        super(component, set);
     }
 
 }
