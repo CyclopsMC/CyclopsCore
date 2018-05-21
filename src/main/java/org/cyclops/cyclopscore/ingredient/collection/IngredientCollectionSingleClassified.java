@@ -1,12 +1,12 @@
 package org.cyclops.cyclopscore.ingredient.collection;
 
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Maps;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponentCategoryType;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -20,7 +20,8 @@ import java.util.function.Supplier;
  * @param <M> The matching condition parameter.
  * @param <C> A classifier type.
  */
-public class IngredientCollectionSingleClassified<T, M, C> extends IngredientCollectionAdapter<T, M> {
+public class IngredientCollectionSingleClassified<T, M, C> extends IngredientCollectionAdapter<T, M>
+        implements IIngredientCollectionLikeSingleClassifiedTrait<T, M, T, C, IIngredientCollectionMutable<T, M>> {
 
     private final Map<C, IIngredientCollectionMutable<T, M>> classifiedCollections;
     private final Supplier<IIngredientCollectionMutable<T, M>> collectionCreator;
@@ -52,35 +53,29 @@ public class IngredientCollectionSingleClassified<T, M, C> extends IngredientCol
         return categoryType;
     }
 
-    protected boolean appliesToClassifier(M matchCondition) {
-        return getComponent().getMatcher().hasCondition(matchCondition, getCategoryType().getMatchCondition());
-    }
-
-    protected C getClassifier(T instance) {
-        return this.categoryType.getClassifier().apply(instance);
-    }
-
-    protected IIngredientCollectionMutable<T, M> createEmptyCollection() {
+    @Override
+    public IIngredientCollectionMutable<T, M> createEmptyCollection() {
         return this.collectionCreator.get();
     }
 
-    protected IIngredientCollectionMutable<T, M> getOrCreateClassifiedCollection(C classifier) {
-        return this.classifiedCollections.computeIfAbsent(classifier, k -> createEmptyCollection());
+    @Override
+    public T getInstance(T iterableInstance) {
+        return iterableInstance;
+    }
+
+    @Override
+    public Map<C, IIngredientCollectionMutable<T, M>> getClassifiedCollections() {
+        return this.classifiedCollections;
+    }
+
+    @Override
+    public void setSize(int size) {
+        this.size = size;
     }
 
     @Override
     public int size() {
         return this.size;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return this.size == 0;
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-        return new ClassifiedIterator<>(this);
     }
 
     @Override
@@ -192,112 +187,30 @@ public class IngredientCollectionSingleClassified<T, M, C> extends IngredientCol
     }
 
     @Override
-    public Iterator<T> iterator(T instance, M matchCondition) {
-        if (Objects.equals(getComponent().getMatcher().getAnyMatchCondition(), matchCondition)) {
-            return iterator();
-        }
-        if (appliesToClassifier(matchCondition)) {
-            // At most one classifier will be found, so we can simply delegate this call
-            IIngredientCollectionMutable<T, M> collection = this.classifiedCollections.get(getClassifier(instance));
-            if (collection != null) {
-                if (Objects.equals(getCategoryType().getMatchCondition(), matchCondition)) {
-                    return new ClassifiedRemoveDelegatorIterator<>(this, collection.iterator());
-                } else {
-                    return new ClassifiedRemoveDelegatorIterator<>(this, collection.iterator(instance, matchCondition));
-                }
-            }
-        }
-        return new FilteredIngredientIterator<>(this, getComponent().getMatcher(), instance, matchCondition);
-    }
-
-    @Override
     public boolean equals(Object obj) {
         return obj == this || obj instanceof IngredientCollectionSingleClassified
                 && this.getCategoryType() == ((IngredientCollectionSingleClassified) obj).getCategoryType()
                 && IngredientCollections.equalsCheckedOrdered(this, (IIngredientCollection<T, M>) obj);
     }
 
-    public static class ClassifiedIterator<T, M, C> implements Iterator<T> {
-
-        private final IngredientCollectionSingleClassified<T, M, C> classifiedCollection;
-        private Iterator<Map.Entry<C, IIngredientCollectionMutable<T, M>>> classifierIterator;
-        private Iterator<T> instanceIterator;
-        private Map.Entry<C, IIngredientCollectionMutable<T, M>> lastClassifierEntry;
-
-        public ClassifiedIterator(IngredientCollectionSingleClassified<T, M, C> classifiedCollection) {
-            this.classifiedCollection = classifiedCollection;
-            this.classifierIterator = this.classifiedCollection.classifiedCollections.entrySet().iterator();
-            this.instanceIterator = null;
-        }
-
-        protected void prepareNextIterators() {
-            if ((this.instanceIterator == null || !this.instanceIterator.hasNext())
-                    && this.classifierIterator.hasNext()) {
-                this.lastClassifierEntry = this.classifierIterator.next();
-                this.instanceIterator = this.classifiedCollection.classifiedCollections
-                        .get(lastClassifierEntry.getKey()).iterator();
-            }
-        }
-
-        @Override
-        public boolean hasNext() {
-            prepareNextIterators();
-            return this.instanceIterator != null && this.instanceIterator.hasNext();
-        }
-
-        @Override
-        public T next() {
-            prepareNextIterators();
-            if (this.instanceIterator == null) {
-                throw new NoSuchElementException("No next instances are available");
-            }
-            return this.instanceIterator.next();
-        }
-
-        @Override
-        public void remove() {
-            if (this.instanceIterator == null) {
-                throw new IllegalStateException("The next method was not called yet");
-            }
-            this.instanceIterator.remove();
-            classifiedCollection.size--;
-            // Cleanup collections map if the collection becomes empty
-            if (this.classifiedCollection.classifiedCollections.get(this.lastClassifierEntry.getKey()).isEmpty()) {
-                this.classifierIterator.remove();
-            }
-        }
+    @Override
+    public Iterator<T> iterator() {
+        return new IIngredientCollectionLikeSingleClassifiedTrait.ClassifiedIterator<>(this);
     }
 
-    public static class ClassifiedRemoveDelegatorIterator<T> implements Iterator<T> {
-
-        private final IngredientCollectionSingleClassified<T, ?, ?> classifiedCollection;
-        private final Iterator<T> iterator;
-        private T lastInstance;
-
-        public ClassifiedRemoveDelegatorIterator(IngredientCollectionSingleClassified<T, ?, ?> classifiedCollection, Iterator<T> iterator) {
-            this.classifiedCollection = classifiedCollection;
-            this.iterator = iterator;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return iterator.hasNext();
-        }
-
-        @Override
-        public T next() {
-            return lastInstance = iterator.next();
-        }
-
-        @Override
-        public void remove() {
-            iterator.remove();
-            classifiedCollection.size--;
-            // Cleanup collections map if the collection becomes empty
-            Object classifier = this.classifiedCollection.getClassifier(lastInstance);
-            if (this.classifiedCollection.classifiedCollections.get(classifier).isEmpty()) {
-                this.classifiedCollection.classifiedCollections.remove(classifier);
+    @Override
+    public Iterator<T> iterator(T instance, M matchCondition) {
+        if (appliesToClassifier(matchCondition)) {
+            // At most one classifier will be found, so we can simply delegate this call
+            IIngredientCollectionMutable<T, M> collection = this.getClassifiedCollections().get(getClassifier(instance));
+            if (collection != null) {
+                return new IIngredientCollectionLikeSingleClassifiedTrait.ClassifiedIteratorDelegated<>(
+                        this, collection, instance, matchCondition);
+            } else {
+                return Iterators.forArray();
             }
         }
+        return new FilteredIngredientCollectionLikeSingleClassifiedIterator<>(this, getComponent().getMatcher(), instance, matchCondition);
     }
+
 }
