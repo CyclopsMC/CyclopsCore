@@ -38,14 +38,12 @@ public abstract class IngredientCollectionAdapter<T, M> implements IIngredientCo
 
     @Override
     public int removeAll(T instance, M matchCondition) {
-        IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
-        Iterator<T> it = this.iterator();
+        Iterator<T> it = this.iterator(instance, matchCondition);
         int count = 0;
         while (it.hasNext()) {
-            if (matcher.matches(instance, it.next(), matchCondition)) {
-                it.remove();
-                count++;
-            }
+            it.next();
+            it.remove();
+            count++;
         }
         return count;
     }
@@ -86,7 +84,7 @@ public abstract class IngredientCollectionAdapter<T, M> implements IIngredientCo
 
     @Override
     public Iterator<T> iterator(T instance, M matchCondition) {
-        return new FilteredIngredientIterator<>(this, getComponent().getMatcher(), instance, matchCondition);
+        return new FilteredIngredientCollectionIterator<>(this, getComponent().getMatcher(), instance, matchCondition);
     }
 
     @Override

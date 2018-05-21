@@ -6,11 +6,11 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * An iterator that filters over instances based on an instance with a match condition.
+ * An iterator that filters over an instances collection based on an instance with a match condition.
  * @param <T> The instance type.
  * @param <M> The matching condition parameter.
  */
-public class FilteredIngredientIterator<T, M> implements Iterator<T> {
+public class FilteredIngredientCollectionIterator<T, M> implements Iterator<T> {
 
     private final Iterator<T> iterator;
     private final IIngredientMatcher<T, M> matcher;
@@ -26,8 +26,8 @@ public class FilteredIngredientIterator<T, M> implements Iterator<T> {
      * @param instance An instance to match.
      * @param matchCondition A match condition to filter by.
      */
-    public FilteredIngredientIterator(Iterable<T> iterable, IIngredientMatcher<T, M> matcher,
-                                      T instance, M matchCondition) {
+    public FilteredIngredientCollectionIterator(Iterable<T> iterable, IIngredientMatcher<T, M> matcher,
+                                                T instance, M matchCondition) {
         this.iterator = iterable.iterator();
         this.matcher = matcher;
         this.instance = instance;
@@ -56,7 +56,7 @@ public class FilteredIngredientIterator<T, M> implements Iterator<T> {
     @Override
     public T next() {
         if (!hasNext()) {
-            throw new NoSuchElementException("Tried reading a finished FilteredIngredientIterator");
+            throw new NoSuchElementException("Tried reading a finished FilteredIngredientCollectionIterator");
         }
         T next = this.next;
         this.next = null;
