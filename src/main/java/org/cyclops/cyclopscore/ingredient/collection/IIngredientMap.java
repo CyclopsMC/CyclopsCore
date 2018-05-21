@@ -46,7 +46,7 @@ public interface IIngredientMap<T, M, V> extends IIngredientCollectionLike<T, M,
         if (Objects.equals(getComponent().getMatcher().getAnyMatchCondition(), matchCondition)) {
             return !isEmpty();
         }
-        return !keySet(instance, matchCondition).isEmpty();
+        return this.iterator(instance, matchCondition).hasNext();
     }
 
     /**
