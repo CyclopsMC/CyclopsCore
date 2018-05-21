@@ -41,6 +41,8 @@ public final class IngredientCollections {
      * Check if the two collection are equal by order using safe types.
      * @param c1 A first collection.
      * @param c2 A second collection.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
      * @return If the two collection are equal by order.
      */
     public static <T, M> boolean equalsCheckedOrdered(IIngredientCollection<T, M> c1, IIngredientCollection<T, M> c2) {
@@ -81,6 +83,9 @@ public final class IngredientCollections {
      * Check if the two maps are equal using safe types.
      * @param c1 A first map.
      * @param c2 A second map.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @param <V> The value type.
      * @return If the two maps are equal.
      */
     public static <T, M, V> boolean equalsMapChecked(IIngredientMap<T, M, V> c1, IIngredientMap<T, M, V> c2) {
