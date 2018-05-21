@@ -4,6 +4,8 @@ import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Helper functions for ingredient collections.
@@ -60,6 +62,40 @@ public final class IngredientCollections {
     }
 
     /**
+     * Check if the two maps are equal.
+     * @param c1 A first map.
+     * @param c2 A second map.
+     * @return If the two maps are equal.
+     */
+    public static boolean equalsMap(IIngredientMap<?, ?, ?> c1, IIngredientMap<?, ?, ?> c2) {
+        if (c1 == c2) {
+            return true;
+        }
+        if (c1.getComponent() != c2.getComponent()) {
+            return false;
+        }
+        return equalsMapChecked((IIngredientMap) c1, c2);
+    }
+
+    /**
+     * Check if the two maps are equal using safe types.
+     * @param c1 A first map.
+     * @param c2 A second map.
+     * @return If the two maps are equal.
+     */
+    public static <T, M, V> boolean equalsMapChecked(IIngredientMap<T, M, V> c1, IIngredientMap<T, M, V> c2) {
+        if (c1.size() != c2.size()) {
+            return false;
+        }
+        for (Map.Entry<T, V> entry : c1) {
+            if (!Objects.equals(c2.get(entry.getKey()), entry.getValue())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Hash the given collection.
      *
      * This will hash each instance in the collection using the component type.
@@ -74,6 +110,26 @@ public final class IngredientCollections {
         IIngredientMatcher<T, M> matcher = collection.getComponent().getMatcher();
         for (T instance : collection) {
             hash = hash | matcher.hash(instance);
+        }
+        return hash;
+    }
+
+    /**
+     * Hash the given map.
+     *
+     * This will hash each instance in the map using the component type.
+     *
+     * @param map A map.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @param <V> The type of mapped values.
+     * @return A hashcode.
+     */
+    public static <T, M, V> int hash(IIngredientMap<T, M, V> map) {
+        int hash = map.getComponent().hashCode();
+        IIngredientMatcher<T, M> matcher = map.getComponent().getMatcher();
+        for (Map.Entry<T, V> entry : map.entrySet()) {
+            hash = hash | (matcher.hash(entry.getKey()) ^ entry.getValue().hashCode());
         }
         return hash;
     }
@@ -99,6 +155,37 @@ public final class IngredientCollections {
                 stringBuilder.append(", ");
             }
             stringBuilder.append(instance);
+        }
+        stringBuilder.append("]");
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Stringifies the given map.
+     *
+     * This will create a string by calling the toString() method on each entry in the map.
+     *
+     * @param map A map.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @param <V> The type of mapped values.
+     * @return A string representation of the map.
+     */
+    public static <T, M, V> String toString(IIngredientMap<T, M, V> map) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+        boolean first = true;
+        for (Map.Entry<T, V> entry : map) {
+            if (first) {
+                first = false;
+            } else {
+                stringBuilder.append(", ");
+            }
+            stringBuilder.append("{");
+            stringBuilder.append(entry.getKey().toString());
+            stringBuilder.append(",");
+            stringBuilder.append(entry.getValue().toString());
+            stringBuilder.append("}");
         }
         stringBuilder.append("]");
         return stringBuilder.toString();
