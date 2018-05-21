@@ -664,4 +664,45 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(c4.containsAll(Lists.newArrayList(a, b, c, d)), is(true));
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testIteratorEmptyCollectionNext() {
+        Iterator<T> it = collection.iterator();
+        it.next();
+    }
+
+    @Test
+    public void testIteratorRemove() {
+        assertThat(collection.add(a), is(true));
+        assertThat(collection.size(), is(1));
+
+        Iterator<T> it1 = collection.iterator();
+        assertThat(it1.hasNext(), is(true));
+        assertThat(it1.next(), is(a));
+        it1.remove();
+        assertThat(it1.hasNext(), is(false));
+
+        assertThat(collection.size(), is(0));
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testIteratorRemoveBeforeStart() {
+        assertThat(collection.add(a), is(true));
+        Iterator<T> it = collection.iterator();
+        it.remove();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testIteratorRemoveBeforeStartEmpty() {
+        Iterator<T> it = collection.iterator();
+        it.remove();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testIteratorRemoveMultiple() {
+        Iterator<T> it = collection.iterator();
+        it.remove();
+        it.remove();
+        it.remove();
+    }
+
 }
