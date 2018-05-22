@@ -50,6 +50,8 @@ public class TestIngredientCollectionComplexParameterized {
                 { new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                         () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX),
                         IngredientComponentStubs.COMPLEX.getCategoryTypes().get(3)) },
+                { new IngredientCollectionMultiClassified<>(IngredientComponentStubs.COMPLEX,
+                        () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX)) },
         });
     }
 

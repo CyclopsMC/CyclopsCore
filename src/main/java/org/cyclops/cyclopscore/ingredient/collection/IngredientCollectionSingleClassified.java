@@ -200,6 +200,9 @@ public class IngredientCollectionSingleClassified<T, M, C> extends IngredientCol
 
     @Override
     public Iterator<T> iterator(T instance, M matchCondition) {
+        if (getComponent().getMatcher().getAnyMatchCondition().equals(matchCondition)) {
+            return iterator();
+        }
         if (appliesToClassifier(matchCondition)) {
             // At most one classifier will be found, so we can simply delegate this call
             IIngredientCollectionMutable<T, M> collection = this.getClassifiedCollections().get(getClassifier(instance));

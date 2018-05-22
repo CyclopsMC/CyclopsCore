@@ -5,6 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.ingredient.collection.IIngredientCollection;
 import org.cyclops.cyclopscore.ingredient.collection.IIngredientCollectionMutable;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientArrayList;
+import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionMultiClassified;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionSingleClassified;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientHashSet;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientLinkedList;
@@ -34,7 +35,15 @@ public class BenchmarkIngredientCollections {
                         IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0))),
                 Pair.of("Classified:LinkedList:Group", new IngredientCollectionSingleClassified<>(
                         IngredientComponentStubs.COMPLEX, () -> new IngredientLinkedList(IngredientComponentStubs.COMPLEX),
-                        IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0)))
+                        IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0))),
+                Pair.of("MultiClassified:HashSet", new IngredientCollectionMultiClassified<>(
+                        IngredientComponentStubs.COMPLEX, () -> new IngredientHashSet(IngredientComponentStubs.COMPLEX))),
+                Pair.of("MultiClassified:TreeSet", new IngredientCollectionMultiClassified<>(
+                        IngredientComponentStubs.COMPLEX, () -> new IngredientTreeSet(IngredientComponentStubs.COMPLEX))),
+                Pair.of("MultiClassified:ArrayList", new IngredientCollectionMultiClassified<>(
+                        IngredientComponentStubs.COMPLEX, () -> new IngredientArrayList(IngredientComponentStubs.COMPLEX))),
+                Pair.of("MultiClassified:LinkedList", new IngredientCollectionMultiClassified<>(
+                        IngredientComponentStubs.COMPLEX, () -> new IngredientLinkedList(IngredientComponentStubs.COMPLEX)))
         );
         Random rand = new Random(1000);
 
