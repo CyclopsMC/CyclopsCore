@@ -1,12 +1,10 @@
 package org.cyclops.cyclopscore.ingredient.collection;
 
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponentCategoryType;
 
-import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +21,7 @@ import java.util.function.Supplier;
  * @param <M> The matching condition parameter.
  */
 public class IngredientCollectionMultiClassified<T, M> extends IngredientCollectionAdapter<T, M>
-        implements IIngredientCollectionMutable<T, M> {
+        implements IIngredientCollectionMutable<T, M>, IIngredientCollectionLikeMultiClassifiedTrait<T, M, T, IngredientCollectionSingleClassified<T, M, ?>> {
 
     private final Map<IngredientComponentCategoryType<T, M, ?>, IngredientCollectionSingleClassified<T, M, ?>> classifiedCollections;
 
@@ -35,29 +33,6 @@ public class IngredientCollectionMultiClassified<T, M> extends IngredientCollect
             this.classifiedCollections.put(categoryType,
                     new IngredientCollectionSingleClassified<>(component, collectionCreator, categoryType));
         }
-    }
-
-    @Nullable
-    protected IngredientComponentCategoryType<T, M, ?> getFirstMatchingCategory(M matchCondition) {
-        // TODO: efficiently cache this if needed
-        if (matchCondition.equals(getComponent().getMatcher().getAnyMatchCondition())) {
-            return null;
-        }
-        for (IngredientComponentCategoryType<T, M, ?> categoryType : getComponent().getCategoryTypes()) {
-            if (getComponent().getMatcher().hasCondition(matchCondition, categoryType.getMatchCondition())) {
-                return categoryType;
-            }
-        }
-        throw new IllegalStateException(
-                "Match condition does not match with any of the available category types, this is a coding error.");
-    }
-
-    protected IngredientCollectionSingleClassified<T, M, ?> getBestClassifiedCollection(M matchCondition) {
-        IngredientComponentCategoryType<T, M, ?> category = getFirstMatchingCategory(matchCondition);
-        if (category == null) {
-            return getFirstSingleClassified();
-        }
-        return classifiedCollections.get(category);
     }
 
     @Override
@@ -138,10 +113,6 @@ public class IngredientCollectionMultiClassified<T, M> extends IngredientCollect
         }
     }
 
-    protected IngredientCollectionSingleClassified<T, M, ?> getFirstSingleClassified() {
-        return Iterables.getFirst(classifiedCollections.values(), null);
-    }
-
     @Override
     public int size() {
         return getFirstSingleClassified().size();
@@ -155,47 +126,22 @@ public class IngredientCollectionMultiClassified<T, M> extends IngredientCollect
 
     @Override
     public Iterator<T> iterator() {
-        return new RemoveCallbackIterator<>(this,
+        return new IIngredientCollectionLikeMultiClassifiedTrait.RemoveCallbackIterator<>(this,
                 null, getComponent().getMatcher().getAnyMatchCondition());
     }
 
     @Override
     public Iterator<T> iterator(T instance, M matchCondition) {
-        return new RemoveCallbackIterator<>(this, instance, matchCondition);
+        return new IIngredientCollectionLikeMultiClassifiedTrait.RemoveCallbackIterator<>(this, instance, matchCondition);
     }
 
-    public static class RemoveCallbackIterator<T, M> implements Iterator<T> {
+    @Override
+    public void removeInstance(IngredientCollectionSingleClassified<T, M, ?> collection, T iterableInstance) {
+        collection.remove(iterableInstance);
+    }
 
-        private final IngredientCollectionMultiClassified<T, M> multiClassifiedCollection;
-        private final Iterator<T> iterator;
-        private final List<IngredientCollectionSingleClassified<T, M, ?>> otherClassifiedCollections;
-
-        private T lastNext;
-
-        public RemoveCallbackIterator(IngredientCollectionMultiClassified<T, M> multiClassifiedCollection,
-                                      T instance, M matchCondition) {
-            this.multiClassifiedCollection = multiClassifiedCollection;
-            IngredientCollectionSingleClassified<T, M, ?> classifiedCollection = this.multiClassifiedCollection.getBestClassifiedCollection(matchCondition);
-            this.iterator = classifiedCollection.iterator(instance, matchCondition);
-            this.otherClassifiedCollections = Lists
-                    .newArrayList(this.multiClassifiedCollection.classifiedCollections.values());
-            otherClassifiedCollections.remove(classifiedCollection);
-        }
-
-        @Override
-        public boolean hasNext() {
-            return this.iterator.hasNext();
-        }
-
-        @Override
-        public T next() {
-            return lastNext = this.iterator.next();
-        }
-
-        @Override
-        public void remove() {
-            this.iterator.remove();
-            otherClassifiedCollections.forEach((c) -> c.remove(lastNext));
-        }
+    @Override
+    public Map<IngredientComponentCategoryType<T, M, ?>, IngredientCollectionSingleClassified<T, M, ?>> getClassifiedCollections() {
+        return this.classifiedCollections;
     }
 }
