@@ -23,6 +23,7 @@ import java.util.function.Supplier;
  * @param <T> The instance type.
  * @param <M> The matching condition parameter.
  * @param <V> The type of mapped values.
+ * @param <C> The category type.
  */
 public class IngredientMapSingleClassified<T, M, V, C> extends IngredientMapAdapter<T, M, V>
         implements IIngredientCollectionLikeSingleClassifiedTrait<T, M, Map.Entry<T, V>, C, IIngredientMapMutable<T, M, V>> {

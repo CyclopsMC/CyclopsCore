@@ -48,6 +48,8 @@ public class TestIngredientMapComplexParameterized {
                 { new IngredientMapSingleClassified<>(IngredientComponentStubs.COMPLEX,
                         () -> new IngredientHashMap<>(IngredientComponentStubs.COMPLEX),
                         IngredientComponentStubs.COMPLEX.getCategoryTypes().get(3)) },
+                { new IngredientMapMultiClassified<>(IngredientComponentStubs.COMPLEX,
+                        () -> new IngredientHashMap<>(IngredientComponentStubs.COMPLEX)) },
         });
     }
 

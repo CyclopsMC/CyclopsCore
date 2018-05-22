@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.ingredient.collection;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponentCategoryType;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -66,7 +66,8 @@ public class IngredientCollectionMultiClassified<T, M> extends IngredientCollect
         IngredientCollectionSingleClassified<T, M, ?> classifiedCollection = getBestClassifiedCollection(matchCondition);
 
         // Determine all other classified collections
-        List<IngredientCollectionSingleClassified<T, M, ?>> otherClassifiedCollections = Lists.newArrayList(classifiedCollections.values());
+        Set<IngredientCollectionSingleClassified<T, M, ?>> otherClassifiedCollections = Sets.newIdentityHashSet();
+        otherClassifiedCollections.addAll(classifiedCollections.values());
         otherClassifiedCollections.remove(classifiedCollection);
 
         // Using the best collection's iterator, we remove all its matches,
@@ -75,7 +76,7 @@ public class IngredientCollectionMultiClassified<T, M> extends IngredientCollect
         // since iteration can (most likely) not be done efficiently for all of them.
         Iterator<T> it = classifiedCollection.iterator(instance, matchCondition);
         int count = 0;
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             T removed = it.next();
             it.remove();
             otherClassifiedCollections.forEach((c) -> c.remove(removed));
@@ -92,17 +93,11 @@ public class IngredientCollectionMultiClassified<T, M> extends IngredientCollect
 
     @Override
     public boolean contains(T instance, M matchCondition) {
-        if (matchCondition.equals(getComponent().getMatcher().getAnyMatchCondition())) {
-            return this.size() > 0;
-        }
         return getBestClassifiedCollection(matchCondition).contains(instance, matchCondition);
     }
 
     @Override
     public int count(T instance, M matchCondition) {
-        if (matchCondition.equals(getComponent().getMatcher().getAnyMatchCondition())) {
-            return this.size();
-        }
         return getBestClassifiedCollection(matchCondition).count(instance, matchCondition);
     }
 

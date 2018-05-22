@@ -36,6 +36,8 @@ public class TestIngredientMapsSimpleParameterized<T, M, V> {
                 /*  2 */ { new IngredientMapSingleClassified<>(IngredientComponentStubs.SIMPLE,
                 () -> new IngredientHashMap<>(IngredientComponentStubs.SIMPLE),
                 IngredientComponentStubs.SIMPLE.getCategoryTypes().get(0)), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3, 0, 1, 2, 3 },
+                /*  3 */ { new IngredientMapMultiClassified<>(IngredientComponentStubs.SIMPLE,
+                () -> new IngredientHashMap<>(IngredientComponentStubs.SIMPLE)), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3, 0, 1, 2, 3 },
         });
     }
 

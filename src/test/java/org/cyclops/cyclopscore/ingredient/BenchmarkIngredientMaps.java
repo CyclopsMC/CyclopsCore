@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.ingredient.collection.IIngredientMapMutable;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientHashMap;
+import org.cyclops.cyclopscore.ingredient.collection.IngredientMapMultiClassified;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientMapSingleClassified;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientTreeMap;
 
@@ -24,7 +25,11 @@ public class BenchmarkIngredientMaps {
                         IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0))),
                 Pair.of("Classified:TreeMap:Group", new IngredientMapSingleClassified<>(
                         IngredientComponentStubs.COMPLEX, () -> new IngredientTreeMap(IngredientComponentStubs.COMPLEX),
-                        IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0)))
+                        IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0))),
+                Pair.of("MultiClassified:HashMap:Group", new IngredientMapMultiClassified<>(
+                        IngredientComponentStubs.COMPLEX, () -> new IngredientHashMap(IngredientComponentStubs.COMPLEX))),
+                Pair.of("MultiClassified:TreeMap:Group", new IngredientMapMultiClassified<>(
+                        IngredientComponentStubs.COMPLEX, () -> new IngredientTreeMap(IngredientComponentStubs.COMPLEX)))
         );
         Random rand = new Random(1000);
 
