@@ -37,7 +37,7 @@ public class BenchmarkIngredientMaps {
     }
 
     public static void runCollections(Random rand, List<Pair<String, IIngredientMapMutable<ComplexStack, Integer, Integer>>> collections, int itemCount, int repeatCount) {
-        List<ComplexStack> complexStacks = Lists.newArrayList();
+        IIngredientMapMutable<ComplexStack, Integer, Integer> complexStacks = new IngredientHashMap<>(IngredientComponentStubs.COMPLEX);
         for (int i = 0; i < itemCount; i++) {
             ComplexStack.Group group = ComplexStack.Group.values()[rand.nextInt(ComplexStack.Group.values().length)];
             ComplexStack.Tag tag = ComplexStack.Tag.values()[rand.nextInt(ComplexStack.Tag.values().length)];
@@ -45,16 +45,12 @@ public class BenchmarkIngredientMaps {
                 tag = null;
             }
             ComplexStack complexStack = new ComplexStack(group, rand.nextInt(64) + 1, rand.nextInt(15), tag);
-            complexStacks.add(complexStack);
+            complexStacks.put(complexStack, rand.nextInt());
         }
 
         System.out.println("--- INSERTION ---");
         for (Pair<String, IIngredientMapMutable<ComplexStack, Integer, Integer>> pair : collections) {
-            benchmark(pair.getLeft(), () -> {
-                for (ComplexStack complexStack : complexStacks) {
-                    pair.getRight().put(complexStack, rand.nextInt());
-                }
-            });
+            benchmark(pair.getLeft(), () -> pair.getRight().putAll(complexStacks));
         }
 
         System.out.println("--- ITERATE ---");

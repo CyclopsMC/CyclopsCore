@@ -5,10 +5,16 @@ import com.google.common.collect.Sets;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponentCategoryType;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * An ingredient collection that classifies instances in smaller collections
@@ -24,6 +30,7 @@ public class IngredientCollectionMultiClassified<T, M> extends IngredientCollect
         implements IIngredientCollectionMutable<T, M>, IIngredientCollectionLikeMultiClassifiedTrait<T, M, T, IngredientCollectionSingleClassified<T, M, ?>> {
 
     private final Map<IngredientComponentCategoryType<T, M, ?>, IngredientCollectionSingleClassified<T, M, ?>> classifiedCollections;
+
 
     public IngredientCollectionMultiClassified(IngredientComponent<T, M> component,
                                                Supplier<IIngredientCollectionMutable<T, M>> collectionCreator) {
@@ -42,6 +49,35 @@ public class IngredientCollectionMultiClassified<T, M> extends IngredientCollect
             result = singleClassified.add(instance);
         }
         return result;
+    }
+
+    /**
+     * A multi-threaded addAll implementation.
+     * This will create workers for adding the given instances to all classified collections.
+     * @param executorService An optional executor service.
+     *                        If none is provided, a new temporary one will be created
+     *                        for the duration of this method call.
+     * @param instances The instances that need to be added.
+     * @return If the collection was changed due to this addition.
+     *         This can be false in the case of sets in which each instance can only exists once.
+     */
+    public boolean addAllThreaded(@Nullable ExecutorService executorService, Iterable<? extends T> instances) {
+        boolean newExecutorService = false;
+        if (executorService == null) {
+            executorService = Executors.newFixedThreadPool(this.classifiedCollections.size());
+            newExecutorService = true;
+        }
+        try {
+            boolean ret =  executorService.invokeAll(this.classifiedCollections.values().stream()
+                    .map(c -> (Callable<Boolean>) () -> c.addAll(instances)).collect(Collectors.toList())).get(0).get();
+            if (newExecutorService) {
+                executorService.shutdown();
+            }
+            return ret;
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override

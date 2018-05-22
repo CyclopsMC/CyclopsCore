@@ -10,7 +10,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * An ingredient map that classifies instances in smaller collections based on all category type of a component type.
@@ -52,6 +57,34 @@ public class IngredientMapMultiClassified<T, M, V> extends IngredientMapAdapter<
             previous = singleClassified.put(key, value);
         }
         return previous;
+    }
+
+    /**
+     * A multi-threaded putAll implementation.
+     * This will create workers for adding the given instances to all classified collections.
+     * @param executorService An optional executor service.
+     *                        If none is provided, a new temporary one will be created
+     *                        for the duration of this method call.
+     * @param map The map entries that needs to be added.
+     * @return The amount of entries that were added.
+     */
+    public int putAllThreaded(@Nullable ExecutorService executorService, IIngredientMap<? extends T, M, ? extends V> map) {
+        boolean newExecutorService = false;
+        if (executorService == null) {
+            executorService = Executors.newFixedThreadPool(this.classifiedMaps.size());
+            newExecutorService = true;
+        }
+        try {
+            int ret =  executorService.invokeAll(this.classifiedMaps.values().stream()
+                    .map(c -> (Callable<Integer>) () -> c.putAll(map)).collect(Collectors.toList())).get(0).get();
+            if (newExecutorService) {
+                executorService.shutdown();
+            }
+            return ret;
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     @Nullable
