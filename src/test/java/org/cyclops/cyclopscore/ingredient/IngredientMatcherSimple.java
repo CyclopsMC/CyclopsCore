@@ -59,6 +59,21 @@ public class IngredientMatcherSimple implements IIngredientMatcher<Integer, Bool
     }
 
     @Override
+    public long getQuantity(Integer instance) {
+        return instance;
+    }
+
+    @Override
+    public Integer withQuantity(Integer instance, long quantity) throws ArithmeticException {
+        return Math.toIntExact(quantity);
+    }
+
+    @Override
+    public long getMaximumQuantity() {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
     public int compare(Integer o1, Integer o2) {
         return o1 - o2;
     }

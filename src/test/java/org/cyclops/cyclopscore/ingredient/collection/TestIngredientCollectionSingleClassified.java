@@ -16,9 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(Parameterized.class)
@@ -86,7 +84,7 @@ public class TestIngredientCollectionSingleClassified {
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), this.categoryType);
         IngredientCollectionSingleClassified<ComplexStack, Integer, ?> c1 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), new IngredientComponentCategoryType<>(
-                        new ResourceLocation("dummy"), ComplexStack.Group.class, true, ComplexStack::getGroup, ComplexStack.Match.GROUP));
+                        new ResourceLocation("dummy"), ComplexStack.Group.class, true, ComplexStack::getGroup, ComplexStack.Match.GROUP, false));
         IngredientCollectionSingleClassified<ComplexStack, Integer, ?> c2 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), this.categoryType);
         c0.addAll(Lists.newArrayList(CA01_, CB02_, CA91B));

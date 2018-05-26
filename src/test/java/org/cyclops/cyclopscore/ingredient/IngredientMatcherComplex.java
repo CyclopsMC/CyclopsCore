@@ -59,6 +59,21 @@ public class IngredientMatcherComplex implements IIngredientMatcher<ComplexStack
     }
 
     @Override
+    public long getQuantity(ComplexStack instance) {
+        return instance.getAmount();
+    }
+
+    @Override
+    public ComplexStack withQuantity(ComplexStack instance, long quantity) throws ArithmeticException {
+        return new ComplexStack(instance.getGroup(), instance.getMeta(), Math.toIntExact(quantity), instance.getTag());
+    }
+
+    @Override
+    public long getMaximumQuantity() {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
     public int compare(ComplexStack o1, ComplexStack o2) {
         if (o1 == null) {
             if (o2 == null) {
