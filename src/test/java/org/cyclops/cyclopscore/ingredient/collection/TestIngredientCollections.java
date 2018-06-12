@@ -741,4 +741,11 @@ public class TestIngredientCollections {
         assertThat(IngredientCollections.toString(cols4), equalTo("[{0,0}, {1,10}, {3,30}]"));
     }
 
+    @Test
+    public void testSort() {
+        IngredientArrayList<Integer, Boolean> unsorted = new IngredientArrayList<>(IngredientComponentStubs.SIMPLE, Lists.newArrayList(3, 1, 2));
+        IngredientArrayList<Integer, Boolean> sorted = IngredientCollections.sort(unsorted, IngredientComponentStubs.SIMPLE.getMatcher());
+        assertThat(sorted, is(new IngredientArrayList<>(IngredientComponentStubs.SIMPLE, Lists.newArrayList(1, 2, 3))));
+    }
+
 }

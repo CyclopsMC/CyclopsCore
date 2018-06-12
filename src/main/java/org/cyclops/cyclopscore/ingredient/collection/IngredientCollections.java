@@ -3,6 +3,8 @@ package org.cyclops.cyclopscore.ingredient.collection;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -194,6 +196,21 @@ public final class IngredientCollections {
         }
         stringBuilder.append("]");
         return stringBuilder.toString();
+    }
+
+    /**
+     * Created a sorted collection using the given comparator and all instances from the given collection.
+     * @param collection A collection to create a sorted copy of.
+     * @param comparator A compatator.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @return A sorted collection based on the given collection and comparator.
+     */
+    public static <T, M> IngredientArrayList<T, M> sort(IIngredientCollection<T, M> collection,
+                                                        Comparator<? super T> comparator) {
+        T[] a = collection.toArray();
+        Arrays.sort(a, comparator);
+        return new IngredientArrayList<>(collection.getComponent(), a);
     }
 
 }
