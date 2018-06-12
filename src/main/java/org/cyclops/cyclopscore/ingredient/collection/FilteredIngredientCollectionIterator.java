@@ -28,7 +28,19 @@ public class FilteredIngredientCollectionIterator<T, M> implements Iterator<T> {
      */
     public FilteredIngredientCollectionIterator(Iterable<T> iterable, IIngredientMatcher<T, M> matcher,
                                                 T instance, M matchCondition) {
-        this.iterator = iterable.iterator();
+        this(iterable.iterator(), matcher, instance, matchCondition);
+    }
+
+    /**
+     * Create a new instance.
+     * @param iterator An iterator with instances.
+     * @param matcher A matcher for the type of instances.
+     * @param instance An instance to match.
+     * @param matchCondition A match condition to filter by.
+     */
+    public FilteredIngredientCollectionIterator(Iterator<T> iterator, IIngredientMatcher<T, M> matcher,
+                                                T instance, M matchCondition) {
+        this.iterator = iterator;
         this.matcher = matcher;
         this.instance = instance;
         this.matchCondition = matchCondition;
