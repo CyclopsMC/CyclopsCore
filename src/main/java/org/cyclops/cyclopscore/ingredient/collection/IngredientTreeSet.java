@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientInstanceWrapper;
 
+import java.util.Iterator;
 import java.util.TreeSet;
 
 /**
@@ -22,6 +23,13 @@ public class IngredientTreeSet<T, M> extends IngredientSet<T, M> {
     public IngredientTreeSet(IngredientComponent<T, M> component, Iterable<? extends T> iterable) {
         super(component, Sets.newTreeSet());
         addAll(iterable);
+    }
+
+    public IngredientTreeSet(IngredientComponent<T, M> component, Iterator<? extends T> iterable) {
+        this(component);
+        while (iterable.hasNext()) {
+            add(iterable.next());
+        }
     }
 
     public IngredientTreeSet(IngredientComponent<T, M> component, TreeSet<IngredientInstanceWrapper<T, M>> set) {

@@ -6,6 +6,7 @@ import org.cyclops.commoncapabilities.api.ingredient.IngredientInstanceWrapper;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * An ingredient list collection that internally uses an {@link java.util.HashSet} to store instances.
@@ -27,6 +28,13 @@ public class IngredientHashSet<T, M> extends IngredientSet<T, M> {
     public IngredientHashSet(IngredientComponent<T, M> component, Iterable<? extends T> iterable) {
         super(component, iterable instanceof Collection ? Sets.newHashSetWithExpectedSize(((Collection) iterable).size()) : Sets.newHashSet());
         addAll(iterable);
+    }
+
+    public IngredientHashSet(IngredientComponent<T, M> component, Iterator<? extends T> iterable) {
+        this(component);
+        while (iterable.hasNext()) {
+            add(iterable.next());
+        }
     }
 
     public IngredientHashSet(IngredientComponent<T, M> component, HashSet<IngredientInstanceWrapper<T, M>> set) {

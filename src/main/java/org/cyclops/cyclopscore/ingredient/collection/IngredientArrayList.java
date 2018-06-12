@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * An ingredient list collection that internally uses an {@link ArrayList} to store instances.
@@ -23,6 +24,13 @@ public class IngredientArrayList<T, M> extends IngredientList<T, M> {
 
     public IngredientArrayList(IngredientComponent<T, M> component, Iterable<? extends T> iterable) {
         super(component, Lists.newArrayList(iterable));
+    }
+
+    public IngredientArrayList(IngredientComponent<T, M> component, Iterator<? extends T> iterable) {
+        this(component);
+        while (iterable.hasNext()) {
+            add(iterable.next());
+        }
     }
 
     public IngredientArrayList(IngredientComponent<T, M> component, T... instances) {

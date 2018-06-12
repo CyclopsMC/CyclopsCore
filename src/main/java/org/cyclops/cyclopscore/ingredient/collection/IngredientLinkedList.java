@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.ingredient.collection;
 import com.google.common.collect.Lists;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -19,6 +20,13 @@ public class IngredientLinkedList<T, M> extends IngredientList<T, M> {
 
     public IngredientLinkedList(IngredientComponent<T, M> component, Iterable<? extends T> iterable) {
         super(component, Lists.newLinkedList(iterable));
+    }
+
+    public IngredientLinkedList(IngredientComponent<T, M> component, Iterator<? extends T> iterable) {
+        this(component);
+        while (iterable.hasNext()) {
+            add(iterable.next());
+        }
     }
 
 }
