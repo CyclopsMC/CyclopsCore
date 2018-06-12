@@ -39,6 +39,20 @@ public class ComplexStack {
         return "[C" + getGroup() + ";" + getMeta() + ";" + getAmount() + ";" + getTag() + "]";
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ComplexStack)) {
+            return false;
+        }
+        ComplexStack that = (ComplexStack) obj;
+        return this.group == that.group && this.meta == that.meta && this.amount == that.amount && this.tag == that.tag;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.group.hashCode() ^ this.meta ^ this.amount ^ (this.tag == null ? 0 : this.tag.hashCode());
+    }
+
     public static enum Group {
         A, B, C, D, E
     }
