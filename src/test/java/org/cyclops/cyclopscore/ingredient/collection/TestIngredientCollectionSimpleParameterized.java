@@ -11,7 +11,8 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @RunWith(Parameterized.class)
@@ -106,6 +107,11 @@ public class TestIngredientCollectionSimpleParameterized {
         Assert.assertThat(collection.size(), is(3));
         assertThat(collection.removeAll(Lists.newArrayList(0, 1), false), is(3));
         Assert.assertThat(collection.size(), is(0));
+    }
+
+    @Test
+    public void testToArray() {
+        Assert.assertThat(Arrays.equals(collection.toArray(), new Integer[]{0, 1, 2}), is(true));
     }
 
 }

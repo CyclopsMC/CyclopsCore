@@ -98,4 +98,21 @@ public interface IIngredientCollection<T, M> extends IIngredientCollectionLike<T
      */
     public Iterator<T> iterator(T instance, M matchCondition);
 
+    /**
+     * Returns an array containing all of the elements in this collection in the internal
+     * sequence (from first to last element).
+     *
+     * Each call of this method will return a new array copy.
+     *
+     * @return an array containing all of the elements in this collection in the internal sequence.
+     */
+    public default T[] toArray() {
+        Object[] array = new Object[size()];
+        int i = 0;
+        for (T t : this) {
+            array[i++] = t;
+        }
+        return (T[]) array;
+    }
+
 }
