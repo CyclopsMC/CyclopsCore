@@ -9,7 +9,7 @@ public class IngredientComponentStubs {
 
     public static IngredientComponent<Integer, Boolean> SIMPLE =
             new IngredientComponent<>("cyclopscore:simple", new IngredientMatcherSimple(),
-                    new IngredientSerializerStub<>(), Lists.newArrayList(
+                    new IngredientSerializerInt(), Lists.newArrayList(
                     new IngredientComponentCategoryType<>(new ResourceLocation("cyclopscore:simple/amount"),
                             Integer.class, false, amount -> amount, true, true)
             )).setUnlocalizedName("recipecomponent.cyclopscore.simple");
