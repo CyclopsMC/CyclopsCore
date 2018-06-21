@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
+import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -12,6 +13,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.opengl.GL11;
 
@@ -313,6 +315,32 @@ public class GuiHelpers {
     public static void renderTooltip(GuiContainer gui, int x, int y, int width, int height,
                                      int mouseX, int mouseY, Supplier<List<String>> linesSupplier) {
         renderTooltipOptional(gui, x, y, width, height, mouseX, mouseY, () -> Optional.of(linesSupplier.get()));
+    }
+
+    private static final List<Pair<Long, String>> COUNT_SCALES = Lists.newArrayList(
+            Pair.of(1000000000000000000L, "E"),
+            Pair.of(1000000000000000L, "P"),
+            Pair.of(1000000000000L, "T"),
+            Pair.of(1000000000L, "G"),
+            Pair.of(1000000L, "M"),
+            Pair.of(1000L, "K")
+    );
+
+    /**
+     * Stringify a (potentially large) quantity to a scaled string.
+     *
+     * For example, 123765 will be converted as 1M.
+     *
+     * @param quantity A quantity.
+     * @return A scaled quantity string.
+     */
+    public static String quantityToScaledString(long quantity) {
+        for (Pair<Long, String> countScale : COUNT_SCALES) {
+            if (quantity >= countScale.getLeft()) {
+                return String.valueOf(quantity / countScale.getLeft()) + countScale.getRight();
+            }
+        }
+        return String.valueOf(quantity);
     }
 
     /**

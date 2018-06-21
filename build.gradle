@@ -65,6 +65,12 @@ idea {
     }
 }
 
+jar {
+    manifest {
+        attributes 'FMLAT': 'cyclopscore_at.cfg'
+    }
+}
+
 jacocoTestReport {
     reports {
         xml.enabled = true

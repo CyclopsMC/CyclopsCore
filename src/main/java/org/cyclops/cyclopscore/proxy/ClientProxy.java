@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.proxy;
 
 import net.minecraftforge.common.MinecraftForge;
 import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.client.gui.RenderItemExtendedSlotCount;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.tracking.Versions;
 
@@ -20,6 +21,13 @@ public class ClientProxy extends ClientProxyComponent {
 	@Override
 	public ModBase getMod() {
 		return CyclopsCore._instance;
+	}
+
+	@Override
+	public void registerRenderers() {
+		super.registerRenderers();
+
+		RenderItemExtendedSlotCount.initialize();
 	}
 
 	@Override
