@@ -3,25 +3,21 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.helper.GuiHelpers;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
-import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
@@ -132,56 +128,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         if(renderOverlays) gui.drawOuterBorder(x, y, SLOT_SIZE, SLOT_SIZE, 1, 1, 1, 0.2f);
 
         if (fluidStack != null) {
-            GlStateManager.pushMatrix();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            RenderHelper.enableGUIStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
-
-            GlStateManager.pushMatrix();
-            TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-            textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
-            GlStateManager.enableRescaleNormal();
-            GlStateManager.enableAlpha();
-            GlStateManager.alphaFunc(516, 0.1F);
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-
-            TextureAtlasSprite icon = RenderHelpers.getFluidIcon(fluidStack, EnumFacing.UP);
-            BufferBuilder worldRenderer = Tessellator.getInstance().getBuffer();
-            worldRenderer.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR);
-            Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            float minX = x;
-            float minY = y;
-            float maxX = minX + SLOT_SIZE;
-            float maxY = minY + SLOT_SIZE;
-            float u1 = icon.getMinU();
-            float u2 = icon.getMaxU();
-            float v1 = icon.getMinV();
-            float v2 = icon.getMaxV();
-            Triple<Float, Float, Float> colorParts = RenderHelpers.getFluidVertexBufferColor(fluidStack);
-            float r = colorParts.getLeft();
-            float g = colorParts.getMiddle();
-            float b = colorParts.getRight();
-            worldRenderer.pos((double) maxX, (double) maxY, 0).tex((double) u2, (double) v2).color(r, g, b, 1.0F).endVertex();
-            worldRenderer.pos((double) maxX, (double) minY, 0).tex((double) u2, (double) v1).color(r, g, b, 1.0F).endVertex();
-            worldRenderer.pos((double) minX, (double) minY, 0).tex((double) u1, (double) v1).color(r, g, b, 1.0F).endVertex();
-            worldRenderer.pos((double) minX, (double) maxY, 0).tex((double) u1, (double) v2).color(r, g, b, 1.0F).endVertex();
-            Tessellator.getInstance().draw();
-
-            GlStateManager.disableAlpha();
-            GlStateManager.disableRescaleNormal();
-            GlStateManager.disableLighting();
-            GlStateManager.popMatrix();
-            textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
-
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.popMatrix();
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GuiHelpers.renderFluidSlot(gui, fluidStack, x, y);
 
             if (button != null && renderOverlays) button.update(x, y, fluidStack, gui);
         }

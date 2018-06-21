@@ -6,8 +6,10 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
@@ -50,6 +52,13 @@ public class GuiHelpers {
     public static void renderFluidTank(Gui gui, @Nullable FluidStack fluidStack, int capacity,
                                        int x, int y, int width, int height) {
         if (fluidStack != null && capacity > 0) {
+            GlStateManager.pushMatrix();
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            RenderHelper.enableGUIStandardItemLighting();
+            GlStateManager.enableRescaleNormal();
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+
             int level = height * fluidStack.amount / capacity;
             TextureAtlasSprite icon = RenderHelpers.getFluidIcon(fluidStack, EnumFacing.UP);
             int verticalOffset = 0;
@@ -76,6 +85,27 @@ public class GuiHelpers {
 
                 verticalOffset = verticalOffset + 16;
             }
+
+            TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+            textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+
+            RenderHelper.disableStandardItemLighting();
+            GlStateManager.popMatrix();
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+        }
+    }
+
+    /**
+     * Render the given fluid in a standard slot.
+     * @param gui The gui to render in.
+     * @param fluidStack The fluid to render.
+     * @param x The slot X position.
+     * @param y The slot Y position.
+     */
+    public static void renderFluidSlot(Gui gui, @Nullable FluidStack fluidStack, int x, int y) {
+        if (fluidStack != null) {
+            GuiHelpers.renderFluidTank(gui, fluidStack, fluidStack.amount, x, y, SLOT_SIZE_INNER, SLOT_SIZE_INNER);
         }
     }
 
