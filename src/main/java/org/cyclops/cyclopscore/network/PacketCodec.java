@@ -66,6 +66,19 @@ public abstract class PacketCodec extends PacketBase {
 			}
 		});
 
+		codecActions.put(long.class, new ICodecAction() {
+
+			@Override
+			public void encode(Object object, ExtendedBuffer output) {
+				output.writeLong((long) object);
+			}
+
+			@Override
+			public Object decode(ExtendedBuffer input) {
+				return input.readLong();
+			}
+		});
+
 		codecActions.put(short.class, new ICodecAction() {
 
 			@Override

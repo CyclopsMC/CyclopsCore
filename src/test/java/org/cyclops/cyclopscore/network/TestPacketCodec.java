@@ -57,6 +57,15 @@ public class TestPacketCodec {
     }
 
     @Test
+    public void testLong() {
+        LongPacketCodec packet1 = new LongPacketCodec();
+        packet1.value = 1000000000000L;
+        LongPacketCodec packet2 = new LongPacketCodec();
+        encodeDecode(packet1, packet2);
+        assertThat("Input equals output", packet1.value, is(packet2.value));
+    }
+
+    @Test
     public void testShort() {
         ShortPacketCodec packet1 = new ShortPacketCodec();
         packet1.value = 10;
@@ -210,6 +219,11 @@ public class TestPacketCodec {
     public static class IntPacketCodec extends SimplePacketCodec {
         @CodecField
         public int value;
+    }
+
+    public static class LongPacketCodec extends SimplePacketCodec {
+        @CodecField
+        public long value;
     }
 
     public static class ShortPacketCodec extends SimplePacketCodec {
