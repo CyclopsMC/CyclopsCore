@@ -15,6 +15,7 @@ import java.util.List;
 /**
  * Gui for an inventory container that has a scrollbar and search field.
  * @author rubensworks
+ * TODO: rewrite with GuiScrollBar
  */
 public abstract class ScrollingGuiContainer extends GuiContainerExtended {
 

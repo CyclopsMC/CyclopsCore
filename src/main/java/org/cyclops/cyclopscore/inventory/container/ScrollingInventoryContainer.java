@@ -19,6 +19,7 @@ import java.util.regex.PatternSyntaxException;
  *      filtered: All items that are browsable by the user, might be more than the pageSize allows what leads to a scrollbar.
  *      unfiltered: All items, pattern searching will happen in this list.
  * @author rubensworks
+ * TODO: rewrite with GuiScrollBar
  */
 public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryContainer {
 
