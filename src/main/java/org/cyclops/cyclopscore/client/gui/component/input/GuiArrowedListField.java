@@ -25,8 +25,8 @@ public class GuiArrowedListField<E> extends GuiTextFieldExtended {
         this.arrows = arrows;
 
         if(this.arrows) {
-            arrowLeft  = new GuiButtonArrow(0, x, y, GuiButtonArrow.Direction.WEST);
-            arrowRight = new GuiButtonArrow(1, x + width, y, GuiButtonArrow.Direction.EAST);
+            arrowLeft  = new GuiButtonArrow(0, x, y - 1, GuiButtonArrow.Direction.WEST);
+            arrowRight = new GuiButtonArrow(1, x + width, y - 1, GuiButtonArrow.Direction.EAST);
             arrowRight.x -= arrowRight.width;
         }
         setEnableBackgroundDrawing(true);
@@ -81,12 +81,12 @@ public class GuiArrowedListField<E> extends GuiTextFieldExtended {
             arrowLeft.drawButton(minecraft, mouseX, mouseY, minecraft.getRenderPartialTicks());
             arrowRight.drawButton(minecraft, mouseX, mouseY, minecraft.getRenderPartialTicks());
             offsetX = arrowLeft.width;
-            x += offsetX;
+            x += offsetX + 1;
             width -= offsetX * 2;
         }
         super.drawTextBox(minecraft, mouseX, mouseY);
         if(arrows) {
-            x -= offsetX;
+            x -= offsetX + 1;
             width += offsetX * 2;
         }
     }
