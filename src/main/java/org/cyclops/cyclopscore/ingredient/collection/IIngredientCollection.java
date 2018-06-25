@@ -4,6 +4,10 @@ import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * A collection of ingredient component instances.
@@ -113,6 +117,25 @@ public interface IIngredientCollection<T, M> extends IIngredientCollectionLike<T
             array[i++] = t;
         }
         return (T[]) array;
+    }
+
+    @Override
+    default Spliterator<T> spliterator() {
+        return Spliterators.spliterator(this.iterator(), this.size(), 0);
+    }
+
+    /**
+     * @return A stream for all ingredients in this collection.
+     */
+    default Stream<T> stream() {
+        return StreamSupport.stream(spliterator(), false);
+    }
+
+    /**
+     * @return A parallel stream for all ingredients in this collection.
+     */
+    default Stream<T> parallelStream() {
+        return StreamSupport.stream(spliterator(), true);
     }
 
 }

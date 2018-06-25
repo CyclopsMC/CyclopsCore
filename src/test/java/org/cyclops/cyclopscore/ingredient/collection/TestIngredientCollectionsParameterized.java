@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.ingredient.collection;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -707,6 +709,16 @@ public class TestIngredientCollectionsParameterized<T, M> {
         it.remove();
         it.remove();
         it.remove();
+    }
+
+    @Test
+    public void testStream() {
+        assertThat(collection.stream().collect(Collectors.toSet()), is(Sets.newHashSet(collection)));
+    }
+
+    @Test
+    public void testParallelStream() {
+        assertThat(collection.parallelStream().collect(Collectors.toSet()), is(Sets.newHashSet(collection)));
     }
 
 }

@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
 
 /**
  * An ingredient collection using list semantics.
@@ -111,6 +113,11 @@ public interface IIngredientList<T, M> extends IIngredientCollection<T, M> {
             it.next();
             it.set(e);
         }
+    }
+
+    @Override
+    default Spliterator<T> spliterator() {
+        return Spliterators.spliterator(this.iterator(), this.size(), Spliterator.ORDERED);
     }
 
 }
