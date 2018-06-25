@@ -10,6 +10,8 @@ import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.ListIterator;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -63,6 +65,229 @@ public class TestIngredientCollectionListComplex {
         assertThat(collection.hashCode(), not(is(new IngredientCollectionEmpty<>(IngredientComponentStubs.SIMPLE).hashCode())));
         assertThat(collection.hashCode(), is(new IngredientArrayList<>(IngredientComponentStubs.COMPLEX, CA01_, CB02_, CA91B).hashCode()));
         assertThat(collection.hashCode(), not(is(new IngredientArrayList<>(IngredientComponentStubs.SIMPLE).hashCode())));
+    }
+
+    @Test
+    public void testGet() {
+        assertThat(collection.get(0), is(CA01_));
+        assertThat(collection.get(1), is(CB02_));
+        assertThat(collection.get(2), is(CA91B));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testGetOutOfBoundsSmall() {
+        collection.get(-1);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testGetOutOfBoundsLarge() {
+        collection.get(3);
+    }
+
+    @Test
+    public void testSet() {
+        assertThat(collection.set(0, CA01B), is(CA01_));
+
+        assertThat(collection.get(0), is(CA01B));
+        assertThat(collection.get(1), is(CB02_));
+        assertThat(collection.get(2), is(CA91B));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testSetOutOfBoundsSmall() {
+        collection.set(-1, CA01B);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testSetOutOfBoundsLarge() {
+        collection.set(3, CA01B);
+    }
+
+    @Test
+    public void testAdd() {
+        collection.add(0, CA01B);
+
+        assertThat(collection.get(0), is(CA01B));
+        assertThat(collection.get(1), is(CA01_));
+        assertThat(collection.get(2), is(CB02_));
+        assertThat(collection.get(3), is(CA91B));
+    }
+
+    @Test
+    public void testAddEnd() {
+        collection.add(3, CA01B);
+
+        assertThat(collection.get(0), is(CA01_));
+        assertThat(collection.get(1), is(CB02_));
+        assertThat(collection.get(2), is(CA91B));
+        assertThat(collection.get(3), is(CA01B));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testAddOutOfBoundsSmall() {
+        collection.add(-1, CA01B);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testAddOutOfBoundsLarge() {
+        collection.add(4, CA01B);
+    }
+
+    @Test
+    public void testRemove() {
+        collection.remove(0);
+
+        assertThat(collection.get(0), is(CB02_));
+        assertThat(collection.get(1), is(CA91B));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testRemoveOutOfBoundsSmall() {
+        collection.remove(-1);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testRemoveOutOfBoundsLarge() {
+        collection.remove(3);
+    }
+
+    @Test
+    public void testFirstIndexOf() {
+        collection.add(CA01_);
+
+        assertThat(collection.firstIndexOf(CA01_), is(0));
+
+        assertThat(collection.firstIndexOf(CA01B), is(-1));
+    }
+
+    @Test
+    public void testLastIndexOf() {
+        collection.add(CA01_);
+
+        assertThat(collection.lastIndexOf(CA01_), is(3));
+
+        assertThat(collection.firstIndexOf(CA01B), is(-1));
+    }
+
+    @Test
+    public void testListIterator() {
+        ListIterator<ComplexStack> it = collection.listIterator();
+
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.hasPrevious(), is(false));
+        assertThat(it.nextIndex(), is(0));
+        assertThat(it.next(), is(CA01_));
+
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.hasPrevious(), is(true));
+        assertThat(it.nextIndex(), is(1));
+        assertThat(it.next(), is(CB02_));
+
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.hasPrevious(), is(true));
+        assertThat(it.nextIndex(), is(2));
+        assertThat(it.next(), is(CA91B));
+
+        assertThat(it.hasNext(), is(false));
+        assertThat(it.hasPrevious(), is(true));
+        assertThat(it.previousIndex(), is(2));
+        assertThat(it.previous(), is(CA91B));
+
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.hasPrevious(), is(true));
+        assertThat(it.previousIndex(), is(1));
+        assertThat(it.previous(), is(CB02_));
+
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.hasPrevious(), is(true));
+        assertThat(it.previousIndex(), is(0));
+        assertThat(it.previous(), is(CA01_));
+
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.hasPrevious(), is(false));
+    }
+
+    @Test
+    public void testListIteratorOffset() {
+        ListIterator<ComplexStack> it = collection.listIterator(1);
+
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.hasPrevious(), is(true));
+        assertThat(it.nextIndex(), is(1));
+        assertThat(it.next(), is(CB02_));
+
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.hasPrevious(), is(true));
+        assertThat(it.nextIndex(), is(2));
+        assertThat(it.next(), is(CA91B));
+
+        assertThat(it.hasNext(), is(false));
+        assertThat(it.hasPrevious(), is(true));
+        assertThat(it.previousIndex(), is(2));
+        assertThat(it.previous(), is(CA91B));
+
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.hasPrevious(), is(true));
+        assertThat(it.previousIndex(), is(1));
+        assertThat(it.previous(), is(CB02_));
+
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.hasPrevious(), is(true));
+        assertThat(it.previousIndex(), is(0));
+        assertThat(it.previous(), is(CA01_));
+
+        assertThat(it.hasNext(), is(true));
+        assertThat(it.hasPrevious(), is(false));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testListIteratorOutOfBoundsSmall() {
+        collection.listIterator(-1);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testListIteratorOutOfBoundsLarge() {
+        collection.listIterator(4);
+    }
+
+    @Test
+    public void testSubList() {
+        assertThat(collection.subList(0, 3), is(collection));
+
+        assertThat(collection.subList(2, 3), is(new IngredientArrayList<>(collection.getComponent(), Lists.newArrayList(CA91B))));
+
+        assertThat(collection.subList(1, 2), is(new IngredientArrayList<>(collection.getComponent(), Lists.newArrayList(CB02_))));
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testSubListOutOfBoundsSmall() {
+        collection.subList(-1, 3);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void testSubListOutOfBoundsLarge() {
+        collection.subList(0, 4);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testSubListOutOfBoundsRange() {
+        collection.subList(1, 0);
+    }
+
+    @Test
+    public void testSort() {
+        collection.add(CA01B);
+
+        collection.sort(collection.getComponent().getMatcher());
+
+        assertThat(Lists.newArrayList(collection), is(Lists.newArrayList(CA01_, CA01B, CA91B, CB02_)));
+    }
+
+    @Test
+    public void testSortReverse() {
+        collection.sort(collection.getComponent().getMatcher().reversed());
+
+        assertThat(Lists.newArrayList(collection), is(Lists.newArrayList(CB02_, CA91B, CA01_)));
     }
 
 }
