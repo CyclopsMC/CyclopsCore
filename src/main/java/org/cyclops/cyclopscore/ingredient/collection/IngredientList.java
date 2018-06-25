@@ -16,7 +16,7 @@ import java.util.ListIterator;
  * @param <M> The matching condition parameter.
  */
 public class IngredientList<T, M> extends IngredientCollectionCollectionAdapter<T, M, List<T>>
-        implements IIngredientList<T, M> {
+        implements IIngredientListMutable<T, M> {
 
     public IngredientList(IngredientComponent<T, M> component, List<T> list) {
         super(component, list);

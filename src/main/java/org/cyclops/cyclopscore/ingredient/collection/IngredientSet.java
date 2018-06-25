@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public abstract class IngredientSet<T, M>
         extends IngredientCollectionCollectionWrappedAdapter<T, M, Set<IngredientInstanceWrapper<T, M>>>
-        implements IIngredientSet<T, M> {
+        implements IIngredientSetMutable<T, M> {
 
     public IngredientSet(IngredientComponent<T, M> component, Set<IngredientInstanceWrapper<T, M>> set) {
         super(component, set);
