@@ -22,7 +22,7 @@ import java.util.Objects;
  * @param <I> The inner collection type.
  */
 public class IngredientCollectionQuantitativeGrouper<T, M, I extends IIngredientList<T, M> & IIngredientCollectionMutable<T, M>>
-        extends IngredientCollectionMutableWrapper<T, M, I> {
+        extends IngredientCollectionMutableWrapper<T, M, I> implements IIngredientCollapsedCollection<T, M> {
 
     private final IngredientComponentCategoryType<T, M, ?> primaryQuantifier;
     private final M quantifierlessMatchCondition;

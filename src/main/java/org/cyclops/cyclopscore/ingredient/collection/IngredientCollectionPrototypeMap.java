@@ -24,7 +24,8 @@ import java.util.Map;
  * @param <T> The instance type.
  * @param <M> The matching condition parameter.
  */
-public class IngredientCollectionPrototypeMap<T, M> extends IngredientCollectionAdapter<T, M> {
+public class IngredientCollectionPrototypeMap<T, M> extends IngredientCollectionAdapter<T, M>
+        implements IIngredientCollapsedCollection<T, M> {
 
     private final IIngredientMapMutable<T, M, Long> ingredients;
     private final boolean negativeQuantities;
