@@ -12,23 +12,23 @@ import java.util.Objects;
  * A mutable ingredient collection that wraps over another mutable ingredient collection
  * and groups instances by stacking them using their primary quantifier.
  *
- * Warning: The given collection must allow the storage of multiple equal instances.
- * List-based collections for example are ideal.
+ * Warning: The given collection must allow the storage of multiple equal instances such as an {@link IIngredientList}.
  *
  * Warning: If the given collection is mutated outside of this grouper,
  * behaviour becomes undefined.
  *
  * @param <T> An instance type.
  * @param <M> The matching condition parameter.
+ * @param <I> The inner collection type.
  */
-public class IngredientCollectionQuantitativeGrouper<T, M>
-        extends IngredientCollectionMutableWrapper<T, M, IIngredientCollectionMutable<T, M>> {
+public class IngredientCollectionQuantitativeGrouper<T, M, I extends IIngredientList<T, M> & IIngredientCollectionMutable<T, M>>
+        extends IngredientCollectionMutableWrapper<T, M, I> {
 
     private final IngredientComponentCategoryType<T, M, ?> primaryQuantifier;
     private final M quantifierlessMatchCondition;
     private final long maxQuantity;
 
-    public IngredientCollectionQuantitativeGrouper(IIngredientCollectionMutable<T, M> innerCollection,
+    public IngredientCollectionQuantitativeGrouper(I innerCollection,
                                                    boolean ignoreInnerCollectionEmptyCheck) {
         super(innerCollection);
 
@@ -47,7 +47,7 @@ public class IngredientCollectionQuantitativeGrouper<T, M>
         this.maxQuantity = matcher.getMaximumQuantity();
     }
 
-    public IngredientCollectionQuantitativeGrouper(IIngredientCollectionMutable<T, M> innerCollection) {
+    public IngredientCollectionQuantitativeGrouper(I innerCollection) {
         this(innerCollection, false);
     }
 

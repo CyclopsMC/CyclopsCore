@@ -65,7 +65,7 @@ public class TestIngredientCollectionQuantitativeGrouper {
                         new IngredientComponentCategoryType<>(new ResourceLocation("cyclopscore:complex/tag"),
                                 ComplexStack.Tag.class, true, ComplexStack::getTag, ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false)
                 )).setUnlocalizedName("recipecomponent.cyclopscore.complex");
-        new IngredientCollectionQuantitativeGrouper<>(new IngredientHashSet<>(comp));
+        new IngredientCollectionQuantitativeGrouper<>(new IngredientArrayList<>(comp));
     }
 
     @Test
