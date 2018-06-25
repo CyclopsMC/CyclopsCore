@@ -5,14 +5,15 @@ import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import java.util.List;
 
 /**
- * An ingredient collection using list semantics.
+ * A mutable ingredient collection using list semantics.
  * This means that instances exist in a predefined order and that instances can exist multiple time in the collection.
  *
  * @see List
  * @param <T> The instance type.
  * @param <M> The matching condition parameter.
  */
-public abstract class IngredientList<T, M> extends IngredientCollectionCollectionAdapter<T, M, List<T>> {
+public abstract class IngredientList<T, M> extends IngredientCollectionCollectionAdapter<T, M, List<T>>
+        implements IIngredientList<T, M> {
 
     public IngredientList(IngredientComponent<T, M> component, List<T> list) {
         super(component, list);

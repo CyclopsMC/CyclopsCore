@@ -10,7 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * A ingredient collection using set semantics.
+ * A mutable ingredient collection using set semantics.
  * This means that each instances can only be present once in the collection based on its equals method.
  *
  * @see Set
@@ -18,7 +18,8 @@ import java.util.Set;
  * @param <M> The matching condition parameter.
  */
 public abstract class IngredientSet<T, M>
-        extends IngredientCollectionCollectionWrappedAdapter<T, M, Set<IngredientInstanceWrapper<T, M>>> {
+        extends IngredientCollectionCollectionWrappedAdapter<T, M, Set<IngredientInstanceWrapper<T, M>>>
+        implements IIngredientSet<T, M> {
 
     public IngredientSet(IngredientComponent<T, M> component, Set<IngredientInstanceWrapper<T, M>> set) {
         super(component, set);
