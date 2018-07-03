@@ -69,15 +69,17 @@ public class IngredientComponentStorageCollectionWrapper<T, M> implements IIngre
     @Override
     public T insert(@Nonnull T ingredient, boolean simulate) {
         T insertingIngredient = rateLimit(ingredient, getMaxQuantity() - this.quantity);
-        boolean added = this.ingredientCollection.add(insertingIngredient);
-        if (added) {
-            IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
-            if (simulate) {
-                this.ingredientCollection.remove(insertingIngredient);
-            } else {
-                this.quantity += matcher.getQuantity(insertingIngredient);
+        IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
+        if (!matcher.isEmpty(insertingIngredient)) {
+            boolean added = this.ingredientCollection.add(insertingIngredient);
+            if (added) {
+                if (simulate) {
+                    this.ingredientCollection.remove(insertingIngredient);
+                } else {
+                    this.quantity += matcher.getQuantity(insertingIngredient);
+                }
+                return matcher.withQuantity(insertingIngredient, matcher.getQuantity(ingredient) - matcher.getQuantity(insertingIngredient));
             }
-            return matcher.withQuantity(insertingIngredient, matcher.getQuantity(ingredient) - matcher.getQuantity(insertingIngredient));
         }
         return ingredient;
     }
