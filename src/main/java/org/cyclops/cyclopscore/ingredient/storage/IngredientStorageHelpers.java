@@ -20,7 +20,7 @@ public final class IngredientStorageHelpers {
      */
     public static <T, M> T moveIngredients(IIngredientComponentStorage<T, M> source,
                                            IIngredientComponentStorage<T, M> destination,
-                                           int maxQuantity, boolean simulate) {
+                                           long maxQuantity, boolean simulate) {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
         T extractedSimulated = source.extract(maxQuantity, true);
         long movableQuantity = insertIngredientQuantity(destination, extractedSimulated, true);
