@@ -1,0 +1,114 @@
+package org.cyclops.cyclopscore.ingredient.storage;
+
+import com.google.common.collect.Iterators;
+import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
+import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
+import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
+import org.cyclops.cyclopscore.ingredient.collection.IIngredientCollapsedCollectionMutable;
+
+import javax.annotation.Nonnull;
+import java.util.Iterator;
+
+/**
+ * An implementation of {@link IIngredientComponentStorage}
+ * that internally uses a {@link IIngredientCollapsedCollectionMutable} to store instances.
+ * @param <T> The instance type.
+ * @param <M> The matching condition parameter.
+ */
+public class IngredientComponentStorageCollectionWrapper<T, M> implements IIngredientComponentStorage<T, M> {
+
+    private final IIngredientCollapsedCollectionMutable<T, M> ingredientCollection;
+    private final long maxQuantity;
+    private final long rateLimit;
+
+    private long quantity;
+
+    public IngredientComponentStorageCollectionWrapper(IIngredientCollapsedCollectionMutable<T, M> ingredientCollection) {
+        this(ingredientCollection, Long.MAX_VALUE, Long.MAX_VALUE);
+    }
+
+    public IngredientComponentStorageCollectionWrapper(IIngredientCollapsedCollectionMutable<T, M> ingredientCollection,
+                                                       long maxQuantity, long rateLimit) {
+        this.ingredientCollection = ingredientCollection;
+        this.maxQuantity = maxQuantity;
+        this.rateLimit = rateLimit;
+
+        this.quantity = 0;
+    }
+
+    @Override
+    public IngredientComponent<T, M> getComponent() {
+        return this.ingredientCollection.getComponent();
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return this.ingredientCollection.iterator();
+    }
+
+    @Override
+    public Iterator<T> iterator(@Nonnull T prototype, M matchCondition) {
+        return this.ingredientCollection.iterator(prototype, matchCondition);
+    }
+
+    @Override
+    public long getMaxQuantity() {
+        return this.maxQuantity;
+    }
+
+    T rateLimit(T instance, long allowedQuantity) {
+        IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
+        long quantity = matcher.getQuantity(instance);
+        long actualQuantity = Math.min(quantity, Math.min(allowedQuantity, this.rateLimit));
+        if (actualQuantity == quantity) {
+            return instance;
+        }
+        return matcher.withQuantity(instance, actualQuantity);
+    }
+
+    @Override
+    public T insert(@Nonnull T ingredient, boolean simulate) {
+        T insertingIngredient = rateLimit(ingredient, getMaxQuantity() - this.quantity);
+        boolean added = this.ingredientCollection.add(insertingIngredient);
+        if (added) {
+            IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
+            if (simulate) {
+                this.ingredientCollection.remove(insertingIngredient);
+            } else {
+                this.quantity += matcher.getQuantity(insertingIngredient);
+            }
+            return matcher.withQuantity(insertingIngredient, matcher.getQuantity(ingredient) - matcher.getQuantity(insertingIngredient));
+        }
+        return ingredient;
+    }
+
+    @Override
+    public T extract(@Nonnull T prototype, M matchCondition, boolean simulate) {
+        IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
+        T first = rateLimit(Iterators.getNext(this.ingredientCollection.iterator(prototype, matchCondition),
+                matcher.getEmptyInstance()), matcher.getQuantity(prototype));
+
+        if (!matcher.matches(prototype, first, matchCondition)) {
+            return getComponent().getMatcher().getEmptyInstance();
+        }
+
+        if (!simulate) {
+            this.ingredientCollection.remove(first);
+            this.quantity -= matcher.getQuantity(first);
+        }
+        return first;
+    }
+
+    @Override
+    public T extract(long maxQuantity, boolean simulate) {
+        T toExtract = this.rateLimit(Iterators.getNext(this.ingredientCollection.iterator(),
+                getComponent().getMatcher().getEmptyInstance()), maxQuantity);
+
+        if (!simulate) {
+            this.ingredientCollection.remove(toExtract);
+            this.quantity -= getComponent().getMatcher().getQuantity(toExtract);
+        }
+
+        return toExtract;
+    }
+}
