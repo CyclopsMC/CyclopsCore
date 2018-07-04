@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Maps;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
@@ -12,7 +11,6 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
-import org.cyclops.commoncapabilities.api.capability.block.BlockCapabilities;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.HashMap;
@@ -174,6 +172,21 @@ public class Helpers {
         int sum = a + b;
         if(sum < a || sum < b) return Integer.MAX_VALUE;
         return sum;
+    }
+
+    /**
+     * Cast a long value safely to an int.
+     * If the casting would result in an overflow,
+     * return the {@link Integer#MAX_VALUE}.
+     * @param value A value to cast.
+     * @return The casted value.
+     */
+    public static int castSafe(long value) {
+        int casted = (int) value;
+        if (casted != value) {
+            return Integer.MAX_VALUE;
+        }
+        return casted;
     }
 
     private static final Map<String, String> MODRESOURCEDOMAIN_TO_MODID = Maps.newHashMap();
