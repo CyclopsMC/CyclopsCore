@@ -15,6 +15,9 @@ sourceJar.dependsOn signJar
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
+    manifest {
+        attributes 'FMLAT': 'cyclopscore_at.cfg'
+    }
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
