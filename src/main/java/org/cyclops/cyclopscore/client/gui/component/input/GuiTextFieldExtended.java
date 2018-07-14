@@ -71,6 +71,7 @@ public class GuiTextFieldExtended extends GuiTextField {
         if (mouseButton == 1 && mouseX >= this.x && mouseX < this.x + this.width
                 && mouseY >= this.y && mouseY < this.y + this.height) {
             // Select everything
+            this.setFocused(true);
             this.setCursorPosition(0);
             this.setSelectionPos(Integer.MAX_VALUE);
             return true;
