@@ -359,15 +359,34 @@ public class GuiHelpers {
     /**
      * Stringify a (potentially large) quantity to a scaled string.
      *
-     * For example, 123765 will be converted as 1M.
+     * For example, 123765 will be converted as 1.23M.
      *
      * @param quantity A quantity.
      * @return A scaled quantity string.
      */
     public static String quantityToScaledString(long quantity) {
         for (Pair<Long, String> countScale : COUNT_SCALES) {
-            if (quantity >= countScale.getLeft()) {
-                return String.valueOf(quantity / countScale.getLeft()) + countScale.getRight();
+            long scale = countScale.getLeft();
+            if (quantity >= scale) {
+                long division = quantity / scale;
+                String divisionString = String.valueOf(division);
+
+                // Add digits if string is short
+                if (division < 10) {
+                    long mod = quantity % scale;
+                    if (mod > 0) {
+                        long digits = mod * 100 / scale;
+                        divisionString += "." + (digits < 10 ? "0" : "") + String.valueOf(digits);
+                    }
+                } else if (division < 100) {
+                    long mod = quantity % scale;
+                    if (mod > 0) {
+                        long digits = mod * 10 / scale;
+                        divisionString += "." + String.valueOf(digits);
+                    }
+                }
+
+                return divisionString + countScale.getRight();
             }
         }
         return String.valueOf(quantity);
