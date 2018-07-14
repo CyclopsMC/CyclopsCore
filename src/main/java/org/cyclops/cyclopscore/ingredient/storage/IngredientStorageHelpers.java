@@ -1,12 +1,55 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
+import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
 
 /**
  * Helper methods for moving ingredients between {@link IIngredientComponentStorage}'s.
  */
 public final class IngredientStorageHelpers {
+
+    /**
+     * Iteratively move the given maximum quantity of instances from source to destination.
+     *
+     * This is useful in cases that the internal transfer rate of certain storages have to be overridden.
+     *
+     * Note: When simulating, only a single iteration will be done.
+     * This is because the iterations don't actually take effect,
+     * which could cause infinite loops.
+     *
+     * @param source A source storage to extract from.
+     * @param destination A destination storage to insert to.
+     * @param maxQuantity The maximum instance quantity to move.
+     * @param simulate If the movement should be simulated.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @return The moved ingredient.
+     */
+    public static <T, M> T moveIngredientsIterative(IIngredientComponentStorage<T, M> source,
+                                                    IIngredientComponentStorage<T, M> destination,
+                                                    long maxQuantity, boolean simulate) {
+        IngredientComponent<T, M> component = source.getComponent();
+        IIngredientMatcher<T, M> matcher = component.getMatcher();
+        T movedFirst = moveIngredients(source, destination, maxQuantity, simulate);
+        long movedQuantity = matcher.getQuantity(movedFirst);
+        if (simulate || movedQuantity == 0) {
+            return movedFirst;
+        }
+        M matchCondition = matcher.withoutCondition(matcher.getExactMatchCondition(),
+                component.getPrimaryQuantifier().getMatchCondition());
+
+        // Try move until we reach the max quantity, or we don't move anything anymore.
+        while (movedQuantity < maxQuantity) {
+            T moved = moveIngredients(source, destination, movedFirst, matchCondition, false);
+            if (matcher.isEmpty(moved)) {
+                break;
+            }
+            movedQuantity += matcher.getQuantity(moved);
+        }
+
+        return matcher.withQuantity(movedFirst, movedQuantity);
+    }
 
     /**
      * Move the given maximum quantity of instances from source to destination.

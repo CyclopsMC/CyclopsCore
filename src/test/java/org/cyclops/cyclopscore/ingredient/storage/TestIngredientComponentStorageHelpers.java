@@ -339,4 +339,119 @@ public class TestIngredientComponentStorageHelpers {
         assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(100)));
     }
 
+    @Test
+    public void testMoveIngredientsIterativeNoneEmpty() {
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, false), is(0));
+
+        assertThat(destinationInnerStorage.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testMoveIngredientsIterativeNoneNonEmpty() {
+        sourceStorage.insert(100, false);
+
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, false), is(0));
+
+        assertThat(destinationInnerStorage.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testMoveIngredientsIterativeFittingRateEmpty() {
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 10, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 10, false), is(0));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
+    }
+
+    @Test
+    public void testMoveIngredientsIterativeFittingRateNonEmpty() {
+        int toInsert = 100;
+        while (toInsert > 0) {
+            toInsert -= sourceStorage.insert(toInsert, false);
+        }
+
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 10, true), is(10));
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 10, false), is(10));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(90)));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(10)));
+    }
+
+    @Test
+    public void testMoveIngredientsIterativeHigherThanRateEmpty() {
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 20, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 20, false), is(0));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
+    }
+
+    @Test
+    public void testMoveIngredientsIterativeHigherThanRateNonEmpty() {
+        int toInsert = 100;
+        while (toInsert > 0) {
+            toInsert -= sourceStorage.insert(toInsert, false);
+        }
+
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 20, true), is(10));
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 20, false), is(20));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(80)));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(20)));
+    }
+
+    @Test
+    public void testMoveIngredientsIterativeHigherThanMaxEmpty() {
+        for (int i = 0; i <= 10; i++) {
+            assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, true), is(0));
+            assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, false), is(0));
+
+            assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
+            assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
+        }
+
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, false), is(0));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
+
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, false), is(0));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
+    }
+
+    @Test
+    public void testMoveIngredientsIterativeHigherThanMaxNonEmpty() {
+        int toInsert = 100;
+        while (toInsert > 0) {
+            toInsert -= sourceStorage.insert(toInsert, false);
+        }
+
+        for (int i = 0; i <= 10; i++) {
+            assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, true), is(9));
+            assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, false), is(9));
+
+            assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(100 - (i + 1) * 9)));
+            assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList((i + 1) * 9)));
+        }
+
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, true), is(1));
+        assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, false), is(1));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(100)));
+
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, false), is(0));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(100)));
+    }
+
 }
