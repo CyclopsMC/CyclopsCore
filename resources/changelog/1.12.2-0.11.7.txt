@@ -1,0 +1,10 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Select and focus text fields on right click
+  Closes CyclopsMC/IntegratedDynamics#602
+
+Lib additions:
+* Add hand-sensitive tryReAddToStack inventory helper method
+* Trim long link strings in infobooks
+  Closes CyclopsMC/IntegratedDynamics#603
