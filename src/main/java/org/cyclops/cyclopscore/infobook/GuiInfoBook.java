@@ -17,7 +17,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.helper.*;
+import org.cyclops.cyclopscore.helper.Helpers;
+import org.cyclops.cyclopscore.helper.InventoryHelpers;
+import org.cyclops.cyclopscore.helper.L10NHelpers;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.cyclops.cyclopscore.network.packet.RequestPlayerNbtPacket;
 import org.lwjgl.opengl.GL11;
 
@@ -140,7 +144,7 @@ public abstract class GuiInfoBook extends GuiScreen {
             for (HyperLink link : infoBook.getCurrentSection().getLinks(innerPage)) {
                 int xOffset = getOffsetXForPageWithWidths(innerPage % getPages());
                 this.buttonList.add(new TextOverlayButton(nextId++, link, left + xOffset + link.getX(), top + getPageYOffset() / 2 + link.getY(),
-                        InfoSection.getFontHeight(getFontRenderer()), this));
+                        InfoSection.getFontHeight(getFontRenderer()), getPageWidth() - getOffsetXTotal() - link.getX(), this));
             }
             this.buttonList.addAll(infoBook.getCurrentSection().getAdvancedButtons(innerPage));
         }
@@ -479,14 +483,21 @@ public abstract class GuiInfoBook extends GuiScreen {
         private final GuiInfoBook guiInfoBook;
         @Getter private HyperLink link;
 
-        public TextOverlayButton(int id, HyperLink link, int x, int y, int height, GuiInfoBook guiInfoBook) {
+        public TextOverlayButton(int id, HyperLink link, int x, int y, int height, int maxWidth, GuiInfoBook guiInfoBook) {
             super(id, x, y, 0, height, InfoSection.formatString(L10NHelpers.localize(link.getUnlocalizedName())));
             this.guiInfoBook = guiInfoBook;
             this.link = link;
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+
             boolean oldUnicode = fontRenderer.getUnicodeFlag();
             fontRenderer.setUnicodeFlag(true);
             this.width = fontRenderer.getStringWidth(displayString);
+            // Trim string if it is too long
+            if (this.width > maxWidth) {
+                displayString = displayString.substring(0, (int) (((float) maxWidth) / this.width * displayString.length()) - 1);
+                displayString = displayString + "…";
+                this.width = maxWidth;
+            }
             fontRenderer.setUnicodeFlag(oldUnicode);
         }
 
