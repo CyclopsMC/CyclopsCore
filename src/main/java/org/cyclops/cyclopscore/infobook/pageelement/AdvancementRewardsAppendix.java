@@ -29,7 +29,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
     public static final int SLOT_SIZE = 16;
     private static final int SLOT_PADDING = 2;
     public static final int MAX_WIDTH = 80;
-    private static final int ADVANCEMENT_INFO_REQUEST_TIMEOUT = 60;
+    private static final long ADVANCEMENT_INFO_REQUEST_TIMEOUT = 60;
 
     private static final AdvancedButton.Enum COLLECT = AdvancedButton.Enum.create();
     private final AdvancedButton.Enum[] rewards;
@@ -103,7 +103,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
     protected void requestAdvancementInfo() {
         if (Minecraft.getMinecraft().world.getTotalWorldTime() - lastAdvancementInfoRequest > ADVANCEMENT_INFO_REQUEST_TIMEOUT) {
             advancementRewards.getAdvancements().forEach(AdvancementHelpers::requestAdvancementUnlockInfo);
-            lastAdvancementInfoRequest = Minecraft.getMinecraft().world.getWorldTime();
+            lastAdvancementInfoRequest = Minecraft.getMinecraft().world.getTotalWorldTime();
         }
     }
 
