@@ -10,8 +10,41 @@ import org.cyclops.cyclopscore.client.gui.image.IImage;
  */
 public class GuiButtonImage extends GuiButtonExtended {
 
-    private IImage image;
+    private IImage[] images;
     private final int offsetX, offsetY;
+
+	/**
+	 * Make a new instance.
+	 * @param id The ID.
+	 * @param x X
+	 * @param y Y
+	 * @param width Width
+	 * @param height Height
+	 * @param images The images to render. First images are rendered behind later images.
+	 * @param offsetX The x coordinate for the image inside the button.
+	 * @param offsetY The y coordinate for the image inside the button.
+	 * @param background If the button background should be rendered.
+	 */
+	public GuiButtonImage(int id, int x, int y,
+						  int width, int height,
+						  IImage[] images, int offsetX, int offsetY,
+						  boolean background) {
+		super(id, x, y, width, height, "", background);
+		this.images = images;
+		this.offsetX = offsetX;
+		this.offsetY = offsetY;
+	}
+
+	/**
+	 * Make a new instance.
+	 * @param id The ID.
+	 * @param x X
+	 * @param y Y
+	 * @param images The images to render
+	 */
+	public GuiButtonImage(int id, int x, int y, IImage... images) {
+		this(id, x, y, images[0].getWidth(), images[0].getHeight(), images, 0, 0, false);
+	}
 
 	/**
 	 * Make a new instance.
@@ -29,10 +62,7 @@ public class GuiButtonImage extends GuiButtonExtended {
                           int width, int height,
                           IImage image, int offsetX, int offsetY,
                           boolean background) {
-		super(id, x, y, width, height, "", background);
-        this.image = image;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
+		this(id, x, y, width, height, new IImage[]{image}, offsetX, offsetY, background);
 	}
 
 	/**
@@ -47,10 +77,16 @@ public class GuiButtonImage extends GuiButtonExtended {
 	}
 
 	protected void drawButtonInner(Minecraft minecraft, int i, int j, boolean mouseOver) {
-        image.draw(this, x + offsetX, y + offsetY);
+		for (IImage image : this.images) {
+			image.draw(this, x + offsetX, y + offsetY);
+		}
     }
 
 	public void setImage(IImage image) {
-		this.image = image;
+		this.images[0] = image;
+	}
+
+	public void setImages(IImage[] images) {
+		this.images = images;
 	}
 }
