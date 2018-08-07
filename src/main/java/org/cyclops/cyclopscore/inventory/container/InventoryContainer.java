@@ -106,14 +106,14 @@ public abstract class InventoryContainer extends Container implements IButtonCli
      * @param offsetY Offset to Y
      */
     protected void addPlayerInventory(InventoryPlayer inventory, int offsetX, int offsetY) {
-        // Player inventory
         int rows = 3;
         int cols = 9;
-        addInventory(inventory, cols, offsetX, offsetY, rows, cols);
-        
+
         // Player hotbar
-        offsetY += 58;
-        addInventory(inventory, 0, offsetX, offsetY, 1, cols);
+        addInventory(inventory, 0, offsetX, offsetY + 58, 1, cols);
+
+        // Player inventory
+        addInventory(inventory, cols, offsetX, offsetY, rows, cols);
     }
 
     /**
