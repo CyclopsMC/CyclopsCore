@@ -124,6 +124,19 @@ public class TestPacketCodec {
     }
 
     @Test
+    public void testMapNested() {
+        MapPacketCodec packet1 = new MapPacketCodec();
+        Map<String, List<Integer>> map = Maps.newHashMap();
+        map.put("a", Lists.newArrayList(1, 2));
+        map.put("i", Lists.newArrayList(2, 3));
+        map.put("qsddq", Lists.newArrayList(4, 6));
+        packet1.value = map;
+        MapPacketCodec packet2 = new MapPacketCodec();
+        encodeDecode(packet1, packet2);
+        assertThat("Input equals output", packet1.value, equalTo(packet2.value));
+    }
+
+    @Test
     public void testNBTEmpty() {
         NBTPacketCodec packet1 = new NBTPacketCodec();
         packet1.value = new NBTTagCompound();

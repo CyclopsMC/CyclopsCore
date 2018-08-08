@@ -9,6 +9,7 @@ import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.ClassUtils;
 import org.cyclops.cyclopscore.datastructure.SingleCache;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -339,12 +340,32 @@ public abstract class PacketCodec extends PacketBase {
         }
 
     });
-	
-	protected static ICodecAction getAction(Class<?> clazz) {
+
+	@Nullable
+	protected static ICodecAction getActionSuper(Class<?> clazz) {
 		if(ClassUtils.isPrimitiveWrapper(clazz)) {
 			clazz = ClassUtils.wrapperToPrimitive(clazz);
 		}
 		ICodecAction action = codecActions.get(clazz);
+		if(action == null) {
+			for (Class<?> iface : clazz.getInterfaces()) {
+				action = codecActions.get(iface);
+				if (action != null) {
+					return action;
+				}
+			}
+			Class<?> superClass = clazz.getSuperclass();
+			if (superClass != null) {
+				return getActionSuper(superClass);
+			} else {
+				return null;
+			}
+		}
+		return action;
+	}
+
+	protected static ICodecAction getAction(Class<?> clazz) {
+		ICodecAction action = getActionSuper(clazz);
 		if(action == null) {
 			System.err.println("No ICodecAction was found for " + clazz
 					+ ". You should add one in PacketCodec.");
