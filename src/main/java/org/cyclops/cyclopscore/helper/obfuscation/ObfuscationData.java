@@ -43,5 +43,10 @@ public class ObfuscationData {
      * Field from net.minecraft.advancements.CriteriaTriggers
      */
     public static final String[] CRITERIATRIGGERS_REGISTER = new String[] { "register", "func_192118_a" };
+
+    /**
+     * Field from net.minecraft.client.settings.KeyBinding
+     */
+    public static final String[] KEYBINDING_KEYBIND_ARRAY = new String[] { "KEYBIND_ARRAY", "field_74516_a" };
 	
 }

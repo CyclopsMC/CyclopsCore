@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.helper.obfuscation;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
@@ -10,6 +11,8 @@ import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
 import java.lang.reflect.Field;
@@ -17,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Helper for getting private fields or methods.
@@ -111,6 +115,14 @@ public class ObfuscationHelpers {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * @return Get the private static {@link net.minecraft.client.settings.KeyBinding#KEYBIND_ARRAY field}.
+     */
+    @SideOnly(Side.CLIENT)
+    public static Map<String, KeyBinding> getKeyBindingKeyBindArray() {
+        return ReflectionHelper.getPrivateValue(KeyBinding.class, null, ObfuscationData.KEYBINDING_KEYBIND_ARRAY);
     }
 	
 }
