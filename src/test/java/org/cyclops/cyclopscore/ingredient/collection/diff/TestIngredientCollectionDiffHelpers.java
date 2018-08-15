@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.ingredient.collection.diff;
 
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.sun.xml.internal.xsom.impl.scd.Iterators;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
@@ -35,7 +35,7 @@ public class TestIngredientCollectionDiffHelpers {
     @Test
     public void testGetDiffEmpty() {
         IngredientCollectionDiff<ComplexStack, Integer> diff = IngredientCollectionDiffHelpers.getDiff(
-                COMP, null, newInstancesCache, Iterators.empty());
+                COMP, null, newInstancesCache, Iterators.forArray());
 
         assertThat(Sets.newHashSet(newInstancesCache), is(Sets.newHashSet()));
         assertThat(Sets.newHashSet(diff.getAdditions()), is(Sets.newHashSet()));
@@ -61,7 +61,7 @@ public class TestIngredientCollectionDiffHelpers {
         oldInstancesCache.add(CB02_);
 
         IngredientCollectionDiff<ComplexStack, Integer> diff = IngredientCollectionDiffHelpers.getDiff(
-                COMP, oldInstancesCache, newInstancesCache, Iterators.empty());
+                COMP, oldInstancesCache, newInstancesCache, Iterators.forArray());
 
         assertThat(Sets.newHashSet(newInstancesCache), is(Sets.newHashSet()));
         assertThat(Sets.newHashSet(diff.getAdditions()), is(Sets.newHashSet()));

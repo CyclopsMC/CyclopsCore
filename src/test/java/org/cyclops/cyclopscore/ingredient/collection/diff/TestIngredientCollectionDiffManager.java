@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.ingredient.collection.diff;
 
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.sun.xml.internal.xsom.impl.scd.Iterators;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class TestIngredientCollectionDiffManager {
     @Test
     public void testOnChangeEmpty() {
         IngredientCollectionDiffManager<ComplexStack, Integer> manager = new IngredientCollectionDiffManager<>(IngredientComponentStubs.COMPLEX);
-        IngredientCollectionDiff<ComplexStack, Integer> diff = manager.onChange(Iterators.empty());
+        IngredientCollectionDiff<ComplexStack, Integer> diff = manager.onChange(Iterators.forArray());
 
         assertThat(Sets.newHashSet(diff.getAdditions()), is(Sets.newHashSet()));
         assertThat(Sets.newHashSet(diff.getDeletions()), is(Sets.newHashSet()));
@@ -66,7 +66,7 @@ public class TestIngredientCollectionDiffManager {
         assertThat(Sets.newHashSet(diff4.getDeletions()), is(Sets.newHashSet(CA01_)));
         assertThat(diff4.isCompletelyEmpty(), is(false));
 
-        IngredientCollectionDiff<ComplexStack, Integer> diff5 = manager.onChange(Iterators.empty());
+        IngredientCollectionDiff<ComplexStack, Integer> diff5 = manager.onChange(Iterators.forArray());
 
         assertThat(Sets.newHashSet(diff5.getAdditions()), is(Sets.newHashSet()));
         assertThat(Sets.newHashSet(diff5.getDeletions()), is(Sets.newHashSet(CA92B)));
