@@ -8,10 +8,12 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.infobook.AdvancedButton;
+import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -26,11 +28,11 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
     private static final int SLOT_OFFSET_Y = 5;
     private static final int START_X_RESULT = 84;
 
-    private static final AdvancedButton.Enum[] INPUT = new AdvancedButton.Enum[9];
+    private static final AdvancedButtonEnum[] INPUT = new AdvancedButtonEnum[9];
     static {
-        for(int i = 0; i < 9; i++) INPUT[i] = AdvancedButton.Enum.create();
+        for(int i = 0; i < 9; i++) INPUT[i] = AdvancedButtonEnum.create();
     }
-    private static final AdvancedButton.Enum RESULT = AdvancedButton.Enum.create();
+    private static final AdvancedButtonEnum RESULT = AdvancedButtonEnum.create();
 
     public CraftingRecipeAppendix(IInfoBook infoBook, IRecipe recipe) {
         super(infoBook, recipe);
@@ -59,6 +61,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     protected void drawElementInner(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
         gui.drawArrowRight(x + (SLOT_SIZE + SLOT_OFFSET_X) * 3 - 3, y + SLOT_OFFSET_Y + SLOT_SIZE + 2);
 

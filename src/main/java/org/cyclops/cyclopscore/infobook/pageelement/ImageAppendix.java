@@ -2,6 +2,8 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -41,6 +43,7 @@ public class ImageAppendix extends SectionAppendix {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     protected void drawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
         Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
         gui.drawTexturedModalRect(x, y, 0, 0, getWidth(), getHeight());
@@ -48,6 +51,7 @@ public class ImageAppendix extends SectionAppendix {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     protected void postDrawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
 
     }

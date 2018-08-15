@@ -2,6 +2,8 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import lombok.Data;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -44,6 +46,7 @@ import org.lwjgl.opengl.GL11;
      * @param my Mouse Y.
      * @param pre If the normal drawing should occur, otherwise post-drawing: things like tooltips.
      */
+    @SideOnly(Side.CLIENT)
     public void drawScreen(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
         int xc = x + width / 2 - getWidth() / 2;
         int yc = y + getOffsetY();
@@ -58,7 +61,9 @@ import org.lwjgl.opengl.GL11;
         GlStateManager.disableBlend();
     }
 
+    @SideOnly(Side.CLIENT)
     protected abstract void drawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my);
+    @SideOnly(Side.CLIENT)
     protected abstract void postDrawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my);
 
     public abstract void preBakeElement(InfoSection infoSection);

@@ -5,6 +5,8 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.lwjgl.opengl.GL11;
@@ -14,6 +16,7 @@ import java.util.List;
 /**
  * A button for the advancements, so they can be hovered.
  */
+@SideOnly(Side.CLIENT)
 public class AdvancementButton extends AdvancedButton {
 
     private final ResourceLocation advancementId;

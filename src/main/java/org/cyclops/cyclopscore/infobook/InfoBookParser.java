@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.infobook;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
@@ -16,7 +15,6 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.util.Strings;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
-import org.cyclops.cyclopscore.helper.obfuscation.ObfuscationHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.*;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
@@ -158,12 +156,7 @@ public class InfoBookParser {
         InfoBookParser.registerFactory("keybinding", new InfoBookParser.IAppendixFactory() {
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InfoBookParser.InvalidAppendixException {
-                String id = node.getTextContent();
-                KeyBinding keyBinding = ObfuscationHelpers.getKeyBindingKeyBindArray().get(id);
-                if (keyBinding == null) {
-                    throw new InfoBookParser.InvalidAppendixException("Could not find a keybinding by name " + id);
-                }
-                return new KeyBindingAppendix(infoBook, keyBinding);
+                return new KeyBindingAppendix(infoBook, node.getTextContent());
             }
         });
 

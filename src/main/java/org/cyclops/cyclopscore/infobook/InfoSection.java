@@ -6,12 +6,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.SectionAppendix;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Section of the info book.
@@ -275,6 +282,7 @@ public class InfoSection {
      * @param footnoteOffsetX Footnote offset x
      * @param footnoteOffsetY Footnote offset y
      */
+    @SideOnly(Side.CLIENT)
     public void drawScreen(GuiInfoBook gui, int x, int y, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
         if(page < getPages()) {
             FontRenderer fontRenderer = gui.getFontRenderer();
@@ -318,6 +326,7 @@ public class InfoSection {
      * @param mx Mouse X.
      * @param my Mouse Y.
      */
+    @SideOnly(Side.CLIENT)
     public void postDrawScreen(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
         if(page < getPages()) {
             FontRenderer fontRenderer = gui.getFontRenderer();

@@ -11,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.ConfigHandler;
@@ -19,6 +21,7 @@ import org.cyclops.cyclopscore.helper.GuiHelpers;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
+import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -43,7 +46,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
      * The map has to be populated in the baking of this appendix.
      * The map values can be updated on each render tick.
      */
-    protected Map<AdvancedButton.Enum, AdvancedButton> renderItemHolders = Maps.newHashMap();
+    protected Map<AdvancedButtonEnum, AdvancedButton> renderItemHolders = Maps.newHashMap();
 
     public RecipeAppendix(IInfoBook infoBook, T recipe) {
         super(infoBook);
@@ -69,26 +72,32 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         return itemStack;
     }
 
-    protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButton.Enum buttonEnum) {
+    @SideOnly(Side.CLIENT)
+    protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButtonEnum buttonEnum) {
         renderItem(gui, x, y, itemStack, mx, my, buttonEnum, 1.0F);
     }
 
-    protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButton.Enum buttonEnum) {
+    @SideOnly(Side.CLIENT)
+    protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum) {
         renderItem(gui, x, y, itemStack, mx, my, renderOverlays, buttonEnum, 1.0F);
     }
 
-    protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButton.Enum buttonEnum, float chance) {
+    @SideOnly(Side.CLIENT)
+    protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButtonEnum buttonEnum, float chance) {
         renderItem(gui, x, y, itemStack, mx, my, true, buttonEnum, chance);
     }
 
-    protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButton.Enum buttonEnum, float chance) {
+    @SideOnly(Side.CLIENT)
+    protected void renderItem(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum, float chance) {
         renderItemForButton(gui, x, y, itemStack, mx, my, renderOverlays, buttonEnum != null ? (ItemButton) renderItemHolders.get(buttonEnum) : null, chance);
     }
 
+    @SideOnly(Side.CLIENT)
     public static void renderItemForButton(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, ItemButton button) {
         renderItemForButton(gui, x, y, itemStack, mx, my, renderOverlays, button, 1.0F);
     }
 
+    @SideOnly(Side.CLIENT)
     public static void renderItemForButton(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, ItemButton button, float chance) {
         if(renderOverlays) gui.drawOuterBorder(x, y, SLOT_SIZE, SLOT_SIZE, 1, 1, 1, 0.2f);
 
@@ -116,14 +125,18 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
             if (button != null && renderOverlays) button.update(x, y, itemStack, gui);
         }
     }
-    protected void renderFluid(GuiInfoBook gui, int x, int y, FluidStack fluidStack, int mx, int my, AdvancedButton.Enum buttonEnum) {
+
+    @SideOnly(Side.CLIENT)
+    protected void renderFluid(GuiInfoBook gui, int x, int y, FluidStack fluidStack, int mx, int my, AdvancedButtonEnum buttonEnum) {
         renderFluid(gui, x, y, fluidStack, mx, my, true, buttonEnum);
     }
 
-    protected void renderFluid(GuiInfoBook gui, int x, int y, FluidStack fluidStack, int mx, int my, boolean renderOverlays, AdvancedButton.Enum buttonEnum) {
+    @SideOnly(Side.CLIENT)
+    protected void renderFluid(GuiInfoBook gui, int x, int y, FluidStack fluidStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum) {
         renderFluidForButton(gui, x, y, fluidStack, mx, my, renderOverlays, buttonEnum != null ? (FluidButton) renderItemHolders.get(buttonEnum) : null);
     }
 
+    @SideOnly(Side.CLIENT)
     public static void renderFluidForButton(GuiInfoBook gui, int x, int y, FluidStack fluidStack, int mx, int my, boolean renderOverlays, FluidButton button) {
         if(renderOverlays) gui.drawOuterBorder(x, y, SLOT_SIZE, SLOT_SIZE, 1, 1, 1, 0.2f);
 
@@ -134,6 +147,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     public static void renderItemTooltip(GuiInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my) {
         GlStateManager.pushMatrix();
         if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && itemStack != null ) {
@@ -147,6 +161,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
+    @SideOnly(Side.CLIENT)
     public static void renderFluidTooltip(GuiInfoBook gui, int x, int y, FluidStack fluidStack, int mx, int my) {
         GlStateManager.pushMatrix();
         if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && fluidStack != null ) {
@@ -182,6 +197,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     protected abstract String getUnlocalizedTitle();
 
     @Override
+    @SideOnly(Side.CLIENT)
     public final void drawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
         int yOffset = getAdditionalHeight();
         gui.drawOuterBorder(x - 1, y - 1 - yOffset, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
@@ -191,12 +207,15 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         drawElementInner(gui, x, y, width, height, page, mx, my);
     }
 
+    @SideOnly(Side.CLIENT)
     protected void postDrawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
         renderToolTips(gui, mx, my);
     }
 
+    @SideOnly(Side.CLIENT)
     protected abstract void drawElementInner(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my);
 
+    @SideOnly(Side.CLIENT)
     protected void renderToolTips(GuiInfoBook gui, int mx, int my) {
         for(AdvancedButton renderItemHolder : renderItemHolders.values()) {
             renderItemHolder.renderTooltip(mx, my);
@@ -213,6 +232,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         infoSection.addAdvancedButtons(getPage(), renderItemHolders.values());
     }
 
+    @SideOnly(Side.CLIENT)
     public static abstract class ElementButton<E> extends AdvancedButton {
 
         private final IInfoBook infoBook;
@@ -263,6 +283,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     public static class ItemButton extends ElementButton<ItemStack> {
 
         public ItemButton(IInfoBook infoBook) {
@@ -285,6 +306,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     public static class FluidButton extends ElementButton<FluidStack> {
 
         public FluidButton(IInfoBook infoBook) {

@@ -2,7 +2,9 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import org.cyclops.cyclopscore.infobook.AdvancedButton;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -19,8 +21,8 @@ public class FurnaceRecipeAppendix extends RecipeAppendix<Map.Entry<ItemStack, I
     private static final int SLOT_OFFSET_Y = 3;
     private static final int START_X_RESULT = 68;
 
-    private static final AdvancedButton.Enum INPUT = AdvancedButton.Enum.create();
-    private static final AdvancedButton.Enum RESULT = AdvancedButton.Enum.create();
+    private static final AdvancedButtonEnum INPUT = AdvancedButtonEnum.create();
+    private static final AdvancedButtonEnum RESULT = AdvancedButtonEnum.create();
 
     public FurnaceRecipeAppendix(IInfoBook infoBook, Map.Entry<ItemStack, ItemStack> recipe) {
         super(infoBook, recipe);
@@ -49,6 +51,7 @@ public class FurnaceRecipeAppendix extends RecipeAppendix<Map.Entry<ItemStack, I
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void drawElementInner(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
         int middle = (width - SLOT_SIZE) / 2;
         gui.drawArrowRight(x + middle - 3, y + SLOT_OFFSET_Y + 2);

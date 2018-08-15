@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
@@ -19,6 +21,7 @@ import java.util.List;
 /**
  * A button that can be clicked for reward collection.
  */
+@SideOnly(Side.CLIENT)
 public class AchievementCollectButton extends AdvancedButton {
 
     private final AdvancementRewards advancementRewards;

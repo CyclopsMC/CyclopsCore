@@ -10,6 +10,7 @@ import org.cyclops.cyclopscore.helper.Helpers;
  * An advanced button type.
  * @author rubensworks
  */
+@SideOnly(Side.CLIENT)
 public class AdvancedButton extends GuiButton {
 
     private InfoSection target;
@@ -31,7 +32,6 @@ public class AdvancedButton extends GuiButton {
      * @param target The target section.
      * @param gui The gui.
      */
-    @SideOnly(Side.CLIENT)
     public void update(int x, int y, String displayName, InfoSection target, GuiInfoBook gui) {
         this.x = x;
         this.y = y;
@@ -44,7 +44,6 @@ public class AdvancedButton extends GuiButton {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
     public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         if(isVisible() && isHover(mouseX, mouseY)) {
             minecraft.fontRenderer.drawString(("§n") +
@@ -58,7 +57,6 @@ public class AdvancedButton extends GuiButton {
      * @param mx Mouse x.
      * @param my Mouse Y.
      */
-    @SideOnly(Side.CLIENT)
     public void renderTooltip(int mx, int my) {
 
     }
@@ -80,15 +78,4 @@ public class AdvancedButton extends GuiButton {
 
     }
 
-    public static class Enum {
-
-        private Enum() {
-
-        }
-
-        public static Enum create() {
-            return new Enum();
-        }
-
-    }
 }

@@ -12,6 +12,7 @@ import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
+import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
 import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -31,9 +32,9 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
     public static final int MAX_WIDTH = 80;
     private static final long ADVANCEMENT_INFO_REQUEST_TIMEOUT = 60;
 
-    private static final AdvancedButton.Enum COLLECT = AdvancedButton.Enum.create();
-    private final AdvancedButton.Enum[] rewards;
-    private final AdvancedButton.Enum[] advancements;
+    private static final AdvancedButtonEnum COLLECT = AdvancedButtonEnum.create();
+    private final AdvancedButtonEnum[] rewards;
+    private final AdvancedButtonEnum[] advancements;
     private final Point[] rewardPositions;
 
     private final AdvancementRewards advancementRewards;
@@ -48,13 +49,13 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
      * The map has to be populated in the baking of this appendix.
      * The map values can be updated on each render tick.
      */
-    protected Map<AdvancedButton.Enum, AdvancedButton> renderButtonHolders = Maps.newHashMap();
+    protected Map<AdvancedButtonEnum, AdvancedButton> renderButtonHolders = Maps.newHashMap();
 
     public AdvancementRewardsAppendix(IInfoBook infoBook, AdvancementRewards advancementRewards) {
         super(infoBook);
         this.advancementRewards = advancementRewards;
-        rewards = new AdvancedButton.Enum[advancementRewards.getRewards().size()];
-        advancements = new AdvancedButton.Enum[advancementRewards.getAdvancements().size()];
+        rewards = new AdvancedButtonEnum[advancementRewards.getRewards().size()];
+        advancements = new AdvancedButtonEnum[advancementRewards.getAdvancements().size()];
         rewardPositions = new Point[advancementRewards.getRewards().size()];
         int x = 0;
         int y = 0;
@@ -64,7 +65,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
 
         for (int i = 0; i < advancementRewards.getRewards().size(); i++) {
             IReward reward = advancementRewards.getRewards().get(i);
-            rewards[i] = AdvancedButton.Enum.create();
+            rewards[i] = AdvancedButtonEnum.create();
             row_max_y = Math.max(row_max_y, reward.getHeight() + SLOT_PADDING * 2);
             if (x + reward.getWidth() > MAX_WIDTH) {
                 y += row_max_y;
@@ -77,7 +78,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
             x += reward.getWidth();
         }
         for (int i = 0; i < advancementRewards.getAdvancements().size(); i++) {
-            advancements[i] = AdvancedButton.Enum.create();
+            advancements[i] = AdvancedButtonEnum.create();
         }
 
         height = y + Math.max(row_max_y, max_height);
