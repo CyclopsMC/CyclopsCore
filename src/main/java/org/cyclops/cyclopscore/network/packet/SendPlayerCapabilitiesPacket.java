@@ -37,7 +37,9 @@ public class SendPlayerCapabilitiesPacket extends PacketCodec {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void actionClient(World world, EntityPlayer player) {
-		ObfuscationHelpers.getEntityCapabilities(player).deserializeNBT(capabilityData);
+    	if (capabilityData != null) {
+			ObfuscationHelpers.getEntityCapabilities(player).deserializeNBT(capabilityData);
+		}
 	}
 
 	@Override
