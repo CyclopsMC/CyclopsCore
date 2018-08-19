@@ -1,0 +1,10 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Lazily register capability constructors
+  In cases where the registry is not used,
+  the Forge event listeners will not be invoked,
+  which can be sometimes slow as can be seen in #113.
+
+Fixes:
+* Fix rare SendPlayerCapabilitiesPacket crash on dimension changes, Closes #114
