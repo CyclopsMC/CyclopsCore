@@ -44,10 +44,12 @@ public class CapabilityConstructorRegistry {
 
     protected final ModBase mod;
     protected boolean baked = false;
+    protected boolean registeredTileEventListener = false;
+    protected boolean registeredEntityEventListener = false;
+    protected boolean registeredItemStackEventListener = false;
 
     public CapabilityConstructorRegistry(ModBase mod) {
         this.mod = mod;
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     protected ModBase getMod() {
@@ -74,6 +76,11 @@ public class CapabilityConstructorRegistry {
             capabilityConstructorsTile.put(clazz, constructors);
         }
         constructors.add(constructor);
+
+        if (!registeredTileEventListener) {
+            registeredTileEventListener = true;
+            MinecraftForge.EVENT_BUS.register(new TileEventListener());
+        }
     }
 
     /**
@@ -90,6 +97,11 @@ public class CapabilityConstructorRegistry {
             capabilityConstructorsEntity.put(clazz, constructors);
         }
         constructors.add(constructor);
+
+        if (!registeredEntityEventListener) {
+            registeredEntityEventListener = true;
+            MinecraftForge.EVENT_BUS.register(new EntityEventListener());
+        }
     }
 
     /**
@@ -106,6 +118,11 @@ public class CapabilityConstructorRegistry {
             capabilityConstructorsItem.put(clazz, constructors);
         }
         constructors.add(constructor);
+
+        if (!registeredItemStackEventListener) {
+            registeredItemStackEventListener = true;
+            MinecraftForge.EVENT_BUS.register(new ItemStackEventListener());
+        }
     }
 
     /**
@@ -120,6 +137,11 @@ public class CapabilityConstructorRegistry {
         checkNotBaked();
         capabilityConstructorsTileSuper.add(
                 Pair.<Class<?>, ICapabilityConstructor<?, ?, ?>>of(clazz, constructor));
+
+        if (!registeredTileEventListener) {
+            registeredTileEventListener = true;
+            MinecraftForge.EVENT_BUS.register(new TileEventListener());
+        }
     }
 
     /**
@@ -134,6 +156,11 @@ public class CapabilityConstructorRegistry {
         checkNotBaked();
         capabilityConstructorsEntitySuper.add(
                 Pair.<Class<?>, ICapabilityConstructor<?, ?, ?>>of(clazz, constructor));
+
+        if (!registeredEntityEventListener) {
+            registeredEntityEventListener = true;
+            MinecraftForge.EVENT_BUS.register(new EntityEventListener());
+        }
     }
 
     /**
@@ -147,6 +174,11 @@ public class CapabilityConstructorRegistry {
         checkNotBaked();
         capabilityConstructorsItemSuper.add(
                 Pair.<Class<?>, ICapabilityConstructor<?, ?, ?>>of(clazz, constructor));
+
+        if (!registeredItemStackEventListener) {
+            registeredItemStackEventListener = true;
+            MinecraftForge.EVENT_BUS.register(new ItemStackEventListener());
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -199,23 +231,6 @@ public class CapabilityConstructorRegistry {
         }
     }
 
-    @SubscribeEvent
-    public void onTileLoad(AttachCapabilitiesEvent<TileEntity> event) {
-        onLoad(capabilityConstructorsTile, capabilityConstructorsTileSuper, event.getObject(), event, TileEntity.class);
-    }
-
-    @SubscribeEvent
-    public void onEntityLoad(AttachCapabilitiesEvent<Entity> event) {
-        onLoad(capabilityConstructorsEntity, capabilityConstructorsEntitySuper, event.getObject(), event, Entity.class);
-    }
-
-    @SubscribeEvent
-    public void onItemStackLoad(AttachCapabilitiesEvent<ItemStack> event) {
-        if (!event.getObject().isEmpty()) {
-            onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getObject().getItem(), event.getObject(), event, Item.class);
-        }
-    }
-
     protected <K, V> void removeNullCapabilities(Map<Class<? extends K>, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allConstructors,
                                                  Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors) {
         // Normal constructors
@@ -261,5 +276,28 @@ public class CapabilityConstructorRegistry {
         capabilityConstructorsEntitySuper = ImmutableList.copyOf(capabilityConstructorsEntitySuper);
         capabilityConstructorsItemSuper = ImmutableList.copyOf(capabilityConstructorsItemSuper);
 
+    }
+
+    public class TileEventListener {
+        @SubscribeEvent
+        public void onTileLoad(AttachCapabilitiesEvent<TileEntity> event) {
+            onLoad(capabilityConstructorsTile, capabilityConstructorsTileSuper, event.getObject(), event, TileEntity.class);
+        }
+    }
+
+    public class EntityEventListener {
+        @SubscribeEvent
+        public void onEntityLoad(AttachCapabilitiesEvent<Entity> event) {
+            onLoad(capabilityConstructorsEntity, capabilityConstructorsEntitySuper, event.getObject(), event, Entity.class);
+        }
+    }
+
+    public class ItemStackEventListener {
+        @SubscribeEvent
+        public void onItemStackLoad(AttachCapabilitiesEvent<ItemStack> event) {
+            if (!event.getObject().isEmpty()) {
+                onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getObject().getItem(), event.getObject(), event, Item.class);
+            }
+        }
     }
 }
