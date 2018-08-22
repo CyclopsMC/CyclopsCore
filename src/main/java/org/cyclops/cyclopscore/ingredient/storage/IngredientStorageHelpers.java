@@ -4,6 +4,8 @@ import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
 
+import java.util.Iterator;
+
 /**
  * Helper methods for moving ingredients between {@link IIngredientComponentStorage}'s.
  */
@@ -96,18 +98,25 @@ public final class IngredientStorageHelpers {
                                            IIngredientComponentStorage<T, M> destination,
                                            T instance, M matchCondition, boolean simulate) {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
-        T extractedSimulated = source.extract(instance, matchCondition, true);
-        long movableQuantity = insertIngredientQuantity(destination, extractedSimulated, true);
-        if (movableQuantity > 0) {
-            if (simulate) {
-                if (matcher.getQuantity(instance) == movableQuantity) {
-                    return extractedSimulated;
+        Iterator<T> it = source.iterator(instance, matchCondition);
+        long prototypeQuantity = matcher.getQuantity(instance);
+        while (it.hasNext()) {
+            T extractedSimulated = it.next();
+            if (matcher.getQuantity(extractedSimulated) > prototypeQuantity) {
+                extractedSimulated = matcher.withQuantity(extractedSimulated, prototypeQuantity);
+            }
+            long movableQuantity = insertIngredientQuantity(destination, extractedSimulated, true);
+            if (movableQuantity > 0) {
+                if (simulate) {
+                    if (matcher.getQuantity(instance) == movableQuantity) {
+                        return extractedSimulated;
+                    } else {
+                        return matcher.withQuantity(extractedSimulated, movableQuantity);
+                    }
                 } else {
-                    return matcher.withQuantity(extractedSimulated, movableQuantity);
+                    T extracted = source.extract(instance, matchCondition, false);
+                    return insertIngredient(destination, extracted, false);
                 }
-            } else {
-                T extracted = source.extract(instance, matchCondition, false);
-                return insertIngredient(destination, extracted, false);
             }
         }
         return matcher.getEmptyInstance();

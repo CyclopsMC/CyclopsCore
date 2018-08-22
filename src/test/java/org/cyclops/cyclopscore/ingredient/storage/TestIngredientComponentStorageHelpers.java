@@ -174,6 +174,17 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
+    public void testMoveIngredientsHigherThanContentsNonEmpty() {
+        sourceStorage.insert(5, false);
+
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 10, true), is(5));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 10, false), is(5));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(5)));
+    }
+
+    @Test
     public void testMoveIngredientsHigherThanMaxEmpty() {
         for (int i = 0; i <= 10; i++) {
             assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, true), is(0));
@@ -286,6 +297,17 @@ public class TestIngredientComponentStorageHelpers {
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(90)));
         assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(10)));
+    }
+
+    @Test
+    public void testMoveIngredientsMatchHigherThanContentsNonEmpty() {
+        sourceStorage.insert(5, false);
+
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 10, false, true), is(5));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 10, false, false), is(5));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(5)));
     }
 
     @Test
