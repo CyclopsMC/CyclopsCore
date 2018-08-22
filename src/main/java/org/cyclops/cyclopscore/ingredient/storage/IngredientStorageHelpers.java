@@ -5,6 +5,7 @@ import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
 
 /**
  * Helper methods for moving ingredients between {@link IIngredientComponentStorage}'s.
@@ -105,17 +106,53 @@ public final class IngredientStorageHelpers {
             if (matcher.getQuantity(extractedSimulated) > prototypeQuantity) {
                 extractedSimulated = matcher.withQuantity(extractedSimulated, prototypeQuantity);
             }
-            long movableQuantity = insertIngredientQuantity(destination, extractedSimulated, true);
-            if (movableQuantity > 0) {
-                if (simulate) {
-                    if (matcher.getQuantity(instance) == movableQuantity) {
-                        return extractedSimulated;
+            extractedSimulated = source.extract(extractedSimulated, matchCondition, true);
+            if (!matcher.isEmpty(extractedSimulated)) {
+                long movableQuantity = insertIngredientQuantity(destination, extractedSimulated, true);
+                if (movableQuantity > 0) {
+                    if (simulate) {
+                        if (matcher.getQuantity(instance) == movableQuantity) {
+                            return extractedSimulated;
+                        } else {
+                            return matcher.withQuantity(extractedSimulated, movableQuantity);
+                        }
                     } else {
-                        return matcher.withQuantity(extractedSimulated, movableQuantity);
+                        T extracted = source.extract(instance, matchCondition, false);
+                        return insertIngredient(destination, extracted, false);
                     }
-                } else {
-                    T extracted = source.extract(instance, matchCondition, false);
-                    return insertIngredient(destination, extracted, false);
+                }
+            }
+        }
+        return matcher.getEmptyInstance();
+    }
+
+    /**
+     * Move the first instance that matches the given predicate from source to destination.
+     * @param source A source storage to extract from.
+     * @param destination A destination storage to insert to.
+     * @param predicate The predicate to match instances by.
+     * @param simulate If the movement should be simulated.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @return The moved ingredient.
+     */
+    public static <T, M> T moveIngredients(IIngredientComponentStorage<T, M> source,
+                                           IIngredientComponentStorage<T, M> destination,
+                                           Predicate<T> predicate, boolean simulate) {
+        IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
+        for (T extractedSimulated : source) {
+            if (predicate.test(extractedSimulated)) {
+                extractedSimulated = source.extract(extractedSimulated, matcher.getExactMatchNoQuantityCondition(), true);
+                if (!matcher.isEmpty(extractedSimulated)) {
+                    T movable = insertIngredient(destination, extractedSimulated, true);
+                    if (!matcher.isEmpty(movable)) {
+                        if (simulate) {
+                            return movable;
+                        } else {
+                            T extracted = source.extract(movable, matcher.getExactMatchNoQuantityCondition(), false);
+                            return insertIngredient(destination, extracted, false);
+                        }
+                    }
                 }
             }
         }

@@ -7,6 +7,8 @@ import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionPrototy
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.function.Predicate;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -236,6 +238,32 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
+    public void testMoveIngredientsNonEmptySourceBlocked() {
+        IngredientComponentStorageCollectionWrapper<Integer, Boolean> sourceStorage
+                = new IngredientComponentStorageCollectionWrapper<>(sourceInnerStorage, 100, 0);
+        sourceInnerStorage.add(100);
+
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, false), is(0));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(100)));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
+    }
+
+    @Test
+    public void testMoveIngredientsNonEmptyDestinationBlocked() {
+        IngredientComponentStorageCollectionWrapper<Integer, Boolean> destinationStorage
+                = new IngredientComponentStorageCollectionWrapper<>(destinationInnerStorage, 100, 0);
+        sourceInnerStorage.add(100);
+
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, false), is(0));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(100)));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
+    }
+
+    @Test
     public void testMoveIngredientsMatchNoneEmpty() {
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 0, false, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 0, false, false), is(0));
@@ -359,6 +387,106 @@ public class TestIngredientComponentStorageHelpers {
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
         assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(100)));
+    }
+
+    @Test
+    public void testMoveIngredientsMatchNonEmptySourceBlocked() {
+        IngredientComponentStorageCollectionWrapper<Integer, Boolean> sourceStorage
+                = new IngredientComponentStorageCollectionWrapper<>(sourceInnerStorage, 100, 0);
+        sourceInnerStorage.add(100);
+
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, false, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, false, false), is(0));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(100)));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
+    }
+
+    @Test
+    public void testMoveIngredientsMatchNonEmptyDestinationBlocked() {
+        IngredientComponentStorageCollectionWrapper<Integer, Boolean> destinationStorage
+                = new IngredientComponentStorageCollectionWrapper<>(destinationInnerStorage, 100, 0);
+        sourceInnerStorage.add(100);
+
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, false, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, false, false), is(0));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(100)));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
+    }
+
+    @Test
+    public void testMoveIngredientsPredicateNoneEmpty() {
+        Predicate<Integer> predicate = (i) -> false;
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, false), is(0));
+
+        assertThat(destinationInnerStorage.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testMoveIngredientsPredicateNoneNonEmpty() {
+        Predicate<Integer> predicate = (i) -> false;
+        sourceStorage.insert(100, false);
+
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, false), is(0));
+
+        assertThat(destinationInnerStorage.isEmpty(), is(true));
+    }
+
+    @Test
+    public void testMoveIngredientsPredicateAllEmpty() {
+        Predicate<Integer> predicate = (i) -> true;
+
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, false), is(0));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
+    }
+
+    @Test
+    public void testMoveIngredientsPredicateAllNonEmpty() {
+        Predicate<Integer> predicate = (i) -> true;
+        int toInsert = 100;
+        while (toInsert > 0) {
+            toInsert -= sourceStorage.insert(toInsert, false);
+        }
+
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, true), is(10));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, false), is(10));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(90)));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(10)));
+    }
+
+    @Test
+    public void testMoveIngredientsPredicateAllNonEmptySourceBlocked() {
+        Predicate<Integer> predicate = (i) -> true;
+        IngredientComponentStorageCollectionWrapper<Integer, Boolean> sourceStorage
+                = new IngredientComponentStorageCollectionWrapper<>(sourceInnerStorage, 100, 0);
+        sourceInnerStorage.add(100);
+
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, false), is(0));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(100)));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
+    }
+
+    @Test
+    public void testMoveIngredientsPredicateAllNonEmptyDestinationBlocked() {
+        Predicate<Integer> predicate = (i) -> true;
+        IngredientComponentStorageCollectionWrapper<Integer, Boolean> destinationStorage
+                = new IngredientComponentStorageCollectionWrapper<>(destinationInnerStorage, 100, 0);
+        sourceInnerStorage.add(100);
+
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, true), is(0));
+        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, false), is(0));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(100)));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
     }
 
     @Test
