@@ -19,6 +19,11 @@ public class IngredientMatcherSimple implements IIngredientMatcher<Integer, Bool
     }
 
     @Override
+    public Boolean getExactMatchNoQuantityCondition() {
+        return false;
+    }
+
+    @Override
     public Boolean withCondition(Boolean matchCondition, Boolean with) {
         return matchCondition || with;
     }

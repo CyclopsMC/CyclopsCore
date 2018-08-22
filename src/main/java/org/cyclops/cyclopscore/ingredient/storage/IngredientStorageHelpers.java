@@ -36,8 +36,7 @@ public final class IngredientStorageHelpers {
         if (simulate || movedQuantity == 0) {
             return movedFirst;
         }
-        M matchCondition = matcher.withoutCondition(matcher.getExactMatchCondition(),
-                component.getPrimaryQuantifier().getMatchCondition());
+        M matchCondition = matcher.getExactMatchNoQuantityCondition();
 
         // Try move until we reach the max quantity, or we don't move anything anymore.
         while (movedQuantity < maxQuantity) {

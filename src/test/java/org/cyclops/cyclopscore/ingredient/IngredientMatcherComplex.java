@@ -20,6 +20,11 @@ public class IngredientMatcherComplex implements IIngredientMatcher<ComplexStack
     }
 
     @Override
+    public Integer getExactMatchNoQuantityCondition() {
+        return ComplexStack.Match.GROUP | ComplexStack.Match.META | ComplexStack.Match.TAG;
+    }
+
+    @Override
     public Integer withCondition(Integer matchCondition, Integer with) {
         return matchCondition | with;
     }
