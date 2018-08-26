@@ -106,21 +106,9 @@ public final class IngredientStorageHelpers {
             if (matcher.getQuantity(extractedSimulated) > prototypeQuantity) {
                 extractedSimulated = matcher.withQuantity(extractedSimulated, prototypeQuantity);
             }
-            extractedSimulated = source.extract(extractedSimulated, matchCondition, true);
-            if (!matcher.isEmpty(extractedSimulated)) {
-                long movableQuantity = insertIngredientQuantity(destination, extractedSimulated, true);
-                if (movableQuantity > 0) {
-                    if (simulate) {
-                        if (matcher.getQuantity(instance) == movableQuantity) {
-                            return extractedSimulated;
-                        } else {
-                            return matcher.withQuantity(extractedSimulated, movableQuantity);
-                        }
-                    } else {
-                        T extracted = source.extract(instance, matchCondition, false);
-                        return insertIngredient(destination, extracted, false);
-                    }
-                }
+            T moved = moveIngredient(source, destination, extractedSimulated, matchCondition, simulate);
+            if (!matcher.isEmpty(moved)) {
+                return moved;
             }
         }
         return matcher.getEmptyInstance();
@@ -153,6 +141,47 @@ public final class IngredientStorageHelpers {
                             return insertIngredient(destination, extracted, false);
                         }
                     }
+                }
+            }
+        }
+        return matcher.getEmptyInstance();
+    }
+
+    /**
+     * Move the first instance that matches the given match condition from source to destination.
+     *
+     * The main difference of this method to
+     * {@link #moveIngredients(IIngredientComponentStorage, IIngredientComponentStorage, Object, Object, boolean)}
+     * is that the latter method will try checking *multiple* ingredients from the source,
+     * while this method will only check the *first matching* ingredient.
+     * This makes this method potentially more efficient than the latter.
+     *
+     * @param source A source storage to extract from.
+     * @param destination A destination storage to insert to.
+     * @param instance The prototype instance.
+     * @param matchCondition The match condition.
+     * @param simulate If the movement should be simulated.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @return The moved ingredient.
+     */
+    public static <T, M> T moveIngredient(IIngredientComponentStorage<T, M> source,
+                                          IIngredientComponentStorage<T, M> destination,
+                                          T instance, M matchCondition, boolean simulate) {
+        IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
+        T extractedSimulated = source.extract(instance, matchCondition, true);
+        if (!matcher.isEmpty(extractedSimulated)) {
+            long movableQuantity = insertIngredientQuantity(destination, extractedSimulated, true);
+            if (movableQuantity > 0) {
+                if (simulate) {
+                    if (matcher.getQuantity(instance) == movableQuantity) {
+                        return extractedSimulated;
+                    } else {
+                        return matcher.withQuantity(extractedSimulated, movableQuantity);
+                    }
+                } else {
+                    T extracted = source.extract(instance, matchCondition, false);
+                    return insertIngredient(destination, extracted, false);
                 }
             }
         }
