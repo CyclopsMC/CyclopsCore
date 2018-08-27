@@ -60,16 +60,25 @@ public class IngredientMatcherComplex implements IIngredientMatcher<ComplexStack
 
     @Override
     public ComplexStack copy(ComplexStack instance) {
+        if (instance == null) {
+            return null;
+        }
         return new ComplexStack(instance.getGroup(), instance.getMeta(), instance.getAmount(), instance.getTag());
     }
 
     @Override
     public long getQuantity(ComplexStack instance) {
+        if (instance == null) {
+            return 0;
+        }
         return instance.getAmount();
     }
 
     @Override
     public ComplexStack withQuantity(ComplexStack instance, long quantity) throws ArithmeticException {
+        if (instance == null) {
+            return new ComplexStack(ComplexStack.Group.A, 0, Math.toIntExact(quantity), ComplexStack.Tag.A);
+        }
         return new ComplexStack(instance.getGroup(), instance.getMeta(), Math.toIntExact(quantity), instance.getTag());
     }
 

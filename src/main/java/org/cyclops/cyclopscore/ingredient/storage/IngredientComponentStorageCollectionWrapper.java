@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
-import com.google.common.collect.Iterators;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
@@ -87,24 +86,39 @@ public class IngredientComponentStorageCollectionWrapper<T, M> implements IIngre
     @Override
     public T extract(@Nonnull T prototype, M matchCondition, boolean simulate) {
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
-        T first = rateLimit(Iterators.getNext(this.ingredientCollection.iterator(prototype, matchCondition),
-                matcher.getEmptyInstance()), matcher.getQuantity(prototype));
+        T toExtract = matcher.getEmptyInstance();
+        Iterator<T> it = this.ingredientCollection.iterator(prototype, matchCondition);
+        while (it.hasNext()) {
+            T t = it.next();
+            if (!matcher.isEmpty(t)) {
+                toExtract = t;
+                break;
+            }
+        }
+        toExtract = this.rateLimit(toExtract, matcher.getQuantity(prototype));
 
-        if (!matcher.matches(prototype, first, matchCondition)) {
+        if (!matcher.matches(prototype, toExtract, matchCondition)) {
             return getComponent().getMatcher().getEmptyInstance();
         }
 
         if (!simulate) {
-            this.ingredientCollection.remove(first);
-            this.quantity -= matcher.getQuantity(first);
+            this.ingredientCollection.remove(toExtract);
+            this.quantity -= matcher.getQuantity(toExtract);
         }
-        return first;
+        return toExtract;
     }
 
     @Override
     public T extract(long maxQuantity, boolean simulate) {
-        T toExtract = this.rateLimit(Iterators.getNext(this.ingredientCollection.iterator(),
-                getComponent().getMatcher().getEmptyInstance()), maxQuantity);
+        IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
+        T toExtract = matcher.getEmptyInstance();
+        for (T t : this.ingredientCollection) {
+            if (!matcher.isEmpty(t)) {
+                toExtract = t;
+                break;
+            }
+        }
+        toExtract = this.rateLimit(toExtract, maxQuantity);
 
         if (!simulate) {
             this.ingredientCollection.remove(toExtract);
@@ -112,5 +126,13 @@ public class IngredientComponentStorageCollectionWrapper<T, M> implements IIngre
         }
 
         return toExtract;
+    }
+
+    long getQuantity() {
+        return quantity;
+    }
+
+    void setQuantity(long quantity) {
+        this.quantity = quantity;
     }
 }
