@@ -50,6 +50,11 @@ public class IngredientMatcherComplex implements IIngredientMatcher<ComplexStack
     }
 
     @Override
+    public boolean isEmpty(ComplexStack instance) {
+        return instance == null || instance.getAmount() == 0;
+    }
+
+    @Override
     public int hash(ComplexStack instance) {
         if (instance == null) {
             return 0;
@@ -68,7 +73,7 @@ public class IngredientMatcherComplex implements IIngredientMatcher<ComplexStack
 
     @Override
     public long getQuantity(ComplexStack instance) {
-        if (instance == null) {
+        if (instance == getEmptyInstance()) {
             return 0;
         }
         return instance.getAmount();
@@ -76,6 +81,9 @@ public class IngredientMatcherComplex implements IIngredientMatcher<ComplexStack
 
     @Override
     public ComplexStack withQuantity(ComplexStack instance, long quantity) throws ArithmeticException {
+        if (quantity == 0) {
+            return getEmptyInstance();
+        }
         if (instance == null) {
             return new ComplexStack(ComplexStack.Group.A, 0, Math.toIntExact(quantity), ComplexStack.Tag.A);
         }

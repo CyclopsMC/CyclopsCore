@@ -1,12 +1,14 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
 import com.google.common.collect.Lists;
+import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestIngredientComponentStorageSlottedCollectionWrapper {
@@ -107,6 +109,40 @@ public class TestIngredientComponentStorageSlottedCollectionWrapper {
 
         assertThat(storage.insert(2, 100, false), is(10));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(100, 0, 100, 0, 0)));
+    }
+
+    @Test
+    public void testInsertComplex() {
+        IngredientArrayList<ComplexStack, Integer> innerList = new IngredientArrayList<>(IngredientComponentStubs.COMPLEX);
+        IngredientComponentStorageSlottedCollectionWrapper<ComplexStack, Integer> storage = new IngredientComponentStorageSlottedCollectionWrapper<>(innerList, 100, Long.MAX_VALUE);
+
+        ComplexStack CA01_ = new ComplexStack(ComplexStack.Group.A, 0, 1, null);
+        ComplexStack CA02_ = new ComplexStack(ComplexStack.Group.A, 0, 2, null);
+        ComplexStack CB02_ = new ComplexStack(ComplexStack.Group.B, 0, 2, null);
+
+        innerList.add(null);
+        innerList.add(CB02_);
+        innerList.add(null);
+        innerList.add(null);
+        innerList.add(null);
+
+        assertThat(storage.insert(0, CA01_, true), nullValue());
+        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(null, CB02_, null, null, null)));
+
+        assertThat(storage.insert(0, CA01_, false), nullValue());
+        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(CA01_, CB02_, null, null, null)));
+
+        assertThat(storage.insert(1, CA01_, true), is(CA01_));
+        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(CA01_, CB02_, null, null, null)));
+
+        assertThat(storage.insert(1, CA01_, false), is(CA01_));
+        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(CA01_, CB02_, null, null, null)));
+
+        assertThat(storage.insert(0, CA01_, true), nullValue());
+        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(CA01_, CB02_, null, null, null)));
+
+        assertThat(storage.insert(0, CA01_, false), nullValue());
+        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(CA02_, CB02_, null, null, null)));
     }
 
     @Test

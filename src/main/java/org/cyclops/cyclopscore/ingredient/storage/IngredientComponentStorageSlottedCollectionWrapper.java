@@ -62,14 +62,17 @@ public class IngredientComponentStorageSlottedCollectionWrapper<T, M> implements
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
         if (!matcher.isEmpty(insertingIngredient)) {
             T contained = ingredientCollection.get(slot);
-            long addQuantity = Math.min(getMaxQuantity(slot) - matcher.getQuantity(contained),
-                    matcher.getQuantity(insertingIngredient));
-            if (!simulate) {
-                ingredientCollection.set(slot, matcher.withQuantity(contained,
-                        matcher.getQuantity(contained) + addQuantity));
-                this.quantity += addQuantity;
+            if (matcher.isEmpty(contained)
+                    || matcher.matches(ingredient, contained, matcher.getExactMatchNoQuantityCondition())) {
+                long addQuantity = Math.min(getMaxQuantity(slot) - matcher.getQuantity(contained),
+                        matcher.getQuantity(insertingIngredient));
+                if (!simulate) {
+                    ingredientCollection.set(slot, matcher.withQuantity(ingredient,
+                            matcher.getQuantity(contained) + addQuantity));
+                    this.quantity += addQuantity;
+                }
+                return matcher.withQuantity(insertingIngredient, matcher.getQuantity(ingredient) - addQuantity);
             }
-            return matcher.withQuantity(insertingIngredient, matcher.getQuantity(ingredient) - addQuantity);
         }
         return ingredient;
     }
