@@ -121,6 +121,8 @@ public final class IngredientStorageHelpers {
      * @param source A source storage to extract from.
      * @param destination A destination storage to insert to.
      * @param predicate The predicate to match instances by.
+     * @param maxQuantity The max quantity that can be moved.
+     * @param exactQuantity If the max quantity should be interpreted as an exact quantity.
      * @param simulate If the movement should be simulated.
      * @param <T> The instance type.
      * @param <M> The matching condition parameter.
@@ -128,14 +130,20 @@ public final class IngredientStorageHelpers {
      */
     public static <T, M> T moveIngredients(IIngredientComponentStorage<T, M> source,
                                            IIngredientComponentStorage<T, M> destination,
-                                           Predicate<T> predicate, boolean simulate) {
+                                           Predicate<T> predicate, long maxQuantity, boolean exactQuantity,
+                                           boolean simulate) {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
         for (T extractedSimulated : source) {
             if (predicate.test(extractedSimulated)) {
+                if (matcher.getQuantity(extractedSimulated) > maxQuantity) {
+                    extractedSimulated = matcher.withQuantity(extractedSimulated, maxQuantity);
+                }
                 extractedSimulated = source.extract(extractedSimulated, matcher.getExactMatchNoQuantityCondition(), true);
                 if (!matcher.isEmpty(extractedSimulated)) {
                     T movable = insertIngredient(destination, extractedSimulated, true);
-                    if (!matcher.isEmpty(movable)) {
+                    if (!matcher.isEmpty(movable)
+                            && (exactQuantity ? matcher.getQuantity(movable) == maxQuantity
+                            : matcher.getQuantity(movable) <= maxQuantity)) {
                         if (simulate) {
                             return movable;
                         } else {
