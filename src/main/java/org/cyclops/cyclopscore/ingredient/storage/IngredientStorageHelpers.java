@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.ingredient.storage;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
+import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorageSlotted;
 
 import java.util.Iterator;
 import java.util.function.Predicate;
@@ -140,6 +141,207 @@ public final class IngredientStorageHelpers {
                             T extracted = source.extract(movable, matcher.getExactMatchNoQuantityCondition(), false);
                             return insertIngredient(destination, extracted, false);
                         }
+                    }
+                }
+            }
+        }
+        return matcher.getEmptyInstance();
+    }
+
+    /**
+     * Move ingredients from source to target with optional source and target slots.
+     *
+     * If the algorithm should iterate over all source/destination slot,
+     * then the respective slot should be -1.
+     *
+     * If a slot is defined, and the storage is not an instance of {@link IIngredientComponentStorageSlotted},
+     * then nothing will be moved.
+     *
+     * @param source A source storage to extract from.
+     * @param sourceSlot The source slot or -1 for any.
+     * @param destination A destination storage to insert to.
+     * @param destinationSlot The destination slot or -1 for any.
+     * @param instance The prototype instance.
+     * @param matchCondition The match condition.
+     * @param simulate If the movement should be simulated.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @return The moved ingredient.
+     */
+    public static <T, M> T moveIngredientsSlotted(IIngredientComponentStorage<T, M> source, int sourceSlot,
+                                                  IIngredientComponentStorage<T, M> destination, int destinationSlot,
+                                                  T instance, M matchCondition, boolean simulate) {
+        IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
+        boolean loopSourceSlots = sourceSlot < 0;
+        boolean loopDestinationSlots = destinationSlot < 0;
+
+        if (!loopSourceSlots && !loopDestinationSlots) {
+            // Both source and destination slot are defined
+
+            // Fail if source or destination are not slotted
+            if (!(source instanceof IIngredientComponentStorageSlotted)) {
+                return matcher.getEmptyInstance();
+            }
+            if (!(destination instanceof IIngredientComponentStorageSlotted)) {
+                return matcher.getEmptyInstance();
+            }
+            IIngredientComponentStorageSlotted<T, M> sourceSlotted = (IIngredientComponentStorageSlotted<T, M>) source;
+            IIngredientComponentStorageSlotted<T, M> destinationSlotted = (IIngredientComponentStorageSlotted<T, M>) destination;
+
+            // Extract from source slot (simulated)
+            long prototypeQuantity = matcher.getQuantity(instance);
+            T extractedSimulated = sourceSlotted.extract(sourceSlot, prototypeQuantity, true);
+            if (!matcher.isEmpty(extractedSimulated) && matcher.matches(instance, extractedSimulated, matchCondition)) {
+                // Insert into target slot  (simulated)
+                T remaining = destinationSlotted.insert(destinationSlot, extractedSimulated, true);
+                long remainingQuantity = matcher.getQuantity(remaining);
+                if (remainingQuantity == 0 ||
+                        (remainingQuantity < prototypeQuantity && !matcher.hasCondition(matchCondition,
+                                source.getComponent().getPrimaryQuantifier().getMatchCondition()))) {
+                    if (simulate) {
+                        // Return the result if we intended to simulate
+                        if (remainingQuantity == 0) {
+                            return extractedSimulated;
+                        } else {
+                            return matcher.withQuantity(instance,
+                                    matcher.getQuantity(instance) - matcher.getQuantity(remaining));
+                        }
+                    } else {
+                        // Redo the operation if we do not intend to simulate
+                        long movedQuantitySimulated = matcher.getQuantity(extractedSimulated) - matcher.getQuantity(remaining);
+                        T sourceInstanceEffective = sourceSlotted.extract(sourceSlot, movedQuantitySimulated, false);
+                        // The following should always be true. If not, then the source was lying during simulated mode.
+                        // But we can safely ignore those cases at this point as nothing has been moved yet.
+                        if (!matcher.isEmpty(sourceInstanceEffective)) {
+                            // Remaining should be empty, otherwise the destination was lying during simulated mode
+                            T remainingEffective = destinationSlotted.insert(destinationSlot, sourceInstanceEffective, false);
+                            if (matcher.isEmpty(remainingEffective)) {
+                                return sourceInstanceEffective;
+                            } else {
+                                // If the destination was lying, try to add the remainder back into the source.
+                                // If even that fails, throw an error.
+                                T remainderFixup = sourceSlotted.insert(sourceSlot, remainingEffective, false);
+                                if (matcher.isEmpty(remainderFixup)) {
+                                    // We've managed to fix the problem, calculate the effective instance that was moved.
+                                    return matcher.withQuantity(remainingEffective,
+                                            matcher.getQuantity(sourceInstanceEffective)
+                                                    - matcher.getQuantity(remainingEffective));
+                                } else {
+                                    throw new IllegalStateException("Slotted source to destination movement failed " +
+                                            "due to inconsistent insertion behaviour by destination in simulation " +
+                                            "and non-simulation: " + destination + ". Lost: " + remainderFixup);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (loopSourceSlots) {
+            if (source instanceof IIngredientComponentStorageSlotted) {
+                // Recursively call movement logic for each slot in the source if slotted.
+                IIngredientComponentStorageSlotted<T, M> sourceSlotted = (IIngredientComponentStorageSlotted<T, M>) source;
+                int slots = sourceSlotted.getSlots();
+                for (int slot = 0; slot < slots; slot++) {
+                    T moved = moveIngredientsSlotted(source, slot, destination, destinationSlot, instance, matchCondition, simulate);
+                    if (!matcher.isEmpty(moved)) {
+                        return moved;
+                    }
+                }
+            } else {
+                // If we don't have source slots, iterate over all source slot instances in a slotless way
+                long prototypeQuantity = matcher.getQuantity(instance);
+                if (loopDestinationSlots) {
+                    return moveIngredients(source, destination, instance, matchCondition, simulate);
+                } else {
+                    if (!(destination instanceof IIngredientComponentStorageSlotted)) {
+                        return matcher.getEmptyInstance();
+                    }
+                    IIngredientComponentStorageSlotted<T, M> destinationSlotted = (IIngredientComponentStorageSlotted<T, M>) destination;
+                    for (T sourceInstance : source) {
+                        if (matcher.matches(instance, sourceInstance, matchCondition)) {
+                            if (matcher.getQuantity(sourceInstance) > prototypeQuantity) {
+                                sourceInstance = matcher.withQuantity(sourceInstance, prototypeQuantity);
+                            }
+                            T extractedSimulated = source.extract(sourceInstance, matchCondition, true);
+                            if (!matcher.isEmpty(extractedSimulated)) {
+                                T remaining = destinationSlotted.insert(destinationSlot, extractedSimulated, true);
+                                long remainingQuantity = matcher.getQuantity(remaining);
+                                if (remainingQuantity == 0 ||
+                                        (remainingQuantity < prototypeQuantity && !matcher.hasCondition(matchCondition,
+                                                source.getComponent().getPrimaryQuantifier().getMatchCondition()))) {
+                                    // Set the movable instance
+                                    T shouldMove;
+                                    if (remainingQuantity == 0) {
+                                        shouldMove = extractedSimulated;
+                                    } else {
+                                        shouldMove = matcher.withQuantity(instance,
+                                                matcher.getQuantity(instance) - matcher.getQuantity(remaining));
+                                    }
+
+                                    if (simulate) {
+                                        // Return the result if we intended to simulate
+                                        return shouldMove;
+                                    } else {
+                                        T extractedEffective = source.extract(shouldMove, matchCondition, false);
+                                        // The following should always be true. If not, then the source was lying during simulated mode.
+                                        // But we can safely ignore those cases at this point as nothing has been moved yet.
+                                        if (!matcher.isEmpty(extractedSimulated)) {
+                                            // Remaining should be empty, otherwise the destination was lying during simulated mode
+                                            T remainingEffective = destinationSlotted.insert(destinationSlot, extractedEffective, false);
+                                            boolean remainingEffectiveEmpty = matcher.isEmpty(remainingEffective);
+                                            if (remainingEffectiveEmpty) {
+                                                return extractedEffective;
+                                            } else {
+                                                // If the destination was lying, try to add the remainder back into the source.
+                                                // If even that fails, throw an error.
+                                                T remainderFixup = source.insert(remainingEffective, false);
+                                                if (matcher.isEmpty(remainderFixup)) {
+                                                    // We've managed to fix the problem, calculate the effective instance that was moved.
+                                                    return matcher.withQuantity(remainingEffective,
+                                                            matcher.getQuantity(extractedEffective)
+                                                                    - matcher.getQuantity(remainingEffective));
+                                                } else {
+                                                    throw new IllegalStateException("Slotless source to destination movement failed " +
+                                                            "due to inconsistent insertion behaviour by destination in simulation " +
+                                                            "and non-simulation: " + destination + ". Lost: " + remainderFixup);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } else { // loopDestinationSlots && !loopSourceSlots
+            // Quickly break if the source is not slotted.
+            if (!(source instanceof IIngredientComponentStorageSlotted)) {
+                return matcher.getEmptyInstance();
+            }
+
+            if (destination instanceof IIngredientComponentStorageSlotted) {
+                // Recursively call movement logic for each slot in the destination if slotted.
+                IIngredientComponentStorageSlotted<T, M> destinationSlotted = (IIngredientComponentStorageSlotted<T, M>) destination;
+                int slots = destinationSlotted.getSlots();
+                for (int slot = 0; slot < slots; slot++) {
+                    T moved = moveIngredientsSlotted(source, sourceSlot, destination, slot, instance, matchCondition, simulate);
+                    if (!matcher.isEmpty(moved)) {
+                        return moved;
+                    }
+                }
+            } else {
+                // If we don't have destination slots, move from defined source slot
+                IIngredientComponentStorageSlotted<T, M> sourceSlotted = (IIngredientComponentStorageSlotted<T, M>) source;
+                long prototypeQuantity = matcher.getQuantity(instance);
+                T sourceInstance = sourceSlotted.extract(sourceSlot, prototypeQuantity, true);
+                if (!matcher.isEmpty(sourceInstance) && matcher.matches(instance, sourceInstance, matchCondition)) {
+                    T inserted = insertIngredient(destination, sourceInstance, true);
+                    if (simulate) {
+                        return inserted;
+                    } else if (!matcher.isEmpty(inserted)) {
+                        T sourceInstanceEffective = sourceSlotted.extract(sourceSlot, matcher.getQuantity(inserted), false);
+                        return insertIngredient(destination, sourceInstanceEffective, false);
                     }
                 }
             }
