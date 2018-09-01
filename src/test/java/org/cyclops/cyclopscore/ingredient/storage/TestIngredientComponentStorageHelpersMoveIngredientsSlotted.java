@@ -39,6 +39,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
     private static final ComplexStack CA07_ = new ComplexStack(ComplexStack.Group.A, 0, 7, null);
     private static final ComplexStack CA08_ = new ComplexStack(ComplexStack.Group.A, 0, 8, null);
     private static final ComplexStack CA09_ = new ComplexStack(ComplexStack.Group.A, 0, 9, null);
+    private static final ComplexStack CA010_ = new ComplexStack(ComplexStack.Group.A, 0, 10, null);
 
     private static final ComplexStack CB02_ = new ComplexStack(ComplexStack.Group.B, 0, 2, null);
     private static final ComplexStack CA91B = new ComplexStack(ComplexStack.Group.A, 9, 1, ComplexStack.Tag.B);
@@ -211,11 +212,23 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
 
             @Test
             public void testSourceSlotLoopDestinationSlotLoopQuantitativeLess() {
+                // Move 5
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA05_));
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA05_));
+
+                assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_, CB02_, CA01B)));
+                assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA06_, CA91B)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotLoopQuantitativeMore() {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
+                        CA010_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                        CA010_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
@@ -248,6 +261,21 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA01_)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotLoopSourceMoreQuantitative() {
+                // Move nothing
+                sourceSlotlessInnerStorage.clear();
+                sourceSlotlessInnerStorage.add(CA05_);
+
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+
+                assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_)));
+                assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA02_, CA91B)));
             }
 
             @Test

@@ -100,11 +100,12 @@ public final class IngredientStorageHelpers {
                                            IIngredientComponentStorage<T, M> destination,
                                            T instance, M matchCondition, boolean simulate) {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
-        Iterator<T> it = source.iterator(instance, matchCondition);
+        Iterator<T> it = source.iterator(instance, matcher.withoutCondition(matchCondition,
+                source.getComponent().getPrimaryQuantifier().getMatchCondition()));
         long prototypeQuantity = matcher.getQuantity(instance);
         while (it.hasNext()) {
             T extractedSimulated = it.next();
-            if (matcher.getQuantity(extractedSimulated) > prototypeQuantity) {
+            if (matcher.getQuantity(extractedSimulated) != prototypeQuantity) {
                 extractedSimulated = matcher.withQuantity(extractedSimulated, prototypeQuantity);
             }
             T moved = moveIngredient(source, destination, extractedSimulated, matchCondition, simulate);

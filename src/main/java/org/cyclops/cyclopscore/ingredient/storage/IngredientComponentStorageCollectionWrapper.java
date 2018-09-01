@@ -87,7 +87,8 @@ public class IngredientComponentStorageCollectionWrapper<T, M> implements IIngre
     public T extract(@Nonnull T prototype, M matchCondition, boolean simulate) {
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
         T toExtract = matcher.getEmptyInstance();
-        Iterator<T> it = this.ingredientCollection.iterator(prototype, matchCondition);
+        Iterator<T> it = this.ingredientCollection.iterator(prototype, matcher.withoutCondition(matchCondition,
+                getComponent().getPrimaryQuantifier().getMatchCondition()));
         while (it.hasNext()) {
             T t = it.next();
             if (!matcher.isEmpty(t)) {

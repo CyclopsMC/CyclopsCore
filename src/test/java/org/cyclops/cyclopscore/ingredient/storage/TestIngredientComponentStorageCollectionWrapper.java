@@ -165,22 +165,28 @@ public class TestIngredientComponentStorageCollectionWrapper {
     public void testExtractMatch() {
         assertThat(storage.insert(100, false), is(0));
 
-        assertThat(storage.extract(10, true, true), is(0));
+        assertThat(storage.extract(10, true, true), is(10));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(100)));
 
-        assertThat(storage.extract(10, true, false), is(0));
-        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(100)));
+        assertThat(storage.extract(10, true, false), is(10));
+        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(90)));
 
-        assertThat(storage.extract(1, true, true), is(0));
-        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(100)));
+        assertThat(storage.extract(1, true, true), is(1));
+        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(90)));
 
-        assertThat(storage.extract(1, true, false), is(0));
-        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(100)));
+        assertThat(storage.extract(1, true, false), is(1));
+        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(89)));
 
-        assertThat(storage.extract(100, true, true), is(100));
-        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(100)));
+        assertThat(storage.extract(100, true, true), is(0));
+        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(89)));
 
-        assertThat(storage.extract(100, true, false), is(100));
+        assertThat(storage.extract(100, true, false), is(0));
+        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(89)));
+
+        assertThat(storage.extract(89, true, true), is(89));
+        assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(89)));
+
+        assertThat(storage.extract(89, true, false), is(89));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList()));
 
 
