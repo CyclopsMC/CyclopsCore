@@ -497,14 +497,14 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
 
             @Test
             public void testSourceSlotLoopDestinationSlotDefined0QuantitativeLess() {
-                // Move nothing
+                // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA05_));
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA05_));
 
-                assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
-                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
+                assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_, CB02_, CA01B)));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA06_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test

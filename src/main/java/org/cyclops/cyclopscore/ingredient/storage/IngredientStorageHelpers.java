@@ -268,7 +268,8 @@ public final class IngredientStorageHelpers {
                     }
                     IIngredientComponentStorageSlotted<T, M> destinationSlotted = (IIngredientComponentStorageSlotted<T, M>) destination;
                     for (T sourceInstance : source) {
-                        if (matcher.matches(instance, sourceInstance, matchCondition)) {
+                        if (matcher.matches(instance, sourceInstance, matcher.withoutCondition(matchCondition,
+                                source.getComponent().getPrimaryQuantifier().getMatchCondition()))) {
                             if (matcher.getQuantity(sourceInstance) != prototypeQuantity) {
                                 sourceInstance = matcher.withQuantity(sourceInstance, prototypeQuantity);
                             }
