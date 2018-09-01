@@ -150,7 +150,8 @@ public final class IngredientStorageHelpers {
     }
 
     /**
-     * Move ingredients from source to target with optional source and target slots.
+     * Move ingredients from source to target with optional source and target slots,
+     * based on an ingredient prototype and match condition.
      *
      * If the algorithm should iterate over all source/destination slot,
      * then the respective slot should be -1.
@@ -204,8 +205,8 @@ public final class IngredientStorageHelpers {
                         if (remainingQuantity == 0) {
                             return extractedSimulated;
                         } else {
-                            return matcher.withQuantity(instance,
-                                    matcher.getQuantity(instance) - matcher.getQuantity(remaining));
+                            return matcher.withQuantity(extractedSimulated,
+                                    matcher.getQuantity(extractedSimulated) - matcher.getQuantity(remaining));
                         }
                     } else {
                         // Redo the operation if we do not intend to simulate
@@ -260,7 +261,7 @@ public final class IngredientStorageHelpers {
                     IIngredientComponentStorageSlotted<T, M> destinationSlotted = (IIngredientComponentStorageSlotted<T, M>) destination;
                     for (T sourceInstance : source) {
                         if (matcher.matches(instance, sourceInstance, matchCondition)) {
-                            if (matcher.getQuantity(sourceInstance) > prototypeQuantity) {
+                            if (matcher.getQuantity(sourceInstance) != prototypeQuantity) {
                                 sourceInstance = matcher.withQuantity(sourceInstance, prototypeQuantity);
                             }
                             T extractedSimulated = source.extract(sourceInstance, matchCondition, true);
@@ -275,8 +276,8 @@ public final class IngredientStorageHelpers {
                                     if (remainingQuantity == 0) {
                                         shouldMove = extractedSimulated;
                                     } else {
-                                        shouldMove = matcher.withQuantity(instance,
-                                                matcher.getQuantity(instance) - matcher.getQuantity(remaining));
+                                        shouldMove = matcher.withQuantity(extractedSimulated,
+                                                matcher.getQuantity(extractedSimulated) - matcher.getQuantity(remaining));
                                     }
 
                                     if (simulate) {
