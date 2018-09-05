@@ -80,7 +80,7 @@ public final class IngredientStorageHelpers {
                 }
             } else {
                 T extracted = source.extract(movableQuantity, false);
-                return insertIngredient(destination, extracted, false);
+                return insertIngredientRemainderFixup(source, destination, extracted, false);
             }
         }
         return matcher.getEmptyInstance();
@@ -149,7 +149,7 @@ public final class IngredientStorageHelpers {
                             return movable;
                         } else {
                             T extracted = source.extract(movable, matcher.getExactMatchNoQuantityCondition(), false);
-                            return insertIngredient(destination, extracted, false);
+                            return insertIngredientRemainderFixup(source, destination, extracted, false);
                         }
                     }
                 }
@@ -467,7 +467,7 @@ public final class IngredientStorageHelpers {
             return inserted;
         } else if (!matcher.isEmpty(inserted)) {
             T sourceInstanceEffective = sourceSlotted.extract(sourceSlot, matcher.getQuantity(inserted), false);
-            return insertIngredient(destination, sourceInstanceEffective, false);
+            return insertIngredientRemainderFixup(sourceSlotted, destination, sourceInstanceEffective, false);
         }
         return matcher.getEmptyInstance();
     }
@@ -497,28 +497,36 @@ public final class IngredientStorageHelpers {
             if (!matcher.isEmpty(extractedSimulated)) {
                 // Remaining should be empty, otherwise the destination was lying during simulated mode
                 T remainingEffective = destinationSlotted.insert(destinationSlot, extractedEffective, false);
-                boolean remainingEffectiveEmpty = matcher.isEmpty(remainingEffective);
-                if (remainingEffectiveEmpty) {
-                    return extractedEffective;
-                } else {
-                    // If the destination was lying, try to add the remainder back into the source.
-                    // If even that fails, throw an error.
-                    T remainderFixup = source.insert(remainingEffective, false);
-                    if (matcher.isEmpty(remainderFixup)) {
-                        // We've managed to fix the problem, calculate the effective instance that was moved.
-                        return matcher.withQuantity(remainingEffective,
-                                matcher.getQuantity(extractedEffective)
-                                        - matcher.getQuantity(remainingEffective));
-                    } else {
-                        throw new IllegalStateException("Slotless source to destination movement failed " +
-                                "due to inconsistent insertion behaviour by destination in simulation " +
-                                "and non-simulation: " + destinationSlotted + ". Lost: " + remainderFixup);
-                    }
-                }
+                return handleRemainder(source, destinationSlotted, extractedEffective, remainingEffective);
             }
         }
 
         return null;
+    }
+
+    public static <T, M> T handleRemainder(IIngredientComponentStorage<T, M> source,
+                                           IIngredientComponentStorage<T, M> destination,
+                                           T movedEffective,
+                                           T remainingEffective) {
+        IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
+        boolean remainingEffectiveEmpty = matcher.isEmpty(remainingEffective);
+        if (remainingEffectiveEmpty) {
+            return movedEffective;
+        } else {
+            // If the destination was lying, try to add the remainder back into the source.
+            // If even that fails, throw an error.
+            T remainderFixup = source.insert(remainingEffective, false);
+            if (matcher.isEmpty(remainderFixup)) {
+                // We've managed to fix the problem, calculate the effective instance that was moved.
+                return matcher.withQuantity(remainingEffective,
+                        matcher.getQuantity(movedEffective)
+                                - matcher.getQuantity(remainingEffective));
+            } else {
+                throw new IllegalStateException("Slotless source to destination movement failed " +
+                        "due to inconsistent insertion behaviour by destination in simulation " +
+                        "and non-simulation: " + destination + ". Lost: " + remainderFixup);
+            }
+        }
     }
 
     /**
@@ -555,7 +563,7 @@ public final class IngredientStorageHelpers {
                     }
                 } else {
                     T extracted = source.extract(instance, matchCondition, false);
-                    return insertIngredient(destination, extracted, false);
+                    return insertIngredientRemainderFixup(source, destination, extracted, false);
                 }
             }
         }
@@ -606,6 +614,35 @@ public final class IngredientStorageHelpers {
                                             T instance, boolean simulate) {
         IIngredientMatcher<T, M> matcher = destination.getComponent().getMatcher();
         return matcher.withQuantity(instance, insertIngredientQuantity(destination, instance, simulate));
+    }
+
+    /**
+     * Insert an ingredient in a destination storage.
+     * If not in simulation mode, and the instance does not completely fit into the destination,
+     * the remainder will be inserted into the source.
+     * If not everything can be re-inserted into the source,
+     * and {@link IllegalStateException} will be thrown.
+     *
+     * The difference of this method compared to {@link IIngredientComponentStorage#insert(Object, boolean)}
+     * is that this method returns the actually inserted ingredient
+     * instead of the remaining ingredient that was not inserted.
+     *
+     * @param source A source storage to insert fixup instances.
+     * @param destination A storage.
+     * @param instance An instance to insert.
+     * @param simulate If the insertion should be simulated.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @return The actual inserted ingredient, or would-be inserted ingredient if simulated.
+     */
+    public static <T, M> T insertIngredientRemainderFixup(IIngredientComponentStorage<T, M> source,
+                                                          IIngredientComponentStorage<T, M> destination,
+                                                          T instance, boolean simulate) {
+        if (simulate) {
+            return insertIngredient(destination, instance, true);
+        }
+        T remainingEffective = destination.insert(instance, false);
+        return handleRemainder(source, destination, instance, remainingEffective);
     }
 
 }
