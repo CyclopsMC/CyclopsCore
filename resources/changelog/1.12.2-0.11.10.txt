@@ -1,0 +1,4 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Don't allow active items with guis to be moved into themselves, Closes CyclopsMC/EvilCraft#724
