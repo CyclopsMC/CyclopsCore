@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.inventory.container;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -75,5 +76,13 @@ public abstract class ItemInventoryContainer<I extends Item & IGuiContainerProvi
     		
     	};
     }
-	
+
+	@Override
+	public ItemStack slotClick(int slotId, int arg, ClickType clickType, EntityPlayer player) {
+		if (clickType == ClickType.SWAP && arg == itemIndex) {
+			// Don't allow swapping with the slot of the active item.
+			return ItemStack.EMPTY;
+		}
+		return super.slotClick(slotId, arg, clickType, player);
+	}
 }
