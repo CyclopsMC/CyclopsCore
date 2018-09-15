@@ -183,6 +183,12 @@ public final class IngredientStorageHelpers {
                                                   IIngredientComponentStorage<T, M> destination, int destinationSlot,
                                                   T instance, M matchCondition, boolean simulate) {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
+
+        // Optimization if nothing will be moved in any case
+        if (matcher.getQuantity(instance) <= 0) {
+            return matcher.getEmptyInstance();
+        }
+
         boolean loopSourceSlots = sourceSlot < 0;
         boolean loopDestinationSlots = destinationSlot < 0;
 
