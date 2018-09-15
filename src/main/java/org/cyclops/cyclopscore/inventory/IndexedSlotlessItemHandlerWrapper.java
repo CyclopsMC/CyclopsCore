@@ -7,12 +7,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.SlotlessItemHandlerWrapper;
+import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.IntStream;
 
 /**
  * A {@link org.cyclops.commoncapabilities.api.capability.itemhandler.ISlotlessItemHandler}
@@ -37,10 +39,20 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
         this(itemHandler, inventory, MovementStrategy.FIRST, MovementStrategy.FIRST);
     }
 
-    // TODO: check if match flags contain ItemMatch.ITEM! If not, iterate over slots in the naive way.
-
     @Override
     protected int getNonFullSlotWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
+        if (!IngredientComponent.ITEMSTACK.getMatcher().hasCondition(matchFlags, ItemMatch.ITEM)) {
+            for (int i = 0; i < itemHandler.getSlots(); i++) {
+                ItemStack slotStack = itemHandler.getStackInSlot(i);
+                if (ItemMatch.areItemStacksEqual(slotStack, itemStack, matchFlags)
+                        && slotStack.getCount() < itemHandler.getSlotLimit(i)
+                        && slotStack.getCount() < slotStack.getMaxStackSize()) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         Map<Item, TIntObjectMap<ItemStack>> items = inventory.getIndex();
         TIntObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
         if (stacks != null) {
@@ -57,6 +69,16 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
 
     @Override
     protected int getNonEmptySlotWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
+        if (!IngredientComponent.ITEMSTACK.getMatcher().hasCondition(matchFlags, ItemMatch.ITEM)) {
+            for (int i = 0; i < itemHandler.getSlots(); i++) {
+                ItemStack slotStack = itemHandler.getStackInSlot(i);
+                if (!slotStack.isEmpty() && ItemMatch.areItemStacksEqual(slotStack, itemStack, matchFlags)) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
         Map<Item, TIntObjectMap<ItemStack>> items = inventory.getIndex();
         TIntObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
         if (stacks != null) {
@@ -72,6 +94,11 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
 
     @Override
     protected Iterator<Integer> getSlotsWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
+        if (!IngredientComponent.ITEMSTACK.getMatcher().hasCondition(matchFlags, ItemMatch.ITEM)) {
+            return IntStream.range(0, itemHandler.getSlots())
+                    .filter(slot -> ItemMatch.areItemStacksEqual(itemHandler.getStackInSlot(slot), itemStack, matchFlags))
+                    .iterator();
+        }
         Map<Item, TIntObjectMap<ItemStack>> items = inventory.getIndex();
         TIntObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
         if (stacks == null) {
