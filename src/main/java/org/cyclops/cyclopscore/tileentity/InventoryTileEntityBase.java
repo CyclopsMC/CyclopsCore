@@ -28,7 +28,7 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
 
     protected boolean sendUpdateOnInventoryChanged = false;
     protected final EnumFacingMap<IItemHandler> sidedInventoryHandlers;
-    private int inventoryHash;
+    private int inventoryHash = 0;
 
     public InventoryTileEntityBase() {
         this.sidedInventoryHandlers = EnumFacingMap.newMap();
@@ -82,7 +82,7 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
     }
 
     protected void updateInventoryHash() {
-        inventoryHash = RAND.nextInt();
+        inventoryHash++;
     }
 
     protected void onInventoryChanged() {
