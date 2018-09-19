@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Maps;
-import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class IndexedInventory extends LargeInventory implements IndexedSlotlessItemHandlerWrapper.IInventoryIndexReference {
 
-    private final Map<Item, TIntObjectMap<ItemStack>> index = Maps.newIdentityHashMap();
+    private final Map<Item, Int2ObjectMap<ItemStack>> index = Maps.newIdentityHashMap();
     private int firstEmptySlot;
     private int lastEmptySlot;
     private int firstNonEmptySlot;
@@ -52,9 +52,9 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
         for (int i = 0; i < getSizeInventory(); i++) {
             ItemStack itemStack = getStackInSlot(i);
             if (!itemStack.isEmpty()) {
-                TIntObjectMap<ItemStack> stacks = index.get(itemStack.getItem());
+                Int2ObjectMap<ItemStack> stacks = index.get(itemStack.getItem());
                 if (stacks == null) {
-                    stacks = new TIntObjectHashMap<ItemStack>();
+                    stacks = new Int2ObjectOpenHashMap<>();
                     index.put(itemStack.getItem(), stacks);
                 }
                 stacks.put(i, itemStack);
@@ -82,7 +82,7 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
         // Update index
         ItemStack oldStack = getStackInSlot(slotId);
         if (!oldStack.isEmpty()) {
-            TIntObjectMap<ItemStack> stacks = index.get(oldStack.getItem());
+            Int2ObjectMap<ItemStack> stacks = index.get(oldStack.getItem());
             if (stacks != null) {
                 stacks.remove(slotId);
             }
@@ -91,9 +91,9 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
             }
         }
         if (!itemStack.isEmpty()) {
-            TIntObjectMap<ItemStack> stacks = index.get(itemStack.getItem());
+            Int2ObjectMap<ItemStack> stacks = index.get(itemStack.getItem());
             if (stacks == null) {
-                stacks = new TIntObjectHashMap<ItemStack>();
+                stacks = new Int2ObjectOpenHashMap<>();
                 index.put(itemStack.getItem(), stacks);
             }
             stacks.put(slotId, itemStack);
@@ -175,7 +175,7 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
     }
 
     @Override
-    public Map<Item, TIntObjectMap<ItemStack>> getIndex() {
+    public Map<Item, Int2ObjectMap<ItemStack>> getIndex() {
         return index;
     }
 

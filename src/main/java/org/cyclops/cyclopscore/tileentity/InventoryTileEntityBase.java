@@ -65,14 +65,20 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
 
     @Override
     public ItemStack decrStackSize(int slotId, int count) {
-        ItemStack itemStack  = getInventory().decrStackSize(slotId, count);
-        onInventoryChanged();
+        ItemStack itemStack = getInventory().decrStackSize(slotId, count);
+        if (!itemStack.isEmpty()) {
+            onInventoryChanged();
+        }
         return itemStack;
     }
 
     @Override
     public ItemStack removeStackFromSlot(int slotId) {
-        return getInventory().removeStackFromSlot(slotId);
+        ItemStack removed = getInventory().removeStackFromSlot(slotId);
+        if (!removed.isEmpty()) {
+            onInventoryChanged();
+        }
+        return removed;
     }
 
     @Override
@@ -149,6 +155,7 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
     @Override
     public void clear() {
         getInventory().clear();
+        updateInventoryHash();
     }
 
     @Override

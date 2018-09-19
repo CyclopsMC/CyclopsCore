@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.inventory;
 
-import gnu.trove.iterator.TIntObjectIterator;
-import gnu.trove.map.TIntObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -53,14 +52,14 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
             return -1;
         }
 
-        Map<Item, TIntObjectMap<ItemStack>> items = inventory.getIndex();
-        TIntObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
+        Map<Item, Int2ObjectMap<ItemStack>> items = inventory.getIndex();
+        Int2ObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
         if (stacks != null) {
-            for (TIntObjectIterator<ItemStack> it = stacks.iterator(); it.hasNext(); ) {
-                it.advance();
-                if (it.value().getCount() < Math.min(inventory.getInventoryStackLimit(), it.value().getMaxStackSize())
-                        && ItemMatch.areItemStacksEqual(it.value(), itemStack, matchFlags)) {
-                    return it.key();
+            for (Int2ObjectMap.Entry<ItemStack> entry : stacks.int2ObjectEntrySet()) {
+                ItemStack value = entry.getValue();
+                if (value.getCount() < Math.min(inventory.getInventoryStackLimit(), value.getMaxStackSize())
+                        && ItemMatch.areItemStacksEqual(value, itemStack, matchFlags)) {
+                    return entry.getIntKey();
                 }
             }
         }
@@ -79,13 +78,13 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
             return -1;
         }
 
-        Map<Item, TIntObjectMap<ItemStack>> items = inventory.getIndex();
-        TIntObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
+        Map<Item, Int2ObjectMap<ItemStack>> items = inventory.getIndex();
+        Int2ObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
         if (stacks != null) {
-            for (TIntObjectIterator<ItemStack> it = stacks.iterator(); it.hasNext(); ) {
-                it.advance();
-                if (ItemMatch.areItemStacksEqual(it.value(), itemStack, matchFlags)) {
-                    return it.key();
+            for (Int2ObjectMap.Entry<ItemStack> entry : stacks.int2ObjectEntrySet()) {
+                ItemStack value = entry.getValue();
+                if (ItemMatch.areItemStacksEqual(value, itemStack, matchFlags)) {
+                    return entry.getIntKey();
                 }
             }
         }
@@ -99,12 +98,12 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
                     .filter(slot -> ItemMatch.areItemStacksEqual(itemHandler.getStackInSlot(slot), itemStack, matchFlags))
                     .iterator();
         }
-        Map<Item, TIntObjectMap<ItemStack>> items = inventory.getIndex();
-        TIntObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
+        Map<Item, Int2ObjectMap<ItemStack>> items = inventory.getIndex();
+        Int2ObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
         if (stacks == null) {
             return Collections.emptyIterator();
         }
-        return new IndexIterator(stacks.iterator(), itemStack, matchFlags);
+        return new IndexIterator(stacks.int2ObjectEntrySet().iterator(), itemStack, matchFlags);
     }
 
     @Override
@@ -150,7 +149,7 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
     public static interface IInventoryIndexReference {
 
         public int getInventoryStackLimit();
-        public Map<Item, TIntObjectMap<ItemStack>> getIndex();
+        public Map<Item, Int2ObjectMap<ItemStack>> getIndex();
         public int getFirstEmptySlot();
         public int getLastEmptySlot();
         public int getFirstNonEmptySlot();
@@ -160,12 +159,12 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
 
     public static class IndexIterator implements Iterator<Integer> {
 
-        private final TIntObjectIterator<ItemStack> slotIterator;
+        private final Iterator<Int2ObjectMap.Entry<ItemStack>> slotIterator;
         private final ItemStack prototype;
         private final int matchFlags;
         private Integer next;
 
-        public IndexIterator(TIntObjectIterator<ItemStack> slotIterator, ItemStack prototype, int matchFlags) {
+        public IndexIterator(Iterator<Int2ObjectMap.Entry<ItemStack>> slotIterator, ItemStack prototype, int matchFlags) {
             this.slotIterator = slotIterator;
             this.prototype = prototype;
             this.matchFlags = matchFlags;
@@ -174,9 +173,9 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
 
         protected Integer findNext() {
             while(slotIterator.hasNext()) {
-                int slot = slotIterator.key();
-                ItemStack itemStack = slotIterator.value();
-                slotIterator.advance();
+                Int2ObjectMap.Entry<ItemStack> entry = slotIterator.next();
+                int slot = entry.getIntKey();
+                ItemStack itemStack = entry.getValue();
                 if (ItemMatch.areItemStacksEqual(itemStack, prototype, matchFlags)) {
                     return slot;
                 }
