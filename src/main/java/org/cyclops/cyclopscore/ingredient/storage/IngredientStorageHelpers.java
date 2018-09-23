@@ -87,6 +87,49 @@ public final class IngredientStorageHelpers {
     }
 
     /**
+     * Iteratively move the instance that matches the given match condition from source to destination.
+     * The quantity of the given instance indicates the maximum amount that can be moved.
+     *
+     * This is useful in cases that the internal transfer rate of certain storages have to be overridden.
+     *
+     * Note: When simulating, only a single iteration will be done.
+     * This is because the iterations don't actually take effect,
+     * which could cause infinite loops.
+     *
+     * @param source A source storage to extract from.
+     * @param destination A destination storage to insert to.
+     * @param instance The prototype instance.
+     * @param matchCondition The match condition.
+     * @param simulate If the movement should be simulated.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @return The moved ingredient.
+     */
+    public static <T, M> T moveIngredientsIterative(IIngredientComponentStorage<T, M> source,
+                                                    IIngredientComponentStorage<T, M> destination,
+                                                    T instance, M matchCondition, boolean simulate) {
+        IngredientComponent<T, M> component = source.getComponent();
+        IIngredientMatcher<T, M> matcher = component.getMatcher();
+        long maxQuantity = matcher.getQuantity(instance);
+        T movedFirst = moveIngredients(source, destination, instance, matchCondition, simulate);
+        long movedQuantity = matcher.getQuantity(movedFirst);
+        if (simulate || movedQuantity == 0) {
+            return movedFirst;
+        }
+
+        // Try move until we reach the max quantity, or we don't move anything anymore.
+        while (movedQuantity < maxQuantity) {
+            T moved = moveIngredients(source, destination, movedFirst, matchCondition, false);
+            if (matcher.isEmpty(moved)) {
+                break;
+            }
+            movedQuantity += matcher.getQuantity(moved);
+        }
+
+        return matcher.withQuantity(movedFirst, movedQuantity);
+    }
+
+    /**
      * Move the first instance that matches the given match condition from source to destination.
      * @param source A source storage to extract from.
      * @param destination A destination storage to insert to.
