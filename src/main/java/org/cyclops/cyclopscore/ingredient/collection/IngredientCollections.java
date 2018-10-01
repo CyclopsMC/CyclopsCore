@@ -249,12 +249,15 @@ public final class IngredientCollections {
      * Deserialize the given NBT tag to an ingredient array list.
      *
      * @param tag An NBT tag.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return An ingredient array list.
+     * @param ingredientCollectionFactory A function that creates a {@link IIngredientCollectionMutable}
+     *                                    from an {@link IngredientComponent}.
+     * @param <C> The collection type.
+     * @return An ingredient collection.
      * @throws IllegalArgumentException If the tag was invalid.
      */
-    public static <T, M> IngredientArrayList<T, M> deserialize(NBTTagCompound tag) {
+    public static <C extends IIngredientCollectionMutable<?, ?>> C deserialize(NBTTagCompound tag,
+                                                                               IIngredientCollectionConstructor<C>
+                                                                                       ingredientCollectionFactory) {
         // Validate tag
         if (!tag.hasKey("component", Constants.NBT.TAG_STRING)) {
             throw new IllegalArgumentException("No component type was found in the given tag");
@@ -265,20 +268,40 @@ public final class IngredientCollections {
 
         // Validate component
         String componentTypeName = tag.getString("component");
-        IngredientComponent<T, M> component = (IngredientComponent<T, M>) IngredientComponent.REGISTRY.getValue(new ResourceLocation(componentTypeName));
+        IngredientComponent<?, ?> component = IngredientComponent.REGISTRY.getValue(new ResourceLocation(componentTypeName));
         if (component == null) {
             throw new IllegalArgumentException("No ingredient component with the given name was found: " + component);
         }
 
         // Actual deserialization of ingredients
-        IIngredientSerializer<T, M> serializer = component.getSerializer();
-        NBTTagList list = (NBTTagList) tag.getTag("ingredients");
-        IngredientArrayList<T, M> arrayList = new IngredientArrayList<>(component, list.tagCount());
-        for (NBTBase subTag : list) {
-            arrayList.add(serializer.deserializeInstance(subTag));
+        IIngredientSerializer<?, ?> serializer = component.getSerializer();
+        NBTTagList ingredients = (NBTTagList) tag.getTag("ingredients");
+        C collection = ingredientCollectionFactory.create(component);
+        IIngredientCollectionMutable collectionUnsafe = collection;
+        for (NBTBase subTag : ingredients) {
+            collectionUnsafe.add(serializer.deserializeInstance(subTag));
         }
 
-        return arrayList;
+        return collection;
+    }
+
+    /**
+     * Deserialize the given NBT tag to an ingredient array list.
+     *
+     * @param tag An NBT tag.
+     * @return An ingredient array list.
+     * @throws IllegalArgumentException If the tag was invalid.
+     */
+    public static IngredientArrayList<?, ?> deserialize(NBTTagCompound tag) {
+        return deserialize(tag, IngredientArrayList::new);
+    }
+
+    /**
+     * Helper interface for constructing an {@link IIngredientCollection} based on an {@link IngredientComponent}.
+     * @param <C>
+     */
+    public static interface IIngredientCollectionConstructor<C extends IIngredientCollection<?, ?>> {
+        public <T, M> C create(IngredientComponent<T, M> ingredientComponent);
     }
 
 }
