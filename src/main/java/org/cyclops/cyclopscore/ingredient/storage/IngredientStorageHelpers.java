@@ -1,9 +1,15 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.util.Constants;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorageSlotted;
+import org.cyclops.cyclopscore.ingredient.collection.IIngredientCollection;
+import org.cyclops.cyclopscore.ingredient.collection.IngredientArrayList;
+import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionPrototypeMap;
+import org.cyclops.cyclopscore.ingredient.collection.IngredientCollections;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
@@ -692,6 +698,58 @@ public final class IngredientStorageHelpers {
         }
         T remainingEffective = destination.insert(instance, false);
         return handleRemainder(source, destination, instance, remainingEffective);
+    }
+
+    /**
+     * Serialize the given storage to NBT.
+     *
+     * All ingredients, the max quantity, and whether or not it is slotted will be stored.
+     *
+     * @param storage An ingredient storage.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @return An NBT tag.
+     */
+    public static <T, M> NBTTagCompound serialize(IIngredientComponentStorage<T, M> storage) {
+        NBTTagCompound tag = IngredientCollections.serialize(new IngredientArrayList<>(storage.getComponent(), storage.iterator()));
+        tag.setLong("maxQuantity", storage.getMaxQuantity());
+        tag.setBoolean("slotted", storage instanceof IIngredientComponentStorageSlotted);
+        return tag;
+    }
+
+    /**
+     * Deserialize the storage from the given NBT tag.
+     *
+     * All ingredients, the max quantity, and whether or not it is slotted will be restored.
+     *
+     * @param tag An NBT tag.
+     * @param rateLimit The rate limit per insertion/extraction.
+     * @return The deserialized storage.
+     * @throws IllegalArgumentException If the tag was invalid.
+     */
+    public static IIngredientComponentStorage<?, ?> deserialize(NBTTagCompound tag, long rateLimit) {
+        if (!tag.hasKey("maxQuantity", Constants.NBT.TAG_LONG)) {
+            throw new IllegalArgumentException("No maxQuantity was found in the given tag");
+        }
+        if (!tag.hasKey("slotted", Constants.NBT.TAG_BYTE)) {
+            throw new IllegalArgumentException("No slotted was found in the given tag");
+        }
+        long maxQuantity = tag.getLong("maxQuantity");
+        if (tag.getBoolean("slotted")) {
+            return new IngredientComponentStorageSlottedCollectionWrapper<>(
+                    IngredientCollections.deserialize(tag, IngredientArrayList::new), maxQuantity, rateLimit);
+        } else {
+            return new IngredientComponentStorageCollectionWrapper<>(
+                    IngredientCollections.deserialize(tag, IngredientCollectionPrototypeMap::new), maxQuantity, rateLimit);
+        }
+    }
+
+    /**
+     * Helper interface for constructing an {@link IIngredientCollection} based on an {@link IngredientComponent}.
+     * @param <C>
+     */
+    public static interface IIngredientStorageConstructor<C extends IIngredientComponentStorage<?, ?>> {
+        public <T, M> C create(IngredientComponent<T, M> ingredientComponent);
     }
 
 }
