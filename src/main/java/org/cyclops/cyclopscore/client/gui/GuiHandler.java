@@ -13,10 +13,12 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -81,11 +83,12 @@ public class GuiHandler implements IGuiHandler {
     }
     
     @SuppressWarnings("unchecked")
+    @Nullable
     private <O> O getTemporaryData(GuiType<O> guiType) throws IllegalArgumentException {
         O data = (O) (MinecraftHelpers.isClientSide() ? tempDataHolderClient.get(guiType) : tempDataHolderServer.get(guiType));
         clearTemporaryData(guiType);
         if(guiType.isCarriesData() && data == null) {
-            throw new IllegalArgumentException("Invalid GUI data.");
+            getMod().log(Level.WARN, "Invalid GUI data.");
         }
         return data;
     }
@@ -98,8 +101,11 @@ public class GuiHandler implements IGuiHandler {
             return null; // Possible with client-only GUI's like books.
         }
         GuiType guiType = types.get(id);
-        return guiType.getContainerConstructor().getServerGuiElement(id, player, world, x, y, z, containerClass,
-                getTemporaryData(guiType));
+        Object data = getTemporaryData(guiType);
+        if (data == null) {
+            return null;
+        }
+        return guiType.getContainerConstructor().getServerGuiElement(id, player, world, x, y, z, containerClass, data);
     }
 
     @SuppressWarnings("unchecked")
@@ -108,8 +114,11 @@ public class GuiHandler implements IGuiHandler {
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         Class<? extends GuiScreen> guiClass = guis.get(id);
         GuiType guiType = types.get(id);
-        return guiType.getGuiConstructor().getClientGuiElement(id, player, world, x, y, z, guiClass,
-                getTemporaryData(guiType));
+        Object data = getTemporaryData(guiType);
+        if (data == null) {
+            return null;
+        }
+        return guiType.getGuiConstructor().getClientGuiElement(id, player, world, x, y, z, guiClass, data);
     }
     
     /**
