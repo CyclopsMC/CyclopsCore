@@ -11,6 +11,8 @@ import org.cyclops.cyclopscore.helper.obfuscation.ObfuscationHelpers;
 import org.cyclops.cyclopscore.network.CodecField;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
+import javax.annotation.Nullable;
+
 /**
  * Packet from server to client to update capabilities.
  * @author rubensworks
@@ -36,14 +38,14 @@ public class SendPlayerCapabilitiesPacket extends PacketCodec {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void actionClient(World world, EntityPlayer player) {
-    	if (capabilityData != null) {
+	public void actionClient(World world, @Nullable EntityPlayer player) {
+    	if (player != null && capabilityData != null) {
 			ObfuscationHelpers.getEntityCapabilities(player).deserializeNBT(capabilityData);
 		}
 	}
 
 	@Override
-	public void actionServer(World world, EntityPlayerMP player) {
+	public void actionServer(World world, @Nullable EntityPlayerMP player) {
 
 	}
 	
