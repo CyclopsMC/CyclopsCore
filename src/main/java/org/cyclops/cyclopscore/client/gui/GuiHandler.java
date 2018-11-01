@@ -88,7 +88,7 @@ public class GuiHandler implements IGuiHandler {
         O data = (O) (MinecraftHelpers.isClientSide() ? tempDataHolderClient.get(guiType) : tempDataHolderServer.get(guiType));
         clearTemporaryData(guiType);
         if(guiType.isCarriesData() && data == null) {
-            getMod().log(Level.WARN, "Invalid GUI data.");
+            throw new IllegalArgumentException("Invalid GUI data.");
         }
         return data;
     }
@@ -101,8 +101,11 @@ public class GuiHandler implements IGuiHandler {
             return null; // Possible with client-only GUI's like books.
         }
         GuiType guiType = types.get(id);
-        Object data = getTemporaryData(guiType);
-        if (data == null) {
+        Object data;
+        try {
+            data = getTemporaryData(guiType);
+        } catch (IllegalArgumentException e) {
+            getMod().log(Level.WARN, "Invalid GUI data.");
             return null;
         }
         return guiType.getContainerConstructor().getServerGuiElement(id, player, world, x, y, z, containerClass, data);
@@ -114,8 +117,11 @@ public class GuiHandler implements IGuiHandler {
     public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
         Class<? extends GuiScreen> guiClass = guis.get(id);
         GuiType guiType = types.get(id);
-        Object data = getTemporaryData(guiType);
-        if (data == null) {
+        Object data;
+        try {
+            data = getTemporaryData(guiType);
+        } catch (IllegalArgumentException e) {
+            getMod().log(Level.WARN, "Invalid GUI data.");
             return null;
         }
         return guiType.getGuiConstructor().getClientGuiElement(id, player, world, x, y, z, guiClass, data);
