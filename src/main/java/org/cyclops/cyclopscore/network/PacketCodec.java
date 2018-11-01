@@ -11,7 +11,12 @@ import org.cyclops.cyclopscore.datastructure.SingleCache;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Packet with automatic coding and decoding of basic fields annotated with {@link CodecField}.
@@ -342,9 +347,10 @@ public abstract class PacketCodec extends PacketBase {
 
 				// Make private fields temporarily accessible.
 				boolean accessible = field.isAccessible();
-				field.setAccessible(true);
+				if (!accessible) {
+					field.setAccessible(true);
+				}
 				runnable.run(field, action);
-				field.setAccessible(accessible);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
