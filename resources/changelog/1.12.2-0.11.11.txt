@@ -1,0 +1,10 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Improve efficiency of reflection-based data serialization, Closes CyclopsMC/IntegratedDynamics#630
+* Make single-levelled enchantments not show its level in the name, For example, 'Unusing I' will now be simple be 'Unusing', Closes CyclopsMC/EvilCraft#736
+
+Fixes:
+* Make leaves always drop the base item when silk-touched, Closes CyclopsMC/IntegratedDynamics#633
+* Make invalid gui data crashes warnings instead, Closes #120
+* Fix rare crash on client-side handling of SendPlayerCapabilitiesPacket, Closes #119
