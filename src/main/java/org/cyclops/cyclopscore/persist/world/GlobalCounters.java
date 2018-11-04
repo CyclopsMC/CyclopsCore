@@ -25,11 +25,22 @@ public class GlobalCounters extends WorldStorage {
      * @return The next counter value.
      */
     public synchronized int getNext(String key) {
+        // Get value from counter map
+        Integer nextObject = counters.get(key);
         int next = 0;
-        if(counters.containsKey(key)) {
-            next = counters.get(key);
+        if (nextObject != null) {
+            next = nextObject;
         }
-        counters.put(key, next + 1);
+
+        // Handle overflows
+        int incr = next + 1;
+        if (incr < 0) {
+            incr = 0;
+        }
+
+        // Store value for next call
+        counters.put(key, incr);
+
         return next;
     }
 
