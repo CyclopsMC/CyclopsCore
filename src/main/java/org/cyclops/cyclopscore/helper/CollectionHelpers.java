@@ -60,20 +60,18 @@ public final class CollectionHelpers {
      * @return The comparator value.
      */
     public static <T extends Comparable<T>> int compareCollection(Collection<? super T> a, Collection<? super T> b) {
-        if (!a.equals(b)) {
-            if (a.size() != b.size()) {
-                return a.size() - b.size();
-            }
+        if (a.size() != b.size()) {
+            return a.size() - b.size();
+        }
 
-            Object[] aArray = a.toArray();
-            Object[] bArray = b.toArray();
-            Arrays.sort(aArray);
-            Arrays.sort(bArray);
-            for (int i = 0; i < aArray.length; i++) {
-                int compComp = ((T) aArray[i]).compareTo((T) bArray[i]);
-                if (compComp != 0) {
-                    return compComp;
-                }
+        Object[] aArray = a.toArray();
+        Object[] bArray = b.toArray();
+        Arrays.sort(aArray);
+        Arrays.sort(bArray);
+        for (int i = 0; i < aArray.length; i++) {
+            int compComp = ((T) aArray[i]).compareTo((T) bArray[i]);
+            if (compComp != 0) {
+                return compComp;
             }
         }
         return 0;
@@ -88,20 +86,18 @@ public final class CollectionHelpers {
      */
     public static <T> int compareCollection(Collection<? super T> a, Collection<? super T> b,
                                             Comparator<T> comparator) {
-        if (!a.equals(b)) {
-            if (a.size() != b.size()) {
-                return a.size() - b.size();
-            }
+        if (a.size() != b.size()) {
+            return a.size() - b.size();
+        }
 
-            Object[] aArray = a.toArray();
-            Object[] bArray = b.toArray();
-            Arrays.sort(aArray);
-            Arrays.sort(bArray);
-            for (int i = 0; i < aArray.length; i++) {
-                int compComp = comparator.compare((T) aArray[i], (T) bArray[i]);
-                if (compComp != 0) {
-                    return compComp;
-                }
+        Object[] aArray = a.toArray();
+        Object[] bArray = b.toArray();
+        Arrays.sort(aArray);
+        Arrays.sort(bArray);
+        for (int i = 0; i < aArray.length; i++) {
+            int compComp = comparator.compare((T) aArray[i], (T) bArray[i]);
+            if (compComp != 0) {
+                return compComp;
             }
         }
         return 0;
