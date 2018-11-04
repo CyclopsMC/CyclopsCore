@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,6 +71,34 @@ public final class CollectionHelpers {
             Arrays.sort(bArray);
             for (int i = 0; i < aArray.length; i++) {
                 int compComp = ((T) aArray[i]).compareTo((T) bArray[i]);
+                if (compComp != 0) {
+                    return compComp;
+                }
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Compare two collections with a custom comparator.
+     * @param a A first collection.
+     * @param b A second collection.
+     * @param <T> The type of the elements.
+     * @return The comparator value.
+     */
+    public static <T> int compareCollection(Collection<? super T> a, Collection<? super T> b,
+                                            Comparator<T> comparator) {
+        if (!a.equals(b)) {
+            if (a.size() != b.size()) {
+                return a.size() - b.size();
+            }
+
+            Object[] aArray = a.toArray();
+            Object[] bArray = b.toArray();
+            Arrays.sort(aArray);
+            Arrays.sort(bArray);
+            for (int i = 0; i < aArray.length; i++) {
+                int compComp = comparator.compare((T) aArray[i], (T) bArray[i]);
                 if (compComp != 0) {
                     return compComp;
                 }
