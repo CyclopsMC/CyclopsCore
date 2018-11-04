@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.helper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -66,8 +65,6 @@ public final class CollectionHelpers {
 
         Object[] aArray = a.toArray();
         Object[] bArray = b.toArray();
-        Arrays.sort(aArray);
-        Arrays.sort(bArray);
         for (int i = 0; i < aArray.length; i++) {
             int compComp = ((T) aArray[i]).compareTo((T) bArray[i]);
             if (compComp != 0) {
@@ -92,8 +89,6 @@ public final class CollectionHelpers {
 
         Object[] aArray = a.toArray();
         Object[] bArray = b.toArray();
-        Arrays.sort(aArray);
-        Arrays.sort(bArray);
         for (int i = 0; i < aArray.length; i++) {
             int compComp = comparator.compare((T) aArray[i], (T) bArray[i]);
             if (compComp != 0) {

@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -30,8 +31,8 @@ public class TestCollectionHelpers {
         ), is(0));
 
         assertThat(compareCollection(
-                Lists.newArrayList(1, 2, 3, 4, 5),
-                Lists.newArrayList(5, 2, 3, 1, 4)
+                Sets.newTreeSet(Lists.newArrayList(1, 2, 3, 4, 5)),
+                Sets.newTreeSet(Lists.newArrayList(5, 2, 3, 1, 4))
         ), is(0));
     }
 
@@ -78,8 +79,8 @@ public class TestCollectionHelpers {
         ), is(0));
 
         assertThat(compareCollection(
-                Lists.newArrayList(1, 2, 3, 4, 5),
-                Lists.newArrayList(5, 2, 3, 1, 4),
+                Sets.newTreeSet(Lists.newArrayList(1, 2, 3, 4, 5)),
+                Sets.newTreeSet(Lists.newArrayList(5, 2, 3, 1, 4)),
                 Comparator.<Integer>reverseOrder()
         ), is(0));
     }
