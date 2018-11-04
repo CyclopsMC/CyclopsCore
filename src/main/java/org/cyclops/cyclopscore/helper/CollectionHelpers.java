@@ -3,6 +3,8 @@ package org.cyclops.cyclopscore.helper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -47,6 +49,33 @@ public final class CollectionHelpers {
             map.put(key, collection);
         }
         collection.add(value);
+    }
+
+    /**
+     * Compare two collections with comparable elements.
+     * @param a A first collection.
+     * @param b A second collection.
+     * @param <T> The type of the elements.
+     * @return The comparator value.
+     */
+    public static <T extends Comparable<T>> int compareCollection(Collection<? super T> a, Collection<? super T> b) {
+        if (!a.equals(b)) {
+            if (a.size() != b.size()) {
+                return a.size() - b.size();
+            }
+
+            Object[] aArray = a.toArray();
+            Object[] bArray = b.toArray();
+            Arrays.sort(aArray);
+            Arrays.sort(bArray);
+            for (int i = 0; i < aArray.length; i++) {
+                int compComp = ((T) aArray[i]).compareTo((T) bArray[i]);
+                if (compComp != 0) {
+                    return compComp;
+                }
+            }
+        }
+        return 0;
     }
 
 }
