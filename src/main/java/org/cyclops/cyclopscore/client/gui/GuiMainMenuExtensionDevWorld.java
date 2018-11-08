@@ -15,6 +15,7 @@ import net.minecraft.world.WorldSettings;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.storage.WorldSummary;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -80,6 +81,13 @@ public class GuiMainMenuExtensionDevWorld {
             worldsettings.setGeneratorOptions(PRESET_FLAT_WORLD);
             String saveName = GuiCreateWorld.getUncollidingSaveDirName(mc.getSaveLoader(), WORLD_NAME_PREFIX);
             mc.launchIntegratedServer(saveName, WORLD_NAME_PREFIX, worldsettings);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onWorldStart(WorldEvent.Load event) {
+        if (!event.getWorld().isRemote && event.getWorld().getWorldInfo().getWorldName().equals(WORLD_NAME_PREFIX)) {
+            event.getWorld().getGameRules().setOrCreateGameRule("doDaylightCycle", "false");
         }
     }
 
