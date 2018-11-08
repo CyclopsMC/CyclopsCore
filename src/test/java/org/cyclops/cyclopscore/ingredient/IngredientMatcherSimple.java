@@ -79,6 +79,11 @@ public class IngredientMatcherSimple implements IIngredientMatcher<Integer, Bool
     }
 
     @Override
+    public int conditionCompare(Boolean a, Boolean b) {
+        return (a ? 1 : 0) - (b ? 1 : 0);
+    }
+
+    @Override
     public int compare(Integer o1, Integer o2) {
         return o1 - o2;
     }
