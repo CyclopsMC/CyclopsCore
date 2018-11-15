@@ -120,24 +120,26 @@ public class GuiNumberField extends GuiTextFieldExtended {
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (this.isEnabled) {
             boolean ret = true;
-            if (arrowUp.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
+            if (this.arrows && arrowUp.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
                 increase();
-            } else if (arrowDown.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
+            } else if (this.arrows && arrowDown.mousePressed(Minecraft.getMinecraft(), mouseX, mouseY)) {
                 decrease();
             } else {
                 ret = super.mouseClicked(mouseX, mouseY, mouseButton);
             }
-            arrowDown.enabled = true;
-            arrowUp.enabled = true;
-            try {
-                if (getInt() <= this.minValue) {
-                    arrowDown.enabled = false;
-                }
-                if (getInt() >= this.maxValue) {
-                    arrowUp.enabled = false;
-                }
-            } catch (NumberFormatException e) {
+            if (this.arrows) {
+                arrowDown.enabled = true;
+                arrowUp.enabled = true;
+                try {
+                    if (getInt() <= this.minValue) {
+                        arrowDown.enabled = false;
+                    }
+                    if (getInt() >= this.maxValue) {
+                        arrowUp.enabled = false;
+                    }
+                } catch (NumberFormatException e) {
 
+                }
             }
             return ret;
         }
