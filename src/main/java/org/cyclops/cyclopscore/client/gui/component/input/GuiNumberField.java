@@ -48,11 +48,19 @@ public class GuiNumberField extends GuiTextFieldExtended {
         setMinValue(positiveOnly ? 0 : Integer.MIN_VALUE);
     }
 
+    public int getMinValue() {
+        return minValue;
+    }
+
     /**
      * @param minValue The minimal value (inclusive)
      */
     public void setMinValue(int minValue) {
         this.minValue = minValue;
+    }
+
+    public int getMaxValue() {
+        return maxValue;
     }
 
     /**
@@ -92,7 +100,7 @@ public class GuiNumberField extends GuiTextFieldExtended {
         }
     }
 
-    protected int validateNumber(int number) {
+    public int validateNumber(int number) {
         return Math.max(this.minValue, Math.min(this.maxValue, number));
     }
 
