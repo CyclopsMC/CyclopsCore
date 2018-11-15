@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import org.cyclops.cyclopscore.client.gui.component.button.GuiButtonArrow;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 /**
  * A number field which by default only accepts positive numbers.
@@ -105,7 +106,7 @@ public class GuiNumberField extends GuiTextFieldExtended {
     }
 
     protected int getDiffAmount() {
-        return Minecraft.getMinecraft().player.isSneaking() ? 10 : 1;
+        return MinecraftHelpers.isShifted() ? 10 : 1;
     }
 
     protected void increase() {
