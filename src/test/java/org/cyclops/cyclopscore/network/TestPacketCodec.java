@@ -5,6 +5,8 @@ import com.google.common.collect.Maps;
 import io.netty.buffer.Unpooled;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.junit.Test;
 
@@ -160,6 +162,24 @@ public class TestPacketCodec {
     }
 
     @Test
+    public void testEnumFacing() {
+        EnumFacingPacketCodec packet1 = new EnumFacingPacketCodec();
+        packet1.value = EnumFacing.NORTH;
+        EnumFacingPacketCodec packet2 = new EnumFacingPacketCodec();
+        encodeDecode(packet1, packet2);
+        assertThat("Input equals output", packet1.value, equalTo(packet2.value));
+    }
+
+    @Test
+    public void testBlockPos() {
+        BlockPosPacketCodec packet1 = new BlockPosPacketCodec();
+        packet1.value = new BlockPos(234, 123, 389);
+        BlockPosPacketCodec packet2 = new BlockPosPacketCodec();
+        encodeDecode(packet1, packet2);
+        assertThat("Input equals output", packet1.value, equalTo(packet2.value));
+    }
+
+    @Test
     public void testListEmpty() {
         ListPacketCodec packet1 = new ListPacketCodec();
         packet1.value = Lists.newArrayList();
@@ -272,6 +292,16 @@ public class TestPacketCodec {
     public static class ItemStackPacketCodec extends SimplePacketCodec {
         @CodecField
         public ItemStack value;
+    }
+
+    public static class EnumFacingPacketCodec extends SimplePacketCodec {
+        @CodecField
+        public EnumFacing value;
+    }
+
+    public static class BlockPosPacketCodec extends SimplePacketCodec {
+        @CodecField
+        public BlockPos value;
     }
 
     public static class ListPacketCodec extends SimplePacketCodec {

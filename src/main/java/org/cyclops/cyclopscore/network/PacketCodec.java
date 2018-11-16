@@ -5,6 +5,8 @@ import com.google.common.collect.Maps;
 import io.netty.handler.codec.EncoderException;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.lang3.ClassUtils;
 import org.cyclops.cyclopscore.datastructure.SingleCache;
@@ -224,6 +226,32 @@ public abstract class PacketCodec extends PacketBase {
 				} catch (IOException ioexception) {
 					throw new EncoderException(ioexception);
 				}
+			}
+		});
+
+		codecActions.put(EnumFacing.class, new ICodecAction() {
+
+			@Override
+			public void encode(Object object, ExtendedBuffer output) {
+				output.writeInt(((EnumFacing) object).ordinal());
+			}
+
+			@Override
+			public Object decode(ExtendedBuffer input) {
+				return EnumFacing.VALUES[input.readInt()];
+			}
+		});
+
+		codecActions.put(BlockPos.class, new ICodecAction() {
+
+			@Override
+			public void encode(Object object, ExtendedBuffer output) {
+				output.writeBlockPos((BlockPos) object);
+			}
+
+			@Override
+			public Object decode(ExtendedBuffer input) {
+				return input.readBlockPos();
 			}
 		});
 
