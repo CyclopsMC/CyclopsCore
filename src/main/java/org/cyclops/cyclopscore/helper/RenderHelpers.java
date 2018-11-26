@@ -56,6 +56,24 @@ public class RenderHelpers {
     }
 
     /**
+     * Draw the given text with the given scale.
+     * @param fontRenderer The font renderer
+     * @param string The string to draw
+     * @param x The center X
+     * @param y The center Y
+     * @param scale The scale to render the string by.
+     * @param color The color to draw
+     * @param dropShadow If a shadow should be rendered.
+     */
+    public static void drawScaledString(FontRenderer fontRenderer, String string, int x, int y, float scale, int color, boolean dropShadow) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, 0);
+        GlStateManager.scale(scale, scale, 1.0f);
+        fontRenderer.drawString(string, 0, 0, color, dropShadow);
+        GlStateManager.popMatrix();
+    }
+
+    /**
      * Draw the given text and scale it to the max width.
      * @param fontRenderer The font renderer
      * @param string The string to draw
