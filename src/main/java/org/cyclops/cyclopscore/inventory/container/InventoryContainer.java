@@ -365,9 +365,9 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     public void setValue(int valueId, NBTTagCompound value) {
         if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
             if (!player.getEntityWorld().isRemote) { // server -> client
-                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(valueId, value), (EntityPlayerMP) player);
+                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getGuiModId(), getGuiId(), valueId, value), (EntityPlayerMP) player);
             } else { // client -> server
-                CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(valueId, value));
+                CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getGuiModId(), getGuiId(), valueId, value));
             }
             values.put(valueId, value);
         }

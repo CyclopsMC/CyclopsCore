@@ -28,5 +28,14 @@ public abstract class ExtendedInventoryContainer extends InventoryContainer {
 	public IGuiContainerProvider getGuiProvider() {
 		return guiProvider;
 	}
-	
+
+	@Override
+	public String getGuiModId() {
+		return getGuiProvider().getModGui().getModId();
+	}
+
+	@Override
+	public int getGuiId() {
+		return getGuiProvider().getGuiID();
+	}
 }

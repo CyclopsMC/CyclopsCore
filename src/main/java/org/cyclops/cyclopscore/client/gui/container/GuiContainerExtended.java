@@ -173,4 +173,13 @@ public abstract class GuiContainerExtended extends GuiContainer implements
         return this.guiTop + offsetY;
     }
 
+    @Override
+    public String getGuiModId() {
+        return getContainer().getGuiModId();
+    }
+
+    @Override
+    public int getGuiId() {
+        return getContainer().getGuiId();
+    }
 }

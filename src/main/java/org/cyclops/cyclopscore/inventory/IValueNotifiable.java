@@ -10,6 +10,16 @@ import net.minecraft.nbt.NBTTagCompound;
 public interface IValueNotifiable {
 
     /**
+     * @return The mod the gui belongs to.
+     */
+    String getGuiModId();
+
+    /**
+     * @return The id of the gui.
+     */
+    int getGuiId();
+
+    /**
      * Called by the server if the value has changed.
      * @param valueId The value id.
      * @param value The new value.

@@ -13,6 +13,16 @@ import java.util.Set;
 public interface IValueNotifier {
 
     /**
+     * @return The mod the gui belongs to.
+     */
+    String getGuiModId();
+
+    /**
+     * @return The id of the gui.
+     */
+    int getGuiId();
+
+    /**
      * Set the value for given value id.
      * This will send a packet if it has changed.
      * If called on the client, a packet to the server will be sent.

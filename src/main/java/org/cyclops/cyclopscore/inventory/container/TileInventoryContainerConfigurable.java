@@ -41,5 +41,14 @@ public class TileInventoryContainerConfigurable<T extends InventoryTileEntity> e
 	protected int getSizeInventory() {
 		return getTile().getSizeInventory();
 	}
-    
+
+    @Override
+    public String getGuiModId() {
+        return getGuiProvider().getModGui().getModId();
+    }
+
+    @Override
+    public int getGuiId() {
+        return getGuiProvider().getGuiID();
+    }
 }
