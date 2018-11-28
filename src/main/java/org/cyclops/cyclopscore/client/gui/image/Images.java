@@ -21,6 +21,8 @@ public class Images {
 
     public static final Image ARROW_DOWN = new Image(ICONS, 18, 0, 18, 18);
     public static final Image ARROW_UP = new Image(ICONS, 36, 0, 18, 18);
+    public static final Image ARROW_RIGHT = new Image(ICONS, 90, 0, 18, 18);
+    public static final Image ARROW_LEFT = new Image(ICONS, 108, 0, 18, 18);
     public static final Image ANVIL = new Image(ICONS, 18, 18, 18, 18);
     public static final Image CONFIG_BOARD = new Image(ICONS, 36, 18, 18, 18);
     public static final Image PICKAXE = new Image(ICONS, 54, 18, 18, 18);
