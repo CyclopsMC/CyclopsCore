@@ -72,15 +72,15 @@ public class GuiNumberField extends GuiTextFieldExtended {
     }
 
     public int getInt() throws NumberFormatException {
-        return Integer.parseInt(getText());
+        return validateNumber(Integer.parseInt(getText()));
     }
 
     public double getDouble() throws NumberFormatException {
-        return Double.parseDouble(getText());
+        return validateNumber(Double.parseDouble(getText()));
     }
 
     public float getFloat() throws NumberFormatException {
-        return Float.parseFloat(getText());
+        return validateNumber(Float.parseFloat(getText()));
     }
 
     @Override
@@ -102,6 +102,14 @@ public class GuiNumberField extends GuiTextFieldExtended {
     }
 
     public int validateNumber(int number) {
+        return Math.max(this.minValue, Math.min(this.maxValue, number));
+    }
+
+    public double validateNumber(double number) {
+        return Math.max(this.minValue, Math.min(this.maxValue, number));
+    }
+
+    public float validateNumber(float number) {
         return Math.max(this.minValue, Math.min(this.maxValue, number));
     }
 
@@ -146,6 +154,13 @@ public class GuiNumberField extends GuiTextFieldExtended {
     public void setText(String value) {
         super.setText(value);
         updateArrowsState();
+    }
+
+    @Override
+    public boolean textboxKeyTyped(char typedChar, int keyCode) {
+        boolean ret = super.textboxKeyTyped(typedChar, keyCode);
+        updateArrowsState();
+        return ret;
     }
 
     protected void updateArrowsState() {
