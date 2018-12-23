@@ -136,23 +136,33 @@ public class GuiNumberField extends GuiTextFieldExtended {
             } else {
                 ret = super.mouseClicked(mouseX, mouseY, mouseButton);
             }
-            if (this.arrows) {
-                arrowDown.enabled = true;
-                arrowUp.enabled = true;
-                try {
-                    if (getInt() <= this.minValue) {
-                        arrowDown.enabled = false;
-                    }
-                    if (getInt() >= this.maxValue) {
-                        arrowUp.enabled = false;
-                    }
-                } catch (NumberFormatException e) {
-
-                }
-            }
+            updateArrowsState();
             return ret;
         }
         return false;
+    }
+
+    @Override
+    public void setText(String value) {
+        super.setText(value);
+        updateArrowsState();
+    }
+
+    protected void updateArrowsState() {
+        if (this.arrows) {
+            arrowDown.enabled = true;
+            arrowUp.enabled = true;
+            try {
+                if (getInt() <= this.minValue) {
+                    arrowDown.enabled = false;
+                }
+                if (getInt() >= this.maxValue) {
+                    arrowUp.enabled = false;
+                }
+            } catch (NumberFormatException e) {
+
+            }
+        }
     }
 
 }
