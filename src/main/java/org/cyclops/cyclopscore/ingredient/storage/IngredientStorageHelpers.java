@@ -701,6 +701,32 @@ public final class IngredientStorageHelpers {
     }
 
     /**
+     * Wrap the given ingredient storage,
+     * where you can configure if the storage is allowed to be read, inserted to, or extracted from.
+     *
+     * This will distinguish between slotted and slotless storages.
+     *
+     * @param ingredientComponentStorage The storage to wrap.
+     * @param read If the storage can be read.
+     * @param insert If the storage can be inserted to.
+     * @param extract If the storage can be extracted from.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @return The wrapped storage.
+     */
+    public static <T, M> IIngredientComponentStorage<T, M> wrapStorage(IIngredientComponentStorage<T, M> ingredientComponentStorage,
+                                                                       boolean read,
+                                                                       boolean insert,
+                                                                       boolean extract) {
+        if (ingredientComponentStorage instanceof IIngredientComponentStorageSlotted) {
+            return new IngredientComponentStorageSlottedWrapped<>(
+                    (IIngredientComponentStorageSlotted<T, M>) ingredientComponentStorage, read, insert, extract);
+        } else {
+            return new IngredientComponentStorageWrapped<>(ingredientComponentStorage, read, insert, extract);
+        }
+    }
+
+    /**
      * Serialize the given storage to NBT.
      *
      * All ingredients, the max quantity, and whether or not it is slotted will be stored.
