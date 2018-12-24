@@ -20,7 +20,7 @@ public class RegistryManager {
      * Only one should exist per mod.
      */
 	public RegistryManager() {
-		registries = Maps.newHashMap();
+		registries = Maps.newIdentityHashMap();
 	}
 	
 	public <R extends IRegistry> void addRegistry(Class<R> clazz, R registry) {
