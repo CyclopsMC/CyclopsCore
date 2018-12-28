@@ -617,7 +617,7 @@ public final class IngredientStorageHelpers {
                         return matcher.withQuantity(extractedSimulated, movableQuantity);
                     }
                 } else {
-                    T extracted = source.extract(instance, matchCondition, false);
+                    T extracted = source.extract(matcher.withQuantity(extractedSimulated, movableQuantity), matchCondition, false);
                     return insertIngredientRemainderFixup(source, destination, extracted, false);
                 }
             }
