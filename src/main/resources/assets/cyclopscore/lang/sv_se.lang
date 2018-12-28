@@ -1,0 +1,85 @@
+# General
+itemGroup.cyclopscore=Cyclops Core
+general.cyclopscore.dev_world=Utvecklarvärld
+general.cyclopscore.tooltip.info=<Shift för information>
+general.cyclopscore.info.enabled=§aAktiverad
+general.cyclopscore.info.disabled=Inaktiverad
+general.cyclopscore.version.updateAvailable=Uppdatering finns tillgänglig
+general.cyclopscore.version.download=Ladda ned
+general.cyclopscore.version.clickToDownload=Klicka för att ladda ned
+gui.waila.cyclopscore.logConfig=Loggar
+
+# Infobook
+infobook.cyclopscore.next_page=Nästa sida
+infobook.cyclopscore.previous_page=Föregående sida
+infobook.cyclopscore.parent_section=Överordnat avsnitt
+infobook.cyclopscore.last_page=Senast besökta sida
+
+# Chat messages
+chat.cyclopscore.command.invalidArguments=Ogiltiga argument
+chat.cyclopscore.command.invalidSubcommand=Ogiltigt underkommando
+chat.cyclopscore.command.onlyOneValue=Definiera ett nytt värde
+chat.cyclopscore.command.invalidNewValue=Ogiltigt nytt värde
+chat.cyclopscore.command.updatedValue=Uppdaterade %s till: %s
+chat.cyclopscore.command.invalidPlayer=Spelaren "%s" hittades inte
+chat.cyclopscore.command.ignitedPlayer=Spelaren "%s" antändes i %s sekunder
+chat.cyclopscore.command.noConfigsFound=Kunde inte hitta konfigurationsvärden som kan ändras
+
+# Multiblock
+multiblock.cyclopscore.error.invalidBlock=%s innehåller det ogiltiga blocket %s.
+multiblock.cyclopscore.error.size.cube=Dimensionerna %s bildar inte en kub, dimensionerna stämmer inte överens.
+multiblock.cyclopscore.error.size.exact=Hittade dimensionerna %s, men exakt %s förväntades.
+multiblock.cyclopscore.error.size.max=Hittade dimensionerna %s, men maximalt %s förväntades.
+multiblock.cyclopscore.error.size.min=Hittade dimensionerna %s, men minimalt %s förväntades.
+multiblock.cyclopscore.error.blockCount.exact=Förväntade exakt %s %s, men %s hittades.
+multiblock.cyclopscore.error.blockCount.max=Förväntade högst %s %s, men %s hittades.
+multiblock.cyclopscore.error.blockCount.min=Förväntade minst %s %s, men %s hittades.
+multiblock.cyclopscore.error.hollow.air=Positionen %s måste vara ihålig.
+
+# Vanilla additions
+tile.air.name=Luft
+
+# Config Screens
+config.cyclopscore=Konfiguration av %s
+
+## Config categories
+config.cyclopscore.item=Föremålsinställningar
+config.cyclopscore.item.tooltip=Föremålsinställningar
+config.cyclopscore.block=Blockinställningar
+config.cyclopscore.block.tooltip=Blockinställningar
+config.cyclopscore.fluid=Vätskeinställningar
+config.cyclopscore.fluid.tooltip=Vätskeinställningar
+config.cyclopscore.entity=Entitetinställningar
+config.cyclopscore.entity.tooltip=Entitetinställningar
+config.cyclopscore.general=Allmänna inställningar
+config.cyclopscore.general.tooltip=Allmänna inställningar
+config.cyclopscore.worldgeneration=Världsgenereringsinställningar
+config.cyclopscore.worldgeneration.tooltip=Världsgenereringsinställningar
+config.cyclopscore.enchantment=Förtrollningsinställningar
+config.cyclopscore.enchantment.tooltip=Förtrollningsinställningar
+config.cyclopscore.mob=Varelseinställningar
+config.cyclopscore.mob.tooltip=Varelseinställningar
+config.cyclopscore.biome=Biomgenereringsinställningar
+config.cyclopscore.biome.tooltip=Biomgenereringsinställningar
+config.cyclopscore.machine=Maskininställningar
+config.cyclopscore.machine.tooltip=Maskininställningar
+config.cyclopscore.potion=Brygdinställningar
+config.cyclopscore.potion.tooltip=Brygdinställningar
+config.cyclopscore.core=Kärninställningar
+config.cyclopscore.core.tooltip=Kärninställningar
+config.cyclopscore.modcompat=Modkompatibilitetsinställningar
+config.cyclopscore.modcompat.tooltip=Modkompatibilitetsinställningar
+
+## General settings
+config.cyclopscore.general.analytics=Skicka anonym statistik
+config.cyclopscore.general.anonymousAnalyticsID=Anonymt ID
+config.cyclopscore.general.crashOnInvalidRecipe=Krascha vid ogiltigt recept
+config.cyclopscore.general.crashOnModCompatCrash=Krascha vid kompatibilitetsproblem
+config.cyclopscore.general.debug=Utvecklingsläge
+config.cyclopscore.general.devWorldButton=Knapp för utvecklingsvärld
+config.cyclopscore.general.minimumPotionTypesArraySize=Minimal storlek för brygdarray
+config.cyclopscore.general.version=Version
+config.cyclopscore.general.versionChecker=Versionskontroll
+
+## Mod compatibility settings
+config.cyclopscore.Waila=Waila
