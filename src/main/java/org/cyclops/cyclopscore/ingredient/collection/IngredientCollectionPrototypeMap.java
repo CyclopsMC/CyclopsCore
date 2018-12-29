@@ -169,7 +169,8 @@ public class IngredientCollectionPrototypeMap<T, M> extends IngredientCollection
         @Nullable
         @Override
         public T apply(@Nullable Map.Entry<T, Long> input) {
-            long quantity = Math.min(matcher.getMaximumQuantity(), input.getValue());
+            Long value = input.getValue();
+            long quantity = Math.min(matcher.getMaximumQuantity(), value == null ? 0 : value);
             return matcher.withQuantity(input.getKey(), quantity);
         }
     }

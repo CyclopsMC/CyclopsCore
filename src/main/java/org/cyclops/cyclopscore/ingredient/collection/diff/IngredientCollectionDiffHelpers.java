@@ -60,7 +60,7 @@ public class IngredientCollectionDiffHelpers {
             Iterator<Map.Entry<T, Long>> quantitativeIterator = oldInstancesCache.prototypeIterator();
             while (quantitativeIterator.hasNext()) {
                 Map.Entry<T, Long> entry = quantitativeIterator.next();
-                long count = entry.getValue();
+                long count = entry.getValue() == null ? 0 : entry.getValue();
                 if (count < 0) {
                     additions.add(ingredientComponent.getMatcher().withQuantity(entry.getKey(), -count));
                 } else if (count > 0) {
