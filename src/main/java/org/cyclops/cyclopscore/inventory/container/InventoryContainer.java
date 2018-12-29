@@ -12,6 +12,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.inventory.IValueNotifier;
@@ -289,7 +290,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
                 adjustPhantomSlot(slot, mouseButton, clickType);
                 slot.onTake(player, playerInv.getItemStack());
             } else if (slot.isItemValid(stackHeld)) {
-                if (ItemStack.areItemStacksEqual(stackSlot, stackHeld)) {
+                if (ItemMatch.areItemStacksEqual(stackSlot, stackHeld, ItemMatch.ITEM | ItemMatch.DAMAGE | ItemMatch.NBT)) {
                     adjustPhantomSlot(slot, mouseButton, clickType);
                 } else {
                     fillPhantomSlot(slot, stackHeld, mouseButton, clickType);
