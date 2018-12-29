@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -14,7 +13,6 @@ import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.inventory.container.ExtendedInventoryContainer;
 import org.cyclops.cyclopscore.inventory.container.button.IButtonActionClient;
 import org.cyclops.cyclopscore.inventory.container.button.IButtonClickAcceptorClient;
-import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
 import org.cyclops.cyclopscore.network.packet.ButtonClickPacket;
 
 import java.awt.*;
@@ -105,15 +103,6 @@ public abstract class GuiContainerExtended extends GuiContainer implements
 
     public void drawTooltip(List<String> lines, int x, int y) {
         GuiHelpers.drawTooltip(this, lines, x, y);
-    }
-
-    @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int mouseButton, long time) {
-        Slot slot = getSlotUnderMouse();
-        if (mouseButton == 1 && slot instanceof SlotExtended && ((SlotExtended) slot).isPhantom()) {
-            return;
-        }
-        super.mouseClickMove(mouseX, mouseY, mouseButton, time);
     }
 
     @Override

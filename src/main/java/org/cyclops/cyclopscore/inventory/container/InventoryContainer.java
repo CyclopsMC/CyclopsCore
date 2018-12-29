@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.inventory.container;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -45,6 +46,13 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     protected final EntityPlayer player;
     protected int offsetX = 0;
     protected int offsetY = 0;
+
+    /* The current drag mode (0 : evenly split, 1 : one item by slot, 2 : not used ?) */
+    private int dragMode = -1;
+    /** The current drag event (0 : start, 1 : add slot : 2 : end) */
+    private int dragEvent;
+    /** The list of slots where the itemstack holds will be distributed */
+    private final Set<Slot> dragSlots = Sets.<Slot>newHashSet();
 
     /**
      * Make a new TileInventoryContainer.
@@ -256,13 +264,87 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     @Override
-    public ItemStack slotClick(int slotId, int arg, ClickType clickType, EntityPlayer player) {
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player) {
         Slot slot = slotId < 0 ? null : this.inventorySlots.get(slotId);
-        // Phantom slot code based on Buildcraft
-        if(slot instanceof SlotExtended && ((SlotExtended) slot).isPhantom()) {
-            return slotClickPhantom(slot, arg, clickType, player);
+        InventoryPlayer inventoryplayer = player.inventory;
+        if (clickType == ClickType.QUICK_CRAFT) {
+            // Copied and adjusted from net.minecraft.inventory.Container
+            int j1 = this.dragEvent;
+            this.dragEvent = getDragEvent(dragType);
+
+            if ((j1 != 1 || this.dragEvent != 2) && j1 != this.dragEvent) {
+                this.resetDrag();
+            } else if (inventoryplayer.getItemStack().isEmpty()) {
+                this.resetDrag();
+            } else if (this.dragEvent == 0) {
+                this.dragMode = extractDragMode(dragType);
+
+                if (isValidDragMode(this.dragMode, player)) {
+                    this.dragEvent = 1;
+                    this.dragSlots.clear();
+                } else {
+                    this.resetDrag();
+                }
+            } else if (this.dragEvent == 1) {
+                Slot slot7 = this.inventorySlots.get(slotId);
+                ItemStack itemstack12 = inventoryplayer.getItemStack();
+
+                if (slot7 != null && canAddItemToSlot(slot7, itemstack12, true) && slot7.isItemValid(itemstack12) && (this.dragMode == 2 || itemstack12.getCount() > this.dragSlots.size()) && this.canDragIntoSlot(slot7)) {
+                    this.dragSlots.add(slot7);
+                }
+            } else if (this.dragEvent == 2) {
+                if (!this.dragSlots.isEmpty()) {
+                    ItemStack itemstack9 = inventoryplayer.getItemStack().copy();
+                    int k1 = inventoryplayer.getItemStack().getCount();
+                    int phantomCount = 0; // Added
+
+                    for (Slot slot8 : this.dragSlots) {
+                        ItemStack itemstack13 = inventoryplayer.getItemStack();
+
+                        if (slot8 != null && canAddItemToSlot(slot8, itemstack13, true) && slot8.isItemValid(itemstack13) && (this.dragMode == 2 || itemstack13.getCount() >= this.dragSlots.size()) && this.canDragIntoSlot(slot8)) {
+                            ItemStack itemstack14 = itemstack9.copy();
+                            int j3 = slot8.getHasStack() ? slot8.getStack().getCount() : 0;
+                            computeStackSize(this.dragSlots, this.dragMode, itemstack14, j3);
+                            int k3 = Math.min(itemstack14.getMaxStackSize(), slot8.getItemStackLimit(itemstack14));
+
+                            if (itemstack14.getCount() > k3) {
+                                itemstack14.setCount(k3);
+                            }
+
+                            k1 -= itemstack14.getCount() - j3;
+                            slot8.putStack(itemstack14);
+
+                            // --- Added ---
+                            if (slot8 instanceof SlotExtended && ((SlotExtended) slot8).isPhantom()) {
+                                phantomCount += itemstack14.getCount() - j3;
+                            }
+                        }
+                    }
+
+                    itemstack9.setCount(k1 + phantomCount); // Changed
+                    inventoryplayer.setItemStack(itemstack9);
+                }
+
+                this.resetDrag();
+            } else {
+                this.resetDrag();
+            }
+            return ItemStack.EMPTY;
+        } else if (this.dragEvent != 0) {
+            this.resetDrag();
+            return ItemStack.EMPTY;
+        } else if (slot instanceof SlotExtended && ((SlotExtended) slot).isPhantom()) { // Phantom slot code based on Buildcraft
+            return slotClickPhantom(slot, dragType, clickType, player);
+        } else {
+            return super.slotClick(slotId, dragType, clickType, player);
         }
-        return super.slotClick(slotId, arg, clickType, player);
+    }
+
+    @Override
+    protected void resetDrag() {
+        super.resetDrag();
+        this.dragEvent = 0;
+        this.dragSlots.clear();
     }
 
     private ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickType, EntityPlayer player) {
