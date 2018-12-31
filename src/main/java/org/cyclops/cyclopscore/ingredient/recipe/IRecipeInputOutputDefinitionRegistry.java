@@ -13,20 +13,20 @@ import javax.annotation.Nullable;
  */
 public interface IRecipeInputOutputDefinitionRegistry extends IRegistry {
 
-    public <T extends IRecipeInput> void setRecipeInputHandler(Class<T> clazz, IRecipeInputDefinitionHandler<T> handler);
+    public <T extends IRecipeInput> void setRecipeInputHandler(Class<? extends T> clazz, IRecipeInputDefinitionHandler<T> handler);
 
-    public <T extends IRecipeOutput> void setRecipeOutputHandler(Class<T> clazz, IRecipeOutputDefinitionHandler<T> handler);
+    public <T extends IRecipeOutput> void setRecipeOutputHandler(Class<? extends T> clazz, IRecipeOutputDefinitionHandler<T> handler);
 
     public default <T extends IRecipeInput & IRecipeOutput, H extends IRecipeInputDefinitionHandler<T> & IRecipeOutputDefinitionHandler<T>>
-    void setRecipeInputOutputHandler(Class<T> clazz, H handler) {
+    void setRecipeInputOutputHandler(Class<? extends T> clazz, H handler) {
         setRecipeInputHandler(clazz, handler);
         setRecipeOutputHandler(clazz, handler);
     }
 
     @Nullable
-    public <T extends IRecipeInput> IRecipeInputDefinitionHandler<T> getRecipeInputHandler(Class<T> clazz);
+    public <T extends IRecipeInput> IRecipeInputDefinitionHandler<T> getRecipeInputHandler(Class<? extends T> clazz);
 
     @Nullable
-    public <T extends IRecipeOutput> IRecipeOutputDefinitionHandler<T> getRecipeOutputHandler(Class<T> clazz);
+    public <T extends IRecipeOutput> IRecipeOutputDefinitionHandler<T> getRecipeOutputHandler(Class<? extends T> clazz);
 
 }
