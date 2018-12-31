@@ -78,6 +78,7 @@ public final class CollectionHelpers {
      * Compare two collections with a custom comparator.
      * @param a A first collection.
      * @param b A second collection.
+     * @param comparator The element comparator.
      * @param <T> The type of the elements.
      * @return The comparator value.
      */

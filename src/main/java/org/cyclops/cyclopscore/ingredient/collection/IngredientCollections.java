@@ -298,7 +298,7 @@ public final class IngredientCollections {
 
     /**
      * Helper interface for constructing an {@link IIngredientCollection} based on an {@link IngredientComponent}.
-     * @param <C>
+     * @param <C> The storage type.
      */
     public static interface IIngredientCollectionConstructor<C extends IIngredientCollection<?, ?>> {
         public <T, M> C create(IngredientComponent<T, M> ingredientComponent);
