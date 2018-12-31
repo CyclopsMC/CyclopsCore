@@ -77,4 +77,12 @@ public class IngredientAndFluidStackRecipeComponent implements IRecipeInput, IRe
     public float getChance() {
         return this.chance;
     }
+
+    public IngredientRecipeComponent getIngredientComponent() {
+        return this.ingredient;
+    }
+
+    public FluidStackRecipeComponent getFluidStackComponent() {
+        return this.fluidStack;
+    }
 }

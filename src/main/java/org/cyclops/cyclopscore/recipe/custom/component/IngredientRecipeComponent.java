@@ -21,7 +21,7 @@ import java.util.Objects;
 @Data
 public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IIngredientRecipeComponent {
 
-    private static final int META_WILDCARD = OreDictionary.WILDCARD_VALUE;
+    public static final int META_WILDCARD = OreDictionary.WILDCARD_VALUE;
 
     private final Ingredient ingredient;
     private float chance;

@@ -78,4 +78,8 @@ public class IngredientsRecipeComponent implements IRecipeInput, IRecipeOutput, 
     public List<IngredientRecipeComponent> getSubIngredientComponents() {
         return this.ingredients;
     }
+
+    public List<IngredientRecipeComponent> getIngredientComponents() {
+        return this.ingredients;
+    }
 }

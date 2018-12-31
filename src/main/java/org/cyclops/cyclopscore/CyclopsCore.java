@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.command.ICommand;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -12,8 +13,15 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
-import org.cyclops.cyclopscore.command.*;
+import org.cyclops.cyclopscore.command.CommandDebug;
+import org.cyclops.cyclopscore.command.CommandIgnite;
+import org.cyclops.cyclopscore.command.CommandMod;
+import org.cyclops.cyclopscore.command.CommandRecursion;
+import org.cyclops.cyclopscore.command.CommandReloadResources;
 import org.cyclops.cyclopscore.config.ConfigHandler;
+import org.cyclops.cyclopscore.ingredient.recipe.IRecipeInputOutputDefinitionRegistry;
+import org.cyclops.cyclopscore.ingredient.recipe.RecipeInputOutputDefinitionHandlers;
+import org.cyclops.cyclopscore.ingredient.recipe.RecipeInputOutputDefinitionRegistry;
 import org.cyclops.cyclopscore.init.ModBaseVersionable;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
@@ -83,8 +91,14 @@ public class CyclopsCore extends ModBaseVersionable {
     @Mod.EventHandler
     @Override
     public final void preInit(FMLPreInitializationEvent event) {
+        // Registries
+        getRegistryManager().addRegistry(IRecipeInputOutputDefinitionRegistry.class, new RecipeInputOutputDefinitionRegistry());
+
         super.preInit(event);
         Advancements.load();
+        if (Loader.isModLoaded(Reference.MOD_COMMONCAPABILITIES)) {
+            RecipeInputOutputDefinitionHandlers.load();
+        }
     }
 
     @Mod.EventHandler
