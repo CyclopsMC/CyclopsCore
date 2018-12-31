@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.ClassUtils;
 import org.cyclops.cyclopscore.datastructure.SingleCache;
 
@@ -223,6 +224,23 @@ public abstract class PacketCodec extends PacketBase {
 			public Object decode(ExtendedBuffer input) {
 				try {
 					return input.readItemStack();
+				} catch (IOException ioexception) {
+					throw new EncoderException(ioexception);
+				}
+			}
+		});
+
+		codecActions.put(FluidStack.class, new ICodecAction() {
+
+			@Override
+			public void encode(Object object, ExtendedBuffer output) {
+				output.writeCompoundTag(((FluidStack) object).writeToNBT(new NBTTagCompound()));
+			}
+
+			@Override
+			public Object decode(ExtendedBuffer input) {
+				try {
+					return FluidStack.loadFluidStackFromNBT(input.readCompoundTag());
 				} catch (IOException ioexception) {
 					throw new EncoderException(ioexception);
 				}
