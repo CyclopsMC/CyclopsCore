@@ -43,7 +43,8 @@ public final class IngredientStorageHelpers {
         IngredientComponent<T, M> component = source.getComponent();
         IIngredientMatcher<T, M> matcher = component.getMatcher();
         T movedFirst = moveIngredients(source, destination, maxQuantity, simulate);
-        long movedQuantity = matcher.getQuantity(movedFirst);
+        long movedFirstQuantity = matcher.getQuantity(movedFirst);
+        long movedQuantity = movedFirstQuantity;
         if (simulate || movedQuantity == 0) {
             return movedFirst;
         }
@@ -51,6 +52,12 @@ public final class IngredientStorageHelpers {
 
         // Try move until we reach the max quantity, or we don't move anything anymore.
         while (movedQuantity < maxQuantity) {
+            // Reduce size if remainder is less than the first moved quantity
+            long toMoveQuantity = maxQuantity - movedQuantity;
+            if (toMoveQuantity < movedFirstQuantity) {
+                movedFirst = matcher.withQuantity(movedFirst, toMoveQuantity);
+            }
+
             T moved = moveIngredients(source, destination, movedFirst, matchCondition, false);
             if (matcher.isEmpty(moved)) {
                 break;
@@ -118,13 +125,20 @@ public final class IngredientStorageHelpers {
         IIngredientMatcher<T, M> matcher = component.getMatcher();
         long maxQuantity = matcher.getQuantity(instance);
         T movedFirst = moveIngredients(source, destination, instance, matchCondition, simulate);
-        long movedQuantity = matcher.getQuantity(movedFirst);
+        long movedFirstQuantity = matcher.getQuantity(movedFirst);
+        long movedQuantity = movedFirstQuantity;
         if (simulate || movedQuantity == 0) {
             return movedFirst;
         }
 
         // Try move until we reach the max quantity, or we don't move anything anymore.
         while (movedQuantity < maxQuantity) {
+            // Reduce size if remainder is less than the first moved quantity
+            long toMoveQuantity = maxQuantity - movedQuantity;
+            if (toMoveQuantity < movedFirstQuantity) {
+                movedFirst = matcher.withQuantity(movedFirst, toMoveQuantity);
+            }
+
             T moved = moveIngredients(source, destination, movedFirst, matchCondition, false);
             if (matcher.isEmpty(moved)) {
                 break;
