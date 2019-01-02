@@ -49,7 +49,7 @@ public class IngredientCollectionDiffHelpers {
                 if (oldInstancesCache != null) {
                     oldInstancesCache.remove(newInstance);
                 }
-                newInstancesCache.add(newInstance);
+                newInstancesCache.add(matcher.copy(newInstance));
             }
         }
 
