@@ -131,7 +131,7 @@ public abstract class TankInventoryTileEntity extends InventoryTileEntity implem
     }
 
     protected boolean isUpdateInventoryHashOnTankContentsChanged() {
-        return false;
+        return true;
     }
     
     /**
