@@ -46,10 +46,11 @@ public class IngredientCollectionDiffHelpers {
         while (newInstances.hasNext()) {
             T newInstance = newInstances.next();
             if (!matcher.isEmpty(newInstance)) {
+                newInstance = matcher.copy(newInstance);
                 if (oldInstancesCache != null) {
                     oldInstancesCache.remove(newInstance);
                 }
-                newInstancesCache.add(matcher.copy(newInstance));
+                newInstancesCache.add(newInstance);
             }
         }
 
