@@ -8,6 +8,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
+import org.cyclops.cyclopscore.recipe.xml.DefaultItemTypeHandler;
 
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +32,11 @@ public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, I
     }
 
     public IngredientRecipeComponent(ItemStack itemStack) {
-        this(Ingredient.fromStacks(itemStack));
+        this(itemStack, false);
+    }
+
+    public IngredientRecipeComponent(ItemStack itemStack, boolean nbtSensitive) {
+        this(nbtSensitive ? new DefaultItemTypeHandler.IngredientNBT(itemStack) : Ingredient.fromStacks(itemStack));
     }
 
     @Override
@@ -43,12 +48,24 @@ public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, I
             return true;
         }
 
+        // Test both directions
+        boolean ok = false;
         for (ItemStack itemStack : getItemStacks()) {
             if (that.getIngredient().apply(itemStack.isEmpty() ? null : itemStack)) {
-                return true;
+                ok = true;
+                break;
             }
         }
-        if (getIngredient().apply(that.getFirstItemStack())) {
+        if (ok) {
+            for (ItemStack itemStack : that.getIngredient().getMatchingStacks()) {
+                if (this.getIngredient().apply(itemStack.isEmpty() ? null : itemStack)) {
+                    return true;
+                }
+            }
+        }
+
+        if (this.getIngredient().apply(that.getFirstItemStack())
+                && that.getIngredient().apply(this.getFirstItemStack())) {
             return true;
         }
         return false;

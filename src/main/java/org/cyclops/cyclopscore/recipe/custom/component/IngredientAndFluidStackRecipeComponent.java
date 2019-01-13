@@ -27,7 +27,11 @@ public class IngredientAndFluidStackRecipeComponent implements IRecipeInput, IRe
     }
 
     public IngredientAndFluidStackRecipeComponent(ItemStack itemStack, FluidStack fluidStack) {
-        this.ingredient = new IngredientRecipeComponent(itemStack);
+        this(itemStack, false, fluidStack);
+    }
+
+    public IngredientAndFluidStackRecipeComponent(ItemStack itemStack, boolean nbtSensitive, FluidStack fluidStack) {
+        this.ingredient = new IngredientRecipeComponent(itemStack, nbtSensitive);
         this.fluidStack = new FluidStackRecipeComponent(fluidStack);
     }
 

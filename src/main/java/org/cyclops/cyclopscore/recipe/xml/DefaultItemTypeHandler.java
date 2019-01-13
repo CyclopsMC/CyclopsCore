@@ -54,7 +54,7 @@ public class DefaultItemTypeHandler implements IItemTypeHandler {
 	}
 
 	public static class IngredientNBT extends net.minecraftforge.common.crafting.IngredientNBT {
-		protected IngredientNBT(ItemStack stack) {
+		public IngredientNBT(ItemStack stack) {
 			super(stack);
 		}
 	}
