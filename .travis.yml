@@ -47,3 +47,12 @@ deploy:
       all_branches: true
       repo: CyclopsMC/CyclopsCore
       condition: "$TRAVIS_BRANCH =~ ^(master|release|feature-).*$"
+  - provider: pages
+    skip-cleanup: true
+    github-token: $GITHUB_TOKEN
+    keep-history: true
+    local-dir: build/docs/javadoc
+    on:
+      all_branches: true
+      repo: CyclopsMC/CyclopsCore
+      condition: "$TRAVIS_BRANCH =~ ^(master).*$"
