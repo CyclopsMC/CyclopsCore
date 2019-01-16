@@ -7,8 +7,8 @@ import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 import org.cyclops.cyclopscore.network.packet.RingOfFirePacket;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class PlayerRingOfFire {
 
     // List of players that have a ring of fire
-    private static final List<UUID> ALLOW_RING = new ArrayList<UUID>();
+    public static final Set<UUID> ALLOW_RING = new HashSet<>();
     static {
         ALLOW_RING.add(UUID.fromString("068d4de0-3a75-4c6a-9f01-8c37e16a394c")); // kroeserr
         ALLOW_RING.add(UUID.fromString("e1dc75c6-dcf9-4e0c-8fbf-9c6e5e44527c")); // _EeB_

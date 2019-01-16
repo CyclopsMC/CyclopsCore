@@ -28,6 +28,7 @@ import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.versionchecker.VersionCheckerModCompat;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 import org.cyclops.cyclopscore.tracking.Analytics;
+import org.cyclops.cyclopscore.tracking.ImportantUsers;
 import org.cyclops.cyclopscore.tracking.Versions;
 
 import java.util.Map;
@@ -106,6 +107,7 @@ public class CyclopsCore extends ModBaseVersionable {
     public final void init(FMLInitializationEvent event) {
         Analytics.sendAll();
         Versions.checkAll();
+        ImportantUsers.checkAll();
         super.init(event);
     }
 
