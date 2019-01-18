@@ -1,0 +1,51 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Create sv_se.lang
+
+Changes:
+* Optimize images
+* Allow dragging over phantom slots
+* Allow phantom slots to be increased with same item, ignoring stacksize
+* Optimize RegistryManager by using identity map instead of hash map
+
+Fixes:
+* Fix gui render progress scaling failing with large numbers
+* Fix shift clicking on arrows in number fields not working
+* Handle overflows in GlobalCounters
+
+Lib changes:
+* Make tank changes update inventory state by default
+* Ensure GuiNumberField outputs numbers in the accepted range
+* Update arrows state in GuiNumberField when changing text directly
+* Expose more methods in GuiNumberField
+* Automatically disable daylight cycle in dev worlds
+* Allow PacketCodec to handle nested types as well
+* Allow custom mod to be set in ConfigRecipeConditionHandler
+* Ensure that the player toolbar has priority over inventory in containers
+* Allow GuiButtonImage to have multiple layers
+* Move buttons in arrowed list fields one pixel up
+* Improve fluid gui rendering abstraction
+
+Lib additions:
+* Add ingredient collections API: https://github.com/CyclopsMC/CyclopsCore/wiki/Ingredient-Collections
+* Add ingredient storage implementations
+* Add RecipeHandlerMachine adapter
+* Add left and right arrow images
+* Add drawScaledString helper
+* Support BlockPos and EnumFacing in PacketCodec
+* Add support for 'long' in PacketCodec
+* Add keybinding recipe appendix
+* Add ConfigurableBlockGlass
+* Add GuiScrollBar component
+* Add RenderItemExtendedSlotCount
+  An extension of RenderItem that is able to visualize large stack counts.
+* Abstract tooltip rendering to GuiHelpers
+* Add MultitransformIterator
+* Add DistinctIterator
+* Add helper to get all subitems of an ItemStack
+* Add custom toString function in GuiArrowedListField
+* Add block capability helpers
+
+Lib fixes:
+* Ignore ValueNotifyPackets to different guis.
