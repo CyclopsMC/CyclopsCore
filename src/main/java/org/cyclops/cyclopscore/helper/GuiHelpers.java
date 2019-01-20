@@ -59,7 +59,7 @@ public class GuiHelpers {
             GlStateManager.enableRescaleNormal();
             GL11.glEnable(GL11.GL_DEPTH_TEST);
 
-            int level = height * (fluidStack.amount / capacity);
+            int level = (int) (height * (((double) fluidStack.amount) / capacity));
             TextureAtlasSprite icon = RenderHelpers.getFluidIcon(fluidStack, EnumFacing.UP);
             int verticalOffset = 0;
             while(level > 0) {
@@ -158,10 +158,10 @@ public class GuiHelpers {
 
             // Scale the width and/or height
             if (direction.getIncrementX() != 0) {
-                scaledWidth = scaledWidth * (progress / progressMax);
+                scaledWidth = (int) (scaledWidth * (((double) progress) / progressMax));
             }
             if (direction.getIncrementY() != 0) {
-                scaledHeight = scaledHeight * (progress / progressMax);
+                scaledHeight = (int) (scaledHeight * (((double) progress) / progressMax));
             }
 
             // If increments happen inversely, make sure we start incrementing from the other end of the progress bar
