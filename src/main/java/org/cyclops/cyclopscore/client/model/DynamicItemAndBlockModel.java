@@ -45,7 +45,9 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
             } else {
                 bakedModel = handleBlockState(state, side, rand);
             }
-            return bakedModel.getQuads(state, side, rand);
+            if (bakedModel != null) {
+                return bakedModel.getQuads(state, side, rand);
+            }
         }
         return getGeneralQuads();
     }
