@@ -1,0 +1,4 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix rare crash due to corrupt dynamic model factories, Closes CyclopsMC/EvilCraft#743
