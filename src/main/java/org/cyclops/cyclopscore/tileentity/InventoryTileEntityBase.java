@@ -7,11 +7,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.cyclops.cyclopscore.Capabilities;
-import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
 import org.cyclops.cyclopscore.inventory.INBTInventory;
 import org.cyclops.cyclopscore.inventory.TileInventoryState;
 
@@ -27,11 +25,9 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
     private static final Random RAND = new Random();
 
     protected boolean sendUpdateOnInventoryChanged = false;
-    protected final EnumFacingMap<IItemHandler> sidedInventoryHandlers;
     private int inventoryHash = 0;
 
     public InventoryTileEntityBase() {
-        this.sidedInventoryHandlers = EnumFacingMap.newMap();
         addCapabilityInternal(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, new InvWrapper(this));
         for(EnumFacing side : EnumFacing.VALUES) {
             addCapabilitySided(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side, new SidedInvWrapper(this, side));
