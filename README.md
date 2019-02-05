@@ -23,7 +23,7 @@ You can add CyclopsCore to your development environment by adding the following 
     repositories {
         maven {
             name "Cyclops Repo"
-            url "https://dl.bintray.com/cyclopsmc/dev/"
+            url "https://oss.jfrog.org/artifactory/simple/libs-release/"
         }
     }
     ...
