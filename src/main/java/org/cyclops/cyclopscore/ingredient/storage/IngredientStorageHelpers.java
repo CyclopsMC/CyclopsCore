@@ -297,7 +297,21 @@ public final class IngredientStorageHelpers {
                 // If we don't have source slots, iterate over all source slot instances in a slotless way
                 long prototypeQuantity = matcher.getQuantity(instance);
                 if (loopDestinationSlots) {
-                    return moveIngredients(source, destination, instance, matchCondition, simulate);
+                    // If exactQuantity is true, try to loop over destination slots manually,
+                    // because our is-exact check is only done after insertion.
+                    if (matcher.hasCondition(matchCondition, source.getComponent().getPrimaryQuantifier().getMatchCondition())
+                            && destination instanceof IIngredientComponentStorageSlotted) {
+                        IIngredientComponentStorageSlotted<T, M> destinationSlotted = (IIngredientComponentStorageSlotted<T, M>) destination;
+                        int slots = destinationSlotted.getSlots();
+                        for (int slot = 0; slot < slots; slot++) {
+                            T moved = moveIngredientsSlotted(source, sourceSlot, destination, slot, instance, matchCondition, simulate);
+                            if (!matcher.isEmpty(moved)) {
+                                return moved;
+                            }
+                        }
+                    } else {
+                        return moveIngredients(source, destination, instance, matchCondition, simulate);
+                    }
                 } else {
                     if (!(destination instanceof IIngredientComponentStorageSlotted)) {
                         return matcher.getEmptyInstance();
@@ -350,6 +364,10 @@ public final class IngredientStorageHelpers {
                 T sourceInstance = sourceSlotted.extract(sourceSlot, prototypeQuantity, true);
                 if (!matcher.isEmpty(sourceInstance) && matcher.matches(instance, sourceInstance, matchCondition)) {
                     T inserted = insertIngredient(destination, sourceInstance, true);
+                    if (matcher.hasCondition(matchCondition, source.getComponent().getPrimaryQuantifier().getMatchCondition())
+                            && matcher.getQuantity(inserted) != prototypeQuantity) {
+                        return matcher.getEmptyInstance();
+                    }
                     return moveEffectiveSourceExactDestinationNonSlotted(sourceSlotted, sourceSlot, destination, inserted, simulate);
                 }
             }
@@ -426,7 +444,21 @@ public final class IngredientStorageHelpers {
             } else {
                 // If we don't have source slots, iterate over all source slot instances in a slotless way
                 if (loopDestinationSlots) {
-                    return moveIngredients(source, destination, predicate, maxQuantity, exactQuantity, simulate);
+                    // If exactQuantity is true, try to loop over destination slots manually,
+                    // because our is-exact check is only done after insertion.
+                    if (exactQuantity && destination instanceof IIngredientComponentStorageSlotted) {
+                        // Recursively call movement logic for each slot in the destination if slotted.
+                        IIngredientComponentStorageSlotted<T, M> destinationSlotted = (IIngredientComponentStorageSlotted<T, M>) destination;
+                        int slots = destinationSlotted.getSlots();
+                        for (int slot = 0; slot < slots; slot++) {
+                            T moved = moveIngredientsSlotted(source, sourceSlot, destination, slot, predicate, maxQuantity, true, simulate);
+                            if (!matcher.isEmpty(moved)) {
+                                return moved;
+                            }
+                        }
+                    } else {
+                        return moveIngredients(source, destination, predicate, maxQuantity, exactQuantity, simulate);
+                    }
                 } else {
                     if (!(destination instanceof IIngredientComponentStorageSlotted)) {
                         return matcher.getEmptyInstance();
@@ -627,10 +659,20 @@ public final class IngredientStorageHelpers {
                 if (simulate) {
                     if (matcher.getQuantity(instance) == movableQuantity) {
                         return extractedSimulated;
+                    } else if (matcher.hasCondition(matchCondition, source.getComponent().getPrimaryQuantifier().getMatchCondition())) {
+                        // Fail if we tried to insert an ingredient under exact-amount match condition,
+                        // but the destination did not accept the given amount exactly.
+                        return matcher.getEmptyInstance();
                     } else {
                         return matcher.withQuantity(extractedSimulated, movableQuantity);
                     }
                 } else {
+                    if (matcher.getQuantity(instance) != movableQuantity
+                            && matcher.hasCondition(matchCondition, source.getComponent().getPrimaryQuantifier().getMatchCondition())) {
+                        // Fail if we tried to insert an ingredient under exact-amount match condition,
+                        // but the destination did not accept the given amount exactly.
+                        return matcher.getEmptyInstance();
+                    }
                     T extracted = source.extract(matcher.withQuantity(extractedSimulated, movableQuantity), matchCondition, false);
                     return insertIngredientRemainderFixup(source, destination, extracted, false);
                 }

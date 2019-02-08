@@ -293,6 +293,25 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA06_, CA91B)));
             }
 
+            @Test
+            public void testSourceSlotLoopDestinationSlotLoopSourceExactNotEnoughRoom() {
+                // Move nothing
+                sourceSlotlessInnerStorage.clear();
+                sourceSlotlessInnerStorage.add(CA05_);
+
+                destinationSlotlessInnerStorage.clear();
+                IngredientComponentStorageCollectionWrapper<ComplexStack, Integer> destinationSlotless =
+                        new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 1, 1);
+
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+
+                assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA05_)));
+                assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet()));
+            }
+
         }
 
         public static class DestinationSlotted {
@@ -606,6 +625,74 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotLoopSourceJustEnoughRoom() {
+                // Move 4
+                sourceSlotlessInnerStorage.clear();
+                sourceSlotlessInnerStorage.add(CA04_);
+
+                destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 5, 10);
+
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA04_));
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA04_));
+
+                assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet()));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA05_, EMPTY, CA91B, EMPTY, EMPTY)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotDefined0SourceJustEnoughRoom() {
+                // Move 4
+                sourceSlotlessInnerStorage.clear();
+                sourceSlotlessInnerStorage.add(CA04_);
+
+                destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 5, 10);
+
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA04_));
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA04_));
+
+                assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet()));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA05_, EMPTY, CA91B, EMPTY, EMPTY)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotDefined0SourceNotEnoughRoom() {
+                // Move nothing
+                sourceSlotlessInnerStorage.clear();
+                sourceSlotlessInnerStorage.add(CA04_);
+
+                destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 4, 10);
+
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+
+                assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_)));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotLoopSourceNotEnoughRoom() {
+                // Move nothing
+                sourceSlotlessInnerStorage.clear();
+                sourceSlotlessInnerStorage.add(CA04_);
+
+                destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 3, 10);
+
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+
+                assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
             
@@ -1033,7 +1120,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(EMPTY);
 
-                // Move nothing
+                // Move 1
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
                         CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
@@ -1041,6 +1128,52 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA02_, CA91B)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotLoopSourceJustEnoughRoom() {
+                sourceSlottedInnerStorage.clear();
+                sourceSlottedInnerStorage.add(EMPTY);
+                sourceSlottedInnerStorage.add(CA02_);
+                sourceSlottedInnerStorage.add(EMPTY);
+                sourceSlottedInnerStorage.add(EMPTY);
+                sourceSlottedInnerStorage.add(EMPTY);
+
+                destinationSlotlessInnerStorage.clear();
+                destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 3, 10);
+                destinationSlotless.insert(CA01_, false);
+
+                // Move 1
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA02_));
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA02_));
+
+                assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)));
+                assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA03_)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotLoopSourceNotEnoughRoom() {
+                sourceSlottedInnerStorage.clear();
+                sourceSlottedInnerStorage.add(EMPTY);
+                sourceSlottedInnerStorage.add(CA02_);
+                sourceSlottedInnerStorage.add(EMPTY);
+                sourceSlottedInnerStorage.add(EMPTY);
+                sourceSlottedInnerStorage.add(EMPTY);
+
+                destinationSlotlessInnerStorage.clear();
+                destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 2, 10);
+                destinationSlotless.insert(CA01_, false);
+
+                // Move 1
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+
+                assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA02_, EMPTY, EMPTY, EMPTY)));
+                assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_)));
             }
 
         }
@@ -2564,6 +2697,114 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceJustEnoughRoom() {
+                sourceSlottedInnerStorage.clear();
+                sourceSlottedInnerStorage.add(EMPTY);
+                sourceSlottedInnerStorage.add(CA02_);
+
+                destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 3, 10);
+
+                // Move nothing
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA02_));
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA02_));
+
+                assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA03_, EMPTY, CA91B, EMPTY, EMPTY)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotDefined0MatchGroupSourceJustEnoughRoom() {
+                sourceSlottedInnerStorage.clear();
+                sourceSlottedInnerStorage.add(EMPTY);
+                sourceSlottedInnerStorage.add(CA02_);
+
+                destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 3, 10);
+
+                // Move nothing
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA02_));
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA02_));
+
+                assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA03_, EMPTY, CA91B, EMPTY, EMPTY)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotDefined1MatchGroupSourceJustEnoughRoom() {
+                sourceSlottedInnerStorage.clear();
+                sourceSlottedInnerStorage.add(EMPTY);
+                sourceSlottedInnerStorage.add(CA02_);
+
+                destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 2, 10);
+
+                // Move nothing
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA02_));
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA02_));
+
+                assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA02_, CA91B, EMPTY, EMPTY)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceNotEnoughRoom() {
+                sourceSlottedInnerStorage.clear();
+                sourceSlottedInnerStorage.add(EMPTY);
+                sourceSlottedInnerStorage.add(CA02_);
+
+                destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 1, 10);
+
+                // Move nothing
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+
+                assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA02_)));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotDefined0MatchGroupSourceNotEnoughRoom() {
+                sourceSlottedInnerStorage.clear();
+                sourceSlottedInnerStorage.add(EMPTY);
+                sourceSlottedInnerStorage.add(CA02_);
+
+                destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 2, 10);
+
+                // Move nothing
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+
+                assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA02_)));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
+            }
+
+            @Test
+            public void testSourceSlotLoopDestinationSlotDefined1MatchGroupSourceNotEnoughRoom() {
+                sourceSlottedInnerStorage.clear();
+                sourceSlottedInnerStorage.add(EMPTY);
+                sourceSlottedInnerStorage.add(CA02_);
+
+                destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 1, 10);
+
+                // Move nothing
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+
+                assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA02_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
             
