@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix ingredient amount movement ignoring final amount in destination
+  Closes CyclopsMC/IntegratedTunnels#149
