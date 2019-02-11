@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.inventory.Slot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -90,6 +91,12 @@ public abstract class GuiContainerExtended extends GuiContainer implements
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(texture);
         drawTexturedModalRect(guiLeft + offsetX, guiTop + offsetY, 0, 0, xSize - 2 * offsetX, ySize - 2 * offsetY);
+    }
+
+    @Override
+    public boolean isMouseOverSlot(Slot slotIn, int mouseX, int mouseY) {
+        return this.isPointInRegion(slotIn.xPos - 1, slotIn.yPos - 1,
+                GuiHelpers.SLOT_SIZE, GuiHelpers.SLOT_SIZE, mouseX, mouseY);
     }
 
     @Override
