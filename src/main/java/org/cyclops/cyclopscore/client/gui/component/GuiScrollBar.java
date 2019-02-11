@@ -66,6 +66,11 @@ public class GuiScrollBar extends Gui {
         int k1 = i1 + 14;
         int l1 = j1 + height;
 
+        // Reset scroll if too big for current view
+        if (!needsScrollBars() && currentScroll > 0) {
+            scrollTo(0);
+        }
+
         if (!this.wasClicking && flag && mouseX >= i1 && mouseY >= j1 && mouseX < k1 && mouseY < l1) {
             this.isScrolling = this.needsScrollBars();
         }
