@@ -158,6 +158,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         GlStateManager.disableLighting();
 
         GlStateManager.enableBlend();
+        GlStateManager.enableDepth();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
