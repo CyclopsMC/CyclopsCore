@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Add GL depth safety after rendering gui tooltips in infobook, Closes CyclopsMC/EvilCraft#753
+* Automatically reset scrollbars when it is too big for the view, Closes CyclopsMC/IntegratedTerminals#13
+* Fix gaps between gui slots, Closes CyclopsMC/IntegratedTerminals#19
