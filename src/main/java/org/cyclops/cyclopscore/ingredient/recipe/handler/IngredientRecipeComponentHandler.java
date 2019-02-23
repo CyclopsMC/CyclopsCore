@@ -22,7 +22,7 @@ public class IngredientRecipeComponentHandler implements IRecipeInputDefinitionH
     @Override
     public IMixedIngredients toRecipeDefinitionOutput(IngredientRecipeComponent recipeOutput) {
         Map<IngredientComponent<?, ?>, List<?>> outputs = Maps.newIdentityHashMap();
-        if (!recipeOutput.getItemStacks().isEmpty()) {
+        if (!recipeOutput.getItemStacks().isEmpty() && recipeOutput.getChance() == 1.0F) {
             outputs.put(IngredientComponent.ITEMSTACK, Collections.singletonList(recipeOutput.getFirstItemStack()));
         }
         return new MixedIngredients(outputs);

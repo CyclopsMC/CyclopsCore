@@ -25,7 +25,7 @@ public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, I
     public static final int META_WILDCARD = OreDictionary.WILDCARD_VALUE;
 
     private final Ingredient ingredient;
-    private float chance;
+    private float chance = 1.0F;
 
     public IngredientRecipeComponent(Ingredient ingredient) {
         this.ingredient = Objects.requireNonNull(ingredient);
