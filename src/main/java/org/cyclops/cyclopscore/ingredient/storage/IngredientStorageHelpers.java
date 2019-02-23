@@ -2,10 +2,12 @@ package org.cyclops.cyclopscore.ingredient.storage;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
+import org.apache.logging.log4j.Level;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorageSlotted;
+import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.ingredient.collection.IIngredientCollection;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientArrayList;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionPrototypeMap;
@@ -550,16 +552,15 @@ public final class IngredientStorageHelpers {
                     // If the destination was lying, try to add the remainder back into the source.
                     // If even that fails, throw an error.
                     T remainderFixup = sourceSlotted.insert(sourceSlot, remainingEffective, false);
-                    if (matcher.isEmpty(remainderFixup)) {
-                        // We've managed to fix the problem, calculate the effective instance that was moved.
-                        return matcher.withQuantity(remainingEffective,
-                                matcher.getQuantity(sourceInstanceEffective)
-                                        - matcher.getQuantity(remainingEffective));
-                    } else {
-                        throw new IllegalStateException("Effective slotted source to slotted destination movement failed " +
+                    if (!matcher.isEmpty(remainderFixup)) {
+                        CyclopsCore.clog(Level.WARN, "Effective slotted source to slotted destination movement failed " +
                                 "due to inconsistent insertion behaviour by destination in simulation " +
-                                "and non-simulation: " + destinationSlotted + ". Lost: " + remainderFixup);
+                                "and non-simulation: " + destinationSlotted + ". Lost: " + remainderFixup +
+                                ". This can be caused by invalid network setups.");
                     }
+                    return matcher.withQuantity(remainingEffective,
+                            matcher.getQuantity(sourceInstanceEffective)
+                                    - matcher.getQuantity(remainingEffective));
                 }
             }
         }
@@ -621,18 +622,17 @@ public final class IngredientStorageHelpers {
             return movedEffective;
         } else {
             // If the destination was lying, try to add the remainder back into the source.
-            // If even that fails, throw an error.
+            // If even that fails, emit a warning.
             T remainderFixup = source.insert(remainingEffective, false);
-            if (matcher.isEmpty(remainderFixup)) {
-                // We've managed to fix the problem, calculate the effective instance that was moved.
-                return matcher.withQuantity(remainingEffective,
-                        matcher.getQuantity(movedEffective)
-                                - matcher.getQuantity(remainingEffective));
-            } else {
-                throw new IllegalStateException("Slotless source to destination movement failed " +
+            if (!matcher.isEmpty(remainderFixup)) {
+                CyclopsCore.clog(Level.WARN, "Slotless source to destination movement failed " +
                         "due to inconsistent insertion behaviour by destination in simulation " +
-                        "and non-simulation: " + destination + ". Lost: " + remainderFixup);
+                        "and non-simulation: " + destination + ". Lost: " + remainderFixup +
+                        ". This can be caused by invalid network setups.");
             }
+            return matcher.withQuantity(remainingEffective,
+                    matcher.getQuantity(movedEffective)
+                            - matcher.getQuantity(remainingEffective));
         }
     }
 
@@ -738,7 +738,7 @@ public final class IngredientStorageHelpers {
      * If not in simulation mode, and the instance does not completely fit into the destination,
      * the remainder will be inserted into the source.
      * If not everything can be re-inserted into the source,
-     * and {@link IllegalStateException} will be thrown.
+     * a warning will be emitted.
      *
      * The difference of this method compared to {@link IIngredientComponentStorage#insert(Object, boolean)}
      * is that this method returns the actually inserted ingredient
