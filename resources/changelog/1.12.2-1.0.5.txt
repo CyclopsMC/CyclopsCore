@@ -1,0 +1,11 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Don't include chance-based recipe outputs in recipe components
+  This fixes validation issues in Integrated Crafting with chance-based recipes.
+  Closes CyclopsMC/IntegratedCrafting#15
+* Make slotless ingredient loss error a warning instead of a crash
+  Closes CyclopsMC/IntegratedDynamics#696
+* Fix ingred movement not checking source alternatives for filtered destinations
+  Closes CyclopsMC/IntegratedTunnels#150
+
