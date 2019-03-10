@@ -1,17 +1,23 @@
 package org.cyclops.cyclopscore.client.gui;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelManager;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.helper.GuiHelpers;
@@ -28,14 +34,18 @@ public class RenderItemExtendedSlotCount extends RenderItem {
 
     private static RenderItemExtendedSlotCount instance;
 
+    private final RenderItem renderItemInner;
+
     protected RenderItemExtendedSlotCount(Minecraft mc) {
-        this(mc.getTextureManager(), mc.getRenderItem().getItemModelMesher().getModelManager(), mc.getItemColors());
+        this(mc.getTextureManager(), mc.getRenderItem().getItemModelMesher().getModelManager(), mc.getItemColors(), mc.getRenderItem());
     }
 
-    protected RenderItemExtendedSlotCount(TextureManager textureManager, ModelManager modelManager, ItemColors itemColors) {
+    protected RenderItemExtendedSlotCount(TextureManager textureManager, ModelManager modelManager,
+                                          ItemColors itemColors, RenderItem renderItemInner) {
         super(Objects.requireNonNull(textureManager),
                 Objects.requireNonNull(modelManager),
                 Objects.requireNonNull(itemColors));
+        this.renderItemInner = renderItemInner;
     }
 
     public static RenderItemExtendedSlotCount getInstance() {
@@ -113,4 +123,30 @@ public class RenderItemExtendedSlotCount extends RenderItem {
         }
     }
 
+    // Hacks to refer to correct RenderItem's itemModelMesher instance
+
+    @Override
+    public ItemModelMesher getItemModelMesher() {
+        return renderItemInner.getItemModelMesher();
+    }
+
+    @Override
+    public boolean shouldRenderItemIn3D(ItemStack stack) {
+        return renderItemInner.shouldRenderItemIn3D(stack);
+    }
+
+    @Override
+    public IBakedModel getItemModelWithOverrides(ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entitylivingbaseIn) {
+        return renderItemInner.getItemModelWithOverrides(stack, worldIn, entitylivingbaseIn);
+    }
+
+    @Override
+    protected void registerItem(Item itm, int subType, String identifier) {
+        // Avoid registering anything here
+    }
+
+    @Override
+    protected void registerBlock(Block blk, int subType, String identifier) {
+        // Avoid registering anything here
+    }
 }
