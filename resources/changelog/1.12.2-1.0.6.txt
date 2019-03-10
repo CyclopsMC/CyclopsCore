@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix RenderItemExtendedSlotCount not considering custom item models
+
+Closes CyclopsMC/IntegratedTerminals#23
+Closes CyclopsMC/IntegratedTerminals#24
