@@ -1,7 +1,11 @@
 package org.cyclops.cyclopscore.config;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.*;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.minecraft.block.Block;
@@ -25,7 +29,11 @@ import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 /**
@@ -52,6 +60,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
         }
     });
     private boolean registryEventPassed = false;
+    private final Set<Class<? extends ExtendedConfig<?>>> enabledConfigs = Sets.newIdentityHashSet();
 
     public ConfigHandler(ModBase mod) {
         this.mod = mod;
@@ -101,6 +110,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
      */
     @SuppressWarnings("unchecked")
     public void loadConfig() {
+        enabledConfigs.clear();
         for(ExtendedConfig<?> eConfig : this) {
             try {
                 addCategory(eConfig.getHolderType().getCategory());
@@ -126,6 +136,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
 
                         // Register as init listener.
                         mod.addInitListeners(new ConfigInitListener(eConfig));
+                        enabledConfigs.add((Class<? extends ExtendedConfig<?>>) eConfig.getClass());
                     }
                 }
             } catch (Exception e) {
@@ -232,6 +243,17 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
      * @param config The config to check.
      * @return If the given config is enabled.
      */
+    public boolean isConfigEnabled(Class<? extends ExtendedConfig<?>> config) {
+        return enabledConfigs.contains(config);
+    }
+
+    /**
+     * A safe way to check if a {@link org.cyclops.cyclopscore.config.configurable.IConfigurable} is enabled. @see ExtendedConfig#isEnabled()
+     * @param config The config to check.
+     * @return If the given config is enabled.
+     * @deprecated Use the non-static variant of this method for better performance.
+     */
+    @Deprecated // TODO: remove in 1.13
     public static boolean isEnabled(Class<? extends ExtendedConfig<?>> config) {
         try {
             return ((ExtendedConfig<?>)config.getField("_instance").get(null)).isEnabled();
