@@ -20,7 +20,7 @@ public abstract class ConfigurableFluid extends Fluid implements IConfigurable<F
     protected ConfigurableFluid(ExtendedConfig<FluidConfig> eConfig) {
         super(eConfig.getNamedId(), ((FluidConfig)eConfig).getIconLocationStill(), ((FluidConfig)eConfig).getIconLocationFlow());
         this.setConfig((FluidConfig)eConfig); // TODO change eConfig to just be a FluidConfig
-        this.setUnlocalizedName(eConfig.getUnlocalizedName());
+        this.setUnlocalizedName(eConfig.getTranslationKey());
     }
 
     private void setConfig(FluidConfig eConfig) {

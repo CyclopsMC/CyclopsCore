@@ -37,14 +37,14 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
     }
     
     @Override
-    public String getUnlocalizedName() {
+    public String getTranslationKey() {
         return "capability." + getMod().getModId() + "." + getNamedId();
 	}
 
     //Needed for config gui
     @Override
-    public String getFullUnlocalizedName() {
-        return getUnlocalizedName();
+    public String getFullTranslationKey() {
+        return getTranslationKey();
     }
     
     @Override

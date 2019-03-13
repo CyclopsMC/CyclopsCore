@@ -54,7 +54,7 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
     protected ConfigurableDamageIndicatedItemFluidContainer(ExtendedConfig<ItemConfig> eConfig, int capacity, Fluid fluid) {
         super(capacity, fluid);
         this.setConfig((ItemConfig)eConfig); // TODO change eConfig to just be an ItemConfig
-        this.setUnlocalizedName(eConfig.getUnlocalizedName());
+        this.setTranslationKey(eConfig.getTranslationKey());
     }
 
     private void setConfig(ItemConfig eConfig) {
@@ -192,7 +192,7 @@ public abstract class ConfigurableDamageIndicatedItemFluidContainer extends Dama
     @SideOnly(Side.CLIENT)
     @Override
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
-    	L10NHelpers.addOptionalInfo(list, getUnlocalizedName());
+    	L10NHelpers.addOptionalInfo(list, getTranslationKey());
         super.addInformation(itemStack, world, list, flag);
     }
 

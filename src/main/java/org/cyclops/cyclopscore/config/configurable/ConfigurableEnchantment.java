@@ -28,7 +28,7 @@ public class ConfigurableEnchantment extends Enchantment implements IConfigurabl
                                       EnumEnchantmentType type, EntityEquipmentSlot[] slots) {
         super(rarity, type, slots);
         this.setConfig((EnchantmentConfig)eConfig); // TODO change eConfig to just be an EnchantmentConfig
-        this.setName(eConfig.getUnlocalizedName());
+        this.setName(eConfig.getTranslationKey());
     }
     
     private void setConfig(EnchantmentConfig eConfig) {

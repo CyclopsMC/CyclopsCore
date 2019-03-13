@@ -1,13 +1,5 @@
 package org.cyclops.cyclopscore.item;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import org.cyclops.cyclopscore.block.IBlockRarityProvider;
-import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockDoor;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -17,6 +9,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.cyclops.cyclopscore.block.IBlockRarityProvider;
+import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockDoor;
+import org.cyclops.cyclopscore.helper.L10NHelpers;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * A hybrid of {@link org.cyclops.cyclopscore.item.ItemBlockMetadata} and {@link net.minecraft.item.ItemDoor}.
@@ -39,21 +37,21 @@ public class ItemDoorMetadata extends ItemDoor {
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
+    public String getTranslationKey(ItemStack stack)
     {
-        return block.getUnlocalizedName();
+        return block.getTranslationKey();
     }
 
     @Override
-    public String getUnlocalizedName()
+    public String getTranslationKey()
     {
-        return block.getUnlocalizedName();
+        return block.getTranslationKey();
     }
 
     @Override
     public CreativeTabs getCreativeTab()
     {
-        return block.getCreativeTabToDisplayOn();
+        return block.getCreativeTab();
     }
 
     @Override
@@ -62,7 +60,7 @@ public class ItemDoorMetadata extends ItemDoor {
     {
         super.addInformation(itemStack, world, list, flag);
         block.addInformation(itemStack, world, list, flag);
-        L10NHelpers.addOptionalInfo(list, getUnlocalizedName());
+        L10NHelpers.addOptionalInfo(list, getTranslationKey());
         informationProvider.addInformation(itemStack, world, list, flag);
     }
 

@@ -44,7 +44,7 @@ public class ConfigurableBlockGlass extends BlockGlass implements IConfigurableB
         super(material, ignoreSimilarity);
         this.setConfig(eConfig);
         this.setSoundType(SoundType.GLASS);
-        this.setUnlocalizedName(eConfig.getUnlocalizedName());
+        this.setTranslationKey(eConfig.getTranslationKey());
     }
 
     @Override

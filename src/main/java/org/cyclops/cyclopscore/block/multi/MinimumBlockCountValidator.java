@@ -19,6 +19,6 @@ public class MinimumBlockCountValidator implements IBlockCountValidator {
             return null;
         }
         return new L10NHelpers.UnlocalizedString("multiblock.cyclopscore.error.blockCount.min",
-                getMinimumCount(), new L10NHelpers.UnlocalizedString(block.getUnlocalizedName() + ".name"), count);
+                getMinimumCount(), new L10NHelpers.UnlocalizedString(block.getTranslationKey() + ".name"), count);
     }
 }

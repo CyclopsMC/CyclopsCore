@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.world.gen;
 
-import com.google.common.base.Predicate;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.block.state.pattern.BlockMatcher;
@@ -13,7 +12,6 @@ import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import org.cyclops.cyclopscore.helper.WorldHelpers;
 
-import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
@@ -67,7 +65,7 @@ public class WorldGenMinableExtended extends WorldGenMinable implements IRetroGe
     }
     
     protected String getUniqueName() {
-    	return state.getBlock().getUnlocalizedName();
+    	return state.getBlock().getTranslationKey();
     }
     
     /**

@@ -33,7 +33,7 @@ public abstract class MobConfig<T extends EntityLivingBase> extends ExtendedConf
     }
     
     @Override
-	public String getUnlocalizedName() {
+	public String getTranslationKey() {
 		return "entity.mob." + getMod().getModId() + "." + getNamedId();
 	}
     

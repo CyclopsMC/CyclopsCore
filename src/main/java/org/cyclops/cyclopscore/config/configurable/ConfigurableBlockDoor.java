@@ -41,7 +41,7 @@ public class ConfigurableBlockDoor extends BlockDoor implements IConfigurableBlo
     public ConfigurableBlockDoor(BlockDoorConfig config, Material material) {
         super(material);
         setConfig(config);
-        setUnlocalizedName(config.getUnlocalizedName());
+        setTranslationKey(config.getTranslationKey());
         disableStats();
     }
 

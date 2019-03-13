@@ -51,13 +51,13 @@ public abstract class ItemConfig extends ExtendedConfig<ItemConfig> implements I
     }
     
     @Override
-	public String getUnlocalizedName() {
+	public String getTranslationKey() {
 		return "items." + getMod().getModId() + "." + getNamedId();
 	}
 
     @Override
-    public String getFullUnlocalizedName() {
-        return "item." + getUnlocalizedName() + ".name";
+    public String getFullTranslationKey() {
+        return "item." + getTranslationKey() + ".name";
     }
     
     @Override

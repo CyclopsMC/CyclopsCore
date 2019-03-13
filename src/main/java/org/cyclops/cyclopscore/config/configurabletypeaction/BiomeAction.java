@@ -18,7 +18,7 @@ public class BiomeAction extends ConfigurableTypeAction<BiomeConfig>{
         property.setRequiresWorldRestart(true);
         property.setRequiresMcRestart(true);
         property.setComment(eConfig.getComment());
-        property.setLanguageKey(eConfig.getFullUnlocalizedName());
+        property.setLanguageKey(eConfig.getFullTranslationKey());
 
         if(startup) {
             // Update the ID, it could've changed

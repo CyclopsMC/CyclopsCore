@@ -65,7 +65,7 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
         		eConfig.isEnabled());
         property.setRequiresMcRestart(true);
         property.setComment(eConfig.getComment());
-        property.setLanguageKey(eConfig.getFullUnlocalizedName());
+        property.setLanguageKey(eConfig.getFullTranslationKey());
         
         if(startup) {
 	        // Update the ID, it could've changed
@@ -113,7 +113,7 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
                         + entry.getNamedId());
             }
 
-            String modId = item.getRegistryName().getResourceDomain();
+            String modId = item.getRegistryName().getNamespace();
             if(item.getHasSubtypes()) {
                 NonNullList<ItemStack> itemStacks = NonNullList.create();
                 item.getSubItems(item.getCreativeTab(), itemStacks);
@@ -125,7 +125,7 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig>{
                 }
             } else {
                 ModelLoader.setCustomModelResourceLocation(item, 0,
-                        new ModelResourceLocation(modId + ":" + item.getRegistryName().getResourcePath(), "inventory"));
+                        new ModelResourceLocation(modId + ":" + item.getRegistryName().getPath(), "inventory"));
             }
             if (item instanceof IDynamicModelElement && ((IDynamicModelElement) item).hasDynamicModel()) {
                 ItemConfig itemConfig = (ItemConfig) entry;

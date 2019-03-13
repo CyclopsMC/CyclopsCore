@@ -29,7 +29,7 @@ public abstract class GuiContainerConfigurable<C extends InventoryContainerConfi
     }
 
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        this.fontRenderer.drawString(L10NHelpers.localize(getContainer().getGuiProvider().getConfig().getFullUnlocalizedName()), 8, 6, 4210752);
+        this.fontRenderer.drawString(L10NHelpers.localize(getContainer().getGuiProvider().getConfig().getFullTranslationKey()), 8, 6, 4210752);
     }
 
 }

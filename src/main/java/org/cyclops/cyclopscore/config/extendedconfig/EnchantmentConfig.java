@@ -28,12 +28,12 @@ public abstract class EnchantmentConfig extends ExtendedConfig<EnchantmentConfig
     }
     
     @Override
-	public String getUnlocalizedName() {
+	public String getTranslationKey() {
 		return "enchantments." + getNamedId();
 	}
     
     @Override
-    public String getFullUnlocalizedName() {
+    public String getFullTranslationKey() {
         return "enchantment." + getMod().getModId() + "." + getNamedId();
     }
 

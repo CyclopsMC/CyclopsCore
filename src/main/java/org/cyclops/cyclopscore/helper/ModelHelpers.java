@@ -137,7 +137,7 @@ public final class ModelHelpers {
      */
     public static ModelBlock loadModelBlock(ResourceLocation modelLocation) throws IOException {
         IResource resource = Minecraft.getMinecraft().getResourceManager().getResource(
-                new ResourceLocation(modelLocation.getResourceDomain(), modelLocation.getResourcePath() + ".json"));
+                new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath() + ".json"));
         Reader reader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
         return ModelBlock.deserialize(reader);
     }

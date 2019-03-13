@@ -42,7 +42,7 @@ public class ConfigurableItemBucket extends ItemBucket implements IConfigurableI
     public ConfigurableItemBucket(ExtendedConfig<ItemConfig> eConfig, Block block, FluidStack fluidStack) {
         super(block);
         this.setConfig((ItemConfig)eConfig); // TODO change eConfig to just be an ItemConfig
-        this.setUnlocalizedName(eConfig.getUnlocalizedName());
+        this.setTranslationKey(eConfig.getTranslationKey());
         setContainerItem(Items.BUCKET);
         this.fluidStack = fluidStack;
     }
@@ -60,7 +60,7 @@ public class ConfigurableItemBucket extends ItemBucket implements IConfigurableI
     @Override
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
         super.addInformation(itemStack, world, list, flag);
-        L10NHelpers.addOptionalInfo(list, getUnlocalizedName());
+        L10NHelpers.addOptionalInfo(list, getTranslationKey());
     }
 
     @Nullable

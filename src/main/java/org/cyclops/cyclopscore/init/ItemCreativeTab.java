@@ -19,7 +19,7 @@ public class ItemCreativeTab extends CreativeTabs {
     }
 
     @Override
-    public ItemStack getTabIconItem() {
+    public ItemStack createIcon() {
         Item i = item.getObject();
         if (i == null) {
             i = Item.getItemFromBlock(Blocks.BARRIER);

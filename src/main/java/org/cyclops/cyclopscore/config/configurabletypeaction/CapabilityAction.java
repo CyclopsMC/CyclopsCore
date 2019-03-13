@@ -18,7 +18,7 @@ public class CapabilityAction<T> extends ConfigurableTypeAction<CapabilityConfig
         Property property = config.get(eConfig.getHolderType().getCategory(), eConfig.getNamedId(), eConfig.isEnabled());
         property.setRequiresMcRestart(true);
         property.setComment(eConfig.getComment());
-        property.setLanguageKey(eConfig.getFullUnlocalizedName());
+        property.setLanguageKey(eConfig.getFullTranslationKey());
         
         if(startup) {
 	        eConfig.setEnabled(property.getBoolean(false));

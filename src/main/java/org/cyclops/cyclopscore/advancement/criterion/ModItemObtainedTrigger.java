@@ -60,7 +60,7 @@ public class ModItemObtainedTrigger extends BaseCriterionTrigger<ItemStack, ModI
         @Override
         public boolean test(EntityPlayerMP player, ItemStack itemStack) {
             return !itemStack.isEmpty()
-                    && Item.REGISTRY.getNameForObject(itemStack.getItem()).getResourceDomain().equals(this.modId);
+                    && Item.REGISTRY.getNameForObject(itemStack.getItem()).getNamespace().equals(this.modId);
         }
     }
 

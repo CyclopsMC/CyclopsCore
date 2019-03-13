@@ -33,7 +33,7 @@ public class DummyConfig extends ExtendedConfig<DummyConfig>{
 	}
 
 	@Override
-	public String getUnlocalizedName() {
+	public String getTranslationKey() {
 		return getNamedId();
 	}
 

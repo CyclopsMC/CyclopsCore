@@ -167,7 +167,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         GlStateManager.pushMatrix();
         if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && fluidStack != null ) {
             List<String> lines = Lists.newArrayList();
-            lines.add(fluidStack.getFluid().getRarity().rarityColor + fluidStack.getLocalizedName());
+            lines.add(fluidStack.getFluid().getRarity().color + fluidStack.getLocalizedName());
             lines.add(TextFormatting.GRAY.toString() + fluidStack.amount + " mB");
             gui.drawHoveringText(lines, mx, my);
         }
@@ -260,7 +260,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
             if(this.element != null) {
                 ExtendedConfig<?> config = getConfigFromElement(element);
                 if (config != null) {
-                    Pair<InfoSection, Integer> pair = this.infoBook.getConfigLinks().get(config.getFullUnlocalizedName());
+                    Pair<InfoSection, Integer> pair = this.infoBook.getConfigLinks().get(config.getFullTranslationKey());
                     if(pair != null) {
                         target = pair.getLeft();
                     }

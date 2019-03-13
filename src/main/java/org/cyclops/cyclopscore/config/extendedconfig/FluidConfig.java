@@ -29,7 +29,7 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig> {
     }
     
     @Override
-	public String getUnlocalizedName() {
+	public String getTranslationKey() {
 		return "fluid.fluids." + getMod().getModId() + "." + getNamedId();
 	}
     

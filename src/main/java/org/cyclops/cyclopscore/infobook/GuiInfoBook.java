@@ -484,7 +484,7 @@ public abstract class GuiInfoBook extends GuiScreen {
         @Getter private HyperLink link;
 
         public TextOverlayButton(int id, HyperLink link, int x, int y, int height, int maxWidth, GuiInfoBook guiInfoBook) {
-            super(id, x, y, 0, height, InfoSection.formatString(L10NHelpers.localize(link.getUnlocalizedName())));
+            super(id, x, y, 0, height, InfoSection.formatString(L10NHelpers.localize(link.getTranslationKey())));
             this.guiInfoBook = guiInfoBook;
             this.link = link;
             FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;

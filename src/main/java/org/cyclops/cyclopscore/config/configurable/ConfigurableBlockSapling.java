@@ -57,7 +57,7 @@ public class ConfigurableBlockSapling extends BlockSapling implements IConfigura
      */
     public ConfigurableBlockSapling(ExtendedConfig<BlockConfig> eConfig, Material material, WorldGeneratorTree treeGenerator) {
         this.setConfig((BlockConfig)eConfig); // TODO change eConfig to just be a BlockConfig
-        this.setUnlocalizedName(eConfig.getUnlocalizedName());
+        this.setTranslationKey(eConfig.getTranslationKey());
         this.treeGenerator = treeGenerator;
         setSoundType(SoundType.GROUND);
     }

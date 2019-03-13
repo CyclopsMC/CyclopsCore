@@ -35,7 +35,7 @@ public class InfoSection {
     @Getter private final IInfoBook infoBook;
     private InfoSection parent;
     private int childIndex;
-    @Getter private String unlocalizedName;
+    @Getter private String translationKey;
     private List<InfoSection> sections = Lists.newLinkedList();
     private List<List<HyperLink>> links = Lists.newLinkedList();
     private List<SectionAppendix> appendixes;
@@ -45,12 +45,12 @@ public class InfoSection {
     private List<String> localizedPages;
     private Map<Integer, List<AdvancedButton>> advancedButtons = Maps.newHashMap();
 
-    public InfoSection(IInfoBook infoBook, InfoSection parent, int childIndex, String unlocalizedName,
+    public InfoSection(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
                        List<String> paragraphs, List<SectionAppendix> appendixes, ArrayList<String> tagList) {
         this.infoBook = infoBook;
         this.parent = parent;
         this.childIndex = childIndex;
-        this.unlocalizedName = unlocalizedName;
+        this.translationKey = translationKey;
         this.paragraphs = paragraphs;
         this.appendixes = appendixes;
         this.tagList = tagList;
@@ -90,7 +90,7 @@ public class InfoSection {
 
     protected static void constructAllLinks(InfoSection root, Map<String, Pair<InfoSection, Integer>> softLinks, int indent, int maxDepth) {
         for(InfoSection section : root.sections) {
-            softLinks.put(section.unlocalizedName, Pair.of(section, indent));
+            softLinks.put(section.getTranslationKey(), Pair.of(section, indent));
             if(maxDepth - 1 > 0) {
                 constructAllLinks(section, softLinks, indent + LINK_INDENT, maxDepth - 1);
             }
@@ -210,7 +210,7 @@ public class InfoSection {
     }
 
     public boolean isTitlePage(int page) {
-        return this.unlocalizedName != null && page == 0;
+        return this.getTranslationKey() != null && page == 0;
     }
 
     public void registerSection(InfoSection section) {
@@ -240,7 +240,7 @@ public class InfoSection {
     }
 
     public String getLocalizedTitle() {
-        return formatString(L10NHelpers.localize(unlocalizedName));
+        return formatString(L10NHelpers.localize(translationKey));
     }
 
     public int getSubSections() {

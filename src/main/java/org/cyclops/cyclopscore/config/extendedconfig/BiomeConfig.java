@@ -29,7 +29,7 @@ public abstract class BiomeConfig extends ExtendedConfig<BiomeConfig>{
     }
     
     @Override
-	public String getUnlocalizedName() {
+	public String getTranslationKey() {
 		return "biomes." + getMod().getModId() + "." + getNamedId();
 	}
     

@@ -99,7 +99,7 @@ public class CubeDetector {
 			return error;
 		}
         return contains ? null : new L10NHelpers.UnlocalizedString("multiblock.cyclopscore.error.invalidBlock",
-				LocationHelpers.toCompactString(location), new L10NHelpers.UnlocalizedString(block.getUnlocalizedName() + ".name"));
+				LocationHelpers.toCompactString(location), new L10NHelpers.UnlocalizedString(block.getTranslationKey() + ".name"));
 	}
 
     protected L10NHelpers.UnlocalizedString isValidLocation(World world, BlockPos location, BlockPos excludeLocation) {

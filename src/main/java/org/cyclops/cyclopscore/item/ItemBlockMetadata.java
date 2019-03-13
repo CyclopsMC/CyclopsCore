@@ -41,7 +41,7 @@ public class ItemBlockMetadata extends ItemBlock {
     @Override
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
         super.addInformation(itemStack, world, list, flag);
-        L10NHelpers.addOptionalInfo(list, getUnlocalizedName());
+        L10NHelpers.addOptionalInfo(list, getTranslationKey());
     	informationProvider.addInformation(itemStack, world, list, flag);
     }
 

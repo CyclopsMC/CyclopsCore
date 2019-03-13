@@ -63,10 +63,10 @@ public class InfoBookParser {
         registerFactory("", new IInfoSectionFactory() {
 
             @Override
-            public InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String unlocalizedName,
+            public InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
                                       ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
                                       ArrayList<String> tagList) {
-                return new InfoSection(infoBook, parent, childIndex, unlocalizedName, paragraphs, appendixes, tagList);
+                return new InfoSection(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList);
             }
 
         });
@@ -677,7 +677,7 @@ public class InfoBookParser {
         return section;
     }
 
-    protected static InfoSection createSection(IInfoBook infoBook, InfoSection parent, int childIndex, String type, String unlocalizedName,
+    protected static InfoSection createSection(IInfoBook infoBook, InfoSection parent, int childIndex, String type, String translationKey,
                                                ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
                                                ArrayList<String> tagList) {
         if(type == null) type = "";
@@ -685,7 +685,7 @@ public class InfoBookParser {
         if(factory == null) {
             throw new InfoBookException("No section of type '" + type + "' was found.");
         }
-        return factory.create(infoBook, parent, childIndex, unlocalizedName, paragraphs, appendixes, tagList);
+        return factory.create(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList);
     }
 
     protected static SectionAppendix createAppendix(IInfoBook infoBook, String type, Element node) throws InvalidAppendixException {
@@ -729,7 +729,7 @@ public class InfoBookParser {
 
     public static interface IInfoSectionFactory {
 
-        public InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String unlocalizedName,
+        public InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
                                   ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
                                   ArrayList<String> tagList);
 
@@ -778,7 +778,7 @@ public class InfoBookParser {
         @Override
         public String toString() {
             return String.format("Invalid appendix %s from mod %s in an infobook: %s",
-                    section != null ? section.getUnlocalizedName() : "<root>",
+                    section != null ? section.getTranslationKey() : "<root>",
                     infoBook.getMod(), getLocalizedMessage());
         }
 

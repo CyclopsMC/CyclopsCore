@@ -33,7 +33,7 @@ public abstract class ConfigurablePotion extends Potion implements IConfigurable
     protected ConfigurablePotion(ExtendedConfig<PotionConfig> eConfig, boolean badEffect, int color, int iconIndex) {
         super(badEffect, color);
         this.setConfig((PotionConfig)eConfig); // TODO change eConfig to just be a PotionConfig
-        this.setPotionName(eConfig.getUnlocalizedName());
+        this.setPotionName(eConfig.getTranslationKey());
         this.setIconIndex(iconIndex % 8, iconIndex / 8);
         this.resource = new ResourceLocation(eConfig.getMod().getModId(), eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "potions.png");
         MinecraftForge.EVENT_BUS.register(this);

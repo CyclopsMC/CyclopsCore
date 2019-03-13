@@ -4,7 +4,12 @@ import com.google.common.collect.Lists;
 import lombok.Getter;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.config.*;
+import org.cyclops.cyclopscore.config.ConfigProperty;
+import org.cyclops.cyclopscore.config.ConfigPropertyCallback;
+import org.cyclops.cyclopscore.config.ConfigurableProperty;
+import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.CyclopsCoreConfigException;
+import org.cyclops.cyclopscore.config.IChangedCallback;
 import org.cyclops.cyclopscore.config.configurable.IConfigurable;
 import org.cyclops.cyclopscore.init.IInitListener;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -173,14 +178,14 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      * Get the unlocalized name (must be unique!) for this configurable.
      * @return The unlocalized name.
      */
-    public abstract String getUnlocalizedName();
+    public abstract String getTranslationKey();
 
     /**
      * Get the full unlocalized name for this configurable.
      * @return The unlocalized name.
      */
-    public String getFullUnlocalizedName() {
-        return getUnlocalizedName();
+    public String getFullTranslationKey() {
+        return getTranslationKey();
     }
 
     /**

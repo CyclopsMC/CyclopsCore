@@ -19,6 +19,6 @@ public class ExactBlockCountValidator implements IBlockCountValidator {
             return null;
         }
         return new L10NHelpers.UnlocalizedString("multiblock.cyclopscore.error.blockCount.exact",
-                getExactCount(), new L10NHelpers.UnlocalizedString(block.getUnlocalizedName() + ".name"), count);
+                getExactCount(), new L10NHelpers.UnlocalizedString(block.getTranslationKey() + ".name"), count);
     }
 }

@@ -28,7 +28,7 @@ public abstract class PotionConfig extends ExtendedConfig<PotionConfig> {
     }
 
     @Override
-    public String getUnlocalizedName() {
+    public String getTranslationKey() {
         return "potions." + getMod().getModId() + "." + getNamedId();
     }
 

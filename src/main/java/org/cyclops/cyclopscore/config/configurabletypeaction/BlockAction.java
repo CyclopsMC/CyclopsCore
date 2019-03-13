@@ -109,7 +109,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
         		eConfig.isEnabled());
         property.setRequiresMcRestart(true);
         property.setComment(eConfig.getComment());
-        property.setLanguageKey(eConfig.getFullUnlocalizedName());
+        property.setLanguageKey(eConfig.getFullTranslationKey());
         
         if(startup) {
 	        // Update the ID, it could've changed

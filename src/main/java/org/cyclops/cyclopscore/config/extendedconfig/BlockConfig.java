@@ -12,9 +12,6 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistry;
-
-import javax.annotation.Nonnull;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -22,6 +19,8 @@ import org.cyclops.cyclopscore.config.configurabletypeaction.BlockAction;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.item.ItemBlockMetadata;
+
+import javax.annotation.Nonnull;
 
 /**
  * Config for blocks.
@@ -55,13 +54,13 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
     }
 
     @Override
-	public String getUnlocalizedName() {
+	public String getTranslationKey() {
 		return "blocks." + getMod().getModId() + "." + getNamedId();
 	}
 
     @Override
-    public String getFullUnlocalizedName() {
-        return "tile." + getUnlocalizedName() + ".name";
+    public String getFullTranslationKey() {
+        return "tile." + getTranslationKey() + ".name";
     }
     
     @Override

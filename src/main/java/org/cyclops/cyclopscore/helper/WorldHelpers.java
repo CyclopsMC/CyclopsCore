@@ -32,7 +32,7 @@ public class WorldHelpers {
      */
     //@SideOnly(Side.SERVER)
     public static void setBiome(World world, BlockPos pos, Biome biome) {
-        Chunk chunk = world.getChunkFromBlockCoords(pos);
+        Chunk chunk = world.getChunk(pos);
         if(chunk != null) {
         	BlockPos c = getChunkLocationFromWorldLocation(pos.getX(), 0, pos.getZ());
             int rx = c.getX();

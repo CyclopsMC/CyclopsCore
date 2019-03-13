@@ -29,7 +29,7 @@ public class ConfigurableBiome extends Biome implements IConfigurable<BiomeConfi
     }
 
     protected static Properties constructProperties(BiomeConfig eConfig) {
-        return new Properties(L10NHelpers.localize(eConfig.getUnlocalizedName()));
+        return new Properties(L10NHelpers.localize(eConfig.getTranslationKey()));
     }
     
     private void setConfig(ExtendedConfig<BiomeConfig> eConfig) {

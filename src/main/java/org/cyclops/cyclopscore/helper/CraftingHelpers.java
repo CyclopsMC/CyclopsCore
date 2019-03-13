@@ -42,10 +42,10 @@ public class CraftingHelpers {
 
     public static ResourceLocation newRecipeIdentifier(ItemStack output) {
         ResourceLocation id = new ResourceLocation(Loader.instance().activeModContainer().getModId(),
-                output.getItem().getRegistryName().getResourcePath());
+                output.getItem().getRegistryName().getPath());
         int counter = 10;
         while (ForgeRegistries.RECIPES.containsKey(id)) {
-            id = new ResourceLocation(id.getResourceDomain(), output.getItem().getRegistryName().getResourcePath() + "_" + ++counter);
+            id = new ResourceLocation(id.getNamespace(), output.getItem().getRegistryName().getPath() + "_" + ++counter);
         }
         return id;
     }

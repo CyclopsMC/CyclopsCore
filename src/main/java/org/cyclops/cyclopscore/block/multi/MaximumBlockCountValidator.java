@@ -19,6 +19,6 @@ public class MaximumBlockCountValidator implements IBlockCountValidator {
             return null;
         }
         return new L10NHelpers.UnlocalizedString("multiblock.cyclopscore.error.blockCount.max",
-                getMaximumCount(), new L10NHelpers.UnlocalizedString(block.getUnlocalizedName() + ".name"), count);
+                getMaximumCount(), new L10NHelpers.UnlocalizedString(block.getTranslationKey() + ".name"), count);
     }
 }

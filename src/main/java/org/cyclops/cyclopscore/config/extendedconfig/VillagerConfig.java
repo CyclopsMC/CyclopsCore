@@ -27,12 +27,12 @@ public abstract class VillagerConfig extends ExtendedConfig<VillagerConfig> {
     }
     
     @Override
-	public String getUnlocalizedName() {
+	public String getTranslationKey() {
 		return "entity.villager." + getNamedId();
 	}
     
     @Override
-    public String getFullUnlocalizedName() {
+    public String getFullTranslationKey() {
         return "entity.Villager." + getNamedId();
     }
 

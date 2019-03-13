@@ -23,8 +23,8 @@ public class SingleModelLoader implements ICustomModelLoader {
 
     @Override
     public boolean accepts(ResourceLocation modelLocation) {
-        return modelLocation.getResourceDomain().equals(modId)
-               && modelLocation.getResourcePath().startsWith(location);
+        return modelLocation.getNamespace().equals(modId)
+               && modelLocation.getPath().startsWith(location);
     }
 
     @Override

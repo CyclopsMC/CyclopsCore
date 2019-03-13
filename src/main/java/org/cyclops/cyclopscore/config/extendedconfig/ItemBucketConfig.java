@@ -26,7 +26,7 @@ public abstract class ItemBucketConfig extends ItemConfig {
     }
     
     @Override
-	public String getUnlocalizedName() {
+	public String getTranslationKey() {
 		return "items." + getMod().getModId() + "." + getNamedId();
 	}
     

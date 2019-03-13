@@ -7,7 +7,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -171,7 +170,7 @@ public final class BlockHelpers {
     public static boolean isValidCreativeTab(Block block, @Nullable CreativeTabs creativeTab) {
         return creativeTab == null
                 || creativeTab == CreativeTabs.SEARCH
-                || block.getCreativeTabToDisplayOn() == creativeTab;
+                || block.getCreativeTab() == creativeTab;
     }
 
     /**

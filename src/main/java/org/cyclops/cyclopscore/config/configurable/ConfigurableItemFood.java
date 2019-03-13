@@ -33,7 +33,7 @@ public class ConfigurableItemFood extends ItemFood implements IConfigurableItem 
     public ConfigurableItemFood(ExtendedConfig<ItemConfig> eConfig, int healAmount, float saturationModifier, boolean isWolfsFavoriteMeat) {
         super(healAmount, saturationModifier, isWolfsFavoriteMeat);
         this.setConfig((ItemConfig)eConfig); // TODO change eConfig to just be an ItemConfig
-        this.setUnlocalizedName(eConfig.getUnlocalizedName());
+        this.setTranslationKey(eConfig.getTranslationKey());
     }
 
     private void setConfig(ItemConfig eConfig) {
@@ -49,7 +49,7 @@ public class ConfigurableItemFood extends ItemFood implements IConfigurableItem 
     @Override
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
         super.addInformation(itemStack, world, list, flag);
-        L10NHelpers.addOptionalInfo(list, getUnlocalizedName());
+        L10NHelpers.addOptionalInfo(list, getTranslationKey());
     }
 
     @Nullable

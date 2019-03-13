@@ -60,7 +60,7 @@ public class InfoSectionTagIndex extends InfoSection {
 
             ExtendedConfig<?> config = mod.getConfigHandler().getDictionary().get(tag);
             if(config != null) {
-                softLinks.put(config.getFullUnlocalizedName(), Pair.of(section, 0));
+                softLinks.put(config.getFullTranslationKey(), Pair.of(section, 0));
             }
         }
         for(int i = 0; i < section.getSubSections(); i++) {

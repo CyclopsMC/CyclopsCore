@@ -35,7 +35,7 @@ public class ConfigurableItem extends Item implements IConfigurableItem, IDynami
      */
     public ConfigurableItem(ExtendedConfig<ItemConfig> eConfig) {
         this.setConfig((ItemConfig)eConfig); // TODO change eConfig to just be an ItemConfig
-        this.setUnlocalizedName(eConfig.getUnlocalizedName());
+        this.setTranslationKey(eConfig.getTranslationKey());
         if(MinecraftHelpers.isClientSide() && hasDynamicModel()) MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -52,7 +52,7 @@ public class ConfigurableItem extends Item implements IConfigurableItem, IDynami
     @Override
     public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
         super.addInformation(itemStack, world, list, flag);
-        L10NHelpers.addOptionalInfo(list, getUnlocalizedName(itemStack));
+        L10NHelpers.addOptionalInfo(list, getTranslationKey(itemStack));
     }
 
     @Override

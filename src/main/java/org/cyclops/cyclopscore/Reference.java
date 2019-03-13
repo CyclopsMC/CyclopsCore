@@ -32,6 +32,6 @@ public final class Reference {
 
     // Dependencies
     public static final String MOD_DEPENDENCIES =
-              "required-after:forge@[14.23.1.2555,);";
+              "required-after:forge@[14.23.5.2768,);";
 
 }

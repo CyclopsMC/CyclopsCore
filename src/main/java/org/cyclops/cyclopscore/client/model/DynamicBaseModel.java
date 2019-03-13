@@ -217,10 +217,10 @@ public abstract class DynamicBaseModel implements IBakedModel {
     protected static void addBakedQuadRotated(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
                                               TextureAtlasSprite texture, EnumFacing side, int rotation,
                                               boolean isColored, int shadeColor, float[][] uvs) {
-        Vec3d v1 = rotate(new Vec3d(x1 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
-        Vec3d v2 = rotate(new Vec3d(x1 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
-        Vec3d v3 = rotate(new Vec3d(x2 - .5, y - .5, z2 - .5), side).addVector(.5, .5, .5);
-        Vec3d v4 = rotate(new Vec3d(x2 - .5, y - .5, z1 - .5), side).addVector(.5, .5, .5);
+        Vec3d v1 = rotate(new Vec3d(x1 - .5, y - .5, z1 - .5), side).add(.5, .5, .5);
+        Vec3d v2 = rotate(new Vec3d(x1 - .5, y - .5, z2 - .5), side).add(.5, .5, .5);
+        Vec3d v3 = rotate(new Vec3d(x2 - .5, y - .5, z2 - .5), side).add(.5, .5, .5);
+        Vec3d v4 = rotate(new Vec3d(x2 - .5, y - .5, z1 - .5), side).add(.5, .5, .5);
         int[] data =  Ints.concat(
                 vertexToInts((float) v1.x, (float) v1.y, (float) v1.z, shadeColor, texture, uvs[(0 + rotation) % 4][0] * 16, uvs[(0 + rotation) % 4][1] * 16),
                 vertexToInts((float) v2.x, (float) v2.y, (float) v2.z, shadeColor, texture, uvs[(1 + rotation) % 4][0] * 16, uvs[(1 + rotation) % 4][1] * 16),

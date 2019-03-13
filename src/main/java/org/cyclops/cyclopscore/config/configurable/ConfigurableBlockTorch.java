@@ -41,7 +41,7 @@ public class ConfigurableBlockTorch extends BlockTorch implements IConfigurableB
      */
     public ConfigurableBlockTorch(ExtendedConfig<BlockConfig> eConfig) {
         this.setConfig((BlockConfig)eConfig); // TODO change eConfig to just be a BlockConfig
-        this.setUnlocalizedName(eConfig.getUnlocalizedName());
+        this.setTranslationKey(eConfig.getTranslationKey());
         this.setHardness(0.0F);
         this.setLightLevel(0.9375F);
         this.setSoundType(SoundType.WOOD);
