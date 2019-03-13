@@ -16,8 +16,9 @@ import javax.annotation.Nullable;
 /**
  * Packet from server to client to update capabilities.
  * @author rubensworks
- *
+ * @deprecated This is a dirty hack, and should not be used, as it can break other mod's capabilities.
  */
+@Deprecated
 public class SendPlayerCapabilitiesPacket extends PacketCodec {
 
 	@CodecField
