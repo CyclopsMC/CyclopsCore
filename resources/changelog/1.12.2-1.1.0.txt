@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Update to Forge 14.23.5.2768 and MCP snapshot_20180814
+
+Lib changes:
+* Add more efficient method for checking if a config is enabled, Closes #116
+* Deprecate SendPlayerCapabilitiesPacket, Closes #123
+
