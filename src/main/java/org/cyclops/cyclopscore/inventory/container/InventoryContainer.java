@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.inventory.container;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.inventory.IValueNotifier;
 import org.cyclops.cyclopscore.inventory.container.button.IButtonActionServer;
@@ -23,8 +25,10 @@ import org.cyclops.cyclopscore.inventory.slot.SlotArmor;
 import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
 import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * A container with inventory.
@@ -39,6 +43,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
 
     private final Map<Integer, IButtonActionServer<InventoryContainer>> buttonActions = Maps.newHashMap();
     private final Map<Integer, NBTTagCompound> values = Maps.newHashMap();
+    private final List<SyncedGuiVariable<?>> syncedGuiVariables = Lists.newArrayList();
     private int nextValueId = 0;
     private IValueNotifiable guiValueListener = null;
 
@@ -61,6 +66,16 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     public InventoryContainer(InventoryPlayer inventory) {
         this.playerIInventory = inventory;
         this.player = inventory.player;
+    }
+
+    @Override
+    public void detectAndSendChanges() {
+        super.detectAndSendChanges();
+        if (!MinecraftHelpers.isClientSide()) {
+            for (SyncedGuiVariable<?> syncedGuiVariable : this.syncedGuiVariables) {
+                syncedGuiVariable.detectAndSendChanges();
+            }
+        }
     }
 
     /**
@@ -472,6 +487,24 @@ public abstract class InventoryContainer extends Container implements IButtonCli
         if(guiValueListener != null) {
             guiValueListener.onUpdate(valueId, value);
         }
+    }
+
+    /**
+     * Register the given variable for automatically sychronizing between client and server.
+     *
+     * This method should be called in the constructor of a container,
+     * and the resulting supplier should be stored.
+     * This resulting supplier can be called at any time by the client to lookup values.
+     *
+     * @param clazz The class of the variable to sync.
+     * @param serverValueSupplier A supplier for the server-side variable value.
+     * @param <T> The variable type.
+     * @return A supplier that can be called for retrieving the value.
+     */
+    public <T> Supplier<T> registerSyncedVariable(Class<T> clazz, Supplier<T> serverValueSupplier) {
+        SyncedGuiVariable<T> variable = new SyncedGuiVariable<>(this, clazz, serverValueSupplier);
+        this.syncedGuiVariables.add(variable);
+        return variable;
     }
 
 }

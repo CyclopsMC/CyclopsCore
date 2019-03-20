@@ -1,0 +1,42 @@
+package org.cyclops.cyclopscore.inventory.container;
+
+import net.minecraft.nbt.NBTTagCompound;
+import org.cyclops.cyclopscore.persist.nbt.NBTClassType;
+
+import java.util.function.Supplier;
+
+/**
+ * A convenience datastructure that offers direct synchronization of values between server and client inside GUIs.
+ * @param <T> The type of value.
+ */
+public class SyncedGuiVariable<T> implements Supplier<T> {
+
+    private final InventoryContainer gui;
+    private final int guiValueId;
+    private final NBTClassType<T> nbtClassType;
+    private final Supplier<T> serverValueSupplier;
+
+    SyncedGuiVariable(InventoryContainer gui, Class<T> clazz, Supplier<T> serverValueSupplier) {
+        this.gui = gui;
+        this.guiValueId = gui.getNextValueId();
+        this.nbtClassType = NBTClassType.getClassType(clazz);
+        this.serverValueSupplier = serverValueSupplier;
+    }
+
+    public void detectAndSendChanges() {
+        NBTTagCompound tag = new NBTTagCompound();
+        T value = this.serverValueSupplier.get();
+        this.nbtClassType.writePersistedField("v", value, tag);
+        this.gui.setValue(this.guiValueId, tag);
+    }
+
+    @Override
+    public T get() {
+        NBTTagCompound tag = this.gui.getValue(this.guiValueId);
+        if (tag == null) {
+            return this.nbtClassType.getDefaultValue();
+        }
+        return this.nbtClassType.readPersistedField("v", tag);
+    }
+
+}
