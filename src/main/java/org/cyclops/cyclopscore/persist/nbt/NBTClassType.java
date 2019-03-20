@@ -14,6 +14,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -24,6 +25,7 @@ import org.cyclops.cyclopscore.datastructure.DimPos;
 import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -154,6 +156,27 @@ public abstract class NBTClassType<T> {
 
             @Override
             public Fluid getDefaultValue() {
+                return null;
+            }
+        });
+
+        NBTYPES.put(FluidStack.class, new NBTClassType<FluidStack>() {
+            @Override
+            public void writePersistedField(String name, @Nullable FluidStack object, NBTTagCompound tag) {
+                if (object != null) {
+                    NBTTagCompound subTag = new NBTTagCompound();
+                    object.writeToNBT(subTag);
+                    tag.setTag(name, subTag);
+                }
+            }
+
+            @Override
+            public FluidStack readPersistedField(String name, NBTTagCompound tag) {
+                return FluidStack.loadFluidStackFromNBT(tag.getCompoundTag(name));
+            }
+
+            @Override
+            public FluidStack getDefaultValue() {
                 return null;
             }
         });
