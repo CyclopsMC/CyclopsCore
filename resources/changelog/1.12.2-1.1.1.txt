@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Lib additions:
+* Add FluidStack NBTClassType
+* Add synced gui variable abstraction
+  This allows variables inside guis to be more
+  easily synced between client and server.
