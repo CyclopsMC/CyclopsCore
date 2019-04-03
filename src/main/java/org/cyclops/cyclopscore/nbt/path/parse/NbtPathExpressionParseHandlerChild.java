@@ -6,6 +6,7 @@ import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -50,17 +51,20 @@ public class NbtPathExpressionParseHandlerChild implements INbtPathExpressionPar
 
         @Override
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
-            return new NbtPathExpressionMatches(executionContexts.flatMap(executionContext -> {
-                NBTBase nbt = executionContext.getCurrentTag();
-                if (nbt.getId() == 10) {
-                    NBTTagCompound tag = (NBTTagCompound) nbt;
-                    NBTBase childTag = tag.getTag(childName);
-                    if (childTag != null) {
-                        return Stream.of(new NbtPathExpressionExecutionContext(childTag, executionContext));
-                    }
-                }
-                return Stream.empty();
-            }));
+            return new NbtPathExpressionMatches(executionContexts
+                    .map(executionContext -> {
+                        NBTBase nbt = executionContext.getCurrentTag();
+                        if (nbt.getId() == 10) {
+                            NBTTagCompound tag = (NBTTagCompound) nbt;
+                            NBTBase childTag = tag.getTag(childName);
+                            if (childTag != null) {
+                                return new NbtPathExpressionExecutionContext(childTag, executionContext);
+                            }
+                        }
+                        return null;
+                    })
+                    .filter(Objects::nonNull)
+            );
         }
 
     }
