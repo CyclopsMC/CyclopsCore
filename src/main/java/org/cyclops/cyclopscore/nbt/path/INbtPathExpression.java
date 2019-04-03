@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path;
 
 import net.minecraft.nbt.NBTBase;
+import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionExecutionContext;
 
 import java.util.stream.Stream;
 
@@ -14,7 +15,9 @@ public interface INbtPathExpression {
      * @param nbts A stream of NBT tags.
      * @return The matches.
      */
-    public NbtPathExpressionMatches match(Stream<NBTBase> nbts);
+    public default NbtPathExpressionMatches match(Stream<NBTBase> nbts) {
+        return matchContexts(nbts.map(NbtPathExpressionExecutionContext::new));
+    }
 
     /**
      * Find all matches for the given NBT tag.
@@ -45,5 +48,12 @@ public interface INbtPathExpression {
     public default boolean test(NBTBase nbt) {
         return test(Stream.of(nbt));
     }
+
+    /**
+     * Find all matches for the given stream of NBT tags.
+     * @param executionContexts A stream of NBT execution contexts.
+     * @return The matches.
+     */
+    public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts);
 
 }

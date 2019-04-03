@@ -49,17 +49,19 @@ public class NbtPathExpressionParseHandlerChild implements INbtPathExpressionPar
         }
 
         @Override
-        public NbtPathExpressionMatches match(Stream<NBTBase> nbt) {
-            return new NbtPathExpressionMatches(nbt.flatMap(subNbt -> {
-                if (subNbt.getId() == 10) {
-                    NBTTagCompound tag = (NBTTagCompound) subNbt;
+        public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
+            return new NbtPathExpressionMatches(executionContexts.flatMap(executionContext -> {
+                NBTBase nbt = executionContext.getCurrentTag();
+                if (nbt.getId() == 10) {
+                    NBTTagCompound tag = (NBTTagCompound) nbt;
                     NBTBase childTag = tag.getTag(childName);
                     if (childTag != null) {
-                        return Stream.of(childTag);
+                        return Stream.of(new NbtPathExpressionExecutionContext(childTag, executionContext));
                     }
                 }
                 return Stream.empty();
             }));
         }
+
     }
 }

@@ -83,4 +83,18 @@ public class TestNbtPathExpressionHandlerRoot {
                 )));
     }
 
+    @Test
+    public void testExpressionNotStartFromRoot() {
+        INbtPathExpression expression = NbtPathExpressionParseHandlerRoot.Expression.INSTANCE;
+        Stream<NbtPathExpressionExecutionContext> stream = Stream.of(
+                new NbtPathExpressionExecutionContext(new NBTTagString("a"), new NbtPathExpressionExecutionContext(
+                        new NBTTagString("b"), new NbtPathExpressionExecutionContext(new NBTTagString("c"))
+                ))
+        );
+        assertThat(expression.matchContexts(stream).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(
+                        new NBTTagString("c")
+                )));
+    }
+
 }

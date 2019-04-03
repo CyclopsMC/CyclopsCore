@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path;
 
 import net.minecraft.nbt.NBTBase;
+import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionExecutionContext;
 
 import java.util.stream.Stream;
 
@@ -12,17 +13,21 @@ public class NbtPathExpressionMatches {
 
     public static NbtPathExpressionMatches EMPTY = NbtPathExpressionMatches.forAll();
 
-    private final Stream<NBTBase> matches;
+    private final Stream<NbtPathExpressionExecutionContext> matches;
 
-    public NbtPathExpressionMatches(Stream<NBTBase> matches) {
+    public NbtPathExpressionMatches(Stream<NbtPathExpressionExecutionContext> matches) {
         this.matches = matches;
     }
 
-    public Stream<NBTBase> getMatches() {
+    public Stream<NbtPathExpressionExecutionContext> getContexts() {
         return matches;
     }
 
-    public static NbtPathExpressionMatches forAll(NBTBase... nbts) {
+    public Stream<NBTBase> getMatches() {
+        return getContexts().map(NbtPathExpressionExecutionContext::getCurrentTag);
+    }
+
+    public static NbtPathExpressionMatches forAll(NbtPathExpressionExecutionContext... nbts) {
         return new NbtPathExpressionMatches(Stream.of(nbts));
     }
 

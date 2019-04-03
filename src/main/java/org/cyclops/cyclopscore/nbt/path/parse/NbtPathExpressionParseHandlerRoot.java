@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import net.minecraft.nbt.NBTBase;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
 
@@ -27,8 +26,8 @@ public class NbtPathExpressionParseHandlerRoot implements INbtPathExpressionPars
         public static final Expression INSTANCE = new Expression();
 
         @Override
-        public NbtPathExpressionMatches match(Stream<NBTBase> nbt) {
-            return new NbtPathExpressionMatches(nbt);
+        public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
+            return new NbtPathExpressionMatches(executionContexts.map(NbtPathExpressionExecutionContext::getRootContext));
         }
     }
 }

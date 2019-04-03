@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.nbt.path;
 
-import net.minecraft.nbt.NBTBase;
+import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionExecutionContext;
 
 import java.util.stream.Stream;
 
@@ -16,10 +16,10 @@ public class NbtPathExpressionList implements INbtPathExpression {
     }
 
     @Override
-    public NbtPathExpressionMatches match(Stream<NBTBase> nbt) {
-        NbtPathExpressionMatches matches = new NbtPathExpressionMatches(nbt);
+    public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
+        NbtPathExpressionMatches matches = new NbtPathExpressionMatches(executionContexts);
         for (INbtPathExpression subExpression : subExpressions) {
-            matches = subExpression.match(matches.getMatches());
+            matches = subExpression.matchContexts(matches.getContexts());
         }
         return matches;
     }

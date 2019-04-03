@@ -19,7 +19,8 @@ public class TestNbtPathExpressionList {
     public void testEmptyList() {
         NbtPathExpressionList list = new NbtPathExpressionList();
         Stream<NBTBase> stream = Stream.of(new NBTTagString("a"));
-        assertThat(list.match(stream).getMatches(), is(stream));
+        assertThat(list.match(stream).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(new NBTTagString("a"))));
     }
 
     @Test

@@ -12,9 +12,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestNbtPathExpressionHandlerChild {
@@ -35,6 +33,12 @@ public class TestNbtPathExpressionHandlerChild {
     @Test
     public void testNonMatchNoChildName() {
         assertThat(handler.handlePrefixOf(".", 0),
+                is(INbtPathExpressionParseHandler.HandleResult.INVALID));
+    }
+
+    @Test
+    public void testNonMatchInvalidChildName() {
+        assertThat(handler.handlePrefixOf(".)", 0),
                 is(INbtPathExpressionParseHandler.HandleResult.INVALID));
     }
 
