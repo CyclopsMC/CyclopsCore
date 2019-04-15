@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.nbt.path;
 
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import org.junit.Test;
 
@@ -187,6 +188,37 @@ public class TestNbtPath {
         )));
         assertThat(expression.test(Stream.of(tag2)), is(true));
         assertThat(expression.test(tag2), is(true));
+    }
+
+    @Test
+    public void testParseListElement() throws NbtParseException {
+        INbtPathExpression expression = NbtPath.parse("$.a[1]");
+
+        NBTTagCompound tagFail1 = new NBTTagCompound();
+        NBTTagList tagFail2 = new NBTTagList();
+        tagFail2.appendTag(new NBTTagString("f0"));
+        tagFail1.setTag("a", tagFail2);
+
+        NBTTagCompound tag1 = new NBTTagCompound();
+        NBTTagList tag2 = new NBTTagList();
+        tag2.appendTag(new NBTTagString("a0"));
+        tag2.appendTag(new NBTTagString("a1"));
+        tag2.appendTag(new NBTTagString("a2"));
+        tag1.setTag("a", tag2);
+
+        assertThat(expression.match(Stream.of(tagFail1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.match(tagFail1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.test(Stream.of(tagFail1)), is(false));
+        assertThat(expression.test(tagFail1), is(false));
+
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagString("a1")
+        )));
+        assertThat(expression.match(tag1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagString("a1")
+        )));
+        assertThat(expression.test(Stream.of(tag1)), is(true));
+        assertThat(expression.test(tag1), is(true));
     }
 
 }
