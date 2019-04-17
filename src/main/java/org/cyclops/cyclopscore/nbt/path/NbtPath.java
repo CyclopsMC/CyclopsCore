@@ -8,6 +8,7 @@ import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerCurre
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerListElement;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerParent;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerRoot;
+import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerUnion;
 
 import java.util.List;
 
@@ -22,7 +23,8 @@ public class NbtPath {
             new NbtPathExpressionParseHandlerParent(),
             new NbtPathExpressionParseHandlerAllChildren(),
             new NbtPathExpressionParseHandlerCurrent(),
-            new NbtPathExpressionParseHandlerListElement()
+            new NbtPathExpressionParseHandlerListElement(),
+            new NbtPathExpressionParseHandlerUnion()
     );
 
     /**
