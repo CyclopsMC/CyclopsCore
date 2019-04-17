@@ -6,6 +6,7 @@ import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerAllCh
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerChild;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerCurrent;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerListElement;
+import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerListSlice;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerParent;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerRoot;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerUnion;
@@ -24,6 +25,7 @@ public class NbtPath {
             new NbtPathExpressionParseHandlerAllChildren(),
             new NbtPathExpressionParseHandlerCurrent(),
             new NbtPathExpressionParseHandlerListElement(),
+            new NbtPathExpressionParseHandlerListSlice(),
             new NbtPathExpressionParseHandlerUnion()
     );
 
