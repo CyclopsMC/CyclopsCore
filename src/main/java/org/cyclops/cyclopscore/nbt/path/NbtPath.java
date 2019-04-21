@@ -20,6 +20,11 @@ public class NbtPath {
             new NbtPathExpressionParseHandlerListElement(),
             new NbtPathExpressionParseHandlerListSlice(),
             new NbtPathExpressionParseHandlerUnion(),
+            new NbtPathExpressionParseHandlerBooleanRelationalLessThan(),
+            new NbtPathExpressionParseHandlerBooleanRelationalLessThanOrEqual(),
+            new NbtPathExpressionParseHandlerBooleanRelationalGreaterThan(),
+            new NbtPathExpressionParseHandlerBooleanRelationalGreaterThanOrEqual(),
+            new NbtPathExpressionParseHandlerBooleanRelationalEqual(),
             new NbtPathExpressionParseHandlerFilterExpression()
     );
 

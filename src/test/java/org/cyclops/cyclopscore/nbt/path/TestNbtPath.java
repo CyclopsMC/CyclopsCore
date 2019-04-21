@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path;
 
 import com.google.common.collect.Lists;
+import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
@@ -340,6 +341,121 @@ public class TestNbtPath {
         )));
         assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
                 tag3
+        )));
+        assertThat(expression.test(Stream.of(tag2)), is(true));
+        assertThat(expression.test(tag2), is(true));
+    }
+
+    @Test
+    public void testParseRelationalLessThan() throws NbtParseException {
+        INbtPathExpression expression = NbtPath.parse("$.a < 2");
+
+        NBTTagString tag1 = new NBTTagString("a");
+        NBTTagCompound tag2 = new NBTTagCompound();
+        tag2.setInteger("a", 1);
+
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.match(tag1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.test(Stream.of(tag1)), is(false));
+        assertThat(expression.test(tag1), is(false));
+
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagByte((byte) 1)
+        )));
+        assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagByte((byte) 1)
+        )));
+        assertThat(expression.test(Stream.of(tag2)), is(true));
+        assertThat(expression.test(tag2), is(true));
+    }
+
+    @Test
+    public void testParseRelationalLessThanOrEqual() throws NbtParseException {
+        INbtPathExpression expression = NbtPath.parse("$.a <= 2");
+
+        NBTTagString tag1 = new NBTTagString("a");
+        NBTTagCompound tag2 = new NBTTagCompound();
+        tag2.setInteger("a", 1);
+
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.match(tag1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.test(Stream.of(tag1)), is(false));
+        assertThat(expression.test(tag1), is(false));
+
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagByte((byte) 1)
+        )));
+        assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagByte((byte) 1)
+        )));
+        assertThat(expression.test(Stream.of(tag2)), is(true));
+        assertThat(expression.test(tag2), is(true));
+    }
+
+    @Test
+    public void testParseRelationalGreaterThan() throws NbtParseException {
+        INbtPathExpression expression = NbtPath.parse("$.a > 2");
+
+        NBTTagString tag1 = new NBTTagString("a");
+        NBTTagCompound tag2 = new NBTTagCompound();
+        tag2.setInteger("a", 1);
+
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.match(tag1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.test(Stream.of(tag1)), is(false));
+        assertThat(expression.test(tag1), is(false));
+
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagByte((byte) 0)
+        )));
+        assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagByte((byte) 0)
+        )));
+        assertThat(expression.test(Stream.of(tag2)), is(true));
+        assertThat(expression.test(tag2), is(true));
+    }
+
+    @Test
+    public void testParseRelationalGreaterThanOrEqual() throws NbtParseException {
+        INbtPathExpression expression = NbtPath.parse("$.a >= 2");
+
+        NBTTagString tag1 = new NBTTagString("a");
+        NBTTagCompound tag2 = new NBTTagCompound();
+        tag2.setInteger("a", 1);
+
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.match(tag1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.test(Stream.of(tag1)), is(false));
+        assertThat(expression.test(tag1), is(false));
+
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagByte((byte) 0)
+        )));
+        assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagByte((byte) 0)
+        )));
+        assertThat(expression.test(Stream.of(tag2)), is(true));
+        assertThat(expression.test(tag2), is(true));
+    }
+
+    @Test
+    public void testParseRelationalEqual() throws NbtParseException {
+        INbtPathExpression expression = NbtPath.parse("$.a == 2");
+
+        NBTTagString tag1 = new NBTTagString("a");
+        NBTTagCompound tag2 = new NBTTagCompound();
+        tag2.setInteger("a", 1);
+
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.match(tag1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.test(Stream.of(tag1)), is(false));
+        assertThat(expression.test(tag1), is(false));
+
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagByte((byte) 0)
+        )));
+        assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagByte((byte) 0)
         )));
         assertThat(expression.test(Stream.of(tag2)), is(true));
         assertThat(expression.test(tag2), is(true));
