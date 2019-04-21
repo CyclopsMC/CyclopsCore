@@ -416,8 +416,8 @@ public class TestNbtPath {
         assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
                 new NBTTagByte((byte) 0)
         )));
-        assertThat(expression.test(Stream.of(tag2)), is(true));
-        assertThat(expression.test(tag2), is(true));
+        assertThat(expression.test(Stream.of(tag2)), is(false));
+        assertThat(expression.test(tag2), is(false));
     }
 
     @Test
@@ -439,8 +439,8 @@ public class TestNbtPath {
         assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
                 new NBTTagByte((byte) 0)
         )));
-        assertThat(expression.test(Stream.of(tag2)), is(true));
-        assertThat(expression.test(tag2), is(true));
+        assertThat(expression.test(Stream.of(tag2)), is(false));
+        assertThat(expression.test(tag2), is(false));
     }
 
     @Test
@@ -462,8 +462,8 @@ public class TestNbtPath {
         assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
                 new NBTTagByte((byte) 0)
         )));
-        assertThat(expression.test(Stream.of(tag2)), is(true));
-        assertThat(expression.test(tag2), is(true));
+        assertThat(expression.test(Stream.of(tag2)), is(false));
+        assertThat(expression.test(tag2), is(false));
     }
 
     @Test
@@ -500,14 +500,17 @@ public class TestNbtPath {
         NBTTagCompound tag1_1_3 = new NBTTagCompound();
         tag1.setTag("a", tag1_1);
         tag1_1.appendTag(tag1_1_1);
-        tag1_1_1.setString("c", "A");
+        tag1_1_1.setString("notC", "b");
         tag1_1.appendTag(tag1_1_2);
         tag1_1_2.setString("c", "B");
         tag1_1.appendTag(tag1_1_3);
         tag1_1_3.setString("c", "C");
 
+        NBTTagList tag1_1Filtered = new NBTTagList();
+        tag1_1Filtered.appendTag(tag1_1_2);
+
         List<NBTBase> expected = Lists.newArrayList();
-        expected.add(tag1_1);
+        expected.add(tag1_1Filtered);
         assertThat(expression.match(Stream.of(
                 tag1
         )).getMatches().collect(Collectors.toList()), equalTo(expected));

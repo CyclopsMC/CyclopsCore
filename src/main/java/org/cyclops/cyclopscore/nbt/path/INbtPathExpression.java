@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.nbt.path;
 
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagByte;
+import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionExecutionContext;
 
 import java.util.stream.Stream;
@@ -37,6 +39,7 @@ public interface INbtPathExpression {
         return this.match(nbts.limit(1))
                 .getMatches()
                 .findAny()
+                .filter(tag -> tag.getId() != Constants.NBT.TAG_BYTE || ((NBTTagByte) tag).getByte() == (byte) 1) // Filter truthy values
                 .isPresent();
     }
 
