@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  */
 public class NbtPathExpressionParseHandlerChild implements INbtPathExpressionParseHandler {
 
-    private static final Pattern REGEX_CHILDNAME = Pattern.compile("[a-zA-Z]+");
+    private static final Pattern REGEX_CHILDNAME = Pattern.compile("^[a-zA-Z]+");
 
     @Nullable
     @Override
@@ -29,7 +29,7 @@ public class NbtPathExpressionParseHandlerChild implements INbtPathExpressionPar
 
         Matcher matcher = REGEX_CHILDNAME
                 .matcher(nbtPathExpression)
-                .region(pos, nbtPathExpression.length());
+                .region(pos + 1, nbtPathExpression.length());
         if (!matcher.find()) {
             return HandleResult.INVALID;
         }

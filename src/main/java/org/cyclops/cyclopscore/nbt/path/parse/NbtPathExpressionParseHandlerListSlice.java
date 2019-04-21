@@ -18,7 +18,7 @@ import java.util.stream.Stream;
  */
 public class NbtPathExpressionParseHandlerListSlice implements INbtPathExpressionParseHandler {
 
-    private static final Pattern REGEX_RANGE = Pattern.compile("\\[([0-9]*):([0-9]*)(:([0-9]+))?\\]");
+    private static final Pattern REGEX_RANGE = Pattern.compile("^\\[([0-9]*):([0-9]*)(:([0-9]+))?\\]");
 
     @Nullable
     @Override

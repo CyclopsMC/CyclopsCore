@@ -10,6 +10,7 @@ import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionList;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -121,7 +122,7 @@ public class TestNbtPathExpressionHandlerFilterExpression {
     public void testExpressionStreamSingleLeaf() {
         INbtPathExpression expression = handler.handlePrefixOf("aa[?(@)]", 2).getPrefixExpression();
         assertThat(expression.match(Stream.of(new NBTTagString("a"))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagString("a"))));
+                is(Lists.newArrayList()));
     }
 
     @Test
@@ -133,11 +134,7 @@ public class TestNbtPathExpressionHandlerFilterExpression {
                 new NBTTagString("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(
-                        new NBTTagString("a"),
-                        new NBTTagString("b"),
-                        new NBTTagString("c")
-                )));
+                is(Lists.newArrayList()));
     }
 
     @Test
@@ -173,20 +170,21 @@ public class TestNbtPathExpressionHandlerFilterExpression {
 
     @Test
     public void testExpressionStreamTagNested() {
+        NBTTagList tagRoot = new NBTTagList();
+        NBTTagList tagRootFiltered = new NBTTagList();
         NBTTagCompound tag1 = new NBTTagCompound();
         NBTTagCompound tag2 = new NBTTagCompound();
+        NBTTagCompound tag3 = new NBTTagCompound();
         tag1.setTag("a", tag2);
         tag2.setTag("b", new NBTTagString("c"));
-
+        tag3.setString("a", "x");
+        tagRoot.appendTag(tag1);
+        tagRoot.appendTag(tag2);
+        tagRootFiltered.appendTag(tag1);
         INbtPathExpression expression = handler.handlePrefixOf("aa[?(@.a.b)]", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
-                tag1,
-                tag2
-        );
-        assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(
-                        tag1
-                )));
+        ArrayList<NBTBase> expected = Lists.newArrayList();
+        expected.add(tagRootFiltered);
+        assertThat(expression.match(tagRoot).getMatches().collect(Collectors.toList()), is(expected));
     }
 
 }

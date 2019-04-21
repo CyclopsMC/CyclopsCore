@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  */
 public class NbtPathExpressionParseHandlerUnion implements INbtPathExpressionParseHandler {
 
-    private static final Pattern REGEX_BRACKETS = Pattern.compile("\\[([^\\]]+(,[^\\]]+)+)]");
+    private static final Pattern REGEX_BRACKETS = Pattern.compile("^\\[([^\\]]+(,[^\\]]+)+)]");
 
     @Nullable
     @Override

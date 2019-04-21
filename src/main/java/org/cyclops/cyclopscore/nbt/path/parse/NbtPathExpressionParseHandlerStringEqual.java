@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  */
 public class NbtPathExpressionParseHandlerStringEqual implements INbtPathExpressionParseHandler {
 
-    private static final Pattern REGEX_EQUAL = Pattern.compile(" *== *\"([^\"]*)\"");
+    private static final Pattern REGEX_EQUAL = Pattern.compile("^ *== *\"([^\"]*)\"");
 
     @Nullable
     @Override

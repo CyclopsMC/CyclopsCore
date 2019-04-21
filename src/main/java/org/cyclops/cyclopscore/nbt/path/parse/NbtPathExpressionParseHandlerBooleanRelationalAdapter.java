@@ -19,7 +19,7 @@ public abstract class NbtPathExpressionParseHandlerBooleanRelationalAdapter impl
     private final Pattern regex;
 
     protected NbtPathExpressionParseHandlerBooleanRelationalAdapter(String relation) {
-        this.regex = Pattern.compile(" *" + relation + " *([0-9]+(.[0-9]+)?)");
+        this.regex = Pattern.compile("^ *" + relation + " *([0-9]+(.[0-9]+)?)");
     }
 
     protected abstract boolean getRelationalValue(double left, double right);

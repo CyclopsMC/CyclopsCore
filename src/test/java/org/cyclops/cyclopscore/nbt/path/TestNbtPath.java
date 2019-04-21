@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path;
 
 import com.google.common.collect.Lists;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
@@ -8,6 +9,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -324,24 +326,27 @@ public class TestNbtPath {
 
         NBTTagString tag1 = new NBTTagString("a");
         NBTTagCompound tag2 = new NBTTagCompound();
-        NBTTagCompound tag3 = new NBTTagCompound();
-        NBTTagString tag4 = new NBTTagString("x");
-        NBTTagString tag5 = new NBTTagString("y");
+        NBTTagList tag3 = new NBTTagList();
+        NBTTagCompound tag4 = new NBTTagCompound();
+        NBTTagCompound tag5 = new NBTTagCompound();
         tag2.setTag("a", tag3);
-        tag3.setTag("b", tag4);
-        tag3.setTag("c", tag5);
+        tag3.appendTag(tag4);
+        tag3.appendTag(tag5);
+        tag4.setString("b", "B");
+        tag4.setString("a", "A");
+
+        NBTTagList tag3Filtered = new NBTTagList();
+        tag3Filtered.appendTag(tag4);
 
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
         assertThat(expression.match(tag1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
         assertThat(expression.test(Stream.of(tag1)), is(false));
         assertThat(expression.test(tag1), is(false));
 
-        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                tag3
-        )));
-        assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                tag3
-        )));
+        List<NBTBase> expected = Lists.newArrayList();
+        expected.add(tag3Filtered);
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(expected));
+        assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(expected));
         assertThat(expression.test(Stream.of(tag2)), is(true));
         assertThat(expression.test(tag2), is(true));
     }
@@ -482,6 +487,30 @@ public class TestNbtPath {
         )));
         assertThat(expression.test(Stream.of(tag2)), is(true));
         assertThat(expression.test(tag2), is(true));
+    }
+
+    @Test
+    public void testParseFilterExpressionComplex() throws NbtParseException {
+        INbtPathExpression expression = NbtPath.parse("$.a[?(@.c == \"B\")]");
+
+        NBTTagCompound tag1 = new NBTTagCompound();
+        NBTTagList tag1_1 = new NBTTagList();
+        NBTTagCompound tag1_1_1 = new NBTTagCompound();
+        NBTTagCompound tag1_1_2 = new NBTTagCompound();
+        NBTTagCompound tag1_1_3 = new NBTTagCompound();
+        tag1.setTag("a", tag1_1);
+        tag1_1.appendTag(tag1_1_1);
+        tag1_1_1.setString("c", "A");
+        tag1_1.appendTag(tag1_1_2);
+        tag1_1_2.setString("c", "B");
+        tag1_1.appendTag(tag1_1_3);
+        tag1_1_3.setString("c", "C");
+
+        List<NBTBase> expected = Lists.newArrayList();
+        expected.add(tag1_1);
+        assertThat(expression.match(Stream.of(
+                tag1
+        )).getMatches().collect(Collectors.toList()), equalTo(expected));
     }
 
 }
