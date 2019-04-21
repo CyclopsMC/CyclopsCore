@@ -23,4 +23,8 @@ public class NbtPathExpressionList implements INbtPathExpression {
         }
         return matches;
     }
+
+    public INbtPathExpression[] getSubExpressions() {
+        return subExpressions;
+    }
 }

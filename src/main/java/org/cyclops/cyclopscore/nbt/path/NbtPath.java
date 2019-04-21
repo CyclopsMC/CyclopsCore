@@ -19,7 +19,8 @@ public class NbtPath {
             new NbtPathExpressionParseHandlerCurrent(),
             new NbtPathExpressionParseHandlerListElement(),
             new NbtPathExpressionParseHandlerListSlice(),
-            new NbtPathExpressionParseHandlerUnion()
+            new NbtPathExpressionParseHandlerUnion(),
+            new NbtPathExpressionParseHandlerFilterExpression()
     );
 
     /**
