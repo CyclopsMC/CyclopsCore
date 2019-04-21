@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 /**
- * A handler that handles boolean expressions in the form of " > 10".
+ * A handler that handles boolean expressions in the form of " &gt; 10".
  */
 public class NbtPathExpressionParseHandlerBooleanRelationalGreaterThan extends NbtPathExpressionParseHandlerBooleanRelationalAdapter {
 

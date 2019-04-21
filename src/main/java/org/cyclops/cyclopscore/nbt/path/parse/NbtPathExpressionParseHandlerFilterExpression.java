@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * A handler that handles filter expressions in the form of "[?(expression)]", such as "[?(@.childName)]" or "[?(@.childName < 10)]".
+ * A handler that handles filter expressions in the form of "[?(expression)]", such as "[?(@.childName)]" or "[?(@.childName &lt; 10)]".
  */
 public class NbtPathExpressionParseHandlerFilterExpression implements INbtPathExpressionParseHandler {
 
