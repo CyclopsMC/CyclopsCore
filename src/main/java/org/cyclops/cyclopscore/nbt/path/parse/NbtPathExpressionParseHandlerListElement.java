@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * A handler that handles list element expressions in the form of "\[[0-9]+\]",
+ * A handler that handles list element expressions in the form of "[10]",
  * where the matched string represents the list element index that should be navigated in.
  */
 public class NbtPathExpressionParseHandlerListElement implements INbtPathExpressionParseHandler {

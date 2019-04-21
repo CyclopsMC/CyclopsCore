@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
- * A handler that picks the parent of the NBT tree in the current execution context.
+ * A handler that picks the parent of the NBT tree in the current execution context via "..".
  */
 public class NbtPathExpressionParseHandlerParent implements INbtPathExpressionParseHandler {
 

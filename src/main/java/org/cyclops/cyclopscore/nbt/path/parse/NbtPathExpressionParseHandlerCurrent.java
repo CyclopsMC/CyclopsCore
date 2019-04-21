@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import java.util.stream.Stream;
 
 /**
- * A handler that picks the current position in the NBT tree.
+ * A handler that picks the current position in the NBT tree via "@".
  */
 public class NbtPathExpressionParseHandlerCurrent implements INbtPathExpressionParseHandler {
 

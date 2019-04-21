@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * A handler that handles list slice expressions in the form of "[start:end:step]".
+ * A handler that handles list slice expressions in the form of "[start:end:step]" such as "[2:3:2]".
  */
 public class NbtPathExpressionParseHandlerListSlice implements INbtPathExpressionParseHandler {
 

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * A handler that handles child path expressions in the form of "\.[a-zA-Z]+",
+ * A handler that handles child path expressions in the form of ".childName",
  * where the matched string represents the child name that should be navigated in.
  */
 public class NbtPathExpressionParseHandlerChild implements INbtPathExpressionParseHandler {

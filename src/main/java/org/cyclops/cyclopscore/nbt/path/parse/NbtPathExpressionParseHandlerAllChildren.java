@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * A handler that handles follows all child links of a tag.
+ * A handler that handles follows all child links of a tag via "*".
  */
 public class NbtPathExpressionParseHandlerAllChildren implements INbtPathExpressionParseHandler {
 

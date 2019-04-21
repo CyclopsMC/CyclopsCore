@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * A handler that handles union expressions in the form of "\[(.*)((,.*)*)\]",
+ * A handler that handles union expressions in the form of "[10,12]" or "[10,]" or "[,12]",
  * where the matches indicate the children or list elements that should be matched.
  */
 public class NbtPathExpressionParseHandlerUnion implements INbtPathExpressionParseHandler {
