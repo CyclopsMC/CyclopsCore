@@ -1,15 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path;
 
 import com.google.common.collect.Lists;
-import org.cyclops.cyclopscore.nbt.path.parse.INbtPathExpressionParseHandler;
-import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerAllChildren;
-import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerChild;
-import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerCurrent;
-import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerListElement;
-import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerListSlice;
-import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerParent;
-import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerRoot;
-import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionParseHandlerUnion;
+import org.cyclops.cyclopscore.nbt.path.parse.*;
 
 import java.util.List;
 
@@ -20,6 +12,7 @@ public class NbtPath {
 
     private static final List<INbtPathExpressionParseHandler> PARSE_HANDLERS = Lists.newArrayList(
             new NbtPathExpressionParseHandlerRoot(),
+            new NbtPathExpressionParseHandlerLength(),
             new NbtPathExpressionParseHandlerChild(),
             new NbtPathExpressionParseHandlerParent(),
             new NbtPathExpressionParseHandlerAllChildren(),
