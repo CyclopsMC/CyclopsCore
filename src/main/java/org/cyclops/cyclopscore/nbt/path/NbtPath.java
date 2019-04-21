@@ -25,6 +25,7 @@ public class NbtPath {
             new NbtPathExpressionParseHandlerBooleanRelationalGreaterThan(),
             new NbtPathExpressionParseHandlerBooleanRelationalGreaterThanOrEqual(),
             new NbtPathExpressionParseHandlerBooleanRelationalEqual(),
+            new NbtPathExpressionParseHandlerStringEqual(),
             new NbtPathExpressionParseHandlerFilterExpression()
     );
 

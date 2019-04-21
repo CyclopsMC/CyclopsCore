@@ -461,4 +461,27 @@ public class TestNbtPath {
         assertThat(expression.test(tag2), is(true));
     }
 
+    @Test
+    public void testParseStringEqual() throws NbtParseException {
+        INbtPathExpression expression = NbtPath.parse("$.a == \"b\"");
+
+        NBTTagString tag1 = new NBTTagString("a");
+        NBTTagCompound tag2 = new NBTTagCompound();
+        tag2.setString("a", "b");
+
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.match(tag1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.test(Stream.of(tag1)), is(false));
+        assertThat(expression.test(tag1), is(false));
+
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagByte((byte) 1)
+        )));
+        assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                new NBTTagByte((byte) 1)
+        )));
+        assertThat(expression.test(Stream.of(tag2)), is(true));
+        assertThat(expression.test(tag2), is(true));
+    }
+
 }
