@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
@@ -63,6 +64,14 @@ public class NbtPathExpressionParseHandlerFilterExpression implements INbtPathEx
                             NBTTagList tag = (NBTTagList) nbt;
                             NBTTagList newTagList = new NBTTagList();
                             StreamSupport.stream(tag.spliterator(), false)
+                                    .filter(subTag -> getExpression().test(subTag))
+                                    .forEach(newTagList::appendTag);
+                            return new NbtPathExpressionExecutionContext(newTagList, executionContext);
+                        } else if (nbt.getId() == Constants.NBT.TAG_COMPOUND) {
+                            NBTTagCompound tag = (NBTTagCompound) nbt;
+                            NBTTagList newTagList = new NBTTagList();
+                            tag.getKeySet().stream()
+                                    .map(tag::getTag)
                                     .filter(subTag -> getExpression().test(subTag))
                                     .forEach(newTagList::appendTag);
                             return new NbtPathExpressionExecutionContext(newTagList, executionContext);

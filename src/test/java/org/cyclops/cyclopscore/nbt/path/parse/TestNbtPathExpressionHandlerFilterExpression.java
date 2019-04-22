@@ -187,4 +187,50 @@ public class TestNbtPathExpressionHandlerFilterExpression {
         assertThat(expression.match(tagRoot).getMatches().collect(Collectors.toList()), is(expected));
     }
 
+    @Test
+    public void testExpressionStreamMultipleTagCompoundsMatch() {
+        NBTTagCompound tag1 = new NBTTagCompound();
+        tag1.setTag("a", new NBTTagString("a0"));
+        tag1.setTag("b", new NBTTagString("a1"));
+        tag1.setTag("c", new NBTTagString("a2"));
+
+        NBTTagCompound tag2 = new NBTTagCompound();
+        tag2.setTag("a", new NBTTagString("b0"));
+        tag2.setTag("b", new NBTTagString("b1"));
+        tag2.setTag("c", new NBTTagString("b2"));
+
+        NBTTagCompound tag3 = new NBTTagCompound();
+        tag3.setTag("a", new NBTTagString("c0"));
+        tag3.setTag("b", new NBTTagString("c1"));
+        tag3.setTag("c", new NBTTagString("c2"));
+
+        NBTTagList list1 = new NBTTagList();
+        list1.appendTag(new NBTTagString("a0"));
+        list1.appendTag(new NBTTagString("a1"));
+        list1.appendTag(new NBTTagString("a2"));
+
+        NBTTagList list2 = new NBTTagList();
+        list2.appendTag(new NBTTagString("b0"));
+        list2.appendTag(new NBTTagString("b1"));
+        list2.appendTag(new NBTTagString("b2"));
+
+        NBTTagList list3 = new NBTTagList();
+        list3.appendTag(new NBTTagString("c0"));
+        list3.appendTag(new NBTTagString("c1"));
+        list3.appendTag(new NBTTagString("c2"));
+
+        INbtPathExpression expression = handler.handlePrefixOf("aa[?(@)]", 2).getPrefixExpression();
+        Stream<NBTBase> stream = Stream.of(
+                tag1,
+                tag2,
+                tag3
+        );
+        assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(
+                        list1,
+                        list2,
+                        list3
+                )));
+    }
+
 }
