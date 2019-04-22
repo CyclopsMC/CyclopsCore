@@ -91,6 +91,32 @@ public class TestNbtPath {
     }
 
     @Test
+    public void testParseChildBrackets() throws NbtParseException {
+        INbtPathExpression expression = NbtPath.parse("$[\"a*\"].b");
+
+        NBTTagString tag1 = new NBTTagString("a");
+        NBTTagCompound tag2 = new NBTTagCompound();
+        NBTTagCompound tag3 = new NBTTagCompound();
+        NBTTagString tag4 = new NBTTagString("x");
+        tag2.setTag("a*", tag3);
+        tag3.setTag("b", tag4);
+
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.match(tag1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
+        assertThat(expression.test(Stream.of(tag1)), is(false));
+        assertThat(expression.test(tag1), is(false));
+
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                tag4
+        )));
+        assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                tag4
+        )));
+        assertThat(expression.test(Stream.of(tag2)), is(true));
+        assertThat(expression.test(tag2), is(true));
+    }
+
+    @Test
     public void testParseRootAfterChild() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a.b$");
 

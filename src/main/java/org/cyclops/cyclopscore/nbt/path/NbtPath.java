@@ -14,6 +14,7 @@ public class NbtPath {
             new NbtPathExpressionParseHandlerRoot(),
             new NbtPathExpressionParseHandlerLength(),
             new NbtPathExpressionParseHandlerChild(),
+            new NbtPathExpressionParseHandlerChildBrackets(),
             new NbtPathExpressionParseHandlerParent(),
             new NbtPathExpressionParseHandlerAllChildren(),
             new NbtPathExpressionParseHandlerCurrent(),
