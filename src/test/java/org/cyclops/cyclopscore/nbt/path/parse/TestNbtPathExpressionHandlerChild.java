@@ -52,6 +52,33 @@ public class TestNbtPathExpressionHandlerChild {
     }
 
     @Test
+    public void testMatchSingleMixedCasing() {
+        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf(".aBc", 0);
+        assertThat(result.isValid(), is(true));
+        assertThat(result.getConsumedExpressionLength(), is(4));
+        assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerChild.Expression.class));
+        assertThat(((NbtPathExpressionParseHandlerChild.Expression) result.getPrefixExpression()).getChildName(), equalTo("aBc"));
+    }
+
+    @Test
+    public void testMatchSingleNumbers() {
+        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf(".abc012", 0);
+        assertThat(result.isValid(), is(true));
+        assertThat(result.getConsumedExpressionLength(), is(7));
+        assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerChild.Expression.class));
+        assertThat(((NbtPathExpressionParseHandlerChild.Expression) result.getPrefixExpression()).getChildName(), equalTo("abc012"));
+    }
+
+    @Test
+    public void testMatchSingleUnderscores() {
+        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf(".a_b_c", 0);
+        assertThat(result.isValid(), is(true));
+        assertThat(result.getConsumedExpressionLength(), is(6));
+        assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerChild.Expression.class));
+        assertThat(((NbtPathExpressionParseHandlerChild.Expression) result.getPrefixExpression()).getChildName(), equalTo("a_b_c"));
+    }
+
+    @Test
     public void testMatchSingleLater() {
         INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("aa.abc", 2);
         assertThat(result.isValid(), is(true));
