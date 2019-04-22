@@ -7,6 +7,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
+import org.cyclops.cyclopscore.nbt.path.NbtParseException;
+import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationAdapter;
+import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationLeafWildcard;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -98,6 +101,18 @@ public class TestNbtPathExpressionHandlerUnion {
         assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerUnion.Expression.class));
         assertThat(((NbtPathExpressionParseHandlerUnion.Expression) result.getPrefixExpression()).getChildIndexes(), equalTo(Lists.newArrayList(0, 1, 2)));
         assertThat(((NbtPathExpressionParseHandlerUnion.Expression) result.getPrefixExpression()).getChildNames(), equalTo(Lists.newArrayList()));
+    }
+
+    @Test
+    public void testMatchNavigation() throws NbtParseException {
+        INbtPathExpression expression = handler.handlePrefixOf("[a,b]", 0).getPrefixExpression();
+        assertThat(expression.asNavigation(NbtPathNavigationLeafWildcard.INSTANCE), instanceOf(NbtPathNavigationAdapter.class));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testMatchNavigationList() throws NbtParseException {
+        INbtPathExpression expression = handler.handlePrefixOf("[0,1]", 0).getPrefixExpression();
+        expression.asNavigation(NbtPathNavigationLeafWildcard.INSTANCE);
     }
 
     @Test

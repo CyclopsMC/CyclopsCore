@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.nbt.path.parse;
 
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
+import org.cyclops.cyclopscore.nbt.path.navigate.INbtPathNavigation;
 
 import javax.annotation.Nullable;
 import java.util.stream.Stream;
@@ -28,6 +29,11 @@ public class NbtPathExpressionParseHandlerRoot implements INbtPathExpressionPars
         @Override
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
             return new NbtPathExpressionMatches(executionContexts.map(NbtPathExpressionExecutionContext::getRootContext));
+        }
+
+        @Override
+        public INbtPathNavigation asNavigation(@Nullable INbtPathNavigation child) {
+            return child;
         }
     }
 }

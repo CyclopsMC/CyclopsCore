@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagString;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
+import org.cyclops.cyclopscore.nbt.path.NbtParseException;
+import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationLeafWildcard;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestNbtPathExpressionHandlerRoot {
@@ -51,6 +54,13 @@ public class TestNbtPathExpressionHandlerRoot {
         assertThat(result.isValid(), is(true));
         assertThat(result.getConsumedExpressionLength(), is(1));
         assertThat(result.getPrefixExpression(), is(NbtPathExpressionParseHandlerRoot.Expression.INSTANCE));
+    }
+
+    @Test
+    public void testMatchNavigation() throws NbtParseException {
+        INbtPathExpression expression = handler.handlePrefixOf("$", 0).getPrefixExpression();
+        assertThat(expression.asNavigation(null), nullValue());
+        assertThat(expression.asNavigation(NbtPathNavigationLeafWildcard.INSTANCE), is(NbtPathNavigationLeafWildcard.INSTANCE));
     }
 
     @Test

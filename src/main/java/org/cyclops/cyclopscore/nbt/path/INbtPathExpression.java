@@ -3,8 +3,10 @@ package org.cyclops.cyclopscore.nbt.path;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraftforge.common.util.Constants;
+import org.cyclops.cyclopscore.nbt.path.navigate.INbtPathNavigation;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionExecutionContext;
 
+import javax.annotation.Nullable;
 import java.util.stream.Stream;
 
 /**
@@ -58,5 +60,25 @@ public interface INbtPathExpression {
      * @return The matches.
      */
     public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts);
+
+    /**
+     * Create a navigation for this expression with the given navigation as child.
+     * If no child is passed, the created navigation is a leaf.
+     * @param child An option child.
+     * @return A navigation path.
+     * @throws NbtParseException If this expression can not be expressed as a navigation.
+     */
+    default INbtPathNavigation asNavigation(@Nullable INbtPathNavigation child) throws NbtParseException {
+        throw new NbtParseException("This NBT Path expression has no navigation keys.");
+    }
+
+    /**
+     * Create a navigation for this expression.
+     * @return A navigation path.
+     * @throws NbtParseException If this expression can not be expressed as a navigation.
+     */
+    public default INbtPathNavigation asNavigation() throws NbtParseException {
+        return this.asNavigation(null);
+    }
 
 }

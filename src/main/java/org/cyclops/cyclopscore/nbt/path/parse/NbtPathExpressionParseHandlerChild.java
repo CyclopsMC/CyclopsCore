@@ -5,6 +5,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
+import org.cyclops.cyclopscore.nbt.path.navigate.INbtPathNavigation;
+import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationAdapter;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -68,5 +70,9 @@ public class NbtPathExpressionParseHandlerChild implements INbtPathExpressionPar
             );
         }
 
+        @Override
+        public INbtPathNavigation asNavigation(@Nullable INbtPathNavigation child) {
+            return new NbtPathNavigationAdapter(getChildName(), child);
+        }
     }
 }

@@ -7,6 +7,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
+import org.cyclops.cyclopscore.nbt.path.NbtParseException;
+import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationLeafWildcard;
+import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationLinkWildcard;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,6 +17,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -54,6 +58,13 @@ public class TestNbtPathExpressionHandlerAllChildren {
         assertThat(result.isValid(), is(true));
         assertThat(result.getConsumedExpressionLength(), is(1));
         assertThat(result.getPrefixExpression(), is(NbtPathExpressionParseHandlerAllChildren.Expression.INSTANCE));
+    }
+
+    @Test
+    public void testMatchNavigation() throws NbtParseException {
+        INbtPathExpression expression = handler.handlePrefixOf("*", 0).getPrefixExpression();
+        assertThat(expression.asNavigation(null), is(NbtPathNavigationLeafWildcard.INSTANCE));
+        assertThat(expression.asNavigation(NbtPathNavigationLeafWildcard.INSTANCE), instanceOf(NbtPathNavigationLinkWildcard.class));
     }
 
     @Test

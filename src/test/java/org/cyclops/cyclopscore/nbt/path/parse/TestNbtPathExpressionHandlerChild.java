@@ -5,6 +5,9 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
+import org.cyclops.cyclopscore.nbt.path.NbtParseException;
+import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationAdapter;
+import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationLeafWildcard;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -99,6 +102,12 @@ public class TestNbtPathExpressionHandlerChild {
         assertThat(result.isValid(), is(true));
         assertThat(result.getConsumedExpressionLength(), is(4));
         assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerChild.Expression.class));
+    }
+
+    @Test
+    public void testMatchNavigation() throws NbtParseException {
+        INbtPathExpression expression = handler.handlePrefixOf(".abc", 0).getPrefixExpression();
+        assertThat(expression.asNavigation(NbtPathNavigationLeafWildcard.INSTANCE), instanceOf(NbtPathNavigationAdapter.class));
     }
 
     @Test

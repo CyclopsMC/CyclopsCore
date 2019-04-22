@@ -7,6 +7,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
+import org.cyclops.cyclopscore.nbt.path.navigate.INbtPathNavigation;
+import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationAdapter;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -99,5 +101,13 @@ public class NbtPathExpressionParseHandlerUnion implements INbtPathExpressionPar
             );
         }
 
+        @Override
+        public INbtPathNavigation asNavigation(@Nullable INbtPathNavigation child) {
+            if (!getChildNames().isEmpty()) {
+                return new NbtPathNavigationAdapter(getChildNames(), child);
+            } else {
+                throw new UnsupportedOperationException("NbtPathExpressionParseHandlerUnion.Expression#asNavigation is not implemented for lists");
+            }
+        }
     }
 }
