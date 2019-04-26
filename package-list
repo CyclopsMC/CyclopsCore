@@ -47,6 +47,9 @@ org.cyclops.cyclopscore.modcompat.capabilities
 org.cyclops.cyclopscore.modcompat.crafttweaker.handlers
 org.cyclops.cyclopscore.modcompat.jei
 org.cyclops.cyclopscore.modcompat.versionchecker
+org.cyclops.cyclopscore.nbt.path
+org.cyclops.cyclopscore.nbt.path.navigate
+org.cyclops.cyclopscore.nbt.path.parse
 org.cyclops.cyclopscore.network
 org.cyclops.cyclopscore.network.packet
 org.cyclops.cyclopscore.network.packet.debug
