@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.ingredient.recipe.handler;
 
+import org.cyclops.commoncapabilities.api.capability.recipehandler.IPrototypedIngredientAlternatives;
 import org.cyclops.commoncapabilities.api.ingredient.IMixedIngredients;
-import org.cyclops.commoncapabilities.api.ingredient.IPrototypedIngredient;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.cyclopscore.ingredient.recipe.IRecipeInputDefinitionHandler;
 import org.cyclops.cyclopscore.ingredient.recipe.IRecipeOutputDefinitionHandler;
@@ -20,7 +20,7 @@ public class IngredientsRecipeComponentHandler implements IRecipeInputDefinition
     }
 
     @Override
-    public Map<IngredientComponent<?, ?>, List<List<IPrototypedIngredient<?, ?>>>> toRecipeDefinitionInput(IngredientsRecipeComponent recipeInput) {
+    public Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> toRecipeDefinitionInput(IngredientsRecipeComponent recipeInput) {
         return IngredientRecipeHelpers.mergeInputs(recipeInput.getIngredientComponents().toArray(new IngredientRecipeComponent[0]));
     }
 }

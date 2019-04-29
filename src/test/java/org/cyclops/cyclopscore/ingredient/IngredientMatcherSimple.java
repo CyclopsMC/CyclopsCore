@@ -84,6 +84,11 @@ public class IngredientMatcherSimple implements IIngredientMatcher<Integer, Bool
     }
 
     @Override
+    public String localize(Integer instance) {
+        return instance.toString();
+    }
+
+    @Override
     public int compare(Integer o1, Integer o2) {
         return o1 - o2;
     }

@@ -12,7 +12,7 @@ public class IngredientComponentStubs {
                     new IngredientSerializerInt(), Lists.newArrayList(
                     new IngredientComponentCategoryType<>(new ResourceLocation("cyclopscore:simple/amount"),
                             Integer.class, false, amount -> amount, true, true)
-            )).setUnlocalizedName("recipecomponent.cyclopscore.simple");
+            )).setTranslationKey("recipecomponent.cyclopscore.simple");
 
     public static IngredientComponent<ComplexStack, Integer> COMPLEX =
             new IngredientComponent<>("cyclopscore:complex", new IngredientMatcherComplex(),
@@ -25,6 +25,6 @@ public class IngredientComponentStubs {
                             Integer.class, false, ComplexStack::getAmount, ComplexStack.Match.AMOUNT, true),
                     new IngredientComponentCategoryType<>(new ResourceLocation("cyclopscore:complex/tag"),
                             ComplexStack.Tag.class, true, ComplexStack::getTag, ComplexStack.Match.TAG, false)
-            )).setUnlocalizedName("recipecomponent.cyclopscore.complex");
+            )).setTranslationKey("recipecomponent.cyclopscore.complex");
 
 }

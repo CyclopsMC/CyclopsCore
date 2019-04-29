@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.ingredient.recipe;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.cyclops.commoncapabilities.api.capability.recipehandler.IPrototypedIngredientAlternatives;
 import org.cyclops.commoncapabilities.api.ingredient.IMixedIngredients;
 import org.cyclops.commoncapabilities.api.ingredient.IPrototypedIngredient;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
@@ -19,7 +20,7 @@ import java.util.Objects;
  */
 public class IngredientRecipeHelpers {
 
-    public static <T extends IRecipeInput> Map<IngredientComponent<?, ?>, List<List<IPrototypedIngredient<?, ?>>>> toRecipeDefinitionInput(T recipeInput) {
+    public static <T extends IRecipeInput> Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> toRecipeDefinitionInput(T recipeInput) {
         IRecipeInputDefinitionHandler<T> handler = RecipeInputOutputDefinitionHandlers.REGISTRY.getRecipeInputHandler((Class<T>) recipeInput.getClass());
         Objects.requireNonNull(handler, "No handler was registered for " + recipeInput.getClass());
         return handler.toRecipeDefinitionInput(recipeInput);
@@ -31,12 +32,12 @@ public class IngredientRecipeHelpers {
         return handler.toRecipeDefinitionOutput(recipeOutput);
     }
 
-    public static Map<IngredientComponent<?, ?>, List<List<IPrototypedIngredient<?, ?>>>> mergeInputs(IRecipeInput... recipeInputs) {
-        Map<IngredientComponent<?, ?>, List<List<IPrototypedIngredient<?, ?>>>> inputs = Maps.newIdentityHashMap();
+    public static Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> mergeInputs(IRecipeInput... recipeInputs) {
+        Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> inputs = Maps.newIdentityHashMap();
         for (IRecipeInput recipeInput : recipeInputs) {
-            Map<IngredientComponent<?, ?>, List<List<IPrototypedIngredient<?, ?>>>> subInput = toRecipeDefinitionInput(recipeInput);
-            for (Map.Entry<IngredientComponent<?, ?>, List<List<IPrototypedIngredient<?, ?>>>> entry : subInput.entrySet()) {
-                List<List<IPrototypedIngredient<?, ?>>> list = inputs.get(entry.getKey());
+            Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> subInput = toRecipeDefinitionInput(recipeInput);
+            for (Map.Entry<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> entry : subInput.entrySet()) {
+                List<IPrototypedIngredientAlternatives<?, ?>> list = inputs.get(entry.getKey());
                 if (list == null) {
                     list = Lists.newArrayList();
                     inputs.put(entry.getKey(), list);

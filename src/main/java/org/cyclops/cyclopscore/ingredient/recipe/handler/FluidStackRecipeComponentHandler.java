@@ -2,8 +2,9 @@ package org.cyclops.cyclopscore.ingredient.recipe.handler;
 
 import com.google.common.collect.Maps;
 import org.cyclops.commoncapabilities.api.capability.fluidhandler.FluidMatch;
+import org.cyclops.commoncapabilities.api.capability.recipehandler.IPrototypedIngredientAlternatives;
+import org.cyclops.commoncapabilities.api.capability.recipehandler.PrototypedIngredientAlternativesList;
 import org.cyclops.commoncapabilities.api.ingredient.IMixedIngredients;
-import org.cyclops.commoncapabilities.api.ingredient.IPrototypedIngredient;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.MixedIngredients;
 import org.cyclops.commoncapabilities.api.ingredient.PrototypedIngredient;
@@ -27,12 +28,13 @@ public class FluidStackRecipeComponentHandler implements IRecipeInputDefinitionH
     }
 
     @Override
-    public Map<IngredientComponent<?, ?>, List<List<IPrototypedIngredient<?, ?>>>> toRecipeDefinitionInput(FluidStackRecipeComponent recipeInput) {
-        Map<IngredientComponent<?, ?>, List<List<IPrototypedIngredient<?, ?>>>> inputs = Maps.newIdentityHashMap();
+    public Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> toRecipeDefinitionInput(FluidStackRecipeComponent recipeInput) {
+        Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> inputs = Maps.newIdentityHashMap();
         if (recipeInput.getFluidStack() != null) {
-            inputs.put(IngredientComponent.FLUIDSTACK, Collections.singletonList(Collections.singletonList(
-                    new PrototypedIngredient<>(IngredientComponent.FLUIDSTACK, recipeInput.getFluidStack(), FluidMatch.FLUID)
-            )));
+            inputs.put(IngredientComponent.FLUIDSTACK, Collections.singletonList(
+                    new PrototypedIngredientAlternativesList<>(Collections.singletonList(
+                            new PrototypedIngredient<>(IngredientComponent.FLUIDSTACK, recipeInput.getFluidStack(), FluidMatch.FLUID)
+                    ))));
         }
         return inputs;
     }

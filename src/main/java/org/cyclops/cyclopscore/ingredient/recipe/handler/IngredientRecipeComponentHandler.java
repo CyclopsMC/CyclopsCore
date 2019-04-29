@@ -3,6 +3,8 @@ package org.cyclops.cyclopscore.ingredient.recipe.handler;
 import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
+import org.cyclops.commoncapabilities.api.capability.recipehandler.IPrototypedIngredientAlternatives;
+import org.cyclops.commoncapabilities.api.capability.recipehandler.PrototypedIngredientAlternativesList;
 import org.cyclops.commoncapabilities.api.ingredient.IMixedIngredients;
 import org.cyclops.commoncapabilities.api.ingredient.IPrototypedIngredient;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
@@ -29,20 +31,21 @@ public class IngredientRecipeComponentHandler implements IRecipeInputDefinitionH
     }
 
     @Override
-    public Map<IngredientComponent<?, ?>, List<List<IPrototypedIngredient<?, ?>>>> toRecipeDefinitionInput(IngredientRecipeComponent recipeInput) {
-        Map<IngredientComponent<?, ?>, List<List<IPrototypedIngredient<?, ?>>>> inputs = Maps.newIdentityHashMap();
+    public Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> toRecipeDefinitionInput(IngredientRecipeComponent recipeInput) {
+        Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> inputs = Maps.newIdentityHashMap();
         List<ItemStack> itemStacks = recipeInput.getItemStacks();
         if (!itemStacks.isEmpty()) {
-            inputs.put(IngredientComponent.ITEMSTACK, Collections.singletonList(itemStacks
-                    .stream()
-                    .map(itemStack -> {
-                        int condition = ItemMatch.ITEM;
-                        if (itemStack.getItemDamage() != IngredientRecipeComponent.META_WILDCARD) {
-                            condition |= ItemMatch.DAMAGE;
-                        }
-                        return new PrototypedIngredient<>(IngredientComponent.ITEMSTACK, itemStack, condition);
-                    })
-                    .collect(Collectors.toList())));
+            inputs.put(IngredientComponent.ITEMSTACK, Collections.singletonList(new PrototypedIngredientAlternativesList<>(
+                    itemStacks
+                            .stream()
+                            .map(itemStack -> {
+                                int condition = ItemMatch.ITEM;
+                                if (itemStack.getItemDamage() != IngredientRecipeComponent.META_WILDCARD) {
+                                    condition |= ItemMatch.DAMAGE;
+                                }
+                                return new PrototypedIngredient<>(IngredientComponent.ITEMSTACK, itemStack, condition);
+                            })
+                            .collect(Collectors.toList()))));
         }
         return inputs;
     }
