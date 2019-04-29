@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Mention file name on XML recipe file validation error, Closes #135
+
+Lib additions:
+* Add NBT Paths: https://github.com/CyclopsMC/CyclopsCore/wiki/NBT-Path
