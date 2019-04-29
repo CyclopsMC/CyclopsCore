@@ -98,7 +98,7 @@ public class XmlRecipeLoader {
             }
 			doc = dBuilder.parse(is);
 		} catch (SAXException | IOException | ParserConfigurationException e) {
-			throw new XmlRecipeException(e);
+			throw new XmlRecipeException("The recipe file " + fileName + " was invalid: " + e.getMessage());
 		}
     }
 	
