@@ -1,10 +1,12 @@
 package org.cyclops.cyclopscore.inventory;
 
+import com.google.common.collect.Iterators;
 import net.minecraft.init.Bootstrap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.junit.Test;
 
+import static org.cyclops.cyclopscore.helper.CyclopsMatchers.isIterator;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
@@ -40,10 +42,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 0", inv.getSizeInventory(), is(0));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not empty", inv.getIndex().size(), is(0));
     }
@@ -57,10 +57,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(0));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not empty", inv.getIndex().size(), is(0));
     }
@@ -74,10 +72,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(0));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not empty", inv.getIndex().size(), is(0));
     }
@@ -91,10 +87,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -117,10 +111,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -139,10 +131,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
@@ -163,10 +153,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
@@ -185,10 +173,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(0));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -206,10 +192,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(0));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -227,10 +211,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(0));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -250,10 +232,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(0));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -267,10 +247,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(0));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not empty", inv.getIndex().size(), is(0));
     }
@@ -286,10 +264,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(0));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not empty", inv.getIndex().size(), is(0));
     }
@@ -305,10 +281,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -329,10 +303,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 1", inv.getSizeInventory(), is(1));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -349,10 +321,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not empty", inv.getIndex().size(), is(0));
     }
@@ -366,10 +336,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not empty", inv.getIndex().size(), is(0));
     }
@@ -383,10 +351,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -405,10 +371,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -427,10 +391,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
@@ -451,10 +413,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
@@ -473,10 +433,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -494,10 +452,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -515,10 +471,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -538,10 +492,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -555,10 +507,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not empty", inv.getIndex().size(), is(0));
     }
@@ -574,10 +524,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not empty", inv.getIndex().size(), is(0));
     }
@@ -593,10 +541,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -617,10 +563,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -639,10 +583,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(2));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1)));
 
         assertThat("Index is not 2", inv.getIndex().size(), is(2));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -666,10 +608,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(2));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1)));
 
         assertThat("Index is not 2", inv.getIndex().size(), is(2));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -693,10 +633,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -719,10 +657,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -745,10 +681,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -770,10 +704,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -791,10 +723,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(1)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
@@ -817,10 +747,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(1)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
@@ -843,10 +771,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -868,10 +794,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -889,10 +813,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
 
         assertThat("Index is not 3", inv.getIndex().size(), is(3));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -921,10 +843,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
 
         assertThat("Index is not 3", inv.getIndex().size(), is(3));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -953,10 +873,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(2));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1)));
 
         assertThat("Index is not 2", inv.getIndex().size(), is(2));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -984,10 +902,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(2));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1)));
 
         assertThat("Index is not 2", inv.getIndex().size(), is(2));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -1013,10 +929,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 2)));
 
         assertThat("Index is not 2", inv.getIndex().size(), is(2));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -1044,10 +958,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 2)));
 
         assertThat("Index is not 2", inv.getIndex().size(), is(2));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -1075,10 +987,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(2));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM3), is(true));
@@ -1105,10 +1015,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(2));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM3), is(true));
@@ -1135,10 +1043,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -1164,10 +1070,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(-1));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(-1));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
 
         assertThat("Index is not 0", inv.getIndex().size(), is(0));
     }
@@ -1189,10 +1093,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -1219,10 +1121,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(2));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(0));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -1243,10 +1143,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -1271,10 +1169,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -1299,10 +1195,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -1328,10 +1222,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -1357,10 +1249,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(2));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -1387,10 +1277,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(0));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(2));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1)));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -1411,10 +1299,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(2));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
@@ -1441,10 +1327,8 @@ public class TestIndexedInventory {
 
         assertThat("Size is not 3", inv.getSizeInventory(), is(3));
 
-        assertThat("First empty slot is incorrect", inv.getFirstEmptySlot(), is(-1));
-        assertThat("Last empty slot is incorrect", inv.getLastEmptySlot(), is(-1));
-        assertThat("First non-empty slot is incorrect", inv.getFirstNonEmptySlot(), is(0));
-        assertThat("Last non-empty slot is incorrect", inv.getLastNonEmptySlot(), is(2));
+        assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
+        assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(2));
         assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));

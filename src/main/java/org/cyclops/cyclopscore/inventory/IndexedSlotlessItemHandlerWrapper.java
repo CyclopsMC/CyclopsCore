@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.inventory;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -9,11 +10,14 @@ import org.cyclops.commoncapabilities.api.capability.itemhandler.SlotlessItemHan
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.PrimitiveIterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.IntStream;
+import java.util.stream.StreamSupport;
 
 /**
  * A {@link org.cyclops.commoncapabilities.api.capability.itemhandler.ISlotlessItemHandler}
@@ -23,76 +27,64 @@ import java.util.stream.IntStream;
 public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrapper {
 
     private final IInventoryIndexReference inventory;
-    private MovementStrategy inputStrategy;
-    private MovementStrategy outputStrategy;
-
-    public IndexedSlotlessItemHandlerWrapper(IItemHandler itemHandler, IInventoryIndexReference inventory,
-                                             MovementStrategy inputStrategy, MovementStrategy outputStrategy) {
-        super(itemHandler);
-        this.inventory = inventory;
-        this.inputStrategy = inputStrategy;
-        this.outputStrategy = outputStrategy;
-    }
 
     public IndexedSlotlessItemHandlerWrapper(IItemHandler itemHandler, IInventoryIndexReference inventory) {
-        this(itemHandler, inventory, MovementStrategy.FIRST, MovementStrategy.FIRST);
+        super(itemHandler);
+        this.inventory = inventory;
     }
 
     @Override
-    protected int getNonFullSlotWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
+    protected PrimitiveIterator.OfInt getNonFullSlotsWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
         if (!IngredientComponent.ITEMSTACK.getMatcher().hasCondition(matchFlags, ItemMatch.ITEM)) {
-            for (int i = 0; i < itemHandler.getSlots(); i++) {
-                ItemStack slotStack = itemHandler.getStackInSlot(i);
-                if (ItemMatch.areItemStacksEqual(slotStack, itemStack, matchFlags)
-                        && slotStack.getCount() < itemHandler.getSlotLimit(i)
-                        && slotStack.getCount() < slotStack.getMaxStackSize()) {
-                    return i;
-                }
-            }
-            return -1;
+            return IntStream.range(0, itemHandler.getSlots())
+                    .filter(slot -> {
+                        ItemStack slotStack = itemHandler.getStackInSlot(slot);
+                        return ItemMatch.areItemStacksEqual(slotStack, itemStack, matchFlags)
+                                && slotStack.getCount() < itemHandler.getSlotLimit(slot)
+                                && slotStack.getCount() < slotStack.getMaxStackSize();
+                    })
+                    .iterator();
         }
 
         Map<Item, Int2ObjectMap<ItemStack>> items = inventory.getIndex();
         Int2ObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
         if (stacks != null) {
-            for (Int2ObjectMap.Entry<ItemStack> entry : stacks.int2ObjectEntrySet()) {
-                ItemStack value = entry.getValue();
-                if (value.getCount() < Math.min(inventory.getInventoryStackLimit(), value.getMaxStackSize())
-                        && ItemMatch.areItemStacksEqual(value, itemStack, matchFlags)) {
-                    return entry.getIntKey();
-                }
-            }
+            return stacks.int2ObjectEntrySet()
+                    .stream()
+                    .filter(entry -> entry.getValue().getCount()
+                            < Math.min(inventory.getInventoryStackLimit(), entry.getValue().getMaxStackSize())
+                            && ItemMatch.areItemStacksEqual(entry.getValue(), itemStack, matchFlags))
+                    .mapToInt(Int2ObjectMap.Entry::getIntKey)
+                    .iterator();
         }
-        return -1;
+        return IntStream.empty().iterator();
     }
 
     @Override
-    protected int getNonEmptySlotWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
+    protected PrimitiveIterator.OfInt getNonEmptySlotsWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
         if (!IngredientComponent.ITEMSTACK.getMatcher().hasCondition(matchFlags, ItemMatch.ITEM)) {
-            for (int i = 0; i < itemHandler.getSlots(); i++) {
-                ItemStack slotStack = itemHandler.getStackInSlot(i);
-                if (!slotStack.isEmpty() && ItemMatch.areItemStacksEqual(slotStack, itemStack, matchFlags)) {
-                    return i;
-                }
-            }
-            return -1;
+            return intIteratorToStream(getNonEmptySlots())
+                    .filter(slot -> {
+                        ItemStack slotStack = itemHandler.getStackInSlot(slot);
+                        return !slotStack.isEmpty() && ItemMatch.areItemStacksEqual(slotStack, itemStack, matchFlags);
+                    })
+                    .iterator();
         }
 
         Map<Item, Int2ObjectMap<ItemStack>> items = inventory.getIndex();
         Int2ObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
         if (stacks != null) {
-            for (Int2ObjectMap.Entry<ItemStack> entry : stacks.int2ObjectEntrySet()) {
-                ItemStack value = entry.getValue();
-                if (ItemMatch.areItemStacksEqual(value, itemStack, matchFlags)) {
-                    return entry.getIntKey();
-                }
-            }
+            return stacks.int2ObjectEntrySet()
+                    .stream()
+                    .filter(entry -> ItemMatch.areItemStacksEqual(entry.getValue(), itemStack, matchFlags))
+                    .mapToInt(Int2ObjectMap.Entry::getIntKey)
+                    .iterator();
         }
-        return -1;
+        return IntStream.empty().iterator();
     }
 
     @Override
-    protected Iterator<Integer> getSlotsWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
+    protected PrimitiveIterator.OfInt getSlotsWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
         if (!IngredientComponent.ITEMSTACK.getMatcher().hasCondition(matchFlags, ItemMatch.ITEM)) {
             return IntStream.range(0, itemHandler.getSlots())
                     .filter(slot -> ItemMatch.areItemStacksEqual(itemHandler.getStackInSlot(slot), itemStack, matchFlags))
@@ -101,68 +93,45 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
         Map<Item, Int2ObjectMap<ItemStack>> items = inventory.getIndex();
         Int2ObjectMap<ItemStack> stacks = items.get(itemStack.getItem());
         if (stacks == null) {
-            return Collections.emptyIterator();
+            return IntStream.empty().iterator();
         }
-        return new IndexIterator(stacks.int2ObjectEntrySet().iterator(), itemStack, matchFlags);
+
+        return stacks.int2ObjectEntrySet()
+                .stream()
+                .filter(entry -> ItemMatch.areItemStacksEqual(entry.getValue(), itemStack, matchFlags))
+                .mapToInt(Int2ObjectMap.Entry::getIntKey)
+                .iterator();
     }
 
     @Override
-    protected int getEmptySlot() {
-        return inputStrategy == MovementStrategy.FIRST ? inventory.getFirstEmptySlot() : inventory.getLastEmptySlot();
+    protected PrimitiveIterator.OfInt getEmptySlots() {
+        return inventory.getEmptySlots();
     }
 
     @Override
-    protected int getNonEmptySlot() {
-        return outputStrategy == MovementStrategy.FIRST ? inventory.getFirstNonEmptySlot() : inventory.getLastNonEmptySlot();
+    protected PrimitiveIterator.OfInt getNonEmptySlots() {
+        return inventory.getNonEmptySlots();
     }
 
-    public MovementStrategy getInputStrategy() {
-        return inputStrategy;
-    }
-
-    public void setInputStrategy(MovementStrategy inputStrategy) {
-        this.inputStrategy = inputStrategy;
-    }
-
-    public MovementStrategy getOutputStrategy() {
-        return outputStrategy;
-    }
-
-    public void setOutputStrategy(MovementStrategy outputStrategy) {
-        this.outputStrategy = outputStrategy;
-    }
-
-    /**
-     * Strategies indicating which slots to pick first.
-     */
-    public static enum MovementStrategy {
-        /**
-         * Pick the earliest possible slot, with the smallest slot id.
-         */
-        FIRST,
-        /**
-         * Pick the latest possible slot, with the largest slot id.
-         */
-        LAST
+    public static IntStream intIteratorToStream(PrimitiveIterator.OfInt it) {
+        return StreamSupport.intStream(Spliterators.spliteratorUnknownSize(it, Spliterator.ORDERED), false);
     }
 
     public static interface IInventoryIndexReference {
 
         public int getInventoryStackLimit();
         public Map<Item, Int2ObjectMap<ItemStack>> getIndex();
-        public int getFirstEmptySlot();
-        public int getLastEmptySlot();
-        public int getFirstNonEmptySlot();
-        public int getLastNonEmptySlot();
+        public PrimitiveIterator.OfInt getEmptySlots();
+        public PrimitiveIterator.OfInt getNonEmptySlots();
 
     }
 
-    public static class IndexIterator implements Iterator<Integer> {
+    public static class IndexIterator implements IntIterator {
 
         private final Iterator<Int2ObjectMap.Entry<ItemStack>> slotIterator;
         private final ItemStack prototype;
         private final int matchFlags;
-        private Integer next;
+        private int next;
 
         public IndexIterator(Iterator<Int2ObjectMap.Entry<ItemStack>> slotIterator, ItemStack prototype, int matchFlags) {
             this.slotIterator = slotIterator;
@@ -171,7 +140,7 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
             this.next = findNext();
         }
 
-        protected Integer findNext() {
+        protected int findNext() {
             while(slotIterator.hasNext()) {
                 Int2ObjectMap.Entry<ItemStack> entry = slotIterator.next();
                 int slot = entry.getIntKey();
@@ -180,22 +149,61 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
                     return slot;
                 }
             }
-            return null;
+            return -1;
         }
 
         @Override
         public boolean hasNext() {
-            return next != null;
+            return next > 0;
         }
 
         @Override
         public Integer next() {
+            return nextInt();
+        }
+
+        @Override
+        public int nextInt() {
             if (!hasNext()) {
                 throw new NoSuchElementException("Slot out of bounds");
             }
-            Integer next = this.next;
+            int next = this.next;
             this.next = findNext();
             return next;
+        }
+
+        @Override
+        public int skip(int n) {
+            int skipped = 0;
+            while (n > 0 && hasNext()) {
+                nextInt();
+                skipped++;
+            }
+            return skipped;
+        }
+    }
+
+    public static class WrappedIntIterator implements PrimitiveIterator.OfInt {
+
+        private final IntIterator it;
+
+        public WrappedIntIterator(IntIterator it) {
+            this.it = it;
+        }
+
+        @Override
+        public int nextInt() {
+            return it.nextInt();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return it.hasNext();
+        }
+
+        @Override
+        public Integer next() {
+            return it.next();
         }
     }
 

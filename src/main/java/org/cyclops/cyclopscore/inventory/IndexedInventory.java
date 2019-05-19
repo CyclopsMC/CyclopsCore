@@ -3,11 +3,14 @@ package org.cyclops.cyclopscore.inventory;
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntAVLTreeSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.Map;
+import java.util.PrimitiveIterator;
 
 /**
  * An inventory that adds an index from item to slot on a regular inventory.
@@ -17,10 +20,8 @@ import java.util.Map;
 public class IndexedInventory extends LargeInventory implements IndexedSlotlessItemHandlerWrapper.IInventoryIndexReference {
 
     private final Map<Item, Int2ObjectMap<ItemStack>> index = Maps.newIdentityHashMap();
-    private int firstEmptySlot;
-    private int lastEmptySlot;
-    private int firstNonEmptySlot;
-    private int lastNonEmptySlot;
+    private IntSet emptySlots;
+    private IntSet nonEmptySlots;
 
     /**
      * Default constructor for NBT persistence, don't call this yourself.
@@ -37,18 +38,15 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
      */
     public IndexedInventory(int size, String name, int stackLimit) {
         super(size, name, stackLimit);
-        this.firstEmptySlot = 0;
-        this.lastEmptySlot = size - 1;
-        this.firstNonEmptySlot = -1;
-        this.lastNonEmptySlot = -1;
+        this.emptySlots = new IntAVLTreeSet();
+        this.nonEmptySlots = new IntAVLTreeSet();
+        createIndex();
     }
 
     protected void createIndex() {
-        index.clear();
-        firstEmptySlot = -1;
-        lastEmptySlot = -1;
-        firstNonEmptySlot = -1;
-        lastNonEmptySlot = -1;
+        this.index.clear();
+        this.nonEmptySlots.clear();
+        this.emptySlots.clear();
         for (int i = 0; i < getSizeInventory(); i++) {
             ItemStack itemStack = getStackInSlot(i);
             if (!itemStack.isEmpty()) {
@@ -58,15 +56,9 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
                     index.put(itemStack.getItem(), stacks);
                 }
                 stacks.put(i, itemStack);
-                if (firstNonEmptySlot < 0) {
-                    firstNonEmptySlot = i;
-                }
-                lastNonEmptySlot = i;
+                this.nonEmptySlots.add(i);
             } else {
-                if (firstEmptySlot < 0) {
-                    firstEmptySlot = i;
-                }
-                lastEmptySlot = i;
+                this.emptySlots.add(i);
             }
         }
     }
@@ -81,6 +73,8 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
     public void setInventorySlotContents(int slotId, ItemStack itemStack) {
         // Update index
         ItemStack oldStack = getStackInSlot(slotId);
+        boolean wasEmpty = oldStack.isEmpty();
+        boolean isEmpty = itemStack.isEmpty();
         if (!oldStack.isEmpty()) {
             Int2ObjectMap<ItemStack> stacks = index.get(oldStack.getItem());
             if (stacks != null) {
@@ -103,69 +97,19 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
         super.setInventorySlotContents(slotId, itemStack);
 
         // Update first and last values
-        if (slotId == firstEmptySlot && oldStack.isEmpty() && !itemStack.isEmpty()) {
-            // Search forwards
-            int oldFirstEmptySlot = firstEmptySlot;
-            firstEmptySlot = -1;
-            for (int i = Math.max(0, oldFirstEmptySlot); i < getSizeInventory(); i++) {
-                if (getStackInSlot(i).isEmpty()) {
-                    firstEmptySlot = i;
-                    break;
-                }
-            }
+        if (wasEmpty && !isEmpty) {
+            this.emptySlots.remove(slotId);
+            this.nonEmptySlots.add(slotId);
         }
-        if (slotId == lastEmptySlot && oldStack.isEmpty() && !itemStack.isEmpty()) {
-            // Search backwards
-            int oldLastEmptySlot = lastEmptySlot;
-            lastEmptySlot = -1;
-            for (int i = oldLastEmptySlot; i >= 0; i--) {
-                if (getStackInSlot(i).isEmpty()) {
-                    lastEmptySlot = i;
-                    break;
-                }
-            }
-        }
-        if (slotId == firstNonEmptySlot && !oldStack.isEmpty() && itemStack.isEmpty()) {
-            // Search forwards
-            int oldFirstNonEmptySlot = firstNonEmptySlot;
-            firstNonEmptySlot = -1;
-            for (int i = Math.max(0, oldFirstNonEmptySlot); i < getSizeInventory(); i++) {
-                if (!getStackInSlot(i).isEmpty()) {
-                    firstNonEmptySlot = i;
-                    break;
-                }
-            }
-        }
-        if (slotId == lastNonEmptySlot && !oldStack.isEmpty() && itemStack.isEmpty()) {
-            // Search backwards
-            int oldLastNonEmptySlot = lastNonEmptySlot;
-            lastNonEmptySlot = -1;
-            for (int i = oldLastNonEmptySlot; i >= 0; i--) {
-                if (!getStackInSlot(i).isEmpty()) {
-                    lastNonEmptySlot = i;
-                    break;
-                }
-            }
-        }
-        if ((slotId < firstEmptySlot || firstEmptySlot < 0) && itemStack.isEmpty()) {
-            firstEmptySlot = slotId;
-        }
-        if (slotId > lastEmptySlot && itemStack.isEmpty()) {
-            lastEmptySlot = slotId;
-        }
-        if ((slotId < firstNonEmptySlot || firstNonEmptySlot < 0) && !itemStack.isEmpty())  {
-            firstNonEmptySlot = slotId;
-        }
-        if (slotId > lastNonEmptySlot && !itemStack.isEmpty())  {
-            lastNonEmptySlot = slotId;
+        if (!wasEmpty && isEmpty) {
+            this.emptySlots.add(slotId);
+            this.nonEmptySlots.remove(slotId);
         }
 
         // This is unit-tested, so this *should not* be able to happen.
         // If it happens, trigger a crash!
-        if (firstEmptySlot == firstNonEmptySlot) throw new IllegalStateException(String.format(
-                "Indexed inventory at inconsistent with first empty %s and first non-empty %s.", firstEmptySlot, firstNonEmptySlot));
-        if (lastEmptySlot == lastNonEmptySlot) throw new IllegalStateException(String.format(
-                "Indexed inventory at inconsistent with last empty %s and last non-empty %s.", lastEmptySlot, lastNonEmptySlot));
+        if (this.nonEmptySlots.size() + this.emptySlots.size() != getSizeInventory()) throw new IllegalStateException(String.format(
+                "Indexed inventory at inconsistent state %s %s %s (slot: %s).", this.nonEmptySlots, this.emptySlots, this.getSizeInventory(), slotId));
     }
 
     @Override
@@ -180,22 +124,12 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
     }
 
     @Override
-    public int getFirstEmptySlot() {
-        return firstEmptySlot;
+    public PrimitiveIterator.OfInt getEmptySlots() {
+        return new IndexedSlotlessItemHandlerWrapper.WrappedIntIterator(this.emptySlots.iterator());
     }
 
     @Override
-    public int getLastEmptySlot() {
-        return lastEmptySlot;
-    }
-
-    @Override
-    public int getFirstNonEmptySlot() {
-        return firstNonEmptySlot;
-    }
-
-    @Override
-    public int getLastNonEmptySlot() {
-        return lastNonEmptySlot;
+    public PrimitiveIterator.OfInt getNonEmptySlots() {
+        return new IndexedSlotlessItemHandlerWrapper.WrappedIntIterator(this.nonEmptySlots.iterator());
     }
 }
