@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Allow insert/extract in indexed inventories over max stack size
+  Required for CyclopsMC/IntegratedCrafting#27
+
+Fixes:
+* Catch ingredient transfer for out-of-bound slots
+  Closes CyclopsMC/IntegratedDynamics#730
