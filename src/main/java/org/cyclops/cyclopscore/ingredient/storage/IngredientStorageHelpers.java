@@ -276,6 +276,11 @@ public final class IngredientStorageHelpers {
             IIngredientComponentStorageSlotted<T, M> sourceSlotted = (IIngredientComponentStorageSlotted<T, M>) source;
             IIngredientComponentStorageSlotted<T, M> destinationSlotted = (IIngredientComponentStorageSlotted<T, M>) destination;
 
+            // Fail if a slot id is too large
+            if (sourceSlot >= sourceSlotted.getSlots() || destinationSlot >= destinationSlotted.getSlots()) {
+                return matcher.getEmptyInstance();
+            }
+
             // Extract from source slot (simulated)
             long prototypeQuantity = matcher.getQuantity(instance);
             T extractedSimulated = sourceSlotted.extract(sourceSlot, prototypeQuantity, true);
@@ -325,6 +330,12 @@ public final class IngredientStorageHelpers {
                         return matcher.getEmptyInstance();
                     }
                     IIngredientComponentStorageSlotted<T, M> destinationSlotted = (IIngredientComponentStorageSlotted<T, M>) destination;
+
+                    // Fail if the destination slot id is too large
+                    if (destinationSlot >= destinationSlotted.getSlots()) {
+                        return matcher.getEmptyInstance();
+                    }
+
                     for (T sourceInstance : source) {
                         if (matcher.matches(instance, sourceInstance, matcher.withoutCondition(matchCondition,
                                 source.getComponent().getPrimaryQuantifier().getMatchCondition()))) {
@@ -368,6 +379,12 @@ public final class IngredientStorageHelpers {
             } else {
                 // If we don't have destination slots, move from defined source slot
                 IIngredientComponentStorageSlotted<T, M> sourceSlotted = (IIngredientComponentStorageSlotted<T, M>) source;
+
+                // Fail if the source slot id is too large
+                if (sourceSlot >= sourceSlotted.getSlots()) {
+                    return matcher.getEmptyInstance();
+                }
+
                 long prototypeQuantity = matcher.getQuantity(instance);
                 T sourceInstance = sourceSlotted.extract(sourceSlot, prototypeQuantity, true);
                 if (!matcher.isEmpty(sourceInstance) && matcher.matches(instance, sourceInstance, matchCondition)) {
@@ -426,6 +443,11 @@ public final class IngredientStorageHelpers {
             IIngredientComponentStorageSlotted<T, M> sourceSlotted = (IIngredientComponentStorageSlotted<T, M>) source;
             IIngredientComponentStorageSlotted<T, M> destinationSlotted = (IIngredientComponentStorageSlotted<T, M>) destination;
 
+            // Fail if a slot id is too large
+            if (sourceSlot >= sourceSlotted.getSlots() || destinationSlot >= destinationSlotted.getSlots()) {
+                return matcher.getEmptyInstance();
+            }
+
             // Extract from source slot (simulated)
             T extractedSimulated = sourceSlotted.extract(sourceSlot, maxQuantity, true);
             if (!matcher.isEmpty(extractedSimulated) && predicate.test(extractedSimulated)
@@ -472,6 +494,12 @@ public final class IngredientStorageHelpers {
                         return matcher.getEmptyInstance();
                     }
                     IIngredientComponentStorageSlotted<T, M> destinationSlotted = (IIngredientComponentStorageSlotted<T, M>) destination;
+
+                    // Fail if the destination slot id is too large
+                    if (destinationSlot >= destinationSlotted.getSlots()) {
+                        return matcher.getEmptyInstance();
+                    }
+
                     for (T sourceInstance : source) {
                         if (predicate.test(sourceInstance)) {
                             if (matcher.getQuantity(sourceInstance) != maxQuantity) {
@@ -512,6 +540,12 @@ public final class IngredientStorageHelpers {
             } else {
                 // If we don't have destination slots, move from defined source slot
                 IIngredientComponentStorageSlotted<T, M> sourceSlotted = (IIngredientComponentStorageSlotted<T, M>) source;
+
+                // Fail if the source slot id is too large
+                if (sourceSlot >= sourceSlotted.getSlots()) {
+                    return matcher.getEmptyInstance();
+                }
+
                 T sourceInstance = sourceSlotted.extract(sourceSlot, maxQuantity, true);
                 if (!matcher.isEmpty(sourceInstance) && predicate.test(sourceInstance)) {
                     T inserted = insertIngredient(destination, sourceInstance, true);

@@ -386,11 +386,16 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlottedPredicat
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA05_)));
             }
 
-            @Test(expected = IndexOutOfBoundsException.class)
-            public void testSourceSlotLoopDestinationSlotDefined5() {
-                // Error
-                IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 5,
-                        P_GROUP_TAG, 5, false, true);
+            @Test
+            public void testSourceSlotLoopDestinationSlotDefined5OutOfBounds() {
+                // Move nothing
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 5,
+                        P_GROUP_TAG, 5, false, true), nullValue());
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 5,
+                        P_GROUP_TAG, 5, false, false), nullValue());
+
+                assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
@@ -764,11 +769,16 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlottedPredicat
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B, CA01B)));
             }
 
-            @Test(expected = IndexOutOfBoundsException.class)
-            public void testSourceSlotDefinedDestinationSlotLoop5() {
-                // Error
-                IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 5, destinationSlotless, -1,
-                        P_GROUP_TAG, 5, false, true);
+            @Test
+            public void testSourceSlotDefinedDestinationSlotLoop5OutOfBounds() {
+                // Move nothing
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 5, destinationSlotless, -1,
+                        P_GROUP_TAG, 5, false, true), nullValue());
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 5, destinationSlotless, -1,
+                        P_GROUP_TAG, 5, false, false), nullValue());
+
+                assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
+                assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
@@ -1476,11 +1486,16 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlottedPredicat
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA05_)));
             }
 
-            @Test(expected = IndexOutOfBoundsException.class)
-            public void testSourceSlotLoopDestinationSlotDefined5() {
-                // Error
-                IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 5,
-                        P_GROUP_TAG, 5, false, true);
+            @Test
+            public void testSourceSlotLoopDestinationSlotDefined5OutOfBounds() {
+                // Move nothing
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 5,
+                        P_GROUP_TAG, 5, false, true), nullValue());
+                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 5,
+                        P_GROUP_TAG, 5, false, false), nullValue());
+
+                assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
+                assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
