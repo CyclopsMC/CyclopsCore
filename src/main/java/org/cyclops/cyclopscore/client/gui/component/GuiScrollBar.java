@@ -48,6 +48,13 @@ public class GuiScrollBar extends Gui {
         setVisibleRows(visibleRows);
     }
 
+    /**
+     * @return The current scroll position.
+     */
+    public float getCurrentScroll() {
+        return currentScroll;
+    }
+
     public void handleMouseInput() {
         int i = Mouse.getEventDWheel();
 
