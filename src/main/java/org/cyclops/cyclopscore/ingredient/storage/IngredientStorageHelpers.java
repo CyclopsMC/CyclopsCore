@@ -2,12 +2,10 @@ package org.cyclops.cyclopscore.ingredient.storage;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.Constants;
-import org.apache.logging.log4j.Level;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorageSlotted;
-import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.ingredient.collection.IIngredientCollection;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientArrayList;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionPrototypeMap;
@@ -38,10 +36,12 @@ public final class IngredientStorageHelpers {
      * @param <T> The instance type.
      * @param <M> The matching condition parameter.
      * @return The moved ingredient.
+     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
      */
     public static <T, M> T moveIngredientsIterative(IIngredientComponentStorage<T, M> source,
                                                     IIngredientComponentStorage<T, M> destination,
-                                                    long maxQuantity, boolean simulate) {
+                                                    long maxQuantity, boolean simulate)
+            throws InconsistentIngredientInsertionException {
         IngredientComponent<T, M> component = source.getComponent();
         IIngredientMatcher<T, M> matcher = component.getMatcher();
         T movedFirst = moveIngredients(source, destination, maxQuantity, simulate);
@@ -79,10 +79,12 @@ public final class IngredientStorageHelpers {
      * @param <T> The instance type.
      * @param <M> The matching condition parameter.
      * @return The moved ingredient.
+     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
      */
     public static <T, M> T moveIngredients(IIngredientComponentStorage<T, M> source,
                                            IIngredientComponentStorage<T, M> destination,
-                                           long maxQuantity, boolean simulate) {
+                                           long maxQuantity, boolean simulate)
+            throws InconsistentIngredientInsertionException {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
         T extractedSimulated = source.extract(maxQuantity, true);
         long movableQuantity = insertIngredientQuantity(destination, extractedSimulated, true);
@@ -119,10 +121,12 @@ public final class IngredientStorageHelpers {
      * @param <T> The instance type.
      * @param <M> The matching condition parameter.
      * @return The moved ingredient.
+     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
      */
     public static <T, M> T moveIngredientsIterative(IIngredientComponentStorage<T, M> source,
                                                     IIngredientComponentStorage<T, M> destination,
-                                                    T instance, M matchCondition, boolean simulate) {
+                                                    T instance, M matchCondition, boolean simulate)
+            throws InconsistentIngredientInsertionException {
         IngredientComponent<T, M> component = source.getComponent();
         IIngredientMatcher<T, M> matcher = component.getMatcher();
         long maxQuantity = matcher.getQuantity(instance);
@@ -161,10 +165,12 @@ public final class IngredientStorageHelpers {
      * @param <T> The instance type.
      * @param <M> The matching condition parameter.
      * @return The moved ingredient.
+     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
      */
     public static <T, M> T moveIngredients(IIngredientComponentStorage<T, M> source,
                                            IIngredientComponentStorage<T, M> destination,
-                                           T instance, M matchCondition, boolean simulate) {
+                                           T instance, M matchCondition, boolean simulate)
+            throws InconsistentIngredientInsertionException{
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
         Iterator<T> it = source.iterator(instance, matcher.withoutCondition(matchCondition,
                 source.getComponent().getPrimaryQuantifier().getMatchCondition()));
@@ -199,11 +205,13 @@ public final class IngredientStorageHelpers {
      * @param <T> The instance type.
      * @param <M> The matching condition parameter.
      * @return The moved ingredient.
+     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
      */
     public static <T, M> T moveIngredients(IIngredientComponentStorage<T, M> source,
                                            IIngredientComponentStorage<T, M> destination,
                                            Predicate<T> predicate, long maxQuantity, boolean exactQuantity,
-                                           boolean simulate) {
+                                           boolean simulate)
+            throws InconsistentIngredientInsertionException{
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
         for (T extractedSimulated : source) {
             if (predicate.test(extractedSimulated)) {
@@ -252,7 +260,8 @@ public final class IngredientStorageHelpers {
      */
     public static <T, M> T moveIngredientsSlotted(IIngredientComponentStorage<T, M> source, int sourceSlot,
                                                   IIngredientComponentStorage<T, M> destination, int destinationSlot,
-                                                  T instance, M matchCondition, boolean simulate) {
+                                                  T instance, M matchCondition, boolean simulate)
+            throws InconsistentIngredientInsertionException {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
 
         // Optimization if nothing will be moved in any case
@@ -421,11 +430,13 @@ public final class IngredientStorageHelpers {
      * @param <T> The instance type.
      * @param <M> The matching condition parameter.
      * @return The moved ingredient.
+     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
      */
     public static <T, M> T moveIngredientsSlotted(IIngredientComponentStorage<T, M> source, int sourceSlot,
                                                   IIngredientComponentStorage<T, M> destination, int destinationSlot,
                                                   Predicate<T> predicate, long maxQuantity, boolean exactQuantity,
-                                                  boolean simulate) {
+                                                  boolean simulate)
+            throws InconsistentIngredientInsertionException {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
         boolean loopSourceSlots = sourceSlot < 0;
         boolean loopDestinationSlots = destinationSlot < 0;
@@ -561,7 +572,8 @@ public final class IngredientStorageHelpers {
 
     protected static <T, M> T moveEffectiveSourceExactDestinationExact(IIngredientComponentStorageSlotted<T, M> sourceSlotted, int sourceSlot,
                                                                        IIngredientComponentStorageSlotted<T, M> destinationSlotted, int destinationSlot,
-                                                                       T extractedSimulated, T remaining, boolean simulate) {
+                                                                       T extractedSimulated, T remaining, boolean simulate)
+            throws InconsistentIngredientInsertionException{
         IIngredientMatcher<T, M> matcher = sourceSlotted.getComponent().getMatcher();
         if (simulate) {
             // Return the result if we intended to simulate
@@ -587,10 +599,11 @@ public final class IngredientStorageHelpers {
                     // If even that fails, throw an error.
                     T remainderFixup = sourceSlotted.insert(sourceSlot, remainingEffective, false);
                     if (!matcher.isEmpty(remainderFixup)) {
-                        CyclopsCore.clog(Level.WARN, "Effective slotted source to slotted destination movement failed " +
-                                "due to inconsistent insertion behaviour by destination in simulation " +
-                                "and non-simulation: " + destinationSlotted + ". Lost: " + remainderFixup +
-                                ". This can be caused by invalid network setups.");
+                        T movedActual = matcher.withQuantity(remainingEffective,
+                                matcher.getQuantity(sourceInstanceEffective)
+                                        - matcher.getQuantity(remainingEffective)
+                                        + matcher.getQuantity(remainderFixup));
+                        throw new InconsistentIngredientInsertionException(destinationSlotted.getComponent(), destinationSlotted, remainderFixup, movedActual);
                     }
                     return matcher.withQuantity(remainingEffective,
                             matcher.getQuantity(sourceInstanceEffective)
@@ -603,7 +616,8 @@ public final class IngredientStorageHelpers {
 
     protected static <T, M> T moveEffectiveSourceExactDestinationNonSlotted(IIngredientComponentStorageSlotted<T, M> sourceSlotted, int sourceSlot,
                                                                             IIngredientComponentStorage<T, M> destination,
-                                                                            T inserted, boolean simulate) {
+                                                                            T inserted, boolean simulate)
+            throws InconsistentIngredientInsertionException{
         IIngredientMatcher<T, M> matcher = sourceSlotted.getComponent().getMatcher();
         if (simulate) {
             return inserted;
@@ -617,7 +631,8 @@ public final class IngredientStorageHelpers {
     @Nullable
     protected static <T, M> T moveEffectiveSourceNonSlottedDestinationExact(IIngredientComponentStorage<T, M> source,
                                                                             IIngredientComponentStorageSlotted<T, M> destinationSlotted, int destinationSlot,
-                                                                            M extractMatchCondition, T extractedSimulated, T remaining, boolean simulate) {
+                                                                            M extractMatchCondition, T extractedSimulated, T remaining, boolean simulate)
+            throws InconsistentIngredientInsertionException {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
 
         // Set the movable instance
@@ -649,7 +664,8 @@ public final class IngredientStorageHelpers {
     public static <T, M> T handleRemainder(IIngredientComponentStorage<T, M> source,
                                            IIngredientComponentStorage<T, M> destination,
                                            T movedEffective,
-                                           T remainingEffective) {
+                                           T remainingEffective)
+            throws InconsistentIngredientInsertionException {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
         boolean remainingEffectiveEmpty = matcher.isEmpty(remainingEffective);
         if (remainingEffectiveEmpty) {
@@ -659,10 +675,11 @@ public final class IngredientStorageHelpers {
             // If even that fails, emit a warning.
             T remainderFixup = source.insert(remainingEffective, false);
             if (!matcher.isEmpty(remainderFixup)) {
-                CyclopsCore.clog(Level.WARN, "Slotless source to destination movement failed " +
-                        "due to inconsistent insertion behaviour by destination in simulation " +
-                        "and non-simulation: " + destination + ". Lost: " + remainderFixup +
-                        ". This can be caused by invalid network setups.");
+                T movedActual = matcher.withQuantity(remainingEffective,
+                        matcher.getQuantity(remainingEffective)
+                                - matcher.getQuantity(remainingEffective)
+                                + matcher.getQuantity(remainderFixup));
+                throw new InconsistentIngredientInsertionException(destination.getComponent(), destination, remainderFixup, movedActual);
             }
             return matcher.withQuantity(remainingEffective,
                     matcher.getQuantity(movedEffective)
@@ -687,10 +704,12 @@ public final class IngredientStorageHelpers {
      * @param <T> The instance type.
      * @param <M> The matching condition parameter.
      * @return The moved ingredient.
+     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
      */
     public static <T, M> T moveIngredient(IIngredientComponentStorage<T, M> source,
                                           IIngredientComponentStorage<T, M> destination,
-                                          T instance, M matchCondition, boolean simulate) {
+                                          T instance, M matchCondition, boolean simulate)
+            throws InconsistentIngredientInsertionException {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
         T extractedSimulated = source.extract(instance, matchCondition, true);
         if (!matcher.isEmpty(extractedSimulated)) {
@@ -785,10 +804,12 @@ public final class IngredientStorageHelpers {
      * @param <T> The instance type.
      * @param <M> The matching condition parameter.
      * @return The actual inserted ingredient, or would-be inserted ingredient if simulated.
+     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
      */
     public static <T, M> T insertIngredientRemainderFixup(IIngredientComponentStorage<T, M> source,
                                                           IIngredientComponentStorage<T, M> destination,
-                                                          T instance, boolean simulate) {
+                                                          T instance, boolean simulate)
+            throws InconsistentIngredientInsertionException {
         if (simulate) {
             return insertIngredient(destination, instance, true);
         }

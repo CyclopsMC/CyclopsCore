@@ -38,7 +38,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     // The iterator will first return A, and then B
 
     @Test
-    public void testMoveIngredientsMatchDestinationFilterATag() {
+    public void testMoveIngredientsMatchDestinationFilterATag() throws InconsistentIngredientInsertionException {
         destinationSlottedInnerStorage.add(CA01_);
 
         sourceInnerStorage.add(CA01_);
@@ -52,7 +52,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationFilterATagGroup() {
+    public void testMoveIngredientsMatchDestinationFilterATagGroup() throws InconsistentIngredientInsertionException {
         destinationSlottedInnerStorage.add(CA01_);
 
         sourceInnerStorage.add(CA01_);
@@ -66,7 +66,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationFilterATagGroupAmount() {
+    public void testMoveIngredientsMatchDestinationFilterATagGroupAmount() throws InconsistentIngredientInsertionException {
         destinationSlottedInnerStorage.add(CA01_);
 
         sourceInnerStorage.add(CA01_);
@@ -80,7 +80,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationFilterBTag() {
+    public void testMoveIngredientsMatchDestinationFilterBTag() throws InconsistentIngredientInsertionException {
         destinationSlottedInnerStorage.add(CB01_);
 
         sourceInnerStorage.add(CA01_);
@@ -94,7 +94,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationFilterBTagGroup() {
+    public void testMoveIngredientsMatchDestinationFilterBTagGroup() throws InconsistentIngredientInsertionException {
         destinationSlottedInnerStorage.add(CB01_);
 
         sourceInnerStorage.add(CA01_);
@@ -108,7 +108,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationFilterBTagGroupAmount() {
+    public void testMoveIngredientsMatchDestinationFilterBTagGroupAmount() throws InconsistentIngredientInsertionException {
         destinationSlottedInnerStorage.add(CB01_);
 
         sourceInnerStorage.add(CA01_);
@@ -122,7 +122,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationNoFilterATag() {
+    public void testMoveIngredientsMatchDestinationNoFilterATag() throws InconsistentIngredientInsertionException {
         destinationSlottedInnerStorage.add(null);
 
         sourceInnerStorage.add(CA01_);
@@ -136,7 +136,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationNoFilterATagGroup() {
+    public void testMoveIngredientsMatchDestinationNoFilterATagGroup() throws InconsistentIngredientInsertionException {
         destinationSlottedInnerStorage.add(null);
 
         sourceInnerStorage.add(CA01_);
@@ -150,7 +150,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationNoFilterATagGroupAmount() {
+    public void testMoveIngredientsMatchDestinationNoFilterATagGroupAmount() throws InconsistentIngredientInsertionException {
         destinationSlottedInnerStorage.add(null);
 
         sourceInnerStorage.add(CA01_);
@@ -164,7 +164,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationNoFilterBTag() {
+    public void testMoveIngredientsMatchDestinationNoFilterBTag() throws InconsistentIngredientInsertionException {
         destinationSlottedInnerStorage.add(null);
 
         sourceInnerStorage.add(CA01_);
@@ -178,7 +178,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationNoFilterBTagGroup() {
+    public void testMoveIngredientsMatchDestinationNoFilterBTagGroup() throws InconsistentIngredientInsertionException {
         destinationSlottedInnerStorage.add(null);
 
         sourceInnerStorage.add(CA01_);
@@ -192,7 +192,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationNoFilterBTagGroupAmount() {
+    public void testMoveIngredientsMatchDestinationNoFilterBTagGroupAmount() throws InconsistentIngredientInsertionException {
         destinationSlottedInnerStorage.add(null);
 
         sourceInnerStorage.add(CA01_);

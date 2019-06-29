@@ -55,7 +55,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
     private static IngredientList<ComplexStack, Integer> destinationSlottedInnerStorage;
     private static IIngredientComponentStorageSlotted<ComplexStack, Integer> destinationSlotted;
 
-    public static void init() {
+    public static void init() throws InconsistentIngredientInsertionException {
         /* Slotless */
         sourceSlotlessInnerStorage = new IngredientCollectionPrototypeMap<>(IngredientComponentStubs.COMPLEX);
         sourceSlotless = new IngredientComponentStorageCollectionWrapper<>(sourceSlotlessInnerStorage, 100, 10);
@@ -85,12 +85,12 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
         public static class DestinationSlotless {
 
             @Before
-            public void beforeEach() {
+            public void beforeEach() throws InconsistentIngredientInsertionException {
                 init();
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotDefined() {
+            public void testSourceSlotDefinedDestinationSlotDefined() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotless, 0,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -102,7 +102,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined() {
+            public void testSourceSlotLoopDestinationSlotDefined() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, 0,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -114,7 +114,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop() {
+            public void testSourceSlotDefinedDestinationSlotLoop() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotless, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -126,7 +126,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoop() {
+            public void testSourceSlotLoopDestinationSlotLoop() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -138,7 +138,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceClear() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceClear() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
 
@@ -152,7 +152,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFew() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFew() throws InconsistentIngredientInsertionException {
                 // Move 1
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA01_);
@@ -167,7 +167,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceNotExtractable() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceNotExtractable() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotless = new IngredientComponentStorageCollectionWrapper<>(sourceSlotlessInnerStorage, 100, 0);
 
@@ -181,7 +181,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 100, 0);
 
@@ -195,7 +195,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableMaxAmount() {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 0, 10);
 
@@ -211,7 +211,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             /* The following tests include an exact quantity matcher flag */
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopQuantitativeLess() {
+            public void testSourceSlotLoopDestinationSlotLoopQuantitativeLess() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA05_));
@@ -223,7 +223,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopQuantitativeMore() {
+            public void testSourceSlotLoopDestinationSlotLoopQuantitativeMore() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
                         CA010_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
@@ -235,7 +235,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceClearQuantitative() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceClearQuantitative() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
 
@@ -249,7 +249,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitative() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA01_);
@@ -264,7 +264,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceMoreQuantitative() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceMoreQuantitative() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA05_);
@@ -279,7 +279,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceExactQuantitative() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceExactQuantitative() throws InconsistentIngredientInsertionException {
                 // Move 5
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA05_);
@@ -294,7 +294,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceExactNotEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceExactNotEnoughRoom() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA05_);
@@ -317,12 +317,12 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
         public static class DestinationSlotted {
 
             @Before
-            public void beforeEach() {
+            public void beforeEach() throws InconsistentIngredientInsertionException {
                 init();
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotDefined() {
+            public void testSourceSlotDefinedDestinationSlotDefined() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotted, 0,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -334,7 +334,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0() {
+            public void testSourceSlotLoopDestinationSlotDefined0() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -346,7 +346,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1() {
+            public void testSourceSlotLoopDestinationSlotDefined1() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -358,7 +358,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined2() {
+            public void testSourceSlotLoopDestinationSlotDefined2() throws InconsistentIngredientInsertionException {
                 // Move none
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 2,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -370,7 +370,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4() {
+            public void testSourceSlotLoopDestinationSlotDefined4() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 4,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -382,7 +382,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined5OutOfBounds() {
+            public void testSourceSlotLoopDestinationSlotDefined5OutOfBounds() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 5,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -394,7 +394,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop() {
+            public void testSourceSlotDefinedDestinationSlotLoop() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotted, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -406,7 +406,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoop() {
+            public void testSourceSlotLoopDestinationSlotLoop() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -418,7 +418,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceClear() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceClear() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
 
@@ -432,7 +432,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceFew() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceFew() throws InconsistentIngredientInsertionException {
                 // Move 1
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA01_);
@@ -447,7 +447,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceMore() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceMore() throws InconsistentIngredientInsertionException {
                 // Move 1
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA05_);
@@ -462,7 +462,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceNotExtractable() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceNotExtractable() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotless = new IngredientComponentStorageCollectionWrapper<>(sourceSlotlessInnerStorage, 100, 0);
 
@@ -476,7 +476,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
@@ -490,7 +490,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
@@ -504,7 +504,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableMaxAmount() {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
@@ -520,7 +520,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             /* The following tests include an exact quantity matcher flag */
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0QuantitativeLess() {
+            public void testSourceSlotLoopDestinationSlotDefined0QuantitativeLess() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA05_));
@@ -532,7 +532,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceClearQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceClearQuantitative() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
 
@@ -546,7 +546,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceFewQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA01_);
@@ -561,7 +561,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceExactQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceExactQuantitative() throws InconsistentIngredientInsertionException {
                 // Move 5
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA05_);
@@ -576,7 +576,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableRateQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
@@ -590,7 +590,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRateQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
@@ -604,7 +604,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRateQuantitativeButValidSource() {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRateQuantitativeButValidSource() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA05_);
@@ -620,7 +620,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableMaxAmountQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableMaxAmountQuantitative() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
@@ -634,7 +634,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceJustEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceJustEnoughRoom() throws InconsistentIngredientInsertionException {
                 // Move 4
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA04_);
@@ -651,7 +651,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceJustEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceJustEnoughRoom() throws InconsistentIngredientInsertionException {
                 // Move 4
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA04_);
@@ -668,7 +668,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceNotEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceNotEnoughRoom() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA04_);
@@ -685,7 +685,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceNotEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceNotEnoughRoom() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA04_);
@@ -710,12 +710,12 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
         public static class DestinationSlotless {
 
             @Before
-            public void beforeEach() {
+            public void beforeEach() throws InconsistentIngredientInsertionException {
                 init();
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotDefined() {
+            public void testSourceSlotDefinedDestinationSlotDefined() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotless, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -727,7 +727,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined() {
+            public void testSourceSlotLoopDestinationSlotDefined() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, 0,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -739,7 +739,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop0() {
+            public void testSourceSlotDefinedDestinationSlotLoop0() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotless, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -751,7 +751,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1() {
+            public void testSourceSlotDefinedDestinationSlotLoop1() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -763,7 +763,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop3() {
+            public void testSourceSlotDefinedDestinationSlotLoop3() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 3, destinationSlotless, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -775,7 +775,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4() {
+            public void testSourceSlotDefinedDestinationSlotLoop4() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -787,7 +787,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroup() {
+            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroup() throws InconsistentIngredientInsertionException {
                 // Move 1 of tag B
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
                         CA05_, ComplexStack.Match.GROUP, true), is(CA01B));
@@ -799,7 +799,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop5OutOfBounds() {
+            public void testSourceSlotDefinedDestinationSlotLoop5OutOfBounds() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 5, destinationSlotless, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -811,7 +811,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoop() {
+            public void testSourceSlotLoopDestinationSlotLoop() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -823,7 +823,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1SourceClear() {
+            public void testSourceSlotDefinedDestinationSlotLoop1SourceClear() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(EMPTY);
@@ -842,7 +842,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupSourceClear() {
+            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupSourceClear() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(EMPTY);
@@ -861,7 +861,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceClear() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceClear() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(EMPTY);
@@ -880,7 +880,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1SourceFew() {
+            public void testSourceSlotDefinedDestinationSlotLoop1SourceFew() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -899,7 +899,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupSourceFew() {
+            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupSourceFew() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -918,7 +918,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFew() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFew() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -937,7 +937,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1SourceNotExtractable() {
+            public void testSourceSlotDefinedDestinationSlotLoop1SourceNotExtractable() throws InconsistentIngredientInsertionException {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -951,7 +951,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupNotExtractable() {
+            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupNotExtractable() throws InconsistentIngredientInsertionException {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -965,7 +965,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopNotExtractable() {
+            public void testSourceSlotLoopDestinationSlotLoopNotExtractable() throws InconsistentIngredientInsertionException {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -979,7 +979,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1DestinationNonInsertable() {
+            public void testSourceSlotDefinedDestinationSlotLoop1DestinationNonInsertable() throws InconsistentIngredientInsertionException {
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 100, 0);
 
                 // Move nothing
@@ -993,7 +993,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupDestinationNonInsertable() {
+            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupDestinationNonInsertable() throws InconsistentIngredientInsertionException {
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 100, 0);
 
                 // Move nothing
@@ -1007,7 +1007,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationNonInsertable() {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationNonInsertable() throws InconsistentIngredientInsertionException {
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 100, 0);
 
                 // Move nothing
@@ -1021,7 +1021,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1DestinationNonInsertableMaxAmount() {
+            public void testSourceSlotDefinedDestinationSlotLoop1DestinationNonInsertableMaxAmount() throws InconsistentIngredientInsertionException {
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 0, 10);
 
                 // Move nothing
@@ -1035,7 +1035,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupDestinationNonInsertableMaxAmount() {
+            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupDestinationNonInsertableMaxAmount() throws InconsistentIngredientInsertionException {
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 0, 10);
 
                 // Move nothing
@@ -1049,7 +1049,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationNonInsertableMaxAmount() {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationNonInsertableMaxAmount() throws InconsistentIngredientInsertionException {
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 0, 10);
 
                 // Move nothing
@@ -1065,7 +1065,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             /* The following tests include an exact quantity matcher flag */
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1SourceFewQuantitative() {
+            public void testSourceSlotDefinedDestinationSlotLoop1SourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1084,7 +1084,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1SourceFewQuantitativeMatch() {
+            public void testSourceSlotDefinedDestinationSlotLoop1SourceFewQuantitativeMatch() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1103,7 +1103,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitative() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1122,7 +1122,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitativeMatch() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitativeMatch() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1141,7 +1141,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceJustEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceJustEnoughRoom() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -1164,7 +1164,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceNotEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceNotEnoughRoom() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -1191,12 +1191,12 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
         public static class DestinationSlotted {
 
             @Before
-            public void beforeEach() {
+            public void beforeEach() throws InconsistentIngredientInsertionException {
                 init();
             }
 
             @Test
-            public void testSourceSlotDefined0DestinationSlotDefined0() {
+            public void testSourceSlotDefined0DestinationSlotDefined0() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1208,7 +1208,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0() {
+            public void testSourceSlotDefined1DestinationSlotDefined0() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -1220,7 +1220,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined2DestinationSlotDefined0() {
+            public void testSourceSlotDefined2DestinationSlotDefined0() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 0,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1232,7 +1232,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined0() {
+            public void testSourceSlotDefined4DestinationSlotDefined0() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1244,7 +1244,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined0DestinationSlotDefined1() {
+            public void testSourceSlotDefined0DestinationSlotDefined1() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1256,7 +1256,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1() {
+            public void testSourceSlotDefined1DestinationSlotDefined1() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -1268,7 +1268,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined2DestinationSlotDefined1() {
+            public void testSourceSlotDefined2DestinationSlotDefined1() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1280,7 +1280,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined1() {
+            public void testSourceSlotDefined4DestinationSlotDefined1() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1292,7 +1292,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined0DestinationSlotDefined1MatchGroup() {
+            public void testSourceSlotDefined0DestinationSlotDefined1MatchGroup() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
                         CA05_, ComplexStack.Match.GROUP, true), nullValue());
@@ -1304,7 +1304,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroup() {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroup() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
                         CA05_, ComplexStack.Match.GROUP, true), is(CA05_));
@@ -1316,7 +1316,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined2DestinationSlotDefined1MatchGroup() {
+            public void testSourceSlotDefined2DestinationSlotDefined1MatchGroup() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 1,
                         CA05_, ComplexStack.Match.GROUP, true), nullValue());
@@ -1328,7 +1328,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined1MatchGroup() {
+            public void testSourceSlotDefined4DestinationSlotDefined1MatchGroup() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
                         CA05_, ComplexStack.Match.GROUP, true), nullValue());
@@ -1340,7 +1340,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined0DestinationSlotDefined2() {
+            public void testSourceSlotDefined0DestinationSlotDefined2() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 2,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1352,7 +1352,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined2() {
+            public void testSourceSlotDefined1DestinationSlotDefined2() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 2,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1364,7 +1364,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined2DestinationSlotDefined2() {
+            public void testSourceSlotDefined2DestinationSlotDefined2() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 2,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1376,7 +1376,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined2() {
+            public void testSourceSlotDefined4DestinationSlotDefined2() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 2,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1388,7 +1388,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined0DestinationSlotDefined4() {
+            public void testSourceSlotDefined0DestinationSlotDefined4() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1400,7 +1400,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4() {
+            public void testSourceSlotDefined1DestinationSlotDefined4() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -1412,7 +1412,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined2DestinationSlotDefined4() {
+            public void testSourceSlotDefined2DestinationSlotDefined4() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 4,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1424,7 +1424,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined4() {
+            public void testSourceSlotDefined4DestinationSlotDefined4() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1436,7 +1436,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined4MatchGroup() {
+            public void testSourceSlotDefined4DestinationSlotDefined4MatchGroup() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
                         CA05_, ComplexStack.Match.GROUP, true), nullValue());
@@ -1448,7 +1448,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined0MatchGroup() {
+            public void testSourceSlotDefined4DestinationSlotDefined0MatchGroup() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1460,7 +1460,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0() {
+            public void testSourceSlotLoopDestinationSlotDefined0() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -1472,7 +1472,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1() {
+            public void testSourceSlotLoopDestinationSlotDefined1() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -1484,7 +1484,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined2() {
+            public void testSourceSlotLoopDestinationSlotDefined2() throws InconsistentIngredientInsertionException {
                 // Move none
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 2,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1496,7 +1496,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4() {
+            public void testSourceSlotLoopDestinationSlotDefined4() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -1508,7 +1508,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined5OutofBounds() {
+            public void testSourceSlotLoopDestinationSlotDefined5OutofBounds() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 5,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1520,7 +1520,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop() {
+            public void testSourceSlotDefinedDestinationSlotLoop() throws InconsistentIngredientInsertionException {
                 // Move nothing
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
@@ -1532,7 +1532,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoop() {
+            public void testSourceSlotLoopDestinationSlotLoop() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -1544,7 +1544,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroup() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroup() throws InconsistentIngredientInsertionException {
                 // Move 5
                 assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
                         CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
@@ -1558,7 +1558,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Start clear
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0Clear() {
+            public void testSourceSlotLoopDestinationSlotDefined0Clear() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
 
                 // Move nothing
@@ -1572,7 +1572,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1Clear() {
+            public void testSourceSlotLoopDestinationSlotDefined1Clear() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
 
                 // Move nothing
@@ -1586,7 +1586,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4Clear() {
+            public void testSourceSlotLoopDestinationSlotDefined4Clear() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
 
                 // Move nothing
@@ -1600,7 +1600,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopClear() {
+            public void testSourceSlotLoopDestinationSlotLoopClear() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
 
                 // Move nothing
@@ -1614,7 +1614,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupClear() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupClear() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
 
                 // Move nothing
@@ -1630,7 +1630,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Source few start
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0SourceFew() {
+            public void testSourceSlotDefined1DestinationSlotDefined0SourceFew() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1646,7 +1646,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1SourceFew() {
+            public void testSourceSlotDefined1DestinationSlotDefined1SourceFew() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1662,7 +1662,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceFew() {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceFew() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1678,7 +1678,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4SourceFew() {
+            public void testSourceSlotDefined1DestinationSlotDefined4SourceFew() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1694,7 +1694,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceFew() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceFew() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1710,7 +1710,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1SourceFew() {
+            public void testSourceSlotLoopDestinationSlotDefined1SourceFew() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1726,7 +1726,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4SourceFew() {
+            public void testSourceSlotLoopDestinationSlotDefined4SourceFew() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1742,7 +1742,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFew() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFew() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1758,7 +1758,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceFew() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceFew() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1776,7 +1776,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Source more start
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0SourceMore() {
+            public void testSourceSlotDefined1DestinationSlotDefined0SourceMore() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -1792,7 +1792,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1SourceMore() {
+            public void testSourceSlotDefined1DestinationSlotDefined1SourceMore() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -1808,7 +1808,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceMore() {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceMore() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -1824,7 +1824,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4SourceMore() {
+            public void testSourceSlotDefined1DestinationSlotDefined4SourceMore() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -1840,7 +1840,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceMore() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceMore() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -1856,7 +1856,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1SourceMore() {
+            public void testSourceSlotLoopDestinationSlotDefined1SourceMore() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -1872,7 +1872,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4SourceMore() {
+            public void testSourceSlotLoopDestinationSlotDefined4SourceMore() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -1888,7 +1888,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceMore() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceMore() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -1904,7 +1904,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceMore() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceMore() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -1922,7 +1922,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Source not extractable
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceNotExtractable() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceNotExtractable() throws InconsistentIngredientInsertionException {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -1936,7 +1936,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1SourceNotExtractable() {
+            public void testSourceSlotLoopDestinationSlotDefined1SourceNotExtractable() throws InconsistentIngredientInsertionException {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -1950,7 +1950,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4SourceNotExtractable() {
+            public void testSourceSlotLoopDestinationSlotDefined4SourceNotExtractable() throws InconsistentIngredientInsertionException {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -1964,7 +1964,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceNotExtractable() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceNotExtractable() throws InconsistentIngredientInsertionException {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -1978,7 +1978,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceNotExtractable() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceNotExtractable() throws InconsistentIngredientInsertionException {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -1994,7 +1994,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Destination not insertable rate
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -2008,7 +2008,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1DestinationNotInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotDefined1DestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -2022,7 +2022,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4DestinationNotInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotDefined4DestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -2036,7 +2036,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -2050,7 +2050,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationNotInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
                 // Move nothing
@@ -2066,7 +2066,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Destination fewer insertable rate
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0DestinationFewerInsertableRate() {
+            public void testSourceSlotDefined1DestinationSlotDefined0DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
@@ -2080,7 +2080,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1DestinationFewerInsertableRate() {
+            public void testSourceSlotDefined1DestinationSlotDefined1DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
@@ -2094,7 +2094,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupDestinationFewerInsertableRate() {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupDestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
@@ -2108,7 +2108,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4DestinationFewerInsertableRate() {
+            public void testSourceSlotDefined1DestinationSlotDefined4DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
@@ -2122,7 +2122,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
@@ -2136,7 +2136,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1DestinationFewerInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotDefined1DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
@@ -2150,7 +2150,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4DestinationFewerInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotDefined4DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
@@ -2164,7 +2164,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationFewerInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
@@ -2178,7 +2178,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationFewerInsertableRate() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
@@ -2194,7 +2194,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Destination not insertable max amount
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableMaxAmount() {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
                 // Move nothing
@@ -2208,7 +2208,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1DestinationNotInsertableMaxAmount() {
+            public void testSourceSlotLoopDestinationSlotDefined1DestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
                 // Move nothing
@@ -2222,7 +2222,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4DestinationNotInsertableMaxAmount() {
+            public void testSourceSlotLoopDestinationSlotDefined4DestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
                 // Move nothing
@@ -2236,7 +2236,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableMaxAmount() {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
                 // Move nothing
@@ -2250,7 +2250,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationNotInsertableMaxAmount() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
                 // Move nothing
@@ -2266,7 +2266,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             /* The following tests include an exact quantity matcher flag */
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0SourceFewQuantitative() {
+            public void testSourceSlotDefined1DestinationSlotDefined0SourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -2282,7 +2282,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0SourceFewQuantitativeOk() {
+            public void testSourceSlotDefined1DestinationSlotDefined0SourceFewQuantitativeOk() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -2298,7 +2298,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1SourceFewQuantitative() {
+            public void testSourceSlotDefined1DestinationSlotDefined1SourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -2314,7 +2314,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1SourceFewQuantitativeOk() {
+            public void testSourceSlotDefined1DestinationSlotDefined1SourceFewQuantitativeOk() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -2330,7 +2330,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceFewQuantitative() {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -2346,7 +2346,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4SourceFewQuantitative() {
+            public void testSourceSlotDefined1DestinationSlotDefined4SourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -2362,7 +2362,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceFewQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -2378,7 +2378,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1SourceFewQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined1SourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -2394,7 +2394,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4SourceFewQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined4SourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -2410,7 +2410,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitative() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -2426,7 +2426,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceFewQuantitative() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceFewQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -2444,7 +2444,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Source more start
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0SourceMoreQuantitative() {
+            public void testSourceSlotDefined1DestinationSlotDefined0SourceMoreQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -2460,7 +2460,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1SourceMoreQuantitative() {
+            public void testSourceSlotDefined1DestinationSlotDefined1SourceMoreQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -2476,7 +2476,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceMoreQuantitative() {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceMoreQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -2492,7 +2492,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4SourceMoreQuantitative() {
+            public void testSourceSlotDefined1DestinationSlotDefined4SourceMoreQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -2508,7 +2508,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceMoreQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceMoreQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -2524,7 +2524,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1SourceMoreQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined1SourceMoreQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -2540,7 +2540,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4SourceMoreQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined4SourceMoreQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -2556,7 +2556,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceMoreQuantitative() {
+            public void testSourceSlotLoopDestinationSlotLoopSourceMoreQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -2572,7 +2572,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceMoreQuantitative() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceMoreQuantitative() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
@@ -2590,7 +2590,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Destination fewer insertable rate
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0DestinationFewerInsertableRateQuantitative() {
+            public void testSourceSlotDefined1DestinationSlotDefined0DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
@@ -2604,7 +2604,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1DestinationFewerInsertableRateQuantitative() {
+            public void testSourceSlotDefined1DestinationSlotDefined1DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
@@ -2618,7 +2618,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupDestinationFewerInsertableRateQuantitative() {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupDestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
@@ -2632,7 +2632,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4DestinationFewerInsertableRateQuantitative() {
+            public void testSourceSlotDefined1DestinationSlotDefined4DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
@@ -2646,7 +2646,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRateQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
@@ -2660,7 +2660,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1DestinationFewerInsertableRateQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined1DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
@@ -2674,7 +2674,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4DestinationFewerInsertableRateQuantitative() {
+            public void testSourceSlotLoopDestinationSlotDefined4DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
@@ -2688,7 +2688,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationFewerInsertableRateQuantitative() {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
@@ -2702,7 +2702,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationFewerInsertableRateQuantitative() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
@@ -2716,7 +2716,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceJustEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceJustEnoughRoom() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -2734,7 +2734,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0MatchGroupSourceJustEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotDefined0MatchGroupSourceJustEnoughRoom() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -2752,7 +2752,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1MatchGroupSourceJustEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotDefined1MatchGroupSourceJustEnoughRoom() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -2770,7 +2770,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceNotEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceNotEnoughRoom() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -2788,7 +2788,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0MatchGroupSourceNotEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotDefined0MatchGroupSourceNotEnoughRoom() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -2806,7 +2806,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1MatchGroupSourceNotEnoughRoom() {
+            public void testSourceSlotLoopDestinationSlotDefined1MatchGroupSourceNotEnoughRoom() throws InconsistentIngredientInsertionException {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);

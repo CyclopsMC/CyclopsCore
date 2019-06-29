@@ -112,7 +112,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsNoneEmpty() {
+    public void testMoveIngredientsNoneEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 0, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 0, false), is(0));
 
@@ -120,7 +120,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsNoneNonEmpty() {
+    public void testMoveIngredientsNoneNonEmpty() throws InconsistentIngredientInsertionException {
         sourceStorage.insert(100, false);
 
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 0, true), is(0));
@@ -130,7 +130,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsFittingRateEmpty() {
+    public void testMoveIngredientsFittingRateEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 10, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 10, false), is(0));
 
@@ -139,7 +139,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsFittingRateNonEmpty() {
+    public void testMoveIngredientsFittingRateNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -153,7 +153,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsHigherThanRateEmpty() {
+    public void testMoveIngredientsHigherThanRateEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 20, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 20, false), is(0));
 
@@ -162,7 +162,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsHigherThanRateNonEmpty() {
+    public void testMoveIngredientsHigherThanRateNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -176,7 +176,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsHigherThanContentsNonEmpty() {
+    public void testMoveIngredientsHigherThanContentsNonEmpty() throws InconsistentIngredientInsertionException {
         sourceStorage.insert(5, false);
 
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 10, true), is(5));
@@ -187,7 +187,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsHigherThanMaxEmpty() {
+    public void testMoveIngredientsHigherThanMaxEmpty() throws InconsistentIngredientInsertionException {
         for (int i = 0; i <= 10; i++) {
             assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, true), is(0));
             assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, false), is(0));
@@ -210,7 +210,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsHigherThanMaxNonEmpty() {
+    public void testMoveIngredientsHigherThanMaxNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -238,7 +238,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsNonEmptySourceBlocked() {
+    public void testMoveIngredientsNonEmptySourceBlocked() throws InconsistentIngredientInsertionException {
         IngredientComponentStorageCollectionWrapper<Integer, Boolean> sourceStorage
                 = new IngredientComponentStorageCollectionWrapper<>(sourceInnerStorage, 100, 0);
         sourceInnerStorage.add(100);
@@ -251,7 +251,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsNonEmptyDestinationBlocked() {
+    public void testMoveIngredientsNonEmptyDestinationBlocked() throws InconsistentIngredientInsertionException {
         IngredientComponentStorageCollectionWrapper<Integer, Boolean> destinationStorage
                 = new IngredientComponentStorageCollectionWrapper<>(destinationInnerStorage, 100, 0);
         sourceInnerStorage.add(100);
@@ -264,7 +264,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsMatchNoneEmpty() {
+    public void testMoveIngredientsMatchNoneEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 0, false, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 0, false, false), is(0));
 
@@ -272,7 +272,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsMatchNoneNonEmpty() {
+    public void testMoveIngredientsMatchNoneNonEmpty() throws InconsistentIngredientInsertionException {
         sourceStorage.insert(100, false);
 
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 0, false, true), is(0));
@@ -282,7 +282,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsMatchFittingRateEmpty() {
+    public void testMoveIngredientsMatchFittingRateEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 10, false, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 10, false, false), is(0));
 
@@ -291,7 +291,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsMatchFittingRateNonEmpty() {
+    public void testMoveIngredientsMatchFittingRateNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -305,7 +305,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsMatchHigherThanRateEmpty() {
+    public void testMoveIngredientsMatchHigherThanRateEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 20, false, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 20, false, false), is(0));
 
@@ -314,7 +314,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsMatchHigherThanRateNonEmpty() {
+    public void testMoveIngredientsMatchHigherThanRateNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -328,7 +328,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsMatchHigherThanContentsNonEmpty() {
+    public void testMoveIngredientsMatchHigherThanContentsNonEmpty() throws InconsistentIngredientInsertionException {
         sourceStorage.insert(5, false);
 
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 10, false, true), is(5));
@@ -339,7 +339,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsMatchHigherThanMaxEmpty() {
+    public void testMoveIngredientsMatchHigherThanMaxEmpty() throws InconsistentIngredientInsertionException {
         for (int i = 0; i <= 10; i++) {
             assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, false, true), is(0));
             assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, 9, false, false), is(0));
@@ -362,7 +362,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsMatchHigherThanMaxNonEmpty() {
+    public void testMoveIngredientsMatchHigherThanMaxNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -390,7 +390,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsMatchNonEmptySourceBlocked() {
+    public void testMoveIngredientsMatchNonEmptySourceBlocked() throws InconsistentIngredientInsertionException {
         IngredientComponentStorageCollectionWrapper<Integer, Boolean> sourceStorage
                 = new IngredientComponentStorageCollectionWrapper<>(sourceInnerStorage, 100, 0);
         sourceInnerStorage.add(100);
@@ -403,7 +403,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsMatchNonEmptyDestinationBlocked() {
+    public void testMoveIngredientsMatchNonEmptyDestinationBlocked() throws InconsistentIngredientInsertionException {
         IngredientComponentStorageCollectionWrapper<Integer, Boolean> destinationStorage
                 = new IngredientComponentStorageCollectionWrapper<>(destinationInnerStorage, 100, 0);
         sourceInnerStorage.add(100);
@@ -416,7 +416,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateNoneEmpty() {
+    public void testMoveIngredientsPredicateNoneEmpty() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> false;
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, Integer.MAX_VALUE, false, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, Integer.MAX_VALUE, false, false), is(0));
@@ -425,7 +425,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateNoneNonEmpty() {
+    public void testMoveIngredientsPredicateNoneNonEmpty() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> false;
         sourceStorage.insert(100, false);
 
@@ -436,7 +436,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateAllEmpty() {
+    public void testMoveIngredientsPredicateAllEmpty() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> true;
 
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, Integer.MAX_VALUE, false, true), is(0));
@@ -447,7 +447,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateAllNonEmpty() {
+    public void testMoveIngredientsPredicateAllNonEmpty() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> true;
         int toInsert = 100;
         while (toInsert > 0) {
@@ -462,7 +462,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateAllNonEmptySourceBlocked() {
+    public void testMoveIngredientsPredicateAllNonEmptySourceBlocked() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> true;
         IngredientComponentStorageCollectionWrapper<Integer, Boolean> sourceStorage
                 = new IngredientComponentStorageCollectionWrapper<>(sourceInnerStorage, 100, 0);
@@ -476,7 +476,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateAllNonEmptyDestinationBlocked() {
+    public void testMoveIngredientsPredicateAllNonEmptyDestinationBlocked() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> true;
         IngredientComponentStorageCollectionWrapper<Integer, Boolean> destinationStorage
                 = new IngredientComponentStorageCollectionWrapper<>(destinationInnerStorage, 100, 0);
@@ -490,7 +490,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateNoneEmptyLowerQuantity() {
+    public void testMoveIngredientsPredicateNoneEmptyLowerQuantity() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> false;
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, 5, false, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, 5, false, false), is(0));
@@ -499,7 +499,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateNoneNonEmptyLowerQuantity() {
+    public void testMoveIngredientsPredicateNoneNonEmptyLowerQuantity() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> false;
         sourceStorage.insert(100, false);
 
@@ -510,7 +510,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateAllEmptyLowerQuantity() {
+    public void testMoveIngredientsPredicateAllEmptyLowerQuantity() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> true;
 
         assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationStorage, predicate, 5, false, true), is(0));
@@ -521,7 +521,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateAllNonEmptyLowerQuantity() {
+    public void testMoveIngredientsPredicateAllNonEmptyLowerQuantity() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> true;
         int toInsert = 100;
         while (toInsert > 0) {
@@ -536,7 +536,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateAllNonEmptyLowerQuantityExact() {
+    public void testMoveIngredientsPredicateAllNonEmptyLowerQuantityExact() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> true;
         int toInsert = 100;
         while (toInsert > 0) {
@@ -551,7 +551,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateAllNonEmptyHigherQuantity() {
+    public void testMoveIngredientsPredicateAllNonEmptyHigherQuantity() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> true;
         sourceStorage.insert(1, false);
 
@@ -563,7 +563,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateAllNonEmptyHigherQuantityExact() {
+    public void testMoveIngredientsPredicateAllNonEmptyHigherQuantityExact() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> true;
         sourceStorage.insert(1, false);
 
@@ -575,7 +575,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateAllNonEmptySourceBlockedLowerQuantity() {
+    public void testMoveIngredientsPredicateAllNonEmptySourceBlockedLowerQuantity() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> true;
         IngredientComponentStorageCollectionWrapper<Integer, Boolean> sourceStorage
                 = new IngredientComponentStorageCollectionWrapper<>(sourceInnerStorage, 100, 0);
@@ -589,7 +589,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsPredicateAllNonEmptyDestinationBlockedLowerQuantity() {
+    public void testMoveIngredientsPredicateAllNonEmptyDestinationBlockedLowerQuantity() throws InconsistentIngredientInsertionException {
         Predicate<Integer> predicate = (i) -> true;
         IngredientComponentStorageCollectionWrapper<Integer, Boolean> destinationStorage
                 = new IngredientComponentStorageCollectionWrapper<>(destinationInnerStorage, 100, 0);
@@ -603,7 +603,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeNoneEmpty() {
+    public void testMoveIngredientsIterativeNoneEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, false), is(0));
 
@@ -611,7 +611,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeNoneNonEmpty() {
+    public void testMoveIngredientsIterativeNoneNonEmpty() throws InconsistentIngredientInsertionException {
         sourceStorage.insert(100, false);
 
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, true), is(0));
@@ -621,7 +621,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeFittingRateEmpty() {
+    public void testMoveIngredientsIterativeFittingRateEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 10, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 10, false), is(0));
 
@@ -630,7 +630,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeFittingRateNonEmpty() {
+    public void testMoveIngredientsIterativeFittingRateNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -644,7 +644,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeHigherThanRateEmpty() {
+    public void testMoveIngredientsIterativeHigherThanRateEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 20, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 20, false), is(0));
 
@@ -653,7 +653,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeHigherThanRateNonEmpty() {
+    public void testMoveIngredientsIterativeHigherThanRateNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -667,7 +667,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeHigherThanRateUnevenNonEmpty() {
+    public void testMoveIngredientsIterativeHigherThanRateUnevenNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -681,7 +681,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeHigherThanMaxEmpty() {
+    public void testMoveIngredientsIterativeHigherThanMaxEmpty() throws InconsistentIngredientInsertionException {
         for (int i = 0; i <= 10; i++) {
             assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, true), is(0));
             assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, false), is(0));
@@ -704,7 +704,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeHigherThanMaxNonEmpty() {
+    public void testMoveIngredientsIterativeHigherThanMaxNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -732,7 +732,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchNoneEmpty() {
+    public void testMoveIngredientsIterativeMatchNoneEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, false, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, false, false), is(0));
 
@@ -740,7 +740,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchNoneNonEmpty() {
+    public void testMoveIngredientsIterativeMatchNoneNonEmpty() throws InconsistentIngredientInsertionException {
         sourceStorage.insert(100, false);
 
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, false, true), is(0));
@@ -750,7 +750,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchFittingRateEmpty() {
+    public void testMoveIngredientsIterativeMatchFittingRateEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 10, false, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 10, false, false), is(0));
 
@@ -759,7 +759,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchFittingRateNonEmpty() {
+    public void testMoveIngredientsIterativeMatchFittingRateNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -773,7 +773,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchHigherThanRateEmpty() {
+    public void testMoveIngredientsIterativeMatchHigherThanRateEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 20, false, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 20, false, false), is(0));
 
@@ -782,7 +782,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchHigherThanRateNonEmpty() {
+    public void testMoveIngredientsIterativeMatchHigherThanRateNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -796,7 +796,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchHigherThanMaxEmpty() {
+    public void testMoveIngredientsIterativeMatchHigherThanMaxEmpty() throws InconsistentIngredientInsertionException {
         for (int i = 0; i <= 10; i++) {
             assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, false, true), is(0));
             assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, false, false), is(0));
@@ -819,7 +819,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchHigherThanMaxNonEmpty() {
+    public void testMoveIngredientsIterativeMatchHigherThanMaxNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -847,7 +847,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchExactNoneEmpty() {
+    public void testMoveIngredientsIterativeMatchExactNoneEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, true, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, true, false), is(0));
 
@@ -855,7 +855,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchExactNoneNonEmpty() {
+    public void testMoveIngredientsIterativeMatchExactNoneNonEmpty() throws InconsistentIngredientInsertionException {
         sourceStorage.insert(100, false);
 
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 0, true, true), is(0));
@@ -865,7 +865,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchExactFittingRateEmpty() {
+    public void testMoveIngredientsIterativeMatchExactFittingRateEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 10, true, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 10, true, false), is(0));
 
@@ -874,7 +874,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchExactFittingRateNonEmpty() {
+    public void testMoveIngredientsIterativeMatchExactFittingRateNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -888,7 +888,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchHigherThanFittingRateUnevenNonEmpty() {
+    public void testMoveIngredientsIterativeMatchHigherThanFittingRateUnevenNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -902,7 +902,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchExactHigherThanRateEmpty() {
+    public void testMoveIngredientsIterativeMatchExactHigherThanRateEmpty() throws InconsistentIngredientInsertionException {
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 20, true, true), is(0));
         assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 20, true, false), is(0));
 
@@ -911,7 +911,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchExactHigherThanRateNonEmpty() {
+    public void testMoveIngredientsIterativeMatchExactHigherThanRateNonEmpty() throws InconsistentIngredientInsertionException {
         int toInsert = 100;
         while (toInsert > 0) {
             toInsert -= sourceStorage.insert(toInsert, false);
@@ -925,7 +925,7 @@ public class TestIngredientComponentStorageHelpers {
     }
 
     @Test
-    public void testMoveIngredientsIterativeMatchExactHigherThanMaxEmpty() {
+    public void testMoveIngredientsIterativeMatchExactHigherThanMaxEmpty() throws InconsistentIngredientInsertionException {
         for (int i = 0; i <= 10; i++) {
             assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, true, true), is(0));
             assertThat(IngredientStorageHelpers.moveIngredientsIterative(sourceStorage, destinationStorage, 9, true, false), is(0));
