@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Lib changes:
+* Throw exception instead of warning on lost ingred during movement
+  This fixed the problem where items could silently go lost
+  in Integrated Tunnels network upon movement failures.
+
+Lib additions:
+* Add getter for scroll position in GuiScrollBar
