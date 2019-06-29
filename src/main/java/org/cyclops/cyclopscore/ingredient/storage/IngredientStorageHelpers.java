@@ -257,6 +257,7 @@ public final class IngredientStorageHelpers {
      * @param <T> The instance type.
      * @param <M> The matching condition parameter.
      * @return The moved ingredient.
+     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
      */
     public static <T, M> T moveIngredientsSlotted(IIngredientComponentStorage<T, M> source, int sourceSlot,
                                                   IIngredientComponentStorage<T, M> destination, int destinationSlot,
