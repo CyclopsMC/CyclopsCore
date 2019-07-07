@@ -14,6 +14,7 @@ import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
 import org.cyclops.cyclopscore.command.CommandDebug;
+import org.cyclops.cyclopscore.command.CommandDumpRegistries;
 import org.cyclops.cyclopscore.command.CommandIgnite;
 import org.cyclops.cyclopscore.command.CommandMod;
 import org.cyclops.cyclopscore.command.CommandRecursion;
@@ -24,6 +25,9 @@ import org.cyclops.cyclopscore.ingredient.recipe.RecipeInputOutputDefinitionHand
 import org.cyclops.cyclopscore.ingredient.recipe.RecipeInputOutputDefinitionRegistry;
 import org.cyclops.cyclopscore.init.ModBaseVersionable;
 import org.cyclops.cyclopscore.init.RecipeHandler;
+import org.cyclops.cyclopscore.metadata.IRegistryExportableRegistry;
+import org.cyclops.cyclopscore.metadata.RegistryExportableRegistry;
+import org.cyclops.cyclopscore.metadata.RegistryExportables;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.versionchecker.VersionCheckerModCompat;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
@@ -84,6 +88,7 @@ public class CyclopsCore extends ModBaseVersionable {
         commands.put(CommandIgnite.NAME, new CommandIgnite(this));
         commands.put(CommandDebug.NAME, new CommandDebug(this));
         commands.put(CommandReloadResources.NAME, new CommandReloadResources(this));
+        commands.put(CommandDumpRegistries.NAME, new CommandDumpRegistries(this));
         CommandMod command =  new CommandMod(this, commands);
         command.addAlias("cyclops");
         return command;
@@ -94,12 +99,14 @@ public class CyclopsCore extends ModBaseVersionable {
     public final void preInit(FMLPreInitializationEvent event) {
         // Registries
         getRegistryManager().addRegistry(IRecipeInputOutputDefinitionRegistry.class, new RecipeInputOutputDefinitionRegistry());
+        getRegistryManager().addRegistry(IRegistryExportableRegistry.class, RegistryExportableRegistry.getInstance());
 
         super.preInit(event);
         Advancements.load();
         if (Loader.isModLoaded(Reference.MOD_COMMONCAPABILITIES)) {
             RecipeInputOutputDefinitionHandlers.load();
         }
+        RegistryExportables.load();
     }
 
     @Mod.EventHandler
