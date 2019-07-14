@@ -55,7 +55,7 @@ public class KeyBindingAppendix extends SectionAppendix {
     protected void drawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
         gui.drawOuterBorder(x - 1, y - 1, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
         gui.drawTextBanner(x + width / 2, y - 2);
-        gui.drawScaledCenteredString(L10NHelpers.localize("infobook.cyclopscore.keybinding"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
+        gui.drawScaledCenteredString(L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".keybinding"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
 
         gui.drawScaledCenteredString(TextFormatting.ITALIC.toString() + L10NHelpers.localize(keyBinding.getKeyDescription()),
                 x, y - 2 + 12, width, 0.9f, gui.getBannerWidth() + 8, Helpers.RGBToInt(30, 20, 120));
