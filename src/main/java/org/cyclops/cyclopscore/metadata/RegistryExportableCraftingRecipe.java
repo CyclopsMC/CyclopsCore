@@ -44,28 +44,16 @@ public class RegistryExportableCraftingRecipe implements IRegistryExportable {
         for (Ingredient input : inputs) {
             JsonArray arrayInputAlternatives = new JsonArray();
             for (ItemStack inputAlternative : input.getMatchingStacks()) {
-                arrayInputAlternatives.add(serializeItemStack(inputAlternative));
+                arrayInputAlternatives.add(IRegistryExportable.serializeItemStack(inputAlternative));
             }
             arrayInputs.add(arrayInputAlternatives);
         }
         object.add("input", arrayInputs);
-        object.add("output", serializeItemStack(recipe.getRecipeOutput()));
+        object.add("output", IRegistryExportable.serializeItemStack(recipe.getRecipeOutput()));
 
         if(recipe instanceof IShapedRecipe) {
             object.addProperty("width", ((IShapedRecipe) recipe).getRecipeWidth());
             object.addProperty("height", ((IShapedRecipe) recipe).getRecipeHeight());
-        }
-
-        return object;
-    }
-
-    public JsonObject serializeItemStack(ItemStack itemStack) {
-        JsonObject object = new JsonObject();
-
-        object.addProperty("item", itemStack.getItem().getRegistryName().toString());
-        object.addProperty("data", itemStack.getMetadata());
-        if (itemStack.hasTagCompound()) {
-            object.addProperty("nbt", itemStack.getTagCompound().toString());
         }
 
         return object;

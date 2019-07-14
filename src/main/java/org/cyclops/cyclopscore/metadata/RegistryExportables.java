@@ -9,6 +9,7 @@ public class RegistryExportables {
 
     public static void load() {
         REGISTRY.register(new RegistryExportableCraftingRecipe());
+        REGISTRY.register(new RegistryExportableItemTranslationKeys());
     }
 
 }
