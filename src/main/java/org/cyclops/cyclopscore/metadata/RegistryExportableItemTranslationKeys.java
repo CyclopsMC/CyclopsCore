@@ -25,6 +25,9 @@ public class RegistryExportableItemTranslationKeys implements IRegistryExportabl
             value.getSubItems(CreativeTabs.SEARCH, subItems);
             for (ItemStack subItem : subItems) {
                 String translationKey = subItem.getTranslationKey();
+                if (!translationKey.endsWith(".name")) {
+                    translationKey += ".name";
+                }
 
                 JsonObject object = new JsonObject();
                 object.addProperty("translationKey", translationKey);
