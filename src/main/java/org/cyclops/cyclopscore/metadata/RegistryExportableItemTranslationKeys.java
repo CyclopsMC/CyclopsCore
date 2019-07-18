@@ -9,7 +9,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 
 /**
- * Crafting recipe exporter.
+ * Item translation key exporter.
  */
 public class RegistryExportableItemTranslationKeys implements IRegistryExportable {
 
