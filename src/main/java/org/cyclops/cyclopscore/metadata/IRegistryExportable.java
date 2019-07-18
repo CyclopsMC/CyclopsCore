@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.metadata;
 
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * A registry export handler.
@@ -26,6 +27,18 @@ public interface IRegistryExportable {
         object.addProperty("count", itemStack.getCount());
         if (itemStack.hasTagCompound()) {
             object.addProperty("nbt", itemStack.getTagCompound().toString());
+        }
+
+        return object;
+    }
+
+    public static JsonObject serializeFluidStack(FluidStack fluidStack) {
+        JsonObject object = new JsonObject();
+
+        object.addProperty("fluid", fluidStack.getFluid().getName());
+        object.addProperty("amount", fluidStack.amount);
+        if (fluidStack.tag != null) {
+            object.addProperty("nbt", fluidStack.tag.toString());
         }
 
         return object;
