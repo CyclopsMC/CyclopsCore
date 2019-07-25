@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.UniversalBucket;
 
 /**
  * Item translation key exporter.
@@ -27,6 +28,11 @@ public class RegistryExportableItemTranslationKeys implements IRegistryExportabl
                 String translationKey = subItem.getTranslationKey();
                 if (!translationKey.endsWith(".name")) {
                     translationKey += ".name";
+                }
+
+                // Forge's universal bucket doesn't override the translation key, so we do it manually
+                if (value instanceof UniversalBucket) {
+                    translationKey = ((UniversalBucket) value).getFluid(subItem).getUnlocalizedName();
                 }
 
                 JsonObject object = new JsonObject();
