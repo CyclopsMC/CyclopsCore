@@ -42,6 +42,7 @@ org.cyclops.cyclopscore.inventory.container
 org.cyclops.cyclopscore.inventory.container.button
 org.cyclops.cyclopscore.inventory.slot
 org.cyclops.cyclopscore.item
+org.cyclops.cyclopscore.metadata
 org.cyclops.cyclopscore.modcompat
 org.cyclops.cyclopscore.modcompat.capabilities
 org.cyclops.cyclopscore.modcompat.crafttweaker.handlers
