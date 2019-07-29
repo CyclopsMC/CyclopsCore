@@ -35,8 +35,10 @@ public class RegistryExportableCraftingRecipe implements IRegistryExportable {
                 RecipeHandler recipeHandler = ((ModBase) modContainer.getMod()).getRecipeHandler();
                 if (recipeHandler != null) {
                     for (Map.Entry<String, org.cyclops.cyclopscore.recipe.custom.api.IRecipe> entry : recipeHandler.getTaggedRecipes().entries()) {
-                        ItemStack outputStack = ((IngredientRecipeComponent) entry.getValue().getOutput()).getFirstItemStack();
-                        taggedRecipeReverse.put(outputStack, entry.getKey());
+                        if (entry.getValue().getOutput() instanceof IngredientRecipeComponent) {
+                            ItemStack outputStack = ((IngredientRecipeComponent) entry.getValue().getOutput()).getFirstItemStack();
+                            taggedRecipeReverse.put(outputStack, entry.getKey());
+                        }
                     }
                 }
             }
