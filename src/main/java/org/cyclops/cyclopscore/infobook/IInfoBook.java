@@ -14,6 +14,7 @@ public interface IInfoBook {
 
     public ModBase getMod();
     public int getPagesPerView();
+    public String getBaseUrl();
 
     public void setCurrentPage(int page);
     public void setCurrentSection(InfoSection section);

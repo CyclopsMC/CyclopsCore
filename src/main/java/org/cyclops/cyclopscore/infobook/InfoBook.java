@@ -18,6 +18,7 @@ public class InfoBook implements IInfoBook {
 
     private final ModBase mod;
     private final int pagesPerView;
+    private final String baseUrl;
     private final EvictingStack<InfoSection.Location> history = new EvictingStack<InfoSection.Location>(128);
     private int currentPage = 0;
     private InfoSection currentSection = null;

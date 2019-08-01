@@ -38,7 +38,8 @@ public abstract class GuiInfoBook extends GuiScreen {
     private static final int BUTTON_PREVIOUS = 2;
     private static final int BUTTON_PARENT = 3;
     private static final int BUTTON_BACK = 4;
-    private static final int BUTTON_HYPERLINKS_START = 5;
+    private static final int BUTTON_EXTERNAL = 5;
+    private static final int BUTTON_HYPERLINKS_START = 6;
 
     private static final int HR_WIDTH = 88;
     private static final int HR_HEIGHT = 10;
@@ -60,6 +61,7 @@ public abstract class GuiInfoBook extends GuiScreen {
     protected NextPageButton buttonPreviousPage;
     protected NextPageButton buttonParent;
     protected NextPageButton buttonBack;
+    protected NextPageButton buttonExternal;
 
     private InfoSection nextSection;
     private int nextPage;
@@ -126,10 +128,11 @@ public abstract class GuiInfoBook extends GuiScreen {
         left = (width - getGuiWidth()) / 2;
         top = (height - getGuiHeight()) / 2;
 
-        this.buttonList.add(this.buttonNextPage = new NextPageButton(BUTTON_NEXT, left + getPageWidth() + 100 + getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 180, 18, 13, this));
-        this.buttonList.add(this.buttonPreviousPage = new NextPageButton(BUTTON_PREVIOUS, left + 23 - getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 193, 18, 13, this));
+        this.buttonList.add(this.buttonNextPage = new NextPageButton(BUTTON_NEXT, left + getPageWidth() + 100 + getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 180, 18, 10, this));
+        this.buttonList.add(this.buttonPreviousPage = new NextPageButton(BUTTON_PREVIOUS, left + 23 - getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 193, 18, 10, this));
         this.buttonList.add(this.buttonParent = new NextPageButton(BUTTON_PARENT, left + 2, top + 2, 36, 180, 8, 8, this));
         this.buttonList.add(this.buttonBack = new NextPageButton(BUTTON_BACK, left + getPageWidth() + 127, top + 2, 0, 223, 13, 18, this));
+        this.buttonList.add(this.buttonExternal = new NextPageButton(BUTTON_EXTERNAL, left + 130, top, 26, 203, 11, 11, this));
         this.updateGui();
 
         if (goToLastPage) {
@@ -191,6 +194,9 @@ public abstract class GuiInfoBook extends GuiScreen {
         }
         if (this.buttonParent.visible && RenderHelpers.isPointInButton(this.buttonParent, x, y)) {
             drawTooltip(x, y, Lists.newArrayList(L10NHelpers.localize("infobook.cyclopscore.parent_section")));
+        }
+        if (this.buttonExternal.visible && RenderHelpers.isPointInButton(this.buttonExternal, x, y)) {
+            drawTooltip(x, y, Lists.newArrayList(L10NHelpers.localize("infobook.cyclopscore.external")));
         }
     }
 
@@ -306,6 +312,8 @@ public abstract class GuiInfoBook extends GuiScreen {
             InfoSection.Location location = infoBook.getHistory().pop();
             nextSection = location.getInfoSection();
             nextPage = location.getPage();
+        } else if(button.id == BUTTON_EXTERNAL) {
+            Helpers.openUrl(infoBook.getBaseUrl() + infoBook.getCurrentSection().getRelativeWebPath());
         } else if(button instanceof TextOverlayButton) {
             nextSection = ((TextOverlayButton) button).getLink().getTarget();
             nextPage = 0;

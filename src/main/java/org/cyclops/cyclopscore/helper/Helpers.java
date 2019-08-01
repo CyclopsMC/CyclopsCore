@@ -11,8 +11,11 @@ import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.init.ModBase;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -231,6 +234,22 @@ public class Helpers {
             return BlockHelpers.getCapability(world, pos, side, capability);
         }
         return instance;
+    }
+
+    /**
+     * Open the given URL in the player's browser.
+     * @param url An URL.
+     */
+    public static void openUrl(String url) {
+        try {
+            URI uri = new URI(url);
+            Class<?> oclass = Class.forName("java.awt.Desktop");
+            Object object = oclass.getMethod("getDesktop").invoke(null);
+            oclass.getMethod("browse", URI.class).invoke(object, uri);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            CyclopsCore.clog(Level.ERROR, e.getMessage());
+        }
     }
 
 }

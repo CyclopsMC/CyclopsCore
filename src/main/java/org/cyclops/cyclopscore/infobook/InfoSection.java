@@ -56,6 +56,15 @@ public class InfoSection {
         this.tagList = tagList;
     }
 
+    public String getRelativeWebPath() {
+        if (isRoot()) {
+            return "";
+        } else {
+            String suffix = getSubSections() > 0 ? "/" : ".html";
+            return getParent().getRelativeWebPath() + getTranslationKey().substring(getTranslationKey().lastIndexOf('.') + 1) + suffix;
+        }
+    }
+
     /**
      * Add all links from the given map to this section, starting from page 0.
      * @param maxLines The maximum amount of lines per page.
