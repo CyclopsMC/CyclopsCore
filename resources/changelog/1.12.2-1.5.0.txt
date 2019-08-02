@@ -1,0 +1,10 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add infobook button to open Web version
+* Add dumpregistries command with ability to dump crafting recipe registry
+
+Changes:
+* Make keybinding appendix title dependent on mod
+* Include rewards localization string
+* Update to latest CommonCaps API version
