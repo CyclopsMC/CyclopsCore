@@ -23,11 +23,6 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     private WidgetTextFieldExtended searchField = null;
     private WidgetScrollBar scrollbar = null;
 
-    /**
-     * Make a new instance.
-     *
-     * @param container The container to make the GUI for.
-     */
     public ContainerScreenScrolling(T container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
     }

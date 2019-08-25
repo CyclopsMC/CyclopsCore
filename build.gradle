@@ -86,7 +86,7 @@ task sourceJar(type: Jar) {
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    from 'build/docs/javadoc'
+    from javadoc.destinationDir
     classifier 'javadoc'
 }
 
@@ -114,6 +114,7 @@ sourceSets {
 
 configurations {
     apiCompile.extendsFrom(compile)
+    javadoc.classpath += sourceSets.api.output
 }
 
 apply from: 'gradle/forge.gradle'

@@ -32,10 +32,6 @@ public abstract class ContainerScreenExtended<T extends InventoryContainer> exte
     protected int offsetX = 0;
     protected int offsetY = 0;
 
-    /**
-     * Make a new instance.
-     * @param container The container to make the GUI for.
-     */
     public ContainerScreenExtended(T container, PlayerInventory playerInventory, ITextComponent title) {
         super(container, playerInventory, title);
         container.setGuiValueListener(this);

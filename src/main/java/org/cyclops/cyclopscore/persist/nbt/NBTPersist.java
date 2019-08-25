@@ -13,8 +13,8 @@ import java.lang.annotation.Target;
  * Fields that are a subtype of {@link INBTSerializable} must not be null, they should
  * have a dummy value that will then be populated with the actual values.
  * It will automatically be added to
- * {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity#writeToNBT(CompoundNBT)}
- * and {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity#readFromNBT(CompoundNBT)}.
+ * {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity#write(CompoundNBT)}}
+ * and {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity#write(CompoundNBT)}.
  * @author rubensworks
  *
  */

@@ -23,10 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * Advanced packet handler of {@link PacketBase} instances.
  * An alternative would be {@link SimpleChannel}.
- * Partially based on the SecretRooms mod packet handling:
- * https://github.com/AbrarSyed/SecretRoomsMod-forge
  * @author rubensworks
- *
  */
 @Sharable
 public final class PacketHandler {
@@ -50,6 +47,7 @@ public final class PacketHandler {
     /**
      * Register a new packet.
      * @param packetType The class of the packet.
+     * @param <P> The packet type.
      */
     public <P extends PacketBase> void register(Class<P> packetType) {
         int discriminator = Helpers.getNewId(mod, IDType.PACKET);
