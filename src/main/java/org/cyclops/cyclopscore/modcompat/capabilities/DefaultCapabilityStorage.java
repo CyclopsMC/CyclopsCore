@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.modcompat.capabilities;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 
 /**
@@ -10,12 +10,12 @@ import net.minecraftforge.common.capabilities.Capability;
  */
 public class DefaultCapabilityStorage<T> implements Capability.IStorage<T> {
     @Override
-    public NBTBase writeNBT(Capability<T> capability, T instance, EnumFacing side) {
+    public INBT writeNBT(Capability<T> capability, T instance, Direction side) {
         return null;
     }
 
     @Override
-    public void readNBT(Capability<T> capability, T instance, EnumFacing side, NBTBase nbt) {
+    public void readNBT(Capability<T> capability, T instance, Direction side, INBT nbt) {
 
     }
 }

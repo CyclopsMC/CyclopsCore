@@ -1,28 +1,27 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.Blocks;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipes;
-import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.ShapedOreRecipe;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
-import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
+import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
 /**
  * Shaped recipes.
  * @author rubensworks
  */
-public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
+public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe<CraftingInventory>> {
 
     private static final int SLOT_OFFSET_X = 5;
     private static final int SLOT_OFFSET_Y = 5;
@@ -34,7 +33,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
     }
     private static final AdvancedButtonEnum RESULT = AdvancedButtonEnum.create();
 
-    public CraftingRecipeAppendix(IInfoBook infoBook, IRecipe recipe) {
+    public CraftingRecipeAppendix(IInfoBook infoBook, IRecipe<CraftingInventory> recipe) {
         super(infoBook, recipe);
     }
 
@@ -61,8 +60,8 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    protected void drawElementInner(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
+    @OnlyIn(Dist.CLIENT)
+    protected void drawElementInner(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
         gui.drawArrowRight(x + (SLOT_SIZE + SLOT_OFFSET_X) * 3 - 3, y + SLOT_OFFSET_Y + SLOT_SIZE + 2);
 
         // Prepare items
@@ -113,14 +112,10 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe> {
     protected Ingredient getItemStacks(int index) {
         NonNullList<Ingredient> ingredients;
 
-        if(recipe instanceof ShapedRecipes) {
-            ingredients = formatShapedGrid(((ShapedRecipes) recipe).recipeItems,
-                    ((ShapedRecipes) recipe).recipeWidth, ((ShapedRecipes) recipe).recipeHeight);
-        } else if(recipe instanceof ShapedOreRecipe) {
-            ingredients = formatShapedGrid(recipe.getIngredients(),
-                    ((ShapedOreRecipe) recipe).getWidth(),
-                    ((ShapedOreRecipe) recipe).getHeight());
-        } else if(recipe instanceof ShapelessRecipes || recipe instanceof ShapelessOreRecipe) {
+        if(recipe instanceof ShapedRecipe) {
+            ingredients = formatShapedGrid(((ShapedRecipe) recipe).getIngredients(),
+                    ((ShapedRecipe) recipe).getRecipeWidth(), ((ShapedRecipe) recipe).getRecipeHeight());
+        } else if(recipe instanceof ShapelessRecipe) {
             ingredients = recipe.getIngredients();
         } else {
             getInfoBook().getMod().log(Level.ERROR, "Recipe of type " + recipe.getClass() + " is not supported.");

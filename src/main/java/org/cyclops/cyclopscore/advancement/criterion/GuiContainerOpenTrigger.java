@@ -4,13 +4,13 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import net.minecraft.advancements.critereon.AbstractCriterionInstance;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
+import net.minecraft.advancements.criterion.CriterionInstance;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.cyclops.cyclopscore.Reference;
 
 import javax.annotation.Nullable;
@@ -42,12 +42,12 @@ public class GuiContainerOpenTrigger extends BaseCriterionTrigger<Container, Gui
 
     @SubscribeEvent
     public void onEvent(PlayerContainerEvent.Open event) {
-        if (event.getEntityPlayer() != null && event.getEntityPlayer() instanceof EntityPlayerMP) {
-            this.trigger((EntityPlayerMP) event.getEntityPlayer(), event.getContainer());
+        if (event.getEntityPlayer() != null && event.getEntityPlayer() instanceof ServerPlayerEntity) {
+            this.trigger((ServerPlayerEntity) event.getEntityPlayer(), event.getContainer());
         }
     }
 
-    public static class Instance extends AbstractCriterionInstance implements ICriterionInstanceTestable<Container> {
+    public static class Instance extends CriterionInstance implements ICriterionInstanceTestable<Container> {
         private final Class<?> clazz;
 
         public Instance(ResourceLocation criterionIn, @Nullable Class<?> clazz) {
@@ -56,7 +56,7 @@ public class GuiContainerOpenTrigger extends BaseCriterionTrigger<Container, Gui
         }
 
         @Override
-        public boolean test(EntityPlayerMP player, Container container) {
+        public boolean test(ServerPlayerEntity player, Container container) {
             return clazz != null && clazz.isInstance(container);
         }
     }

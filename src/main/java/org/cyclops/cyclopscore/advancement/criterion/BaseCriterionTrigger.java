@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.List;
@@ -60,7 +60,7 @@ public abstract class BaseCriterionTrigger<D, T extends ICriterionInstanceTestab
         this.listeners.remove(playerAdvancementsIn);
     }
 
-    public void trigger(EntityPlayerMP player, D criterionData) {
+    public void trigger(ServerPlayerEntity player, D criterionData) {
         BaseCriterionTrigger.Listeners<D, T> listeners = this.listeners.get(player.getAdvancements());
 
         if (listeners != null) {
@@ -88,7 +88,7 @@ public abstract class BaseCriterionTrigger<D, T extends ICriterionInstanceTestab
             this.listeners.remove(listener);
         }
 
-        public void trigger(EntityPlayerMP player, D criterionData) {
+        public void trigger(ServerPlayerEntity player, D criterionData) {
             List<Listener<T>> list = null;
 
             for (Listener<T> listener : this.listeners) {

@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.NBTTagByte;
-import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.ByteNBT;
+import net.minecraft.nbt.IntNBT;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,8 +50,8 @@ public class TestNbtPathExpressionHandlerBooleanRelationalLessThan {
     @Test
     public void testExpressionStreamSingleLeafIntValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagInt(2))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagByte((byte) 1))));
+        assertThat(expression.match(Stream.of(new IntNBT(2))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(new ByteNBT((byte) 1))));
     }
 
 }

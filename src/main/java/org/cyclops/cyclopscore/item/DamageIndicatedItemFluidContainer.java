@@ -1,22 +1,23 @@
 package org.cyclops.cyclopscore.item;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacity;
-import org.cyclops.cyclopscore.helper.ItemStackHelpers;
 
 import java.util.List;
 
@@ -37,14 +38,13 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     
     /**
      * Create a new DamageIndicatedItemFluidContainer.
-     * 
-     * @param capacity
-     *          The capacity this container will have.
-     * @param fluid
-     *          The Fluid instance this container must hold.
+     *
+     * @param builder Item properties builder.
+     * @param capacity The capacity this container will have.
+     * @param fluid The Fluid instance this container must hold.
      */
-    public DamageIndicatedItemFluidContainer(int capacity, Fluid fluid) {
-        super(capacity);
+    public DamageIndicatedItemFluidContainer(Item.Properties builder, int capacity, Fluid fluid) {
+        super(builder, capacity);
         this.fluid = fluid;
         init();
     }
@@ -54,9 +54,10 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList) {
-        if (!ItemStackHelpers.isValidCreativeTab(this, tab)) return;
-        component.getSubItems(tab, itemList, fluid, 0);
+    public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> items) {
+        if (this.isInGroup(group)) {
+            component.fillItemGroup(itemGroup, items, fluid);
+        }
     }
 
     @Override
@@ -65,14 +66,14 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     }
     
     @Override
-    @SideOnly(Side.CLIENT)
-    public void provideInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
+    @OnlyIn(Dist.CLIENT)
+    public void provideInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
         
     }
     
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
+    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
         component.addInformation(itemStack, world, list, flag);
         super.addInformation(itemStack, world, list, flag);
     }
@@ -107,14 +108,14 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
      * @return If it could be drained.
      */
     public boolean canDrain(int amount, ItemStack itemStack) {
-        IFluidHandler fluidHandler = FluidUtil.getFluidHandler(itemStack);
+        IFluidHandler fluidHandler = FluidUtil.getFluidHandler(itemStack).orElse(null);
         if (fluidHandler == null) return false;
     	FluidStack simulatedDrain = fluidHandler.drain(amount, false);
     	return simulatedDrain != null && simulatedDrain.amount == amount;
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
         return new FluidHandlerItemCapacity(stack, capacity, getFluid());
     }
 }

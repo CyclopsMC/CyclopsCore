@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.proxy;
 
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.tileentity.TileEntity;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -22,7 +22,7 @@ public interface ICommonProxy {
      * @param clazz The tile entity class.
      * @param renderer The tile entity renderer.
      */
-    public void registerRenderer(Class<? extends TileEntity> clazz, TileEntitySpecialRenderer renderer);
+    public void registerRenderer(Class<? extends TileEntity> clazz, TileEntityRenderer renderer);
 
     /**
      * Register renderers.

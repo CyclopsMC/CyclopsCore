@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigHandler;
-import org.cyclops.cyclopscore.config.UndisableableConfigException;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -17,62 +17,62 @@ import java.util.concurrent.Callable;
  * An action that is used to register Configurables.
  * Used inside of {@link ConfigHandler}.
  * @author rubensworks
- * @param <C> The subclass of ExtendedConfig
+ * @param <C> The subclass of ExtendedConfig.
+ * @param <I> The instance corresponding to this config.
  * @see ConfigHandler
  */
-public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
+public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I>, I> {
     
     /**
      * The common run method for all the subtypes of {@link ConfigurableTypeAction}.
      * @param eConfig The config to be registered.
-     * @param config The config file reference.
+     * @param configBuilder The configuration builder.
      */
-    public void commonRun(C eConfig, Configuration config) {
+    public void onConfigInit(C eConfig, ForgeConfigSpec.Builder configBuilder) {
         if(eConfig.isDisableable()) {
-            preRun(eConfig, config, true);
-        }
-        if (eConfig.isEnabled()) {
-            postRun(eConfig, config);
-        } else if (!eConfig.isDisableable()) {
-            throw new UndisableableConfigException(eConfig);
-        } else {
-            onSkipRegistration(eConfig);
+            buildConfigEnabled(eConfig, configBuilder);
         }
     }
+
+    /**
+     * Logic to register the eConfig target when the config is being loaded.
+     * @param eConfig The config to be registered.
+     */
+    public abstract void onRegister(C eConfig);
     
-    protected void onSkipRegistration(C eConfig) {
+    public void onSkipRegistration(C eConfig) {
         eConfig.getMod().log(Level.TRACE, "Skipped registering " + eConfig.getNamedId());
     }
     
     /**
-     * Logic that constructs the eConfig from for example a config file.
-     * @param eConfig configuration holder.
-     * @param config configuration from the config file.
-     * @param startup If this is currently being run at the mod startup.
+     * Logic that constructs the config options.
+     * @param eConfig The config to be registered.
+     * @param configBuilder The configuration builder.
      */
-    public abstract void preRun(C eConfig, Configuration config, boolean startup);
-    /**
-     * Logic to register the eConfig target.
-     * @param eConfig configuration holder.
-     * @param config configuration from the config file.
-     */
-    public abstract void postRun(C eConfig, Configuration config);
+    public void buildConfigEnabled(C eConfig, ForgeConfigSpec.Builder configBuilder) {
+        configBuilder.push(eConfig.getConfigurableType().getCategory());
 
-    /**
-     * Optional method that will be called during the initialization phase.
-     * @param config configuration holder.
-     */
-    public void polish(C config) {
+        // Construct property for enabling the configurable
+        if (eConfig.getComment() != null) {
+            configBuilder = configBuilder.comment(eConfig.getComment());
+        }
+        ForgeConfigSpec.BooleanValue configProperty = configBuilder
+                .translation(eConfig.getFullTranslationKey())
+                .worldRestart()
+                .define(eConfig.getNamedId(), eConfig.isEnabledDefault());
+        eConfig.setPropertyEnabled(configProperty);
 
+        configBuilder.pop();
     }
 
     /**
      * Register the {@link IForgeRegistryEntry}.
      * @param instance The instance.
      * @param config The corresponding config.
-     * @param <T> The type to register.
+     * @param <C> The subclass of ExtendedConfig.
+     * @param <I> The instance corresponding to this config.
      */
-    public static <T extends IForgeRegistryEntry<T>> void register(T instance, ExtendedConfig<?> config) {
+    public static <C extends ExtendedConfigForge<C, I>, I extends IForgeRegistryEntry<I>> void register(I instance, C config) {
         register(instance, config, () -> {
             config.onForgeRegistered();
             return null;
@@ -84,10 +84,11 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
      * @param instance The instance.
      * @param config The corresponding config.
      * @param callback A callback that will be called when the entry is registered.
-     * @param <T> The type to register.
+     * @param <C> The subclass of ExtendedConfig.
+     * @param <I> The instance corresponding to this config.
      */
-    public static <T extends IForgeRegistryEntry<T>> void register(T instance, ExtendedConfig<?> config, @Nullable Callable<?> callback) {
-        register(Objects.requireNonNull((IForgeRegistry<T>)config.getRegistry(),
+    public static <C extends ExtendedConfigForge<C, I>, I extends IForgeRegistryEntry<I>> void register(I instance, C config, @Nullable Callable<?> callback) {
+        register(Objects.requireNonNull(config.getRegistry(),
                 "Tried registering a config for which no registry exists: " + config.getNamedId()), instance, config, callback);
     }
 
@@ -96,9 +97,10 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
      * @param registry The registry.
      * @param instance The instance.
      * @param config The corresponding config.
-     * @param <T> The type to register.
+     * @param <C> The subclass of ExtendedConfig.
+     * @param <I> The instance corresponding to this config.
      */
-    public static <T extends IForgeRegistryEntry<T>> void register(IForgeRegistry<T> registry, T instance, ExtendedConfig<?> config) {
+    public static <C extends ExtendedConfigForge<C, I>, I extends IForgeRegistryEntry<I>> void register(IForgeRegistry<I> registry, I instance, C config) {
         register(registry, instance, config, null);
     }
 
@@ -108,9 +110,10 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C>> {
      * @param instance The instance.
      * @param config The corresponding config.
      * @param callback A callback that will be called when the entry is registered.
-     * @param <T> The type to register.
+     * @param <C> The subclass of ExtendedConfig.
+     * @param <I> The instance corresponding to this config.
      */
-    public static <T extends IForgeRegistryEntry<T>> void register(IForgeRegistry<T> registry, T instance, ExtendedConfig<?> config, @Nullable Callable<?> callback) {
+    public static <C extends ExtendedConfigForge<C, I>, I extends IForgeRegistryEntry<I>> void register(IForgeRegistry<? super I> registry, I instance, C config, @Nullable Callable<?> callback) {
         if (instance.getRegistryName() == null) {
             instance.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
         }

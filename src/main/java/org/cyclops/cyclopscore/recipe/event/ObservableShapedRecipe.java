@@ -1,10 +1,11 @@
 package org.cyclops.cyclopscore.recipe.event;
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipes;
+import net.minecraft.item.crafting.ShapedRecipe;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * A shaped recipe that is observable in terms of the recipe output.
@@ -12,12 +13,13 @@ import net.minecraft.util.NonNullList;
  * @author rubensworks
  *
  */
-public class ObservableShapedRecipe extends ShapedRecipes {
+public class ObservableShapedRecipe extends ShapedRecipe {
 	
 	private IRecipeOutputObserver observer;
 
 	/**
 	 * Make a new instance.
+	 * @param id The recipe id.
 	 * @param group The recipe name.
 	 * @param recipeWidth The recipe width.
 	 * @param recipeHeight The recipe height.
@@ -25,14 +27,14 @@ public class ObservableShapedRecipe extends ShapedRecipes {
 	 * @param recipeOutput The recipe output.
 	 * @param observer The observer for the output.
 	 */
-	public ObservableShapedRecipe(String group, int recipeWidth, int recipeHeight,
+	public ObservableShapedRecipe(ResourceLocation id, String group, int recipeWidth, int recipeHeight,
 								  NonNullList<Ingredient> recipeItems, ItemStack recipeOutput, IRecipeOutputObserver observer) {
-		super(group, recipeWidth, recipeHeight, recipeItems, recipeOutput);
+		super(id, group, recipeWidth, recipeHeight, recipeItems, recipeOutput);
 		this.observer = observer;
 	}
 	
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting craftingGrid) {
+	public ItemStack getCraftingResult(CraftingInventory craftingGrid) {
 		return observer.getRecipeOutput(craftingGrid, super.getCraftingResult(craftingGrid));
     }
 

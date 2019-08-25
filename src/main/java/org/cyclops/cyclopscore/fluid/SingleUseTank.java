@@ -1,12 +1,11 @@
 package org.cyclops.cyclopscore.fluid;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
-import org.cyclops.cyclopscore.tileentity.TankInventoryTileEntity;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * A simple tank that can accept and drain fluids until the capacity is reached.
@@ -35,28 +34,6 @@ public class SingleUseTank extends Tank {
      */
     public SingleUseTank(int capacity, TileEntity tile) {
         super(capacity, tile);
-    }
-
-    /**
-     * Make a new tank instance.
-     * @param name The name for the tank, will be used for NBT storage.
-     * @param capacity The capacity (mB) for the tank.
-     * @param tile The TileEntity that uses this tank.
-     */
-    @Deprecated // TODO: remove in 1.13
-    public SingleUseTank(String name, int capacity, TileEntity tile) {
-        super(name, capacity, tile);
-    }
-
-    /**
-     * Make a new tank instance.
-     * @param name The name for the tank, will be used for NBT storage.
-     * @param capacity The capacity (mB) for the tank.
-     * @param tile The TileEntity that uses this tank.
-     */
-    @Deprecated // TODO: remove in 1.13
-    public SingleUseTank(String name, int capacity, CyclopsTileEntity tile) {
-        super(name, capacity, tile);
     }
 
     @Override
@@ -101,14 +78,6 @@ public class SingleUseTank extends Tank {
         if (tile instanceof IUpdateListener) {
             ((IUpdateListener) tile).onTankChanged();
         }
-    	// TODO: remove the block below in 1.13
-    	else if(!(tile instanceof TankInventoryTileEntity) || ((TankInventoryTileEntity) tile).isSendUpdateOnTankChanged()) {
-            if (tile instanceof TankInventoryTileEntity) {
-                ((TankInventoryTileEntity) tile).onTankChanged();
-            } else if (tile instanceof CyclopsTileEntity) {
-                ((CyclopsTileEntity) tile).sendUpdate();
-            }
-    	}
     }
 
     /**
@@ -135,16 +104,17 @@ public class SingleUseTank extends Tank {
     }
 
     @Override
-    public void writeTankToNBT(NBTTagCompound nbt) {
+    public void writeTankToNBT(CompoundNBT nbt) {
         super.writeTankToNBT(nbt);
         if (acceptedFluid != null)
-            nbt.setString(NBT_ACCEPTED_FLUID, acceptedFluid.getName());
+            nbt.putString(NBT_ACCEPTED_FLUID, acceptedFluid.getName());
     }
 
     @Override
-    public void readTankFromNBT(NBTTagCompound nbt) {
+    public void readTankFromNBT(CompoundNBT nbt) {
         super.readTankFromNBT(nbt);
-        acceptedFluid = FluidRegistry.getFluid(nbt.getString(NBT_ACCEPTED_FLUID));
+        // TODO: enable when Forge finished fluids impl
+        //acceptedFluid = ForgeRegistries.FLUIDS.getValue(ResourceLocation.tryCreate(nbt.getString(NBT_ACCEPTED_FLUID)));
     }
 
     @Override

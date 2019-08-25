@@ -1,11 +1,11 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.EntityHelpers;
 import org.cyclops.cyclopscore.network.CodecField;
 import org.cyclops.cyclopscore.network.PacketCodec;
@@ -18,13 +18,13 @@ import org.cyclops.cyclopscore.network.PacketCodec;
 public class SendPlayerNbtPacket extends PacketCodec {
 
 	@CodecField
-	private NBTTagCompound nbtData;
+	private CompoundNBT nbtData;
 
     public SendPlayerNbtPacket() {
 
     }
 
-	public SendPlayerNbtPacket(EntityPlayer player) {
+	public SendPlayerNbtPacket(PlayerEntity player) {
 		this.nbtData = EntityHelpers.getPersistedPlayerNbt(player);
 	}
 
@@ -34,13 +34,13 @@ public class SendPlayerNbtPacket extends PacketCodec {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void actionClient(World world, EntityPlayer player) {
-		player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, nbtData);
+	@OnlyIn(Dist.CLIENT)
+	public void actionClient(World world, PlayerEntity player) {
+		player.getEntityData().put(PlayerEntity.PERSISTED_NBT_TAG, nbtData);
 	}
 
 	@Override
-	public void actionServer(World world, EntityPlayerMP player) {
+	public void actionServer(World world, ServerPlayerEntity player) {
 
 	}
 	

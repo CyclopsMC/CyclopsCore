@@ -36,4 +36,9 @@ public class InfoBook implements IInfoBook {
     public InfoSection getSection(String sectionName) {
         return sections.get(sectionName);
     }
+
+    @Override
+    public void putIndex(InfoSectionTagIndex tagIndex) {
+        this.tagIndex = tagIndex;
+    }
 }

@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.ingredient.collection;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
@@ -229,18 +229,18 @@ public final class IngredientCollections {
      * @param <M> The matching condition parameter.
      * @return An NBT tag.
      */
-    public static <T, M> NBTTagCompound serialize(IIngredientCollection<T, M> collection) {
-        NBTTagCompound tag = new NBTTagCompound();
+    public static <T, M> CompoundNBT serialize(IIngredientCollection<T, M> collection) {
+        CompoundNBT tag = new CompoundNBT();
 
         IngredientComponent<T, M> component = collection.getComponent();
-        tag.setString("component", component.getName().toString());
+        tag.putString("component", component.getName().toString());
 
-        NBTTagList list = new NBTTagList();
+        ListNBT list = new ListNBT();
         IIngredientSerializer<T, M> serializer = component.getSerializer();
         for (T ingredient : collection) {
-            list.appendTag(serializer.serializeInstance(ingredient));
+            list.add(serializer.serializeInstance(ingredient));
         }
-        tag.setTag("ingredients", list);
+        tag.put("ingredients", list);
 
         return tag;
     }
@@ -255,14 +255,14 @@ public final class IngredientCollections {
      * @return An ingredient collection.
      * @throws IllegalArgumentException If the tag was invalid.
      */
-    public static <C extends IIngredientCollectionMutable<?, ?>> C deserialize(NBTTagCompound tag,
+    public static <C extends IIngredientCollectionMutable<?, ?>> C deserialize(CompoundNBT tag,
                                                                                IIngredientCollectionConstructor<C>
                                                                                        ingredientCollectionFactory) {
         // Validate tag
-        if (!tag.hasKey("component", Constants.NBT.TAG_STRING)) {
+        if (!tag.contains("component", Constants.NBT.TAG_STRING)) {
             throw new IllegalArgumentException("No component type was found in the given tag");
         }
-        if (!tag.hasKey("ingredients", Constants.NBT.TAG_LIST)) {
+        if (!tag.contains("ingredients", Constants.NBT.TAG_LIST)) {
             throw new IllegalArgumentException("No ingredients list was found in the given tag");
         }
 
@@ -275,10 +275,10 @@ public final class IngredientCollections {
 
         // Actual deserialization of ingredients
         IIngredientSerializer<?, ?> serializer = component.getSerializer();
-        NBTTagList ingredients = (NBTTagList) tag.getTag("ingredients");
+        ListNBT ingredients = (ListNBT) tag.get("ingredients");
         C collection = ingredientCollectionFactory.create(component);
         IIngredientCollectionMutable collectionUnsafe = collection;
-        for (NBTBase subTag : ingredients) {
+        for (INBT subTag : ingredients) {
             collectionUnsafe.add(serializer.deserializeInstance(subTag));
         }
 
@@ -292,7 +292,7 @@ public final class IngredientCollections {
      * @return An ingredient array list.
      * @throws IllegalArgumentException If the tag was invalid.
      */
-    public static IngredientArrayList<?, ?> deserialize(NBTTagCompound tag) {
+    public static IngredientArrayList<?, ?> deserialize(CompoundNBT tag) {
         return deserialize(tag, IngredientArrayList::new);
     }
 

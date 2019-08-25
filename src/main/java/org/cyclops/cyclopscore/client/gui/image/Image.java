@@ -1,14 +1,14 @@
 package org.cyclops.cyclopscore.client.gui.image;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import lombok.Data;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -30,9 +30,9 @@ public class Image implements IImage {
     }
 
     @Override
-    public void draw(Gui gui, int x, int y) {
-        Minecraft.getMinecraft().renderEngine.bindTexture(resourceLocation);
-        gui.drawTexturedModalRect(x, y, sheetX, sheetY, sheetWidth, sheetHeight);
+    public void draw(AbstractGui gui, int x, int y) {
+        RenderHelpers.bindTexture(resourceLocation);
+        gui.blit(x, y, sheetX, sheetY, sheetWidth, sheetHeight);
     }
 
     @Override

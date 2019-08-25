@@ -1,9 +1,11 @@
 package org.cyclops.cyclopscore.item;
 
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -27,7 +29,7 @@ import java.util.List;
  * @author rubensworks
  *
  */
-public class DamageIndicatedItemComponent{
+public class DamageIndicatedItemComponent {
     
     /**
      * The item class on which the behaviour will be added.
@@ -42,26 +44,24 @@ public class DamageIndicatedItemComponent{
      */
     public DamageIndicatedItemComponent(ItemFluidContainer item) {
         this.item = item;
-        item.setMaxStackSize(1);
     }
     
     /**
      * Add the creative tab items.
-     * @param tab The creative tab to add to.
-     * @param itemList The item list to add to.
+     * @param itemGroup The item group.
+     * @param items The item list to add to.
      * @param fluid The fluid in the container that needs to be added.
-     * @param meta The meta data for the item to add.
      */
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> itemList, Fluid fluid, int meta) {
+    public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> items, Fluid fluid) {
         // Add the 'full' container.
-        ItemStack itemStackFull = new ItemStack(this.item, 1, meta);
-        IFluidHandlerItemCapacity fluidHanderFull = FluidHelpers.getFluidHandlerItemCapacity(itemStackFull);
+        ItemStack itemStackFull = new ItemStack(this.item);
+        IFluidHandlerItemCapacity fluidHanderFull = FluidHelpers.getFluidHandlerItemCapacity(itemStackFull).orElse(null);
         fluidHanderFull.fill(new FluidStack(fluid, fluidHanderFull.getCapacity()), true);
-        itemList.add(itemStackFull);
+        items.add(itemStackFull);
         
         // Add the 'empty' container.
-        ItemStack itemStackEmpty = new ItemStack(item, 1, meta);
-        itemList.add(itemStackEmpty);
+        ItemStack itemStackEmpty = new ItemStack(item);
+        items.add(itemStackEmpty);
     }
     
     /**
@@ -71,8 +71,8 @@ public class DamageIndicatedItemComponent{
      */
     public String getInfo(ItemStack itemStack) {
         int amount = 0;
-        IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack);
-        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack);
+        IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack).orElse(null);
+        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(null);
         if(fluidStack != null)
             amount = fluidStack.amount;
         return getInfo(fluidStack, amount, fluidHander.getCapacity());
@@ -101,8 +101,8 @@ public class DamageIndicatedItemComponent{
      * @param list The info list where the info will be added.
      * @param flag the tooltip flag
      */
-    public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
-        list.add(IInformationProvider.ITEM_PREFIX+((IInformationProvider) itemStack.getItem()).getInfo(itemStack));
+    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
+        list.add(new StringTextComponent(IInformationProvider.ITEM_PREFIX+((IInformationProvider) itemStack.getItem()).getInfo(itemStack)));
     }
     
     /**
@@ -111,8 +111,8 @@ public class DamageIndicatedItemComponent{
      * @return The displayed durability.
      */
     public double getDurability(ItemStack itemStack) {
-        IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack);
-        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack);
+        IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack).orElse(null);
+        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(null);
         double capacity = fluidHander.getCapacity();
         double amount = FluidHelpers.getAmount(fluidStack);
         return (capacity - amount) / capacity;

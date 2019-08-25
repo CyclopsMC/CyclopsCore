@@ -2,27 +2,30 @@ package org.cyclops.cyclopscore.tracking;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.*;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
-import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.versioning.ComparableVersion;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.VersionChecker;
+import net.minecraftforge.forgespi.language.IModInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.Level;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
-import org.cyclops.cyclopscore.modcompat.versionchecker.VersionCheckerModCompat;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -83,9 +86,6 @@ public class Versions {
                                 String updateUrl = lines[2];
                                 setVersionInfo(triple.getLeft(), triple.getMiddle(), version, info, updateUrl);
                                 if(triple.getMiddle().needsUpdate()) {
-                                    VersionCheckerModCompat.sendIMCOutdatedMessage(triple.getLeft(), triple.getMiddle());
-                                }
-                                if(triple.getMiddle().needsUpdate()) {
                                     triple.getLeft().log(Level.INFO, String.format("%s is outdated, version %s can be found at %s.", triple.getLeft().getModName(), version, updateUrl));
                                 } else {
                                     triple.getLeft().log(Level.INFO, String.format("%s is up-to-date!", triple.getLeft().getModName()));
@@ -111,17 +111,17 @@ public class Versions {
 
     public static void setForgeVersionInfo(ModBase mod, IModVersion modVersion, String version, String info, String updateUrl) {
         try {
-            Field resultsField = ForgeVersion.class.getDeclaredField("results");
+            Field resultsField = VersionChecker.class.getDeclaredField("results");
             resultsField.setAccessible(true);
-            Map<ModContainer, ForgeVersion.CheckResult> results = (Map<ModContainer, ForgeVersion.CheckResult>) resultsField.get(null);
+            Map<IModInfo, VersionChecker.CheckResult> results = (Map<IModInfo, VersionChecker.CheckResult>) resultsField.get(null);
 
-            Constructor<ForgeVersion.CheckResult> constructor = ForgeVersion.CheckResult.class.getDeclaredConstructor(ForgeVersion.Status.class, ComparableVersion.class, Map.class, String.class);
+            Constructor<VersionChecker.CheckResult> constructor = VersionChecker.CheckResult.class.getDeclaredConstructor(VersionChecker.Status.class, ComparableVersion.class, Map.class, String.class);
             constructor.setAccessible(true);
-            ForgeVersion.Status status = modVersion.needsUpdate() ? ForgeVersion.Status.OUTDATED : ForgeVersion.Status.UP_TO_DATE;
+            VersionChecker.Status status = modVersion.needsUpdate() ? VersionChecker.Status.OUTDATED : VersionChecker.Status.UP_TO_DATE;
             ComparableVersion comparableVersion = new ComparableVersion(version);
-            ForgeVersion.CheckResult checkResult = constructor.newInstance(status, comparableVersion, ImmutableMap.of(comparableVersion, info), updateUrl);
-            ModContainer modContainer = Loader.instance().getIndexedModList().get(mod.getModId());
-            results.put(modContainer, checkResult);
+            VersionChecker.CheckResult checkResult = constructor.newInstance(status, comparableVersion, ImmutableMap.of(comparableVersion, info), updateUrl);
+            IModInfo modInfo = ModList.get().getModFileById(mod.getModId()).getMods().get(0);
+            results.put(modInfo, checkResult);
         } catch (NoSuchFieldException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
             mod.log(Level.ERROR, String.format("Failed to set Forge version information for %s-%s.", mod.getModName(), version));
             e.printStackTrace();
@@ -132,7 +132,7 @@ public class Versions {
      * When a player tick event is received.
      * @param event The received event.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public synchronized void onTick(TickEvent.PlayerTickEvent event) {
         if(event.phase == TickEvent.Phase.END && allDone && !displayed) {
@@ -140,8 +140,8 @@ public class Versions {
             for (Triple<ModBase, IModVersion, String> triple : versionMods) {
                 if (triple.getMiddle().needsUpdate()) {
                     // Chat formatting inspired by CoFH
-                    EntityPlayer player = event.player;
-                    ITextComponent chat = new TextComponentString("");
+                    PlayerEntity player = event.player;
+                    ITextComponent chat = new StringTextComponent("");
 
                     Style modNameStyle = new Style();
                     modNameStyle.setColor(TextFormatting.AQUA);
@@ -154,24 +154,24 @@ public class Versions {
 
                     String currentVersion = Reference.MOD_MC_VERSION + "-" + triple.getLeft().getReferenceValue(ModBase.REFKEY_MOD_VERSION);
                     String newVersion = Reference.MOD_MC_VERSION + "-" + triple.getMiddle().getVersion();
-                    ITextComponent versionTransition = new TextComponentString(String.format("%s -> %s", currentVersion, newVersion)).setStyle(versionStyle);
+                    ITextComponent versionTransition = new StringTextComponent(String.format("%s -> %s", currentVersion, newVersion)).setStyle(versionStyle);
                     modNameStyle.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, versionTransition));
-                    ITextComponent modNameComponent = new TextComponentString(String.format("[%s]", triple.getLeft().getModName())).setStyle(modNameStyle);
+                    ITextComponent modNameComponent = new StringTextComponent(String.format("[%s]", triple.getLeft().getModName())).setStyle(modNameStyle);
 
-                    ITextComponent downloadComponent = new TextComponentString(String.format("[%s]", L10NHelpers.localize("general.cyclopscore.version.download"))).setStyle(downloadStyle);
-                    downloadStyle.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentTranslation("general.cyclopscore.version.clickToDownload")));
+                    ITextComponent downloadComponent = new StringTextComponent(String.format("[%s]", L10NHelpers.localize("general.cyclopscore.version.download"))).setStyle(downloadStyle);
+                    downloadStyle.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("general.cyclopscore.version.clickToDownload")));
                     downloadStyle.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, triple.getMiddle().getUpdateUrl()));
 
                     chat.appendSibling(modNameComponent);
                     chat.appendText(" ");
-                    chat.appendSibling(new TextComponentTranslation("general.cyclopscore.version.updateAvailable").setStyle(new Style().setColor(TextFormatting.WHITE)));
+                    chat.appendSibling(new TranslationTextComponent("general.cyclopscore.version.updateAvailable").setStyle(new Style().setColor(TextFormatting.WHITE)));
                     chat.appendText(String.format(": %s ", triple.getMiddle().getVersion()));
                     chat.appendSibling(downloadComponent);
 
                     try {
                     player.sendMessage(chat);
 
-                    chat = new TextComponentString("");
+                    chat = new StringTextComponent("");
                     chat.appendSibling(modNameComponent);
                     chat.appendText(TextFormatting.WHITE + " ");
                     chat.appendText(triple.getMiddle().getInfo());

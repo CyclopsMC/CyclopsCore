@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
@@ -854,10 +854,10 @@ public final class IngredientStorageHelpers {
      * @param <M> The matching condition parameter.
      * @return An NBT tag.
      */
-    public static <T, M> NBTTagCompound serialize(IIngredientComponentStorage<T, M> storage) {
-        NBTTagCompound tag = IngredientCollections.serialize(new IngredientArrayList<>(storage.getComponent(), storage.iterator()));
-        tag.setLong("maxQuantity", storage.getMaxQuantity());
-        tag.setBoolean("slotted", storage instanceof IIngredientComponentStorageSlotted);
+    public static <T, M> CompoundNBT serialize(IIngredientComponentStorage<T, M> storage) {
+        CompoundNBT tag = IngredientCollections.serialize(new IngredientArrayList<>(storage.getComponent(), storage.iterator()));
+        tag.putLong("maxQuantity", storage.getMaxQuantity());
+        tag.putBoolean("slotted", storage instanceof IIngredientComponentStorageSlotted);
         return tag;
     }
 
@@ -871,11 +871,11 @@ public final class IngredientStorageHelpers {
      * @return The deserialized storage.
      * @throws IllegalArgumentException If the tag was invalid.
      */
-    public static IIngredientComponentStorage<?, ?> deserialize(NBTTagCompound tag, long rateLimit) {
-        if (!tag.hasKey("maxQuantity", Constants.NBT.TAG_LONG)) {
+    public static IIngredientComponentStorage<?, ?> deserialize(CompoundNBT tag, long rateLimit) {
+        if (!tag.contains("maxQuantity", Constants.NBT.TAG_LONG)) {
             throw new IllegalArgumentException("No maxQuantity was found in the given tag");
         }
-        if (!tag.hasKey("slotted", Constants.NBT.TAG_BYTE)) {
+        if (!tag.contains("slotted", Constants.NBT.TAG_BYTE)) {
             throw new IllegalArgumentException("No slotted was found in the given tag");
         }
         long maxQuantity = tag.getLong("maxQuantity");

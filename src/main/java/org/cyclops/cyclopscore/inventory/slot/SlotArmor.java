@@ -1,13 +1,14 @@
 package org.cyclops.cyclopscore.inventory.slot;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Slot that is used to hold armor.
@@ -16,8 +17,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class SlotArmor extends Slot {
 
-    private final EntityEquipmentSlot armorType;
-    private final EntityPlayer player;
+    private final EquipmentSlotType armorType;
+    private final PlayerEntity player;
 
     /**
      * Make a new instance.
@@ -29,7 +30,7 @@ public class SlotArmor extends Slot {
      * @param armorType The armor type.
      */
     public SlotArmor(IInventory inventory, int index, int x,
-                     int y, EntityPlayer player, EntityEquipmentSlot armorType) {
+                     int y, PlayerEntity player, EquipmentSlotType armorType) {
         super(inventory, index, x, y);
         this.armorType = armorType;
         this.player = player;
@@ -43,14 +44,14 @@ public class SlotArmor extends Slot {
     @Override
     public boolean isItemValid(ItemStack itemStack) {
         if (itemStack == null) return false;
-        return itemStack.getItem().isValidArmor(itemStack, armorType, player);
+        // return itemStack.getItem().isValidArmor(itemStack, armorType, player); // TODO
+        return itemStack.getItem() instanceof ArmorItem;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public String getSlotTexture()
-    {
-        return ItemArmor.EMPTY_SLOT_NAMES[armorType.getIndex()];
+    public String getSlotTexture() {
+        return PlayerContainer.ARMOR_SLOT_TEXTURES[armorType.getIndex()];
     }
     
 }

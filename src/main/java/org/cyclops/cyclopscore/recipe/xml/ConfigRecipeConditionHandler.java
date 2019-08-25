@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.recipe.xml;
 
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 import org.apache.logging.log4j.util.Strings;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -24,7 +24,7 @@ public class ConfigRecipeConditionHandler implements IRecipeConditionHandler {
 		}
 		ModBase mod;
 		if (!Strings.isEmpty(modId)) {
-			ModContainer untypedMod = Loader.instance().getIndexedModList().get(modId);
+			ModContainer untypedMod = ModList.get().getModContainerById(modId).orElse(null);
 			if (!(untypedMod.getMod() instanceof ModBase)) {
 				throw new IllegalArgumentException("The mod " + modId + " is not of type ModBase.");
 			}
@@ -32,7 +32,7 @@ public class ConfigRecipeConditionHandler implements IRecipeConditionHandler {
 		} else {
 			mod = recipeHandler.getMod();
 		}
-		ExtendedConfig<?> config = mod.getConfigHandler().getDictionary().get(param);
+		ExtendedConfig<?, ?> config = mod.getConfigHandler().getDictionary().get(param);
 		return config != null && config.isEnabled();
 	}
 

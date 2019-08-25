@@ -1,12 +1,15 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -15,6 +18,20 @@ import org.apache.commons.lang3.ArrayUtils;
  *
  */
 public class InventoryHelpers {
+
+	/**
+	 * Drop an ItemStack into the world
+	 * @param world the world
+	 * @param inventory inventory with ItemStacks
+	 * @param blockPos The position.
+	 */
+	public static void dropItems(World world, IInventory inventory, BlockPos blockPos) {
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			ItemStack itemStack = inventory.getStackInSlot(i);
+			if (!itemStack.isEmpty() && itemStack.getCount() > 0)
+				ItemStackHelpers.spawnItemStack(world, blockPos, inventory.getStackInSlot(i).copy());
+		}
+	}
 
 	/**
 	 * Erase a complete inventory
@@ -35,8 +52,8 @@ public class InventoryHelpers {
 	 * @param newStackPart The new item stack.
 	 */
 	@Deprecated
-	public static void tryReAddToStack(EntityPlayer player, ItemStack originalStack, ItemStack newStackPart) {
-		tryReAddToStack(player, originalStack, newStackPart, EnumHand.MAIN_HAND);
+	public static void tryReAddToStack(PlayerEntity player, ItemStack originalStack, ItemStack newStackPart) {
+		tryReAddToStack(player, originalStack, newStackPart, Hand.MAIN_HAND);
 	}
 	
 	/**
@@ -48,10 +65,10 @@ public class InventoryHelpers {
 	 * @param newStackPart The new item stack.
 	 * @param hand The hand for which the stack should be re-added
 	 */
-	public static void tryReAddToStack(EntityPlayer player, ItemStack originalStack, ItemStack newStackPart, EnumHand hand) {
-		if (!player.capabilities.isCreativeMode) {
+	public static void tryReAddToStack(PlayerEntity player, ItemStack originalStack, ItemStack newStackPart, Hand hand) {
+		if (!player.isCreative()) {
         	if(!originalStack.isEmpty() && originalStack.getCount() == 1) {
-        		player.inventory.setInventorySlotContents(hand == EnumHand.MAIN_HAND ? player.inventory.currentItem : 40, newStackPart);
+        		player.inventory.setInventorySlotContents(hand == Hand.MAIN_HAND ? player.inventory.currentItem : 40, newStackPart);
         	} else {
                 if(!originalStack.isEmpty()) {
 					originalStack.shrink(1);
@@ -71,13 +88,9 @@ public class InventoryHelpers {
 	 * @param tagName The tag name to read from.
 	 */
 	public static void validateNBTStorage(IInventory inventory, ItemStack itemStack, String tagName) {
-		NBTTagCompound tag = itemStack.getTagCompound();
-		if(tag == null) {
-			tag = new NBTTagCompound();
-			itemStack.setTagCompound(tag);
-		}
-		if(!tag.hasKey(tagName)) {
-			tag.setTag(tagName, new NBTTagList());
+		CompoundNBT tag = itemStack.getOrCreateTag();
+		if(!tag.contains(tagName)) {
+			tag.put(tagName, new ListNBT());
 		}
 		readFromNBT(inventory, tag, tagName);
 	}
@@ -88,23 +101,23 @@ public class InventoryHelpers {
 	 * @param data The tag to read from.
 	 * @param tagName The tag name to read from.
 	 */
-	public static void readFromNBT(IInventory inventory, NBTTagCompound data, String tagName) {
-        NBTTagList nbttaglist = data.getTagList(tagName, MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
+	public static void readFromNBT(IInventory inventory, CompoundNBT data, String tagName) {
+        ListNBT nbttaglist = data.getList(tagName, Constants.NBT.TAG_COMPOUND);
         
         for(int j = 0; j < inventory.getSizeInventory(); j++) {
         	inventory.setInventorySlotContents(j, ItemStack.EMPTY);
         }
 
-        for(int j = 0; j < nbttaglist.tagCount(); j++) {
-            NBTTagCompound slot = nbttaglist.getCompoundTagAt(j);
+        for(int j = 0; j < nbttaglist.size(); j++) {
+            CompoundNBT slot = nbttaglist.getCompound(j);
             int index;
-            if(slot.hasKey("index")) {
-                index = slot.getInteger("index");
+            if(slot.contains("index")) {
+                index = slot.getInt("index");
             } else {
                 index = slot.getByte("Slot");
             }
             if(index >= 0 && index < inventory.getSizeInventory()) {
-            	inventory.setInventorySlotContents(index, new ItemStack(slot));
+            	inventory.setInventorySlotContents(index, ItemStack.read(slot));
             }
         }
     }
@@ -115,18 +128,18 @@ public class InventoryHelpers {
 	 * @param data The tag to write to.
 	 * @param tagName The tag name to write into.
 	 */
-	public static void writeToNBT(IInventory inventory, NBTTagCompound data, String tagName) {
-        NBTTagList slots = new NBTTagList();
+	public static void writeToNBT(IInventory inventory, CompoundNBT data, String tagName) {
+        ListNBT slots = new ListNBT();
         for(byte index = 0; index < inventory.getSizeInventory(); ++index) {
         	ItemStack itemStack = inventory.getStackInSlot(index);
             if(!itemStack.isEmpty() && itemStack.getCount() > 0) {
-                NBTTagCompound slot = new NBTTagCompound();
-                slot.setInteger("index", index);
-                slots.appendTag(slot);
-                itemStack.writeToNBT(slot);
+                CompoundNBT slot = new CompoundNBT();
+                slot.putInt("index", index);
+                slots.add(slot);
+                itemStack.write(slot);
             }
         }
-        data.setTag(tagName, slots);
+        data.put(tagName, slots);
     }
 
 	/**
@@ -135,8 +148,8 @@ public class InventoryHelpers {
 	 * @param itemIndex The index of the item in the inventory.
 	 * @return The item stack.
 	 */
-	public static ItemStack getItemFromIndex(EntityPlayer player, int itemIndex) {
-		return getItemFromIndex(player, itemIndex, EnumHand.MAIN_HAND);
+	public static ItemStack getItemFromIndex(PlayerEntity player, int itemIndex) {
+		return getItemFromIndex(player, itemIndex, Hand.MAIN_HAND);
 	}
 	
 	/**
@@ -146,8 +159,8 @@ public class InventoryHelpers {
 	 * @param hand The hand the item is in.
 	 * @return The item stack.
 	 */
-	public static ItemStack getItemFromIndex(EntityPlayer player, int itemIndex, EnumHand hand) {
-		return EnumHand.MAIN_HAND.equals(hand)
+	public static ItemStack getItemFromIndex(PlayerEntity player, int itemIndex, Hand hand) {
+		return Hand.MAIN_HAND.equals(hand)
 				? player.inventory.mainInventory.get(itemIndex) : player.getHeldItemOffhand();
 	}
 

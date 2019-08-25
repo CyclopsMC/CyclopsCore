@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.config;
 
+import net.minecraftforge.fml.config.ModConfig;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -15,15 +17,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface ConfigurableProperty {
     /**
-     * The category of the field. categoryRaw can also be used to define direct strings as categories.
+     * The category of the field.
      * @return The category.
      */
-	ConfigurableTypeCategory category();
-	/**
-     * The category of the field, as a raw string.
-     * @return The category.
-     */
-	String categoryRaw() default "";
+	String category();
     /**
      * The comment for the field in the config file.
      * @return The comment.
@@ -61,10 +58,9 @@ public @interface ConfigurableProperty {
      * @return The maximal value.
      */
     int maximalValue() default Integer.MAX_VALUE;
-    
+
     /**
-     * @return The optional callback when the property has been changed.
-     * @see IChangedCallback
+     * @return The location of this config property.
      */
-    Class<? extends IChangedCallback> changedCallback() default IChangedCallback.class;
+    ModConfig.Type configLocation() default ModConfig.Type.COMMON;
 }

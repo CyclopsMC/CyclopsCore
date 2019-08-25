@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.ItemStackHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
-import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
+import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
 /**
  * An item reward.
@@ -24,12 +24,12 @@ public class RewardItem implements IReward {
     }
 
     @Override
-    public boolean canObtain(EntityPlayer player) {
+    public boolean canObtain(PlayerEntity player) {
         return true;
     }
 
     @Override
-    public void obtain(EntityPlayer player) {
+    public void obtain(PlayerEntity player) {
         if (!player.inventory.addItemStackToInventory(itemStack.copy())) {
             ItemStackHelpers.spawnItemStack(player.getEntityWorld(), player.getPosition(), itemStack.copy());
         }
@@ -46,14 +46,14 @@ public class RewardItem implements IReward {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public AdvancedButton createButton(IInfoBook infoBook) {
         return new RecipeAppendix.ItemButton(infoBook);
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void drawElementInner(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button) {
+    @OnlyIn(Dist.CLIENT)
+    public void drawElementInner(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button) {
         RecipeAppendix.renderItemForButton(gui, x, y, itemStack, mx, my, true, (RecipeAppendix.ItemButton) button);
     }
 

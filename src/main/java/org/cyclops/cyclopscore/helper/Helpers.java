@@ -1,14 +1,5 @@
 package org.cyclops.cyclopscore.helper;
 
-import com.google.common.collect.Maps;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.LoaderState;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.Level;
@@ -17,7 +8,6 @@ import org.cyclops.cyclopscore.init.ModBase;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -54,7 +44,7 @@ public class Helpers {
     
     /**
      * Get a new ID for the given type.
-     * @param type Type for a {@link org.cyclops.cyclopscore.config.configurable.IConfigurable}.
+     * @param type Type for something.
      * @param mod The mod to register the id for.
      * @return The incremented ID.
      */
@@ -71,14 +61,6 @@ public class Helpers {
      *
      */
     public enum IDType {
-    	/**
-    	 * Entity ID.
-    	 */
-    	ENTITY,
-    	/**
-    	 * GUI ID.
-    	 */
-    	GUI,
     	/**
     	 * Packet ID.
     	 */
@@ -192,48 +174,11 @@ public class Helpers {
         return casted;
     }
 
-    private static final Map<String, String> MODRESOURCEDOMAIN_TO_MODID = Maps.newHashMap();
-
     /**
-     * Get the mod id from the given resource domain the given mod is using.
-     * @param modResourceDomain The mod resource domain.
-     * @return The mod id.
-     */
-    public static String getModId(String modResourceDomain) {
-        if(MODRESOURCEDOMAIN_TO_MODID.isEmpty()) {
-            for (Map.Entry<String, ModContainer> entry : Loader.instance().getIndexedModList().entrySet()) {
-                MODRESOURCEDOMAIN_TO_MODID.put(entry.getKey().toLowerCase(Locale.ENGLISH), entry.getValue().getModId());
-            }
-        }
-        return MODRESOURCEDOMAIN_TO_MODID.get(modResourceDomain);
-    }
-
-    /**
-     * @return If minecraft is past the POST-init phase.
+     * @return If minecraft has been fully loaded.
      */
     public static boolean isMinecraftInitialized() {
-        return Loader.instance().getLoaderState().ordinal() > LoaderState.POSTINITIALIZATION.ordinal();
-    }
-
-    /**
-     * Safely get a capability from a tile or block.
-     * The capability of the tile will be checked first,
-     * only if it was not found, the block will be checked.
-     * @param world The world.
-     * @param pos The position of the tile or block providing the capability.
-     * @param side The side to get the capability from.
-     * @param capability The capability.
-     * @param <C> The capability instance.
-     * @return The capability or null.
-     */
-    @Optional.Method(modid = "commoncapabilities")
-    public static <C> C getTileOrBlockCapability(IBlockAccess world, BlockPos pos, EnumFacing side,
-                                                 Capability<C> capability) {
-        C instance = TileHelpers.getCapability(world, pos, side, capability);
-        if (instance == null) {
-            return BlockHelpers.getCapability(world, pos, side, capability);
-        }
-        return instance;
+        return CyclopsCore._instance.isLoaded();
     }
 
     /**

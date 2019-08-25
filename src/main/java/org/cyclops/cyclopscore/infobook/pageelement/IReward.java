@@ -1,11 +1,11 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
-import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
+import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
 /**
  * A reward instance.
@@ -17,14 +17,14 @@ public interface IReward {
      * @param player The player.
      * @return If it can obtain this.
      */
-    public boolean canObtain(EntityPlayer player);
+    public boolean canObtain(PlayerEntity player);
 
     /**
      * The logic for obtaining this reward.
      * Will only be called server-side.
      * @param player The player.
      */
-    public void obtain(EntityPlayer player);
+    public void obtain(PlayerEntity player);
 
     /**
      * @return The gui width/
@@ -40,7 +40,7 @@ public interface IReward {
      * @param infoBook The infobook instance.
      * @return Factory for a button for this reward.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public AdvancedButton createButton(IInfoBook infoBook);
 
     /**
@@ -55,6 +55,6 @@ public interface IReward {
      * @param my Mouse Y.
      * @param button The button of this reward.
      */
-    @SideOnly(Side.CLIENT)
-    public void drawElementInner(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button);
+    @OnlyIn(Dist.CLIENT)
+    public void drawElementInner(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button);
 }

@@ -3,9 +3,11 @@ package org.cyclops.cyclopscore.item;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -34,11 +36,12 @@ public class InformationProviderComponent {
      * @param list The info list where the info will be added.
      * @param flag No idea...
      */
-    @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag) {
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
         if(hasInfo) {
             if(((IInformationProvider) block).getInfo(itemStack) != null) {
-                list.add(IInformationProvider.BLOCK_PREFIX + ((IInformationProvider) block).getInfo(itemStack));
+                list.add(new StringTextComponent(IInformationProvider.BLOCK_PREFIX
+                        + ((IInformationProvider) block).getInfo(itemStack)));
             }
             ((IInformationProvider) block).provideInformation(itemStack, world, list, flag);
         }

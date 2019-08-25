@@ -1,10 +1,7 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
-
-import javax.annotation.Nullable;
 
 /**
  * Dummy config.
@@ -12,7 +9,7 @@ import javax.annotation.Nullable;
  * @see ExtendedConfig
  *
  */
-public class DummyConfig extends ExtendedConfig<DummyConfig>{
+public class DummyConfig extends ExtendedConfig<DummyConfig, Void>{
 
     /**
      * Make a new instance.
@@ -20,15 +17,13 @@ public class DummyConfig extends ExtendedConfig<DummyConfig>{
      * @param enabled If this should is enabled.
      * @param namedId The unique name ID for the configurable.
      * @param comment The comment to add in the config file for this configurable.
-     * @param element The class of this configurable.
-     */
-    public DummyConfig(ModBase mod, boolean enabled, String namedId,
-            String comment, Class<?> element) {
-        super(mod, enabled, namedId, comment, element);
+	 */
+	public DummyConfig(ModBase mod, boolean enabled, String namedId, String comment) {
+		super(mod, enabled, namedId, comment, (c) -> null);
     }
     
     @Override
-	public ConfigurableType getHolderType() {
+	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.DUMMY;
 	}
 
@@ -37,9 +32,4 @@ public class DummyConfig extends ExtendedConfig<DummyConfig>{
 		return getNamedId();
 	}
 
-	@Nullable
-	@Override
-	public IForgeRegistry<?> getRegistry() {
-		return null;
-	}
 }

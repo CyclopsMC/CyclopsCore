@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.StringNBT;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionList;
 import org.junit.Before;
@@ -121,17 +121,17 @@ public class TestNbtPathExpressionHandlerFilterExpression {
     @Test
     public void testExpressionStreamSingleLeaf() {
         INbtPathExpression expression = handler.handlePrefixOf("aa[?(@)]", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagString("a"))).getMatches().collect(Collectors.toList()),
+        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
     }
 
     @Test
     public void testExpressionStreamMultipleLeaf() {
         INbtPathExpression expression = handler.handlePrefixOf("aa[?(@)]", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
-                new NBTTagString("a"),
-                new NBTTagString("b"),
-                new NBTTagString("c")
+        Stream<INBT> stream = Stream.of(
+                new StringNBT("a"),
+                new StringNBT("b"),
+                new StringNBT("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
@@ -139,23 +139,23 @@ public class TestNbtPathExpressionHandlerFilterExpression {
 
     @Test
     public void testExpressionStreamMultipleTagsMatch() {
-        NBTTagList tag1 = new NBTTagList();
-        tag1.appendTag(new NBTTagString("a0"));
-        tag1.appendTag(new NBTTagString("a1"));
-        tag1.appendTag(new NBTTagString("a2"));
+        ListNBT tag1 = new ListNBT();
+        tag1.add(new StringNBT("a0"));
+        tag1.add(new StringNBT("a1"));
+        tag1.add(new StringNBT("a2"));
 
-        NBTTagList tag2 = new NBTTagList();
-        tag2.appendTag(new NBTTagString("b0"));
-        tag2.appendTag(new NBTTagString("b1"));
-        tag2.appendTag(new NBTTagString("b2"));
+        ListNBT tag2 = new ListNBT();
+        tag2.add(new StringNBT("b0"));
+        tag2.add(new StringNBT("b1"));
+        tag2.add(new StringNBT("b2"));
 
-        NBTTagList tag3 = new NBTTagList();
-        tag3.appendTag(new NBTTagString("c0"));
-        tag3.appendTag(new NBTTagString("c1"));
-        tag3.appendTag(new NBTTagString("c2"));
+        ListNBT tag3 = new ListNBT();
+        tag3.add(new StringNBT("c0"));
+        tag3.add(new StringNBT("c1"));
+        tag3.add(new StringNBT("c2"));
 
         INbtPathExpression expression = handler.handlePrefixOf("aa[?(@)]", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
+        Stream<INBT> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3
@@ -170,57 +170,57 @@ public class TestNbtPathExpressionHandlerFilterExpression {
 
     @Test
     public void testExpressionStreamTagNested() {
-        NBTTagList tagRoot = new NBTTagList();
-        NBTTagList tagRootFiltered = new NBTTagList();
-        NBTTagCompound tag1 = new NBTTagCompound();
-        NBTTagCompound tag2 = new NBTTagCompound();
-        NBTTagCompound tag3 = new NBTTagCompound();
-        tag1.setTag("a", tag2);
-        tag2.setTag("b", new NBTTagString("c"));
-        tag3.setString("a", "x");
-        tagRoot.appendTag(tag1);
-        tagRoot.appendTag(tag2);
-        tagRootFiltered.appendTag(tag1);
+        ListNBT tagRoot = new ListNBT();
+        ListNBT tagRootFiltered = new ListNBT();
+        CompoundNBT tag1 = new CompoundNBT();
+        CompoundNBT tag2 = new CompoundNBT();
+        CompoundNBT tag3 = new CompoundNBT();
+        tag1.put("a", tag2);
+        tag2.put("b", new StringNBT("c"));
+        tag3.putString("a", "x");
+        tagRoot.add(tag1);
+        tagRoot.add(tag2);
+        tagRootFiltered.add(tag1);
         INbtPathExpression expression = handler.handlePrefixOf("aa[?(@.a.b)]", 2).getPrefixExpression();
-        ArrayList<NBTBase> expected = Lists.newArrayList();
+        ArrayList<INBT> expected = Lists.newArrayList();
         expected.add(tagRootFiltered);
         assertThat(expression.match(tagRoot).getMatches().collect(Collectors.toList()), is(expected));
     }
 
     @Test
     public void testExpressionStreamMultipleTagCompoundsMatch() {
-        NBTTagCompound tag1 = new NBTTagCompound();
-        tag1.setTag("a", new NBTTagString("a0"));
-        tag1.setTag("b", new NBTTagString("a1"));
-        tag1.setTag("c", new NBTTagString("a2"));
+        CompoundNBT tag1 = new CompoundNBT();
+        tag1.put("a", new StringNBT("a0"));
+        tag1.put("b", new StringNBT("a1"));
+        tag1.put("c", new StringNBT("a2"));
 
-        NBTTagCompound tag2 = new NBTTagCompound();
-        tag2.setTag("a", new NBTTagString("b0"));
-        tag2.setTag("b", new NBTTagString("b1"));
-        tag2.setTag("c", new NBTTagString("b2"));
+        CompoundNBT tag2 = new CompoundNBT();
+        tag2.put("a", new StringNBT("b0"));
+        tag2.put("b", new StringNBT("b1"));
+        tag2.put("c", new StringNBT("b2"));
 
-        NBTTagCompound tag3 = new NBTTagCompound();
-        tag3.setTag("a", new NBTTagString("c0"));
-        tag3.setTag("b", new NBTTagString("c1"));
-        tag3.setTag("c", new NBTTagString("c2"));
+        CompoundNBT tag3 = new CompoundNBT();
+        tag3.put("a", new StringNBT("c0"));
+        tag3.put("b", new StringNBT("c1"));
+        tag3.put("c", new StringNBT("c2"));
 
-        NBTTagList list1 = new NBTTagList();
-        list1.appendTag(new NBTTagString("a0"));
-        list1.appendTag(new NBTTagString("a1"));
-        list1.appendTag(new NBTTagString("a2"));
+        ListNBT list1 = new ListNBT();
+        list1.add(new StringNBT("a0"));
+        list1.add(new StringNBT("a1"));
+        list1.add(new StringNBT("a2"));
 
-        NBTTagList list2 = new NBTTagList();
-        list2.appendTag(new NBTTagString("b0"));
-        list2.appendTag(new NBTTagString("b1"));
-        list2.appendTag(new NBTTagString("b2"));
+        ListNBT list2 = new ListNBT();
+        list2.add(new StringNBT("b0"));
+        list2.add(new StringNBT("b1"));
+        list2.add(new StringNBT("b2"));
 
-        NBTTagList list3 = new NBTTagList();
-        list3.appendTag(new NBTTagString("c0"));
-        list3.appendTag(new NBTTagString("c1"));
-        list3.appendTag(new NBTTagString("c2"));
+        ListNBT list3 = new ListNBT();
+        list3.add(new StringNBT("c0"));
+        list3.add(new StringNBT("c1"));
+        list3.add(new StringNBT("c2"));
 
         INbtPathExpression expression = handler.handlePrefixOf("aa[?(@)]", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
+        Stream<INBT> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3

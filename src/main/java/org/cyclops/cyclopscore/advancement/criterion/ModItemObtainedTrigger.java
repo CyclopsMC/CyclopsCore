@@ -2,15 +2,15 @@ package org.cyclops.cyclopscore.advancement.criterion;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.critereon.AbstractCriterionInstance;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
+import net.minecraft.advancements.criterion.CriterionInstance;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.Reference;
 
 /**
@@ -30,26 +30,26 @@ public class ModItemObtainedTrigger extends BaseCriterionTrigger<ItemStack, ModI
 
     @SubscribeEvent
     public void onPickup(EntityItemPickupEvent event) {
-        if (event.getEntityPlayer() != null && event.getEntityPlayer() instanceof EntityPlayerMP) {
-            this.trigger((EntityPlayerMP) event.getEntityPlayer(), event.getItem().getItem());
+        if (event.getEntityPlayer() != null && event.getEntityPlayer() instanceof ServerPlayerEntity) {
+            this.trigger((ServerPlayerEntity) event.getEntityPlayer(), event.getItem().getItem());
         }
     }
 
     @SubscribeEvent
     public void onCrafted(PlayerEvent.ItemCraftedEvent event) {
-        if (event.player != null && event.player instanceof EntityPlayerMP) {
-            this.trigger((EntityPlayerMP) event.player, event.crafting);
+        if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayerEntity) {
+            this.trigger((ServerPlayerEntity) event.getPlayer(), event.getCrafting());
         }
     }
 
     @SubscribeEvent
     public void onSmelted(PlayerEvent.ItemSmeltedEvent event) {
-        if (event.player != null && event.player instanceof EntityPlayerMP) {
-            this.trigger((EntityPlayerMP) event.player, event.smelting);
+        if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayerEntity) {
+            this.trigger((ServerPlayerEntity) event.getPlayer(), event.getSmelting());
         }
     }
 
-    public static class Instance extends AbstractCriterionInstance implements ICriterionInstanceTestable<ItemStack> {
+    public static class Instance extends CriterionInstance implements ICriterionInstanceTestable<ItemStack> {
         private final String modId;
 
         public Instance(ResourceLocation criterionIn, String modId) {
@@ -58,9 +58,9 @@ public class ModItemObtainedTrigger extends BaseCriterionTrigger<ItemStack, ModI
         }
 
         @Override
-        public boolean test(EntityPlayerMP player, ItemStack itemStack) {
+        public boolean test(ServerPlayerEntity player, ItemStack itemStack) {
             return !itemStack.isEmpty()
-                    && Item.REGISTRY.getNameForObject(itemStack.getItem()).getNamespace().equals(this.modId);
+                    && ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getNamespace().equals(this.modId);
         }
     }
 

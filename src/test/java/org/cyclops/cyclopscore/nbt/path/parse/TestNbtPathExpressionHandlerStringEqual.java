@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.ByteNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.IntNBT;
+import net.minecraft.nbt.StringNBT;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,37 +72,37 @@ public class TestNbtPathExpressionHandlerStringEqual {
     @Test
     public void testExpressionStreamSingleLeafStringInvalid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa == \"abc\"", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagString("a"))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagByte((byte) 0))));
+        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(new ByteNBT((byte) 0))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafStringValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa == \"abc\"", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagString("abc"))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagByte((byte) 1))));
+        assertThat(expression.match(Stream.of(new StringNBT("abc"))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(new ByteNBT((byte) 1))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafInt() {
         INbtPathExpression expression = handler.handlePrefixOf("aa == \"abc\"", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagInt(2))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagByte((byte) 0))));
+        assertThat(expression.match(Stream.of(new IntNBT(2))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(new ByteNBT((byte) 0))));
     }
 
     @Test
     public void testExpressionStreamMultipleLeafString() {
         INbtPathExpression expression = handler.handlePrefixOf("aa == \"b\"", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
-                new NBTTagString("a"),
-                new NBTTagString("b"),
-                new NBTTagString("c")
+        Stream<INBT> stream = Stream.of(
+                new StringNBT("a"),
+                new StringNBT("b"),
+                new StringNBT("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagByte((byte) 0),
-                        new NBTTagByte((byte) 1),
-                        new NBTTagByte((byte) 0)
+                        new ByteNBT((byte) 0),
+                        new ByteNBT((byte) 1),
+                        new ByteNBT((byte) 0)
                 )));
     }
 

@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
@@ -38,15 +38,15 @@ public class NbtPathExpressionParseHandlerAllChildren implements INbtPathExpress
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
             return new NbtPathExpressionMatches(executionContexts
                     .flatMap(executionContext -> {
-                        NBTBase nbt = executionContext.getCurrentTag();
+                        INBT nbt = executionContext.getCurrentTag();
                         if (nbt.getId() == Constants.NBT.TAG_LIST) {
-                            NBTTagList tag = (NBTTagList) nbt;
+                            ListNBT tag = (ListNBT) nbt;
                             return StreamSupport.stream(tag.spliterator(), false)
                                     .map((subTag) -> new NbtPathExpressionExecutionContext(subTag, executionContext));
                         } else if (nbt.getId() == Constants.NBT.TAG_COMPOUND) {
-                            NBTTagCompound tag = (NBTTagCompound) nbt;
-                            return tag.getKeySet().stream()
-                                    .map((key) -> new NbtPathExpressionExecutionContext(tag.getTag(key), executionContext));
+                            CompoundNBT tag = (CompoundNBT) nbt;
+                            return tag.keySet().stream()
+                                    .map((key) -> new NbtPathExpressionExecutionContext(tag.get(key), executionContext));
                         }
                         return null;
                     })

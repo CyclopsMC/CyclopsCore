@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.recipe.xml;
 
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.ModList;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 
 /**
@@ -12,7 +12,7 @@ public class ModRecipeConditionHandler implements IRecipeConditionHandler {
 
 	@Override
 	public boolean isSatisfied(RecipeHandler recipeHandler, String param) {
-		return Loader.isModLoaded(param);
+		return ModList.get().isLoaded(param);
 	}
 
 }

@@ -2,8 +2,10 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * This class contains helper methods to get and set certain enchants
@@ -20,16 +22,12 @@ public class EnchantmentHelpers {
 	 * @return The id of the enchantment in the enchantmentlist or -1 if it does not apply.
 	 */
 	public static int doesEnchantApply(ItemStack itemStack, Enchantment enchantment) {
-	    if(itemStack != null) {
-	        NBTTagList enchantmentList = itemStack.getEnchantmentTagList();
-	        if(enchantmentList != null) {
-	            for(int i = 0; i < enchantmentList.tagCount(); i++) {
-	                if (enchantmentList.getCompoundTagAt(i).getShort("id") == Enchantment.getEnchantmentID(enchantment)) {
-	                    return i;
-	                }
-	            }
-	        }
-	    }
+		ListNBT enchantmentList = itemStack.getEnchantmentTagList();
+		for(int i = 0; i < enchantmentList.size(); i++) {
+			if (enchantment.getRegistryName().equals(ResourceLocation.tryCreate(enchantmentList.getCompound(i).getString("id")))) {
+				return i;
+			}
+		}
 	    return -1;
 	}
 
@@ -42,21 +40,22 @@ public class EnchantmentHelpers {
 	 * @return The level of the enchantment on the given item
 	 */
 	public static int getEnchantmentLevel(ItemStack itemStack, int enchantmentListID) {
-	    NBTTagList enchlist = itemStack.getEnchantmentTagList();
-	    return enchlist.getCompoundTagAt(enchantmentListID).getShort("lvl");
+	    ListNBT enchlist = itemStack.getEnchantmentTagList();
+	    return enchlist.getCompound(enchantmentListID).getShort("lvl");
 	}
 
 	/**
-	 * Returns the id of an enchantment given an itemStack and the list id
+	 * Returns the enchantment given an itemStack and the list id
 	 * of the enchantment in the enchantmentlist (see doesEnchantApply() to get
 	 * the id in the enchantmentlist)
 	 * @param itemStack The itemStack which contains the enchanted item
 	 * @param enchantmentListID The id of the enchantment in the enchantment list
-	 * @return The id of the enchantment on the given item
+	 * @return The enchantment on the given item
 	 */
-	public static int getEnchantmentID(ItemStack itemStack, int enchantmentListID) {
-	    NBTTagList enchlist = itemStack.getEnchantmentTagList();
-	    return enchlist.getCompoundTagAt(enchantmentListID).getShort("id");
+	public static Enchantment getEnchantment(ItemStack itemStack, int enchantmentListID) {
+	    ListNBT enchlist = itemStack.getEnchantmentTagList();
+	    return ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryCreate(
+	    		enchlist.getCompound(enchantmentListID).getString("id")));
 	}
 
 	/**
@@ -69,18 +68,18 @@ public class EnchantmentHelpers {
 	 * @param level The new level of the enchantment on the given item
 	 */
 	public static void setEnchantmentLevel(ItemStack itemStack, int enchantmentListID, int level) {
-	    NBTTagList enchlist = itemStack.getEnchantmentTagList();
+	    ListNBT enchlist = itemStack.getEnchantmentTagList();
 	    if(level <= 0) {
-	        enchlist.removeTag(enchantmentListID);
-	        if(enchlist.tagCount() == 0) {
-	            itemStack.getTagCompound().removeTag("ench");
+	        enchlist.remove(enchantmentListID);
+	        if(enchlist.size() == 0) {
+	            itemStack.getTag().remove("Enchantments");
 	        }
 	    } else {
-	    	NBTTagCompound compound = enchlist.getCompoundTagAt(enchantmentListID);
-	        compound.setShort("lvl", (short) level);
+	    	CompoundNBT compound = enchlist.getCompound(enchantmentListID);
+	        compound.putShort("lvl", (short) level);
 	    }
-		NBTTagCompound tag = ItemStackHelpers.getSafeTagCompound(itemStack);
-		tag.setTag("ench", enchlist);
+		CompoundNBT tag = itemStack.getOrCreateTag();
+		tag.put("Enchantments", enchlist);
 	}
 
 	/**

@@ -1,93 +1,86 @@
 package org.cyclops.cyclopscore.command;
 
 import com.google.common.collect.Maps;
-import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.util.text.StringTextComponent;
 import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.PacketCodec;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketAsync;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketComplexAsync;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketComplexSync;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketSync;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Command debugging.
  * @author rubensworks
  *
  */
-public class CommandDebug extends CommandMod {
+public class CommandDebug implements Command<CommandSource> {
 
-    public static final String NAME = "debug";
     private static final int AMOUNT = 3;
-
-    public CommandDebug(ModBase mod) {
-        super(mod, NAME);
-    }
-
-    public CommandDebug(ModBase mod, String name) {
-        super(mod, NAME);
-    }
-
-    @Override
-    public String getFullCommand() {
-        return super.getFullCommand() + " " + NAME;
+    private static final Map<String, PacketCodec> PACKETS = Maps.newHashMap();
+    static {
+        PACKETS.put("simple_async", new PingPongPacketAsync(AMOUNT));
+        PACKETS.put("simple_sync", new PingPongPacketSync(AMOUNT));
+        PACKETS.put("complex_async", new PingPongPacketComplexAsync(AMOUNT, "abc", "def"));
+        PACKETS.put("complex_sync", new PingPongPacketComplexSync(AMOUNT, "abc", "def"));
     }
 
     @Override
-    public List<String> getAliases() {
-        List<String> list = new LinkedList<String>();
-        list.add(NAME);
-        return list;
-    }
-    
-    @Override
-    protected Map<String, ICommand> getSubcommands() {
-        Map<String, ICommand> map = Maps.newHashMap();
-        map.put("simple_async", new CommandDebugPacket(getMod(), new PingPongPacketAsync(AMOUNT)));
-        map.put("simple_sync", new CommandDebugPacket(getMod(), new PingPongPacketSync(AMOUNT)));
-        map.put("complex_async", new CommandDebugPacket(getMod(), new PingPongPacketComplexAsync(AMOUNT, "abc", "def")));
-        map.put("complex_sync", new CommandDebugPacket(getMod(), new PingPongPacketComplexSync(AMOUNT, "abc", "def")));
-        return map;
+    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
+        PacketCodec packet = context.getArgument("packet", PacketCodec.class);
+        context.getSource().asPlayer().sendMessage(new StringTextComponent(String.format("Sending %s from client to server...", packet.getClass())));
+        CyclopsCore._instance.getPacketHandler().sendToPlayer(packet, context.getSource().asPlayer());
+        return 0;
     }
 
-    @Override
-    public void processCommandHelp(ICommandSender icommandsender, String[] astring) throws CommandException {
-        Iterator<String> it = getSubcommands().keySet().iterator();
-        if (it.hasNext())
-            icommandsender.sendMessage(new TextComponentString(joinStrings(it, ", ")));
-        else
-            throw new CommandException("empty");
+    public static LiteralArgumentBuilder<CommandSource> make() {
+        return Commands.literal("debug")
+                .requires((commandSource) -> commandSource.hasPermissionLevel(2))
+                .then(Commands.argument("packet", ArgumentTypePacket.INSTANCE))
+                .executes(new CommandDebug());
     }
 
-    public class CommandDebugPacket extends CommandMod {
+    public static class ArgumentTypePacket implements ArgumentType<PacketCodec> {
 
-        private final PacketCodec packet;
+        public static final ArgumentTypePacket INSTANCE = new ArgumentTypePacket();
 
-        public CommandDebugPacket(ModBase mod, PacketCodec packet) {
-            super(mod);
-            this.packet = packet;
+        private ArgumentTypePacket() {
+
         }
 
         @Override
-        public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] parts, BlockPos blockPos) {
-            return null;
+        public PacketCodec parse(StringReader reader) throws CommandSyntaxException {
+            PacketCodec packet = PACKETS.get(reader.readString());
+            if (packet == null) {
+                throw new SimpleCommandExceptionType(new StringTextComponent("Invalid packet type")).create();
+            }
+            return packet;
         }
 
         @Override
-        public void execute(MinecraftServer server, ICommandSender sender, String[] parts) {
-            sender.sendMessage(new TextComponentString(String.format("Sending %s from client to server...", packet.getClass())));
-            CyclopsCore._instance.getPacketHandler().sendToPlayer(packet, (EntityPlayerMP) sender.getCommandSenderEntity());
+        public Collection<String> getExamples() {
+            return PACKETS.keySet();
+        }
+
+        @Override
+        public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+            return ISuggestionProvider.suggest(PACKETS.keySet(), builder);
         }
     }
 

@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IModel;
 
 /**
  * Custom model loader for a single model.
@@ -13,9 +13,9 @@ public class SingleModelLoader implements ICustomModelLoader {
 
     private final String modId;
     private final String location;
-    private final IModel model;
+    private final IUnbakedModel model;
 
-    public SingleModelLoader(String modId, String location, IModel model) {
+    public SingleModelLoader(String modId, String location, IUnbakedModel model) {
         this.modId = modId;
         this.location = location;
         this.model = model;
@@ -28,7 +28,7 @@ public class SingleModelLoader implements ICustomModelLoader {
     }
 
     @Override
-    public IModel loadModel(ResourceLocation modelLocation) {
+    public IUnbakedModel loadModel(ResourceLocation modelLocation) {
         return model;
     }
 

@@ -1,12 +1,12 @@
 package org.cyclops.cyclopscore.block.component;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import org.cyclops.cyclopscore.client.particle.ExtendedParticleDrop;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
+import org.cyclops.cyclopscore.helper.RenderHelpers;
 
 import java.util.Random;
 
@@ -17,7 +17,7 @@ import java.util.Random;
  * @author rubensworks
  *
  */
-public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock{
+public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock {
     
     protected float particleRed;
     protected float particleGreen;
@@ -55,7 +55,7 @@ public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock{
     }
 
     @Override
-    public void randomDisplayTick(IBlockState blockState, World world, BlockPos blockPos, Random rand) {
+    public void randomDisplayTick(BlockState blockState, World world, BlockPos blockPos, Random rand) {
         if (rand.nextInt(chance) == 0 &&
                 (offset == 0 || BlockHelpers.doesBlockHaveSolidTopSurface(world, blockPos.add(0, -offset, 0))) &&
                 !world.getBlockState(blockPos.add(0, - offset - 1, 0)).getMaterial().blocksMovement()) {
@@ -64,7 +64,7 @@ public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock{
             double pz = (double) ((float) blockPos.getZ() + rand.nextFloat());
 
             Particle fx = new ExtendedParticleDrop(world, px, py, pz, particleRed, particleGreen, particleBlue);
-            FMLClientHandler.instance().getClient().effectRenderer.addEffect(fx);
+            RenderHelpers.emitParticle(fx);
         }
     }
     

@@ -3,9 +3,9 @@ package org.cyclops.cyclopscore.infobook;
 import com.google.common.collect.Maps;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
 
@@ -44,7 +44,7 @@ public class InfoBookRegistry implements IInfoBookRegistry {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onRegistryEvent(RegistryEvent.Register event) {
         // Load _after_ recipes are loaded
-        if (event.getRegistry() == ForgeRegistries.RECIPES) {
+        if (event.getRegistry() == ForgeRegistries.RECIPE_SERIALIZERS) {
             for (Map.Entry<IInfoBook, String> entry : bookPaths.entrySet()) {
                 bookRoots.put(entry.getKey(), InfoBookParser.initializeInfoBook(entry.getKey(), entry.getValue(), null));
                 // Reset the infobook history

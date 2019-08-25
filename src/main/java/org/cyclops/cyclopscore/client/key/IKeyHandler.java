@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.client.key;
 
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * A handler responsible for handling key presses.
@@ -10,7 +10,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author immortaleeb
  *
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public interface IKeyHandler {
 
 	/**

@@ -1,18 +1,18 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
@@ -49,7 +49,7 @@ public class GuiHelpers {
      * @param width The tank width.
      * @param height The tank height.
      */
-    public static void renderFluidTank(Gui gui, @Nullable FluidStack fluidStack, int capacity,
+    public static void renderFluidTank(AbstractGui gui, @Nullable FluidStack fluidStack, int capacity,
                                        int x, int y, int width, int height) {
         if (fluidStack != null && capacity > 0) {
             GlStateManager.pushMatrix();
@@ -60,7 +60,7 @@ public class GuiHelpers {
             GL11.glEnable(GL11.GL_DEPTH_TEST);
 
             int level = (int) (height * (((double) fluidStack.amount) / capacity));
-            TextureAtlasSprite icon = RenderHelpers.getFluidIcon(fluidStack, EnumFacing.UP);
+            TextureAtlasSprite icon = RenderHelpers.getFluidIcon(fluidStack, Direction.UP);
             int verticalOffset = 0;
             while(level > 0) {
                 int textureHeight;
@@ -72,23 +72,23 @@ public class GuiHelpers {
                     level = 0;
                 }
 
-                RenderHelpers.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+                RenderHelpers.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
                 // Fluids can have a custom overlay color, use this to render.
                 Triple<Float, Float, Float> colorParts = Helpers.intToRGB(fluidStack.getFluid().getColor(fluidStack));
-                GlStateManager.color(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight());
+                GlStateManager.color3f(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight());
 
-                gui.drawTexturedModalRect(x, y - textureHeight - verticalOffset + height, icon, width, textureHeight);
+                AbstractGui.blit(x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
 
                 // Reset color when done
-                GlStateManager.color(1, 1, 1, 1);
+                GlStateManager.color4f(1, 1, 1, 1);
 
                 verticalOffset = verticalOffset + 16;
             }
 
-            TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
-            textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            textureManager.getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+            TextureManager textureManager = Minecraft.getInstance().getTextureManager();
+            textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            textureManager.getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
 
             RenderHelper.disableStandardItemLighting();
             GlStateManager.popMatrix();
@@ -103,7 +103,7 @@ public class GuiHelpers {
      * @param x The slot X position.
      * @param y The slot Y position.
      */
-    public static void renderFluidSlot(Gui gui, @Nullable FluidStack fluidStack, int x, int y) {
+    public static void renderFluidSlot(AbstractGui gui, @Nullable FluidStack fluidStack, int x, int y) {
         if (fluidStack != null) {
             GuiHelpers.renderFluidTank(gui, fluidStack, fluidStack.amount, x, y, SLOT_SIZE_INNER, SLOT_SIZE_INNER);
         }
@@ -124,14 +124,14 @@ public class GuiHelpers {
      * @param overlayTextureX The overlay x texture position.
      * @param overlayTextureY The overlay y texture position.
      */
-    public static void renderOverlayedFluidTank(Gui gui, @Nullable FluidStack fluidStack, int capacity,
+    public static void renderOverlayedFluidTank(AbstractGui gui, @Nullable FluidStack fluidStack, int capacity,
                                                 int x, int y, int width, int height,
                                                 ResourceLocation textureOverlay, int overlayTextureX, int overlayTextureY) {
         renderFluidTank(gui, fluidStack, capacity, x, y, width, height);
         if (fluidStack != null && capacity > 0) {
             GlStateManager.enableBlend();
             RenderHelpers.bindTexture(textureOverlay);
-            gui.drawTexturedModalRect(x, y, overlayTextureX, overlayTextureY, width, height);
+            gui.blit(x, y, overlayTextureX, overlayTextureY, width, height);
         }
     }
 
@@ -150,7 +150,7 @@ public class GuiHelpers {
      * @param progress The current progress.
      * @param progressMax The maximum progress.
      */
-    public static void renderProgressBar(Gui gui, int x, int y, int width, int height, int textureX, int textureY,
+    public static void renderProgressBar(AbstractGui gui, int x, int y, int width, int height, int textureX, int textureY,
                                          ProgressDirection direction, int progress, int progressMax) {
         if (progressMax > 0 && progress > 0) {
             int scaledWidth = width;
@@ -176,7 +176,7 @@ public class GuiHelpers {
                 textureY += offset;
             }
 
-            gui.drawTexturedModalRect(x, y, textureX, textureY, scaledWidth, scaledHeight);
+            gui.blit(x, y, textureX, textureY, scaledWidth, scaledHeight);
         }
     }
 
@@ -187,12 +187,12 @@ public class GuiHelpers {
      * @param x Tooltip X.
      * @param y Tooltip Y.
      */
-    public static void drawTooltip(GuiContainer gui, List<String> lines, int x, int y) {
+    public static void drawTooltip(ContainerScreen gui, List<String> lines, int x, int y) {
         int guiLeft = gui.getGuiLeft();
         int guiTop = gui.getGuiTop();
         int width = gui.width;
         int height = gui.height;
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
 
         GlStateManager.pushMatrix();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -229,19 +229,19 @@ public class GuiHelpers {
         }
 
         float zLevel = 300.0F;
-        mc.getRenderItem().zLevel = 300.0F;
+        mc.getItemRenderer().zLevel = 300.0F;
         int color1 = -267386864;
-        drawGradientRect(xStart - 3, yStart - 4, xStart + tooltipWidth + 3, yStart - 3, color1, color1, zLevel);
-        drawGradientRect(xStart - 3, yStart + tooltipHeight + 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 4, color1, color1, zLevel);
-        drawGradientRect(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color1, color1, zLevel);
-        drawGradientRect(xStart - 4, yStart - 3, xStart - 3, yStart + tooltipHeight + 3, color1, color1, zLevel);
-        drawGradientRect(xStart + tooltipWidth + 3, yStart - 3, xStart + tooltipWidth + 4, yStart + tooltipHeight + 3, color1, color1, zLevel);
+        fillGradient(xStart - 3, yStart - 4, xStart + tooltipWidth + 3, yStart - 3, color1, color1, zLevel);
+        fillGradient(xStart - 3, yStart + tooltipHeight + 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 4, color1, color1, zLevel);
+        fillGradient(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color1, color1, zLevel);
+        fillGradient(xStart - 4, yStart - 3, xStart - 3, yStart + tooltipHeight + 3, color1, color1, zLevel);
+        fillGradient(xStart + tooltipWidth + 3, yStart - 3, xStart + tooltipWidth + 4, yStart + tooltipHeight + 3, color1, color1, zLevel);
         int color2 = 1347420415;
         int color3 = (color2 & 16711422) >> 1 | color2 & -16777216;
-        drawGradientRect(xStart - 3, yStart - 3 + 1, xStart - 3 + 1, yStart + tooltipHeight + 3 - 1, color2, color3, zLevel);
-        drawGradientRect(xStart + tooltipWidth + 2, yStart - 3 + 1, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3 - 1, color2, color3, zLevel);
-        drawGradientRect(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart - 3 + 1, color2, color2, zLevel);
-        drawGradientRect(xStart - 3, yStart + tooltipHeight + 2, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color3, color3, zLevel);
+        fillGradient(xStart - 3, yStart - 3 + 1, xStart - 3 + 1, yStart + tooltipHeight + 3 - 1, color2, color3, zLevel);
+        fillGradient(xStart + tooltipWidth + 2, yStart - 3 + 1, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3 - 1, color2, color3, zLevel);
+        fillGradient(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart - 3 + 1, color2, color2, zLevel);
+        fillGradient(xStart - 3, yStart + tooltipHeight + 2, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color3, color3, zLevel);
 
         for(int stringIndex = 0; stringIndex < lines.size(); ++stringIndex) {
             String line = lines.get(stringIndex);
@@ -264,13 +264,13 @@ public class GuiHelpers {
         GlStateManager.popMatrix();
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 
-        mc.getRenderItem().zLevel = 0.0F;
+        mc.getItemRenderer().zLevel = 0.0F;
     }
 
     /**
      * Render a rectangle.
      *
-     * Static variant of {@link Gui#drawGradientRect(int, int, int, int, int, int)}.
+     * Static variant of {@link AbstractGui#fillGradient(int, int, int, int, int, int)}.
      *
      * @param left Left X.
      * @param top Top Y.
@@ -280,7 +280,7 @@ public class GuiHelpers {
      * @param endColor End gradient color.
      * @param zLevel The Z level to render at.
      */
-    public static void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor, float zLevel) {
+    public static void fillGradient(int left, int top, int right, int bottom, int startColor, int endColor, float zLevel) {
         float f = (float)(startColor >> 24 & 255) / 255.0F;
         float f1 = (float)(startColor >> 16 & 255) / 255.0F;
         float f2 = (float)(startColor >> 8 & 255) / 255.0F;
@@ -289,10 +289,10 @@ public class GuiHelpers {
         float f5 = (float)(endColor >> 16 & 255) / 255.0F;
         float f6 = (float)(endColor >> 8 & 255) / 255.0F;
         float f7 = (float)(endColor & 255) / 255.0F;
-        GlStateManager.disableTexture2D();
+        GlStateManager.disableTexture();
         GlStateManager.enableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.disableAlphaTest();
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.shadeModel(7425);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -304,8 +304,8 @@ public class GuiHelpers {
         tessellator.draw();
         GlStateManager.shadeModel(7424);
         GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableAlphaTest();
+        GlStateManager.enableTexture();
     }
 
     /**
@@ -322,7 +322,7 @@ public class GuiHelpers {
      *                      No tooltip will be rendered when the optional value is absent.
      *                      This will only be called when needed.
      */
-    public static void renderTooltipOptional(GuiContainer gui, int x, int y, int width, int height,
+    public static void renderTooltipOptional(ContainerScreen gui, int x, int y, int width, int height,
                                              int mouseX, int mouseY, Supplier<Optional<List<String>>> linesSupplier) {
         if(RenderHelpers.isPointInRegion(x, y, width, height, mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop())) {
             linesSupplier.get().ifPresent(
@@ -342,7 +342,7 @@ public class GuiHelpers {
      * @param linesSupplier A supplier for the tooltip lines to render.
      *                      This will only be called when needed.
      */
-    public static void renderTooltip(GuiContainer gui, int x, int y, int width, int height,
+    public static void renderTooltip(ContainerScreen gui, int x, int y, int width, int height,
                                      int mouseX, int mouseY, Supplier<List<String>> linesSupplier) {
         renderTooltipOptional(gui, x, y, width, height, mouseX, mouseY, () -> Optional.of(linesSupplier.get()));
     }

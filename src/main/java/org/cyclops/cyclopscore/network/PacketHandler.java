@@ -1,27 +1,28 @@
 package org.cyclops.cyclopscore.network;
 
+import com.google.common.base.Predicates;
 import io.netty.channel.ChannelHandler.Sharable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.Packet;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.fml.network.NetworkDirection;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
+import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.Helpers.IDType;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Advanced packet handler of {@link PacketBase} instances.
- * An alternative would be {@link SimpleNetworkWrapper}.
+ * An alternative would be {@link SimpleChannel}.
  * Partially based on the SecretRooms mod packet handling:
  * https://github.com/AbrarSyed/SecretRoomsMod-forge
  * @author rubensworks
@@ -30,27 +31,19 @@ import org.cyclops.cyclopscore.init.ModBase;
 @Sharable
 public final class PacketHandler {
 
-    // Forge's CPacketCustomPayload assumes a max channel name length of 20
-    private static final int MAX_CHANNELNAME_LENGTH = 20;
-
-    private SimpleNetworkWrapper networkWrapper = null;
-    @SideOnly(Side.CLIENT)
-    private HandlerClient handlerClient;
-    private HandlerServer handlerServer;
     private final ModBase mod;
+
+    private SimpleChannel networkChannel = null;
 	
     public PacketHandler(ModBase mod) {
         this.mod = mod;
     }
 
     public void init() {
-        if(networkWrapper == null) {
-            networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(mod.getModId()
-                    .substring(0, Math.min(mod.getModId().length(), MAX_CHANNELNAME_LENGTH)));
-            if(MinecraftHelpers.isClientSide()) {
-                handlerClient = new HandlerClient();
-            }
-            handlerServer = new HandlerServer();
+        if(networkChannel == null) {
+            networkChannel = NetworkRegistry.newSimpleChannel(
+                    new ResourceLocation(mod.getModId(), "channel_main"), () -> "1.0.0",
+                    Predicates.alwaysTrue(), Predicates.alwaysTrue());
         }
     }
     
@@ -58,12 +51,42 @@ public final class PacketHandler {
      * Register a new packet.
      * @param packetType The class of the packet.
      */
-    public void register(Class<? extends PacketBase> packetType) {
+    public <P extends PacketBase> void register(Class<P> packetType) {
         int discriminator = Helpers.getNewId(mod, IDType.PACKET);
-        if(MinecraftHelpers.isClientSide()) {
-            networkWrapper.registerMessage(handlerClient, packetType, discriminator, Side.CLIENT);
+        try {
+            Constructor<P> constructor = packetType.getConstructor();
+            networkChannel.registerMessage(discriminator, packetType,
+                    (packet, packetBuffer) -> packet.encode(packetBuffer),
+                    (packetBuffer) -> {
+                        P packet = null;
+                        try {
+                            packet = constructor.newInstance();
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                        packet.decode(packetBuffer);
+                        return packet;
+                    },
+                    (packet, contextSupplier) -> {
+                        NetworkEvent.Context context = contextSupplier.get();
+                        if (context.getDirection().getReceptionSide().isClient()) {
+                            if (packet.isAsync()) {
+                                packet.actionClient(Minecraft.getInstance().player.world, Minecraft.getInstance().player);
+                            } else {
+                                context.enqueueWork(() -> packet.actionClient(Minecraft.getInstance().player.world, Minecraft.getInstance().player));
+                            }
+                        } else {
+                            if (packet.isAsync()) {
+                                packet.actionServer(context.getSender().getServerWorld(), context.getSender());
+                            } else {
+                                context.enqueueWork(() -> packet.actionServer(context.getSender().getServerWorld(), context.getSender()));
+                            }
+                        }
+                    });
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            CyclopsCore.clog(Level.ERROR, "Could not find a default constructor for packet " + packetType.getName());
         }
-        networkWrapper.registerMessage(handlerServer, packetType, discriminator, Side.SERVER);
     }
     
     /**
@@ -71,7 +94,7 @@ public final class PacketHandler {
      * @param packet The packet.
      */
     public void sendToServer(PacketBase packet) {
-        networkWrapper.sendToServer(packet);
+        networkChannel.sendToServer(packet);
     }
     
     /**
@@ -79,8 +102,8 @@ public final class PacketHandler {
      * @param packet The packet.
      * @param player The player.
      */
-    public void sendToPlayer(PacketBase packet, EntityPlayerMP player) {
-        networkWrapper.sendTo(packet, player);
+    public void sendToPlayer(PacketBase packet, ServerPlayerEntity player) {
+        networkChannel.sendTo(packet, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
     }
 
     /**
@@ -88,8 +111,9 @@ public final class PacketHandler {
      * @param packet The packet.
      * @param point The area to send to.
      */
-    public void sendToAllAround(PacketBase packet, NetworkRegistry.TargetPoint point) {
-        networkWrapper.sendToAllAround(packet, point);
+    public void sendToAllAround(PacketBase packet, PacketDistributor.TargetPoint point) {
+        PacketDistributor.PacketTarget target = PacketDistributor.NEAR.with(() -> point);
+        target.send(networkChannel.toVanillaPacket(packet, target.getDirection()));
     }
 
     /**
@@ -97,8 +121,9 @@ public final class PacketHandler {
      * @param packet The packet.
      * @param dimension The dimension to send to.
      */
-    public void sendToDimension(PacketBase packet, int dimension) {
-        networkWrapper.sendToDimension(packet, dimension);
+    public void sendToDimension(PacketBase packet, DimensionType dimension) {
+        PacketDistributor.PacketTarget target = PacketDistributor.DIMENSION.with(() -> dimension);
+        target.send(networkChannel.toVanillaPacket(packet, target.getDirection()));
     }
     
     /**
@@ -106,57 +131,8 @@ public final class PacketHandler {
      * @param packet The packet.
      */
     public void sendToAll(PacketBase packet) {
-        networkWrapper.sendToAll(packet);
-    }
-    
-    /**
-     * Convert the given packet to a minecraft packet.
-     * @param packet The packet.
-     * @return The minecraft packet.
-     */
-    public Packet<?> toMcPacket(PacketBase packet) {
-        return networkWrapper.getPacketFrom(packet);
-    }
-    
-    @Sharable
-    @SideOnly(Side.CLIENT)
-    private static final class HandlerClient implements IMessageHandler<PacketBase, IMessage> {
-
-        @Override
-        public IMessage onMessage(final PacketBase packet, MessageContext ctx) {
-            final Minecraft mc = Minecraft.getMinecraft();
-            IThreadListener thread = FMLCommonHandler.instance().getWorldThread(ctx.getClientHandler());
-            if (packet.isAsync()) {
-                packet.actionClient(mc.world, mc.player);
-            } else {
-                thread.addScheduledTask(new Runnable() {
-                    public void run() {
-                        packet.actionClient(mc.world, mc.player);
-                    }
-                });
-            }
-            return null;
-        }
-    }
-
-    @Sharable
-    private static final class HandlerServer implements IMessageHandler<PacketBase, IMessage> {
-
-        @Override
-        public IMessage onMessage(PacketBase packet, MessageContext ctx) {
-            if (ctx.side == Side.CLIENT) {
-                // nothing on the client thread
-                return null;
-            }
-
-            EntityPlayerMP player = ctx.getServerHandler().player;
-            if (packet.isAsync()) {
-		packet.actionServer(player.world, player);
-	    } else {
-		((WorldServer) player.world).addScheduledTask(() -> packet.actionServer(player.world, player));
-	    }
-            return null;
-        }
+        PacketDistributor.PacketTarget target = PacketDistributor.ALL.with(() -> null);
+        target.send(networkChannel.toVanillaPacket(packet, target.getDirection()));
     }
     
 }

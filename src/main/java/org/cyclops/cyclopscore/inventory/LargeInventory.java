@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.inventory;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraftforge.common.util.Constants;
 
 /**
  * A large inventory implementation.
@@ -16,17 +16,16 @@ public class LargeInventory extends SimpleInventory {
      * Default constructor for NBT persistence, don't call this yourself.
      */
     public LargeInventory() {
-        this(0, "", 0);
+        this(0, 0);
     }
 
     /**
      * Make a new instance.
      * @param size The amount of slots in the inventory.
-     * @param name The name of the inventory, used for NBT storage.
      * @param stackLimit The stack limit for each slot.
      */
-    public LargeInventory(int size, String name, int stackLimit) {
-        super(size, name, stackLimit);
+    public LargeInventory(int size, int stackLimit) {
+        super(size, stackLimit);
     }
 
     /**
@@ -34,22 +33,22 @@ public class LargeInventory extends SimpleInventory {
      * @param data The NBT data containing inventory data.
      * @param tag The NBT tag name where the info is located.
      */
-    public void readFromNBT(NBTTagCompound data, String tag) {
-        NBTTagList nbttaglist = data.getTagList(tag, MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
+    public void readFromNBT(CompoundNBT data, String tag) {
+        ListNBT nbttaglist = data.getList(tag, Constants.NBT.TAG_COMPOUND);
 
         for (int j = 0; j < getSizeInventory(); ++j)
-            _contents[j] = ItemStack.EMPTY;
+            contents[j] = ItemStack.EMPTY;
 
-        for (int j = 0; j < nbttaglist.tagCount(); ++j) {
-            NBTTagCompound slot = nbttaglist.getCompoundTagAt(j);
+        for (int j = 0; j < nbttaglist.size(); ++j) {
+            CompoundNBT slot = nbttaglist.getCompound(j);
             int index;
-            if (slot.hasKey("index")) {
-                index = slot.getInteger("index");
+            if (slot.contains("index")) {
+                index = slot.getInt("index");
             } else {
-                index = slot.getInteger("Slot");
+                index = slot.getInt("Slot");
             }
             if (index >= 0 && index < getSizeInventory()) {
-                _contents[index] = new ItemStack(slot);
+                contents[index] = ItemStack.read(slot);
             }
         }
     }
@@ -59,18 +58,18 @@ public class LargeInventory extends SimpleInventory {
      * @param data The NBT tag that will receive inventory data.
      * @param tag The NBT tag name where the info must be located.
      */
-    public void writeToNBT(NBTTagCompound data, String tag) {
-        NBTTagList slots = new NBTTagList();
+    public void writeToNBT(CompoundNBT data, String tag) {
+        ListNBT slots = new ListNBT();
         for (int index = 0; index < getSizeInventory(); ++index) {
             ItemStack itemStack = getStackInSlot(index);
             if (!itemStack.isEmpty() && itemStack.getCount() > 0) {
-                NBTTagCompound slot = new NBTTagCompound();
-                slots.appendTag(slot);
-                slot.setInteger("Slot", index);
-                itemStack.writeToNBT(slot);
+                CompoundNBT slot = new CompoundNBT();
+                slots.add(slot);
+                slot.putInt("Slot", index);
+                itemStack.write(slot);
             }
         }
-        data.setTag(tag, slots);
+        data.put(tag, slots);
     }
 
 }

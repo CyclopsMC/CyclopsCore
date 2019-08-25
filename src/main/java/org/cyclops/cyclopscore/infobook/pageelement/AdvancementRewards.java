@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
 import lombok.Data;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.Reference;
@@ -45,14 +45,14 @@ public class AdvancementRewards {
         return NBT_KEY_OBTAINED_PREFIX + id;
     }
 
-    public boolean isObtained(EntityPlayer player) {
+    public boolean isObtained(PlayerEntity player) {
         return EntityHelpers.getPersistedPlayerNbt(player).getBoolean(getNbtTagKey());
     }
 
-    public void obtain(EntityPlayer player) {
+    public void obtain(PlayerEntity player) {
         if (!isObtained(player)) {
             // If client-side, send packet to server, otherwise, obtain the rewards server-side
-            if (player.world.isRemote) {
+            if (player.world.isRemote()) {
                 CyclopsCore._instance.getPacketHandler().sendToServer(new AdvancementRewardsObtainPacket(id));
             } else {
                 for (IReward reward : getRewards()) {
@@ -61,12 +61,12 @@ public class AdvancementRewards {
             }
 
             // Set NBT
-            NBTTagCompound tag = player.getEntityData();
-            if (!tag.hasKey(EntityPlayer.PERSISTED_NBT_TAG)) {
-                tag.setTag(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
+            CompoundNBT tag = player.getEntityData();
+            if (!tag.contains(PlayerEntity.PERSISTED_NBT_TAG)) {
+                tag.put(PlayerEntity.PERSISTED_NBT_TAG, new CompoundNBT());
             }
-            NBTTagCompound persistedTag = tag.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
-            persistedTag.setBoolean(getNbtTagKey(), true);
+            CompoundNBT persistedTag = tag.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
+            persistedTag.putBoolean(getNbtTagKey(), true);
         }
     }
 }

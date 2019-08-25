@@ -1,27 +1,33 @@
 package org.cyclops.cyclopscore.infobook;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.Helpers;
 
 /**
  * An advanced button type.
  * @author rubensworks
  */
-@SideOnly(Side.CLIENT)
-public class AdvancedButton extends GuiButton {
+@OnlyIn(Dist.CLIENT)
+public class AdvancedButton extends Button {
 
     private InfoSection target;
-    protected GuiInfoBook gui;
+    protected ScreenInfoBook gui;
+
+    private Button.IPressable onPress;
 
     public AdvancedButton() {
-        super(-1, 0, 0, "");
+        super(0, 0, 0, 0, "", null);
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setOnPress(IPressable onPress) {
+        this.onPress = onPress;
+    }
+
+    public IPressable getOnPress() {
+        return this.onPress;
     }
 
     /**
@@ -32,22 +38,21 @@ public class AdvancedButton extends GuiButton {
      * @param target The target section.
      * @param gui The gui.
      */
-    public void update(int x, int y, String displayName, InfoSection target, GuiInfoBook gui) {
+    public void update(int x, int y, String displayName, InfoSection target, ScreenInfoBook gui) {
         this.x = x;
         this.y = y;
-        this.displayString = displayName;
+        this.setMessage(displayName);
         this.target = target;
         this.gui = gui;
         this.width = 16;
         this.height = 16;
-        this.enabled = isVisible();
+        this.active = isVisible();
     }
 
     @Override
-    public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(int mouseX, int mouseY, float partialTicks) {
         if(isVisible() && isHover(mouseX, mouseY)) {
-            minecraft.fontRenderer.drawString(("§n") +
-                            displayString + "§r", x, y,
+            Minecraft.getInstance().fontRenderer.drawString(("§n") + getMessage() + "§r", x, y,
                     Helpers.RGBToInt(100, 100, 150));
         }
     }
@@ -73,9 +78,4 @@ public class AdvancedButton extends GuiButton {
     public InfoSection getTarget() {
         return this.target;
     }
-
-    public void onClick() {
-
-    }
-
 }

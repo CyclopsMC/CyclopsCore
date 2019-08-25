@@ -1,15 +1,17 @@
 package org.cyclops.cyclopscore.inventory.container;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import org.cyclops.cyclopscore.helper.InventoryHelpers;
-import org.cyclops.cyclopscore.inventory.IGuiContainerProviderConfigurable;
+
+import javax.annotation.Nullable;
 
 /**
  * A container for an item.
@@ -17,31 +19,35 @@ import org.cyclops.cyclopscore.inventory.IGuiContainerProviderConfigurable;
  *
  * @param <I> The item instance.
  */
-public abstract class ItemInventoryContainer<I extends Item & IGuiContainerProviderConfigurable> extends InventoryContainerConfigurable {
+public abstract class ItemInventoryContainer<I extends Item> extends InventoryContainer {
 	
 	protected I item;
 	protected int itemIndex;
-	protected EnumHand hand;
+	protected Hand hand;
 
 	/**
 	 * Make a new instance.
+	 * @param type The container type.
+	 * @param id The container id.
 	 * @param inventory The player inventory.
 	 * @param item The item.
 	 * @param itemIndex The index of the item in use inside the player inventory.
 	 */
-	public ItemInventoryContainer(InventoryPlayer inventory, I item, int itemIndex) {
-		this(inventory, item, itemIndex, EnumHand.MAIN_HAND);
+	public ItemInventoryContainer(@Nullable ContainerType<?> type, int id,  PlayerInventory inventory, I item, int itemIndex) {
+		this(type, id, inventory, item, itemIndex, Hand.MAIN_HAND);
 	}
 
 	/**
 	 * Make a new instance.
+	 * @param type The container type.
+	 * @param id The container id.
 	 * @param inventory The player inventory.
 	 * @param item The item.
 	 * @param itemIndex The index of the item in use inside the player inventory.
 	 * @param hand The hand the player is using.
 	 */
-	public ItemInventoryContainer(InventoryPlayer inventory, I item, int itemIndex, EnumHand hand) {
-		super(inventory, item);
+	public ItemInventoryContainer(@Nullable ContainerType<?> type, int id, PlayerInventory inventory, I item, int itemIndex, Hand hand) {
+		super(type, id, inventory);
 		this.item = item;
 		this.itemIndex = itemIndex;
 		this.hand = hand;
@@ -56,12 +62,12 @@ public abstract class ItemInventoryContainer<I extends Item & IGuiContainerProvi
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer player) {
+	public boolean canInteractWith(PlayerEntity player) {
 		ItemStack item = getItemStack(player);
 		return item != null && item.getItem() == getItem();
 	}
 
-	public ItemStack getItemStack(EntityPlayer player) {
+	public ItemStack getItemStack(PlayerEntity player) {
 		return InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
 	}
 	
@@ -70,7 +76,7 @@ public abstract class ItemInventoryContainer<I extends Item & IGuiContainerProvi
     	return new Slot(inventory, index, x, y) {
     		
     		@Override
-    		public boolean canTakeStack(EntityPlayer player) {
+    		public boolean canTakeStack(PlayerEntity player) {
     			return this.getStack() != InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
     	    }
     		
@@ -78,7 +84,7 @@ public abstract class ItemInventoryContainer<I extends Item & IGuiContainerProvi
     }
 
 	@Override
-	public ItemStack slotClick(int slotId, int arg, ClickType clickType, EntityPlayer player) {
+	public ItemStack slotClick(int slotId, int arg, ClickType clickType, PlayerEntity player) {
 		if (clickType == ClickType.SWAP && arg == itemIndex) {
 			// Don't allow swapping with the slot of the active item.
 			return ItemStack.EMPTY;

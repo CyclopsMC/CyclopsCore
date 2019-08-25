@@ -1,26 +1,26 @@
 package org.cyclops.cyclopscore.ingredient;
 
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBT;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientSerializer;
 
 public class IngredientSerializerStub<T, M> implements IIngredientSerializer<T, M> {
     @Override
-    public NBTBase serializeInstance(T instance) {
+    public INBT serializeInstance(T instance) {
         return null;
     }
 
     @Override
-    public T deserializeInstance(NBTBase tag) throws IllegalArgumentException {
+    public T deserializeInstance(INBT tag) throws IllegalArgumentException {
         return null;
     }
 
     @Override
-    public NBTBase serializeCondition(M matchCondition) {
+    public INBT serializeCondition(M matchCondition) {
         return null;
     }
 
     @Override
-    public M deserializeCondition(NBTBase tag) throws IllegalArgumentException {
+    public M deserializeCondition(INBT tag) throws IllegalArgumentException {
         return null;
     }
 }

@@ -2,13 +2,13 @@ package org.cyclops.cyclopscore.tracking;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.GeneralConfig;
 import org.cyclops.cyclopscore.Reference;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.io.IOException;
@@ -54,22 +54,18 @@ public class Analytics {
     public static void sendAll() {
         if(!checked) {
             checked = true;
-            if (MinecraftHelpers.isClientSide()
-                    ? Minecraft.getMinecraft().isSnooperEnabled()
-                    : FMLCommonHandler.instance().getMinecraftServerInstance().isSnooperEnabled()) {
-                new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        List<Pair<ModBase, String>> trackingMods = getTrackingMods();
-                        for (Pair<ModBase, String> pair : trackingMods) {
-                            try {
-                                URL url = new URL(createRequestURL(pair.getLeft(), pair.getRight()));
-                                //noinspection ResultOfMethodCallIgnored
-                                IOUtils.toString(url, Charset.forName("UTF-8")); // Just do request, we don't need the output (?)
-                            } catch (IOException e) {
-                                pair.getLeft().log(Level.WARN, "Could not send tracking info: " + e.toString());
-                            }
+            if (FMLEnvironment.dist.isClient()
+                    ? Minecraft.getInstance().getSnooper().isSnooperRunning()
+                    : ServerLifecycleHooks.getCurrentServer().getSnooper().isSnooperRunning()) {
+                new Thread(() -> {
+                    List<Pair<ModBase, String>> trackingMods = getTrackingMods();
+                    for (Pair<ModBase, String> pair : trackingMods) {
+                        try {
+                            URL url = new URL(createRequestURL(pair.getLeft(), pair.getRight()));
+                            //noinspection ResultOfMethodCallIgnored
+                            IOUtils.toString(url, Charset.forName("UTF-8")); // Just do request, we don't need the output (?)
+                        } catch (IOException e) {
+                            pair.getLeft().log(Level.WARN, "Could not send tracking info: " + e.toString());
                         }
                     }
                 }).start();
@@ -82,7 +78,7 @@ public class Analytics {
         return String.format(REQUEST_PATTERN, trackingId, GeneralConfig.anonymousAnalyticsID,
                 URLEncoder.encode(mod.getModName(), "UTF-8"),
                 mcVersion + "-" + URLEncoder.encode(mod.getReferenceValue(ModBase.REFKEY_MOD_VERSION), "UTF-8"),
-                mcVersion, MinecraftHelpers.isClientSide() ? "client" : "server", System.getProperty("java.version"));
+                mcVersion, FMLEnvironment.dist.isClient() ? "client" : "server", System.getProperty("java.version"));
     }
 
 }

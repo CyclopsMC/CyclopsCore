@@ -1,11 +1,8 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraft.entity.EntityType;
 import org.cyclops.cyclopscore.config.extendedconfig.EntityConfig;
-import org.cyclops.cyclopscore.helper.Helpers;
 
 /**
  * The action used for {@link EntityConfig}.
@@ -13,32 +10,24 @@ import org.cyclops.cyclopscore.helper.Helpers;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class EntityAction<T extends Entity> extends ConfigurableTypeAction<EntityConfig<T>>{
+public class EntityAction<T extends Entity> extends ConfigurableTypeAction<EntityConfig<T>, EntityType<T>> {
 
     @Override
-    public void preRun(EntityConfig<T> eConfig, Configuration config, boolean startup) {
-        
-    }
-
-    @Override
-    public void postRun(EntityConfig<T> eConfig, Configuration config) {
-        // Save the config inside the correct element
-        eConfig.save();
-        
-        @SuppressWarnings("unchecked")
-        Class<? extends T> clazz = (Class<? extends T>) eConfig.getElement();
+    public void onRegister(EntityConfig<T> eConfig) {
+        register(eConfig.getInstance(), (EntityConfig) eConfig);
 
         // Register
-        EntityRegistry.registerModEntity(
-                new ResourceLocation(eConfig.getMod().getModId(), eConfig.getSubUniqueName()),
-                clazz,
-                eConfig.getSubUniqueName(),
-                Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY),
-                eConfig.getMod(),
-                eConfig.getTrackingRange(),
-                eConfig.getUpdateFrequency(),
-                eConfig.sendVelocityUpdates()
-        );
+        // TODO: is this still needed?
+//        EntityRegistry.registerModEntity(
+//                new ResourceLocation(eConfig.getMod().getModId(), eConfig.getSubUniqueName()),
+//                clazz,
+//                eConfig.getSubUniqueName(),
+//                Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY),
+//                eConfig.getMod(),
+//                eConfig.getTrackingRange(),
+//                eConfig.getUpdateFrequency(),
+//                eConfig.sendVelocityUpdates()
+//        );
     }
 
 }

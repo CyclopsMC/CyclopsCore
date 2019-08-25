@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.nbt.path;
 
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.StringNBT;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionExecutionContext;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,9 +20,9 @@ public class TestNbtPathExpressionMatches {
     @Before
     public void beforeEach() {
         stream = Stream.of(
-                new NbtPathExpressionExecutionContext(new NBTTagString("a")),
-                new NbtPathExpressionExecutionContext(new NBTTagString("b")),
-                new NbtPathExpressionExecutionContext(new NBTTagString("c"))
+                new NbtPathExpressionExecutionContext(new StringNBT("a")),
+                new NbtPathExpressionExecutionContext(new StringNBT("b")),
+                new NbtPathExpressionExecutionContext(new StringNBT("c"))
         );
         matches = new NbtPathExpressionMatches(stream);
     }
@@ -35,9 +35,9 @@ public class TestNbtPathExpressionMatches {
     @Test
     public void testForAll() {
         matches = NbtPathExpressionMatches.forAll(
-                new NbtPathExpressionExecutionContext(new NBTTagString("a")),
-                new NbtPathExpressionExecutionContext(new NBTTagString("b")),
-                new NbtPathExpressionExecutionContext(new NBTTagString("c"))
+                new NbtPathExpressionExecutionContext(new StringNBT("a")),
+                new NbtPathExpressionExecutionContext(new StringNBT("b")),
+                new NbtPathExpressionExecutionContext(new StringNBT("c"))
         );
         assertThat(matches.getContexts().collect(Collectors.toList()), equalTo(stream.collect(Collectors.toList())));
     }

@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Arrays;
@@ -16,82 +16,78 @@ import java.util.List;
  */
 public class DirectionHelpers {
 	/**
-     * A list of all the {@link net.minecraft.util.EnumFacing}.
+     * A list of all the {@link Direction}.
      */
-    public static List<EnumFacing> DIRECTIONS = Arrays.asList(EnumFacing.VALUES);
-    /**
-     * The facing directions of an entity, used in {@link DirectionHelpers#getEntityFacingDirection(net.minecraft.entity.EntityLivingBase)}.
-     */
-    public static final EnumFacing[] ENTITYFACING = EnumFacing.HORIZONTALS;
+    public static List<Direction> DIRECTIONS = Arrays.asList(Direction.values());
     /**
      * A double array that contains the visual side. The first argument should be the rotation of
      * the blockState and the second argument is the side for which the texture is called.
      */
-    public static EnumFacing[][] TEXTURESIDE_ORIENTATION = {
-            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST}, // DOWN
-            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST}, // UP
-            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST}, // NORTH
-            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.SOUTH, EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.WEST}, // SOUTH
-            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.EAST, EnumFacing.WEST, EnumFacing.NORTH, EnumFacing.SOUTH}, // WEST
-            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.WEST, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.NORTH}, // EAST
+    public static Direction[][] TEXTURESIDE_ORIENTATION = {
+            {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST}, // DOWN
+            {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST}, // UP
+            {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST}, // NORTH
+            {Direction.DOWN, Direction.UP, Direction.SOUTH, Direction.NORTH, Direction.EAST, Direction.WEST}, // SOUTH
+            {Direction.DOWN, Direction.UP, Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH}, // WEST
+            {Direction.DOWN, Direction.UP, Direction.WEST, Direction.EAST, Direction.SOUTH, Direction.NORTH}, // EAST
     };
-    private static EnumFacing[][] FACING_ROTATIONS = {
+    private static Direction[][] FACING_ROTATIONS = {
             // DOWN, UP, NORTH, SOUTH, WEST, EAST
-            {EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.UP, EnumFacing.DOWN, EnumFacing.EAST, EnumFacing.WEST}, // DOWN
-            {EnumFacing.SOUTH, EnumFacing.NORTH, EnumFacing.DOWN, EnumFacing.UP, EnumFacing.WEST, EnumFacing.EAST}, // UP
-            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST}, // NORTH
-            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.SOUTH, EnumFacing.NORTH, EnumFacing.EAST, EnumFacing.WEST}, // SOUTH
-            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.EAST, EnumFacing.WEST, EnumFacing.NORTH, EnumFacing.SOUTH}, // WEST
-            {EnumFacing.DOWN, EnumFacing.UP, EnumFacing.WEST, EnumFacing.EAST, EnumFacing.SOUTH, EnumFacing.NORTH}, // EAST
+            {Direction.NORTH, Direction.SOUTH, Direction.UP, Direction.DOWN, Direction.EAST, Direction.WEST}, // DOWN
+            {Direction.SOUTH, Direction.NORTH, Direction.DOWN, Direction.UP, Direction.WEST, Direction.EAST}, // UP
+            {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST}, // NORTH
+            {Direction.DOWN, Direction.UP, Direction.SOUTH, Direction.NORTH, Direction.EAST, Direction.WEST}, // SOUTH
+            {Direction.DOWN, Direction.UP, Direction.EAST, Direction.WEST, Direction.NORTH, Direction.SOUTH}, // WEST
+            {Direction.DOWN, Direction.UP, Direction.WEST, Direction.EAST, Direction.SOUTH, Direction.NORTH}, // EAST
     };
 
     /**
-     * Get an iterator for all the {@link net.minecraft.util.EnumFacing}.
-     * @return The {@link net.minecraft.util.EnumFacing} iterator
+     * Get an iterator for all the {@link Direction}.
+     * @return The {@link Direction} iterator
      * @see DirectionHelpers#DIRECTIONS
-     * @see net.minecraft.util.EnumFacing
+     * @see Direction
      */
-    public static Iterator<EnumFacing> getDirectionIterator() {
+    public static Iterator<Direction> getDirectionIterator() {
         return DIRECTIONS.iterator();
     }
 
     /**
      * Get the EnumFacing the entity is facing, only vertical directions.
      * @param entity The entity that is facing a direction.
-     * @return The {@link net.minecraft.util.EnumFacing} the entity is facing.
+     * @return The {@link Direction} the entity is facing.
      */
-    public static EnumFacing getEntityFacingDirection(EntityLivingBase entity) {
+    public static Direction getEntityFacingDirection(LivingEntity entity) {
         int facingDirection = MathHelper.floor((entity.rotationYaw * 4F) / 360F + 0.5D) & 3;
-        return ENTITYFACING[facingDirection];
+        return Direction.byHorizontalIndex(facingDirection);
     }
 
     /**
-     * Get the {@link net.minecraft.util.EnumFacing} from the sign of an X offset.
+     * Get the {@link Direction} from the sign of an X offset.
      * @param xSign X offset from somewhere.
-     * @return The {@link net.minecraft.util.EnumFacing} for the offset.
+     * @return The {@link Direction} for the offset.
      */
-    public static EnumFacing getEnumFacingFromXSign(int xSign) {
-    	return xSign > 0 ? EnumFacing.EAST : EnumFacing.WEST;
+    public static Direction getEnumFacingFromXSign(int xSign) {
+    	return xSign > 0 ? Direction.EAST : Direction.WEST;
     }
 
     /**
-     * Get the {@link net.minecraft.util.EnumFacing} from the sign of an Z offset.
+     * Get the {@link Direction} from the sign of an Z offset.
      * @param zSign Z offset from somewhere.
-     * @return The {@link net.minecraft.util.EnumFacing} for the offset.
+     * @return The {@link Direction} for the offset.
      */
-    public static EnumFacing getEnumFacingFromZSing(int zSign) {
-    	return zSign > 0 ? EnumFacing.SOUTH : EnumFacing.NORTH;
+    public static Direction getEnumFacingFromZSing(int zSign) {
+    	return zSign > 0 ? Direction.SOUTH : Direction.NORTH;
     }
 
     /**
      * Transform the given facing based on a rotation.
-     * The default rotation is {@link EnumFacing#NORTH},
+     * The default rotation is {@link Direction#NORTH},
      * which means no transformation.
      * @param facing The facing to transform.
      * @param rotation The rotation.
      * @return The transformed facing.
      */
-    public static EnumFacing transformFacingForRotation(EnumFacing facing, EnumFacing rotation) {
+    public static Direction transformFacingForRotation(Direction facing, Direction rotation) {
         return FACING_ROTATIONS[rotation.ordinal()][facing.ordinal()];
     }
 }

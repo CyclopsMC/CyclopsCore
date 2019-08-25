@@ -4,12 +4,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.NetworkRegistry.TargetPoint;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.Random;
 
 /**
- * Helper methods involving {@link BlockPos}S and {@link TargetPoint}S.
+ * Helper methods involving {@link BlockPos}S and {@link PacketDistributor.TargetPoint}S.
  * @author immortaleeb
  *
  */
@@ -18,29 +18,29 @@ public class LocationHelpers {
 	private static final Random random = new Random();
 
 	/**
-	 * Creates a {@link TargetPoint} for the dimension and position of the given {@link Entity}
+	 * Creates a {@link PacketDistributor.TargetPoint} for the dimension and position of the given {@link Entity}
 	 * and a given range.
 	 * 
-	 * @param entity Entity who's dimension and position will be used to create the {@link TargetPoint}.
-	 * @param range The range of the {@link TargetPoint}.
-	 * @return A {@link TargetPoint} with the position and dimension of the entity and the given range.
+	 * @param entity Entity who's dimension and position will be used to create the {@link PacketDistributor.TargetPoint}.
+	 * @param range The range of the {@link PacketDistributor.TargetPoint}.
+	 * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
 	 */
-	public static TargetPoint createTargetPointFromEntity(Entity entity, int range) {
-		return new TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, range);
+	public static PacketDistributor.TargetPoint createTargetPointFromEntity(Entity entity, int range) {
+		return new PacketDistributor.TargetPoint(entity.posX, entity.posY, entity.posZ, range, entity.dimension);
 	}
 
 	/**
-	 * Creates a {@link TargetPoint} for the dimension of the given world and the
+	 * Creates a {@link PacketDistributor.TargetPoint} for the dimension of the given world and the
 	 * given {@link BlockPos}.
 	 * 
 	 * @param world The world from which the dimension will be used.
 	 * @param location The location for the target.
-	 * @param range The range of the {@link TargetPoint}.
-	 * @return A {@link TargetPoint} with the position and dimension of the entity and the given range.
+	 * @param range The range of the {@link PacketDistributor.TargetPoint}.
+	 * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
 	 */
-	public static TargetPoint createTargetPointFromLocation(World world, BlockPos location,
+	public static PacketDistributor.TargetPoint createTargetPointFromLocation(World world, BlockPos location,
 			int range) {
-		return new TargetPoint(world.provider.getDimension(), location.getX(), location.getY(), location.getZ(), range);
+		return new PacketDistributor.TargetPoint(location.getX(), location.getY(), location.getZ(), range, world.getDimension().getType());
 	}
 	
 	/**

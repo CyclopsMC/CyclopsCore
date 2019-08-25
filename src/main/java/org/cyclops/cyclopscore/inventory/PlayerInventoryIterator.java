@@ -1,61 +1,17 @@
 package org.cyclops.cyclopscore.inventory;
 
-import lombok.Getter;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.Iterator;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 /**
  * Iterate over a player's inventory.
  * @author rubensworks
  *
  */
-public class PlayerInventoryIterator implements Iterator<ItemStack>{
-    
-    @Getter private final EntityPlayer player;
-    private int i;
-    
-    /**
-     * Create a new HotbarIterator.
-     * @param player The player to iterate the hotbar from.
-     */
-    public PlayerInventoryIterator(EntityPlayer player) {
-        this.player = player;
-    }
+public class PlayerInventoryIterator extends InventoryIterator {
 
-    @Override
-    public boolean hasNext() {
-        return i < player.inventory.getSizeInventory();
-    }
 
-    @Override
-    public ItemStack next() {
-        return player.inventory.getStackInSlot(i++);
+    public PlayerInventoryIterator(PlayerEntity player) {
+        super(new InvWrapper(player.inventory));
     }
-    
-    /**
-     * Get the next item indexed.
-     * @return The indexed item.
-     */
-    public Pair<Integer, ItemStack> nextIndexed() {
-    	return Pair.of(i, next());
-    }
-
-    @Override
-    public void remove() {
-        if(i - 1 >= 0 && i - 1 < player.inventory.mainInventory.size())
-            player.inventory.setInventorySlotContents(i - 1, ItemStack.EMPTY);
-    }
-
-    /**
-     * Replaces the itemstack on the position of the last returned itemstack.
-     * @param itemStack The itemstack to place.
-     */
-    public void replace(ItemStack itemStack) {
-        if(i - 1 >= 0 && i - 1 < player.inventory.mainInventory.size())
-            player.inventory.setInventorySlotContents(i - 1, itemStack);
-    }
-
 }

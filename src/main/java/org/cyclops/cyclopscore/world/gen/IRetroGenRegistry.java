@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.world.gen;
 
 import net.minecraftforge.event.world.ChunkDataEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.cyclops.cyclopscore.init.IRegistry;
 
 /**

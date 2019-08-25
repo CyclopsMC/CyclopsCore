@@ -1,40 +1,29 @@
 package org.cyclops.cyclopscore.command;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
 import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.packet.ReloadResourcesPacket;
-
-import java.util.List;
 
 /**
  * Command for reloading the current resourcepack
  * @author rubensworks
  *
  */
-public class CommandReloadResources extends CommandMod {
-
-    public static final String NAME = "reloadresources";
-
-    public CommandReloadResources(ModBase mod) {
-        super(mod, NAME);
-    }
+public class CommandReloadResources implements Command<CommandSource> {
 
     @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender icommandsender, String[] astring, BlockPos blockPos) {
-        return null;
+    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
+        CyclopsCore._instance.getPacketHandler().sendToPlayer(new ReloadResourcesPacket(), context.getSource().asPlayer());
+        return 0;
     }
 
-    @Override
-    public boolean checkPermission(MinecraftServer server, ICommandSender sender) {
-        return sender instanceof EntityPlayerMP;
-    }
-
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] parts) {
-        CyclopsCore._instance.getPacketHandler().sendToPlayer(new ReloadResourcesPacket(), (EntityPlayerMP) sender);
+    public static LiteralArgumentBuilder<CommandSource> make() {
+        return Commands.literal("reloadresources")
+                .executes(new CommandReloadResources());
     }
 }

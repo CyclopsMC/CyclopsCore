@@ -2,10 +2,10 @@ package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.StringNBT;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtParseException;
 import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationAdapter;
@@ -125,64 +125,64 @@ public class TestNbtPathExpressionHandlerUnion {
     @Test
     public void testExpressionStreamSingleNoChildren() {
         INbtPathExpression expression = new NbtPathExpressionParseHandlerUnion.Expression(Lists.newArrayList("1", "3"), Lists.newArrayList(0, 2));
-        assertThat(expression.match(Stream.of(new NBTTagString("a"))).getMatches().collect(Collectors.toList()),
+        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
     }
 
     @Test
     public void testExpressionStreamSingleTagList() {
         INbtPathExpression expression = new NbtPathExpressionParseHandlerUnion.Expression(Lists.newArrayList("1", "3"), Lists.newArrayList(0, 2));
-        NBTTagList list = new NBTTagList();
-        list.appendTag(new NBTTagString("a"));
-        list.appendTag(new NBTTagString("b"));
-        list.appendTag(new NBTTagString("c"));
+        ListNBT list = new ListNBT();
+        list.add(new StringNBT("a"));
+        list.add(new StringNBT("b"));
+        list.add(new StringNBT("c"));
         assertThat(expression.match(Stream.of(list)).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagString("a"), new NBTTagString("c"))));
+                is(Lists.newArrayList(new StringNBT("a"), new StringNBT("c"))));
     }
 
     @Test
     public void testExpressionStreamSingleTagCompound() {
         INbtPathExpression expression = new NbtPathExpressionParseHandlerUnion.Expression(Lists.newArrayList("1", "3"), Lists.newArrayList(0, 2));
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setTag("1", new NBTTagString("a"));
-        tag.setTag("2", new NBTTagString("b"));
-        tag.setTag("3", new NBTTagString("c"));
+        CompoundNBT tag = new CompoundNBT();
+        tag.put("1", new StringNBT("a"));
+        tag.put("2", new StringNBT("b"));
+        tag.put("3", new StringNBT("c"));
         assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagString("a"), new NBTTagString("c"))));
+                is(Lists.newArrayList(new StringNBT("a"), new StringNBT("c"))));
     }
 
     @Test
     public void testExpressionStreamMultipleTagList() {
         INbtPathExpression expression = new NbtPathExpressionParseHandlerUnion.Expression(Lists.newArrayList("1", "3"), Lists.newArrayList(0, 2));
 
-        NBTTagList list1 = new NBTTagList();
-        list1.appendTag(new NBTTagString("a1"));
-        list1.appendTag(new NBTTagString("b1"));
-        list1.appendTag(new NBTTagString("c1"));
+        ListNBT list1 = new ListNBT();
+        list1.add(new StringNBT("a1"));
+        list1.add(new StringNBT("b1"));
+        list1.add(new StringNBT("c1"));
 
-        NBTTagList list2 = new NBTTagList();
-        list2.appendTag(new NBTTagString("a2"));
-        list2.appendTag(new NBTTagString("b2"));
-        list2.appendTag(new NBTTagString("c2"));
+        ListNBT list2 = new ListNBT();
+        list2.add(new StringNBT("a2"));
+        list2.add(new StringNBT("b2"));
+        list2.add(new StringNBT("c2"));
 
-        NBTTagList list3 = new NBTTagList();
-        list3.appendTag(new NBTTagString("a3"));
-        list3.appendTag(new NBTTagString("b3"));
-        list3.appendTag(new NBTTagString("c3"));
+        ListNBT list3 = new ListNBT();
+        list3.add(new StringNBT("a3"));
+        list3.add(new StringNBT("b3"));
+        list3.add(new StringNBT("c3"));
 
-        Stream<NBTBase> stream = Stream.of(
+        Stream<INBT> stream = Stream.of(
                 list1,
                 list2,
                 list3
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagString("a1"),
-                        new NBTTagString("c1"),
-                        new NBTTagString("a2"),
-                        new NBTTagString("c2"),
-                        new NBTTagString("a3"),
-                        new NBTTagString("c3")
+                        new StringNBT("a1"),
+                        new StringNBT("c1"),
+                        new StringNBT("a2"),
+                        new StringNBT("c2"),
+                        new StringNBT("a3"),
+                        new StringNBT("c3")
                 )));
     }
 
@@ -190,34 +190,34 @@ public class TestNbtPathExpressionHandlerUnion {
     public void testExpressionStreamMultipleTagCompound() {
         INbtPathExpression expression = new NbtPathExpressionParseHandlerUnion.Expression(Lists.newArrayList("1", "3"), Lists.newArrayList(0, 2));
 
-        NBTTagCompound tag1 = new NBTTagCompound();
-        tag1.setTag("1", new NBTTagString("a1"));
-        tag1.setTag("2", new NBTTagString("b1"));
-        tag1.setTag("3", new NBTTagString("c1"));
+        CompoundNBT tag1 = new CompoundNBT();
+        tag1.put("1", new StringNBT("a1"));
+        tag1.put("2", new StringNBT("b1"));
+        tag1.put("3", new StringNBT("c1"));
 
-        NBTTagCompound tag2 = new NBTTagCompound();
-        tag2.setTag("1", new NBTTagString("a2"));
-        tag2.setTag("2", new NBTTagString("b2"));
-        tag2.setTag("3", new NBTTagString("c2"));
+        CompoundNBT tag2 = new CompoundNBT();
+        tag2.put("1", new StringNBT("a2"));
+        tag2.put("2", new StringNBT("b2"));
+        tag2.put("3", new StringNBT("c2"));
 
-        NBTTagCompound tag3 = new NBTTagCompound();
-        tag3.setTag("1", new NBTTagString("a3"));
-        tag3.setTag("2", new NBTTagString("b3"));
-        tag3.setTag("3", new NBTTagString("c3"));
+        CompoundNBT tag3 = new CompoundNBT();
+        tag3.put("1", new StringNBT("a3"));
+        tag3.put("2", new StringNBT("b3"));
+        tag3.put("3", new StringNBT("c3"));
 
-        Stream<NBTBase> stream = Stream.of(
+        Stream<INBT> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toSet()),
                 is(Sets.newHashSet(
-                        new NBTTagString("a1"),
-                        new NBTTagString("c1"),
-                        new NBTTagString("a2"),
-                        new NBTTagString("c2"),
-                        new NBTTagString("a3"),
-                        new NBTTagString("c3")
+                        new StringNBT("a1"),
+                        new StringNBT("c1"),
+                        new StringNBT("a2"),
+                        new StringNBT("c2"),
+                        new StringNBT("a3"),
+                        new StringNBT("c3")
                 )));
     }
 

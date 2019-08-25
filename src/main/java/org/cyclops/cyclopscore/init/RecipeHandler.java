@@ -8,12 +8,11 @@ import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.Getter;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.oredict.RecipeSorter;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import org.cyclops.cyclopscore.GeneralConfig;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
-import org.cyclops.cyclopscore.recipe.event.ObservableShapedRecipe;
-import org.cyclops.cyclopscore.recipe.event.ObservableShapelessRecipe;
 import org.cyclops.cyclopscore.recipe.xml.*;
 
 import java.io.File;
@@ -62,7 +61,8 @@ public class RecipeHandler {
         recipeConditionHandlers.put("config", new ConfigRecipeConditionHandler());
         recipeConditionHandlers.put("predefined", new PredefinedRecipeConditionHandler());
         recipeConditionHandlers.put("mod", new ModRecipeConditionHandler());
-        recipeConditionHandlers.put("oredict", new OreDictConditionHandler());
+        recipeConditionHandlers.put("itemtag", new TagConditionHandler<>(ItemTags.getCollection()));
+        recipeConditionHandlers.put("blocktag", new TagConditionHandler<>(BlockTags.getCollection()));
         recipeConditionHandlers.put("fluid", new FluidConditionHandler());
         recipeConditionHandlers.put("item", new ItemConditionHandler());
     }
@@ -125,7 +125,6 @@ public class RecipeHandler {
      * specific configuration stuff.
      */
     public final void registerRecipes(File rootConfigFolder) throws XmlRecipeLoader.XmlRecipeException {
-        registerRecipeSorters();
     	loadPredefineds(getPredefinedItems(), getPredefinedValues());
 
         // Load the recipes stored in XML.
@@ -143,14 +142,6 @@ public class RecipeHandler {
 
     	// Register remaining recipes that are too complex to declare in xml files.
         registerCustomRecipes();
-    }
-
-    protected void registerRecipeSorters() {
-        // Register custom recipe classes
-        RecipeSorter.register(getMod().getModId() + "observableshapeless", ObservableShapelessRecipe.class,
-                RecipeSorter.Category.SHAPELESS, "after:forge:shapelessore");
-        RecipeSorter.register(getMod().getModId() + "observableshaped", ObservableShapedRecipe.class,
-                RecipeSorter.Category.SHAPELESS, "after:forge:shapedore");
     }
 
     protected void loadPredefineds(Map<String, ItemStack> predefinedItems, Set<String> predefinedValues) {

@@ -2,11 +2,11 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.cyclops.cyclopscore.infobook.GuiInfoBook;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
+import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
 /**
  * Images that can be added to sections.
@@ -43,16 +43,16 @@ public class ImageAppendix extends SectionAppendix {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    protected void drawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
-        Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
-        gui.drawTexturedModalRect(x, y, 0, 0, getWidth(), getHeight());
+    @OnlyIn(Dist.CLIENT)
+    protected void drawElement(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
+        Minecraft.getInstance().getTextureManager().bindTexture(resource);
+        gui.blit(x, y, 0, 0, getWidth(), getHeight());
         gui.drawOuterBorder(x, y, getWidth(), getHeight(), 0.5F, 0.5F, 0.5F, 0.4f);
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    protected void postDrawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
+    @OnlyIn(Dist.CLIENT)
+    protected void postDrawElement(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
 
     }
 

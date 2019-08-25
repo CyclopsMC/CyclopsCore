@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
 /**
@@ -12,13 +12,13 @@ import net.minecraft.world.World;
  */
 public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndBlockModel {
 
-    protected final IBlockState blockState;
-    protected final EnumFacing facing;
+    protected final BlockState blockState;
+    protected final Direction facing;
     protected final long rand;
 
     protected final ItemStack itemStack;
     protected final World world;
-    protected final EntityLivingBase entity;
+    protected final LivingEntity entity;
 
     public DelegatingDynamicItemAndBlockModel() {
         super(true, false);
@@ -31,7 +31,7 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.entity = null;
     }
 
-    public DelegatingDynamicItemAndBlockModel(IBlockState blockState, EnumFacing facing, long rand) {
+    public DelegatingDynamicItemAndBlockModel(BlockState blockState, Direction facing, long rand) {
         super(false, false);
         this.blockState = blockState;
         this.facing = facing;
@@ -42,7 +42,7 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.entity = null;
     }
 
-    public DelegatingDynamicItemAndBlockModel(ItemStack itemStack, World world, EntityLivingBase entity) {
+    public DelegatingDynamicItemAndBlockModel(ItemStack itemStack, World world, LivingEntity entity) {
         super(false, true);
         this.blockState = null;
         this.facing = null;

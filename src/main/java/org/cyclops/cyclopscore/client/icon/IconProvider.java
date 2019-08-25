@@ -1,14 +1,14 @@
 package org.cyclops.cyclopscore.client.icon;
 
 import com.google.common.collect.Lists;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.proxy.ClientProxyComponent;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * An alternative way of registering icons.
  * @author rubensworks
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class IconProvider {
 
     private final ClientProxyComponent clientProxy;
@@ -34,8 +34,8 @@ public class IconProvider {
         toRegister.add(Pair.of(Pair.of(object, field), location));
     }
 
-    protected TextureAtlasSprite registerIcon(TextureMap textureMap, String location) {
-        return textureMap.registerSprite(new ResourceLocation(clientProxy.getMod().getModId(), location));
+    protected TextureAtlasSprite registerIcon(AtlasTexture textureMap, String location) {
+        return textureMap.getSprite(new ResourceLocation(clientProxy.getMod().getModId(), location));
     }
 
     @SubscribeEvent

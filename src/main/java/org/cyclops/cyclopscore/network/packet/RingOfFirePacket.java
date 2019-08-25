@@ -1,14 +1,11 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.client.particle.ParticleFlame;
-import net.minecraft.client.particle.ParticleLava;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.FMLClientHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -26,11 +23,11 @@ public class RingOfFirePacket extends PlayerPositionPacket {
         super();
     }
 
-    public RingOfFirePacket(EntityPlayer player) {
+    public RingOfFirePacket(PlayerEntity player) {
         super(player);
     }
     
-	@SideOnly(Side.CLIENT)
+	@OnlyIn(Dist.CLIENT)
     private static void showFireRing(World world, Vec3d pos) {
         double area = RING_AREA;
         int points = 40;
@@ -54,20 +51,15 @@ public class RingOfFirePacket extends PlayerPositionPacket {
             float particleMotionZ = (float)zOffset / 50;
 
             if(world.rand.nextInt(20) == 0) {
-                FMLClientHandler.instance().getClient().effectRenderer.addEffect(
-                        new ParticleLava.Factory().createParticle(EnumParticleTypes.LAVA.getParticleID(), world, particleX, particleY, particleZ,
-                                0, 0, 0, 0)
-                        );
+                world.addParticle(ParticleTypes.LAVA, particleX, particleY, particleZ, 0.0D, 0.0D, 0.0D);
             } else {
-                FMLClientHandler.instance().getClient().effectRenderer.addEffect(
-                        new ParticleFlame.Factory().createParticle(0, world, particleX, particleY, particleZ, particleMotionX, particleMotionY, particleMotionZ)
-                        );
+                world.addParticle(ParticleTypes.FLAME, particleX, particleY, particleZ, particleMotionX, particleMotionY, particleMotionZ);
             }
         }
     }
 
     @Override
-    protected PlayerPositionPacket create(EntityPlayer player, int range) {
+    protected PlayerPositionPacket create(PlayerEntity player, int range) {
         return new RingOfFirePacket(player);
     }
 
@@ -77,7 +69,7 @@ public class RingOfFirePacket extends PlayerPositionPacket {
     }
 
     @Override
-    protected void performClientAction(World world, EntityPlayer player) {
+    protected void performClientAction(World world, PlayerEntity player) {
         showFireRing(world, this.position);
     }
 }

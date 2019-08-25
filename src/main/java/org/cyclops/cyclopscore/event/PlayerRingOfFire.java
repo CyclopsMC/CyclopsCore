@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.event;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 import org.cyclops.cyclopscore.network.packet.RingOfFirePacket;
@@ -34,7 +34,7 @@ public class PlayerRingOfFire {
      */
     @SubscribeEvent
     public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		spawnRing(event.player);
+		spawnRing(event.getPlayer());
     }
 	
 	/**
@@ -43,11 +43,11 @@ public class PlayerRingOfFire {
      */
     @SubscribeEvent
     public void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        spawnRing(event.player);
+        spawnRing(event.getPlayer());
     }
     
-    private void spawnRing(EntityPlayer player) {
-        if(!player.world.isRemote && player.getGameProfile() != null
+    private void spawnRing(PlayerEntity player) {
+        if(!player.world.isRemote() && player.getGameProfile() != null
     			&& ALLOW_RING.contains(player.getGameProfile().getId())) {
     		CyclopsCore._instance.getPacketHandler().sendToAllAround(new RingOfFirePacket(player),
                     LocationHelpers.createTargetPointFromLocation(player.world, player.getPosition(), 50));

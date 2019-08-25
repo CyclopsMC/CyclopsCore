@@ -1,16 +1,21 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.item.IInformationProvider;
 import org.cyclops.cyclopscore.persist.nbt.INBTSerializable;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A set of localization helpers.
@@ -32,7 +37,7 @@ public final class L10NHelpers {
      */
     public static String localize(String key, Object... params) {
         if(MinecraftHelpers.isModdedEnvironment()) {
-            return I18n.translateToLocalFormatted(key, params);
+            return I18n.format(key, params);
         } else {
             return String.format("%s: %s", key, Arrays.toString(params));
         }
@@ -70,15 +75,17 @@ public final class L10NHelpers {
      * @param list   The list to add the lines to.
      * @param prefix The I18N key prefix, being the unlocalized name of blocks or items.
      */
-    public static void addOptionalInfo(List<String> list, String prefix) {
+    public static void addOptionalInfo(List<ITextComponent> list, String prefix) {
         String key = prefix + ".info";
-        if (I18n.canTranslate(key)) {
+        if (I18n.hasKey(key)) {
             if (MinecraftHelpers.isShifted()) {
                 String localized = localize(key);
-                list.addAll(StringHelpers.splitLines(localized, MAX_TOOLTIP_LINE_LENGTH,
-                        IInformationProvider.INFO_PREFIX));
+                list.addAll(StringHelpers.splitLines(localized, MAX_TOOLTIP_LINE_LENGTH, IInformationProvider.INFO_PREFIX)
+                        .stream()
+                        .map(StringTextComponent::new)
+                        .collect(Collectors.toList()));
             } else {
-                list.add(localize(TextFormatting.GRAY.toString()
+                list.add(new TranslationTextComponent(TextFormatting.GRAY.toString()
                         + TextFormatting.ITALIC.toString()
                         + localize("general." + Reference.MOD_ID + ".tooltip.info")));
             }
@@ -124,33 +131,33 @@ public final class L10NHelpers {
         }
 
         @Override
-        public NBTTagCompound toNBT() {
-            NBTTagCompound tag = new NBTTagCompound();
-            tag.setString("parameterizedString", parameterizedString);
-            NBTTagList list = new NBTTagList();
+        public CompoundNBT toNBT() {
+            CompoundNBT tag = new CompoundNBT();
+            tag.putString("parameterizedString", parameterizedString);
+            ListNBT list = new ListNBT();
             for (Object parameter : parameters) {
                 if(parameter instanceof UnlocalizedString) {
-                    NBTTagCompound objectTag = ((UnlocalizedString) parameter).toNBT();
-                    objectTag.setString("type", "object");
-                    list.appendTag(objectTag);
+                    CompoundNBT objectTag = ((UnlocalizedString) parameter).toNBT();
+                    objectTag.putString("type", "object");
+                    list.add(objectTag);
                 } else {
-                    NBTTagCompound stringTag = new NBTTagCompound();
-                    stringTag.setTag("value", new NBTTagString((String) parameter));
-                    stringTag.setString("type", "string");
-                    list.appendTag(stringTag);
+                    CompoundNBT stringTag = new CompoundNBT();
+                    stringTag.put("value", new StringNBT((String) parameter));
+                    stringTag.putString("type", "string");
+                    list.add(stringTag);
                 }
             }
-            tag.setTag("parameters", list);
+            tag.put("parameters", list);
             return tag;
         }
 
         @Override
-        public void fromNBT(NBTTagCompound tag) {
+        public void fromNBT(CompoundNBT tag) {
             this.parameterizedString = tag.getString("parameterizedString");
-            NBTTagList list = tag.getTagList("parameters", MinecraftHelpers.NBTTag_Types.NBTTagCompound.ordinal());
-            this.parameters = new Object[list.tagCount()];
+            ListNBT list = tag.getList("parameters", Constants.NBT.TAG_COMPOUND);
+            this.parameters = new Object[list.size()];
             for (int i = 0; i < this.parameters.length; i++) {
-                NBTTagCompound elementTag = list.getCompoundTagAt(i);
+                CompoundNBT elementTag = list.getCompound(i);
                 if("object".equals(elementTag.getString("type"))) {
                     UnlocalizedString object = new UnlocalizedString();
                     object.fromNBT(elementTag);

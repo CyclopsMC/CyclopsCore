@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.inventory;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import org.cyclops.cyclopscore.helper.InventoryHelpers;
 
 /**
@@ -11,40 +11,38 @@ import org.cyclops.cyclopscore.helper.InventoryHelpers;
  */
 public class NBTSimpleInventoryItemStack extends SimpleInventory {
 
-	private static final String NBT_TAG_ROOT = NBTSimpleInventoryItemHeld.NBT_TAG_ROOT;
-
-	protected ItemStack itemStack;
+	protected final ItemStack itemStack;
+	protected final String tagName;
 
 	/**
      * Make a new instance.
 	 * @param itemStack The item stack.
      * @param size The amount of slots in the inventory.
-     * @param stackLimit The stack limit for each slot.
-     */
-	public NBTSimpleInventoryItemStack(ItemStack itemStack, int size, int stackLimit) {
-		super(size, NBT_TAG_ROOT, stackLimit);
+	 * @param stackLimit The stack limit for each slot.
+	 * @param tagName The NBT tag name to store this inventory in.
+	 *                This should be the same tag name that is used to call the NBT read/write methods.
+	 */
+	public NBTSimpleInventoryItemStack(ItemStack itemStack, int size, int stackLimit, String tagName) {
+		super(size, stackLimit);
 		this.itemStack = itemStack;
-		InventoryHelpers.validateNBTStorage(this, itemStack, NBT_TAG_ROOT);
+		this.tagName = tagName;
+		InventoryHelpers.validateNBTStorage(this, itemStack, this.tagName);
 	}
 	
 	@Override
 	public void markDirty() {
-		NBTTagCompound tag = itemStack.getTagCompound();
-		if(tag == null) {
-			tag = new NBTTagCompound();
-			itemStack.setTagCompound(tag);
-		}
-		writeToNBT(tag, NBT_TAG_ROOT);
-		itemStack.setTagCompound(tag);
+		CompoundNBT tag = itemStack.getOrCreateTag();
+		writeToNBT(tag, this.tagName);
+		itemStack.setTag(tag);
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound data, String tagName) {
+	public void readFromNBT(CompoundNBT data, String tagName) {
         InventoryHelpers.readFromNBT(this, data, tagName);
     }
 	
 	@Override
-	public void writeToNBT(NBTTagCompound data, String tagName) {
+	public void writeToNBT(CompoundNBT data, String tagName) {
         InventoryHelpers.writeToNBT(this, data, tagName);
     }
 

@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
+import net.minecraft.world.biome.Biome;
 import org.cyclops.cyclopscore.config.extendedconfig.BiomeConfig;
 
 /**
@@ -9,29 +8,10 @@ import org.cyclops.cyclopscore.config.extendedconfig.BiomeConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class BiomeAction extends ConfigurableTypeAction<BiomeConfig>{
+public class BiomeAction extends ConfigurableTypeAction<BiomeConfig, Biome> {
 
     @Override
-    public void preRun(BiomeConfig eConfig, Configuration config, boolean startup) {
-        // Get property in config file and set comment
-        Property property = config.get(eConfig.getHolderType().getCategory(), eConfig.getNamedId(), eConfig.isEnabled());
-        property.setRequiresWorldRestart(true);
-        property.setRequiresMcRestart(true);
-        property.setComment(eConfig.getComment());
-        property.setLanguageKey(eConfig.getFullTranslationKey());
-
-        if(startup) {
-            // Update the ID, it could've changed
-            eConfig.setEnabled(property.getBoolean());
-        }
-    }
-
-    @Override
-    public void postRun(BiomeConfig eConfig, Configuration config) {
-        // Save the config inside the correct element
-        eConfig.save();
-        
-        // Register biome
-        register(eConfig.getBiome(), eConfig);
+    public void onRegister(BiomeConfig eConfig) {
+        register(eConfig.getInstance(), eConfig);
     }
 }

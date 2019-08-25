@@ -1,8 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraft.fluid.Fluid;
 import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
 
 /**
@@ -10,24 +8,13 @@ import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class FluidAction extends ConfigurableTypeAction<FluidConfig>{
+public class FluidAction extends ConfigurableTypeAction<FluidConfig, Fluid> {
 
     @Override
-    public void preRun(FluidConfig eConfig, Configuration config, boolean startup) {
-        
-    }
-
-    @Override
-    public void postRun(FluidConfig eConfig, Configuration config) {
-        // Save the config inside the correct element
-        eConfig.save();
-        
-        // Register
-        FluidRegistry.registerFluid((Fluid) eConfig.getSubInstance());
-        FluidRegistry.addBucketForFluid((Fluid) eConfig.getSubInstance());
-        
-        // Add I18N
-        //LanguageRegistry.instance().addStringLocalization("fluid.fluids."+eConfig.NAMEDID, eConfig.NAME);
+    public void onRegister(FluidConfig eConfig) {
+        // TODO: Implement when Forge has implemented Fluids
+//        FluidRegistry.registerFluid((Fluid) eConfig.getSubInstance());
+//        FluidRegistry.addBucketForFluid((Fluid) eConfig.getSubInstance());
     }
 
 }

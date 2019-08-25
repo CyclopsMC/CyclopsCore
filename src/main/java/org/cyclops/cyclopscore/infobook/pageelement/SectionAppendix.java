@@ -1,12 +1,12 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import lombok.Data;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.cyclops.cyclopscore.infobook.GuiInfoBook;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
+import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -46,13 +46,13 @@ import org.lwjgl.opengl.GL11;
      * @param my Mouse Y.
      * @param pre If the normal drawing should occur, otherwise post-drawing: things like tooltips.
      */
-    @SideOnly(Side.CLIENT)
-    public void drawScreen(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
+    @OnlyIn(Dist.CLIENT)
+    public void drawScreen(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
         int xc = x + width / 2 - getWidth() / 2;
         int yc = y + getOffsetY();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color(1F, 1F, 1F, 1F);
+        GlStateManager.color4f(1F, 1F, 1F, 1F);
         if(pre) {
             drawElement(gui, xc, yc, getWidth(), getHeight(), page, mx, my);
         } else {
@@ -61,10 +61,10 @@ import org.lwjgl.opengl.GL11;
         GlStateManager.disableBlend();
     }
 
-    @SideOnly(Side.CLIENT)
-    protected abstract void drawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my);
-    @SideOnly(Side.CLIENT)
-    protected abstract void postDrawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my);
+    @OnlyIn(Dist.CLIENT)
+    protected abstract void drawElement(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my);
+    @OnlyIn(Dist.CLIENT)
+    protected abstract void postDrawElement(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my);
 
     public abstract void preBakeElement(InfoSection infoSection);
     /**

@@ -1,36 +1,36 @@
 package org.cyclops.cyclopscore.ingredient;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
-import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.nbt.ByteNBT;
+import net.minecraft.nbt.IntNBT;
+import net.minecraft.nbt.INBT;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientSerializer;
 
 public class IngredientSerializerInt implements IIngredientSerializer<Integer, Boolean> {
 
     @Override
-    public NBTBase serializeInstance(Integer instance) {
-        return new NBTTagInt(instance);
+    public INBT serializeInstance(Integer instance) {
+        return new IntNBT(instance);
     }
 
     @Override
-    public Integer deserializeInstance(NBTBase tag) throws IllegalArgumentException {
-        if (!(tag instanceof NBTTagInt)) {
+    public Integer deserializeInstance(INBT tag) throws IllegalArgumentException {
+        if (!(tag instanceof IntNBT)) {
             throw new IllegalArgumentException("This deserializer only accepts NBTTagInt");
         }
-        return ((NBTTagInt) tag).getInt();
+        return ((IntNBT) tag).getInt();
     }
 
     @Override
-    public NBTBase serializeCondition(Boolean matchCondition) {
-        return new NBTTagByte((byte) (matchCondition ? 1 : 0));
+    public INBT serializeCondition(Boolean matchCondition) {
+        return new ByteNBT((byte) (matchCondition ? 1 : 0));
     }
 
     @Override
-    public Boolean deserializeCondition(NBTBase tag) throws IllegalArgumentException {
-        if (!(tag instanceof NBTTagByte)) {
+    public Boolean deserializeCondition(INBT tag) throws IllegalArgumentException {
+        if (!(tag instanceof ByteNBT)) {
             throw new IllegalArgumentException("This deserializer only accepts NBTTagByte");
         }
-        return ((NBTTagByte) tag).getByte() == 1;
+        return ((ByteNBT) tag).getByte() == 1;
     }
 
 }

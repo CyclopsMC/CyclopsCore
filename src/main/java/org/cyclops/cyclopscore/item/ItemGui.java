@@ -1,82 +1,51 @@
 package org.cyclops.cyclopscore.item;
 
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.Stat;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.client.gui.GuiHandler;
-import org.cyclops.cyclopscore.config.configurable.ConfigurableItem;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
-import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
-import org.cyclops.cyclopscore.helper.Helpers;
-import org.cyclops.cyclopscore.helper.Helpers.IDType;
-import org.cyclops.cyclopscore.init.ModBase;
-import org.cyclops.cyclopscore.inventory.IGuiContainerProviderConfigurable;
+
+import javax.annotation.Nullable;
 
 /**
  * Configurable item that can show a GUI on right clicking.
- * @author rubensworks
  *
+ * Implement {@link #getContainer(World, PlayerEntity, ItemStack)}
+ * and {@link #getContainerClass(World, PlayerEntity, ItemStack)} to specify the gui.
+ *
+ * Optionally implement {@link #getOpenStat()} to specify a stat on gui opening.
+ *
+ * @author rubensworks
  */
-public abstract class ItemGui extends ConfigurableItem implements IGuiContainerProviderConfigurable {
+public abstract class ItemGui extends Item {
 
-	private int guiID;
-	
-	/**
-     * Make a new item instance.
-     * @param eConfig Config for this blockState.
-     */
-	protected ItemGui(ExtendedConfig<ItemConfig> eConfig) {
-		super(eConfig);
-		this.guiID = Helpers.getNewId(eConfig.getMod(), IDType.GUI);
+	protected ItemGui(Item.Properties properties) {
+		super(properties);
 	}
 
-    @Override
-    public ModBase getModGui() {
-        return eConfig.getMod();
-    }
+	@Nullable
+	public abstract INamedContainerProvider getContainer(World world, PlayerEntity player, ItemStack itemStack);
+
+	public abstract Class<? extends Container> getContainerClass(World world, PlayerEntity player, ItemStack itemStack);
     
     @Override
-    public int getGuiID() {
-        return this.guiID;
-    }
-    
-    @Override
-	public abstract Class<? extends Container> getContainer();
-    
-    @Override
-	@SideOnly(Side.CLIENT)
-    public abstract Class<? extends GuiScreen> getGui();
-    
-    @Override
-	public boolean onDroppedByPlayer(ItemStack itemstack, EntityPlayer player) {
-		if(itemstack != null
-				&& player instanceof EntityPlayerMP
+	public boolean onDroppedByPlayer(ItemStack itemstack, PlayerEntity player) {
+		if(!itemstack.isEmpty()
+				&& player instanceof ServerPlayerEntity
 				&& player.openContainer != null
-				&& player.openContainer.getClass() == getContainer()) {
+				&& player.openContainer.getClass() == getContainerClass(player.world, player, itemstack)) {
 			player.closeScreen();
 		}
 		return super.onDroppedByPlayer(itemstack, player);
-	}
-
-	/**
-	 * Open the gui for a certain item index in the player inventory.
-	 * @param world The world.
-	 * @param player The player.
-	 * @param itemIndex The item index in the player inventory.
-	 */
-	@Deprecated
-	public void openGuiForItemIndex(World world, EntityPlayer player, int itemIndex) {
-		openGuiForItemIndex(world, player, itemIndex, EnumHand.MAIN_HAND);
 	}
     
     /**
@@ -86,10 +55,17 @@ public abstract class ItemGui extends ConfigurableItem implements IGuiContainerP
      * @param itemIndex The item index in the player inventory.
 	 * @param hand The hand the player is using.
      */
-    public void openGuiForItemIndex(World world, EntityPlayer player, int itemIndex, EnumHand hand) {
-		getConfig().getMod().getGuiHandler().setTemporaryData(GuiHandler.GuiType.ITEM, Pair.of(itemIndex, hand));
-    	if(!world.isRemote || isClientSideOnlyGui()) {
-    		player.openGui(getConfig().getMod(), getGuiID(), world, (int) player.posX, (int) player.posY, (int) player.posZ);
+    public void openGuiForItemIndex(World world, PlayerEntity player, int itemIndex, Hand hand) {
+		// TODO: temp data?: getConfig().getMod().getGuiHandler().setTemporaryData(GuiHandler.GuiType.ITEM, Pair.of(itemIndex, hand));
+    	if(!world.isRemote() || isClientSideOnlyGui()) {
+			INamedContainerProvider containerProvider = this.getContainer(world, player, player.getHeldItem(hand));
+			if (containerProvider != null) {
+				player.openContainer(containerProvider);
+				Stat<ResourceLocation> openStat = this.getOpenStat();
+				if (openStat != null) {
+					player.addStat(openStat);
+				}
+			}
     	}
     }
 
@@ -97,14 +73,22 @@ public abstract class ItemGui extends ConfigurableItem implements IGuiContainerP
         return false;
     }
 
+	/**
+	 * @return An optional gui opening statistic.
+	 */
+	@Nullable
+	protected Stat<ResourceLocation> getOpenStat() {
+		return null;
+	}
+
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
 		ItemStack itemStack = player.getHeldItem(hand);
-		if (player instanceof FakePlayer || (player.getClass().getName().equals("ffba04.blockhologram.dummy.DummyPlayer"))) {
-			return new ActionResult<>(EnumActionResult.FAIL, itemStack);
+		if (player instanceof FakePlayer) {
+			return new ActionResult<>(ActionResultType.FAIL, itemStack);
 		}
 		openGuiForItemIndex(world, player, player.inventory.currentItem, hand);
-		return new ActionResult<>(EnumActionResult.SUCCESS, itemStack);
+		return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
 	}
 
 }

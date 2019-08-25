@@ -12,6 +12,8 @@ public interface IModCompat extends IExternalCompat {
      * Get the unique mod ID.
      * @return The mod ID.
      */
-    public String getModID();
+    public default String getModId() {
+        return this.getId();
+    }
     
 }

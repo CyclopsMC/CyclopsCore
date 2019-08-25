@@ -1,12 +1,12 @@
 package baubles.api.cap;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 public interface IBaublesItemHandler extends IItemHandlerModifiable {	
 	
-	public boolean isItemValidForSlot(int slot, ItemStack stack, EntityLivingBase player);
+	public boolean isItemValidForSlot(int slot, ItemStack stack, LivingEntity player);
 
 	/**
 	 * Used internally to prevent equip/unequip events from triggering when they shouldn't
@@ -22,5 +22,5 @@ public interface IBaublesItemHandler extends IItemHandlerModifiable {
 	boolean isChanged(int slot);
 	void setChanged(int slot, boolean changed);
 
-	public void setPlayer(EntityLivingBase player);
+	public void setPlayer(LivingEntity player);
 }

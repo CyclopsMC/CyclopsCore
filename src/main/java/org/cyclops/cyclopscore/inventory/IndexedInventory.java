@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.ints.IntAVLTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import java.util.Map;
 import java.util.PrimitiveIterator;
@@ -27,17 +27,16 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
      * Default constructor for NBT persistence, don't call this yourself.
      */
     public IndexedInventory() {
-        this(0, "", 0);
+        this(0, 0);
     }
 
     /**
      * Make a new instance.
      * @param size The amount of slots in the inventory.
-     * @param name The name of the inventory, used for NBT storage.
      * @param stackLimit The stack limit for each slot.
      */
-    public IndexedInventory(int size, String name, int stackLimit) {
-        super(size, name, stackLimit);
+    public IndexedInventory(int size, int stackLimit) {
+        super(size, stackLimit);
         this.emptySlots = new IntAVLTreeSet();
         this.nonEmptySlots = new IntAVLTreeSet();
         createIndex();
@@ -64,7 +63,7 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound data, String tag) {
+    public void readFromNBT(CompoundNBT data, String tag) {
         super.readFromNBT(data, tag);
         createIndex();
     }

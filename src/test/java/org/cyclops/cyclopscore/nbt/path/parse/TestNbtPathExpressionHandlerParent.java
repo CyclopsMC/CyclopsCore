@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.StringNBT;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,7 +69,7 @@ public class TestNbtPathExpressionHandlerParent {
     @Test
     public void testExpressionStreamNoParent() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerParent.Expression.INSTANCE;
-        assertThat(expression.match(Stream.of(new NBTTagString("a"))).getMatches().collect(Collectors.toList()),
+        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
     }
 
@@ -77,42 +77,42 @@ public class TestNbtPathExpressionHandlerParent {
     public void testExpressionStreamSingle() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerParent.Expression.INSTANCE;
         assertThat(expression.matchContexts(Stream.of(
-                new NbtPathExpressionExecutionContext(new NBTTagString("a"),
-                        new NbtPathExpressionExecutionContext(new NBTTagString("b"))
+                new NbtPathExpressionExecutionContext(new StringNBT("a"),
+                        new NbtPathExpressionExecutionContext(new StringNBT("b"))
                 )
                 )).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagString("b"))));
+                is(Lists.newArrayList(new StringNBT("b"))));
     }
 
     @Test
     public void testExpressionStreamMultiple() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerParent.Expression.INSTANCE;
         Stream<NbtPathExpressionExecutionContext> stream = Stream.of(
-                new NbtPathExpressionExecutionContext(new NBTTagString("a1"),
-                        new NbtPathExpressionExecutionContext(new NBTTagString("a2"))
+                new NbtPathExpressionExecutionContext(new StringNBT("a1"),
+                        new NbtPathExpressionExecutionContext(new StringNBT("a2"))
                 ),
-                new NbtPathExpressionExecutionContext(new NBTTagString("b1"),
-                        new NbtPathExpressionExecutionContext(new NBTTagString("b2"))
+                new NbtPathExpressionExecutionContext(new StringNBT("b1"),
+                        new NbtPathExpressionExecutionContext(new StringNBT("b2"))
                 ),
-                new NbtPathExpressionExecutionContext(new NBTTagString("c1"),
-                        new NbtPathExpressionExecutionContext(new NBTTagString("c2"))
+                new NbtPathExpressionExecutionContext(new StringNBT("c1"),
+                        new NbtPathExpressionExecutionContext(new StringNBT("c2"))
                 )
         );
         assertThat(expression.matchContexts(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagString("a2"),
-                        new NBTTagString("b2"),
-                        new NBTTagString("c2")
+                        new StringNBT("a2"),
+                        new StringNBT("b2"),
+                        new StringNBT("c2")
                 )));
     }
 
     @Test
     public void testExpressionStartFromRoot() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerParent.Expression.INSTANCE;
-        Stream<NBTBase> stream = Stream.of(
-                new NBTTagString("a"),
-                new NBTTagString("b"),
-                new NBTTagString("c")
+        Stream<INBT> stream = Stream.of(
+                new StringNBT("a"),
+                new StringNBT("b"),
+                new StringNBT("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));

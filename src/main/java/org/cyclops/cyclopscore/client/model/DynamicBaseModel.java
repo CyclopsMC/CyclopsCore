@@ -1,25 +1,27 @@
 package org.cyclops.cyclopscore.client.model;
 
 import com.google.common.primitives.Ints;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.common.model.TRSRTransformation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.ModelHelpers;
-import org.lwjgl.util.Color;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
+import java.awt.*;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A model that can be used as a basis for flexible baked models.
@@ -40,7 +42,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
      * @param side The side to rotate by.
      * @return The rotated vector.
      */
-    protected static Vec3d rotate(Vec3d vec, EnumFacing side) {
+    protected static Vec3d rotate(Vec3d vec, Direction side) {
         switch(side) {
             case DOWN:  return new Vec3d( vec.x, -vec.y, -vec.z);
             case UP:    return new Vec3d( vec.x,  vec.y,  vec.z);
@@ -58,7 +60,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
      * @param side The side to rotate by.
      * @return The inversely rotated vector.
      */
-    protected static Vec3d revRotate(Vec3d vec, EnumFacing side) {
+    protected static Vec3d revRotate(Vec3d vec, Direction side) {
         switch(side) {
             case DOWN:  return new Vec3d( vec.x, -vec.y, -vec.z);
             case UP:    return new Vec3d( vec.x,  vec.y,  vec.z);
@@ -107,7 +109,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
      * @param side The side to add render quad at.
      */
     protected static void addBakedQuad(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
-                                     TextureAtlasSprite texture, EnumFacing side) {
+                                     TextureAtlasSprite texture, Direction side) {
         addBakedQuad(quads, x1, x2, z1, z2, y, texture, -1, side);
     }
 
@@ -124,7 +126,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
      * @param side The side to add render quad at.
      */
     protected static void addBakedQuad(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
-                                       TextureAtlasSprite texture, int shadeColor, EnumFacing side) {
+                                       TextureAtlasSprite texture, int shadeColor, Direction side) {
         addBakedQuad(quads, x1, x2, z1, z2, y, texture, shadeColor, side, false);
     }
 
@@ -141,7 +143,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
      * @param side The side to add render quad at.
      */
     protected static void addColoredBakedQuad(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
-                                              TextureAtlasSprite texture, Color shadeColor, EnumFacing side) {
+                                              TextureAtlasSprite texture, Color shadeColor, Direction side) {
         int color = Helpers.RGBAToInt(shadeColor.getBlue(), shadeColor.getGreen(), shadeColor.getRed(), shadeColor.getAlpha());
         addColoredBakedQuad(quads, x1, x2, z1, z2, y, texture, color, side);
     }
@@ -159,7 +161,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
      * @param side The side to add render quad at.
      */
     protected static void addColoredBakedQuad(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
-                                              TextureAtlasSprite texture, int shadeColor, EnumFacing side) {
+                                              TextureAtlasSprite texture, int shadeColor, Direction side) {
         addBakedQuad(quads, x1, x2, z1, z2, y, texture, shadeColor, side, true);
     }
 
@@ -177,7 +179,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
      * @param isColored When set to true a colored baked quad will be made, otherwise a regular baked quad is used.
      */
     private static void addBakedQuad(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
-                                       TextureAtlasSprite texture, int shadeColor, EnumFacing side, boolean isColored) {
+                                     TextureAtlasSprite texture, int shadeColor, Direction side, boolean isColored) {
         addBakedQuadRotated(quads, x1, x2, z1, z2, y, texture, side, 0, isColored,
                 shadeColor, new float[][]{{x1, z1}, {x1, z2}, {x2, z2}, {x2, z1}});
     }
@@ -195,7 +197,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
      * @param rotation The rotation index to rotate by.
      */
     protected static void addBakedQuadRotated(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
-                                              TextureAtlasSprite texture, EnumFacing side, int rotation) {
+                                              TextureAtlasSprite texture, Direction side, int rotation) {
         addBakedQuadRotated(quads, x1, x2, z1, z2, y, texture, side, rotation, false, -1, ROTATION_UV);
     }
 
@@ -215,7 +217,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
      * @param uvs A double array of 4 uv pairs
      */
     protected static void addBakedQuadRotated(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
-                                              TextureAtlasSprite texture, EnumFacing side, int rotation,
+                                              TextureAtlasSprite texture, Direction side, int rotation,
                                               boolean isColored, int shadeColor, float[][] uvs) {
         Vec3d v1 = rotate(new Vec3d(x1 - .5, y - .5, z1 - .5), side).add(.5, .5, .5);
         Vec3d v2 = rotate(new Vec3d(x1 - .5, y - .5, z2 - .5), side).add(.5, .5, .5);
@@ -232,7 +234,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
         return Collections.emptyList();
     }
 
@@ -252,20 +254,15 @@ public abstract class DynamicBaseModel implements IBakedModel {
     }
 
     @Override
-    public ItemCameraTransforms getItemCameraTransforms() {
-        return ItemCameraTransforms.DEFAULT;
-    }
-
-    @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
         TRSRTransformation tr = ModelHelpers.DEFAULT_PERSPECTIVE_TRANSFORMS.get(cameraTransformType);
         Matrix4f mat = null;
-        if(tr != null && !tr.equals(TRSRTransformation.identity())) mat = TRSRTransformation.blockCornerToCenter(tr).getMatrix();
+        if(tr != null && !tr.equals(TRSRTransformation.identity())) mat = TRSRTransformation.blockCornerToCenter(tr).getMatrix(Direction.UP);
         return Pair.of(this, mat);
     }
 
     @Override
     public ItemOverrideList getOverrides() {
-        return ItemOverrideList.NONE;
+        return ItemOverrideList.EMPTY;
     }
 }

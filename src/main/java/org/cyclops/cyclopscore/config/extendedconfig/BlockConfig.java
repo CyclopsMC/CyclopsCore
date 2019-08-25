@@ -1,16 +1,13 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.StateMapperBase;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.client.renderer.color.IBlockColor;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
@@ -21,16 +18,20 @@ import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.item.ItemBlockMetadata;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.function.Function;
 
 /**
  * Config for blocks.
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements IModelProviderConfig {
+public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block> implements IModelProviderConfig {
 
-    @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicBlockVariantLocation;
-    @SideOnly(Side.CLIENT) public ModelResourceLocation dynamicItemVariantLocation;
+    @OnlyIn(Dist.CLIENT)
+    public ModelResourceLocation dynamicBlockVariantLocation;
+    @OnlyIn(Dist.CLIENT)
+    public ModelResourceLocation dynamicItemVariantLocation;
 
     /**
      * Make a new instance.
@@ -38,14 +39,11 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
      * @param enabled If this should is enabled.
      * @param namedId The unique name ID for the configurable.
      * @param comment The comment to add in the config file for this configurable.
-     * @param element The class of this configurable.
+     * @param elementConstructor The element constructor.
      */
-    public BlockConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends Block> element) {
-        super(mod, enabled, namedId, comment, element);
-        if(MinecraftHelpers.isClientSide()) {
-            dynamicBlockVariantLocation = null;
-            dynamicItemVariantLocation  = null;
-        }
+    public BlockConfig(ModBase mod, boolean enabled, String namedId, String comment,
+                       Function<BlockConfig, ? extends Block> elementConstructor) {
+        super(mod, enabled, namedId, comment, elementConstructor);
     }
 
     @Override
@@ -64,7 +62,7 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
     }
     
     @Override
-	public ConfigurableType getHolderType() {
+	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.BLOCK;
 	}
     
@@ -75,30 +73,6 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
     public Class<? extends Item> getItemBlockClass() {
         return ItemBlockMetadata.class;
     }
-    
-    /**
-     * If the IConfigurable is registered in the OreDictionary, use this name to identify it.
-     * @return the name this IConfigurable is registered with in the OreDictionary.
-     */
-    public String getOreDictionaryId() {
-        return null;
-    }
-    
-    /**
-     * If this blockState should enable Forge Multiparts and BC facades.
-     * @return If that should be enabled for this blockState.
-     */
-    public boolean isMultipartEnabled() {
-        return false;
-    }
-
-    /**
-     * Get the casted instance of the blockState.
-     * @return The blockState.
-     */
-    public Block getBlockInstance() {
-        return (Block) super.getSubInstance();
-    }
 
     /**
      * Get the item corresponding to the block.
@@ -107,15 +81,7 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
      */
     @Nonnull
     public Item getItemInstance() {
-        return Item.getItemFromBlock(getBlockInstance());
-    }
-
-    /**
-     * Get the creative tab for this item.
-     * @return The creative tab, by default the value in {@link org.cyclops.cyclopscore.init.ModBase#getDefaultCreativeTab()}.
-     */
-    public CreativeTabs getTargetTab() {
-        return getMod().getDefaultCreativeTab();
+        return Item.getItemFromBlock(getInstance());
     }
 
     /**
@@ -123,33 +89,43 @@ public abstract class BlockConfig extends ExtendedConfig<BlockConfig> implements
      * This should only be used when registering dynamic models.
      * @return The pair of block resource location and item resource location.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public Pair<ModelResourceLocation, ModelResourceLocation> registerDynamicModel() {
         String blockName = getMod().getModId() + ":" + getNamedId();
         final ModelResourceLocation blockLocation = new ModelResourceLocation(blockName, "normal");
         ModelResourceLocation itemLocation = new ModelResourceLocation(blockName, "inventory");
-        ModelLoader.setCustomStateMapper(getBlockInstance(), new StateMapperBase() {
-            @Override
-            protected ModelResourceLocation getModelResourceLocation(IBlockState blockState) {
-                return blockLocation;
-            }
-        });
-        ModelLoader.setCustomModelResourceLocation(getItemInstance(), 0, itemLocation);
+        // TODO: implement statemapping if still needed
+//        ModelLoader.setCustomStateMapper(getBlockInstance(), new StateMapperBase() {
+//            @Override
+//            protected ModelResourceLocation getModelResourceLocation(BlockState blockState) {
+//                return blockLocation;
+//            }
+//        });
+//        ModelLoader.setCustomModelResourceLocation(getItemInstance(), 0, itemLocation);
         return Pair.of(blockLocation, itemLocation);
     }
 
     @Override
     public void onRegistered() {
         super.onRegistered();
-        if(MinecraftHelpers.isClientSide() && getBlockInstance() instanceof IDynamicModelElement &&
-                ((IDynamicModelElement) getBlockInstance()).hasDynamicModel()) {
+        if(MinecraftHelpers.isClientSide() && getInstance() instanceof IDynamicModelElement &&
+                ((IDynamicModelElement) getInstance()).hasDynamicModel()) {
             BlockAction.handleDynamicBlockModel(this);
         }
     }
 
     @Override
-    public IForgeRegistry<?> getRegistry() {
+    public IForgeRegistry<Block> getRegistry() {
         return ForgeRegistries.BLOCKS;
+    }
+
+    /**
+     * @return An optional color handler for the block instance.
+     */
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    public IBlockColor getBlockColorHandler() {
+        return null;
     }
 
 }

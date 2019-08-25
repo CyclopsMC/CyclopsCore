@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.StringNBT;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.junit.Before;
 import org.junit.Test;
@@ -175,17 +175,17 @@ public class TestNbtPathExpressionHandlerListSlice {
     @Test
     public void testExpressionStreamSingleLeaf() {
         INbtPathExpression expression = handler.handlePrefixOf("aa[1:2]", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagString("a"))).getMatches().collect(Collectors.toList()),
+        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
     }
 
     @Test
     public void testExpressionStreamMultipleLeaf() {
         INbtPathExpression expression = handler.handlePrefixOf("aa[1:2]", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
-                new NBTTagString("a"),
-                new NBTTagString("b"),
-                new NBTTagString("c")
+        Stream<INBT> stream = Stream.of(
+                new StringNBT("a"),
+                new StringNBT("b"),
+                new StringNBT("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
@@ -193,8 +193,8 @@ public class TestNbtPathExpressionHandlerListSlice {
 
     @Test
     public void testExpressionStreamSingleTagNoMatch() {
-        NBTTagList tag = new NBTTagList();
-        tag.appendTag(new NBTTagString("0"));
+        ListNBT tag = new ListNBT();
+        tag.add(new StringNBT("0"));
 
         INbtPathExpression expression = handler.handlePrefixOf("aa[1:2]", 2).getPrefixExpression();
         assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
@@ -203,20 +203,20 @@ public class TestNbtPathExpressionHandlerListSlice {
 
     @Test
     public void testExpressionStreamFromFirstTagMatch() {
-        NBTTagList tag = new NBTTagList();
-        tag.appendTag(new NBTTagString("0"));
+        ListNBT tag = new ListNBT();
+        tag.add(new StringNBT("0"));
 
         INbtPathExpression expression = handler.handlePrefixOf("aa[0:]", 2).getPrefixExpression();
         assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagString("0")
+                        new StringNBT("0")
                 )));
     }
 
     @Test
     public void testExpressionStreamAfterFirstTagNoMatch() {
-        NBTTagList tag = new NBTTagList();
-        tag.appendTag(new NBTTagString("0"));
+        ListNBT tag = new ListNBT();
+        tag.add(new StringNBT("0"));
 
         INbtPathExpression expression = handler.handlePrefixOf("aa[1:]", 2).getPrefixExpression();
         assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
@@ -225,17 +225,17 @@ public class TestNbtPathExpressionHandlerListSlice {
 
     @Test
     public void testExpressionStreamMultipleTagsNoMatch() {
-        NBTTagList tag1 = new NBTTagList();
-        tag1.appendTag(new NBTTagString("a0"));
+        ListNBT tag1 = new ListNBT();
+        tag1.add(new StringNBT("a0"));
 
-        NBTTagList tag2 = new NBTTagList();
-        tag2.appendTag(new NBTTagString("b0"));
+        ListNBT tag2 = new ListNBT();
+        tag2.add(new StringNBT("b0"));
 
-        NBTTagList tag3 = new NBTTagList();
-        tag3.appendTag(new NBTTagString("c0"));
+        ListNBT tag3 = new ListNBT();
+        tag3.add(new StringNBT("c0"));
 
         INbtPathExpression expression = handler.handlePrefixOf("aa[1:2]", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
+        Stream<INBT> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3
@@ -246,116 +246,116 @@ public class TestNbtPathExpressionHandlerListSlice {
 
     @Test
     public void testExpressionStreamSingleTagMatch() {
-        NBTTagList tag = new NBTTagList();
-        tag.appendTag(new NBTTagString("0"));
-        tag.appendTag(new NBTTagString("1"));
-        tag.appendTag(new NBTTagString("2"));
+        ListNBT tag = new ListNBT();
+        tag.add(new StringNBT("0"));
+        tag.add(new StringNBT("1"));
+        tag.add(new StringNBT("2"));
 
         INbtPathExpression expression = handler.handlePrefixOf("aa[1:2]", 2).getPrefixExpression();
         assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagString("1"),
-                        new NBTTagString("2")
+                        new StringNBT("1"),
+                        new StringNBT("2")
                 )));
     }
 
     @Test
     public void testExpressionStreamMultipleTagsMatch() {
-        NBTTagList tag1 = new NBTTagList();
-        tag1.appendTag(new NBTTagString("a0"));
-        tag1.appendTag(new NBTTagString("a1"));
-        tag1.appendTag(new NBTTagString("a2"));
+        ListNBT tag1 = new ListNBT();
+        tag1.add(new StringNBT("a0"));
+        tag1.add(new StringNBT("a1"));
+        tag1.add(new StringNBT("a2"));
 
-        NBTTagList tag2 = new NBTTagList();
-        tag2.appendTag(new NBTTagString("b0"));
-        tag2.appendTag(new NBTTagString("b1"));
-        tag2.appendTag(new NBTTagString("b2"));
+        ListNBT tag2 = new ListNBT();
+        tag2.add(new StringNBT("b0"));
+        tag2.add(new StringNBT("b1"));
+        tag2.add(new StringNBT("b2"));
 
-        NBTTagList tag3 = new NBTTagList();
-        tag3.appendTag(new NBTTagString("c0"));
-        tag3.appendTag(new NBTTagString("c1"));
-        tag3.appendTag(new NBTTagString("c2"));
+        ListNBT tag3 = new ListNBT();
+        tag3.add(new StringNBT("c0"));
+        tag3.add(new StringNBT("c1"));
+        tag3.add(new StringNBT("c2"));
 
         INbtPathExpression expression = handler.handlePrefixOf("aa[1:2]", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
+        Stream<INBT> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagString("a1"),
-                        new NBTTagString("a2"),
-                        new NBTTagString("b1"),
-                        new NBTTagString("b2"),
-                        new NBTTagString("c1"),
-                        new NBTTagString("c2")
+                        new StringNBT("a1"),
+                        new StringNBT("a2"),
+                        new StringNBT("b1"),
+                        new StringNBT("b2"),
+                        new StringNBT("c1"),
+                        new StringNBT("c2")
                 )));
     }
 
     @Test
     public void testExpressionStreamMultipleTagsMatchStep() {
-        NBTTagList tag1 = new NBTTagList();
-        tag1.appendTag(new NBTTagString("a0"));
-        tag1.appendTag(new NBTTagString("a1"));
-        tag1.appendTag(new NBTTagString("a2"));
+        ListNBT tag1 = new ListNBT();
+        tag1.add(new StringNBT("a0"));
+        tag1.add(new StringNBT("a1"));
+        tag1.add(new StringNBT("a2"));
 
-        NBTTagList tag2 = new NBTTagList();
-        tag2.appendTag(new NBTTagString("b0"));
-        tag2.appendTag(new NBTTagString("b1"));
-        tag2.appendTag(new NBTTagString("b2"));
+        ListNBT tag2 = new ListNBT();
+        tag2.add(new StringNBT("b0"));
+        tag2.add(new StringNBT("b1"));
+        tag2.add(new StringNBT("b2"));
 
-        NBTTagList tag3 = new NBTTagList();
-        tag3.appendTag(new NBTTagString("c0"));
-        tag3.appendTag(new NBTTagString("c1"));
-        tag3.appendTag(new NBTTagString("c2"));
+        ListNBT tag3 = new ListNBT();
+        tag3.add(new StringNBT("c0"));
+        tag3.add(new StringNBT("c1"));
+        tag3.add(new StringNBT("c2"));
 
         INbtPathExpression expression = handler.handlePrefixOf("aa[0::2]", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
+        Stream<INBT> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagString("a0"),
-                        new NBTTagString("a2"),
-                        new NBTTagString("b0"),
-                        new NBTTagString("b2"),
-                        new NBTTagString("c0"),
-                        new NBTTagString("c2")
+                        new StringNBT("a0"),
+                        new StringNBT("a2"),
+                        new StringNBT("b0"),
+                        new StringNBT("b2"),
+                        new StringNBT("c0"),
+                        new StringNBT("c2")
                 )));
     }
 
     @Test
     public void testExpressionStreamMultipleTagsPartialMatch() {
-        NBTTagList tag1 = new NBTTagList();
-        tag1.appendTag(new NBTTagString("a0"));
-        tag1.appendTag(new NBTTagString("a1"));
-        tag1.appendTag(new NBTTagString("a2"));
+        ListNBT tag1 = new ListNBT();
+        tag1.add(new StringNBT("a0"));
+        tag1.add(new StringNBT("a1"));
+        tag1.add(new StringNBT("a2"));
 
-        NBTTagList tag2 = new NBTTagList();
-        tag2.appendTag(new NBTTagString("b0"));
-        tag2.appendTag(new NBTTagString("b1"));
+        ListNBT tag2 = new ListNBT();
+        tag2.add(new StringNBT("b0"));
+        tag2.add(new StringNBT("b1"));
 
-        NBTTagList tag3 = new NBTTagList();
-        tag3.appendTag(new NBTTagString("c0"));
-        tag3.appendTag(new NBTTagString("c1"));
-        tag3.appendTag(new NBTTagString("c2"));
+        ListNBT tag3 = new ListNBT();
+        tag3.add(new StringNBT("c0"));
+        tag3.add(new StringNBT("c1"));
+        tag3.add(new StringNBT("c2"));
 
         INbtPathExpression expression = handler.handlePrefixOf("aa[1:2]", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
+        Stream<INBT> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagString("a1"),
-                        new NBTTagString("a2"),
-                        new NBTTagString("b1"),
-                        new NBTTagString("c1"),
-                        new NBTTagString("c2")
+                        new StringNBT("a1"),
+                        new StringNBT("a2"),
+                        new StringNBT("b1"),
+                        new StringNBT("c1"),
+                        new StringNBT("c2")
                 )));
     }
 

@@ -1,11 +1,11 @@
 package org.cyclops.cyclopscore.network.packet.debug;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.network.CodecField;
 import org.cyclops.cyclopscore.network.PacketCodec;
@@ -39,8 +39,8 @@ public class PingPongPacketAsync extends PacketCodec {
 		return true;
 	}
 
-	protected void log(EntityPlayer player, String message) {
-		player.sendMessage(new TextComponentString(message));
+	protected void log(PlayerEntity player, String message) {
+		player.sendMessage(new StringTextComponent(message));
 	}
 
 	protected PingPongPacketAsync newPacket() {
@@ -48,8 +48,8 @@ public class PingPongPacketAsync extends PacketCodec {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void actionClient(World world, EntityPlayer player) {
+	@OnlyIn(Dist.CLIENT)
+	public void actionClient(World world, PlayerEntity player) {
 		if(remaining > 0) {
 			CyclopsCore._instance.getPacketHandler().sendToServer(newPacket());
 		}
@@ -57,7 +57,7 @@ public class PingPongPacketAsync extends PacketCodec {
 	}
 
 	@Override
-	public void actionServer(World world, EntityPlayerMP player) {
+	public void actionServer(World world, ServerPlayerEntity player) {
 		if(remaining > 0) {
 			CyclopsCore._instance.getPacketHandler().sendToPlayer(newPacket(), player);
 		}

@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import org.cyclops.cyclopscore.inventory.IValueNotifier;
 
 /**
@@ -19,8 +19,8 @@ public class ValueNotifierHelpers {
      * @param value The value
      */
     public static void setValue(IValueNotifier notifier, int valueId, int value) {
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setInteger(KEY, value);
+        CompoundNBT tag = new CompoundNBT();
+        tag.putInt(KEY, value);
         notifier.setValue(valueId, tag);
     }
 
@@ -31,8 +31,8 @@ public class ValueNotifierHelpers {
      * @param value The value
      */
     public static void setValue(IValueNotifier notifier, int valueId, String value) {
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setString(KEY, value);
+        CompoundNBT tag = new CompoundNBT();
+        tag.putString(KEY, value);
         notifier.setValue(valueId, tag);
     }
 
@@ -43,9 +43,9 @@ public class ValueNotifierHelpers {
      * @return The value
      */
     public static int getValueInt(IValueNotifier notifier, int valueId) {
-        NBTTagCompound tag = notifier.getValue(valueId);
+        CompoundNBT tag = notifier.getValue(valueId);
         if(tag != null) {
-            return tag.getInteger(KEY);
+            return tag.getInt(KEY);
         }
         return 0;
     }
@@ -57,7 +57,7 @@ public class ValueNotifierHelpers {
      * @return The value
      */
     public static String getValueString(IValueNotifier notifier, int valueId) {
-        NBTTagCompound tag = notifier.getValue(valueId);
+        CompoundNBT tag = notifier.getValue(valueId);
         if(tag != null) {
             return tag.getString(KEY);
         }

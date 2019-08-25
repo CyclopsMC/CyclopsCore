@@ -1,11 +1,7 @@
 package org.cyclops.cyclopscore.modcompat;
 
-import org.cyclops.cyclopscore.init.IInitListener;
-
 /**
  * Interface for external compatibilities.
- * Implement this on classes that require external functionality
- * that needs to be called in the preInit, init or postInit events.
  * Add instances to the {@link ModCompatLoader#compats} list.
  * Note that classes implementing this interface can NOT use classes
  * from the targeted mod, since an instance of the Compat will be
@@ -13,16 +9,29 @@ import org.cyclops.cyclopscore.init.IInitListener;
  * @author rubensworks
  *
  */
-public interface IExternalCompat extends IInitListener {
-    
+public interface IExternalCompat {
+
+    /**
+     * @return The unique id of this compat, such as the mod id.
+     */
+    public String getId();
     /**
      * @return If this mod compat is enabled by default.
      */
-    public boolean isEnabled();
+    public boolean isEnabledDefault();
     
     /**
      * @return The comment of this mod compat in the config file.
      */
     public String getComment();
+
+    /**
+     * Create a new compat intializer.
+     * This should contain all logic to initialize the compat,
+     * and will only be loaded if the compat *can* be loaded,
+     * so you can safely refer to third-party mod classes in this initializer.
+     * @return A new compat initializer instance.
+     */
+    public ICompatInitializer createInitializer();
     
 }

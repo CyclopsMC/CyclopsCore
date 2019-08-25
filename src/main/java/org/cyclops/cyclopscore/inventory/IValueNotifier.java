@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 import java.util.Set;
 
@@ -30,7 +30,7 @@ public interface IValueNotifier {
      * @param valueId The value id.
      * @param value The new value.
      */
-    void setValue(int valueId, NBTTagCompound value);
+    void setValue(int valueId, CompoundNBT value);
 
     /**
      * @return All available value ids.
@@ -42,6 +42,6 @@ public interface IValueNotifier {
      * @param valueId The value id.
      * @return The value or null.
      */
-    NBTTagCompound getValue(int valueId);
+    CompoundNBT getValue(int valueId);
 
 }

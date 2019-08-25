@@ -1,7 +1,7 @@
 package baubles.api.cap;
 
 import baubles.api.IBauble;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -10,7 +10,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
 	private final static int BAUBLE_SLOTS = 7;
 	private boolean[] changed = new boolean[BAUBLE_SLOTS];
 	private boolean blockEvents=false;	
-	private EntityLivingBase player;
+	private LivingEntity player;
 	
 	public BaublesContainer()
     {
@@ -35,7 +35,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
 	 * stack size) into the given slot.
 	 */
 	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack, EntityLivingBase player) {
+	public boolean isItemValidForSlot(int slot, ItemStack stack, LivingEntity player) {
 		if (stack==null || stack.isEmpty() || !(stack.getItem() instanceof IBauble) ||
 				!((IBauble) stack.getItem()).canEquip(stack, player))
 			return false;		
@@ -88,7 +88,7 @@ public class BaublesContainer extends ItemStackHandler implements IBaublesItemHa
 	}
 
 	@Override
-	public void setPlayer(EntityLivingBase player) {
+	public void setPlayer(LivingEntity player) {
 		this.player=player;
 	}
 	

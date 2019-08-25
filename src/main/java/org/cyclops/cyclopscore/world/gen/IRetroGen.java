@@ -1,7 +1,8 @@
 package org.cyclops.cyclopscore.world.gen;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.chunk.IChunk;
+import net.minecraft.world.dimension.DimensionType;
 
 import java.util.Random;
 
@@ -18,24 +19,24 @@ public interface IRetroGen {
 	 * @param chunk The chunk.
 	 * @param random The random instance.
 	 */
-	public void retroGenerateChunk(NBTTagCompound tag, Chunk chunk, Random random);
+	public void retroGenerateChunk(CompoundNBT tag, IChunk chunk, Random random);
 	
 	/**
 	 * If retrogen for this instance should be started.
 	 * The NBT compound tag is specific for retrogeneration and contains data that is stored
-	 * in {@link IRetroGen#afterRetroGen(NBTTagCompound)}.
+	 * in {@link IRetroGen#afterRetroGen(CompoundNBT)}.
 	 * @param tag The NBT tag. This tag is read-only.
-	 * @param dimensionId The id of the dimension.
+	 * @param dimensionType The dimension type.
 	 * @return If retrogen should start for this.
 	 */
-	public boolean shouldRetroGen(NBTTagCompound tag, int dimensionId);
+	public boolean shouldRetroGen(CompoundNBT tag, DimensionType dimensionType);
 	
 	/**
 	 * Called after retrogen for this instance is done.
 	 * Info should be stored inside the given tag about the retrogen status, so that it can
-	 * be re-used later in {@link IRetroGen#shouldRetroGen(NBTTagCompound, int)}.
+	 * be re-used later in {@link IRetroGen#shouldRetroGen(CompoundNBT, DimensionType)}.
 	 * @param tag The NBT tag. This will be stored inside the chunk data.
 	 */
-	public void afterRetroGen(NBTTagCompound tag);
+	public void afterRetroGen(CompoundNBT tag);
 	
 }

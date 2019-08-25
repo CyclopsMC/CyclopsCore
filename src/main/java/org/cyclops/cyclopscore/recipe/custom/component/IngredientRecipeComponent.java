@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import lombok.Data;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraftforge.oredict.OreDictionary;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
@@ -21,8 +20,6 @@ import java.util.Objects;
  */
 @Data
 public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, IRecipeProperties, IIngredientRecipeComponent {
-
-    public static final int META_WILDCARD = OreDictionary.WILDCARD_VALUE;
 
     private final Ingredient ingredient;
     private float chance = 1.0F;
@@ -51,21 +48,21 @@ public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, I
         // Test both directions
         boolean ok = false;
         for (ItemStack itemStack : getItemStacks()) {
-            if (that.getIngredient().apply(itemStack.isEmpty() ? null : itemStack)) {
+            if (that.getIngredient().test(itemStack.isEmpty() ? null : itemStack)) {
                 ok = true;
                 break;
             }
         }
         if (ok) {
             for (ItemStack itemStack : that.getIngredient().getMatchingStacks()) {
-                if (this.getIngredient().apply(itemStack.isEmpty() ? null : itemStack)) {
+                if (this.getIngredient().test(itemStack.isEmpty() ? null : itemStack)) {
                     return true;
                 }
             }
         }
 
-        if (this.getIngredient().apply(that.getFirstItemStack())
-                && that.getIngredient().apply(this.getFirstItemStack())) {
+        if (this.getIngredient().test(that.getFirstItemStack())
+                && that.getIngredient().test(this.getFirstItemStack())) {
             return true;
         }
         return false;
@@ -73,9 +70,7 @@ public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, I
 
     protected boolean equals(ItemStack a, ItemStack b) {
         return (a.isEmpty() && b.isEmpty()) ||
-                (!a.isEmpty() && !b.isEmpty() && a.getItem().equals(b.getItem()) &&
-                        (a.getItemDamage() == b.getItemDamage() ||
-                                a.getItemDamage() == META_WILDCARD || b.getItemDamage() == META_WILDCARD));
+                (!a.isEmpty() && !b.isEmpty() && a.getItem().equals(b.getItem()));
     }
 
     @Override

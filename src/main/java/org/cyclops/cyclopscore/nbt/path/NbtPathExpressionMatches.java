@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.nbt.path;
 
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBT;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionExecutionContext;
 
 import java.util.stream.Stream;
@@ -23,7 +23,7 @@ public class NbtPathExpressionMatches {
         return matches;
     }
 
-    public Stream<NBTBase> getMatches() {
+    public Stream<INBT> getMatches() {
         return getContexts().map(NbtPathExpressionExecutionContext::getCurrentTag);
     }
 

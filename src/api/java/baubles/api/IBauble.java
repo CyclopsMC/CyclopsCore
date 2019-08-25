@@ -1,6 +1,6 @@
 package baubles.api;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -21,33 +21,33 @@ public interface IBauble {
 	/**
 	 * This method is called once per tick if the bauble is being worn by a player
 	 */
-	public void onWornTick(ItemStack itemstack, EntityLivingBase player);
+	public void onWornTick(ItemStack itemstack, LivingEntity player);
 	
 	/**
 	 * This method is called when the bauble is equipped by a player
 	 */
-	public void onEquipped(ItemStack itemstack, EntityLivingBase player);
+	public void onEquipped(ItemStack itemstack, LivingEntity player);
 	
 	/**
 	 * This method is called when the bauble is unequipped by a player
 	 */
-	public void onUnequipped(ItemStack itemstack, EntityLivingBase player);
+	public void onUnequipped(ItemStack itemstack, LivingEntity player);
 
 	/**
 	 * can this bauble be placed in a bauble slot
 	 */
-	public boolean canEquip(ItemStack itemstack, EntityLivingBase player);
+	public boolean canEquip(ItemStack itemstack, LivingEntity player);
 	
 	/**
 	 * Can this bauble be removed from a bauble slot
 	 */
-	public boolean canUnequip(ItemStack itemstack, EntityLivingBase player);
+	public boolean canUnequip(ItemStack itemstack, LivingEntity player);
 	
 	/**
 	 * Will bauble automatically sync to client if a change is detected in its NBT or damage values?
 	 * Default is off, so override and set to true if you want to auto sync.
 	 * This sync is not instant, but occurs every 10 ticks (.5 seconds).
 	 */
-	public boolean willAutoSync(ItemStack itemstack, EntityLivingBase player);
+	public boolean willAutoSync(ItemStack itemstack, LivingEntity player);
 	
 }

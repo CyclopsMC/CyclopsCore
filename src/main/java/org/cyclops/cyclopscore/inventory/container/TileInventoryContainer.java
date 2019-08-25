@@ -1,34 +1,31 @@
 package org.cyclops.cyclopscore.inventory.container;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
-import org.cyclops.cyclopscore.tileentity.InventoryTileEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
+import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
+
+import javax.annotation.Nullable;
 
 /**
  * A container for a tile entity with inventory.
  * @author rubensworks
- * @deprecated Use {@link TileInventoryContainerConfigurable}.
  * @param <T> The type of tile.
  */
-@Deprecated
-public class TileInventoryContainer<T extends InventoryTileEntity> extends ExtendedInventoryContainer {
+public abstract class TileInventoryContainer<T extends CyclopsTileEntity> extends InventoryContainer {
     
     protected T tile;
 
     /**
      * Make a new TileInventoryContainer.
+     * @param type The container type.
+     * @param id The container id.
      * @param inventory The player inventory.
      * @param tile The TileEntity for this container.
      */
-    public TileInventoryContainer(InventoryPlayer inventory, T tile) {
-        super(inventory, (IGuiContainerProvider) tile.getBlock());
+    public TileInventoryContainer(@Nullable ContainerType<?> type, int id, PlayerInventory inventory, T tile) {
+        super(type, id, inventory);
         this.tile = tile;
-    }
-
-    @Override
-    public boolean canInteractWith(EntityPlayer entityPlayer) {
-        return tile.canInteractWith(entityPlayer);
     }
     
     /**
@@ -38,18 +35,14 @@ public class TileInventoryContainer<T extends InventoryTileEntity> extends Exten
     	return tile;
     }
 
-	@Override
-	protected int getSizeInventory() {
-		return getTile().getSizeInventory();
-	}
-
     @Override
-    public String getGuiModId() {
-        return getGuiProvider().getModGui().getModId();
+    protected int getSizeInventory() {
+        return this.player.inventory.getSizeInventory();
     }
 
     @Override
-    public int getGuiId() {
-        return getGuiProvider().getGuiID();
+    public boolean canInteractWith(PlayerEntity player) {
+        return tile.canInteractWith(player);
     }
+
 }

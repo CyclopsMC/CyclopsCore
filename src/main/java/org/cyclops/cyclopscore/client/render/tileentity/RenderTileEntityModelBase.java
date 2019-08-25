@@ -1,15 +1,15 @@
 package org.cyclops.cyclopscore.client.render.tileentity;
 
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.model.Model;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 
 /**
- * General renderer for {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity} with {@link net.minecraft.client.model.ModelBase} models.
+ * General renderer for {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity} with {@link import net.minecraft.client.renderer.model.Model;} models.
  * @author rubensworks
  *
  */
-public class RenderTileEntityModelBase<T extends CyclopsTileEntity, M extends ModelBase> extends RenderTileEntityModel<T, M> {
+public class RenderTileEntityModelBase<T extends CyclopsTileEntity, M extends Model> extends RenderTileEntityModel<T, M> {
 
     /**
      * Make a new instance.
@@ -22,6 +22,6 @@ public class RenderTileEntityModelBase<T extends CyclopsTileEntity, M extends Mo
 
     @Override
     protected void renderModel(T tile, M model, float partialTick, int destroyStage) {
-        model.render(null, 0, 0, 0, 0, 0, 0);
+        model.getRandomModelBox(getWorld().rand).render(1);
     }
 }

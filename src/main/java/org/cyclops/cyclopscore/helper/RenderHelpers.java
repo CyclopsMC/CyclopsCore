@@ -1,35 +1,38 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.base.Function;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleDigging;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.opengl.GL11;
 
@@ -41,7 +44,7 @@ import java.util.Random;
  * @author rubensworks
  *
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RenderHelpers {
 
     private static final Random rand = new Random();
@@ -52,7 +55,15 @@ public class RenderHelpers {
      * @param texture The texture to bind.
      */
     public static void bindTexture(ResourceLocation texture) {
-    	Minecraft.getMinecraft().renderEngine.bindTexture(texture);
+    	Minecraft.getInstance().getTextureManager().bindTexture(texture);
+    }
+
+    /**
+     * Add a particle to the world.
+     * @param particle A particle.
+     */
+    public static void emitParticle(Particle particle) {
+        Minecraft.getInstance().particles.addEffect(particle);
     }
 
     /**
@@ -63,13 +74,29 @@ public class RenderHelpers {
      * @param y The center Y
      * @param scale The scale to render the string by.
      * @param color The color to draw
-     * @param dropShadow If a shadow should be rendered.
      */
-    public static void drawScaledString(FontRenderer fontRenderer, String string, int x, int y, float scale, int color, boolean dropShadow) {
+    public static void drawScaledString(FontRenderer fontRenderer, String string, int x, int y, float scale, int color) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, 0);
-        GlStateManager.scale(scale, scale, 1.0f);
-        fontRenderer.drawString(string, 0, 0, color, dropShadow);
+        GlStateManager.translatef(x, y, 0);
+        GlStateManager.scalef(scale, scale, 1.0f);
+        fontRenderer.drawString(string, 0, 0, color);
+        GlStateManager.popMatrix();
+    }
+
+    /**
+     * Draw the given text with the given scale with a shadow.
+     * @param fontRenderer The font renderer
+     * @param string The string to draw
+     * @param x The center X
+     * @param y The center Y
+     * @param scale The scale to render the string by.
+     * @param color The color to draw
+     */
+    public static void drawScaledStringWithShadow(FontRenderer fontRenderer, String string, int x, int y, float scale, int color) {
+        GlStateManager.pushMatrix();
+        GlStateManager.translatef(x, y, 0);
+        GlStateManager.scalef(scale, scale, 1.0f);
+        fontRenderer.drawStringWithShadow(string, 0, 0, color);
         GlStateManager.popMatrix();
     }
 
@@ -116,7 +143,7 @@ public class RenderHelpers {
      */
     public static void drawScaledCenteredString(FontRenderer fontRenderer, String string, int x, int y, int width, float scale, int color) {
         GlStateManager.pushMatrix();
-        GlStateManager.scale(scale, scale, 1.0f);
+        GlStateManager.scalef(scale, scale, 1.0f);
         int titleLength = fontRenderer.getStringWidth(string);
         int titleHeight = fontRenderer.FONT_HEIGHT;
         fontRenderer.drawString(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
@@ -128,11 +155,11 @@ public class RenderHelpers {
      * @param blockState The block state.
      * @return The corresponding baked model.
      */
-    public static IBakedModel getBakedModel(IBlockState blockState) {
-        Minecraft mc = Minecraft.getMinecraft();
+    public static IBakedModel getBakedModel(BlockState blockState) {
+        Minecraft mc = Minecraft.getInstance();
         BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
         BlockModelShapes blockModelShapes = blockRendererDispatcher.getBlockModelShapes();
-        return blockModelShapes.getModelForState(blockState);
+        return blockModelShapes.getModel(blockState);
     }
 
     /**
@@ -144,13 +171,7 @@ public class RenderHelpers {
      */
 
     public static IBakedModel getDynamicBakedModel(World world, BlockPos pos) {
-        IBlockState blockState = world.getBlockState(pos);
-        IBakedModel bakedModel = getBakedModel(blockState);
-        /*if(bakedModel instanceof ISmartBlockModel) {
-            IBlockState extendedBlockState = blockState.getBlock().getExtendedState(blockState, world, pos);
-            bakedModel = ((ISmartBlockModel) bakedModel).handleBlockState(extendedBlockState);
-        }*/
-        return bakedModel;
+        return getBakedModel(world.getBlockState(pos));
     }
 
     /**
@@ -161,25 +182,25 @@ public class RenderHelpers {
      * @param pos The position.
      * @param side The hit side.
      */
-    public static void addBlockHitEffects(ParticleManager particleManager, World world, IBlockState blockState, BlockPos pos, EnumFacing side)  {
-        if (blockState.getRenderType() != EnumBlockRenderType.INVISIBLE) {
+    public static void addBlockHitEffects(ParticleManager particleManager, World world, BlockState blockState, BlockPos pos, Direction side)  {
+        if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
             int i = pos.getX();
             int j = pos.getY();
             int k = pos.getZ();
             float f = 0.1F;
-            AxisAlignedBB bb = blockState.getBoundingBox(world, pos);
+            AxisAlignedBB bb = blockState.getShape(world, pos).getBoundingBox();
             double d0 = (double)i + rand.nextDouble() * (bb.maxX - bb.minX - (double)(f * 2.0F)) + (double)f + bb.minX;
             double d1 = (double)j + rand.nextDouble() * (bb.maxY - bb.minY - (double)(f * 2.0F)) + (double)f + bb.minY;
             double d2 = (double)k + rand.nextDouble() * (bb.maxZ - bb.minZ - (double)(f * 2.0F)) + (double)f + bb.minZ;
 
-            if (side == EnumFacing.DOWN)  d1 = (double)j + bb.minY - (double)f;
-            if (side == EnumFacing.UP)    d1 = (double)j + bb.maxY + (double)f;
-            if (side == EnumFacing.NORTH) d2 = (double)k + bb.minZ - (double)f;
-            if (side == EnumFacing.SOUTH) d2 = (double)k + bb.maxZ + (double)f;
-            if (side == EnumFacing.WEST)  d0 = (double)i + bb.minX - (double)f;
-            if (side == EnumFacing.EAST)  d0 = (double)i + bb.maxX + (double)f;
+            if (side == Direction.DOWN)  d1 = (double)j + bb.minY - (double)f;
+            if (side == Direction.UP)    d1 = (double)j + bb.maxY + (double)f;
+            if (side == Direction.NORTH) d2 = (double)k + bb.minZ - (double)f;
+            if (side == Direction.SOUTH) d2 = (double)k + bb.maxZ + (double)f;
+            if (side == Direction.WEST)  d0 = (double)i + bb.minX - (double)f;
+            if (side == Direction.EAST)  d0 = (double)i + bb.maxX + (double)f;
 
-            Particle fx = new ParticleDigging.Factory().createParticle(-1, world, d0, d1, d2, 0.0D, 0.0D, 0.0D, Block.getStateId(blockState));
+            Particle fx = new DiggingParticle.Factory().makeParticle(new BlockParticleData(ParticleTypes.BLOCK, blockState), world, d0, d1, d2, 0.0D, 0.0D, 0.0D);
             particleManager.addEffect(fx);
         }
     }
@@ -189,7 +210,7 @@ public class RenderHelpers {
      * @param itemStack The item stack.
      */
     public static void renderItem(ItemStack itemStack) {
-        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
+        ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
         renderItem.renderItem(itemStack, ItemCameraTransforms.TransformType.NONE);
     }
 
@@ -199,19 +220,19 @@ public class RenderHelpers {
      * @param transformType A transform type.
      */
     public static void renderItem(ItemStack itemStack, ItemCameraTransforms.TransformType transformType) {
-        RenderItem renderItem = Minecraft.getMinecraft().getRenderItem();
-        GlStateManager.translate(8.0F, 8.0F, 0.0F);
-        GlStateManager.scale(1.0F, 1.0F, -1.0F);
-        GlStateManager.scale(0.5F, 0.5F, 0.5F);
+        ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
+        GlStateManager.translatef(8.0F, 8.0F, 0.0F);
+        GlStateManager.scalef(1.0F, 1.0F, -1.0F);
+        GlStateManager.scalef(0.5F, 0.5F, 0.5F);
         IBakedModel ibakedmodel = renderItem.getItemModelMesher().getItemModel(itemStack);
         if (ibakedmodel.isGui3d()){
-            GlStateManager.scale(40.0F, 40.0F, 40.0F);
-            GlStateManager.rotate(210.0F, 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
+            GlStateManager.scalef(40.0F, 40.0F, 40.0F);
+            GlStateManager.rotatef(210.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotatef(-135.0F, 0.0F, 1.0F, 0.0F);
             GlStateManager.enableLighting();
         } else {
-            GlStateManager.scale(64.0F, 64.0F, 64.0F);
-            GlStateManager.rotate(180.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.scalef(64.0F, 64.0F, 64.0F);
+            GlStateManager.rotatef(180.0F, 1.0F, 0.0F, 0.0F);
             GlStateManager.disableLighting();
         }
         renderItem.renderItem(itemStack, transformType);
@@ -219,7 +240,7 @@ public class RenderHelpers {
 
     public static final Function<ResourceLocation, TextureAtlasSprite> TEXTURE_GETTER = new Function<ResourceLocation, TextureAtlasSprite>() {
         public TextureAtlasSprite apply(ResourceLocation location) {
-            return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
+            return Minecraft.getInstance().getTextureMap().getAtlasSprite(location.toString());
         }
     };
 
@@ -229,7 +250,7 @@ public class RenderHelpers {
      * @return The icon.
      */
     public static TextureAtlasSprite getBlockIcon(Block block) {
-        return Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(block.getDefaultState());
+        return Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getTexture(block.getDefaultState());
     }
 
     /**
@@ -238,7 +259,7 @@ public class RenderHelpers {
      * @param side The side to get the icon from, UP if null.
      * @return The icon.
      */
-    public static TextureAtlasSprite getFluidIcon(Fluid fluid, EnumFacing side) {
+    public static TextureAtlasSprite getFluidIcon(Fluid fluid, Direction side) {
         return getFluidIcon(new FluidStack(fluid, 1000), side);
     }
 
@@ -248,17 +269,17 @@ public class RenderHelpers {
      * @param side The side to get the icon from, UP if null.
      * @return The icon.
      */
-    public static TextureAtlasSprite getFluidIcon(FluidStack fluid, EnumFacing side) {
+    public static TextureAtlasSprite getFluidIcon(FluidStack fluid, Direction side) {
         Block defaultBlock = Blocks.WATER;
         Block block = defaultBlock;
         if(fluid.getFluid().getBlock() != null) {
             block = fluid.getFluid().getBlock();
         }
 
-        if(side == null) side = EnumFacing.UP;
+        if(side == null) side = Direction.UP;
 
         TextureAtlasSprite icon = TEXTURE_GETTER.apply(fluid.getFluid().getFlowing(fluid));
-        if(icon == null || (side == EnumFacing.UP || side == EnumFacing.DOWN)) {
+        if(icon == null || (side == Direction.UP || side == Direction.DOWN)) {
             icon = TEXTURE_GETTER.apply(fluid.getFluid().getStill(fluid));
         }
         if(icon == null) {
@@ -288,16 +309,16 @@ public class RenderHelpers {
             GlStateManager.disableCull();
 
             // Correct color & lighting
-            GlStateManager.color(1, 1, 1, 1);
+            GlStateManager.color4f(1, 1, 1, 1);
             GlStateManager.disableLighting();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
             // Set to current relative player location
-            GlStateManager.translate(x, y, z);
+            GlStateManager.translated(x, y, z);
 
             // Set blockState textures
-            Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
             render.renderFluid(fluid);
 
@@ -333,7 +354,7 @@ public class RenderHelpers {
     }
 
     /**
-     * Get the fluid color to use in {@link net.minecraft.client.renderer.block.model.BakedQuad}.
+     * Get the fluid color to use in {@link BakedQuad}.
      * @param fluidStack The fluid stack.
      * @return The BGR colors.
      */
@@ -357,7 +378,7 @@ public class RenderHelpers {
      * @param pointY The point y
      * @return If the point is inside the region.
      */
-    public static boolean isPointInRegion(int left, int top, int width, int height, int pointX, int pointY) {
+    public static boolean isPointInRegion(int left, int top, int width, int height, double pointX, double pointY) {
         return pointX >= left && pointX < left + width && pointY >= top && pointY < top + height;
     }
 
@@ -378,8 +399,8 @@ public class RenderHelpers {
      * @param pointY The point y
      * @return If the point is inside the button's region.
      */
-    public static boolean isPointInButton(GuiButton button, int pointX, int pointY) {
-        return isPointInRegion(button.x, button.y, button.width, button.height, pointX, pointY);
+    public static boolean isPointInButton(Button button, int pointX, int pointY) {
+        return isPointInRegion(button.x, button.y, button.getWidth(), button.getHeight(), pointX, pointY);
     }
 
     /**

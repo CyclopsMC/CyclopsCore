@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.init;
 
-import net.minecraftforge.fml.common.versioning.ArtifactVersion;
-import net.minecraftforge.fml.common.versioning.DefaultArtifactVersion;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.cyclops.cyclopscore.tracking.IModVersion;
 
 /**

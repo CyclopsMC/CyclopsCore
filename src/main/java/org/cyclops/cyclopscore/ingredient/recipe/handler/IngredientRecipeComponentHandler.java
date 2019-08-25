@@ -38,13 +38,7 @@ public class IngredientRecipeComponentHandler implements IRecipeInputDefinitionH
             inputs.put(IngredientComponent.ITEMSTACK, Collections.singletonList(new PrototypedIngredientAlternativesList<>(
                     itemStacks
                             .stream()
-                            .map(itemStack -> {
-                                int condition = ItemMatch.ITEM;
-                                if (itemStack.getItemDamage() != IngredientRecipeComponent.META_WILDCARD) {
-                                    condition |= ItemMatch.DAMAGE;
-                                }
-                                return new PrototypedIngredient<>(IngredientComponent.ITEMSTACK, itemStack, condition);
-                            })
+                            .map(itemStack -> new PrototypedIngredient<>(IngredientComponent.ITEMSTACK, itemStack, ItemMatch.ITEM))
                             .collect(Collectors.toList()))));
         }
         return inputs;

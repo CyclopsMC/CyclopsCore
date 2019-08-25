@@ -15,59 +15,76 @@ repositories {
 }
 
 dependencies {
-    deobfCompile("CraftTweaker2:CraftTweaker2-API:${config.crafttweakerapi_version}") { // http://blamejared.com/maven/CraftTweaker2/CraftTweaker2-API/maven-metadata.xml
-        exclude group: 'org.ow2.asm', module: 'asm-debug-all'
-    }
-    deobfCompile "mezz.jei:jei_${config.jei_version}:api" // https://dvs1.progwml6.com/jenkins/
+    minecraft "net.minecraftforge:forge:${config.minecraft_version}-${config.forge_version}"
+
+    //deobf("CraftTweaker2:CraftTweaker2-API:${config.crafttweakerapi_version}") { // http://blamejared.com/maven/CraftTweaker2/CraftTweaker2-API/maven-metadata.xml
+    //    exclude group: 'org.ow2.asm', module: 'asm-debug-all'
+    //}
+    compileOnly fg.deobf("mezz.jei:jei-${config.jei_version}:api") // https://dvs1.progwml6.com/jenkins/
 
     // Project lombok
-    provided "org.projectlombok:lombok:1.16.4"
+    compileOnly "org.projectlombok:lombok:1.16.4"
     testCompile "junit:junit:4.12"
     testCompile "org.mockito:mockito-core:1.+"
 }
 
-minecraft {
-    version = "${config.minecraft_version}-${config.forge_version}"
-    runDir = "run"
-    
-    replaceIn "Reference.java"
-    replace "@VERSION@", project.version
-    replace "@MC_VERSION@", project.config.minecraft_version
-    replace "@FORGE_VERSION@", project.config.forge_version
-    replace "@BUILD_NUMBER@", project.buildnumber
-    replace "@FINGERPRINT@", project.config.fingerprint
+// TODO: fix process resources (it breaks run configs)
+//processResources {
+//    from(sourceSets.main.resources.srcDirs) {
+//        expand '@VERSION@': project.version,
+//                '@MC_VERSION@' : project.config.minecraft_version,
+//                '@FORGE_VERSION@' : project.config.forge_version,
+//                '@BUILD_NUMBER@' : project.buildnumber,
+//                '@FINGERPRINT@' : project.config.fingerprint
+//    }
+//}
 
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not allways work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "${config.mcp_mappings_version}"
+minecraft {
+    mappings channel: "${config.mcp_mappings_channel}", version: "${config.mcp_mappings_version}"
+
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            // Recommended logging data for a userdev environment
+            //property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                cyclopscore {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                cyclopscore {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', 'cyclopscore', '--all', '--output', file('src/generated/resources/')
+            mods {
+                cyclopscore {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+            }
+        }
+    }
 }
 
 if (project.buildnumber.equals("RELEASE"))
     version = "${config.minecraft_version}-${config.mod_version}"
 else
     version = "${config.minecraft_version}-${config.mod_version}-${buildnumber}"
-
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-        
-    // copy everything else, that is not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
-
-    // Move access transformers to META-INF
-    rename '(.+_at.cfg)', 'META-INF/$1'
-}

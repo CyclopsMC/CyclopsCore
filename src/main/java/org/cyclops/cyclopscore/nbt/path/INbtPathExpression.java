@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
+import net.minecraft.nbt.ByteNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.nbt.path.navigate.INbtPathNavigation;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionExecutionContext;
@@ -19,7 +19,7 @@ public interface INbtPathExpression {
      * @param nbts A stream of NBT tags.
      * @return The matches.
      */
-    public default NbtPathExpressionMatches match(Stream<NBTBase> nbts) {
+    public default NbtPathExpressionMatches match(Stream<INBT> nbts) {
         return matchContexts(nbts.map(NbtPathExpressionExecutionContext::new));
     }
 
@@ -28,7 +28,7 @@ public interface INbtPathExpression {
      * @param nbt An NBT tag.
      * @return The matches.
      */
-    public default NbtPathExpressionMatches match(NBTBase nbt) {
+    public default NbtPathExpressionMatches match(INBT nbt) {
         return match(Stream.of(nbt));
     }
 
@@ -37,11 +37,11 @@ public interface INbtPathExpression {
      * @param nbts A stream of NBT tags.
      * @return True if there is at least one match.
      */
-    public default boolean test(Stream<NBTBase> nbts) {
+    public default boolean test(Stream<INBT> nbts) {
         return this.match(nbts.limit(1))
                 .getMatches()
                 .findAny()
-                .filter(tag -> tag.getId() != Constants.NBT.TAG_BYTE || ((NBTTagByte) tag).getByte() == (byte) 1) // Filter truthy values
+                .filter(tag -> tag.getId() != Constants.NBT.TAG_BYTE || ((ByteNBT) tag).getByte() == (byte) 1) // Filter truthy values
                 .isPresent();
     }
 
@@ -50,7 +50,7 @@ public interface INbtPathExpression {
      * @param nbt An NBT tag.
      * @return True if there is at least one match.
      */
-    public default boolean test(NBTBase nbt) {
+    public default boolean test(INBT nbt) {
         return test(Stream.of(nbt));
     }
 

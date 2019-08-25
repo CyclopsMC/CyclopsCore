@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Hand;
 import org.cyclops.cyclopscore.helper.InventoryHelpers;
 
 /**
@@ -12,12 +12,11 @@ import org.cyclops.cyclopscore.helper.InventoryHelpers;
  *
  */
 public class NBTSimpleInventoryItemHeld extends SimpleInventory {
-
-	public static final String NBT_TAG_ROOT = "NBTSimpleInventory";
 	
-	protected EntityPlayer player;
-	protected int itemIndex;
-	protected EnumHand hand;
+	protected final PlayerEntity player;
+	protected final int itemIndex;
+	protected final Hand hand;
+	protected final String tagName;
 
 	/**
 	 * Make a new instance.
@@ -25,9 +24,11 @@ public class NBTSimpleInventoryItemHeld extends SimpleInventory {
 	 * @param itemIndex The index of the item in use inside the player inventory.
 	 * @param size The amount of slots in the inventory.
 	 * @param stackLimit The stack limit for each slot.
+	 * @param tagName The NBT tag name to store this inventory in.
+	 *                This should be the same tag name that is used to call the NBT read/write methods.
 	 */
-	public NBTSimpleInventoryItemHeld(EntityPlayer player, int itemIndex, int size, int stackLimit) {
-		this(player, itemIndex, EnumHand.MAIN_HAND, size, stackLimit);
+	public NBTSimpleInventoryItemHeld(PlayerEntity player, int itemIndex, int size, int stackLimit, String tagName) {
+		this(player, itemIndex, Hand.MAIN_HAND, size, stackLimit, tagName);
 	}
 	
 	/**
@@ -35,36 +36,35 @@ public class NBTSimpleInventoryItemHeld extends SimpleInventory {
 	 * @param player The player holding the item.
 	 * @param itemIndex The index of the item in use inside the player inventory.
 	 * @param hand The hand the player is using.
-     * @param size The amount of slots in the inventory.
-     * @param stackLimit The stack limit for each slot.
-     */
-	public NBTSimpleInventoryItemHeld(EntityPlayer player, int itemIndex, EnumHand hand, int size, int stackLimit) {
-		super(size, NBT_TAG_ROOT, stackLimit);
+	 * @param size The amount of slots in the inventory.
+	 * @param stackLimit The stack limit for each slot.
+	 * @param tagName The NBT tag name to store this inventory in.
+	 *                This should be the same tag name that is used to call the NBT read/write methods.
+	 */
+	public NBTSimpleInventoryItemHeld(PlayerEntity player, int itemIndex, Hand hand, int size, int stackLimit, String tagName) {
+		super(size, stackLimit);
 		this.player = player;
 		this.itemIndex = itemIndex;
 		this.hand = hand;
-		InventoryHelpers.validateNBTStorage(this, InventoryHelpers.getItemFromIndex(player, itemIndex, hand), NBT_TAG_ROOT);
+		this.tagName = tagName;
+		InventoryHelpers.validateNBTStorage(this, InventoryHelpers.getItemFromIndex(player, itemIndex, hand), this.tagName);
 	}
 	
 	@Override
 	public void markDirty() {
 		ItemStack itemStack = InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
-		NBTTagCompound tag = itemStack.getTagCompound();
-		if(tag == null) {
-			tag = new NBTTagCompound();
-			itemStack.setTagCompound(tag);
-		}
-		writeToNBT(tag, NBT_TAG_ROOT);
-		InventoryHelpers.getItemFromIndex(player, itemIndex, hand).setTagCompound(tag);
+		CompoundNBT tag = itemStack.getOrCreateTag();
+		writeToNBT(tag, this.tagName);
+		InventoryHelpers.getItemFromIndex(player, itemIndex, hand).setTag(tag);
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound data, String tagName) {
+	public void readFromNBT(CompoundNBT data, String tagName) {
         InventoryHelpers.readFromNBT(this, data, tagName);
     }
 	
 	@Override
-	public void writeToNBT(NBTTagCompound data, String tagName) {
+	public void writeToNBT(CompoundNBT data, String tagName) {
         InventoryHelpers.writeToNBT(this, data, tagName);
     }
 

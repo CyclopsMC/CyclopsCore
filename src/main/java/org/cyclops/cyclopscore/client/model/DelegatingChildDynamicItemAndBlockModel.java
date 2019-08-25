@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 
 /**
@@ -20,12 +20,12 @@ public abstract class DelegatingChildDynamicItemAndBlockModel extends Delegating
         this.baseModel = baseModel;
     }
 
-    public DelegatingChildDynamicItemAndBlockModel(IBakedModel baseModel, IBlockState blockState, EnumFacing facing, long rand) {
+    public DelegatingChildDynamicItemAndBlockModel(IBakedModel baseModel, BlockState blockState, Direction facing, long rand) {
         super(blockState, facing, rand);
         this.baseModel = baseModel;
     }
 
-    public DelegatingChildDynamicItemAndBlockModel(IBakedModel baseModel, ItemStack itemStack, World world, EntityLivingBase entity) {
+    public DelegatingChildDynamicItemAndBlockModel(IBakedModel baseModel, ItemStack itemStack, World world, LivingEntity entity) {
         super(itemStack, world, entity);
         this.baseModel = baseModel;
     }

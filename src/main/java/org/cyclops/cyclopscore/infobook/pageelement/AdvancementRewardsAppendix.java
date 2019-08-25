@@ -1,21 +1,21 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
-import org.cyclops.cyclopscore.infobook.GuiInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
+import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.awt.*;
@@ -102,15 +102,15 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
     }
 
     protected void requestAdvancementInfo() {
-        if (Minecraft.getMinecraft().world.getTotalWorldTime() - lastAdvancementInfoRequest > ADVANCEMENT_INFO_REQUEST_TIMEOUT) {
+        if (Minecraft.getInstance().world.getGameTime() - lastAdvancementInfoRequest > ADVANCEMENT_INFO_REQUEST_TIMEOUT) {
             advancementRewards.getAdvancements().forEach(AdvancementHelpers::requestAdvancementUnlockInfo);
-            lastAdvancementInfoRequest = Minecraft.getMinecraft().world.getTotalWorldTime();
+            lastAdvancementInfoRequest = Minecraft.getInstance().world.getGameTime();
         }
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    protected void drawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
+    @OnlyIn(Dist.CLIENT)
+    protected void drawElement(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
         requestAdvancementInfo();
 
         int offsetX = 0;
@@ -124,7 +124,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         boolean allAchievementsValid = true;
         for (int i = 0; i < advancementRewards.getAdvancements().size(); i++) {
             ResourceLocation advancementId = advancementRewards.getAdvancements().get(i);
-            Advancement advancement = AdvancementHelpers.getAdvancement(advancementId);
+            Advancement advancement = AdvancementHelpers.getAdvancement(Dist.CLIENT, advancementId);
             if (advancement == null) {
                 allAchievementsValid = false;
             } else {
@@ -133,7 +133,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
                     offsetX = 0;
                 }
                 RecipeAppendix.renderItemForButton(gui, x + offsetX, y + offsetY, advancement.getDisplay().getIcon(), mx, my, true, null);
-                if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getMinecraft().player, advancementId)) {
+                if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getInstance().player, advancementId)) {
                     Images.OK.draw(gui, x + offsetX + 1, y + offsetY + 2);
                 } else {
                     allAchievementsValid = false;
@@ -143,7 +143,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
             }
         }
 
-        boolean taken = advancementRewards.isObtained(Minecraft.getMinecraft().player);
+        boolean taken = advancementRewards.isObtained(Minecraft.getInstance().player);
 
         // Draw rewards button with fancy hover effect
         offsetY += SLOT_SIZE + SLOT_PADDING * 2 + 6;
@@ -155,7 +155,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
             float g = hovering ? 1.0F : (((float) (gui.getTick() % 20)) / 20) * 0.4F + 0.6F;
             float r = hovering ? 0.2F : 0.7F;
             float b = hovering ? 0.2F : 0.7F;
-            GlStateManager.color(r, g, b);
+            GlStateManager.color3f(r, g, b);
             Images.ARROW_DOWN.draw(gui, x, y + offsetY - 11);
             Images.ARROW_DOWN.draw(gui, x + 60, y + offsetY - 11);
 
@@ -174,13 +174,13 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    protected void postDrawElement(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
+    @OnlyIn(Dist.CLIENT)
+    protected void postDrawElement(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
         renderToolTips(gui, mx, my);
     }
 
-    @SideOnly(Side.CLIENT)
-    protected void renderToolTips(GuiInfoBook gui, int mx, int my) {
+    @OnlyIn(Dist.CLIENT)
+    protected void renderToolTips(ScreenInfoBook gui, int mx, int my) {
         for(AdvancedButton button : renderButtonHolders.values()) {
             button.renderTooltip(mx, my);
         }

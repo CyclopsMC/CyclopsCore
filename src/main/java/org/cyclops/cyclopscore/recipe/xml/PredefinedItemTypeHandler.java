@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.init.RecipeHandler;
 public class PredefinedItemTypeHandler extends DefaultItemTypeHandler {
 
 	@Override
-	protected Ingredient makeIngredient(RecipeHandler recipeHandler, String key, int amount, int meta, boolean nbtSensitive) throws XmlRecipeLoader.XmlRecipeException {
+	protected Ingredient makeIngredient(RecipeHandler recipeHandler, String key, int amount, boolean nbtSensitive) throws XmlRecipeLoader.XmlRecipeException {
         ItemStack item = recipeHandler.getPredefinedItem(key);
         if(item == null) {
         	throw new XmlRecipeLoader.XmlRecipeException(String.format(

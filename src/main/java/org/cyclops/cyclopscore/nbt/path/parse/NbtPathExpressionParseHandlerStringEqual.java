@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.ByteNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
@@ -49,14 +49,14 @@ public class NbtPathExpressionParseHandlerStringEqual implements INbtPathExpress
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
             return new NbtPathExpressionMatches(executionContexts
                     .map(executionContext -> {
-                        NBTBase nbt = executionContext.getCurrentTag();
+                        INBT nbt = executionContext.getCurrentTag();
                         if (nbt.getId() == Constants.NBT.TAG_STRING) {
-                            NBTTagString tag = (NBTTagString) nbt;
+                            StringNBT tag = (StringNBT) nbt;
                             return new NbtPathExpressionExecutionContext(
-                                    new NBTTagByte(getTargetString().equals(tag.getString())
+                                    new ByteNBT(getTargetString().equals(tag.getString())
                                             ? (byte) 1 : (byte) 0), executionContext);
                         }
-                        return new NbtPathExpressionExecutionContext(new NBTTagByte((byte) 0), executionContext);
+                        return new NbtPathExpressionExecutionContext(new ByteNBT((byte) 0), executionContext);
                     })
             );
         }

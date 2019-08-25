@@ -1,20 +1,20 @@
 package org.cyclops.cyclopscore.helper;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.storage.loot.ItemLootEntry;
 import net.minecraft.world.storage.loot.LootEntry;
-import net.minecraft.world.storage.loot.LootEntryItem;
-import net.minecraft.world.storage.loot.LootEntryTable;
 import net.minecraft.world.storage.loot.LootPool;
 import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.LootTables;
 import net.minecraft.world.storage.loot.RandomValueRange;
-import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.TableLootEntry;
+import net.minecraft.world.storage.loot.conditions.ILootCondition;
+import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.obfuscation.ObfuscationHelpers;
 
@@ -30,101 +30,55 @@ public class LootHelpers {
 
     private static final LootHelpers INSTANCE = new LootHelpers();
     private static final Multimap<ResourceLocation, LootPool> INJECT_LOOTPOOLS = MultimapBuilder.ListMultimapBuilder.hashKeys().arrayListValues().build();
-    private static final Multimap<Pair<ResourceLocation, String>, LootEntryItem> INJECT_LOOTENTRIES = MultimapBuilder.ListMultimapBuilder.hashKeys().arrayListValues().build();
+    private static final Multimap<Pair<ResourceLocation, String>, ItemLootEntry> INJECT_LOOTENTRIES = MultimapBuilder.ListMultimapBuilder.hashKeys().arrayListValues().build();
     private static final Multimap<ResourceLocation, ResourceLocation> INJECT_LOOTTABLES = MultimapBuilder.ListMultimapBuilder.hashKeys().arrayListValues().build();
-
-    public static List<ResourceLocation> VANILLA_LOOT_CHEST_TABLES = Lists.newArrayList(
-            LootTableList.CHESTS_ABANDONED_MINESHAFT,
-            LootTableList.CHESTS_DESERT_PYRAMID,
-            LootTableList.CHESTS_END_CITY_TREASURE,
-            LootTableList.CHESTS_IGLOO_CHEST,
-            LootTableList.CHESTS_JUNGLE_TEMPLE,
-            LootTableList.CHESTS_NETHER_BRIDGE,
-            LootTableList.CHESTS_SIMPLE_DUNGEON,
-            LootTableList.CHESTS_SPAWN_BONUS_CHEST,
-            LootTableList.CHESTS_STRONGHOLD_CORRIDOR,
-            LootTableList.CHESTS_STRONGHOLD_CROSSING,
-            LootTableList.CHESTS_STRONGHOLD_LIBRARY,
-            LootTableList.CHESTS_VILLAGE_BLACKSMITH
-    );
 
     private LootHelpers() {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    @SubscribeEvent
-    public void onLootTableLoad(LootTableLoadEvent event) {
-        // Inject pools into tables
-        for (Map.Entry<ResourceLocation, LootPool> poolEntry : INJECT_LOOTPOOLS.entries()) {
-            ResourceLocation resourceLocation = poolEntry.getKey();
-            LootPool pool = poolEntry.getValue();
-            if (event.getName().equals(resourceLocation)) {
-                event.getTable().addPool(pool);
-            }
-        }
-
-        // Inject entries into pools
-        for (Map.Entry<Pair<ResourceLocation, String>, LootEntryItem> entryItemEntry : INJECT_LOOTENTRIES.entries()) {
-            ResourceLocation resourceLocation = entryItemEntry.getKey().getKey();
-            String poolName = entryItemEntry.getKey().getValue();
-            LootEntryItem entryItem = entryItemEntry.getValue();
-            if (event.getName().equals(resourceLocation)) {
-                LootTable lootTable = event.getTable();
-                if (poolName == null) {
-                    List<LootPool> pools = ObfuscationHelpers.getLootPools(lootTable);
-                    for (LootPool pool : pools) {
-                        if (!pool.isFrozen()) {
-                            pool.addEntry(entryItem);
-                        }
-                    }
-                } else {
-                    LootPool lootPool = lootTable.getPool(poolName);
-                    if (lootPool == null) {
-                        throw new RuntimeException(String.format("Could not find loot pool %s in loot table %s.", poolName, resourceLocation));
-                    }
-                    if (!lootPool.isFrozen()) {
-                        lootPool.addEntry(entryItem);
-                    }
-                }
-            }
-        }
-
-        // Inject loot tables from resource location
-        for (ResourceLocation injectTable : INJECT_LOOTTABLES.get(event.getName())) {
-            injectLootTableDirect(event.getTable(), injectTable);
-        }
-    }
-
-    /**
-     * Add the given entries to all vanilla loot chests.
-     * @param lootEntryItems The new entries.
-     */
-    public static void addVanillaLootChestLootEntry(LootEntryItem... lootEntryItems) {
-        for (ResourceLocation lootTable : VANILLA_LOOT_CHEST_TABLES) {
-            addLootEntry(lootTable, null, lootEntryItems);
-        }
-    }
-
-    /**
-     * Add the given entries to all vanilla loot chests.
-     * @param poolName The name, or null for all pools.
-     * @param lootEntryItems The new entries.
-     */
-    public static void addVanillaLootChestLootEntry(@Nullable String poolName, LootEntryItem... lootEntryItems) {
-        for (ResourceLocation lootTable : VANILLA_LOOT_CHEST_TABLES) {
-            addLootEntry(lootTable, poolName, lootEntryItems);
-        }
-    }
-
-    /**
-     * Add the given loot pool to all vanilla loot chests.
-     * @param lootPool The new loot pool.
-     */
-    public static void addVanillaLootChestLootPool(LootPool lootPool) {
-        for (ResourceLocation lootTable : VANILLA_LOOT_CHEST_TABLES) {
-            addLootPool(lootTable, lootPool);
-        }
-    }
+    // TODO: enable when ATs are fixed
+//    @SubscribeEvent
+//    public void onLootTableLoad(LootTableLoadEvent event) {
+//        // Inject pools into tables
+//        for (Map.Entry<ResourceLocation, LootPool> poolEntry : INJECT_LOOTPOOLS.entries()) {
+//            ResourceLocation resourceLocation = poolEntry.getKey();
+//            LootPool pool = poolEntry.getValue();
+//            if (event.getName().equals(resourceLocation)) {
+//                event.getTable().addPool(pool);
+//            }
+//        }
+//
+//        // Inject entries into pools
+//        for (Map.Entry<Pair<ResourceLocation, String>, ItemLootEntry> entryItemEntry : INJECT_LOOTENTRIES.entries()) {
+//            ResourceLocation resourceLocation = entryItemEntry.getKey().getKey();
+//            String poolName = entryItemEntry.getKey().getValue();
+//            ItemLootEntry entryItem = entryItemEntry.getValue();
+//            if (event.getName().equals(resourceLocation)) {
+//                LootTable lootTable = event.getTable();
+//                if (poolName == null) {
+//                    for (LootPool pool : lootTable.pools) {
+//                        if (!pool.isFrozen()) {
+//                            pool.lootEntries.add(entryItem);
+//                        }
+//                    }
+//                } else {
+//                    LootPool lootPool = lootTable.getPool(poolName);
+//                    if (lootPool == null) {
+//                        throw new RuntimeException(String.format("Could not find loot pool %s in loot table %s.", poolName, resourceLocation));
+//                    }
+//                    if (!lootPool.isFrozen()) {
+//                        lootPool.lootEntries.add(entryItem);
+//                    }
+//                }
+//            }
+//        }
+//
+//        // Inject loot tables from resource location
+//        for (ResourceLocation injectTable : INJECT_LOOTTABLES.get(event.getName())) {
+//            injectLootTableDirect(event.getTable(), injectTable);
+//        }
+//    }
 
     /**
      * Add entries to the given loot table.
@@ -132,8 +86,8 @@ public class LootHelpers {
      * @param poolName The name, or null for all pools.
      * @param lootEntryItems The new entries.
      */
-    public static void addLootEntry(ResourceLocation lootTable, @Nullable String poolName, LootEntryItem... lootEntryItems) {
-        for (LootEntryItem lootEntryItem : lootEntryItems) {
+    public static void addLootEntry(ResourceLocation lootTable, @Nullable String poolName, ItemLootEntry... lootEntryItems) {
+        for (ItemLootEntry lootEntryItem : lootEntryItems) {
             INJECT_LOOTENTRIES.put(Pair.of(lootTable, poolName), lootEntryItem);
         }
     }
@@ -154,16 +108,22 @@ public class LootHelpers {
      * @param targets The targets to inject to.
      */
     public static void injectLootTable(ResourceLocation source, ResourceLocation... targets) {
-        LootTableList.register(source);
+        LootTables.register(source);
         for (ResourceLocation target : targets) {
             INJECT_LOOTTABLES.put(target, source);
         }
     }
 
-    public static void injectLootTableDirect(LootTable target, ResourceLocation source) {
-        target.addPool(new LootPool(new LootEntry[]{
-                new LootEntryTable(source, 1, 0, new LootCondition[0], source.toString())},
-                new LootCondition[0], new RandomValueRange(1), new RandomValueRange(0), source.toString()));
-    }
+    // TODO: enable when ATs are fixed
+//    public static void injectLootTableDirect(LootTable target, ResourceLocation source) {
+//        target.addPool(new LootPool(new LootEntry[]{
+//                new TableLootEntry(source, 1, 0, new ILootCondition[0], new ILootFunction[0])},
+//                new ILootCondition[0],
+//                new ILootFunction[0],
+//                new RandomValueRange(1),
+//                new RandomValueRange(0),
+//                source.toString()
+//        ));
+//    }
 
 }

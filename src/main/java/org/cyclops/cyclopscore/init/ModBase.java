@@ -2,25 +2,31 @@ package org.cyclops.cyclopscore.init;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import lombok.Data;
-import net.minecraft.command.ICommand;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.event.*;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.item.ItemGroup;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.client.key.KeyRegistry;
-import org.cyclops.cyclopscore.command.CommandMod;
+import org.cyclops.cyclopscore.command.CommandConfig;
+import org.cyclops.cyclopscore.command.CommandVersion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.modcompat.IMCHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
@@ -28,12 +34,11 @@ import org.cyclops.cyclopscore.modcompat.capabilities.CapabilityConstructorRegis
 import org.cyclops.cyclopscore.network.PacketHandler;
 import org.cyclops.cyclopscore.persist.world.WorldStorage;
 import org.cyclops.cyclopscore.proxy.ClientProxyComponent;
+import org.cyclops.cyclopscore.proxy.IClientProxy;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Base class for mods which adds a few convenience methods.
@@ -43,23 +48,20 @@ import java.util.Set;
 @Data
 public abstract class ModBase {
 
-    public static final EnumReferenceKey<String> REFKEY_MOD_VERSION = EnumReferenceKey.create("mod_version", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_GUI = EnumReferenceKey.create("texture_path_gui", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_MODELS = EnumReferenceKey.create("texture_path_models", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_SKINS = EnumReferenceKey.create("texture_path_skins", String.class);
+    public static final EnumReferenceKey<String> REFKEY_MOD_VERSION = EnumReferenceKey.create("mod_version", String.class);
     public static final EnumReferenceKey<Boolean> REFKEY_RETROGEN = EnumReferenceKey.create("retrogen", Boolean.class);
-    public static final EnumReferenceKey<Boolean> REFKEY_DEBUGCONFIG = EnumReferenceKey.create("debug_config", Boolean.class);
     public static final EnumReferenceKey<Boolean> REFKEY_CRASH_ON_INVALID_RECIPE = EnumReferenceKey.create("crash_on_invalid_recipe", Boolean.class);
     public static final EnumReferenceKey<Boolean> REFKEY_CRASH_ON_MODCOMPAT_CRASH = EnumReferenceKey.create("crash_on_modcompat_crash", Boolean.class);
     public static final EnumReferenceKey<Boolean> REFKEY_INFOBOOK_REWARDS = EnumReferenceKey.create("rewards", Boolean.class);
 
     private final String modId, modName;
     private final LoggerHelper loggerHelper;
-    private final Set<IInitListener> initListeners;
     private final ConfigHandler configHandler;
     private final Map<EnumReferenceKey<?>, Object> genericReference = Maps.newHashMap();
     private final List<WorldStorage> worldStorages = Lists.newLinkedList();
-    private final GuiHandler guiHandler;
     private final RegistryManager registryManager;
     private final RecipeHandler recipeHandler;
     private final IKeyRegistry keyRegistry;
@@ -67,18 +69,16 @@ public abstract class ModBase {
     private final ModCompatLoader modCompatLoader;
     private final CapabilityConstructorRegistry capabilityConstructorRegistry;
     private final IMCHandler imcHandler;
-    private final Debug debug;
 
-    private CreativeTabs defaultCreativeTab = null;
-    private File configFolder = null;
+    private ICommonProxy proxy;
+
+    private ItemGroup defaultCreativeTab = null;
 
     public ModBase(String modId, String modName) {
         this.modId = modId;
         this.modName = modName;
         this.loggerHelper = constructLoggerHelper();
-        this.initListeners = Sets.newHashSet();
         this.configHandler = constructConfigHandler();
-        this.guiHandler = constructGuiHandler();
         this.registryManager = constructRegistryManager();
         this.recipeHandler = constructRecipeHandler();
         this.keyRegistry = new KeyRegistry();
@@ -86,10 +86,25 @@ public abstract class ModBase {
         this.modCompatLoader = constructModCompatLoader();
         this.capabilityConstructorRegistry = constructCapabilityConstructorRegistry();
         this.imcHandler = constructIMCHandler();
-        this.debug = new Debug(this);
+
+        // Register listeners
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        MinecraftForge.EVENT_BUS.register(this);
+
+        // Register proxies
+        DistExecutor.runForDist(
+                () -> () -> this.proxy = this.constructClientProxy(),
+                () -> () -> this.proxy = this.constructCommonProxy()
+        );
 
         populateDefaultGenericReferences();
-        addInitListeners(getModCompatLoader());
+
+        // Initialize config handler
+        this.onConfigsRegister(getConfigHandler());
+        getConfigHandler().initialize(Lists.newArrayList(
+                getModCompatLoader()
+        ));
+
         loadModCompats(getModCompatLoader());
     }
 
@@ -99,10 +114,6 @@ public abstract class ModBase {
 
     protected ConfigHandler constructConfigHandler() {
         return new ConfigHandler(this);
-    }
-
-    protected GuiHandler constructGuiHandler() {
-        return new GuiHandler(this);
     }
 
     protected RegistryManager constructRegistryManager() {
@@ -127,14 +138,19 @@ public abstract class ModBase {
         return new IMCHandler(this);
     }
 
-    protected ICommand constructBaseCommand() {
-        return new CommandMod(this, Maps.<String, ICommand>newHashMap());
+    protected LiteralArgumentBuilder<CommandSource> constructBaseCommand() {
+        LiteralArgumentBuilder<CommandSource> root = Commands.literal(this.getModId());
+
+        root.then(CommandConfig.make(this));
+        root.then(CommandVersion.make(this));
+
+        return root;
     }
 
     /**
      * @return The icon provider that was constructed in {@link ClientProxyComponent}.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public IconProvider getIconProvider() {
         return ((ClientProxyComponent) getProxy()).getIconProvider();
     }
@@ -154,7 +170,6 @@ public abstract class ModBase {
         putGenericReference(REFKEY_TEXTURE_PATH_MODELS, "textures/models/");
         putGenericReference(REFKEY_TEXTURE_PATH_SKINS, "textures/skins/");
         putGenericReference(REFKEY_RETROGEN, false);
-        putGenericReference(REFKEY_DEBUGCONFIG, false);
         putGenericReference(REFKEY_CRASH_ON_INVALID_RECIPE, false);
         putGenericReference(REFKEY_CRASH_ON_MODCOMPAT_CRASH, false);
         putGenericReference(REFKEY_INFOBOOK_REWARDS, true);
@@ -199,161 +214,67 @@ public abstract class ModBase {
     }
 
     /**
-     * Register a new init listener.
-     * @param initListener The init listener.
+     * Called on the Forge setup lifecycle event.
+     * @param event The setup event.
      */
-    public void addInitListeners(IInitListener initListener) {
-        synchronized(initListeners) {
-            initListeners.add(initListener);
-        }
-    }
+    protected void setup(FMLCommonSetupEvent event) {
+        log(Level.TRACE, "setup()");
 
-    /**
-     * Get the init-listeners on a thread-safe way;
-     * @return A copy of the init listeners list.
-     */
-    private Set<IInitListener> getSafeInitListeners() {
-        Set<IInitListener> clonedInitListeners;
-        synchronized(initListeners) {
-            clonedInitListeners = Sets.newHashSet(initListeners);
-        }
-        return clonedInitListeners;
-    }
-
-    /**
-     * Call the init-listeners for the given step.
-     * @param step The step of initialization.
-     */
-    protected void callInitStepListeners(IInitListener.Step step) {
-        for(IInitListener initListener : getSafeInitListeners()) {
-            initListener.onInit(step);
-        }
-    }
-
-    /**
-     * Override this, call super and annotate with {@link net.minecraftforge.fml.common.Mod.EventHandler}.
-     * @param event The pre-init event.
-     */
-    public void preInit(FMLPreInitializationEvent event) {
-        log(Level.TRACE, "preInit()");
-
-        if(getConfigFolder() == null) {
-            // Determine config folder.
-            String rootFolderName = event.getModConfigurationDirectory() + "/" + getModId();
-            File configFolder = new File(rootFolderName);
-            setConfigFolder(configFolder);
-        }
-
-        // Register configs and start with loading the general configs
-        onGeneralConfigsRegister(getConfigHandler());
-        getConfigHandler().handle(event);
-        onMainConfigsRegister(getConfigHandler());
-
-        // Call init listeners
-        callInitStepListeners(IInitListener.Step.PREINIT);
-
-        // Run debugging tools
-        if(getReferenceValue(REFKEY_DEBUGCONFIG)) {
-            getDebug().checkPreConfigurables(getConfigHandler());
-        }
-
-        // Load the rest of the configs and run the ConfigHandler to make/read the config and fill in the game registry
-        getConfigHandler().handle(event);
-
-        // Run debugging tools
-        if(getReferenceValue(REFKEY_DEBUGCONFIG)) {
-            getDebug().checkPostConfigurables();
-        }
-
-        // Register events
+        // Register proxy things
         ICommonProxy proxy = getProxy();
         if(proxy != null) {
             proxy.registerEventHooks();
-        }
-    }
-
-    /**
-     * Override this, call super and annotate with {@link net.minecraftforge.fml.common.Mod.EventHandler}.
-     * @param event The init event.
-     */
-    public void init(FMLInitializationEvent event) {
-        log(Level.TRACE, "init()");
-
-        // Gui Handlers
-        NetworkRegistry.INSTANCE.registerGuiHandler(getModId(), getGuiHandler());
-
-        // Initialize the creative tab
-        getDefaultCreativeTab();
-
-        // Polish the enabled configs.
-        getConfigHandler().polishConfigs();
-
-        // Call init listeners
-        callInitStepListeners(IInitListener.Step.INIT);
-
-        // Register proxy related things.
-        ICommonProxy proxy = getProxy();
-        if(proxy != null) {
             proxy.registerRenderers();
             proxy.registerKeyBindings(getKeyRegistry());
             getPacketHandler().init();
             proxy.registerPacketHandlers(getPacketHandler());
             proxy.registerTickHandlers();
         }
+
+        // Gui Handlers
+        //NetworkRegistry.registerGuiHandler(getModId(), getGuiHandler()); // TODO: guis are now handled by ContainerType registry
+
+        // Initialize the creative tab
+        getDefaultCreativeTab();
     }
 
     /**
-     * Override this, call super and annotate with {@link net.minecraftforge.fml.common.Mod.EventHandler}.
-     * @param event The post-init event.
-     */
-    public void postInit(FMLPostInitializationEvent event) {
-        log(Level.TRACE, "postInit()");
-
-        // Call init listeners
-        callInitStepListeners(IInitListener.Step.POSTINIT);
-    }
-
-    /**
-     * Override this, call super and annotate with {@link net.minecraftforge.fml.common.Mod.EventHandler}.
      * Register the things that are related to when the server is starting.
-     * @param event The Forge event required for this.
+     * @param event The Forge server starting event.
      */
-    @Mod.EventHandler
-    public void onServerStarting(FMLServerStartingEvent event) {
-        event.registerServerCommand(constructBaseCommand());
+    @SubscribeEvent
+    protected void onServerStarting(FMLServerStartingEvent event) {
+        event.getCommandDispatcher().register(constructBaseCommand());
     }
 
     /**
-     * Override this, call super and annotate with {@link net.minecraftforge.fml.common.Mod.EventHandler}.
      * Register the things that are related to when the server is about to start.
-     * @param event The Forge event required for this.
+     * @param event The Forge server about to start event.
      */
-    @Mod.EventHandler
-    public void onServerAboutToStart(FMLServerAboutToStartEvent event) {
+    @SubscribeEvent
+    protected void onServerAboutToStart(FMLServerAboutToStartEvent event) {
         for(WorldStorage worldStorage : worldStorages) {
             worldStorage.onAboutToStartEvent(event);
         }
     }
 
     /**
-     * Override this, call super and annotate with {@link net.minecraftforge.fml.common.Mod.EventHandler}.
      * Register the things that are related to server starting.
-     * @param event The Forge event required for this.
+     * @param event The Forge server started event.
      */
-    @Mod.EventHandler
-    public void onServerStarted(FMLServerStartedEvent event) {
+    @SubscribeEvent
+    protected void onServerStarted(FMLServerStartedEvent event) {
         for(WorldStorage worldStorage : worldStorages) {
             worldStorage.onStartedEvent(event);
         }
     }
 
     /**
-     * Override this, call super and annotate with {@link net.minecraftforge.fml.common.Mod.EventHandler}.
      * Register the things that are related to server stopping, like persistent storage.
-     * @param event The Forge event required for this.
+     * @param event The Forge server stopping event.
      */
-    @Mod.EventHandler
-    public void onServerStopping(FMLServerStoppingEvent event) {
+    @SubscribeEvent
+    protected void onServerStopping(FMLServerStoppingEvent event) {
         for(WorldStorage worldStorage : worldStorages) {
             worldStorage.onStoppingEvent(event);
         }
@@ -362,49 +283,37 @@ public abstract class ModBase {
     /**
      * Register a new world storage type.
      * Make sure to call this at least before the event
-     * {@link net.minecraftforge.fml.common.event.FMLServerStartedEvent} is called.
+     * {@link net.minecraftforge.fml.event.server.FMLServerStartedEvent} is called.
      * @param worldStorage The world storage to register.
      */
     public void registerWorldStorage(WorldStorage worldStorage) {
         worldStorages.add(worldStorage);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    protected abstract IClientProxy constructClientProxy();
+
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    protected abstract ICommonProxy constructCommonProxy();
+
     /**
      * Construct a creative tab, will only be called once during the init event.
      * @return The default creative tab for items and blocks.
      */
-    public abstract CreativeTabs constructDefaultCreativeTab();
+    protected abstract ItemGroup constructDefaultCreativeTab();
 
     /**
-     * Register a config file.
-     * The registration order is always kept.
-     * @param extendedConfig The config to register.
-     */
-    public final void registerConfig(ExtendedConfig<?> extendedConfig) {
-        getConfigHandler().add(extendedConfig);
-    }
-
-    /**
-     * Called when the general configs should be registered.
-     * These are configs which should be available before other configs can be registered.
+     * Called when the configs should be registered.
      * @param configHandler The config handler to register to.
      */
-    public void onGeneralConfigsRegister(ConfigHandler configHandler) {
-
-    }
-
-    /**
-     * Called when the main configs should be registered.
-     * @param configHandler The config handler to register to.
-     */
-    public void onMainConfigsRegister(ConfigHandler configHandler) {
+    protected void onConfigsRegister(ConfigHandler configHandler) {
 
     }
 
     /**
      * @return The default creative tab for items and blocks.
      */
-    public final CreativeTabs getDefaultCreativeTab() {
+    public final ItemGroup getDefaultCreativeTab() {
         if(defaultCreativeTab == null) {
             defaultCreativeTab = constructDefaultCreativeTab();
         }
@@ -412,9 +321,11 @@ public abstract class ModBase {
     }
 
     /**
-     * @return The proxy for this mod, can be null if not required.
+     * @return The proxy for this mod.
      */
-    public abstract ICommonProxy getProxy();
+    public ICommonProxy getProxy() {
+        return this.proxy;
+    }
 
     @Override
     public String toString() {
@@ -437,7 +348,7 @@ public abstract class ModBase {
      * @return The mod instance or null.
      */
     public static ModBase get(String modId) {
-        ModContainer modContainer = Loader.instance().getIndexedModList().get(modId);
+        ModContainer modContainer = ModList.get().getModContainerById(modId).orElse(null);
         Object mod = modContainer.getMod();
         if (mod instanceof ModBase) {
             return (ModBase) mod;

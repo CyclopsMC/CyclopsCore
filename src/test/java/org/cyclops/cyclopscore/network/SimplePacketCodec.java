@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.network;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
 
 /**
@@ -15,12 +15,12 @@ public class SimplePacketCodec extends PacketCodec {
     }
 
     @Override
-    public void actionClient(World world, EntityPlayer player) {
+    public void actionClient(World world, PlayerEntity player) {
 
     }
 
     @Override
-    public void actionServer(World world, EntityPlayerMP player) {
+    public void actionServer(World world, ServerPlayerEntity player) {
 
     }
 }

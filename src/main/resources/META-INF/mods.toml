@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[28,)"
+issueTrackerURL="https://github.com/CyclopsMC/CyclopsCore/issues"
+[[mods]]
+modId="cyclopscore"
+version="${file.jarVersion}"
+displayName="Cyclops Core"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/cyclops-core"
+logoFile="logo.png"
+authors="rubensworks (aka kroeser)"
+description='''
+Coremod for Integrated Dynamics, EvilCraft and others.
+'''
+[[dependencies.cyclopscore]]
+    modId="forge"
+    mandatory=true
+    versionRange="[28,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.cyclopscore]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.14.4]"
+    ordering="NONE"
+    side="BOTH"

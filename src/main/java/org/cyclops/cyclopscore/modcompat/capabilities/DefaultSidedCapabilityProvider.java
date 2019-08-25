@@ -1,8 +1,9 @@
 package org.cyclops.cyclopscore.modcompat.capabilities;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
 
@@ -21,30 +22,26 @@ public class DefaultSidedCapabilityProvider<T> implements ICapabilityProvider {
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capabilities.containsKey(facing) && capabilities.get(facing).getKey() == capability;
-    }
-
-    @Override
-    public <T2> T2 getCapability(Capability<T2> capability, EnumFacing facing) {
-        if(hasCapability(capability, facing)) {
-            return (T2) capabilities.get(facing).getValue();
+    public <T2> LazyOptional<T2> getCapability(Capability<T2> capability, Direction facing) {
+        Pair<Capability<T>, T> value = capabilities.get(facing);
+        if(value != null && value.getKey() == capability) {
+            return LazyOptional.of(() -> value.getValue()).cast();
         }
-        return null;
+        return LazyOptional.empty();
     }
 
     public static <T, H extends ISidedCapabilityConstructor<T>> EnumFacingMap<Pair<Capability<T>, T>> forAllSides(Capability<T> capabilityType, H constructor) {
         return EnumFacingMap.forAllValues(
-                Pair.of(capabilityType, constructor.createForSide(EnumFacing.DOWN)),
-                Pair.of(capabilityType, constructor.createForSide(EnumFacing.UP)),
-                Pair.of(capabilityType, constructor.createForSide(EnumFacing.NORTH)),
-                Pair.of(capabilityType, constructor.createForSide(EnumFacing.SOUTH)),
-                Pair.of(capabilityType, constructor.createForSide(EnumFacing.WEST)),
-                Pair.of(capabilityType, constructor.createForSide(EnumFacing.EAST))
+                Pair.of(capabilityType, constructor.createForSide(Direction.DOWN)),
+                Pair.of(capabilityType, constructor.createForSide(Direction.UP)),
+                Pair.of(capabilityType, constructor.createForSide(Direction.NORTH)),
+                Pair.of(capabilityType, constructor.createForSide(Direction.SOUTH)),
+                Pair.of(capabilityType, constructor.createForSide(Direction.WEST)),
+                Pair.of(capabilityType, constructor.createForSide(Direction.EAST))
         );
     }
 
     public static interface ISidedCapabilityConstructor<T> {
-        public T createForSide(EnumFacing side);
+        public T createForSide(Direction side);
     }
 }

@@ -9,7 +9,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
  *
  */
 public class UndisableableConfigException extends CyclopsCoreConfigException {
-    
+
     /**
      * The serial version ID.
      */
@@ -19,7 +19,7 @@ public class UndisableableConfigException extends CyclopsCoreConfigException {
      * Make a new instance of the exception.
      * @param eConfig The config that caused the exception and was thus disabled.
      */
-    public UndisableableConfigException(ExtendedConfig<?> eConfig) {
-        super("The configuration for "+eConfig.getNamedId()+" was disabled in the config file, please enable it back since this mod can't function without it.");
+    public UndisableableConfigException(ExtendedConfig<?, ?> eConfig) {
+        super("The configuration for " + eConfig.getNamedId() + " was disabled in the config file, please enable it back since this mod can't function without it.");
     }
 }

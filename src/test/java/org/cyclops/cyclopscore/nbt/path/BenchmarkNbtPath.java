@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path;
 
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 
 public class BenchmarkNbtPath {
 
@@ -22,20 +22,20 @@ public class BenchmarkNbtPath {
     }
 
     private static void runExecute(int replication) throws NbtParseException {
-        NBTTagCompound tag1 = new NBTTagCompound();
-        NBTTagCompound tag2 = new NBTTagCompound();
-        NBTTagList tag3 = new NBTTagList();
-        NBTTagCompound tag4 = new NBTTagCompound();
-        NBTTagCompound tag5 = new NBTTagCompound();
-        NBTTagCompound tag6 = new NBTTagCompound();
-        tag1.setTag("a", tag2);
-        tag2.setTag("b", tag3);
-        tag3.appendTag(tag4);
-        tag3.appendTag(tag5);
-        tag3.appendTag(tag6);
-        tag4.setString("notX", "X");
-        tag5.setString("x", "X");
-        tag6.setString("x", "notX");
+        CompoundNBT tag1 = new CompoundNBT();
+        CompoundNBT tag2 = new CompoundNBT();
+        ListNBT tag3 = new ListNBT();
+        CompoundNBT tag4 = new CompoundNBT();
+        CompoundNBT tag5 = new CompoundNBT();
+        CompoundNBT tag6 = new CompoundNBT();
+        tag1.put("a", tag2);
+        tag2.put("b", tag3);
+        tag3.add(tag4);
+        tag3.add(tag5);
+        tag3.add(tag6);
+        tag4.putString("notX", "X");
+        tag5.putString("x", "X");
+        tag6.putString("x", "notX");
 
         INbtPathExpression expression = NbtPath.parse("$.a.b[?(@.x == \"X\")][0].x");
         benchmark("execute", () -> expression.match(tag1).getMatches().findFirst().get(), replication);

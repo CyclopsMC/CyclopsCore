@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 /**
  * Contains helper methods for matrix transformations.
@@ -38,7 +38,7 @@ public final class MatrixHelpers {
      * @param targetArray The box bounds to transform.
      * @param direction The orientation to transform to.
      */
-    public static void transform(float[][] targetArray, EnumFacing direction) {
+    public static void transform(float[][] targetArray, Direction direction) {
         if((direction.ordinal() & 0x1) == 1) {
             mirrorY(targetArray);
         }

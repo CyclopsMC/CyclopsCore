@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.image;
 
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.texture.TextureManager;
 
 /**
@@ -15,7 +15,7 @@ public interface IImage {
      * @param x The x position.
      * @param y The y position.
      */
-    public void draw(Gui gui, int x, int y);
+    public void draw(AbstractGui gui, int x, int y);
 
     /**
      * Draw the image in the world.

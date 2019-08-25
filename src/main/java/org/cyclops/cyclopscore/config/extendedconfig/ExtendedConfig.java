@@ -2,65 +2,70 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.config.ConfigProperty;
-import org.cyclops.cyclopscore.config.ConfigPropertyCallback;
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
+import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.CyclopsCoreConfigException;
-import org.cyclops.cyclopscore.config.IChangedCallback;
-import org.cyclops.cyclopscore.config.configurable.IConfigurable;
-import org.cyclops.cyclopscore.init.IInitListener;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
+import java.util.function.Function;
 
 /**
- * A config that refers to a {@link IConfigurable}. Every unique {@link IConfigurable} must have one
- * unique extension of this class. This contains several configurable settings and properties
+ * A config that refers to a configurable.
+ * Every unique configurable must have one unique extension of this class.
+ *
+ * This extension can contain several configurable settings and properties
  * that can also be set in the config file.
+ *
  * @author rubensworks
  * @param <C> Class of the extension of ExtendedConfig
- *
+ * @param <I> The instance corresponding to this config.
  */
-public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
-	Comparable<ExtendedConfig<C>>, IInitListener {
+public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
+        implements Comparable<ExtendedConfig<C, I>> {
 
-    @Getter private final ModBase mod;
-    private boolean enabled;
-    @Getter private final String namedId;
-    @Getter private final String comment;
-    @Getter private final Class<?> element;
+    @Getter
+    private final ModBase mod;
+    private final boolean enabledDefault;
+    private ForgeConfigSpec.BooleanValue propertyEnabled;
+    @Getter
+    private final String namedId;
+    @Getter
+    @Nullable
+    private final String comment;
+    @Getter
+    private final Function<C, ? extends I> elementConstructor;
 
-    private IConfigurable<C> overriddenSubInstance;
+    private I instance;
     
     /**
-     * A list of {@link ConfigProperty} that can contain additional settings for this configurable.
+     * A list of {@link ConfigurablePropertyData} that can contain additional settings for this configurable.
      */
-    public List<ConfigProperty> configProperties = Lists.newLinkedList();
-    
+    public List<ConfigurablePropertyData<?>> configProperties = Lists.newLinkedList();
+
     /**
      * Create a new config
-     * @param mod     The mod instance.
-     * @param enabled If this should is enabled by default. If this is false, this can still
-     * be enabled through the config file.
-     * @param namedId a unique name id
-     * @param comment a comment that can be added to the config file line
-     * @param element the class for the element this config is for
+     * @param mod The mod instance.
+     * @param enabledDefault If this should is enabled by default. If this is false, this can still
+     *                       be enabled through the config file.
+     * @param namedId A unique name id
+     * @param comment A comment that can be added to the config file line
+     * @param elementConstructor The element constructor.
      */
-    public ExtendedConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<?> element) {
+    public ExtendedConfig(ModBase mod, boolean enabledDefault, String namedId, @Nullable String comment,
+                          Function<C, ? extends I> elementConstructor) {
         this.mod = mod;
-    	this.enabled = enabled;
+    	this.enabledDefault = enabledDefault;
     	this.namedId = namedId.toLowerCase(Locale.ROOT);
     	this.comment = comment;
-    	this.element = element;
+    	this.elementConstructor = elementConstructor;
         try {
             generateConfigProperties();
         } catch (IllegalArgumentException | IllegalAccessException e1) {
@@ -79,29 +84,20 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
         for(Field field : this.getClass().getDeclaredFields()) {
             if(field.isAnnotationPresent(ConfigurableProperty.class)) {
             	ConfigurableProperty annotation = field.getAnnotation(ConfigurableProperty.class);
-            	IChangedCallback changedCallback = null;
-            	if(annotation.changedCallback() != IChangedCallback.class) {
-            		try {
-						changedCallback = annotation.changedCallback().newInstance();
-					} catch (InstantiationException e) {
-						e.printStackTrace();
-					}
-            	}
-            	String category = annotation.categoryRaw().equals("") ? annotation.category().toString() : annotation.categoryRaw();
-                ConfigProperty configProperty = new ConfigProperty(
+                ConfigurablePropertyData<?> configProperty = new ConfigurablePropertyData<>(
                         getMod(),
-                		category,
+                        annotation.category(),
                         getConfigPropertyPrefix() + "." + field.getName(),
                         field.get(null),
                         annotation.comment(),
-                        new ConfigPropertyCallback(changedCallback),
                         annotation.isCommandable(),
-                        field);
-                configProperty.setRequiresWorldRestart(annotation.requiresWorldRestart());
-                configProperty.setRequiresMcRestart(annotation.requiresMcRestart());
-                configProperty.setShowInGui(annotation.showInGui());
-                configProperty.setMinValue(annotation.minimalValue());
-                configProperty.setMaxValue(annotation.maximalValue());                
+                        annotation.configLocation(),
+                        field,
+                        annotation.requiresWorldRestart(),
+                        annotation.requiresMcRestart(),
+                        annotation.showInGui(),
+                        annotation.minimalValue(),
+                        annotation.maximalValue());
                 configProperties.add(configProperty);
             }
         }
@@ -119,52 +115,19 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      */
     public void save() {
         try {
-            // Save inside the self-implementation
-            try {
-                this.getClass().getField("_instance").set(null, this);
-            } catch (NoSuchFieldError e) {
-                throw new CyclopsCoreConfigException(String.format("The config file for %s requires a static field " +
-                        "_instance.", this.getNamedId()));
-            }
-
-            // Try initalizing the override sub instance.
-            this.overriddenSubInstance = initSubInstance();
-
-            // Save inside the unique instance this config refers to (only if such an instance exists!)
-            if (getOverriddenSubInstance() == null && this.getHolderType().hasUniqueInstance()) {
-                Constructor<?> constructor = this.getElement().getDeclaredConstructor(ExtendedConfig.class);
-                if(constructor == null) {
-                    throw new CyclopsCoreConfigException(String.format("The class %s requires a constructor with " +
-                            "ExtendedConfig as single parameter.", this.getElement()));
-                }
-                Object instance = constructor.newInstance(this);
-
-                Field field = this.getElement().getDeclaredField("_instance");
-                field.setAccessible(true);
-                if(field.get(null) == null) {
-                    field.set(null, instance);
+            // Construct the instance
+            if (this.getConfigurableType().hasUniqueInstance()) {
+                I instance = this.getElementConstructor().apply(this.downCast());
+                if(this.instance == null) {
+                    this.instance = instance;
                 } else {
                     showDoubleInitError();
                 }
             }
-        } catch (IllegalAccessException | NoSuchFieldException | InstantiationException | NoSuchMethodException
-                | RuntimeException e) {
+        } catch (RuntimeException e) {
             mod.getLoggerHelper().getLogger().error(String.format("Registering %s caused an issue. ", getNamedId()), e);
             throw new CyclopsCoreConfigException(String.format("Registering %s caused the issue: %s",
                     this.getNamedId(), e.getMessage()));
-        } catch (InvocationTargetException e) {
-            mod.log(Level.ERROR, "Registering " + this.getNamedId() + " caused the issue "
-                    + "(skipping registration): " + e.getCause().getMessage());
-            mod.getLoggerHelper().getLogger().error("Registering %s caused an issue. ", e.getCause());
-
-            // Disable this configurable.
-            if (!this.isDisableable()) {
-                throw new CyclopsCoreConfigException("Registering " + this.getNamedId()
-                        + " caused the issue: " + e.getCause().getMessage()
-                        + ". Since this is a required element of this mod, we can not continue, "
-                        + "there might be ID conflicts with other mods.");
-            }
-            this.setEnabled(false);
         }
     }
     
@@ -172,7 +135,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      * Return the configurable type for which this config holds data
      * @return the type of the configurable to where the config belongs
      */
-    public abstract ConfigurableType getHolderType();
+    public abstract ConfigurableType getConfigurableType();
     
     /**
      * Get the unlocalized name (must be unique!) for this configurable.
@@ -189,42 +152,10 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
     }
 
     /**
-     * This method will by default just return null.
-     * If it returns something else, this config will assume that the object that is returned is the unique sub-instance
-     * for the configurable.
-     * This is only called once.
-     * @return A sub-instance that will become a singleton.
+     * @return Instance of the object this config refers to.
      */
-    protected IConfigurable<C> initSubInstance() {
-        return null;
-    }
-
-    private IConfigurable<C> getOverriddenSubInstance() {
-        return this.overriddenSubInstance;
-    }
-
-    /**
-     * Will return the instance of the object this config refers to
-     * @return instance of sub object
-     */
-    public IConfigurable<C> getSubInstance() {
-        if(getOverriddenSubInstance() != null) {
-            return getOverriddenSubInstance();
-        }
-        if(!this.getHolderType().hasUniqueInstance())
-            throw new CyclopsCoreConfigException("There exists no unique instance for " + this);
-        try {
-            Method method = this.getElement().getMethod("getInstance");
-            if(method == null) {
-                throw new CyclopsCoreConfigException("There exists no static getInstance method for  " + this);
-            }
-            return (IConfigurable<C>) method.invoke(null);
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
-        	// Only possible in development mode
-        	e1.printStackTrace();
-        }
-
-        return null;
+    public I getInstance() {
+        return this.instance;
     }
     
     /**
@@ -250,21 +181,25 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
     }
     
     @Override
-    public void onInit(IInitListener.Step step) {
-    	
-    }
-    
-    @Override
-    public int compareTo(ExtendedConfig<C> o) {
+    public int compareTo(ExtendedConfig<C, I> o) {
         return getNamedId().compareTo(o.getNamedId());
     }
-    
+
+    /**
+     * @return If the target should be enabled by default.
+     */
+    public boolean isEnabledDefault() {
+        return enabledDefault;
+    }
+
     /**
      * Checks if the eConfig refers to a target that should be enabled.
      * @return if the target should be enabled.
      */
     public boolean isEnabled() {
-        return this.enabled && !isHardDisabled();
+        Objects.requireNonNull(this.propertyEnabled, "No enabled property was found for " + this.getNamedId()
+                + ", probably because it can not be disabled.");
+        return this.propertyEnabled.get() && !isHardDisabled();
     }
     
     /**
@@ -272,9 +207,18 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      * @param enabled If the target should be enabled.
      */
     public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
+		this.propertyEnabled.set(enabled);
+        this.propertyEnabled.save();
 	}
-    
+
+    /**
+     * Save the property for checking if the target is enabled.
+     * @param propertyEnabled A boolean property.
+     */
+    public void setPropertyEnabled(ForgeConfigSpec.BooleanValue propertyEnabled) {
+        this.propertyEnabled = propertyEnabled;
+    }
+
     /**
      * If the target should be hard-disabled, this means no occurence in the config file,
      * total ignorance.
@@ -296,7 +240,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
      * Call this method in the initInstance method of Configurables if the instance was already set.
      */
     public void showDoubleInitError() {
-        String message = this.getClass()+" caused a double registration of "+getSubInstance()+". This is an error in the mod code.";
+        String message = this.getClass()+" caused a double registration of " + getInstance() + ". This is an error in the mod code.";
         mod.log(Level.FATAL, message);
         throw new CyclopsCoreConfigException(message);
     }
@@ -311,11 +255,4 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C>> implements
         return (C) this;
     }
 
-    /**
-     * @return The optional registry in which this should be registered.
-     */
-    @Nullable
-    public IForgeRegistry<?> getRegistry() {
-        return null;
-    }
 }

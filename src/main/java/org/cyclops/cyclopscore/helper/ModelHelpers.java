@@ -4,11 +4,11 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ModelBlock;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.BlockModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.resources.IResource;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.model.TRSRTransformation;
 
@@ -121,25 +121,25 @@ public final class ModelHelpers {
             .build();
 
     // An empty list^2 for quads.
-    public static final Map<EnumFacing, List<BakedQuad>> EMPTY_FACE_QUADS;
+    public static final Map<Direction, List<BakedQuad>> EMPTY_FACE_QUADS;
     static {
         EMPTY_FACE_QUADS = Maps.newHashMap();
-        for (EnumFacing facing : EnumFacing.VALUES) {
+        for (Direction facing : Direction.values()) {
             EMPTY_FACE_QUADS.put(facing, Collections.<BakedQuad>emptyList());
         }
     }
 
     /**
-     * Read the given model location to a {@link net.minecraft.client.renderer.block.model.ModelBlock}.
+     * Read the given model location to a {@link BlockModel}.
      * @param modelLocation A model location (without .json suffix)
      * @return The corresponding model.
      * @throws IOException If the model file was invalid.
      */
-    public static ModelBlock loadModelBlock(ResourceLocation modelLocation) throws IOException {
-        IResource resource = Minecraft.getMinecraft().getResourceManager().getResource(
+    public static BlockModel loadModelBlock(ResourceLocation modelLocation) throws IOException {
+        IResource resource = Minecraft.getInstance().getResourceManager().getResource(
                 new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath() + ".json"));
         Reader reader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
-        return ModelBlock.deserialize(reader);
+        return BlockModel.deserialize(reader);
     }
 
     /**

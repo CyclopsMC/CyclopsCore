@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.client.render.model;
 
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.model.Model;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
@@ -16,7 +16,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @param <T> The entity type
  * @param <M> The model that will be rendered.
  */
-public abstract class RenderModel<T extends Entity, M extends ModelBase> extends Render<T> {
+public abstract class RenderModel<T extends Entity, M extends Model> extends EntityRenderer<T> {
     
     private ResourceLocation texture;
 
@@ -27,13 +27,13 @@ public abstract class RenderModel<T extends Entity, M extends ModelBase> extends
      * @param renderManager The render manager
      * @param config The config.
      */
-    public RenderModel(RenderManager renderManager, ExtendedConfig<?> config) {
+    public RenderModel(EntityRendererManager renderManager, ExtendedConfig<?, ?> config) {
         super(renderManager);
         texture = createResourceLocation(config);
         model = constructModel();
     }
 
-    protected ResourceLocation createResourceLocation(ExtendedConfig<?> config) {
+    protected ResourceLocation createResourceLocation(ExtendedConfig<?, ?> config) {
         return new ResourceLocation(config.getMod().getModId(), config.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_MODELS) + config.getNamedId() + ".png");
     }
     

@@ -2,10 +2,11 @@ package org.cyclops.cyclopscore.item;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -44,6 +45,6 @@ public interface IInformationProvider {
      * @param list The list of information.
      * @param flag The tooltip flag type.
      */
-    @SideOnly(Side.CLIENT)
-    public void provideInformation(ItemStack itemStack, World world, List<String> list, ITooltipFlag flag);
+    @OnlyIn(Dist.CLIENT)
+    public void provideInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag);
 }

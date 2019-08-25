@@ -3,23 +3,20 @@ package org.cyclops.cyclopscore.tileentity;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import lombok.experimental.Delegate;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
 import org.cyclops.cyclopscore.helper.DirectionHelpers;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
-import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
 import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
 
 import java.util.HashMap;
@@ -40,25 +37,18 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
 
     private static final int UPDATE_BACKOFF_TICKS = 1;
 
-    @NBTPersist
-    private Boolean rotatable = false;
-    private EnumFacing rotation = EnumFacing.NORTH;
     @Delegate
-    private INBTProvider nbtProviderComponent = new NBTProviderComponent(this);
+    private INBTProvider nbtProviderComponent = new NBTProviderComponent(this); // TODO: rewrite NBT serialization
 
     private boolean shouldSendUpdate = false;
     private int sendUpdateBackoff = 0;
     private final boolean ticking;
-    private Map<Pair<Capability<?>, EnumFacing>, Object> capabilities = Maps.newHashMap();
+    private Map<Pair<Capability<?>, Direction>, Object> capabilities = Maps.newHashMap();
 
-    public CyclopsTileEntity() {
+    public CyclopsTileEntity(TileEntityType<?> type) {
+        super(type);
         sendUpdateBackoff = (int) Math.round(Math.random() * getUpdateBackoffTicks()); // Random backoff so not all TE's will be updated at once.
         ticking = this instanceof ITickingTile;
-    }
-
-    @Override
-    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState) {
-        return (oldState.getBlock() != newState.getBlock());
     }
 
     protected boolean isTicking() {
@@ -142,15 +132,15 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     }
 
     @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        return new SPacketUpdateTileEntity(getPos(), 1, getNBTTagCompound());
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        return new SUpdateTileEntityPacket(getPos(), 1, getNBTTagCompound());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
         super.onDataPacket(net, packet);
-        NBTTagCompound tag = packet.getNbtCompound();
-        readFromNBT(tag);
+        CompoundNBT tag = packet.getNbtCompound();
+        read(tag);
         onUpdateReceived();
     }
 
@@ -172,41 +162,35 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     }
     
     /**
-     * Called when the blockState of this tile entity is destroyed.
-     */
-    public void destroy() {
-        invalidate();
-    }
-    
-    /**
      * If this entity is interactable with a player.
      * @param entityPlayer The player that is checked.
      * @return If the given player can interact.
      */
-    public boolean canInteractWith(EntityPlayer entityPlayer) {
+    public boolean canInteractWith(PlayerEntity entityPlayer) {
         return true;
     }
     
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound tag) {
-        tag = super.writeToNBT(tag);
+    public CompoundNBT write(CompoundNBT tag) {
+        tag = super.write(tag);
         writeGeneratedFieldsToNBT(tag);
-        
-        // Separate action for direction
-        tag.setInteger("rotation", rotation.ordinal());
         return tag;
+    }
+
+    /**
+     * Write this tile to the given NBT tag that will be attached to an item.
+     * By default, {@link #write(CompoundNBT)} will be called.
+     * @param tag The tag to write to.
+     * @return The written tag.
+     */
+    public CompoundNBT writeToItemStack(CompoundNBT tag) {
+        return this.write(tag);
     }
     
     @Override
-    public void readFromNBT(NBTTagCompound tag) {
-        super.readFromNBT(tag);
+    public void read(CompoundNBT tag) {
+        super.read(tag);
         readGeneratedFieldsFromNBT(tag);
-        
-        // Separate action for direction
-        EnumFacing foundRotation = EnumFacing.VALUES[tag.getInteger("rotation")];
-        if(foundRotation != null) {
-        	rotation = foundRotation;
-        }
         onLoad();
     }
 
@@ -222,86 +206,44 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
     /**
      * Get the NBT tag for this tile entity.
      * @return The NBT tag that is created with the
-     * {@link CyclopsTileEntity#writeToNBT(net.minecraft.nbt.NBTTagCompound)} method.
+     * {@link CyclopsTileEntity#write(CompoundNBT)} method.
      */
-    public NBTTagCompound getNBTTagCompound() {
-        NBTTagCompound tag = new NBTTagCompound();
-        tag = writeToNBT(tag);
+    public CompoundNBT getNBTTagCompound() {
+        CompoundNBT tag = new CompoundNBT();
+        tag = write(tag);
         return tag;
     }
 
     @Override
-    public NBTTagCompound getUpdateTag() {
+    public CompoundNBT getUpdateTag() {
         return getNBTTagCompound();
     }
 
-    /**
-     * If the blockState this tile entity has can be rotated.
-     * @return If it can be rotated.
-     */
-    public boolean isRotatable() {
-        return this.rotatable;
-    }
-
-    /**
-     * Set whether or not the blockState that has this tile entity can be rotated.
-     * @param rotatable If it can be rotated.
-     */
-    public void setRotatable(boolean rotatable) {
-        this.rotatable = rotatable;
-    }
-
-    /**
-     * Get the current rotation of this tile entity.
-     * Default is {@link net.minecraft.util.EnumFacing#NORTH}.
-     * @return The rotation.
-     */
-    public EnumFacing getRotation() {
-        return rotation;
-    }
-
-    /**
-     * Set the rotation of this tile entity.
-     * Default is {@link net.minecraft.util.EnumFacing#NORTH}.
-     * @param rotation The new rotation.
-     */
-    public void setRotation(EnumFacing rotation) {
-        this.rotation = rotation;
-    }
-    
-    /**
-     * Get the blockState type this tile entity is defined for.
-     * @return The blockState instance.
-     */
-    public ConfigurableBlockContainer getBlock() {
-        return (ConfigurableBlockContainer) this.getBlockType();
-    }
-
-    protected EnumFacing transformFacingForRotation(EnumFacing facing) {
+    protected Direction transformFacingForRotation(Direction facing) {
         if (facing == null) {
             return null;
+        }
+        if (getRotation() == null) {
+            return facing;
         }
         return DirectionHelpers.transformFacingForRotation(facing, getRotation());
     }
 
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return (capabilities != null && capabilities.containsKey(Pair.<Capability<?>,
-                    EnumFacing>of(capability, transformFacingForRotation(facing))))
-                || (facing != null && capabilities != null && capabilities.containsKey(Pair.<Capability<?>, EnumFacing>of(capability, null)))
-                || super.hasCapability(capability, facing);
+    public Direction getRotation() {
+        return null;
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
         if (capabilities != null) {
             Object value = capabilities.get(Pair.<Capability<?>,
-                    EnumFacing>of(capability, transformFacingForRotation(facing)));
+                    Direction>of(capability, transformFacingForRotation(facing)));
             if (value == null && facing != null) {
-                value = capabilities.get(Pair.<Capability<?>, EnumFacing>of(capability, null));
+                value = capabilities.get(Pair.<Capability<?>, Direction>of(capability, null));
             }
             if (value != null) {
-                return (T) value;
+                Object finalValue = value;
+                return LazyOptional.of(() -> finalValue).cast();
             }
         }
         return super.getCapability(capability, facing);
@@ -314,8 +256,8 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      * @param value The capability.
      * @param <T> The capability type.
      */
-    public <T> void addCapabilityInternal(Capability<T> capability, T value) {
-        capabilities.put(Pair.<Capability<?>, EnumFacing>of(capability, null), value);
+    public <T> void addCapabilityInternal(Capability<T> capability, T value) { // TODO: make something to auto-serialize caps
+        capabilities.put(Pair.<Capability<?>, Direction>of(capability, null), value);
     }
 
     /**
@@ -326,18 +268,18 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
      * @param value The capability.
      * @param <T> The capability type.
      */
-    public <T> void addCapabilitySided(Capability<T> capability, EnumFacing facing, T value) {
-        capabilities.put(Pair.<Capability<?>, EnumFacing>of(capability, facing), value);
+    public <T> void addCapabilitySided(Capability<T> capability, Direction facing, T value) {
+        capabilities.put(Pair.<Capability<?>, Direction>of(capability, facing), value);
     }
 
-    protected Map<Pair<Capability<?>, EnumFacing>, Object> getCapabilities() {
+    protected Map<Pair<Capability<?>, Direction>, Object> getStoredCapabilities() {
         return capabilities;
     }
 
     /**
      * Apply this interface on any tile classes that should tick.
      */
-    public static interface ITickingTile extends ITickable {
+    public static interface ITickingTile extends ITickableTileEntity {
 
     }
 
@@ -353,7 +295,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
         }
 
         @Override
-        public void update() {
+        public void tick() {
             tile.updateTicking();
         }
 

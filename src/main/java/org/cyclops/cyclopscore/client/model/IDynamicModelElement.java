@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Interface for blocks and items which can have a dynamic model.
@@ -20,7 +20,7 @@ public interface IDynamicModelElement {
      * This will only be called once.
      * @return A dynamic model instance.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public IBakedModel createDynamicModel();
 
 }

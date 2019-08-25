@@ -26,7 +26,7 @@ public interface IInfoBook {
     public Map<String, Pair<InfoSection, Integer>> getConfigLinks();
     public void setConfigLinks(Map<String, Pair<InfoSection, Integer>> configLinks);
     public InfoSectionTagIndex getTagIndex();
-    public void setTagIndex(InfoSectionTagIndex tagIndex);
+    public void putIndex(InfoSectionTagIndex tagIndex);
 
     public EvictingStack<InfoSection.Location> getHistory();
 

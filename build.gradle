@@ -8,20 +8,24 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        //classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 
 plugins {
     // For people who want stable
     //id "net.minecraftforge.gradle.forge" version "2.0.2"
-    id 'com.matthewprenger.cursegradle' version '1.1.0'
+    id 'com.matthewprenger.cursegradle' version '1.2.0'
     id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 // For those who want the bleeding edge
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'jacoco'
+apply plugin: 'idea'
+
+import net.minecraftforge.gradle.common.task.SignJar
 
 loadProperties()
 
@@ -54,20 +58,88 @@ def loadProperties() {
     logger.lifecycle "BUILDING VERSION: " + project.buildnumber
 }
 
-apply from: 'gradle/forge.gradle'
-apply from: 'gradle/dev.gradle'
-apply from: 'gradle/deploy.gradle'
+task signJar(type: SignJar, dependsOn: jar) {
+    onlyIf {
+        System.getenv().SIGN_KEYSTORE
+    }
 
-// Mark API directory as source directory in IDEA.
-idea {
-    module {
-        sourceDirs += file('src/api/java')
+    keyStore = System.getenv().SIGN_KEYSTORE
+    alias = System.getenv().SIGN_ALIAS
+    storePass = System.getenv().SIGN_STOREPASS
+    keyPass = System.getenv().SIGN_KEYPASS
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+}
+build.dependsOn signJar
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+    manifest {
+        attributes 'FMLAT': 'accesstransformer.cfg'
     }
 }
 
+task sourceJar(type: Jar) {
+    classifier = "sources"
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    from 'build/docs/javadoc'
+    classifier 'javadoc'
+}
+
+artifacts {
+    archives deobfJar
+    archives sourceJar
+    archives javadocJar
+}
+
+sourceSets {
+    api
+    main {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+        java {
+            // TODO: temporarily disable some mod compats
+            exclude '**/modcompat/crafttweaker/**'
+        }
+    }
+    test {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+    }
+}
+
+configurations {
+    apiCompile.extendsFrom(compile)
+}
+
+apply from: 'gradle/forge.gradle'
+//apply from: 'gradle/dev.gradle'
+apply from: 'gradle/deploy.gradle'
+
 jar {
     manifest {
-        attributes 'FMLAT': 'cyclopscore_at.cfg'
+        attributes([
+            "Specification-Title": "${project.name}",
+            "Specification-Vendor": "rubensworks",
+            "Specification-Version": "${config.mod_version}",
+            "Implementation-Title": "${project.name}",
+            "Implementation-Version": "${project.version}",
+            "Implementation-Vendor" :"rubensworks",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+idea {
+    module {
+        for (String excludeDirName in ["run", "out", "logs", "gradle"]) {
+            File excludeDir = new File(projectDir, excludeDirName)
+            excludeDirs.add(excludeDir)
+        }
     }
 }
 

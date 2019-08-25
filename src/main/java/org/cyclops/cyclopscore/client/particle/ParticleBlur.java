@@ -1,19 +1,20 @@
 package org.cyclops.cyclopscore.client.particle;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import org.cyclops.cyclopscore.Reference;
-import org.cyclops.cyclopscore.helper.obfuscation.ObfuscationHelpers;
+import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -59,42 +60,42 @@ public class ParticleBlur extends Particle {
 		this.particleBlue = blue;
 		this.particleGravity = 0;
 		
-		this.particleScale *= scale;
-		this.particleMaxAge = (int) ((rand.nextFloat() * 0.33F + 0.66F) * ageMultiplier);
+		this.originalScale *= scale;
+		this.maxAge = (int) ((rand.nextFloat() * 0.33F + 0.66F) * ageMultiplier);
 		this.setSize(0.01F, 0.01F);
 		
 		this.prevPosX = posX;
 		this.prevPosY = posY;
 		this.prevPosZ = posZ;
 		
-		this.scaleLife = (int) (particleMaxAge / 2.5);
-		this.originalScale = this.particleScale;
+		this.scaleLife = (int) (maxAge / 2.5);
 		
 		validateDistance();
 	}
 	
 	private void validateDistance() {
-		EntityLivingBase renderentity = FMLClientHandler.instance().getClient().player;
+		LivingEntity renderentity = Minecraft.getInstance().player;
 		int visibleDistance = MAX_VIEW_DISTANCE;
 		
-		if(!FMLClientHandler.instance().getClient().gameSettings.fancyGraphics) {
+		if(!Minecraft.getInstance().gameSettings.fancyGraphics) {
 			visibleDistance = visibleDistance / 2;
 		}
 
 		if(renderentity == null
-				|| renderentity.getDistance(posX, posY, posZ) > visibleDistance) {
-			particleMaxAge = 0;
+				|| renderentity.getDistanceSq(posX, posY, posZ) > visibleDistance) {
+			maxAge = 0;
 		}
 	}
 
     @Override
-    public void renderParticle(BufferBuilder worldRenderer, Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-		float agescale = (float)particleAge / (float) scaleLife;
+    public void renderParticle(BufferBuilder worldRenderer, ActiveRenderInfo renderInfo,
+							   float f, float f1, float f2, float f3, float f4, float f5) {
+		float agescale = (float)age / (float) scaleLife;
 		if(agescale > 1F) {
 			agescale = 2 - agescale;
 		}
 
-		particleScale = originalScale * agescale;
+		originalScale = originalScale * agescale;
 
 		int oldDrawMode = worldRenderer.getDrawMode();
 		VertexFormat oldVertexFormat = worldRenderer.getVertexFormat();
@@ -105,11 +106,11 @@ public class ParticleBlur extends Particle {
 		GlStateManager.enableBlend();
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
-		Minecraft.getMinecraft().renderEngine.bindTexture(TEXTURE);
+		RenderHelpers.bindTexture(TEXTURE);
 
-		GlStateManager.color(1.0F, 1.0F, 1.0F, 0.75F);
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
 
-		float f10 = 0.5F * particleScale;
+		float f10 = 0.5F * originalScale;
 		float f11 = (float)(prevPosX + (posX - prevPosX) * f - interpPosX);
 		float f12 = (float)(prevPosY + (posY - prevPosY) * f - interpPosY);
 		float f13 = (float)(prevPosZ + (posZ - prevPosZ) * f - interpPosZ);
@@ -133,17 +134,22 @@ public class ParticleBlur extends Particle {
 		GlStateManager.depthMask(true);
 
 		GlStateManager.popMatrix();
-		Minecraft.getMinecraft().renderEngine.bindTexture(ObfuscationHelpers.getParticleTexture());
+		RenderHelpers.bindTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE);
 		worldRenderer.begin(oldDrawMode, oldVertexFormat);
 	}
-	
+
 	@Override
-	public void onUpdate() {
+	public IParticleRenderType getRenderType() {
+		return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+	}
+
+	@Override
+	public void tick() {
 		prevPosX = posX;
 		prevPosY = posY;
 		prevPosZ = posZ;
 
-		if(particleAge++ >= particleMaxAge) {
+		if (age++ >= maxAge) {
 			setExpired();
 		}
 

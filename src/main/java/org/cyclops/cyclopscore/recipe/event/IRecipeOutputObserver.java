@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.recipe.event;
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -16,6 +16,6 @@ public interface IRecipeOutputObserver {
 	 * @param output The original recipe output.
 	 * @return An optionally different output.
 	 */
-	public ItemStack getRecipeOutput(InventoryCrafting craftingGrid, ItemStack output);
+	public ItemStack getRecipeOutput(CraftingInventory craftingGrid, ItemStack output);
 	
 }

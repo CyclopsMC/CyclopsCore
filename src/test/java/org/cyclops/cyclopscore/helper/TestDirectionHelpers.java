@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import org.junit.Test;
 
 import static org.cyclops.cyclopscore.helper.DirectionHelpers.transformFacingForRotation;
@@ -11,46 +11,46 @@ public class TestDirectionHelpers {
 
     @Test
     public void testTransformFacingForRotation() {
-        assertThat(transformFacingForRotation(EnumFacing.NORTH, EnumFacing.NORTH), is(EnumFacing.NORTH));
-        assertThat(transformFacingForRotation(EnumFacing.EAST,  EnumFacing.NORTH), is(EnumFacing.EAST));
-        assertThat(transformFacingForRotation(EnumFacing.SOUTH, EnumFacing.NORTH), is(EnumFacing.SOUTH));
-        assertThat(transformFacingForRotation(EnumFacing.WEST,  EnumFacing.NORTH), is(EnumFacing.WEST));
-        assertThat(transformFacingForRotation(EnumFacing.UP,    EnumFacing.NORTH), is(EnumFacing.UP));
-        assertThat(transformFacingForRotation(EnumFacing.DOWN,  EnumFacing.NORTH), is(EnumFacing.DOWN));
+        assertThat(transformFacingForRotation(Direction.NORTH, Direction.NORTH), is(Direction.NORTH));
+        assertThat(transformFacingForRotation(Direction.EAST,  Direction.NORTH), is(Direction.EAST));
+        assertThat(transformFacingForRotation(Direction.SOUTH, Direction.NORTH), is(Direction.SOUTH));
+        assertThat(transformFacingForRotation(Direction.WEST,  Direction.NORTH), is(Direction.WEST));
+        assertThat(transformFacingForRotation(Direction.UP,    Direction.NORTH), is(Direction.UP));
+        assertThat(transformFacingForRotation(Direction.DOWN,  Direction.NORTH), is(Direction.DOWN));
 
-        assertThat(transformFacingForRotation(EnumFacing.NORTH, EnumFacing.EAST), is(EnumFacing.WEST));
-        assertThat(transformFacingForRotation(EnumFacing.EAST,  EnumFacing.EAST), is(EnumFacing.NORTH));
-        assertThat(transformFacingForRotation(EnumFacing.SOUTH, EnumFacing.EAST), is(EnumFacing.EAST));
-        assertThat(transformFacingForRotation(EnumFacing.WEST,  EnumFacing.EAST), is(EnumFacing.SOUTH));
-        assertThat(transformFacingForRotation(EnumFacing.UP,    EnumFacing.EAST), is(EnumFacing.UP));
-        assertThat(transformFacingForRotation(EnumFacing.DOWN,  EnumFacing.EAST), is(EnumFacing.DOWN));
+        assertThat(transformFacingForRotation(Direction.NORTH, Direction.EAST), is(Direction.WEST));
+        assertThat(transformFacingForRotation(Direction.EAST,  Direction.EAST), is(Direction.NORTH));
+        assertThat(transformFacingForRotation(Direction.SOUTH, Direction.EAST), is(Direction.EAST));
+        assertThat(transformFacingForRotation(Direction.WEST,  Direction.EAST), is(Direction.SOUTH));
+        assertThat(transformFacingForRotation(Direction.UP,    Direction.EAST), is(Direction.UP));
+        assertThat(transformFacingForRotation(Direction.DOWN,  Direction.EAST), is(Direction.DOWN));
 
-        assertThat(transformFacingForRotation(EnumFacing.NORTH, EnumFacing.SOUTH), is(EnumFacing.SOUTH));
-        assertThat(transformFacingForRotation(EnumFacing.EAST,  EnumFacing.SOUTH), is(EnumFacing.WEST));
-        assertThat(transformFacingForRotation(EnumFacing.SOUTH, EnumFacing.SOUTH), is(EnumFacing.NORTH));
-        assertThat(transformFacingForRotation(EnumFacing.WEST,  EnumFacing.SOUTH), is(EnumFacing.EAST));
-        assertThat(transformFacingForRotation(EnumFacing.UP,    EnumFacing.SOUTH), is(EnumFacing.UP));
-        assertThat(transformFacingForRotation(EnumFacing.DOWN,  EnumFacing.SOUTH), is(EnumFacing.DOWN));
+        assertThat(transformFacingForRotation(Direction.NORTH, Direction.SOUTH), is(Direction.SOUTH));
+        assertThat(transformFacingForRotation(Direction.EAST,  Direction.SOUTH), is(Direction.WEST));
+        assertThat(transformFacingForRotation(Direction.SOUTH, Direction.SOUTH), is(Direction.NORTH));
+        assertThat(transformFacingForRotation(Direction.WEST,  Direction.SOUTH), is(Direction.EAST));
+        assertThat(transformFacingForRotation(Direction.UP,    Direction.SOUTH), is(Direction.UP));
+        assertThat(transformFacingForRotation(Direction.DOWN,  Direction.SOUTH), is(Direction.DOWN));
 
-        assertThat(transformFacingForRotation(EnumFacing.NORTH, EnumFacing.WEST), is(EnumFacing.EAST));
-        assertThat(transformFacingForRotation(EnumFacing.EAST,  EnumFacing.WEST), is(EnumFacing.SOUTH));
-        assertThat(transformFacingForRotation(EnumFacing.SOUTH, EnumFacing.WEST), is(EnumFacing.WEST));
-        assertThat(transformFacingForRotation(EnumFacing.WEST,  EnumFacing.WEST), is(EnumFacing.NORTH));
-        assertThat(transformFacingForRotation(EnumFacing.UP,    EnumFacing.WEST), is(EnumFacing.UP));
-        assertThat(transformFacingForRotation(EnumFacing.DOWN,  EnumFacing.WEST), is(EnumFacing.DOWN));
+        assertThat(transformFacingForRotation(Direction.NORTH, Direction.WEST), is(Direction.EAST));
+        assertThat(transformFacingForRotation(Direction.EAST,  Direction.WEST), is(Direction.SOUTH));
+        assertThat(transformFacingForRotation(Direction.SOUTH, Direction.WEST), is(Direction.WEST));
+        assertThat(transformFacingForRotation(Direction.WEST,  Direction.WEST), is(Direction.NORTH));
+        assertThat(transformFacingForRotation(Direction.UP,    Direction.WEST), is(Direction.UP));
+        assertThat(transformFacingForRotation(Direction.DOWN,  Direction.WEST), is(Direction.DOWN));
 
-        assertThat(transformFacingForRotation(EnumFacing.NORTH, EnumFacing.UP), is(EnumFacing.DOWN));
-        assertThat(transformFacingForRotation(EnumFacing.EAST,  EnumFacing.UP), is(EnumFacing.EAST));
-        assertThat(transformFacingForRotation(EnumFacing.SOUTH, EnumFacing.UP), is(EnumFacing.UP));
-        assertThat(transformFacingForRotation(EnumFacing.WEST,  EnumFacing.UP), is(EnumFacing.WEST));
-        assertThat(transformFacingForRotation(EnumFacing.UP,    EnumFacing.UP), is(EnumFacing.NORTH));
-        assertThat(transformFacingForRotation(EnumFacing.DOWN,  EnumFacing.UP), is(EnumFacing.SOUTH));
+        assertThat(transformFacingForRotation(Direction.NORTH, Direction.UP), is(Direction.DOWN));
+        assertThat(transformFacingForRotation(Direction.EAST,  Direction.UP), is(Direction.EAST));
+        assertThat(transformFacingForRotation(Direction.SOUTH, Direction.UP), is(Direction.UP));
+        assertThat(transformFacingForRotation(Direction.WEST,  Direction.UP), is(Direction.WEST));
+        assertThat(transformFacingForRotation(Direction.UP,    Direction.UP), is(Direction.NORTH));
+        assertThat(transformFacingForRotation(Direction.DOWN,  Direction.UP), is(Direction.SOUTH));
 
-        assertThat(transformFacingForRotation(EnumFacing.NORTH, EnumFacing.DOWN), is(EnumFacing.UP));
-        assertThat(transformFacingForRotation(EnumFacing.EAST,  EnumFacing.DOWN), is(EnumFacing.WEST));
-        assertThat(transformFacingForRotation(EnumFacing.SOUTH, EnumFacing.DOWN), is(EnumFacing.DOWN));
-        assertThat(transformFacingForRotation(EnumFacing.WEST,  EnumFacing.DOWN), is(EnumFacing.EAST));
-        assertThat(transformFacingForRotation(EnumFacing.UP,    EnumFacing.DOWN), is(EnumFacing.SOUTH));
-        assertThat(transformFacingForRotation(EnumFacing.DOWN,  EnumFacing.DOWN), is(EnumFacing.NORTH));
+        assertThat(transformFacingForRotation(Direction.NORTH, Direction.DOWN), is(Direction.UP));
+        assertThat(transformFacingForRotation(Direction.EAST,  Direction.DOWN), is(Direction.WEST));
+        assertThat(transformFacingForRotation(Direction.SOUTH, Direction.DOWN), is(Direction.DOWN));
+        assertThat(transformFacingForRotation(Direction.WEST,  Direction.DOWN), is(Direction.EAST));
+        assertThat(transformFacingForRotation(Direction.UP,    Direction.DOWN), is(Direction.SOUTH));
+        assertThat(transformFacingForRotation(Direction.DOWN,  Direction.DOWN), is(Direction.NORTH));
     }
 }

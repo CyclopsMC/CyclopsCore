@@ -23,10 +23,9 @@ public interface IRegistryExportable {
         JsonObject object = new JsonObject();
 
         object.addProperty("item", itemStack.getItem().getRegistryName().toString());
-        object.addProperty("data", itemStack.getMetadata());
         object.addProperty("count", itemStack.getCount());
-        if (itemStack.hasTagCompound()) {
-            object.addProperty("nbt", itemStack.getTagCompound().toString());
+        if (itemStack.hasTag()) {
+            object.addProperty("nbt", itemStack.getTag().toString());
         }
 
         return object;

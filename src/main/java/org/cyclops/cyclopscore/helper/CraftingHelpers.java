@@ -1,15 +1,12 @@
 package org.cyclops.cyclopscore.helper;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.oredict.OreDictionary;
-
-import java.util.Map;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 /**
  * Several convenience functions for crafting.
@@ -17,34 +14,23 @@ import java.util.Map;
  */
 public class CraftingHelpers {
 
-    public static IRecipe findCraftingRecipe(ItemStack itemStack, int index) throws IllegalArgumentException {
+    public static <C extends IInventory, T extends IRecipe<C>> IRecipe<C> findRecipe(ItemStack itemStack, IRecipeType<T> recipeType, int index) throws IllegalArgumentException {
         int indexAttempt = index;
-        for(IRecipe recipe : CraftingManager.REGISTRY) {
-            if(itemStacksEqual(recipe.getRecipeOutput(), itemStack) && indexAttempt-- == 0) {
+        for(IRecipe<C> recipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipes(recipeType).values()) {
+            if(ItemStack.areItemStacksEqual(recipe.getRecipeOutput(), itemStack) && indexAttempt-- == 0) {
                 return recipe;
             }
         }
-        throw new IllegalArgumentException("Could not find crafting recipe for " + itemStack + "::"
-                + itemStack.getTagCompound() + " with index " + index);
+        throw new IllegalArgumentException("Could not find recipe for " + itemStack + "::"
+                + itemStack.getTag() + " with index " + index);
     }
 
-    public static Map.Entry<ItemStack, ItemStack> findFurnaceRecipe(ItemStack itemStack, int index) throws IllegalArgumentException {
-        int indexAttempt = index;
-        for(Map.Entry<ItemStack, ItemStack> recipe : (FurnaceRecipes.instance().
-                getSmeltingList()).entrySet()) {
-            if(itemStacksEqual(recipe.getValue(), itemStack) && indexAttempt-- == 0) {
-                return recipe;
-            }
-        }
-        throw new IllegalArgumentException("Could not find furnace recipe for " + itemStack + "::"
-                + itemStack.getTagCompound() + " with index " + index);
-    }
-
+    @Deprecated // TODO: rm
     public static ResourceLocation newRecipeIdentifier(ItemStack output) {
-        ResourceLocation id = new ResourceLocation(Loader.instance().activeModContainer().getModId(),
+        ResourceLocation id = new ResourceLocation(ModLoadingContext.get().getActiveContainer().getModId(),
                 output.getItem().getRegistryName().getPath());
         int counter = 10;
-        while (ForgeRegistries.RECIPES.containsKey(id)) {
+        while (ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipe(id).isPresent()) {
             id = new ResourceLocation(id.getNamespace(), output.getItem().getRegistryName().getPath() + "_" + ++counter);
         }
         return id;
@@ -56,20 +42,11 @@ public class CraftingHelpers {
      * @param recipe The recipe
      * @return The recipe
      */
-    public static IRecipe registerRecipe(ResourceLocation id, IRecipe recipe) {
-        recipe.setRegistryName(id);
-        ForgeRegistries.RECIPES.register(recipe);
+    @Deprecated // TODO: rm
+    public static IRecipe<?> registerRecipe(ResourceLocation id, IRecipe<?> recipe) {
+        /*recipe.setRegistryName(id);
+        ForgeRegistries.RECIPES.register(recipe);*/
         return recipe;
-    }
-
-    public static boolean itemStacksEqual(ItemStack itemStack1, ItemStack itemStack2) {
-        return itemStack1 != null && itemStack2 != null &&
-               itemStack1.getItem() == itemStack2.getItem() &&
-               ItemStack.areItemStackTagsEqual(itemStack1, itemStack2) &&
-               (itemStack1.getItemDamage() == itemStack2.getItemDamage() ||
-                       itemStack1.getItemDamage() == OreDictionary.WILDCARD_VALUE ||
-                       itemStack2.getItemDamage() == OreDictionary.WILDCARD_VALUE ||
-                       itemStack1.getItem().isDamageable());
     }
 
 }

@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBT;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -10,21 +10,21 @@ import java.util.Objects;
  */
 public class NbtPathExpressionExecutionContext {
 
-    private final NBTBase currentTag;
+    private final INBT currentTag;
     @Nullable
     private final NbtPathExpressionExecutionContext parentContext;
 
-    public NbtPathExpressionExecutionContext(NBTBase currentTag,
+    public NbtPathExpressionExecutionContext(INBT currentTag,
                                              @Nullable NbtPathExpressionExecutionContext parentContext) {
         this.currentTag = currentTag;
         this.parentContext = parentContext;
     }
 
-    public NbtPathExpressionExecutionContext(NBTBase currentTag) {
+    public NbtPathExpressionExecutionContext(INBT currentTag) {
         this(currentTag, null);
     }
 
-    public NBTBase getCurrentTag() {
+    public INBT getCurrentTag() {
         return currentTag;
     }
 

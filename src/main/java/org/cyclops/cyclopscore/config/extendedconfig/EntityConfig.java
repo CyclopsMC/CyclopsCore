@@ -1,39 +1,46 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
+import java.util.function.Function;
+
 /**
  * Config for entities.
- * For mobs, there is the {@link MobConfig}.
- * For entities with custom models there is {@link ModelEntityConfig}.
  * @param <T> The entity type
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class EntityConfig<T extends Entity> extends ExtendedConfig<EntityConfig<T>>{
+public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge<EntityConfig<T>, EntityType<T>> {
+
+    private final Class<? extends T> entityClass;
 
     /**
      * Make a new instance.
      * @param mod     The mod instance.
-     * @param enabled If this should is enabled.
+     * @param enabledDefault     If this should is enabled by default. If this is false, this can still
+     *                           be enabled through the config file.
      * @param namedId The unique name ID for the configurable.
      * @param comment The comment to add in the config file for this configurable.
-     * @param element The class of this configurable.
+     * @param elementConstructor The element constructor.
+     * @param entityClass The class of the entity.
      */
-    public EntityConfig(ModBase mod, boolean enabled, String namedId, String comment, Class<? extends T> element) {
-        super(mod, enabled, namedId, comment, element);
+    public EntityConfig(ModBase mod, boolean enabledDefault, String namedId, String comment,
+                        Function<EntityConfig<T>, ? extends EntityType<T>> elementConstructor, Class<? extends T> entityClass) {
+        super(mod, enabledDefault, namedId, comment, elementConstructor);
+        this.entityClass = entityClass;
     }
     
     @Override
@@ -42,22 +49,22 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfig<Enti
 	}
     
     @Override
-	public ConfigurableType getHolderType() {
+	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.ENTITY;
 	}
 
+    public Class<? extends T> getEntityClass() {
+        return entityClass;
+    }
+
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void onRegistered() {
         super.onRegistered();
         @SuppressWarnings("unchecked")
-        Class<? extends T> clazz = (Class<? extends T>) this.getElement();
-        RenderingRegistry.registerEntityRenderingHandler(clazz, new IRenderFactory<T>() {
-            @Override
-            public Render<? super T> createRenderFor(RenderManager manager) {
-                return EntityConfig.this.getRender(manager, Minecraft.getMinecraft().getRenderItem());
-            }
-        });
+        Class<? extends T> clazz = this.getEntityClass();
+        RenderingRegistry.registerEntityRenderingHandler(clazz,
+                (IRenderFactory<T>) manager -> EntityConfig.this.getRender(manager, Minecraft.getInstance().getItemRenderer()));
 
     }
     
@@ -91,11 +98,11 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfig<Enti
      * @param renderItem The render item instance.
      * @return Get the render.
      */
-    @SideOnly(Side.CLIENT)
-    public abstract Render<? super T> getRender(RenderManager renderManager, RenderItem renderItem);
+    @OnlyIn(Dist.CLIENT)
+    public abstract EntityRenderer<? super T> getRender(EntityRendererManager renderManager, ItemRenderer renderItem);
 
     @Override
-    public IForgeRegistry<?> getRegistry() {
+    public IForgeRegistry<EntityType<?>> getRegistry() {
         return ForgeRegistries.ENTITIES;
     }
 }

@@ -1,17 +1,20 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemOverride;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.IModelData;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A dynamic model that can be used for items and blocks.
@@ -23,7 +26,7 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
     private final boolean item;
     private final ItemOverrides itemOverrides;
 
-    private EnumFacing renderingSide;
+    private Direction renderingSide;
 
     public DynamicItemAndBlockModel(boolean factory, boolean item) {
         this.factory = factory;
@@ -36,14 +39,15 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
+                                    @Nonnull Random rand, @Nonnull IModelData extraData) {
         this.renderingSide = side;
         if(factory) {
             IBakedModel bakedModel;
             if(isItemStack()) {
                 bakedModel = handleItemState(null, null, null);
             } else {
-                bakedModel = handleBlockState(state, side, rand);
+                bakedModel = handleBlockState(state, side, rand, extraData);
             }
             if (bakedModel != null) {
                 return bakedModel.getQuads(state, side, rand);
@@ -56,26 +60,24 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
         return Collections.emptyList();
     }
 
-    public abstract IBakedModel handleBlockState(IBlockState state, EnumFacing side, long rand);
-    public abstract IBakedModel handleItemState(ItemStack stack, World world, EntityLivingBase entity);
+    public abstract IBakedModel handleBlockState(@Nullable BlockState state, @Nullable Direction side,
+                                                 @Nonnull Random rand, @Nonnull IModelData extraData);
+    public abstract IBakedModel handleItemState(@Nullable ItemStack stack, @Nullable World world,
+                                                @Nullable LivingEntity entity);
 
     @Override
     public ItemOverrideList getOverrides() {
         return itemOverrides;
     }
 
-    public EnumFacing getRenderingSide() {
+    public Direction getRenderingSide() {
         return renderingSide;
     }
 
     public class ItemOverrides extends ItemOverrideList {
-
-        public ItemOverrides() {
-            super(Collections.<ItemOverride>emptyList());
-        }
-
+        @Nullable
         @Override
-        public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
+        public IBakedModel getModelWithOverrides(IBakedModel model, ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
             return DynamicItemAndBlockModel.this.handleItemState(stack, world, entity);
         }
     }

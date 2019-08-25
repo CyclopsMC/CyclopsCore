@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagFloat;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagShort;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.ByteNBT;
+import net.minecraft.nbt.IntNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.DoubleNBT;
+import net.minecraft.nbt.FloatNBT;
+import net.minecraft.nbt.ShortNBT;
+import net.minecraft.nbt.StringNBT;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.junit.Before;
 import org.junit.Test;
@@ -116,97 +116,97 @@ public class TestNbtPathExpressionHandlerBooleanRelationalAdapter {
     @Test
     public void testExpressionStreamSingleLeafString() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagString("a"))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagByte((byte) 0))));
+        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(new ByteNBT((byte) 0))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafIntValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagInt(2))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagByte((byte) 1))));
+        assertThat(expression.match(Stream.of(new IntNBT(2))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(new ByteNBT((byte) 1))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafIntInvalid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagInt(3))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagByte((byte) 0))));
+        assertThat(expression.match(Stream.of(new IntNBT(3))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(new ByteNBT((byte) 0))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafDoubleValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3.3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagDouble(2.2))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagByte((byte) 1))));
+        assertThat(expression.match(Stream.of(new DoubleNBT(2.2))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(new ByteNBT((byte) 1))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafFloatValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3.3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagFloat(2.2f))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagByte((byte) 1))));
+        assertThat(expression.match(Stream.of(new FloatNBT(2.2f))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(new ByteNBT((byte) 1))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafShortValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3.3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagShort((short) 2))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagByte((byte) 1))));
+        assertThat(expression.match(Stream.of(new ShortNBT((short) 2))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(new ByteNBT((byte) 1))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafByteValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3.3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagShort((byte) 1))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagByte((byte) 1))));
+        assertThat(expression.match(Stream.of(new ShortNBT((byte) 1))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(new ByteNBT((byte) 1))));
     }
 
     @Test
     public void testExpressionStreamMultipleLeafString() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
-                new NBTTagString("a"),
-                new NBTTagString("b"),
-                new NBTTagString("c")
+        Stream<INBT> stream = Stream.of(
+                new StringNBT("a"),
+                new StringNBT("b"),
+                new StringNBT("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagByte((byte) 0),
-                        new NBTTagByte((byte) 0),
-                        new NBTTagByte((byte) 0)
+                        new ByteNBT((byte) 0),
+                        new ByteNBT((byte) 0),
+                        new ByteNBT((byte) 0)
                 )));
     }
 
     @Test
     public void testExpressionStreamMultipleLeafIntValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
-                new NBTTagInt(2),
-                new NBTTagInt(1),
-                new NBTTagInt(0)
+        Stream<INBT> stream = Stream.of(
+                new IntNBT(2),
+                new IntNBT(1),
+                new IntNBT(0)
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagByte((byte) 1),
-                        new NBTTagByte((byte) 1),
-                        new NBTTagByte((byte) 1)
+                        new ByteNBT((byte) 1),
+                        new ByteNBT((byte) 1),
+                        new ByteNBT((byte) 1)
                 )));
     }
 
     @Test
     public void testExpressionStreamMultipleLeafIntPartialValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
-                new NBTTagInt(2),
-                new NBTTagInt(3),
-                new NBTTagInt(4)
+        Stream<INBT> stream = Stream.of(
+                new IntNBT(2),
+                new IntNBT(3),
+                new IntNBT(4)
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagByte((byte) 1),
-                        new NBTTagByte((byte) 0),
-                        new NBTTagByte((byte) 0)
+                        new ByteNBT((byte) 1),
+                        new ByteNBT((byte) 0),
+                        new ByteNBT((byte) 0)
                 )));
     }
 

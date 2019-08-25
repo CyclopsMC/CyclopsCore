@@ -7,4 +7,9 @@ import net.minecraft.item.Item;
  * @author rubensworks
  */
 public class ItemDummy extends Item {
+
+    public ItemDummy() {
+        super(new Properties());
+    }
+
 }

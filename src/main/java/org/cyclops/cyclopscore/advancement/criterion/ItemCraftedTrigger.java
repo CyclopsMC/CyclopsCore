@@ -2,13 +2,13 @@ package org.cyclops.cyclopscore.advancement.criterion;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.critereon.AbstractCriterionInstance;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.advancements.criterion.CriterionInstance;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.cyclops.cyclopscore.Reference;
 
 /**
@@ -28,12 +28,12 @@ public class ItemCraftedTrigger extends BaseCriterionTrigger<PlayerEvent.ItemCra
 
     @SubscribeEvent
     public void onCrafted(PlayerEvent.ItemCraftedEvent event) {
-        if (event.player != null && event.player instanceof EntityPlayerMP) {
-            this.trigger((EntityPlayerMP) event.player, event);
+        if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayerEntity) {
+            this.trigger((ServerPlayerEntity) event.getPlayer(), event);
         }
     }
 
-    public static class Instance extends AbstractCriterionInstance implements ICriterionInstanceTestable<PlayerEvent.ItemCraftedEvent> {
+    public static class Instance extends CriterionInstance implements ICriterionInstanceTestable<PlayerEvent.ItemCraftedEvent> {
         private final ItemPredicate[] itemPredicates;
 
         public Instance(ResourceLocation criterionIn, ItemPredicate[] itemPredicates) {
@@ -42,9 +42,9 @@ public class ItemCraftedTrigger extends BaseCriterionTrigger<PlayerEvent.ItemCra
         }
 
         @Override
-        public boolean test(EntityPlayerMP player, PlayerEvent.ItemCraftedEvent criterionData) {
+        public boolean test(ServerPlayerEntity player, PlayerEvent.ItemCraftedEvent criterionData) {
             for (ItemPredicate itemPredicate : this.itemPredicates) {
-                if (itemPredicate.test(criterionData.crafting)) {
+                if (itemPredicate.test(criterionData.getCrafting())) {
                     return true;
                 }
             }

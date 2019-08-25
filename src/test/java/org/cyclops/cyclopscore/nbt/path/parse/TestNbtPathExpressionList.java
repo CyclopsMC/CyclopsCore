@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.StringNBT;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionList;
 import org.junit.Test;
 
@@ -18,9 +18,9 @@ public class TestNbtPathExpressionList {
     @Test
     public void testEmptyList() {
         NbtPathExpressionList list = new NbtPathExpressionList();
-        Stream<NBTBase> stream = Stream.of(new NBTTagString("a"));
+        Stream<INBT> stream = Stream.of(new StringNBT("a"));
         assertThat(list.match(stream).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new NBTTagString("a"))));
+                is(Lists.newArrayList(new StringNBT("a"))));
     }
 
     @Test
@@ -31,16 +31,16 @@ public class TestNbtPathExpressionList {
                 new NbtPathExpressionParseHandlerChild.Expression("c")
         );
 
-        NBTTagCompound tag1 = new NBTTagCompound();
-        NBTTagCompound tag2 = new NBTTagCompound();
-        NBTTagCompound tag3 = new NBTTagCompound();
-        tag1.setTag("a", tag2);
-        tag2.setTag("b", tag3);
-        tag3.setString("c", "x");
+        CompoundNBT tag1 = new CompoundNBT();
+        CompoundNBT tag2 = new CompoundNBT();
+        CompoundNBT tag3 = new CompoundNBT();
+        tag1.put("a", tag2);
+        tag2.put("b", tag3);
+        tag3.putString("c", "x");
 
-        Stream<NBTBase> stream = Stream.of(tag1);
+        Stream<INBT> stream = Stream.of(tag1);
         assertThat(list.match(stream).getMatches().collect(Collectors.toList()), is(Lists.newArrayList(
-                new NBTTagString("x")
+                new StringNBT("x")
         )));
     }
 

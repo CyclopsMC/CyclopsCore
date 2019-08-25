@@ -3,33 +3,20 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.common.config.Property;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.gui.GuiHandler;
-import org.cyclops.cyclopscore.config.ConfigurableType;
-import org.cyclops.cyclopscore.config.configurable.ConfigurableBlockContainer;
-import org.cyclops.cyclopscore.config.configurable.IConfigurableBlock;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
-import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -38,7 +25,7 @@ import java.util.concurrent.Callable;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
+public class BlockAction extends ConfigurableTypeAction<BlockConfig, Block> {
 
     private static final List<BlockConfig> MODEL_ENTRIES = Lists.newArrayList();
 
@@ -50,21 +37,19 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
      * Registers a block.
      * @param block The block instance.
      * @param config The config.
-     * @param creativeTabs The creative tab this block will reside in.
      */
-    public static void register(Block block, ExtendedConfig<BlockConfig> config, @Nullable CreativeTabs creativeTabs) {
-        register(block, config, creativeTabs, null);
+    public static void register(Block block, BlockConfig config) {
+        register(block, config, null);
     }
 
     /**
      * Registers a block.
      * @param block The block instance.
      * @param config The config.
-     * @param creativeTabs The creative tab this block will reside in.
      * @param callback A callback that will be called when the entry is registered.
      */
-    public static void register(Block block, ExtendedConfig<BlockConfig> config, @Nullable CreativeTabs creativeTabs, @Nullable Callable<?> callback) {
-        register(block, null, config, creativeTabs, callback);
+    public static void register(Block block, BlockConfig config, @Nullable Callable<?> callback) {
+        register(block, null, config, callback);
     }
 
     /**
@@ -72,10 +57,9 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
      * @param block The block instance.
      * @param itemBlockClass The optional item block class.
      * @param config The config.
-     * @param creativeTabs The creative tab this block will reside in.
      */
-    public static void register(Block block, @Nullable Class<? extends Item> itemBlockClass, ExtendedConfig<BlockConfig> config, @Nullable CreativeTabs creativeTabs) {
-        register(block, itemBlockClass, config, creativeTabs, null);
+    public static void register(Block block, @Nullable Class<? extends Item> itemBlockClass, BlockConfig config) {
+        register(block, itemBlockClass, config, null);
     }
 
     /**
@@ -83,89 +67,60 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
      * @param block The block instance.
      * @param itemBlockClass The optional item block class.
      * @param config The config.
-     * @param creativeTabs The creative tab this block will reside in.
      * @param callback A callback that will be called when the entry is registered.
      */
-    public static void register(Block block, @Nullable Class<? extends Item> itemBlockClass, ExtendedConfig<BlockConfig> config, @Nullable CreativeTabs creativeTabs, @Nullable Callable<?> callback) {
-        register(block, config, (Callable<?>) null); // Delay onForgeRegistered callback until item has been registered
+    public static void register(Block block, @Nullable Class<? extends Item> itemBlockClass, BlockConfig config, @Nullable Callable<?> callback) {
+        register(block, config, null); // Delay onForgeRegistered callback until item has been registered
         if(itemBlockClass != null) {
-            try {
-                Item item = itemBlockClass.getConstructor(Block.class).newInstance(block);
-                register(ForgeRegistries.ITEMS, item, config, callback);
-            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if(creativeTabs != null) {
-            block.setCreativeTab(creativeTabs);
+            // TODO: handle item registration for ItemBlock
+//            try {
+//                Item item = itemBlockClass.getConstructor(Block.class).newInstance(block);
+//                register(ForgeRegistries.ITEMS, item, config, callback);
+//            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+//                e.printStackTrace();
+//            }
         }
     }
 
     @Override
-    public void preRun(BlockConfig eConfig, Configuration config, boolean startup) {
-        // Get property in config file and set comment
-        Property property = config.get(eConfig.getHolderType().getCategory(), eConfig.getNamedId(),
-        		eConfig.isEnabled());
-        property.setRequiresMcRestart(true);
-        property.setComment(eConfig.getComment());
-        property.setLanguageKey(eConfig.getFullTranslationKey());
-        
-        if(startup) {
-	        // Update the ID, it could've changed
-	        eConfig.setEnabled(property.getBoolean(true));
-        }
-    }
-
-    @Override
-    public void postRun(BlockConfig eConfig, Configuration config) {
-        // Save the config inside the correct element
-        eConfig.save();
-
-        Block block = (Block) eConfig.getSubInstance();
+    public void onRegister(BlockConfig eConfig) {
+        Block block = eConfig.getInstance();
 
         // Register block and set creative tab.
-        register(block, eConfig.getItemBlockClass(), eConfig, eConfig.getTargetTab(), () -> {
+        register(block, eConfig.getItemBlockClass(), eConfig, () -> {
             eConfig.onForgeRegistered(); // Manually call after item has been registered
-            // Register optional ore dictionary ID
-            if(eConfig.getOreDictionaryId() != null) {
-                OreDictionary.registerOre(eConfig.getOreDictionaryId(), new ItemStack((Block)eConfig.getSubInstance()));
-            }
+            this.polish(eConfig);
             return null;
         });
 
         // Also register tile entity
         GuiHandler.GuiType<Void> guiType = GuiHandler.GuiType.BLOCK;
-        if(eConfig.getHolderType().equals(ConfigurableType.BLOCKCONTAINER)) {
-            ConfigurableBlockContainer container = (ConfigurableBlockContainer) block;
-            // This alternative registration is required to remain compatible with old worlds.
-            try {
-                GameRegistry.registerTileEntity(container.getTileEntity(),
-                        eConfig.getMod().getModId() + ":" + eConfig.getSubUniqueName());
-            } catch (IllegalArgumentException e) {
-                // Ignore duplicate tile entity registration errors
-            }
-            guiType = GuiHandler.GuiType.TILE;
-        }
+//        if(eConfig.getConfigurableType().equals(ConfigurableType.BLOCKCONTAINER)) {
+//            ConfigurableBlockContainer container = (ConfigurableBlockContainer) block;
+//            // This alternative registration is required to remain compatible with old worlds.
+//            try {
+//                // TODO: register guis via registry
+////                GameRegistry.registerTileEntity(container.getTileEntity(),
+////                        eConfig.getMod().getModId() + ":" + eConfig.getSubUniqueName());
+//            } catch (IllegalArgumentException e) {
+//                // Ignore duplicate tile entity registration errors
+//            }
+//            guiType = GuiHandler.GuiType.TILE;
+//        }
 
         // If the block has a GUI, go ahead and register that.
-        if(block instanceof IConfigurableBlock && ((IConfigurableBlock) block).hasGui()) {
-            IGuiContainerProvider gui = (IGuiContainerProvider) block;
-            eConfig.getMod().getGuiHandler().registerGUI(gui, guiType);
-        }
-        
-        // Register third-party mod blockState parts.
-        // TODO: enable when FMP is updated.
-        /*if(eConfig.isMultipartEnabled()) {
-            ForgeMultipartHelper.registerMicroblock(eConfig);
-        }*/
+        // TODO: handle guis
+//        if(block instanceof IConfigurableBlock && ((IConfigurableBlock) block).hasGui()) {
+//            IGuiContainerProvider gui = (IGuiContainerProvider) block;
+//            eConfig.getMod().getGuiHandler().registerGUI(gui, guiType);
+//        }
 
         if (MinecraftHelpers.isClientSide()) {
             ItemAction.handleItemModel(eConfig);
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public static void onModelRegistryLoad(ModelRegistryEvent event) {
         for (BlockConfig config : MODEL_ENTRIES) {
@@ -180,15 +135,12 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig> {
         MODEL_ENTRIES.add(extendedConfig);
     }
 
-    @Override
-    public void polish(BlockConfig config) {
-        super.polish(config);
-        Block block = config.getBlockInstance();
-        if(block instanceof IConfigurableBlock && MinecraftHelpers.isClientSide()) {
-            IConfigurableBlock configurableBlock = (IConfigurableBlock) block;
-            IBlockColor blockColorHandler = configurableBlock.getBlockColorHandler();
+    protected void polish(BlockConfig config) {
+        Block block = config.getInstance();
+        if(MinecraftHelpers.isClientSide()) {
+            IBlockColor blockColorHandler = config.getBlockColorHandler();
             if (blockColorHandler != null) {
-                Minecraft.getMinecraft().getBlockColors().registerBlockColorHandler(blockColorHandler, block);
+                Minecraft.getInstance().getBlockColors().register(blockColorHandler, block);
             }
         }
     }

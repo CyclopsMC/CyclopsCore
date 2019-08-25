@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
@@ -56,10 +56,10 @@ public class NbtPathExpressionParseHandlerChild implements INbtPathExpressionPar
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
             return new NbtPathExpressionMatches(executionContexts
                     .map(executionContext -> {
-                        NBTBase nbt = executionContext.getCurrentTag();
+                        INBT nbt = executionContext.getCurrentTag();
                         if (nbt.getId() == Constants.NBT.TAG_COMPOUND) {
-                            NBTTagCompound tag = (NBTTagCompound) nbt;
-                            NBTBase childTag = tag.getTag(childName);
+                            CompoundNBT tag = (CompoundNBT) nbt;
+                            INBT childTag = tag.get(childName);
                             if (childTag != null) {
                                 return new NbtPathExpressionExecutionContext(childTag, executionContext);
                             }

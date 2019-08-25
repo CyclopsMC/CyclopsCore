@@ -1,12 +1,12 @@
 package org.cyclops.cyclopscore.network.packet;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
 /**
@@ -29,16 +29,16 @@ public class ReloadResourcesPacket extends PacketCodec {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void actionClient(World world, EntityPlayer player) {
+	@OnlyIn(Dist.CLIENT)
+	public void actionClient(World world, PlayerEntity player) {
 		long start = System.currentTimeMillis();
-		Minecraft.getMinecraft().refreshResources();
+		Minecraft.getInstance().reloadResources();
 		long end = System.currentTimeMillis();
-		player.sendMessage(new TextComponentString(String.format("Reloaded all resources in %s ms", end - start)));
+		player.sendMessage(new StringTextComponent(String.format("Reloaded all resources in %s ms", end - start)));
 	}
 
 	@Override
-	public void actionServer(World world, EntityPlayerMP player) {
+	public void actionServer(World world, ServerPlayerEntity player) {
 
 	}
 	

@@ -1,33 +1,36 @@
 package org.cyclops.cyclopscore.command;
 
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentString;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.util.text.StringTextComponent;
 import org.cyclops.cyclopscore.init.ModBase;
-
-import java.util.List;
 
 /**
  * Command for checking the version.
  * @author rubensworks
  *
  */
-public class CommandVersion extends CommandMod {
+public class CommandVersion implements Command<CommandSource> {
 
-    public static final String NAME = "version";
+    private final ModBase mod;
 
     public CommandVersion(ModBase mod) {
-        super(mod, NAME);
+        this.mod = mod;
     }
 
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] parts, BlockPos blockPos) {
-        return null;
+    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
+        context.getSource().asPlayer()
+                .sendMessage(new StringTextComponent(this.mod.getReferenceValue(ModBase.REFKEY_MOD_VERSION)));
+        return 0;
     }
 
-    @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] parts) {
-        sender.sendMessage(new TextComponentString(getMod().getReferenceValue(ModBase.REFKEY_MOD_VERSION)));
+    public static LiteralArgumentBuilder<CommandSource> make(ModBase mod) {
+        return Commands.literal("version")
+                .executes(new CommandVersion(mod));
     }
+
 }

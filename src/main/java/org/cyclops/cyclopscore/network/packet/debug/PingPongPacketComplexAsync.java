@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.network.packet.debug;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import org.cyclops.cyclopscore.network.CodecField;
 
 /**
@@ -33,7 +33,7 @@ public class PingPongPacketComplexAsync extends PingPongPacketAsync {
 	}
 
 	@Override
-	protected void log(EntityPlayer player, String message) {
+	protected void log(PlayerEntity player, String message) {
 		super.log(player, message);
 		super.log(player, String.format("[EXTRA] '%s' and '%s' ", string1, string2));
 	}

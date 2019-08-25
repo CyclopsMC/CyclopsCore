@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.StringNBT;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtParseException;
 import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationAdapter;
@@ -120,17 +120,17 @@ public class TestNbtPathExpressionHandlerChild {
     @Test
     public void testExpressionStreamSingleLeaf() {
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new NBTTagString("a"))).getMatches().collect(Collectors.toList()),
+        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
     }
 
     @Test
     public void testExpressionStreamMultipleLeaf() {
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
-                new NBTTagString("a"),
-                new NBTTagString("b"),
-                new NBTTagString("c")
+        Stream<INBT> stream = Stream.of(
+                new StringNBT("a"),
+                new StringNBT("b"),
+                new StringNBT("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
@@ -138,8 +138,8 @@ public class TestNbtPathExpressionHandlerChild {
 
     @Test
     public void testExpressionStreamSingleTagNoMatch() {
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setString("def", "123");
+        CompoundNBT tag = new CompoundNBT();
+        tag.putString("def", "123");
 
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
         assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
@@ -148,15 +148,15 @@ public class TestNbtPathExpressionHandlerChild {
 
     @Test
     public void testExpressionStreamMultipleTagsNoMatch() {
-        NBTTagCompound tag1 = new NBTTagCompound();
-        tag1.setString("def", "1");
-        NBTTagCompound tag2 = new NBTTagCompound();
-        tag2.setString("def", "2");
-        NBTTagCompound tag3 = new NBTTagCompound();
-        tag3.setString("def", "3");
+        CompoundNBT tag1 = new CompoundNBT();
+        tag1.putString("def", "1");
+        CompoundNBT tag2 = new CompoundNBT();
+        tag2.putString("def", "2");
+        CompoundNBT tag3 = new CompoundNBT();
+        tag3.putString("def", "3");
 
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
+        Stream<INBT> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3
@@ -167,58 +167,58 @@ public class TestNbtPathExpressionHandlerChild {
 
     @Test
     public void testExpressionStreamSingleTagMatch() {
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setString("abc", "123");
+        CompoundNBT tag = new CompoundNBT();
+        tag.putString("abc", "123");
 
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
         assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagString("123")
+                        new StringNBT("123")
                 )));
     }
 
     @Test
     public void testExpressionStreamMultipleTagsMatch() {
-        NBTTagCompound tag1 = new NBTTagCompound();
-        tag1.setString("abc", "1");
-        NBTTagCompound tag2 = new NBTTagCompound();
-        tag2.setString("abc", "2");
-        NBTTagCompound tag3 = new NBTTagCompound();
-        tag3.setString("abc", "3");
+        CompoundNBT tag1 = new CompoundNBT();
+        tag1.putString("abc", "1");
+        CompoundNBT tag2 = new CompoundNBT();
+        tag2.putString("abc", "2");
+        CompoundNBT tag3 = new CompoundNBT();
+        tag3.putString("abc", "3");
 
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
+        Stream<INBT> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagString("1"),
-                        new NBTTagString("2"),
-                        new NBTTagString("3")
+                        new StringNBT("1"),
+                        new StringNBT("2"),
+                        new StringNBT("3")
                 )));
     }
 
     @Test
     public void testExpressionStreamMultipleTagsPartialMatch() {
-        NBTTagCompound tag1 = new NBTTagCompound();
-        tag1.setString("abc", "1");
-        NBTTagCompound tag2 = new NBTTagCompound();
-        tag2.setString("def", "2");
-        NBTTagCompound tag3 = new NBTTagCompound();
-        tag3.setString("abc", "3");
+        CompoundNBT tag1 = new CompoundNBT();
+        tag1.putString("abc", "1");
+        CompoundNBT tag2 = new CompoundNBT();
+        tag2.putString("def", "2");
+        CompoundNBT tag3 = new CompoundNBT();
+        tag3.putString("abc", "3");
 
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
-        Stream<NBTBase> stream = Stream.of(
+        Stream<INBT> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new NBTTagString("1"),
-                        new NBTTagString("3")
+                        new StringNBT("1"),
+                        new StringNBT("3")
                 )));
     }
 

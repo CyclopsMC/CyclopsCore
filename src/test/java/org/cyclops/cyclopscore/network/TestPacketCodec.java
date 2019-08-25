@@ -4,8 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.netty.buffer.Unpooled;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.junit.Test;
@@ -141,7 +142,7 @@ public class TestPacketCodec {
     @Test
     public void testNBTEmpty() {
         NBTPacketCodec packet1 = new NBTPacketCodec();
-        packet1.value = new NBTTagCompound();
+        packet1.value = new CompoundNBT();
         NBTPacketCodec packet2 = new NBTPacketCodec();
         encodeDecode(packet1, packet2);
         assertThat("Input equals output", packet1.value, equalTo(packet2.value));
@@ -150,12 +151,12 @@ public class TestPacketCodec {
     @Test
     public void testNBTNonEmpty() {
         NBTPacketCodec packet1 = new NBTPacketCodec();
-        packet1.value = new NBTTagCompound();
-        packet1.value.setBoolean("b", true);
-        packet1.value.setInteger("c", 45678);
-        NBTTagCompound subTag = new NBTTagCompound();
-        subTag.setFloat("f", 790.5F);
-        packet1.value.setTag("(", subTag);
+        packet1.value = new CompoundNBT();
+        packet1.value.putBoolean("b", true);
+        packet1.value.putInt("c", 45678);
+        CompoundNBT subTag = new CompoundNBT();
+        subTag.putFloat("f", 790.5F);
+        packet1.value.put("(", subTag);
         NBTPacketCodec packet2 = new NBTPacketCodec();
         encodeDecode(packet1, packet2);
         assertThat("Input equals output", packet1.value, equalTo(packet2.value));
@@ -164,7 +165,7 @@ public class TestPacketCodec {
     @Test
     public void testEnumFacing() {
         EnumFacingPacketCodec packet1 = new EnumFacingPacketCodec();
-        packet1.value = EnumFacing.NORTH;
+        packet1.value = Direction.NORTH;
         EnumFacingPacketCodec packet2 = new EnumFacingPacketCodec();
         encodeDecode(packet1, packet2);
         assertThat("Input equals output", packet1.value, equalTo(packet2.value));
@@ -234,7 +235,7 @@ public class TestPacketCodec {
     }
 
     protected static <T extends PacketCodec> void encodeDecode(T packetIn, T packetOut) {
-        ExtendedBuffer buffer = new ExtendedBuffer(Unpooled.buffer());
+        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
         packetIn.encode(buffer);
         packetOut.decode(buffer);
     }
@@ -286,7 +287,7 @@ public class TestPacketCodec {
 
     public static class NBTPacketCodec extends SimplePacketCodec {
         @CodecField
-        public NBTTagCompound value;
+        public CompoundNBT value;
     }
 
     public static class ItemStackPacketCodec extends SimplePacketCodec {
@@ -296,7 +297,7 @@ public class TestPacketCodec {
 
     public static class EnumFacingPacketCodec extends SimplePacketCodec {
         @CodecField
-        public EnumFacing value;
+        public Direction value;
     }
 
     public static class BlockPosPacketCodec extends SimplePacketCodec {

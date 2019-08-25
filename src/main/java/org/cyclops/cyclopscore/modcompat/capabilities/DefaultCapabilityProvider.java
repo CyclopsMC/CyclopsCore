@@ -1,8 +1,9 @@
 package org.cyclops.cyclopscore.modcompat.capabilities;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.Objects;
 
@@ -33,15 +34,10 @@ public class DefaultCapabilityProvider<T> implements ICapabilityProvider {
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return this.getCapabilityType() == capability;
-    }
-
-    @Override
-    public <T2> T2 getCapability(Capability<T2> capability, EnumFacing facing) {
-        if(hasCapability(capability, facing)) {
-            return (T2) this.capability;
+    public <T2> LazyOptional<T2> getCapability(Capability<T2> capability, Direction facing) {
+        if(this.getCapabilityType() == capability) {
+            return LazyOptional.of(() -> this.capability).cast();
         }
-        return null;
+        return LazyOptional.empty();
     }
 }

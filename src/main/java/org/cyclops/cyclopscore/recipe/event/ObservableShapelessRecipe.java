@@ -1,9 +1,11 @@
 package org.cyclops.cyclopscore.recipe.event;
 
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapelessRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 /**
  * A shapeless recipe that is observable in terms of the recipe output.
@@ -11,24 +13,25 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
  * @author rubensworks
  *
  */
-public class ObservableShapelessRecipe extends ShapelessOreRecipe {
+public class ObservableShapelessRecipe extends ShapelessRecipe {
 	
 	private IRecipeOutputObserver observer;
 	
 	/**
 	 * Make a new instance.
+	 * @param id The recipe id.
 	 * @param group The recipe name.
 	 * @param result The result.
-	 * @param recipe The recipe.
+	 * @param recipeItems The recipe items.
 	 * @param observer The observer for the output.
 	 */
-	public ObservableShapelessRecipe(ResourceLocation group, ItemStack result, Object[] recipe, IRecipeOutputObserver observer) {
-		super(group, result, recipe);
+	public ObservableShapelessRecipe(ResourceLocation id, String group, ItemStack result, NonNullList<Ingredient> recipeItems, IRecipeOutputObserver observer) {
+		super(id, group, result, recipeItems);
 		this.observer = observer;
 	}
 	
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting craftingGrid) {
+	public ItemStack getCraftingResult(CraftingInventory craftingGrid) {
 		return observer.getRecipeOutput(craftingGrid, super.getCraftingResult(craftingGrid));
     }
 

@@ -1,16 +1,16 @@
 package org.cyclops.cyclopscore.client.render.tileentity;
 
-import net.minecraft.block.state.IBlockState;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 
 /**
- * General renderer for {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity} with {@link net.minecraft.client.renderer.block.model.IBakedModel} models.
+ * General renderer for {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity} with {@link IBakedModel} models.
  * @author rubensworks
  *
  */
@@ -27,34 +27,34 @@ public abstract class RenderTileEntityBakedModel<T extends CyclopsTileEntity> ex
         GlStateManager.enableRescaleNormal();
         GlStateManager.alphaFunc(516, 0.1F);
         GlStateManager.enableBlend();
-        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager.blendFuncSeparate(770, 771, 1, 0);
         GlStateManager.pushMatrix();
-        GlStateManager.pushAttrib();
+        GlStateManager.pushTextureAttributes();
 
         GlStateManager.enableRescaleNormal();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.translate((float) x, (float) y, (float) z);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.translatef((float) x, (float) y, (float) z);
         GlStateManager.disableRescaleNormal();
 
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
         BlockModelShapes blockModelShapes = blockRendererDispatcher.getBlockModelShapes();
-        IBakedModel bakedModel = blockModelShapes.getModelForState(getBlockState(tile, x, y, z, partialTick, destroyStage));
-        Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        IBakedModel bakedModel = blockModelShapes.getModel(getBlockState(tile, x, y, z, partialTick, destroyStage));
+        Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         renderModel(tile, bakedModel, partialTick, destroyStage);
 
-        GlStateManager.popAttrib();
+        GlStateManager.popAttributes();
         GlStateManager.popMatrix();
         GlStateManager.disableRescaleNormal();
         GlStateManager.disableBlend();
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    protected abstract IBlockState getBlockState(T tile, double x, double y, double z, float partialTick, int destroyStage);
+    protected abstract BlockState getBlockState(T tile, double x, double y, double z, float partialTick, int destroyStage);
 
     @Override
     protected void renderModel(T tile, IBakedModel model, float partialTick, int destroyStage) {
-        Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().
+        Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelRenderer().
                 renderModelBrightnessColor(model, 1.0F, 1.0F, 1.0F, 1.0F);
     }
 }

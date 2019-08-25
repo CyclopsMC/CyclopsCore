@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
@@ -291,12 +291,12 @@ public class InfoSection {
      * @param footnoteOffsetX Footnote offset x
      * @param footnoteOffsetY Footnote offset y
      */
-    @SideOnly(Side.CLIENT)
-    public void drawScreen(GuiInfoBook gui, int x, int y, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
+    @OnlyIn(Dist.CLIENT)
+    public void drawScreen(ScreenInfoBook gui, int x, int y, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
         if(page < getPages()) {
             FontRenderer fontRenderer = gui.getFontRenderer();
-            boolean oldUnicode = fontRenderer.getUnicodeFlag();
-            fontRenderer.setUnicodeFlag(true);
+            boolean oldUnicode = fontRenderer.getBidiFlag();
+            fontRenderer.setBidiFlag(true);
             fontRenderer.setBidiFlag(false);
 
             // Draw text content
@@ -309,7 +309,7 @@ public class InfoSection {
                 gui.drawHorizontalRule(x + width / 2, y + yOffset);
                 gui.drawHorizontalRule(x + width / 2, y + yOffset + 21);
             }
-            fontRenderer.setUnicodeFlag(oldUnicode);
+            fontRenderer.setBidiFlag(oldUnicode);
 
             // Draw current page/section indication
             gui.drawScaledCenteredString(getLocalizedTitle() + " - " + (page + 1) +  "/" + getPages(), x + (((page % 2 == 0) ? 1 : -1) * footnoteOffsetX), y + height + footnoteOffsetY, width, 0.6f, (int) (width * 0.75f), Helpers.RGBToInt(190, 190, 190));
@@ -335,8 +335,8 @@ public class InfoSection {
      * @param mx Mouse X.
      * @param my Mouse Y.
      */
-    @SideOnly(Side.CLIENT)
-    public void postDrawScreen(GuiInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
+    @OnlyIn(Dist.CLIENT)
+    public void postDrawScreen(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
         if(page < getPages()) {
             FontRenderer fontRenderer = gui.getFontRenderer();
             // Post draw appendixes

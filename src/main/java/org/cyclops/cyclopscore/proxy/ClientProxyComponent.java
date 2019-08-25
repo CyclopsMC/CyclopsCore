@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.proxy;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -23,11 +23,11 @@ import java.util.Map.Entry;
  */
 @EqualsAndHashCode(callSuper = false)
 @Data
-public abstract class ClientProxyComponent extends CommonProxyComponent implements ICommonProxy {
+public abstract class ClientProxyComponent extends CommonProxyComponent implements ICommonProxy, IClientProxy {
 
 	private final CommonProxyComponent commonProxyComponent;
 	private final IconProvider iconProvider;
-    protected final Map<Class<? extends TileEntity>, TileEntitySpecialRenderer> tileEntityRenderers = Maps.newHashMap();
+    protected final Map<Class<? extends TileEntity>, TileEntityRenderer> tileEntityRenderers = Maps.newHashMap();
 
     public ClientProxyComponent(CommonProxyComponent commonProxyComponent) {
         this.commonProxyComponent = commonProxyComponent;
@@ -39,14 +39,14 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
     }
 
     @Override
-    public void registerRenderer(Class<? extends TileEntity> clazz, TileEntitySpecialRenderer renderer) {
+    public void registerRenderer(Class<? extends TileEntity> clazz, TileEntityRenderer renderer) {
         tileEntityRenderers.put(clazz, renderer);
     }
 
 	@Override
 	public void registerRenderers() {
 		// Special TileEntity renderers
-		for (Entry<Class<? extends TileEntity>, TileEntitySpecialRenderer> entry : tileEntityRenderers.entrySet()) {
+		for (Entry<Class<? extends TileEntity>, TileEntityRenderer> entry : tileEntityRenderers.entrySet()) {
 			ClientRegistry.bindTileEntitySpecialRenderer(entry.getKey(), entry.getValue());
             getMod().getLoggerHelper().log(Level.TRACE, String.format("Registered %s special renderer %s", entry.getKey(), entry.getValue()));
 		}

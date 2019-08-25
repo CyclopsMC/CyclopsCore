@@ -6,15 +6,16 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.IShapedRecipe;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.recipe.custom.component.IngredientRecipeComponent;
@@ -30,7 +31,7 @@ public class RegistryExportableCraftingRecipe implements IRegistryExportable {
     public JsonObject export() {
         // Calculate tags for all recipes
         Multimap<ItemStack, String> taggedRecipeReverse = Multimaps.newListMultimap(Maps.newHashMap(), Lists::newArrayList);
-        for (ModContainer modContainer : Loader.instance().getActiveModList()) {
+        ModList.get().forEachModContainer(((s, modContainer) -> {
             if (modContainer.getMod() instanceof ModBase) {
                 RecipeHandler recipeHandler = ((ModBase) modContainer.getMod()).getRecipeHandler();
                 if (recipeHandler != null) {
@@ -42,11 +43,11 @@ public class RegistryExportableCraftingRecipe implements IRegistryExportable {
                     }
                 }
             }
-        }
+        }));
 
         JsonObject elements = new JsonObject();
-        for (ResourceLocation key : CraftingManager.REGISTRY.getKeys()) {
-            IRecipe value = CraftingManager.REGISTRY.getObject(key);
+        for (Map.Entry<ResourceLocation, IRecipe<CraftingInventory>> recipeEntry : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipes(IRecipeType.CRAFTING).entrySet()) {
+            IRecipe value = recipeEntry.getValue();
             JsonObject serializedRecipe = serializeRecipe(value);
             ItemStack outputItem = value.getRecipeOutput();
 

@@ -3,28 +3,29 @@ package org.cyclops.cyclopscore.inventory.container;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.IContainerListener;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.IContainerListener;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.inventory.IValueNotifier;
-import org.cyclops.cyclopscore.inventory.container.button.IButtonActionServer;
-import org.cyclops.cyclopscore.inventory.container.button.IButtonClickAcceptorServer;
+import org.cyclops.cyclopscore.inventory.container.button.IContainerButtonAction;
+import org.cyclops.cyclopscore.inventory.container.button.IContainerButtonClickAcceptorServer;
 import org.cyclops.cyclopscore.inventory.slot.SlotArmor;
 import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
 import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,21 +35,21 @@ import java.util.function.Supplier;
  * A container with inventory.
  * @author rubensworks
  */
-public abstract class InventoryContainer extends Container implements IButtonClickAcceptorServer<InventoryContainer>,
+public abstract class InventoryContainer extends Container implements IContainerButtonClickAcceptorServer<InventoryContainer>,
         IValueNotifier, IValueNotifiable {
 
-    private static final EntityEquipmentSlot[] EQUIPMENT_SLOTS = new EntityEquipmentSlot[] {
-            EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET};
+    private static final EquipmentSlotType[] EQUIPMENT_SLOTS = new EquipmentSlotType[] {
+            EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET};
     protected static final int ITEMBOX = 18;
 
-    private final Map<Integer, IButtonActionServer<InventoryContainer>> buttonActions = Maps.newHashMap();
-    private final Map<Integer, NBTTagCompound> values = Maps.newHashMap();
+    private final Map<String, IContainerButtonAction<InventoryContainer>> buttonActions = Maps.newHashMap();
+    private final Map<Integer, CompoundNBT> values = Maps.newHashMap();
     private final List<SyncedGuiVariable<?>> syncedGuiVariables = Lists.newArrayList();
     private int nextValueId = 0;
     private IValueNotifiable guiValueListener = null;
 
     private IInventory playerIInventory;
-    protected final EntityPlayer player;
+    protected final PlayerEntity player;
     protected int offsetX = 0;
     protected int offsetY = 0;
 
@@ -61,9 +62,12 @@ public abstract class InventoryContainer extends Container implements IButtonCli
 
     /**
      * Make a new TileInventoryContainer.
+     * @param type The container type.
+     * @param id The container id.
      * @param inventory The player inventory.
      */
-    public InventoryContainer(InventoryPlayer inventory) {
+    public InventoryContainer(@Nullable ContainerType<?> type, int id, PlayerInventory inventory) {
+        super(type, id);
         this.playerIInventory = inventory;
         this.player = inventory.player;
     }
@@ -71,7 +75,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     @Override
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
-        if (!MinecraftHelpers.isClientSide()) {
+        if (!player.world.isRemote()) {
             for (SyncedGuiVariable<?> syncedGuiVariable : this.syncedGuiVariables) {
                 syncedGuiVariable.detectAndSendChanges();
             }
@@ -89,7 +93,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     @Override
     public void addListener(IContainerListener listener) {
         super.addListener(listener);
-        if(!player.getEntityWorld().isRemote) {
+        if(!player.getEntityWorld().isRemote()) {
             initializeValues();
         }
     }
@@ -108,17 +112,17 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     	return new Slot(inventory, index, x, y);
     }
 
-    protected Slot addSlotToContainer(Slot slot) {
+    protected Slot addSlot(Slot slot) {
         slot.xPos += offsetX;
         slot.yPos += offsetY;
-        return super.addSlotToContainer(slot);
+        return super.addSlot(slot);
     }
     
     protected void addInventory(IInventory inventory, int indexOffset, int offsetX, int offsetY, int rows, int cols) {
     	for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 // Slot params: id, x-coord, y-coord (coords are relative to gui box)
-                addSlotToContainer(createNewSlot(inventory, x + y * cols + indexOffset, offsetX + x * ITEMBOX, offsetY + y * ITEMBOX));
+                addSlot(createNewSlot(inventory, x + y * cols + indexOffset, offsetX + x * ITEMBOX, offsetY + y * ITEMBOX));
             }
         }
     }
@@ -129,7 +133,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
      * @param offsetX Offset to X
      * @param offsetY Offset to Y
      */
-    protected void addPlayerInventory(InventoryPlayer inventory, int offsetX, int offsetY) {
+    protected void addPlayerInventory(PlayerInventory inventory, int offsetX, int offsetY) {
         int rows = 3;
         int cols = 9;
 
@@ -146,10 +150,10 @@ public abstract class InventoryContainer extends Container implements IButtonCli
      * @param offsetX Offset to X
      * @param offsetY Offset to Y
      */
-    protected void addPlayerArmorInventory(InventoryPlayer inventory, int offsetX, int offsetY) {
+    protected void addPlayerArmorInventory(PlayerInventory inventory, int offsetX, int offsetY) {
         for (int k = 0; k < 4; ++k) {
-            EntityEquipmentSlot equipmentSlot = EQUIPMENT_SLOTS[k];
-            addSlotToContainer(new SlotArmor(inventory, 4 * 9 + (3 - k), offsetX, offsetY + k * ITEMBOX, inventory.player, equipmentSlot));
+            EquipmentSlotType equipmentSlot = EQUIPMENT_SLOTS[k];
+            addSlot(new SlotArmor(inventory, 4 * 9 + (3 - k), offsetX, offsetY + k * ITEMBOX, inventory.player, equipmentSlot));
         }
     }
     
@@ -164,7 +168,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
     
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotID) {
+    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(slotID);
         int slots = getSizeInventory();
@@ -216,7 +220,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
                 int maxSlotSize = Math.min(slot.getSlotStackLimit(), maxStack);
                 existingStack = slot.getStack().copy();
 
-                if (slot.isItemValid(stack) && !existingStack.isEmpty() && existingStack.getItem() == stack.getItem() && (!stack.getHasSubtypes() || stack.getItemDamage() == existingStack.getItemDamage()) && ItemStack.areItemStackTagsEqual(stack, existingStack)) {
+                if (slot.isItemValid(stack) && !existingStack.isEmpty() && existingStack.getItem() == stack.getItem() && ItemStack.areItemStackTagsEqual(stack, existingStack)) {
                     int existingSize = existingStack.getCount() + stack.getCount();
                     if (existingSize <= maxSlotSize) {
                         stack.setCount(0);
@@ -279,9 +283,9 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickType, EntityPlayer player) {
+    public ItemStack slotClick(int slotId, int dragType, ClickType clickType, PlayerEntity player) {
         Slot slot = slotId < 0 ? null : this.inventorySlots.get(slotId);
-        InventoryPlayer inventoryplayer = player.inventory;
+        PlayerInventory inventoryplayer = player.inventory;
         if (clickType == ClickType.QUICK_CRAFT) {
             // Copied and adjusted from net.minecraft.inventory.Container
             int j1 = this.dragEvent;
@@ -362,7 +366,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
         this.dragSlots.clear();
     }
 
-    private ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickType, EntityPlayer player) {
+    private ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickType, PlayerEntity player) {
         ItemStack stack = ItemStack.EMPTY;
 
         if (mouseButton == 2) {
@@ -370,7 +374,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
                 slot.putStack(ItemStack.EMPTY);
             }
         } else if (mouseButton == 0 || mouseButton == 1) {
-            InventoryPlayer playerInv = player.inventory;
+            PlayerInventory playerInv = player.inventory;
             slot.onSlotChanged();
             ItemStack stackSlot = slot.getStack();
             ItemStack stackHeld = playerInv.getItemStack();
@@ -387,7 +391,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
                 adjustPhantomSlot(slot, mouseButton, clickType);
                 slot.onTake(player, playerInv.getItemStack());
             } else if (slot.isItemValid(stackHeld)) {
-                if (ItemMatch.areItemStacksEqual(stackSlot, stackHeld, ItemMatch.ITEM | ItemMatch.DAMAGE | ItemMatch.NBT)) {
+                if (ItemMatch.areItemStacksEqual(stackSlot, stackHeld, ItemMatch.ITEM | ItemMatch.NBT)) {
                     adjustPhantomSlot(slot, mouseButton, clickType);
                 } else {
                     fillPhantomSlot(slot, stackHeld, mouseButton, clickType);
@@ -435,21 +439,18 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     @Override
-    public void putButtonAction(int buttonId, IButtonActionServer<InventoryContainer> action) {
+    public void putButtonAction(String buttonId, IContainerButtonAction<InventoryContainer> action) {
         buttonActions.put(buttonId, action);
     }
 
     @Override
-    public boolean requiresAction(int buttonId) {
-        return buttonActions.containsKey(buttonId);
-    }
-
-    @Override
-    public void onButtonClick(int buttonId) {
-        IButtonActionServer<InventoryContainer> action;
+    public boolean onButtonClick(String buttonId) {
+        IContainerButtonAction<InventoryContainer> action;
         if((action = buttonActions.get(buttonId)) != null) {
             action.onAction(buttonId, this);
+            return true;
         }
+        return false;
     }
 
     /**
@@ -460,10 +461,10 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     @Override
-    public void setValue(int valueId, NBTTagCompound value) {
+    public void setValue(int valueId, CompoundNBT value) {
         if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
-            if (!player.getEntityWorld().isRemote) { // server -> client
-                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getGuiModId(), getGuiId(), valueId, value), (EntityPlayerMP) player);
+            if (!player.getEntityWorld().isRemote()) { // server -> client
+                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getGuiModId(), getGuiId(), valueId, value), (ServerPlayerEntity) player);
             } else { // client -> server
                 CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getGuiModId(), getGuiId(), valueId, value));
             }
@@ -472,7 +473,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     @Override
-    public NBTTagCompound getValue(int valueId) {
+    public CompoundNBT getValue(int valueId) {
         return values.get(valueId);
     }
 
@@ -482,7 +483,7 @@ public abstract class InventoryContainer extends Container implements IButtonCli
     }
 
     @Override
-    public void onUpdate(int valueId, NBTTagCompound value) {
+    public void onUpdate(int valueId, CompoundNBT value) {
         values.put(valueId, value);
         if(guiValueListener != null) {
             guiValueListener.onUpdate(valueId, value);

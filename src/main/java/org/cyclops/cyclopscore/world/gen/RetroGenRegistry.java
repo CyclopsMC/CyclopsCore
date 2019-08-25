@@ -2,11 +2,11 @@ package org.cyclops.cyclopscore.world.gen;
 
 import com.google.common.collect.Sets;
 import lombok.Getter;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.event.world.ChunkDataEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -23,7 +23,8 @@ public class RetroGenRegistry implements IRetroGenRegistry {
 
 	private final Set<IRetroGen> retroGeneratables = Sets.newHashSet();
 	private final Random random = new Random();
-	@Getter private final ModBase mod;
+	@Getter
+	private final ModBase mod;
 	
 	public RetroGenRegistry(ModBase mod) {
 		this.mod = mod;
@@ -42,34 +43,34 @@ public class RetroGenRegistry implements IRetroGenRegistry {
 	@SubscribeEvent
     public void retroGenLoad(ChunkDataEvent.Load event) {
 		if(getMod().getReferenceValue(ModBase.REFKEY_RETROGEN) && event.getData() != null) {
-			NBTTagCompound tag = event.getData().getCompoundTag(getNBTTag());
+			CompoundNBT tag = event.getData().getCompound(getNBTTag());
 			if(tag == null) {
-				tag = new NBTTagCompound();
+				tag = new CompoundNBT();
 			}
 			setChunkSeed(event.getWorld(), event.getChunk());
 			
 			boolean atLeastOneModified = false;
 			for(IRetroGen retroGen : retroGeneratables) {
-				if(retroGen.shouldRetroGen(tag, event.getWorld().provider.getDimension())) {
+				if(retroGen.shouldRetroGen(tag, event.getWorld().getDimension().getType())) {
 					retroGen.retroGenerateChunk(tag, event.getChunk(), random);
 					getMod().log(Level.INFO, "Retrogenerating chunk at "
-                            + event.getChunk().x + ":" + event.getChunk().z);
+                            + event.getChunk().getPos().x + ":" + event.getChunk().getPos().z);
 					atLeastOneModified = true;
 				}
 			}
 			
 			if(atLeastOneModified) {
-				event.getChunk().markDirty();
+				event.getChunk().setModified(true);
 			}
 		}
 	}
 	
-	private void setChunkSeed(World world, Chunk chunk) {
+	private void setChunkSeed(IWorld world, IChunk chunk) {
 		// Based on RWTema's DenseOres retrogen
         random.setSeed(world.getSeed());
         long xSeed = random.nextLong() >> 2 + 1L;
         long zSeed = random.nextLong() >> 2 + 1L;
-        long chunkSeed = (xSeed * chunk.x + zSeed * chunk.z) ^ world.getSeed();
+        long chunkSeed = (xSeed * chunk.getPos().x + zSeed * chunk.getPos().z) ^ world.getSeed();
         random.setSeed(chunkSeed);
 	}
 
@@ -77,14 +78,14 @@ public class RetroGenRegistry implements IRetroGenRegistry {
 	@SubscribeEvent
     public void retroGenSave(ChunkDataEvent.Save event) {
 		if(getMod().getReferenceValue(ModBase.REFKEY_RETROGEN) && event.getData() != null) {
-			NBTTagCompound tag = event.getData().getCompoundTag(getNBTTag());
+			CompoundNBT tag = event.getData().getCompound(getNBTTag());
 			if(tag == null) {
-				tag = new NBTTagCompound();
+				tag = new CompoundNBT();
 			}
 			for(IRetroGen retroGen : retroGeneratables) {
 				retroGen.afterRetroGen(tag);
 			}
-			event.getData().setTag(getNBTTag(), tag);
+			event.getData().put(getNBTTag(), tag);
 		}
 	}
 	

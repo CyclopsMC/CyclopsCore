@@ -1,15 +1,15 @@
 package org.cyclops.cyclopscore.capability.fluid;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-import org.cyclops.cyclopscore.helper.ItemStackHelpers;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import javax.annotation.Nullable;
 
@@ -46,15 +46,15 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
 
     @Override
     public void setCapacity(int capacity) {
-        NBTTagCompound tag = ItemStackHelpers.getSafeTagCompound(getContainer());
+        CompoundNBT tag = getContainer().getOrCreateTag();
         this.capacity = capacity;
-        tag.setInteger("capacity", capacity);
+        tag.putInt("capacity", capacity);
     }
 
     @Override
     public int getCapacity() {
-        NBTTagCompound tag = ItemStackHelpers.getSafeTagCompound(getContainer());
-        return tag.hasKey("capacity", MinecraftHelpers.NBTTag_Types.NBTTagInt.ordinal()) ? tag.getInteger("capacity") : this.capacity;
+        CompoundNBT tag = getContainer().getOrCreateTag();
+        return tag.contains("capacity", Constants.NBT.TAG_INT) ? tag.getInt("capacity") : this.capacity;
     }
 
     @Nullable
@@ -64,37 +64,32 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
         return super.getFluid();
     }
 
-    @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-        return capability == FluidHandlerItemCapacityConfig.CAPABILITY || super.hasCapability(capability, facing);
-    }
-
     @Nullable
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-        return capability == FluidHandlerItemCapacityConfig.CAPABILITY ? (T) this : super.getCapability(capability, facing);
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
+        return capability == FluidHandlerItemCapacityConfig.CAPABILITY ? LazyOptional.of(() -> this).cast() : super.getCapability(capability, facing);
     }
 
     public static class Storage implements Capability.IStorage<IFluidHandlerItemCapacity> {
 
         @Override
-        public NBTBase writeNBT(Capability<IFluidHandlerItemCapacity> capability, IFluidHandlerItemCapacity instance, EnumFacing side) {
-            NBTTagCompound nbt = new NBTTagCompound();
+        public INBT writeNBT(Capability<IFluidHandlerItemCapacity> capability, IFluidHandlerItemCapacity instance, Direction side) {
+            CompoundNBT nbt = new CompoundNBT();
             FluidStack fluid = ((FluidHandlerItemCapacity)instance).getFluid();
             if (fluid != null) {
                 fluid.writeToNBT(nbt);
             } else {
-                nbt.setString("Empty", "");
+                nbt.putString("Empty", "");
             }
-            nbt.setInteger("capacity", instance.getCapacity());
+            nbt.putInt("capacity", instance.getCapacity());
             return nbt;
         }
 
         @Override
-        public void readNBT(Capability<IFluidHandlerItemCapacity> capability, IFluidHandlerItemCapacity instance, EnumFacing side, NBTBase nbt) {
-            NBTTagCompound tags = (NBTTagCompound) nbt;
-            if (tags.hasKey("capacity", MinecraftHelpers.NBTTag_Types.NBTTagInt.ordinal())) {
-                instance.setCapacity(tags.getInteger("capacity"));
+        public void readNBT(Capability<IFluidHandlerItemCapacity> capability, IFluidHandlerItemCapacity instance, Direction side, INBT nbt) {
+            CompoundNBT tags = (CompoundNBT) nbt;
+            if (tags.contains("capacity", Constants.NBT.TAG_INT)) {
+                instance.setCapacity(tags.getInt("capacity"));
             }
             FluidStack fluid = FluidStack.loadFluidStackFromNBT(tags);
             ((FluidHandlerItemCapacity)instance).setFluid(fluid);

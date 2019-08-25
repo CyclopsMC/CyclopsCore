@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.datastructure;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -10,16 +10,16 @@ import java.util.Map;
  * @author rubensworks
  * @param <V> The value type.
  */
-public class EnumFacingMap<V> extends EnumMap<EnumFacing, V> {
+public class EnumFacingMap<V> extends EnumMap<Direction, V> {
     public EnumFacingMap() {
-        super(EnumFacing.class);
+        super(Direction.class);
     }
 
-    public EnumFacingMap(EnumMap<EnumFacing, ? extends V> m) {
+    public EnumFacingMap(EnumMap<Direction, ? extends V> m) {
         super(m);
     }
 
-    public EnumFacingMap(Map<EnumFacing, ? extends V> m) {
+    public EnumFacingMap(Map<Direction, ? extends V> m) {
         super(m);
     }
 
@@ -38,7 +38,7 @@ public class EnumFacingMap<V> extends EnumMap<EnumFacing, V> {
      * @param <V> Value type.
      * @return The new map.
      */
-    public static <V> EnumFacingMap<V> newMap(EnumMap<EnumFacing, ? extends V> m) {
+    public static <V> EnumFacingMap<V> newMap(EnumMap<Direction, ? extends V> m) {
         return new EnumFacingMap<V>(m);
     }
 
@@ -48,7 +48,7 @@ public class EnumFacingMap<V> extends EnumMap<EnumFacing, V> {
      * @param <V> Value type.
      * @return The new map.
      */
-    public static <V> EnumFacingMap<V> newMap(Map<EnumFacing, ? extends V> m) {
+    public static <V> EnumFacingMap<V> newMap(Map<Direction, ? extends V> m) {
         return new EnumFacingMap<V>(m);
     }
 
@@ -65,12 +65,12 @@ public class EnumFacingMap<V> extends EnumMap<EnumFacing, V> {
      */
     public static <V> EnumFacingMap<V> forAllValues(V down, V up, V north, V south, V west, V east) {
         EnumFacingMap<V> map = new EnumFacingMap<V>();
-        map.put(EnumFacing.DOWN, down);
-        map.put(EnumFacing.UP, up);
-        map.put(EnumFacing.NORTH, north);
-        map.put(EnumFacing.SOUTH, south);
-        map.put(EnumFacing.WEST, west);
-        map.put(EnumFacing.EAST, east);
+        map.put(Direction.DOWN, down);
+        map.put(Direction.UP, up);
+        map.put(Direction.NORTH, north);
+        map.put(Direction.SOUTH, south);
+        map.put(Direction.WEST, west);
+        map.put(Direction.EAST, east);
         return map;
     }
 }

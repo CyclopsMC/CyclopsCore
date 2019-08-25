@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtParseException;
@@ -59,21 +59,21 @@ public class NbtPathExpressionParseHandlerFilterExpression implements INbtPathEx
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
             return new NbtPathExpressionMatches(executionContexts
                     .map(executionContext -> {
-                        NBTBase nbt = executionContext.getCurrentTag();
+                        INBT nbt = executionContext.getCurrentTag();
                         if (nbt.getId() == Constants.NBT.TAG_LIST) {
-                            NBTTagList tag = (NBTTagList) nbt;
-                            NBTTagList newTagList = new NBTTagList();
+                            ListNBT tag = (ListNBT) nbt;
+                            ListNBT newTagList = new ListNBT();
                             StreamSupport.stream(tag.spliterator(), false)
                                     .filter(subTag -> getExpression().test(subTag))
-                                    .forEach(newTagList::appendTag);
+                                    .forEach(newTagList::add);
                             return new NbtPathExpressionExecutionContext(newTagList, executionContext);
                         } else if (nbt.getId() == Constants.NBT.TAG_COMPOUND) {
-                            NBTTagCompound tag = (NBTTagCompound) nbt;
-                            NBTTagList newTagList = new NBTTagList();
-                            tag.getKeySet().stream()
-                                    .map(tag::getTag)
+                            CompoundNBT tag = (CompoundNBT) nbt;
+                            ListNBT newTagList = new ListNBT();
+                            tag.keySet().stream()
+                                    .map(tag::get)
                                     .filter(subTag -> getExpression().test(subTag))
-                                    .forEach(newTagList::appendTag);
+                                    .forEach(newTagList::add);
                             return new NbtPathExpressionExecutionContext(newTagList, executionContext);
                         }
                         return null;

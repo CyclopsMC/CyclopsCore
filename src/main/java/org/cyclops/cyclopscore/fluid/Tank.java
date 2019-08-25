@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.fluid;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
@@ -13,9 +13,6 @@ import net.minecraftforge.fluids.FluidTank;
  */
 public class Tank extends FluidTank {
 
-    // TODO: remove name parameter in 1.13
-    private final String name;
-
     /**
      * Make a new fluid tank.
      * @param capacity The capacity (mB) for the tank.
@@ -23,20 +20,6 @@ public class Tank extends FluidTank {
      */
     public Tank(int capacity, TileEntity tile) {
         super(capacity);
-        this.name = "tank";
-        this.tile = tile;
-    }
-
-    /**
-     * Make a new fluid tank.
-     * @param name The name for the tank, used for NBT storage.
-     * @param capacity The capacity (mB) for the tank.
-     * @param tile The {@link TileEntity} that uses this tank.
-     */
-    @Deprecated // TODO: remove in 1.13
-    public Tank(String name, int capacity, TileEntity tile) {
-        super(capacity);
-        this.name = name;
         this.tile = tile;
     }
     
@@ -69,28 +52,24 @@ public class Tank extends FluidTank {
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-        NBTTagCompound tankData = new NBTTagCompound();
+    public CompoundNBT writeToNBT(CompoundNBT nbt) {
+        CompoundNBT tankData = new CompoundNBT();
         if(replaceInnerFluid()) {
             super.writeToNBT(tankData);
         }
         writeTankToNBT(tankData);
-        nbt.setTag(name, tankData);
         return nbt;
     }
 
     @Override
-    public FluidTank readFromNBT(NBTTagCompound nbt) {
-        if (nbt.hasKey(name)) {
-            NBTTagCompound tankData = nbt.getCompoundTag(name);
-            if(replaceInnerFluid()) {
-                if (tankData.hasKey("Empty")) {
-                    setFluid(null);
-                }
-                super.readFromNBT(tankData);
+    public FluidTank readFromNBT(CompoundNBT nbt) {
+        if(replaceInnerFluid()) {
+            if (nbt.contains("Empty")) {
+                setFluid(null);
             }
-            readTankFromNBT(tankData);
+            super.readFromNBT(nbt);
         }
+        readTankFromNBT(nbt);
         return this;
     }
 
@@ -98,25 +77,18 @@ public class Tank extends FluidTank {
      * Write the tank contents to NBT.
      * @param nbt The NBT tag to write to.
      */
-    public void writeTankToNBT(NBTTagCompound nbt) {
-    	nbt.setInteger("capacity", getCapacity());
+    public void writeTankToNBT(CompoundNBT nbt) {
+    	nbt.putInt("capacity", getCapacity());
     }
 
     /**
      * Read the tank contents from NBT.
      * @param nbt The NBT tag to write from.
      */
-    public void readTankFromNBT(NBTTagCompound nbt) {
-    	if(nbt.hasKey("capacity")) { // Backwards compatibility.
-    		setCapacity(nbt.getInteger("capacity"));
+    public void readTankFromNBT(CompoundNBT nbt) {
+    	if(nbt.contains("capacity")) { // Backwards compatibility.
+    		setCapacity(nbt.getInt("capacity"));
     	}
-    }
-    
-    /**
-     * @return The tank name.
-     */
-    public String getName() {
-    	return this.name;
     }
 
 }

@@ -1,14 +1,12 @@
 package org.cyclops.cyclopscore.proxy;
 
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.event.ConfigChangedEventHook;
 import org.cyclops.cyclopscore.event.PlayerRingOfFire;
-import org.cyclops.cyclopscore.item.IBucketRegistry;
 import org.cyclops.cyclopscore.network.PacketHandler;
-import org.cyclops.cyclopscore.network.packet.SendPlayerCapabilitiesPacket;
 import org.cyclops.cyclopscore.world.gen.IRetroGenRegistry;
 
 /**
@@ -19,7 +17,7 @@ import org.cyclops.cyclopscore.world.gen.IRetroGenRegistry;
 public abstract class CommonProxyComponent implements ICommonProxy {
 
     @Override
-    public void registerRenderer(Class<? extends TileEntity> clazz, TileEntitySpecialRenderer renderer) {
+    public void registerRenderer(Class<? extends TileEntity> clazz, TileEntityRenderer renderer) {
         throw new IllegalArgumentException("Registration of renderers should not be called server side!");
     }
 
@@ -34,7 +32,7 @@ public abstract class CommonProxyComponent implements ICommonProxy {
 
     @Override
     public void registerPacketHandlers(PacketHandler packetHandler) {
-        packetHandler.register(SendPlayerCapabilitiesPacket.class);
+
     }
 
     @Override
@@ -47,10 +45,6 @@ public abstract class CommonProxyComponent implements ICommonProxy {
         IRetroGenRegistry retroGenRegistry = getMod().getRegistryManager().getRegistry(IRetroGenRegistry.class);
         if(retroGenRegistry != null) {
             MinecraftForge.EVENT_BUS.register(retroGenRegistry);
-        }
-        IBucketRegistry bucketRegistry = getMod().getRegistryManager().getRegistry(IBucketRegistry.class);
-        if(bucketRegistry != null) {
-            MinecraftForge.EVENT_BUS.register(bucketRegistry);
         }
 
         MinecraftForge.EVENT_BUS.register(new PlayerRingOfFire());

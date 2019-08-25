@@ -1,20 +1,18 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -24,19 +22,6 @@ import java.util.Random;
 public final class ItemStackHelpers {
 
     private static final Random RANDOM = new Random();
-
-    /**
-     * Get the tag compound from an item safely.
-     * If it does not exist yet, it will create and save a new tag compound.
-     * @param itemStack The item to get the tag compound from.
-     * @return The tag compound.
-     */
-    public static NBTTagCompound getSafeTagCompound(ItemStack itemStack) {
-        if(!itemStack.hasTagCompound()) {
-            itemStack.setTagCompound(new NBTTagCompound());
-        }
-        return itemStack.getTagCompound();
-    }
 
     /**
      * Spawn an itemstack into the world.
@@ -71,14 +56,15 @@ public final class ItemStackHelpers {
             ItemStack dropStack = itemStack.copy();
             itemStack.shrink(i);
             dropStack.setCount(i);
-            EntityItem entityitem = new EntityItem(world, x + (double)offsetX, y + (double)offsetY,
+            ItemEntity entityitem = new ItemEntity(world, x + (double)offsetX, y + (double)offsetY,
                     z + (double)offsetZ, dropStack);
 
             float motion = 0.05F;
-            entityitem.motionX = RANDOM.nextGaussian() * (double)motion;
-            entityitem.motionY = RANDOM.nextGaussian() * (double)motion + 0.2D;
-            entityitem.motionZ = RANDOM.nextGaussian() * (double)motion;
-            world.spawnEntity(entityitem);
+            entityitem.setMotion(
+                    RANDOM.nextGaussian() * (double)motion,
+                    RANDOM.nextGaussian() * (double)motion + 0.2D,
+                    RANDOM.nextGaussian() * (double)motion);
+            world.addEntity(entityitem);
         }
     }
 
@@ -89,26 +75,23 @@ public final class ItemStackHelpers {
      * @param stack The stack to spawn
      * @param player The player to direct the motion to
      */
-    public static void spawnItemStackToPlayer(World world, BlockPos pos, ItemStack stack, EntityPlayer player) {
-        if (!world.isRemote) {
+    public static void spawnItemStackToPlayer(World world, BlockPos pos, ItemStack stack, PlayerEntity player) {
+        if (!world.isRemote()) {
             float f = 0.5F;
 
             double xo = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
             double yo = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
             double zo = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-            EntityItem entityitem = new EntityItem(world, (double)pos.getX() + xo, (double)pos.getY() + yo, (double)pos.getZ() + zo, stack);
+            ItemEntity entityitem = new ItemEntity(world, (double)pos.getX() + xo, (double)pos.getY() + yo, (double)pos.getZ() + zo, stack);
 
             double d0 = 8.0D;
             double d1 = (player.posX - entityitem.posX) / d0;
             double d2 = (player.posY + (double)player.getEyeHeight() - entityitem.posY) / d0;
             double d3 = (player.posZ - entityitem.posZ) / d0;
 
-            entityitem.motionX += d1;
-            entityitem.motionY += d2;
-            entityitem.motionZ += d3;
-
+            entityitem.setMotion(entityitem.getMotion().add(d1, d2, d3));
             entityitem.setNoPickupDelay();
-            world.spawnEntity(entityitem);
+            world.addEntity(entityitem);
         }
     }
 
@@ -120,7 +103,7 @@ public final class ItemStackHelpers {
      * @param item The item to search in the inventory.
      * @return If the player has the item.
      */
-    public static boolean hasPlayerItem(EntityPlayer player, Item item) {
+    public static boolean hasPlayerItem(PlayerEntity player, Item item) {
         for(PlayerExtendedInventoryIterator it = new PlayerExtendedInventoryIterator(player); it.hasNext();) {
             ItemStack itemStack = it.next();
             if (itemStack != null && itemStack.getItem() == item) {
@@ -131,24 +114,8 @@ public final class ItemStackHelpers {
     }
 
     /**
-     * Get a list of variants from the given stack if its damage value is the wildcard value,
-     * otherwise the list will only contain the given itemstack.
-     * @param itemStack The itemstack
-     * @return The list of variants.
-     */
-    public static List<ItemStack> getVariants(ItemStack itemStack) {
-        NonNullList<ItemStack> output = NonNullList.create();
-        if(itemStack.getItemDamage() == OreDictionary.WILDCARD_VALUE) {
-            itemStack.getItem().getSubItems(CreativeTabs.SEARCH, output);
-        } else {
-            output.add(itemStack);
-        }
-        return output;
-    }
-
-    /**
      * Parse a string to an itemstack.
-     * Expects the format "domain:itemname:amount:meta"
+     * Expects the format "domain:itemname:amount"
      * The domain and itemname are mandatory, the rest is optional.
      * @param itemStackString The string to parse.
      * @return The itemstack.
@@ -157,39 +124,19 @@ public final class ItemStackHelpers {
     public static ItemStack parseItemStack(String itemStackString) {
         String[] split = itemStackString.split(":");
         String itemName = split[0] + ":" + split[1];
-        Item item =  Item.REGISTRY.getObject(new ResourceLocation(itemName));
+        Item item =  ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(itemName));
         if(item == null) {
             throw new IllegalArgumentException("Invalid ItemStack item: " + itemName);
         }
         int amount = 1;
-        int meta = 0;
         if(split.length > 2) {
             try {
                 amount = Integer.parseInt(split[2]);
             } catch (NumberFormatException e) {
                 throw new IllegalArgumentException("Invalid ItemStack amount: " + split[2]);
             }
-            if(split.length > 3) {
-                try {
-                    meta = Integer.parseInt(split[3]);
-                } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid ItemStack meta: " + split[3]);
-                }
-            }
         }
-        return new ItemStack(item, amount, meta);
-    }
-
-    /**
-     * If the given itemstacks are completely identical, including their stack size.
-     * @param a The first itemstack.
-     * @param b The second itemstack.
-     * @return If they are completely equal.
-     * @deprecated Use {@link ItemStack#areItemStacksEqual} instead.
-     */
-    @Deprecated // TODO remove in 1.13
-    public static boolean areItemStacksIdentical(ItemStack a, ItemStack b) {
-        return ItemStack.areItemStacksEqual(a, b);
+        return new ItemStack(item, amount);
     }
 
     /**
@@ -203,8 +150,7 @@ public final class ItemStackHelpers {
         int result = 1;
         result = 37 * result + stack.getCount();
         result = 37 * result + stack.getItem().hashCode();
-        result = 37 * result + stack.getItemDamage();
-        NBTTagCompound tagCompound = stack.getTagCompound();
+        CompoundNBT tagCompound = stack.getTag();
         result = 37 * result + (tagCompound != null ? tagCompound.hashCode() : 0);
         // Not factoring in capability compatibility. Doing so would require either reflection (slow)
         // or an access transformer, it's highly unlikely that it'd be the only difference between
@@ -215,46 +161,17 @@ public final class ItemStackHelpers {
     /**
      * If the given item can be displayed in the given creative tab.
      * @param item The item.
-     * @param creativeTab The creative tab.
+     * @param itemGroup The creative tab.
      * @return If it can be displayed.
      */
-    public static boolean isValidCreativeTab(Item item, @Nullable CreativeTabs creativeTab) {
-        for (CreativeTabs itemTab : item.getCreativeTabs()) {
-            if (itemTab == creativeTab) {
+    public static boolean isValidCreativeTab(Item item, @Nullable ItemGroup itemGroup) {
+        for (ItemGroup itemTab : item.getCreativeTabs()) {
+            if (itemTab == itemGroup) {
                 return true;
             }
         }
-        return creativeTab == null
-                || creativeTab == CreativeTabs.SEARCH;
-    }
-
-    /**
-     * Get all subitems of an item.
-     * This is based on {@link Item#getSubItems(CreativeTabs, NonNullList)}.
-     * @param itemStack The given item.
-     * @return The sub items.
-     */
-    public static NonNullList<ItemStack> getSubItems(ItemStack itemStack) {
-        NonNullList<ItemStack> subItems = NonNullList.create();
-        itemStack.getItem().getSubItems(CreativeTabs.SEARCH, subItems);
-        return subItems;
-    }
-
-    /**
-     * If the given stack has a wildcard meta value,
-     * return a list of all its subitems,
-     * otherwise return a list with as single element itself.
-     * @param itemStack The given item.
-     * @return The sub items.
-     */
-    public static NonNullList<ItemStack> getSubItemsIfWildcardMeta(ItemStack itemStack) {
-        if (itemStack.getMetadata() == OreDictionary.WILDCARD_VALUE) {
-            NonNullList<ItemStack> subItems = NonNullList.create();
-            itemStack.getItem().getSubItems(CreativeTabs.SEARCH, subItems);
-            return subItems;
-        } else {
-            return NonNullList.withSize(1, itemStack);
-        }
+        return itemGroup == null
+                || itemGroup == ItemGroup.SEARCH;
     }
 
 }

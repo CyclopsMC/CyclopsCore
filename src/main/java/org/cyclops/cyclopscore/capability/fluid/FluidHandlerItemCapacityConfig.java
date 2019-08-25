@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.capability.fluid;
 
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -31,7 +32,7 @@ public class FluidHandlerItemCapacityConfig extends CapabilityConfig<IFluidHandl
                 "Item fluid handler with configurable capacity",
                 IFluidHandlerItemCapacity.class,
                 new FluidHandlerItemCapacity.Storage(),
-                FluidHandlerItemCapacity.class
+                () -> new FluidHandlerItemCapacity(ItemStack.EMPTY, 1000)
         );
     }
 

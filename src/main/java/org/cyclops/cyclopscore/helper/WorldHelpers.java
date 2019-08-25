@@ -4,6 +4,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.IChunk;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
 
@@ -32,16 +33,16 @@ public class WorldHelpers {
      */
     //@SideOnly(Side.SERVER)
     public static void setBiome(World world, BlockPos pos, Biome biome) {
-        Chunk chunk = world.getChunk(pos);
+        IChunk chunk = world.getChunk(pos);
         if(chunk != null) {
         	BlockPos c = getChunkLocationFromWorldLocation(pos.getX(), 0, pos.getZ());
             int rx = c.getX();
             int rz = c.getZ();
-            byte[] biomeArray = chunk.getBiomeArray();
-            biomeArray[rz << 4 | rx] = (byte)(Biome.getIdForBiome(biome) & 255);
-            chunk.markDirty();
-            world.getChunkProvider().provideChunk(chunk.x, chunk.z);
-            world.markBlockRangeForRenderUpdate(pos, pos);
+            Biome[] biomeArray = chunk.getBiomes();
+            biomeArray[rz << 4 | rx] = biome;
+            chunk.setModified(true);
+            world.getChunkProvider().forceChunk(chunk.getPos(), false);
+            // world.markBlockRangeForRenderUpdate(pos, pos); // TODO?
         } else {
             CyclopsCore.clog(Level.WARN, "Tried changing biome at non-existing chunk for position " + pos);
         }

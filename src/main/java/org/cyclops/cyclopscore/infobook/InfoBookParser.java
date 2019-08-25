@@ -5,13 +5,13 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.util.Strings;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
@@ -87,7 +87,7 @@ public class InfoBookParser {
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
                 try {
                     return new CraftingRecipeAppendix(infoBook,
-                            CraftingHelpers.findCraftingRecipe(createStack(node, infoBook.getMod().getRecipeHandler()), getIndex(node)));
+                            CraftingHelpers.findRecipe(createStack(node, infoBook.getMod().getRecipeHandler()), IRecipeType.CRAFTING, getIndex(node)));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }
@@ -100,7 +100,7 @@ public class InfoBookParser {
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
                 try {
                     return new FurnaceRecipeAppendix(infoBook,
-                        CraftingHelpers.findFurnaceRecipe(createStack(node, infoBook.getMod().getRecipeHandler()), getIndex(node)));
+                        CraftingHelpers.findRecipe(createStack(node, infoBook.getMod().getRecipeHandler()), IRecipeType.SMELTING, getIndex(node)));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }
@@ -186,7 +186,7 @@ public class InfoBookParser {
             @Override
             public SectionAppendix create(IInfoBook infoBook, IRecipe<IngredientsRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent> recipe) throws InvalidAppendixException {
                 try {
-                    return new CraftingRecipeAppendix(infoBook, CraftingHelpers.findCraftingRecipe(recipe.getOutput().getFirstItemStack(), 0));
+                    return new CraftingRecipeAppendix(infoBook, CraftingHelpers.findRecipe(recipe.getOutput().getFirstItemStack(), IRecipeType.CRAFTING, 0));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }
@@ -198,7 +198,7 @@ public class InfoBookParser {
             @Override
             public SectionAppendix create(IInfoBook infoBook, IRecipe<IngredientRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent> recipe) throws InvalidAppendixException {
                 try {
-                    return new FurnaceRecipeAppendix(infoBook, CraftingHelpers.findFurnaceRecipe(recipe.getOutput().getFirstItemStack(), 0));
+                    return new FurnaceRecipeAppendix(infoBook, CraftingHelpers.findRecipe(recipe.getOutput().getFirstItemStack(), IRecipeType.SMELTING, 0));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }
@@ -211,9 +211,6 @@ public class InfoBookParser {
             @Override
             public IReward create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
                 ItemStack itemStack = InfoBookParser.createStack(node, infoBook.getMod().getRecipeHandler());
-                if (itemStack.getMetadata() == OreDictionary.WILDCARD_VALUE) {
-                    itemStack.setItemDamage(0);
-                }
                 return new RewardItem(itemStack);
             }
         });
@@ -299,7 +296,6 @@ public class InfoBookParser {
     /**
      * Get the itemstack represented by the given node.
      * Interpreted attributes:
-     * meta: The stack metadata value or wildcard '*', defaults to 0.
      * amount: the stacksize, defaults to 1.
      * @param node A node
      * @param recipeHandler A recipe handler.
@@ -307,11 +303,7 @@ public class InfoBookParser {
      * @throws InvalidAppendixException If the node was incorrectly structured.
      */
     public static ItemStack createStack(Element node, RecipeHandler recipeHandler) throws InvalidAppendixException {
-        int meta = OreDictionary.WILDCARD_VALUE;
         int amount = 1;
-        if(!node.getAttribute("meta").isEmpty()) {
-            meta = Integer.parseInt(node.getAttribute("meta"));
-        }
         if(!node.getAttribute("amount").isEmpty()) {
             amount = Integer.parseInt(node.getAttribute("amount"));
         }
@@ -322,11 +314,11 @@ public class InfoBookParser {
             }
             return itemStack;
         }
-        Item item = Item.REGISTRY.getObject(new ResourceLocation(node.getTextContent()));
+        Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(node.getTextContent()));
         if(item == null) {
             throw new InvalidAppendixException("Invalid item " + node.getTextContent());
         }
-        return new ItemStack(item, amount, meta);
+        return new ItemStack(item, amount);
     }
 
     /**
@@ -478,7 +470,7 @@ public class InfoBookParser {
         if(!node.getAttribute("amount").isEmpty()) {
             amount = Integer.parseInt(node.getAttribute("amount"));
         }
-        Fluid fluid = FluidRegistry.getFluid(node.getTextContent());
+        Fluid fluid = null; // TODO: enable when Forge implements fluids. FluidRegistry.getFluid(node.getTextContent());
         if(fluid == null) {
             throw new InvalidAppendixException("Invalid fluid " + node.getTextContent());
         }
@@ -576,7 +568,7 @@ public class InfoBookParser {
             if (parent == null) {
                 tagIndex = new InfoSectionTagIndex(infoBook, root);
                 root.registerSection(tagIndex);
-                infoBook.setTagIndex(tagIndex);
+                infoBook.putIndex(tagIndex);
             } else {
                 tagIndex = infoBook.getTagIndex();
             }

@@ -7,32 +7,26 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.config.configurable.IConfigurable;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
-import org.cyclops.cyclopscore.init.IInitListener;
 import org.cyclops.cyclopscore.init.ModBase;
-import org.cyclops.cyclopscore.init.RecipeHandler;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -42,16 +36,14 @@ import java.util.concurrent.Callable;
  *
  */
 @SuppressWarnings("rawtypes")
-@EqualsAndHashCode(callSuper=false)
 @Data
-public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
+public class ConfigHandler {
 
     private final ModBase mod;
-    private Configuration config;
-    private final LinkedHashSet<ExtendedConfig<?>> processedConfigs = new LinkedHashSet<ExtendedConfig<?>>();
-    private final Map<String, ExtendedConfig<?>> configDictionary = Maps.newHashMap();
+    private final LinkedHashSet<ExtendedConfig<?, ?>> configurables = new LinkedHashSet<>();
+    private final Map<String, ExtendedConfig<?, ?>> configDictionary = Maps.newHashMap();
     private final Set<String> categories = Sets.newHashSet();
-    private final Map<String, ConfigProperty> commandableProperties = Maps.newHashMap();
+    private final Map<String, ConfigurablePropertyData> commandableProperties = Maps.newHashMap();
     private final Multimap<Class<?>, Pair<IForgeRegistryEntry<?>, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<Class<?>, Collection<Pair<IForgeRegistryEntry<?>, Callable<?>>>>newIdentityHashMap(), new Supplier<List<Pair<IForgeRegistryEntry<?>, Callable<?>>>>() {
         // Compiler complains when this is replaced with a lambda :-(
         @Override
@@ -60,41 +52,99 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
         }
     });
     private boolean registryEventPassed = false;
-    private final Set<Class<? extends ExtendedConfig<?>>> enabledConfigs = Sets.newIdentityHashSet();
+    private final Map<Class<? extends ExtendedConfig<?, ?>>, ExtendedConfig<?, ?>> enabledConfigs = Maps.newIdentityHashMap();
 
     public ConfigHandler(ModBase mod) {
         this.mod = mod;
         MinecraftForge.EVENT_BUS.register(this);
     }
-    
-    @Override
-    public boolean add(ExtendedConfig<?> e) {
-    	addToConfigDictionary(e);
-    	return super.add(e);
+
+    /**
+     * Initialize the configs by running builders through all relevant parts.
+     * @param configInitializers A collection of additional initializers to run the config builders through.
+     */
+    public void initialize(Collection<IConfigInitializer> configInitializers) {
+        Map<ModConfig.Type, ForgeConfigSpec.Builder> configBuilders = new EnumMap<>(ModConfig.Type.class);
+
+        // Pass config builder to all configurables
+        enabledConfigs.clear();
+        for (ExtendedConfig<?, ?> eConfig : this.configurables) {
+            ForgeConfigSpec.Builder configBuilder = configBuilders.get(ModConfig.Type.COMMON);
+            if (configBuilder == null) {
+                configBuilder = new ForgeConfigSpec.Builder();
+                configBuilders.put(ModConfig.Type.COMMON, configBuilder);
+            }
+            addCategory(eConfig.getConfigurableType().getCategory());
+            if (!eConfig.isHardDisabled()) {
+                // Save additional properties
+                for (ConfigurablePropertyData configProperty : eConfig.configProperties) {
+                    ForgeConfigSpec.Builder configBuilderProperty = configBuilders.get(configProperty.getConfigLocation());
+                    if (configBuilderProperty == null) {
+                        configBuilderProperty = new ForgeConfigSpec.Builder();
+                        configBuilders.put(configProperty.getConfigLocation(), configBuilderProperty);
+                    }
+                    categories.add(configProperty.getCategory());
+                    if (configProperty.isCommandable()) {
+                        configProperty.onConfigInit(configBuilder);
+                        commandableProperties.put(configProperty.getName(), configProperty);
+                    }
+                }
+
+                // Register the element depending on the type.
+                eConfig.getConfigurableType().getConfigurableTypeAction().onConfigInit(eConfig, configBuilder);
+            }
+        }
+
+        // Handle all config initializers
+        for (IConfigInitializer configInitializer : configInitializers) {
+            configInitializer.initializeConfig(configBuilders);
+        }
+
+        // Finalize config builders to config specs, and register them
+        for (Map.Entry<ModConfig.Type, ForgeConfigSpec.Builder> entry : configBuilders.entrySet()) {
+            ModLoadingContext.get().registerConfig(entry.getKey(), entry.getValue().build());
+        }
     }
 
-    public void addToConfigDictionary(ExtendedConfig<?> e) {
+    @SubscribeEvent
+    public void onLoad(final ModConfig.Loading configEvent) {
+        this.mod.log(Level.TRACE, "Load config");
+        load();
+    }
+
+    @SubscribeEvent
+    public void onReload(final ModConfig.ConfigReloading configEvent) {
+        this.mod.log(Level.TRACE, "Reload config");
+        syncProcessedConfigs();
+    }
+
+    public boolean addConfigurable(ExtendedConfig<?, ?> e) {
+    	addToConfigDictionary(e);
+    	return configurables.add(e);
+    }
+
+    public void addToConfigDictionary(ExtendedConfig<?, ?> e) {
         configDictionary.put(e.getNamedId(), e);
     }
     
     /**
      * Iterate over the given ExtendedConfigs to read/write the config and register the given elements
      * This also sets the config of this instance.
-     * @param event the event from the init methods
      */
-    public void handle(FMLPreInitializationEvent event) {
-        if(getConfig() == null) {
-            // You will be able to find the config file in .minecraft/config/ and it will be named EvilCraft.cfg
-            // here our Configuration has been instantiated, and saved under the name "config"
-            // If the file doesn't already exist, it will be created.
-            Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-            setConfig(config);
-
-            // Loading the configuration from its file
-            config.load();
+    public void load() {
+        for (ExtendedConfig<?, ?> eConfig : this.configurables) {
+            if (eConfig.isEnabled()) {
+                mod.log(Level.TRACE, "Registering " + eConfig.getNamedId());
+                eConfig.save();
+                eConfig.getConfigurableType().getConfigurableTypeAction().onRegister(eConfig);
+                eConfig.onRegistered();
+                enabledConfigs.put((Class<? extends ExtendedConfig<?, ?>>) eConfig.getClass(), eConfig);
+            } else if (!eConfig.isDisableable()) {
+                throw new UndisableableConfigException(eConfig);
+            } else {
+                eConfig.getConfigurableType().getConfigurableTypeAction().onSkipRegistration(eConfig);
+            }
         }
-        
-        loadConfig();
     }
 
     /**
@@ -106,199 +156,34 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
     }
     
     /**
-     * Iterate over the given ExtendedConfigs to read/write the config and register the given elements.
-     */
-    @SuppressWarnings("unchecked")
-    public void loadConfig() {
-        enabledConfigs.clear();
-        for(ExtendedConfig<?> eConfig : this) {
-            try {
-                addCategory(eConfig.getHolderType().getCategory());
-                if (!eConfig.isHardDisabled()) {
-                    // Save additional properties
-                    for (ConfigProperty configProperty : eConfig.configProperties) {
-                        categories.add(configProperty.getCategory());
-                        configProperty.save(config);
-                        if (configProperty.isCommandable()) {
-                            commandableProperties.put(configProperty.getName(), configProperty);
-                        }
-                    }
-
-                    // Register the element depending on the type.
-                    eConfig.getHolderType().getElementTypeAction().commonRun(eConfig, config);
-
-                    if (eConfig.isEnabled()) {
-                        // Call the listener
-                        eConfig.onRegistered();
-
-                        mod.log(Level.TRACE, "Registered " + eConfig.getNamedId());
-                        processedConfigs.add(eConfig);
-
-                        // Register as init listener.
-                        mod.addInitListeners(new ConfigInitListener(eConfig));
-                        enabledConfigs.add((Class<? extends ExtendedConfig<?>>) eConfig.getClass());
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace(); // Forge seems to silently ignore these errors, so let's print them manually.
-                throw e;
-            }
-        }
-        
-        // Empty the configs so they won't be loaded again later
-        this.removeAll(this);
-        
-        // Saving the configuration to its file
-        config.save();
-    }
-
-    /**
-     * Polish the enabled configs during the initialization phase.
-     */
-    @SuppressWarnings("unchecked")
-    public void polishConfigs() {
-        for(ExtendedConfig<?> eConfig : processedConfigs) {
-            ConfigurableType type = eConfig.getHolderType();
-            type.getElementTypeAction().polish(eConfig);
-        }
-    }
-    
-    /**
      * Sync the config values that were already loaded.
      * This will update the values in-game and in the config file.
      */
     @SuppressWarnings("unchecked")
 	public void syncProcessedConfigs() {
-    	for(ExtendedConfig<?> eConfig : processedConfigs) {
+    	for(ExtendedConfig<?, ?> eConfig : this.configurables) {
     		// Re-save additional properties
-            for(ConfigProperty configProperty : eConfig.configProperties) {
-                configProperty.save(config, false);
+            for(ConfigurablePropertyData configProperty : eConfig.configProperties) {
+                configProperty.saveToField();
             }
-            
-            // Register the element depending on the type.
-            ConfigurableType type = eConfig.getHolderType();
-            type.getElementTypeAction().preRun(eConfig, config, false);
     	}
-
-        // Update the config file.
-        getConfig().save();
     }
-
-	/**
-	 * @return the config
-	 */
-	public Configuration getConfig() {
-		return config;
-	}
-
-	/**
-	 * @param config the config to set
-	 */
-	public void setConfig(Configuration config) {
-		this.config = config;
-	}
 	
 	/**
 	 * Get the map of config nameid to config.
 	 * @return The dictionary.
 	 */
-	public Map<String, ExtendedConfig<?>> getDictionary() {
+	public Map<String, ExtendedConfig<?, ?>> getDictionary() {
 		return configDictionary;
 	}
-	
-	/**
-	 * Init listener for configs.
-	 * @author rubensworks
-	 *
-	 */
-	public static class ConfigInitListener implements IInitListener {
-
-		private ExtendedConfig<?> config;
-		
-		/**
-		 * Make a new instance.
-		 * @param config The config.
-		 */
-		public ConfigInitListener(ExtendedConfig<?> config) {
-			this.config = config;
-		}
-		
-		@Override
-		public void onInit(IInitListener.Step step) {
-			config.onInit(step);
-			if(step == IInitListener.Step.POSTINIT) {
-				for(ConfigProperty property : config.configProperties) {
-					IChangedCallback changedCallback = property.getCallback().getChangedCallback();
-					if(changedCallback != null) {
-                        changedCallback.onRegisteredPostInit(property.getValue());
-					}
-				}
-			}
-		}
-		
-	}
 
     /**
-     * A safe way to check if a {@link org.cyclops.cyclopscore.config.configurable.IConfigurable} is enabled. @see ExtendedConfig#isEnabled()
+     * A safe way to check if a config is enabled. @see ExtendedConfig#isEnabled()
      * @param config The config to check.
      * @return If the given config is enabled.
      */
-    public boolean isConfigEnabled(Class<? extends ExtendedConfig<?>> config) {
-        return enabledConfigs.contains(config);
-    }
-
-    /**
-     * A safe way to check if a {@link org.cyclops.cyclopscore.config.configurable.IConfigurable} is enabled. @see ExtendedConfig#isEnabled()
-     * @param config The config to check.
-     * @return If the given config is enabled.
-     * @deprecated Use the non-static variant of this method for better performance.
-     */
-    @Deprecated // TODO: remove in 1.13
-    public static boolean isEnabled(Class<? extends ExtendedConfig<?>> config) {
-        try {
-            return ((ExtendedConfig<?>)config.getField("_instance").get(null)).isEnabled();
-        } catch (NullPointerException e1) {
-            return false;
-        } catch (IllegalArgumentException e2) {
-            return false;
-        } catch (IllegalAccessException e3) {
-            return false;
-        } catch (NoSuchFieldException e3) {
-            return false;
-        } catch (SecurityException e4) {
-            return false;
-        }
-    }
-
-    /**
-     * Get the config from a given item.
-     * It will internally also try to get the blockState from the item if it exists to get the config from.
-     * @param item The item, possibly IConfigurable.
-     * @return The config or null.
-     */
-    public static @Nullable ExtendedConfig<?> getConfigFromItem(Item item) {
-        if(item instanceof IConfigurable) {
-            return ((IConfigurable<?>) item).getConfig();
-        } else {
-            Block block = Block.getBlockFromItem(item);
-            if(block != Blocks.AIR && block instanceof IConfigurable<?>) {
-                return ((IConfigurable<?>) block).getConfig();
-            } else {
-                return null;
-            }
-        }
-    }
-
-    /**
-     * Get the config from a given fluid.
-     * @param fluid The fluid, possibly IConfigurable.
-     * @return The config or null.
-     */
-    public static @Nullable ExtendedConfig<?> getConfigFromFluid(Fluid fluid) {
-        if(fluid instanceof IConfigurable<?>) {
-            return ((IConfigurable<?>) fluid).getConfig();
-        }
-        return null;
+    public boolean isConfigEnabled(Class<? extends ExtendedConfig<?, ?>> config) {
+        return enabledConfigs.containsKey(config);
     }
 
     /**
@@ -309,7 +194,7 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
      * @param callback A callback that will be called when the entry is registered.
      * @param <V> The entry type.
      */
-    public <V extends IForgeRegistryEntry<V>> void registerToRegistry(IForgeRegistry<V> registry,
+    public <V extends IForgeRegistryEntry<V>> void registerToRegistry(IForgeRegistry<? super V> registry,
                                                                       IForgeRegistryEntry<V> entry,
                                                                       @Nullable Callable<?> callback) {
         if (this.registryEventPassed) {
@@ -345,23 +230,28 @@ public class ConfigHandler extends LinkedHashSet<ExtendedConfig<?>> {
             }
         });
 
-        if (event.getRegistry() == ForgeRegistries.RECIPES) {
-            // Register recipes
-            RecipeHandler recipeHandler = getMod().getRecipeHandler();
-            if (recipeHandler != null) {
-                recipeHandler.registerRecipes(getMod().getConfigFolder());
-            }
-        }
+//        if (event.getRegistry() == null) { // TODO: Deprecate XML Recipe Loader, and move to JSON recipes
+//            // Register recipes
+//            RecipeHandler recipeHandler = getMod().getRecipeHandler();
+//            if (recipeHandler != null) {
+//                recipeHandler.registerRecipes(getMod().getConfigFolder());
+//            }
+//        }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof ConfigHandler && ((ConfigHandler) o).getMod().equals(this.getMod());
+    /**
+     * Get the instance corresponding to the given config.
+     *
+     * This will throw an NPE when no instance could be found.
+     *
+     * @param clazz A config class.
+     * @param <C> Class of the extension of ExtendedConfig
+     * @param <I> The instance corresponding to this config.
+     * @return An instance.
+     */
+    public <C extends ExtendedConfig<C, I>, I> I getInstance(Class<? extends ExtendedConfig<C, I>> clazz) {
+        ExtendedConfig<C, I> eConfig = (ExtendedConfig<C, I>) this.enabledConfigs.get(clazz);
+        Objects.requireNonNull(eConfig, "Could not find an enabled config by class " + clazz.getName());
+        return eConfig.getInstance();
     }
-
-    @Override
-    public int hashCode() {
-        return 1 + this.getMod().hashCode();
-    }
-    
 }

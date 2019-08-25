@@ -1,10 +1,9 @@
 package org.cyclops.cyclopscore.inventory.slot;
 
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.cyclops.cyclopscore.fluid.SingleUseTank;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
 
@@ -58,8 +57,9 @@ public class SlotFluidContainer extends Slot {
     public static boolean checkIsItemValid(ItemStack itemStack, SingleUseTank tank) {
         if (!itemStack.isEmpty()) {
             itemStack = itemStack.copy();
-            IFluidHandler fluidHandler = FluidUtil.getFluidHandler(itemStack.splitStack(1));
-            return fluidHandler != null && tank.canFillFluidType(FluidHelpers.getFluid(fluidHandler));
+            return FluidUtil.getFluidHandler(itemStack.split(1))
+                    .map((fluidHandler) -> tank.canFillFluidType(FluidHelpers.getFluid(fluidHandler)))
+                    .orElse(false);
         }
         return false;
     }

@@ -1,10 +1,11 @@
 package org.cyclops.cyclopscore.inventory.container;
 
 import com.google.common.collect.Lists;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.inventory.IGuiContainerProvider;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -19,9 +20,8 @@ import java.util.regex.PatternSyntaxException;
  *      filtered: All items that are browsable by the user, might be more than the pageSize allows what leads to a scrollbar.
  *      unfiltered: All items, pattern searching will happen in this list.
  * @author rubensworks
- * TODO: rewrite with GuiScrollBar
  */
-public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryContainer {
+public abstract class ScrollingInventoryContainer<E> extends InventoryContainer {
 
     private final List<E> unfilteredItems;
     private List<Pair<Integer, E>> filteredItems; // Pair: original index - item
@@ -32,16 +32,15 @@ public abstract class ScrollingInventoryContainer<E> extends ExtendedInventoryCo
 
     /**
      * Make a new instance.
-     *
+     * @param type The container type.
+     * @param id The container id.
      * @param inventory   The player inventory.
-     * @param guiProvider The gui provider.
      * @param items       All items to potentially show in this list.
      * @param filterer    The predicate that is used to filter on the given items.
      */
     @SuppressWarnings("unchecked")
-    public ScrollingInventoryContainer(InventoryPlayer inventory, IGuiContainerProvider guiProvider, List<E> items,
-                                       IItemPredicate<E> filterer) {
-        super(inventory, guiProvider);
+    public ScrollingInventoryContainer(@Nullable ContainerType<?> type, int id, PlayerInventory inventory, List<E> items, IItemPredicate<E> filterer) {
+        super(type, id, inventory);
         this.unfilteredItems = Lists.newArrayList(items);
         this.filteredItems = Lists.newLinkedList();
         this.visibleItems = (List<E>) Arrays.asList(new Object[getPageSize() * getColumns()]);

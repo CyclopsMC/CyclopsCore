@@ -1,22 +1,21 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
-import javax.annotation.Nullable;
+import java.util.concurrent.Callable;
 
 /**
  * Config for capabilities.
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfig<T>> {
+public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfig<T>, T> {
 
     private final Class<T> type;
     private final Capability.IStorage<T> storage;
-    private final Class<? extends T> implementation;
+    private final Callable<? extends T> implementation;
 
     /**
      * Make a new instance.
@@ -29,7 +28,7 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
      * @param implementation The default capability implementation
      */
     public CapabilityConfig(ModBase mod, boolean enabled, String namedId, String comment,
-                            Class<T> type, Capability.IStorage<T> storage, Class<? extends T> implementation) {
+                            Class<T> type, Capability.IStorage<T> storage, Callable<? extends T> implementation) {
         super(mod, enabled, namedId, comment, null);
         this.type = type;
         this.storage = storage;
@@ -48,7 +47,7 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
     }
     
     @Override
-	public ConfigurableType getHolderType() {
+	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.CAPABILITY;
 	}
 
@@ -60,13 +59,8 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
         return storage;
     }
 
-    public Class<? extends T> getImplementation() {
+    public Callable<? extends T> getFactory() {
         return implementation;
     }
 
-    @Nullable
-    @Override
-    public IForgeRegistry<?> getRegistry() {
-        return null;
-    }
 }

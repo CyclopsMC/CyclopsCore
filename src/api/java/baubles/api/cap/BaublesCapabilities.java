@@ -1,7 +1,7 @@
 package baubles.api.cap;
 
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -17,13 +17,13 @@ public class BaublesCapabilities {
     public static class CapabilityBaubles<T extends IBaublesItemHandler> implements IStorage<IBaublesItemHandler> {
         
         @Override
-        public NBTBase writeNBT (Capability<IBaublesItemHandler> capability, IBaublesItemHandler instance, EnumFacing side) {
+        public INBT writeNBT (Capability<IBaublesItemHandler> capability, IBaublesItemHandler instance, Direction side) {
             
             return null;
         }
         
         @Override
-        public void readNBT (Capability<IBaublesItemHandler> capability, IBaublesItemHandler instance, EnumFacing side, NBTBase nbt) {
+        public void readNBT (Capability<IBaublesItemHandler> capability, IBaublesItemHandler instance, Direction side, INBT nbt) {
         
         }
     }

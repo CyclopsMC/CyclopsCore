@@ -1,71 +1,51 @@
 package org.cyclops.cyclopscore.inventory;
 
-import baubles.api.BaublesApi;
-import net.minecraft.entity.player.EntityPlayer;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Queues;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Optional;
-import org.cyclops.cyclopscore.Reference;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * Iterate over a player's inventory and any other attached inventory like baubles.
  * @author rubensworks
  */
-@Optional.Interface(iface = "baubles.api.IBauble", modid = Reference.MOD_BAUBLES, striprefs = true)
 public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
 
-    private PlayerInventoryIterator innerIt;
-    private boolean hasIteratedInner = false;
-    private int maxBaublesSize = 4;
-    private int baublesIterator = maxBaublesSize;
+    public static final List<IInventoryExtender> INVENTORY_EXTENDERS = Lists.newArrayList();
+
+    private final Queue<InventoryIterator> iterators;
 
     /**
      * Create a new HotbarIterator.
      * @param player The player to iterate the hotbar from.
      */
-    public PlayerExtendedInventoryIterator(EntityPlayer player) {
-        innerIt = new PlayerInventoryIterator(player);
-        if(Loader.isModLoaded(Reference.MOD_BAUBLES)) {
-            setBaublesData();
+    public PlayerExtendedInventoryIterator(PlayerEntity player) {
+        this.iterators = Queues.newArrayDeque();
+        iterators.add(new PlayerInventoryIterator(player));
+        for (IInventoryExtender inventoryExtender : PlayerExtendedInventoryIterator.INVENTORY_EXTENDERS) {
+            iterators.add(new InventoryIterator(inventoryExtender.getInventory(player)));
         }
     }
 
     @Override
     public boolean hasNext() {
-        return !hasIteratedInner || baublesIterator < maxBaublesSize;
+        return iterators.size() > 0 && iterators.peek().hasNext();
     }
 
     @Override
     public ItemStack next() {
-        if(hasIteratedInner && hasNext()) {
-            ItemStack itemStack = getBaublesStack(baublesIterator);
-            baublesIterator++;
-            return itemStack;
-        } else {
-            ItemStack next = innerIt.next();
-            if(!innerIt.hasNext()) {
-                hasIteratedInner = true;
-            }
-            return next;
+        if (!iterators.peek().hasNext()) {
+            iterators.poll();
         }
-    }
-
-    @Optional.Method(modid = Reference.MOD_BAUBLES)
-    protected ItemStack getBaublesStack(int index) {
-        return BaublesApi.getBaubles(innerIt.getPlayer()).getStackInSlot(index);
-    }
-
-    @Optional.Method(modid = Reference.MOD_BAUBLES)
-    protected void setBaublesStack(int index, ItemStack itemStack) {
-        BaublesApi.getBaubles(innerIt.getPlayer()).setInventorySlotContents(index, itemStack);
-    }
-
-    @Optional.Method(modid = Reference.MOD_BAUBLES)
-    protected void setBaublesData() {
-        maxBaublesSize = BaublesApi.getBaubles(innerIt.getPlayer()).getSizeInventory();
-        baublesIterator = 0;
+        if (iterators.peek().hasNext()) {
+            return iterators.peek().next();
+        }
+        throw new IndexOutOfBoundsException();
     }
 
     @Override
@@ -78,11 +58,16 @@ public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
      * @param itemStack The itemstack to place.
      */
     public void replace(ItemStack itemStack) {
-        if(hasIteratedInner && baublesIterator > 0) {
-            setBaublesStack(baublesIterator - 1, itemStack);
-        } else {
-            innerIt.replace(itemStack);
-        }
+        iterators.peek().replace(itemStack);
+    }
+
+    /**
+     * A registerable inventory extender for iterating over.
+     */
+    public static interface IInventoryExtender {
+
+        public IItemHandlerModifiable getInventory(PlayerEntity player);
+
     }
 
 }

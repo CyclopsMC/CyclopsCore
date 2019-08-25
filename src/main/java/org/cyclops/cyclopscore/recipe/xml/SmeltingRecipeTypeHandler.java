@@ -2,13 +2,10 @@ package org.cyclops.cyclopscore.recipe.xml;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import org.cyclops.cyclopscore.init.RecipeHandler;
-import org.cyclops.cyclopscore.recipe.custom.Recipe;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
 import org.cyclops.cyclopscore.recipe.custom.component.DummyPropertiesComponent;
 import org.cyclops.cyclopscore.recipe.custom.component.IngredientRecipeComponent;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
@@ -24,7 +21,7 @@ public class SmeltingRecipeTypeHandler extends CommonRecipeTypeHandler<Ingredien
 
 	@Override
 	public IRecipe<IngredientRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent> loadRecipe(RecipeHandler recipeHandler, Node recipe) {
-		Element recipeElement = (Element) recipe;
+		/*Element recipeElement = (Element) recipe;
 		Element input = (Element) recipeElement.getElementsByTagName("input").item(0);
 		Element output = (Element) recipeElement.getElementsByTagName("output").item(0);
 		
@@ -40,7 +37,8 @@ public class SmeltingRecipeTypeHandler extends CommonRecipeTypeHandler<Ingredien
 				new IngredientRecipeComponent(inputItem),
 				new IngredientRecipeComponent(outputItem),
 				new DummyPropertiesComponent()
-		);
+		);*/
+		return null; // TODO: rm
 	}
 
 	private ItemStack getSafeItem(Ingredient ingredient) {

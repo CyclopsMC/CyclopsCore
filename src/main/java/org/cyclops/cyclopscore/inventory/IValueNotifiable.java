@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 /**
  * Used for receiving values from servers to clients in guis.
@@ -24,6 +24,6 @@ public interface IValueNotifiable {
      * @param valueId The value id.
      * @param value The new value.
      */
-    void onUpdate(int valueId, NBTTagCompound value);
+    void onUpdate(int valueId, CompoundNBT value);
 
 }

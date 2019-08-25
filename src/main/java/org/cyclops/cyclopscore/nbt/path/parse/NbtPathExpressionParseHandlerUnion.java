@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
@@ -79,19 +79,19 @@ public class NbtPathExpressionParseHandlerUnion implements INbtPathExpressionPar
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
             return new NbtPathExpressionMatches(executionContexts
                     .flatMap(executionContext -> {
-                        NBTBase nbt = executionContext.getCurrentTag();
+                        INBT nbt = executionContext.getCurrentTag();
                         if (!getChildIndexes().isEmpty() && nbt.getId() == Constants.NBT.TAG_LIST) {
-                            NBTTagList tag = (NBTTagList) nbt;
+                            ListNBT tag = (ListNBT) nbt;
                             return getChildIndexes()
                                     .stream()
                                     .map(tag::get)
                                     .filter((subTag) -> subTag.getId() != 0)
                                     .map((subTag) -> new NbtPathExpressionExecutionContext(subTag, executionContext));
                         } else if (!getChildNames().isEmpty() && nbt.getId() == Constants.NBT.TAG_COMPOUND) {
-                            NBTTagCompound tag = (NBTTagCompound) nbt;
+                            CompoundNBT tag = (CompoundNBT) nbt;
                             return getChildNames()
                                     .stream()
-                                    .map(tag::getTag)
+                                    .map(tag::get)
                                     .filter(Objects::nonNull)
                                     .map((subTag) -> new NbtPathExpressionExecutionContext(subTag, executionContext));
                         }

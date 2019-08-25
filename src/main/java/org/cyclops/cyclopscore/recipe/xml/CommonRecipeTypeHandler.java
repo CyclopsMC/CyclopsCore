@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.recipe.xml;
 import com.google.common.collect.Maps;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
@@ -25,7 +24,7 @@ public abstract class CommonRecipeTypeHandler<I extends IRecipeInput, O extends 
 	protected static final String DEFAULT_ITEM_TYPE = "default";
 	static {
 		ITEM_TYPE_HANDLERS.put(DEFAULT_ITEM_TYPE, new DefaultItemTypeHandler());
-		ITEM_TYPE_HANDLERS.put("oredict", new OreDictItemTypeHandler());
+		ITEM_TYPE_HANDLERS.put("tag", new TagItemTypeHandler());
 		ITEM_TYPE_HANDLERS.put("predefined", new PredefinedItemTypeHandler());
 	}
 	
@@ -64,7 +63,7 @@ public abstract class CommonRecipeTypeHandler<I extends IRecipeInput, O extends 
 			amount = Integer.parseInt(amountNode.getTextContent());
 		}
 		String fluidName = fluidNode.getTextContent();
-		Fluid fluid = FluidRegistry.getFluid(fluidName);
+		Fluid fluid = null; // TODO: update when Forge is updated with Fluids. FluidRegistry.getFluid(fluidName);
 		if(fluid == null) {
 			throw new XmlRecipeLoader.XmlRecipeException(String.format("Fluid by name '%s' has not been found.", fluidName));
 		}

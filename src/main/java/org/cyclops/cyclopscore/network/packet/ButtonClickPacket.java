@@ -1,11 +1,11 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.cyclops.cyclopscore.inventory.container.button.IButtonClickAcceptor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.cyclops.cyclopscore.inventory.container.button.IContainerButtonClickAcceptorServer;
 import org.cyclops.cyclopscore.network.CodecField;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
@@ -17,13 +17,13 @@ import org.cyclops.cyclopscore.network.PacketCodec;
 public class ButtonClickPacket extends PacketCodec {
 
 	@CodecField
-	private int buttonId;
+	private String buttonId;
 
     public ButtonClickPacket() {
 
     }
 
-    public ButtonClickPacket(int buttonId) {
+    public ButtonClickPacket(String buttonId) {
 		this.buttonId = buttonId;
     }
 
@@ -33,15 +33,15 @@ public class ButtonClickPacket extends PacketCodec {
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void actionClient(World world, EntityPlayer player) {
+	@OnlyIn(Dist.CLIENT)
+	public void actionClient(World world, PlayerEntity player) {
 
 	}
 
 	@Override
-	public void actionServer(World world, EntityPlayerMP player) {
-		if(player.openContainer instanceof IButtonClickAcceptor) {
-			((IButtonClickAcceptor<?>) player.openContainer).onButtonClick(buttonId);
+	public void actionServer(World world, ServerPlayerEntity player) {
+		if(player.openContainer instanceof IContainerButtonClickAcceptorServer) {
+			((IContainerButtonClickAcceptorServer) player.openContainer).onButtonClick(buttonId);
 		}
 	}
 	

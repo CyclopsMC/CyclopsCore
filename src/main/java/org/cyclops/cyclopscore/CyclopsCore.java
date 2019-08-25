@@ -1,23 +1,21 @@
 package org.cyclops.cyclopscore;
 
-import com.google.common.collect.Maps;
-import net.minecraft.command.ICommand;
-import net.minecraft.creativetab.CreativeTabs;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.command.CommandSource;
+import net.minecraft.item.ItemGroup;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
 import org.cyclops.cyclopscore.command.CommandDebug;
 import org.cyclops.cyclopscore.command.CommandDumpRegistries;
 import org.cyclops.cyclopscore.command.CommandIgnite;
-import org.cyclops.cyclopscore.command.CommandMod;
-import org.cyclops.cyclopscore.command.CommandRecursion;
 import org.cyclops.cyclopscore.command.CommandReloadResources;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.ingredient.recipe.IRecipeInputOutputDefinitionRegistry;
@@ -29,51 +27,49 @@ import org.cyclops.cyclopscore.metadata.IRegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportables;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
-import org.cyclops.cyclopscore.modcompat.versionchecker.VersionCheckerModCompat;
+import org.cyclops.cyclopscore.modcompat.baubles.ModCompatBaubles;
+import org.cyclops.cyclopscore.proxy.ClientProxy;
+import org.cyclops.cyclopscore.proxy.CommonProxy;
+import org.cyclops.cyclopscore.proxy.IClientProxy;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 import org.cyclops.cyclopscore.tracking.Analytics;
 import org.cyclops.cyclopscore.tracking.ImportantUsers;
 import org.cyclops.cyclopscore.tracking.Versions;
-
-import java.util.Map;
 
 /**
  * The main mod class of CyclopsCore.
  * @author rubensworks
  *
  */
-@Mod(   modid = Reference.MOD_ID,
-        name = Reference.MOD_NAME,
-        useMetadata = true,
-        version = Reference.MOD_VERSION,
-        dependencies = Reference.MOD_DEPENDENCIES,
-        guiFactory = "org.cyclops.cyclopscore.GuiConfigOverview$ExtendedConfigGuiFactory",
-        certificateFingerprint = Reference.MOD_FINGERPRINT
-)
+@Mod(Reference.MOD_ID)
+// TODO: guiFactory = "org.cyclops.cyclopscore.GuiConfigOverview$ExtendedConfigGuiFactory"
 public class CyclopsCore extends ModBaseVersionable {
-
-    /**
-     * The proxy of this mod, depending on 'side' a different proxy will be inside this field.
-     * @see net.minecraftforge.fml.common.SidedProxy
-     */
-    @SidedProxy(clientSide = "org.cyclops.cyclopscore.proxy.ClientProxy", serverSide = "org.cyclops.cyclopscore.proxy.CommonProxy")
-    public static ICommonProxy proxy;
 
     /**
      * The unique instance of this mod.
      */
-    @Mod.Instance(value = Reference.MOD_ID)
     public static CyclopsCore _instance;
+
+    private boolean loaded = false;
 
     public CyclopsCore() {
         super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION);
-        putGenericReference(REFKEY_MOD_VERSION, Reference.MOD_VERSION);
         FluidRegistry.enableUniversalBucket();
+        _instance = this;
+
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
     }
 
     @Override
-    protected void loadModCompats(ModCompatLoader modCompatLoader) {
-        modCompatLoader.addModCompat(new VersionCheckerModCompat());
+    @OnlyIn(Dist.CLIENT)
+    protected IClientProxy constructClientProxy() {
+        return new ClientProxy();
+    }
+
+    @Override
+    @OnlyIn(Dist.DEDICATED_SERVER)
+    protected ICommonProxy constructCommonProxy() {
+        return new CommonProxy();
     }
 
     @Override
@@ -82,73 +78,68 @@ public class CyclopsCore extends ModBaseVersionable {
     }
 
     @Override
-    protected ICommand constructBaseCommand() {
-        Map<String, ICommand> commands = Maps.newHashMap();
-        commands.put(CommandRecursion.NAME, new CommandRecursion(this));
-        commands.put(CommandIgnite.NAME, new CommandIgnite(this));
-        commands.put(CommandDebug.NAME, new CommandDebug(this));
-        commands.put(CommandReloadResources.NAME, new CommandReloadResources(this));
-        commands.put(CommandDumpRegistries.NAME, new CommandDumpRegistries(this));
-        CommandMod command =  new CommandMod(this, commands);
-        command.addAlias("cyclops");
-        return command;
+    protected ModCompatLoader constructModCompatLoader() {
+        ModCompatLoader modCompatLoader = super.constructModCompatLoader();
+
+        modCompatLoader.addModCompat(new ModCompatBaubles());
+
+        return modCompatLoader;
     }
 
-    @Mod.EventHandler
     @Override
-    public final void preInit(FMLPreInitializationEvent event) {
+    protected LiteralArgumentBuilder<CommandSource> constructBaseCommand() {
+        LiteralArgumentBuilder<CommandSource> root = super.constructBaseCommand();
+
+        root.then(CommandIgnite.make());
+        root.then(CommandDebug.make());
+        root.then(CommandReloadResources.make());
+        root.then(CommandDumpRegistries.make());
+
+        return root;
+    }
+
+    @Override
+    protected void setup(FMLCommonSetupEvent event) {
         // Registries
         getRegistryManager().addRegistry(IRecipeInputOutputDefinitionRegistry.class, new RecipeInputOutputDefinitionRegistry());
         getRegistryManager().addRegistry(IRegistryExportableRegistry.class, RegistryExportableRegistry.getInstance());
 
-        super.preInit(event);
+        super.setup(event);
+        System.out.println("SETUP OVERRIDDEN CALLED"); // TODO: check if this is properly called
+
+        // Populate registries
         Advancements.load();
-        if (Loader.isModLoaded(Reference.MOD_COMMONCAPABILITIES)) {
+        if (ModList.get().isLoaded(Reference.MOD_COMMONCAPABILITIES)) {
             RecipeInputOutputDefinitionHandlers.load();
         }
         RegistryExportables.load();
-    }
 
-    @Mod.EventHandler
-    @Override
-    public final void init(FMLInitializationEvent event) {
+        // Handle metadata
         Analytics.sendAll();
         Versions.checkAll();
         ImportantUsers.checkAll();
-        super.init(event);
-    }
-
-    @Mod.EventHandler
-    @Override
-    public final void postInit(FMLPostInitializationEvent event) {
-        super.postInit(event);
-    }
-
-    @Mod.EventHandler
-    @Override
-    public void onServerStarting(FMLServerStartingEvent event) {
-        super.onServerStarting(event);
     }
 
     @Override
-    public CreativeTabs constructDefaultCreativeTab() {
+    public ItemGroup constructDefaultCreativeTab() {
         return null; // We don't need a creative tab for this core mod.
     }
 
     @Override
-    public ICommonProxy getProxy() {
-        return proxy;
+    public void onConfigsRegister(ConfigHandler configHandler) {
+        configHandler.addConfigurable(new GeneralConfig());
+        configHandler.addConfigurable(new FluidHandlerItemCapacityConfig());
     }
 
-    @Override
-    public void onGeneralConfigsRegister(ConfigHandler configHandler) {
-        configHandler.add(new GeneralConfig());
+    private void loadComplete(FMLLoadCompleteEvent event) {
+        this.loaded = true;
     }
 
-    @Override
-    public void onMainConfigsRegister(ConfigHandler configHandler) {
-        super.onMainConfigsRegister(configHandler);
-        configHandler.add(new FluidHandlerItemCapacityConfig());
+    /**
+     * @return If this mod has been fully loaded. (The {@link FMLLoadCompleteEvent} has been called)
+     */
+    public boolean isLoaded() {
+        return loaded;
     }
 
     /**

@@ -3,8 +3,12 @@ package org.cyclops.cyclopscore.modcompat.jei;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import mezz.jei.api.recipe.IRecipeWrapper;
-import org.cyclops.cyclopscore.recipe.custom.api.*;
+import org.cyclops.cyclopscore.recipe.custom.api.IMachine;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
+import org.cyclops.cyclopscore.recipe.custom.api.IRecipeRegistry;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -19,8 +23,7 @@ import java.util.Map;
  * @author rubensworks
  */
 public abstract class RecipeRegistryJeiRecipeWrapper<M extends IMachine<M, I, O, P>, I extends IRecipeInput,
-        O extends IRecipeOutput, P extends IRecipeProperties, T extends RecipeRegistryJeiRecipeWrapper<M, I, O, P, T>>
-        implements IRecipeWrapper {
+        O extends IRecipeOutput, P extends IRecipeProperties, T extends RecipeRegistryJeiRecipeWrapper<M, I, O, P, T>> {
 
     private static final Map<IRecipe<?, ?, ?>, RecipeRegistryJeiRecipeWrapper<?, ?, ?, ?, ?>> RECIPE_WRAPPERS = Maps.newIdentityHashMap();
 

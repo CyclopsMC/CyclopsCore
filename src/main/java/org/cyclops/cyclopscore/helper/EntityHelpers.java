@@ -2,18 +2,23 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.item.ExperienceOrbEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+import net.minecraft.world.spawner.AbstractSpawner;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.eventbus.api.Event;
 
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Helpers for entities.
@@ -54,6 +59,24 @@ public class EntityHelpers {
 	    List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, box);
 	    return entities;
 	}
+
+	/**
+	 * Spawns the creature specified by the entity name in the location specified by the last three parameters.
+	 * @param world The world.
+	 * @param entityName The name of the entity.
+	 * @param x X coordinate.
+	 * @param y Y coordinate.
+	 * @param z Z coordinate.
+	 * @return the entity that was spawned.
+	 */
+	public static Optional<Entity> spawnEntity(World world, @Nullable ResourceLocation entityName, double x, double y, double z) {
+		return EntityType.byKey(entityName.toString()).map((type) -> {
+			Entity entity = type.create(world);
+			entity.setPosition(x, y, z);
+			world.addEntity(entity);
+			return entity;
+		});
+	}
 	
 	/**
 	 * Spawn the entity in the world.
@@ -61,13 +84,29 @@ public class EntityHelpers {
 	 * @param entityLiving The entity to spawn.
 	 * @return If the entity was spawned.
 	 */
-	public static boolean spawnEntity(World world, EntityLiving entityLiving) {
-		Result canSpawn = ForgeEventFactory.canEntitySpawn(entityLiving, world, (float) entityLiving.posX,
-				(float) entityLiving.posY, (float) entityLiving.posZ);
-        if (canSpawn == Result.ALLOW || (canSpawn == Result.DEFAULT)) { //  && entityliving.getCanSpawnHere()
+	public static boolean spawnEntity(World world, MobEntity entityLiving) {
+		AbstractSpawner spawner = new AbstractSpawner() {
+			@Override
+			public void broadcastEvent(int id) {
+
+			}
+
+			@Override
+			public World getWorld() {
+				return world;
+			}
+
+			@Override
+			public BlockPos getSpawnerPosition() {
+				return entityLiving.getPosition();
+			}
+		};
+		Event.Result canSpawn = ForgeEventFactory.canEntitySpawn(entityLiving, world, (float) entityLiving.posX,
+				(float) entityLiving.posY, (float) entityLiving.posZ, spawner);
+        if (canSpawn == Event.Result.ALLOW || (canSpawn == Event.Result.DEFAULT)) { //  && entityliving.getCanSpawnHere()
             if (!ForgeEventFactory.doSpecialSpawn(entityLiving, world, (float) entityLiving.posX,
-					(float) entityLiving.posY, (float) entityLiving.posZ)) {
-            	world.spawnEntity(entityLiving);
+					(float) entityLiving.posY, (float) entityLiving.posZ, spawner)) {
+            	world.addEntity(entityLiving);
                 return true;
             }
         }
@@ -80,8 +119,8 @@ public class EntityHelpers {
      * @return The size.
      */
     public static Vec3i getEntitySize(Entity entity) {
-        int x = ((int) Math.ceil(entity.width));
-        int y = ((int) Math.ceil(entity.height));
+        int x = ((int) Math.ceil(entity.getWidth()));
+        int y = ((int) Math.ceil(entity.getHeight()));
         int z = x;
         return new Vec3i(x, y, z);
     }
@@ -92,13 +131,13 @@ public class EntityHelpers {
 	 * @param player The player.
 	 * @param xp The amount of experience to spawn.
 	 */
-	public static void spawnXpAtPlayer(World world, EntityPlayer player, int xp) {
-		if(!world.isRemote) {
+	public static void spawnXpAtPlayer(World world, PlayerEntity player, int xp) {
+		if(!world.isRemote()) {
 			while (xp > 0) {
 				int current;
-				current = EntityXPOrb.getXPSplit(xp);
+				current = ExperienceOrbEntity.getXPSplit(xp);
 				xp -= current;
-				world.spawnEntity(new EntityXPOrb(world, player.posX, player.posY + 0.5D, player.posZ + 0.5D, current));
+				world.addEntity(new ExperienceOrbEntity(world, player.posX, player.posY + 0.5D, player.posZ + 0.5D, current));
 			}
 		}
 	}
@@ -108,12 +147,12 @@ public class EntityHelpers {
 	 * @param player The player.
 	 * @return The player's persisted NBT tag.
 	 */
-	public static NBTTagCompound getPersistedPlayerNbt(EntityPlayer player) {
-		NBTTagCompound tag = player.getEntityData();
-		NBTTagCompound persistedTag = tag.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+	public static CompoundNBT getPersistedPlayerNbt(PlayerEntity player) {
+		CompoundNBT tag = player.getEntityData();
+		CompoundNBT persistedTag = tag.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
 		if (persistedTag == null) {
-			persistedTag = new NBTTagCompound();
-			tag.setTag(EntityPlayer.PERSISTED_NBT_TAG, persistedTag);
+			persistedTag = new CompoundNBT();
+			tag.put(PlayerEntity.PERSISTED_NBT_TAG, persistedTag);
 		}
 		return persistedTag;
 	}
