@@ -58,6 +58,29 @@ def loadProperties() {
     logger.lifecycle "BUILDING VERSION: " + project.buildnumber
 }
 
+sourceSets {
+    api
+    main {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+        java {
+            // TODO: temporarily disable some mod compats
+            exclude '**/modcompat/crafttweaker/**'
+        }
+    }
+    test {
+        compileClasspath += sourceSets.api.output
+        runtimeClasspath += sourceSets.api.output
+    }
+}
+
+configurations {
+    apiCompile.extendsFrom(compile)
+    javadoc.classpath += sourceSets.api.output
+}
+
+apply from: 'gradle/forge.gradle'
+
 task signJar(type: SignJar, dependsOn: jar) {
     onlyIf {
         System.getenv().SIGN_KEYSTORE
@@ -96,28 +119,6 @@ artifacts {
     archives javadocJar
 }
 
-sourceSets {
-    api
-    main {
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
-        java {
-            // TODO: temporarily disable some mod compats
-            exclude '**/modcompat/crafttweaker/**'
-        }
-    }
-    test {
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
-    }
-}
-
-configurations {
-    apiCompile.extendsFrom(compile)
-    javadoc.classpath += sourceSets.api.output
-}
-
-apply from: 'gradle/forge.gradle'
 //apply from: 'gradle/dev.gradle'
 apply from: 'gradle/deploy.gradle'
 
