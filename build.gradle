@@ -24,6 +24,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'jacoco'
 apply plugin: 'idea'
+apply plugin: 'maven'
 
 import net.minecraftforge.gradle.common.task.SignJar
 
@@ -50,9 +51,6 @@ def loadProperties() {
         project.buildnumber = System.getenv().BUILD_NUMBER
     if (System.getenv().TRAVIS_BUILD_NUMBER)
         project.buildnumber = System.getenv().TRAVIS_BUILD_NUMBER
-    if (System.getenv().CI) {
-        //project.buildnumber += "-DEV"
-    }
     if (System.getenv().RELEASE || System.getenv().TRAVIS_TAG)
         project.buildnumber = "RELEASE"
     logger.lifecycle "BUILDING VERSION: " + project.buildnumber
@@ -79,7 +77,104 @@ configurations {
     javadoc.classpath += sourceSets.api.output
 }
 
-apply from: 'gradle/forge.gradle'
+repositories {
+    mavenCentral()
+    maven {
+        name "Blamejared Maven Repo"
+        url "http://blamejared.com/maven"
+    }
+    maven {
+        name 'DVS1 Maven FS'
+        url 'http://dvs1.progwml6.com/files/maven'
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${config.minecraft_version}-${config.forge_version}"
+
+    //deobf("CraftTweaker2:CraftTweaker2-API:${config.crafttweakerapi_version}") { // http://blamejared.com/maven/CraftTweaker2/CraftTweaker2-API/maven-metadata.xml
+    //    exclude group: 'org.ow2.asm', module: 'asm-debug-all'
+    //}
+    compileOnly fg.deobf("mezz.jei:jei-${config.jei_version}:api") // https://dvs1.progwml6.com/jenkins/
+
+    // Project lombok
+    compileOnly "org.projectlombok:lombok:1.16.4"
+    testCompile "junit:junit:4.12"
+    testCompile "org.mockito:mockito-core:1.+"
+}
+
+// TODO: fix process resources (it breaks run configs)
+//processResources {
+//    from(sourceSets.main.resources.srcDirs) {
+//        expand '@VERSION@': project.version,
+//                '@MC_VERSION@' : project.config.minecraft_version,
+//                '@FORGE_VERSION@' : project.config.forge_version,
+//                '@BUILD_NUMBER@' : project.buildnumber,
+//                '@FINGERPRINT@' : project.config.fingerprint
+//    }
+//}
+
+minecraft {
+    mappings channel: "${config.mcp_mappings_channel}", version: "${config.mcp_mappings_version}"
+
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            //property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                cyclopscore {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                cyclopscore {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+            args '--mod', 'cyclopscore', '--all', '--output', file('src/generated/resources/')
+            mods {
+                cyclopscore {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+            }
+        }
+    }
+}
+
+if (project.buildnumber.equals("RELEASE"))
+    version = "${config.minecraft_version}-${config.mod_version}"
+else
+    version = "${config.minecraft_version}-${config.mod_version}-${buildnumber}"
+
+jar {
+    manifest {
+        attributes([
+                "Specification-Title": "${project.name}",
+                "Specification-Vendor": "rubensworks",
+                "Specification-Version": "${config.mod_version}",
+                "Implementation-Title": "${project.name}",
+                "Implementation-Version": "${project.version}",
+                "Implementation-Vendor" :"rubensworks",
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
 
 task signJar(type: SignJar, dependsOn: jar) {
     onlyIf {
@@ -119,20 +214,93 @@ artifacts {
     archives javadocJar
 }
 
-//apply from: 'gradle/dev.gradle'
-apply from: 'gradle/deploy.gradle'
+curseforge {
+    if(project.hasProperty("curseforge_key") && project.hasProperty("changelog")) {
+        apiKey = project.curseforge_key
+    } else if(System.getenv().TRAVIS && System.getenv().CURSEFORGE_KEY_SECRET) {
+        apiKey = System.getenv().CURSEFORGE_KEY_SECRET
+    } else {
+        apiKey = "DUMMY"
+    }
 
-jar {
-    manifest {
-        attributes([
-            "Specification-Title": "${project.name}",
-            "Specification-Vendor": "rubensworks",
-            "Specification-Version": "${config.mod_version}",
-            "Implementation-Title": "${project.name}",
-            "Implementation-Version": "${project.version}",
-            "Implementation-Vendor" :"rubensworks",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
+    project {
+        id = "232758" // my project url is http://minecraft.curseforge.com/mc-mods/232758/
+        releaseType = project.config.release_type
+        mainArtifact(jar) {
+
+        }
+
+        changelog = ""
+        if (new File("resources/changelog/${project.version}.txt").exists()) {
+            changelog = new File("resources/changelog/${project.version}.txt").text
+        }
+
+        addArtifact deobfJar
+        addArtifact sourceJar
+        addArtifact javadocJar
+    }
+}
+
+configurations {
+    deployerJars
+}
+
+dependencies {
+    deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
+}
+
+uploadArchives {
+    repositories {
+        add getProject().repositories.mavenLocal()
+    }
+    repositories.mavenDeployer {
+        configuration = configurations.deployerJars
+
+        if (project.hasProperty("filesmaven_url")) {
+            logger.info('Publishing to files server')
+            repository(url: project.filesmaven_url) {
+                authentication(userName: project.filesmaven_username, password: project.filesmaven_key)
+            }
+        } else if (System.getenv().MAVEN_URL) {
+            logger.info('Publishing to files server')
+            repository(url: System.getenv().MAVEN_URL) {
+                authentication(userName: System.getenv().MAVEN_USERNAME, password: System.getenv().MAVEN_KEY)
+            }
+        } else {
+            logger.info('Publishing to repo folder')
+            repository(url: 'file://localhost/' + project.file('~/.m2/repository').getAbsolutePath())
+        }
+
+        pom {
+            groupId = project.group
+            version = project.version
+            artifactId = project.archivesBaseName
+        }
+        pom.project {
+            name project.archivesBaseName
+            packaging 'jar'
+            description 'Minecraft coremod for EvilCraft, Integrated Dynamics and others.'
+            url 'https://github.com/CyclopsMC/CyclopsCore'
+
+            scm {
+                url 'https://github.com/CyclopsMC/CyclopsCore'
+                connection 'scm:git:git://github.com/CyclopsMC/CyclopsCore.git'
+                developerConnection 'scm:git:git@github.com:CyclopsMC/CyclopsCore.git'
+            }
+
+            issueManagement {
+                system 'github'
+                url 'https://github.com/CyclopsMC/CyclopsCore/issues'
+            }
+
+            developers {
+                developer {
+                    id 'rubensworks'
+                    name 'rubensworks'
+                    roles { role 'developer' }
+                }
+            }
+        }
     }
 }
 
