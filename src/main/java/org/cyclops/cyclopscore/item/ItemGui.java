@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 /**
  * Configurable item that can show a GUI on right clicking.
  *
- * Implement {@link #getContainer(World, PlayerEntity, ItemStack)}
+ * Implement {@link #getContainer(World, PlayerEntity, int, Hand, ItemStack)}
  * and {@link #getContainerClass(World, PlayerEntity, ItemStack)} to specify the gui.
  *
  * Optionally implement {@link #getOpenStat()} to specify a stat on gui opening.
@@ -33,7 +33,7 @@ public abstract class ItemGui extends Item {
 	}
 
 	@Nullable
-	public abstract INamedContainerProvider getContainer(World world, PlayerEntity player, ItemStack itemStack);
+	public abstract INamedContainerProvider getContainer(World world, PlayerEntity player, int itemIndex, Hand hand, ItemStack itemStack);
 
 	public abstract Class<? extends Container> getContainerClass(World world, PlayerEntity player, ItemStack itemStack);
     
@@ -58,7 +58,7 @@ public abstract class ItemGui extends Item {
     public void openGuiForItemIndex(World world, PlayerEntity player, int itemIndex, Hand hand) {
 		// TODO: temp data?: getConfig().getMod().getGuiHandler().setTemporaryData(GuiHandler.GuiType.ITEM, Pair.of(itemIndex, hand));
     	if(!world.isRemote() || isClientSideOnlyGui()) {
-			INamedContainerProvider containerProvider = this.getContainer(world, player, player.getHeldItem(hand));
+			INamedContainerProvider containerProvider = this.getContainer(world, player, itemIndex, hand, player.getHeldItem(hand));
 			if (containerProvider != null) {
 				player.openContainer(containerProvider);
 				Stat<ResourceLocation> openStat = this.getOpenStat();
