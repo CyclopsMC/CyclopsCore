@@ -50,6 +50,10 @@ public class ConfigurableType {
      * Gui type.
      */
     public static final ConfigurableType GUI = new ConfigurableType(false, GuiConfig.class, new GuiAction(), "gui");
+    /**
+     * Recipe serializer type.
+     */
+    public static final ConfigurableType RECIPE = new ConfigurableType(false, RecipeConfig.class, new RecipeAction(), "recipe");
 
     /**
      * Dummy type, only used for configs that refer to nothing.
