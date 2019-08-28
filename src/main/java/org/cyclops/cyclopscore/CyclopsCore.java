@@ -73,11 +73,6 @@ public class CyclopsCore extends ModBaseVersionable {
     }
 
     @Override
-    protected RecipeHandler constructRecipeHandler() {
-        return null;
-    }
-
-    @Override
     protected ModCompatLoader constructModCompatLoader() {
         ModCompatLoader modCompatLoader = super.constructModCompatLoader();
 
@@ -121,7 +116,7 @@ public class CyclopsCore extends ModBaseVersionable {
     }
 
     @Override
-    public ItemGroup constructDefaultCreativeTab() {
+    public ItemGroup constructDefaultItemGroup() {
         return null; // We don't need a creative tab for this core mod.
     }
 

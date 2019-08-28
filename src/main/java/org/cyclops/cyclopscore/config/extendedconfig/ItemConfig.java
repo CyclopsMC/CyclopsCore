@@ -78,10 +78,10 @@ public abstract class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> i
 
     /**
      * Get the creative tab for this item.
-     * @return The creative tab, by default the value in {@link org.cyclops.cyclopscore.init.ModBase#getDefaultCreativeTab()}.
+     * @return The creative tab, by default the value in {@link org.cyclops.cyclopscore.init.ModBase#getDefaultItemGroup()}.
      */
     public ItemGroup getTargetTab() {
-        return getMod().getDefaultCreativeTab();
+        return getMod().getDefaultItemGroup();
     }
 
     @Override

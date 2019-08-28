@@ -120,7 +120,10 @@ public abstract class ModBase {
         return new RegistryManager();
     }
 
-    protected abstract RecipeHandler constructRecipeHandler();
+    @Deprecated // TODO: rm
+    protected RecipeHandler constructRecipeHandler() {
+        return null;
+    }
 
     protected PacketHandler constructPacketHandler() {
         return new PacketHandler(this);
@@ -235,7 +238,7 @@ public abstract class ModBase {
         //NetworkRegistry.registerGuiHandler(getModId(), getGuiHandler()); // TODO: guis are now handled by ContainerType registry
 
         // Initialize the creative tab
-        getDefaultCreativeTab();
+        getDefaultItemGroup();
     }
 
     /**
@@ -297,10 +300,10 @@ public abstract class ModBase {
     protected abstract ICommonProxy constructCommonProxy();
 
     /**
-     * Construct a creative tab, will only be called once during the init event.
-     * @return The default creative tab for items and blocks.
+     * Construct an item group, will only be called once during the init event.
+     * @return The default item group for items and blocks.
      */
-    protected abstract ItemGroup constructDefaultCreativeTab();
+    protected abstract ItemGroup constructDefaultItemGroup();
 
     /**
      * Called when the configs should be registered.
@@ -311,11 +314,11 @@ public abstract class ModBase {
     }
 
     /**
-     * @return The default creative tab for items and blocks.
+     * @return The default item group for items and blocks.
      */
-    public final ItemGroup getDefaultCreativeTab() {
+    public final ItemGroup getDefaultItemGroup() {
         if(defaultCreativeTab == null) {
-            defaultCreativeTab = constructDefaultCreativeTab();
+            defaultCreativeTab = constructDefaultItemGroup();
         }
         return defaultCreativeTab;
     }
