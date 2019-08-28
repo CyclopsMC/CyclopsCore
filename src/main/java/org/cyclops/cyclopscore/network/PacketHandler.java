@@ -80,6 +80,7 @@ public final class PacketHandler {
                                 context.enqueueWork(() -> packet.actionServer(context.getSender().getServerWorld(), context.getSender()));
                             }
                         }
+                        context.setPacketHandled(true);
                     });
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
