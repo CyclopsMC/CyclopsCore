@@ -46,6 +46,10 @@ public class ConfigurableType {
      * Capability type.
      */
     public static final ConfigurableType CAPABILITY = new ConfigurableType(false, CapabilityConfig.class, new CapabilityAction(), "capability");
+    /**
+     * Gui type.
+     */
+    public static final ConfigurableType GUI = new ConfigurableType(false, GuiConfig.class, new GuiAction(), "gui");
 
     /**
      * Dummy type, only used for configs that refer to nothing.
