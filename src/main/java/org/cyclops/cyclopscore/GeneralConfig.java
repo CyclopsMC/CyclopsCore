@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore;
 
+import net.minecraftforge.fml.config.ModConfig;
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.extendedconfig.DummyConfig;
@@ -59,15 +60,9 @@ public class GeneralConfig extends DummyConfig {
     public static boolean versionChecker = true;
 
     /**
-     * The minimum array size of potion types, increase to allow for more potion types.
-     */
-    @ConfigurableProperty(category = "core", comment = "The minimum array size of potion types, increase to allow for more potion types.", minimalValue=256, maximalValue=2560, requiresMcRestart = true)
-    public static int minimumPotionTypesArraySize = 256;
-
-    /**
      * If a button should be added to the main menu to open a dev world (shift-click creates a new world).
      */
-    @ConfigurableProperty(category = "general", comment = "If a button should be added to the main menu to open a dev world (shift-click creates a new world).")
+    @ConfigurableProperty(category = "general", comment = "If a button should be added to the main menu to open a dev world (shift-click creates a new world).", configLocation = ModConfig.Type.CLIENT)
     public static boolean devWorldButton = true; // TODO: (Boolean) Launcher.INSTANCE.blackboard().get("fml.deobfuscatedEnvironment");
 
     /**
