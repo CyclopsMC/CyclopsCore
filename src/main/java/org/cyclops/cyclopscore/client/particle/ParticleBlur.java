@@ -30,38 +30,21 @@ public class ParticleBlur extends Particle {
 	
 	private int scaleLife;
 	private float originalScale;
-	
-	/**
-	 * Make a new instance.
-	 * @param world The world.
-	 * @param x X coordinate.
-	 * @param y Y coordinate.
-	 * @param z Z coordinate.
-	 * @param scale The scale of this particle.
-	 * @param motionX The X motion speed.
-	 * @param motionY The Y motion speed.
-	 * @param motionZ The Z motion speed.
-	 * @param red Red tint.
-	 * @param green Green tint.
-	 * @param blue Blue tint.
-	 * @param ageMultiplier The multiplier of the maximum age (this will be multiplied with
-	 * a partially random factor).
-	 */
-	public ParticleBlur(World world, double x, double y, double z, float scale,
-						double motionX, double motionY, double motionZ,
-						float red, float green, float blue, float ageMultiplier) {
+
+	public ParticleBlur(ParticleBlurData data, World world, double x, double y, double z,
+						double motionX, double motionY, double motionZ) {
 		super(world, x, y, z, 0, 0, 0);
 		this.motionX = motionX;
 		this.motionY = motionY;
 		this.motionZ = motionZ;
 		
-		this.particleRed = red;
-		this.particleGreen = green;
-		this.particleBlue = blue;
+		this.particleRed = data.getRed();
+		this.particleGreen = data.getGreen();
+		this.particleBlue = data.getBlue();
 		this.particleGravity = 0;
 		
-		this.originalScale *= scale;
-		this.maxAge = (int) ((rand.nextFloat() * 0.33F + 0.66F) * ageMultiplier);
+		this.originalScale *= data.getScale();
+		this.maxAge = (int) ((rand.nextFloat() * 0.33F + 0.66F) * data.getAgeMultiplier());
 		this.setSize(0.01F, 0.01F);
 		
 		this.prevPosX = posX;
