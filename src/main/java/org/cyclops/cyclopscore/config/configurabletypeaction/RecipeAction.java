@@ -2,11 +2,10 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import org.cyclops.cyclopscore.config.extendedconfig.GuiConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.RecipeConfig;
 
 /**
- * The action used for {@link GuiConfig}.
+ * The action used for {@link RecipeConfig}.
  * @author rubensworks
  * @see ConfigurableTypeAction
  */

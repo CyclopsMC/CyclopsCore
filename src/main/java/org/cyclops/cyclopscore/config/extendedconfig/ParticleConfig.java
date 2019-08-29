@@ -1,7 +1,11 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -14,7 +18,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class RecipeConfig<T extends IRecipe<?>> extends ExtendedConfigForge<RecipeConfig<T>, IRecipeSerializer<T>> {
+public abstract class ParticleConfig<T extends IParticleData> extends ExtendedConfigForge<ParticleConfig<T>, ParticleType<T>> {
 
     /**
      * Create a new config
@@ -26,14 +30,14 @@ public abstract class RecipeConfig<T extends IRecipe<?>> extends ExtendedConfigF
      * @param comment            A comment that can be added to the config file line
      * @param elementConstructor The element constructor.
      */
-    public RecipeConfig(ModBase mod, boolean enabledDefault, String namedId, String comment,
-                        Function<RecipeConfig<T>, ? extends IRecipeSerializer<T>> elementConstructor) {
+    public ParticleConfig(ModBase mod, boolean enabledDefault, String namedId, String comment,
+                          Function<ParticleConfig<T>, ? extends ParticleType<T>> elementConstructor) {
         super(mod, enabledDefault, namedId, comment, elementConstructor);
     }
 
     @Override
     public String getTranslationKey() {
-        return "recipe." + getMod().getModId() + "." + getNamedId();
+        return "gui." + getMod().getModId() + "." + getNamedId();
 	}
 
     // Needed for config gui
@@ -44,12 +48,23 @@ public abstract class RecipeConfig<T extends IRecipe<?>> extends ExtendedConfigF
     
     @Override
 	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.RECIPE;
+		return ConfigurableType.PARTICLE;
 	}
 
     @Override
-    public IForgeRegistry<? super IRecipeSerializer<T>> getRegistry() {
-        return ForgeRegistries.RECIPE_SERIALIZERS;
+    public IForgeRegistry<? super ParticleType<T>> getRegistry() {
+        return ForgeRegistries.PARTICLE_TYPES;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public abstract IParticleFactory<T> getParticleFactory();
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void onRegistered() {
+        super.onRegistered();
+        System.out.println("After reg particle"); // TODO
+        Minecraft.getInstance().particles.registerFactory(getInstance(), getParticleFactory());
     }
 
 }
