@@ -106,6 +106,7 @@ public abstract class ModBase<T extends ModBase> {
         getConfigHandler().initialize(Lists.newArrayList(
                 getModCompatLoader()
         ));
+        getConfigHandler().loadModInit();
 
         loadModCompats(getModCompatLoader());
     }
@@ -224,6 +225,9 @@ public abstract class ModBase<T extends ModBase> {
      */
     protected void setup(FMLCommonSetupEvent event) {
         log(Level.TRACE, "setup()");
+
+        // Iterate over all configs again
+        getConfigHandler().loadSetup();
 
         // Register proxy things
         ICommonProxy proxy = getProxy();

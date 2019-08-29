@@ -12,7 +12,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.GuiConfig;
 public class GuiAction<T extends Container> extends ConfigurableTypeAction<GuiConfig<T>, ContainerType<T>> {
 
     @Override
-    public void onRegister(GuiConfig<T> eConfig) {
+    public void onRegisterModInit(GuiConfig<T> eConfig) {
         register(eConfig.getInstance(), (GuiConfig) eConfig);
     }
 }

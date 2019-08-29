@@ -27,18 +27,11 @@ public class FluidHandlerItemCapacityConfig extends CapabilityConfig<IFluidHandl
     public FluidHandlerItemCapacityConfig() {
         super(
                 CyclopsCore._instance,
-                true,
                 "fluid_handler_capacity",
-                "Item fluid handler with configurable capacity",
                 IFluidHandlerItemCapacity.class,
                 new FluidHandlerItemCapacity.Storage(),
                 () -> new FluidHandlerItemCapacity(ItemStack.EMPTY, 1000)
         );
-    }
-
-    @Override
-    public boolean isDisableable() {
-        return false;
     }
 
 }

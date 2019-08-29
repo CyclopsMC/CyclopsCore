@@ -18,15 +18,11 @@ public abstract class VillagerConfig extends ExtendedConfigForge<VillagerConfig,
     /**
      * Make a new instance.
      * @param mod     The mod instance.
-     * @param enabledDefault     If this should is enabled by default. If this is false, this can still
-     *                           be enabled through the config file.
      * @param namedId The unique name ID for the configurable.
-     * @param comment The comment to add in the config file for this configurable.
      * @param elementConstructor The element constructor.
      */
-    public VillagerConfig(ModBase mod, boolean enabledDefault, String namedId,
-            String comment, Function<VillagerConfig, ? extends VillagerProfession> elementConstructor) {
-        super(mod, enabledDefault, namedId, comment, elementConstructor);
+    public VillagerConfig(ModBase mod, String namedId, Function<VillagerConfig, ? extends VillagerProfession> elementConstructor) {
+        super(mod, namedId, elementConstructor);
     }
     
     @Override

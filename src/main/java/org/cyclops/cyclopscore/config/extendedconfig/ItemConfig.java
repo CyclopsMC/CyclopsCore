@@ -29,14 +29,11 @@ public abstract class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> i
     /**
      * Make a new instance.
      * @param mod     The mod instance.
-     * @param enabled If this should is enabled.O
      * @param namedId The unique name ID for the configurable.
-     * @param comment The comment to add in the config file for this configurable.
      * @param elementConstructor The element constructor.
      */
-    public ItemConfig(ModBase mod, boolean enabled, String namedId, String comment,
-                      Function<ItemConfig, ? extends Item> elementConstructor) {
-        super(mod, enabled, namedId, comment, elementConstructor);
+    public ItemConfig(ModBase mod, String namedId, Function<ItemConfig, ? extends Item> elementConstructor) {
+        super(mod, namedId, elementConstructor);
         if(MinecraftHelpers.isClientSide()) {
             dynamicItemVariantLocation  = null;
         }

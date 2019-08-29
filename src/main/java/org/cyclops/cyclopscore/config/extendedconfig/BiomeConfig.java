@@ -16,9 +16,8 @@ import java.util.function.Function;
  */
 public abstract class BiomeConfig extends ExtendedConfigForge<BiomeConfig, Biome>{
 
-    public BiomeConfig(ModBase mod, boolean enabledDefault, String namedId,
-                       String comment, Function<BiomeConfig, ? extends Biome> elementConstructor) {
-        super(mod, enabledDefault, namedId, comment, elementConstructor);
+    public BiomeConfig(ModBase mod, String namedId, Function<BiomeConfig, ? extends Biome> elementConstructor) {
+        super(mod, namedId, elementConstructor);
     }
     
     @Override

@@ -20,16 +20,14 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
     /**
      * Make a new instance.
      * @param mod The mod
-     * @param enabled If this should is enabled.
      * @param namedId The unique name ID for the configurable.
-     * @param comment The comment to add in the config file for this configurable.
      * @param type The capability type.
      * @param storage The default capability storage.
      * @param implementation The default capability implementation
      */
-    public CapabilityConfig(ModBase mod, boolean enabled, String namedId, String comment,
-                            Class<T> type, Capability.IStorage<T> storage, Callable<? extends T> implementation) {
-        super(mod, enabled, namedId, comment, null);
+    public CapabilityConfig(ModBase mod, String namedId, Class<T> type,
+                            Capability.IStorage<T> storage, Callable<? extends T> implementation) {
+        super(mod, namedId, null);
         this.type = type;
         this.storage = storage;
         this.implementation = implementation;

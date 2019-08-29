@@ -32,7 +32,7 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig, Item>{
     }
 
     @Override
-    public void onRegister(ItemConfig eConfig) {
+    public void onRegisterModInit(ItemConfig eConfig) {
         Item item = eConfig.getInstance();
 
         // Register item and set creative tab.

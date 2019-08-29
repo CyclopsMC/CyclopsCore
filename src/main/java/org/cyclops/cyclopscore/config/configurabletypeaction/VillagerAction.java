@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.VillagerConfig;
 public class VillagerAction extends ConfigurableTypeAction<VillagerConfig, VillagerProfession> {
 
     @Override
-    public void onRegister(VillagerConfig eConfig) {
+    public void onRegisterModInit(VillagerConfig eConfig) {
         register(eConfig.getInstance(), eConfig);
     }
 

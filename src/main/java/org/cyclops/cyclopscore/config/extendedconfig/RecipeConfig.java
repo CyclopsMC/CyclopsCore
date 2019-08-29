@@ -20,15 +20,11 @@ public abstract class RecipeConfig<T extends IRecipe<?>> extends ExtendedConfigF
      * Create a new config
      *
      * @param mod                The mod instance.
-     * @param enabledDefault     If this should is enabled by default. If this is false, this can still
-     *                           be enabled through the config file.
      * @param namedId            A unique name id
-     * @param comment            A comment that can be added to the config file line
      * @param elementConstructor The element constructor.
      */
-    public RecipeConfig(ModBase mod, boolean enabledDefault, String namedId, String comment,
-                        Function<RecipeConfig<T>, ? extends IRecipeSerializer<T>> elementConstructor) {
-        super(mod, enabledDefault, namedId, comment, elementConstructor);
+    public RecipeConfig(ModBase mod, String namedId, Function<RecipeConfig<T>, ? extends IRecipeSerializer<T>> elementConstructor) {
+        super(mod, namedId, elementConstructor);
     }
 
     @Override

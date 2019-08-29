@@ -22,47 +22,20 @@ import java.util.concurrent.Callable;
  * @see ConfigHandler
  */
 public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I>, I> {
-    
-    /**
-     * The common run method for all the subtypes of {@link ConfigurableTypeAction}.
-     * @param eConfig The config to be registered.
-     * @param configBuilder The configuration builder.
-     */
-    public void onConfigInit(C eConfig, ForgeConfigSpec.Builder configBuilder) {
-        if(eConfig.isDisableable()) {
-            buildConfigEnabled(eConfig, configBuilder);
-        }
-    }
 
     /**
-     * Logic to register the eConfig target when the config is being loaded.
+     * Logic to register the eConfig target when the config is being loaded during mod construction.
      * @param eConfig The config to be registered.
      */
-    public abstract void onRegister(C eConfig);
-    
-    public void onSkipRegistration(C eConfig) {
-        eConfig.getMod().log(Level.TRACE, "Skipped registering " + eConfig.getNamedId());
-    }
-    
+    public abstract void onRegisterModInit(C eConfig);
+
     /**
-     * Logic that constructs the config options.
+     * Logic to register the eConfig target when the config is being loaded during the
+     * {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent}.
      * @param eConfig The config to be registered.
-     * @param configBuilder The configuration builder.
      */
-    public void buildConfigEnabled(C eConfig, ForgeConfigSpec.Builder configBuilder) {
-        configBuilder.push(eConfig.getConfigurableType().getCategory());
+    public void onRegisterSetup(C eConfig) {
 
-        // Construct property for enabling the configurable
-        if (eConfig.getComment() != null) {
-            configBuilder = configBuilder.comment(eConfig.getComment());
-        }
-        ForgeConfigSpec.BooleanValue configProperty = configBuilder
-                .translation(eConfig.getFullTranslationKey())
-                .worldRestart()
-                .define(eConfig.getNamedId(), eConfig.isEnabledDefault());
-        eConfig.setPropertyEnabled(configProperty);
-
-        configBuilder.pop();
     }
 
     /**

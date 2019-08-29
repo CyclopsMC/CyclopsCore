@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.EffectConfig;
 public class EffectAction extends ConfigurableTypeAction<EffectConfig, Effect> {
 
     @Override
-    public void onRegister(EffectConfig eConfig) {
+    public void onRegisterModInit(EffectConfig eConfig) {
         register(eConfig.getInstance(), eConfig);
     }
 

@@ -30,16 +30,13 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
     /**
      * Make a new instance.
      * @param mod     The mod instance.
-     * @param enabledDefault     If this should is enabled by default. If this is false, this can still
-     *                           be enabled through the config file.
      * @param namedId The unique name ID for the configurable.
-     * @param comment The comment to add in the config file for this configurable.
      * @param elementConstructor The element constructor.
      * @param entityClass The class of the entity.
      */
-    public EntityConfig(ModBase mod, boolean enabledDefault, String namedId, String comment,
-                        Function<EntityConfig<T>, ? extends EntityType<T>> elementConstructor, Class<? extends T> entityClass) {
-        super(mod, enabledDefault, namedId, comment, elementConstructor);
+    public EntityConfig(ModBase mod, String namedId, Function<EntityConfig<T>, ? extends EntityType<T>> elementConstructor,
+                        Class<? extends T> entityClass) {
+        super(mod, namedId, elementConstructor);
         this.entityClass = entityClass;
     }
     

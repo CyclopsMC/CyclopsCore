@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import com.google.common.collect.Lists;
 import lombok.Getter;
-import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
@@ -10,11 +9,9 @@ import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.CyclopsCoreConfigException;
 import org.cyclops.cyclopscore.init.ModBase;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -33,13 +30,8 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
 
     @Getter
     private final ModBase mod;
-    private final boolean enabledDefault;
-    private ForgeConfigSpec.BooleanValue propertyEnabled;
     @Getter
     private final String namedId;
-    @Getter
-    @Nullable
-    private final String comment;
     @Getter
     private final Function<C, ? extends I> elementConstructor;
 
@@ -53,18 +45,12 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
     /**
      * Create a new config
      * @param mod The mod instance.
-     * @param enabledDefault If this should is enabled by default. If this is false, this can still
-     *                       be enabled through the config file.
      * @param namedId A unique name id
-     * @param comment A comment that can be added to the config file line
      * @param elementConstructor The element constructor.
      */
-    public ExtendedConfig(ModBase mod, boolean enabledDefault, String namedId, @Nullable String comment,
-                          Function<C, ? extends I> elementConstructor) {
+    public ExtendedConfig(ModBase mod, String namedId, Function<C, ? extends I> elementConstructor) {
         this.mod = mod;
-    	this.enabledDefault = enabledDefault;
     	this.namedId = namedId.toLowerCase(Locale.ROOT);
-    	this.comment = comment;
     	this.elementConstructor = elementConstructor;
         try {
             generateConfigProperties();
@@ -155,6 +141,9 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
      * @return Instance of the object this config refers to.
      */
     public I getInstance() {
+        if (!this.getConfigurableType().hasUniqueInstance()) {
+            throw new IllegalStateException("Tried calling getInstance() on a config of type that has no unique instances.");
+        }
         return this.instance;
     }
     
@@ -167,7 +156,8 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
     }
     
     /**
-     * Overridable method that is immediately called after the element of this config is registered.
+     * Overridable method that is called after the element of this config is fully registered,
+     * after the {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent}.
      */
     public void onRegistered() {
 
@@ -183,57 +173,6 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
     @Override
     public int compareTo(ExtendedConfig<C, I> o) {
         return getNamedId().compareTo(o.getNamedId());
-    }
-
-    /**
-     * @return If the target should be enabled by default.
-     */
-    public boolean isEnabledDefault() {
-        return enabledDefault;
-    }
-
-    /**
-     * Checks if the eConfig refers to a target that should be enabled.
-     * @return if the target should be enabled.
-     */
-    public boolean isEnabled() {
-        Objects.requireNonNull(this.propertyEnabled, "No enabled property was found for " + this.getNamedId()
-                + ", probably because it can not be disabled.");
-        return this.propertyEnabled.get() && !isHardDisabled();
-    }
-    
-    /**
-     * Set the enabling of the target.
-     * @param enabled If the target should be enabled.
-     */
-    public void setEnabled(boolean enabled) {
-		this.propertyEnabled.set(enabled);
-        this.propertyEnabled.save();
-	}
-
-    /**
-     * Save the property for checking if the target is enabled.
-     * @param propertyEnabled A boolean property.
-     */
-    public void setPropertyEnabled(ForgeConfigSpec.BooleanValue propertyEnabled) {
-        this.propertyEnabled = propertyEnabled;
-    }
-
-    /**
-     * If the target should be hard-disabled, this means no occurence in the config file,
-     * total ignorance.
-     * @return if the target should run trough the config handler.
-     */
-    public boolean isHardDisabled() {
-        return false;
-    }
-    
-    /**
-     * Override this method to prevent configs to be disabled from the config file. (non-zero id's that is)
-     * @return if the target can be disabled.
-     */
-    public boolean isDisableable() {
-        return true;
     }
     
     /**

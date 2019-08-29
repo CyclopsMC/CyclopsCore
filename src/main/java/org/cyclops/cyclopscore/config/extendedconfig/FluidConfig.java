@@ -20,15 +20,11 @@ public abstract class FluidConfig extends ExtendedConfigForge<FluidConfig, Fluid
     /**
      * Make a new instance.
      * @param mod     The mod instance.
-     * @param enabledDefault     If this should is enabled by default. If this is false, this can still
-     *                           be enabled through the config file.
      * @param namedId The unique name ID for the configurable.
-     * @param comment The comment to add in the config file for this configurable.
      * @param elementConstructor The element constructor.
      */
-    public FluidConfig(ModBase mod, boolean enabledDefault, String namedId,
-                       String comment, Function<FluidConfig, ? extends Fluid> elementConstructor) {
-        super(mod, enabledDefault, namedId, comment, elementConstructor);
+    public FluidConfig(ModBase mod, String namedId, Function<FluidConfig, ? extends Fluid> elementConstructor) {
+        super(mod, namedId, elementConstructor);
     }
 
     @Override
@@ -40,11 +36,6 @@ public abstract class FluidConfig extends ExtendedConfigForge<FluidConfig, Fluid
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.FLUID;
 	}
-    
-    @Override
-    public boolean isDisableable() {
-        return false;
-    }
 
     /**
      * Get the still icon location.

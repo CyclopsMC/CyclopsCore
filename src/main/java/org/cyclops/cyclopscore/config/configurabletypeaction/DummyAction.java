@@ -10,7 +10,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.DummyConfig;
 public class DummyAction extends ConfigurableTypeAction<DummyConfig, Void> {
 
     @Override
-    public void onRegister(DummyConfig eConfig) {
+    public void onRegisterModInit(DummyConfig eConfig) {
         
     }
 

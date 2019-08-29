@@ -14,11 +14,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.ParticleConfig;
 public class ParticleBlurConfig extends ParticleConfig<ParticleBlurData> {
 
     public ParticleBlurConfig() {
-        super(CyclopsCore._instance,
-                true,
-                "blur",
-                "Blur particle",
-                eConfig -> new ParticleType<>(false, ParticleBlurData.DESERIALIZER));
+        super(CyclopsCore._instance, "blur", eConfig -> new ParticleType<>(false, ParticleBlurData.DESERIALIZER));
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -14,12 +14,10 @@ public class DummyConfig extends ExtendedConfig<DummyConfig, Void>{
     /**
      * Make a new instance.
      * @param mod     The mod instance.
-     * @param enabled If this should is enabled.
      * @param namedId The unique name ID for the configurable.
-     * @param comment The comment to add in the config file for this configurable.
 	 */
-	public DummyConfig(ModBase mod, boolean enabled, String namedId, String comment) {
-		super(mod, enabled, namedId, comment, (c) -> null);
+	public DummyConfig(ModBase mod, String namedId) {
+		super(mod, namedId, (c) -> null);
     }
     
     @Override

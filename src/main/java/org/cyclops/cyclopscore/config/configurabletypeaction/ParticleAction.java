@@ -12,8 +12,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.ParticleConfig;
 public class ParticleAction<T extends IParticleData> extends ConfigurableTypeAction<ParticleConfig<T>, ParticleType<T>> {
 
     @Override
-    public void onRegister(ParticleConfig<T> eConfig) {
-        System.out.println("Reg particle"); // TODO
+    public void onRegisterModInit(ParticleConfig<T> eConfig) {
         register(eConfig.getInstance(), (ParticleConfig) eConfig);
     }
 }

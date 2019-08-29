@@ -79,7 +79,7 @@ public class GeneralConfig extends DummyConfig {
      * Create a new instance.
      */
     public GeneralConfig() {
-        super(CyclopsCore._instance, true, "general", null);
+        super(CyclopsCore._instance, "general");
     }
     
     @Override
@@ -94,9 +94,5 @@ public class GeneralConfig extends DummyConfig {
             Versions.registerMod(getMod(), CyclopsCore._instance, Reference.VERSION_URL);
         }
     }
-    
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+
 }

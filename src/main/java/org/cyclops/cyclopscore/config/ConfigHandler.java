@@ -8,15 +8,16 @@ import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeAction;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -56,7 +57,7 @@ public class ConfigHandler {
 
     public ConfigHandler(ModBase mod) {
         this.mod = mod;
-        MinecraftForge.EVENT_BUS.register(this);
+        FMLJavaModLoadingContext.get().getModEventBus().register(this);
     }
 
     /**
@@ -75,23 +76,19 @@ public class ConfigHandler {
                 configBuilders.put(ModConfig.Type.COMMON, configBuilder);
             }
             addCategory(eConfig.getConfigurableType().getCategory());
-            if (!eConfig.isHardDisabled()) {
-                // Save additional properties
-                for (ConfigurablePropertyData configProperty : eConfig.configProperties) {
-                    ForgeConfigSpec.Builder configBuilderProperty = configBuilders.get(configProperty.getConfigLocation());
-                    if (configBuilderProperty == null) {
-                        configBuilderProperty = new ForgeConfigSpec.Builder();
-                        configBuilders.put(configProperty.getConfigLocation(), configBuilderProperty);
-                    }
-                    categories.add(configProperty.getCategory());
-                    if (configProperty.isCommandable()) {
-                        configProperty.onConfigInit(configBuilder);
-                        commandableProperties.put(configProperty.getName(), configProperty);
-                    }
-                }
 
-                // Register the element depending on the type.
-                eConfig.getConfigurableType().getConfigurableTypeAction().onConfigInit(eConfig, configBuilder);
+            // Save additional properties
+            for (ConfigurablePropertyData configProperty : eConfig.configProperties) {
+                ForgeConfigSpec.Builder configBuilderProperty = configBuilders.get(configProperty.getConfigLocation());
+                if (configBuilderProperty == null) {
+                    configBuilderProperty = new ForgeConfigSpec.Builder();
+                    configBuilders.put(configProperty.getConfigLocation(), configBuilderProperty);
+                }
+                categories.add(configProperty.getCategory());
+                configProperty.onConfigInit(configBuilder);
+                if (configProperty.isCommandable()) {
+                    commandableProperties.put(configProperty.getName(), configProperty);
+                }
             }
         }
 
@@ -107,13 +104,13 @@ public class ConfigHandler {
     }
 
     @SubscribeEvent
-    public void onLoad(final ModConfig.Loading configEvent) {
+    public void onLoad(ModConfig.Loading configEvent) {
         this.mod.log(Level.TRACE, "Load config");
-        load();
+        syncProcessedConfigs();
     }
 
     @SubscribeEvent
-    public void onReload(final ModConfig.ConfigReloading configEvent) {
+    public void onReload(ModConfig.ConfigReloading configEvent) {
         this.mod.log(Level.TRACE, "Reload config");
         syncProcessedConfigs();
     }
@@ -130,20 +127,25 @@ public class ConfigHandler {
     /**
      * Iterate over the given ExtendedConfigs to read/write the config and register the given elements
      * This also sets the config of this instance.
+     * This is called during mod construction.
      */
-    public void load() {
+    public void loadModInit() {
         for (ExtendedConfig<?, ?> eConfig : this.configurables) {
-            if (eConfig.isEnabled()) {
-                mod.log(Level.TRACE, "Registering " + eConfig.getNamedId());
-                eConfig.save();
-                eConfig.getConfigurableType().getConfigurableTypeAction().onRegister(eConfig);
-                eConfig.onRegistered();
-                enabledConfigs.put((Class<? extends ExtendedConfig<?, ?>>) eConfig.getClass(), eConfig);
-            } else if (!eConfig.isDisableable()) {
-                throw new UndisableableConfigException(eConfig);
-            } else {
-                eConfig.getConfigurableType().getConfigurableTypeAction().onSkipRegistration(eConfig);
-            }
+            mod.log(Level.TRACE, "Registering " + eConfig.getNamedId());
+            eConfig.save();
+            eConfig.getConfigurableType().getConfigurableTypeAction().onRegisterModInit(eConfig);
+            enabledConfigs.put((Class<? extends ExtendedConfig<?, ?>>) eConfig.getClass(), eConfig);
+        }
+    }
+
+    /**
+     * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeAction#onRegisterSetup(ExtendedConfig)}
+     * during the {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent}.
+     */
+    public void loadSetup() {
+        for (ExtendedConfig<?, ?> eConfig : this.configurables) {
+            eConfig.getConfigurableType().getConfigurableTypeAction().onRegisterSetup(eConfig);
+            eConfig.onRegistered();
         }
     }
 

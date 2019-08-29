@@ -33,7 +33,7 @@ public class ConfigRecipeConditionHandler implements IRecipeConditionHandler {
 			mod = recipeHandler.getMod();
 		}
 		ExtendedConfig<?, ?> config = mod.getConfigHandler().getDictionary().get(param);
-		return config != null && config.isEnabled();
+		return config != null;
 	}
 
 }

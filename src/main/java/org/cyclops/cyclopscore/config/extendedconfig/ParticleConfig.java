@@ -24,15 +24,11 @@ public abstract class ParticleConfig<T extends IParticleData> extends ExtendedCo
      * Create a new config
      *
      * @param mod                The mod instance.
-     * @param enabledDefault     If this should is enabled by default. If this is false, this can still
-     *                           be enabled through the config file.
      * @param namedId            A unique name id
-     * @param comment            A comment that can be added to the config file line
      * @param elementConstructor The element constructor.
      */
-    public ParticleConfig(ModBase mod, boolean enabledDefault, String namedId, String comment,
-                          Function<ParticleConfig<T>, ? extends ParticleType<T>> elementConstructor) {
-        super(mod, enabledDefault, namedId, comment, elementConstructor);
+    public ParticleConfig(ModBase mod, String namedId, Function<ParticleConfig<T>, ? extends ParticleType<T>> elementConstructor) {
+        super(mod, namedId, elementConstructor);
     }
 
     @Override
@@ -63,7 +59,6 @@ public abstract class ParticleConfig<T extends IParticleData> extends ExtendedCo
     @Override
     public void onRegistered() {
         super.onRegistered();
-        System.out.println("After reg particle"); // TODO
         Minecraft.getInstance().particles.registerFactory(getInstance(), getParticleFactory());
     }
 

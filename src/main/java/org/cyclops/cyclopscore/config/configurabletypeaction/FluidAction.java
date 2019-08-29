@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
 public class FluidAction extends ConfigurableTypeAction<FluidConfig, Fluid> {
 
     @Override
-    public void onRegister(FluidConfig eConfig) {
+    public void onRegisterModInit(FluidConfig eConfig) {
         // TODO: Implement when Forge has implemented Fluids
 //        FluidRegistry.registerFluid((Fluid) eConfig.getSubInstance());
 //        FluidRegistry.addBucketForFluid((Fluid) eConfig.getSubInstance());

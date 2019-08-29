@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.BiomeConfig;
 public class BiomeAction extends ConfigurableTypeAction<BiomeConfig, Biome> {
 
     @Override
-    public void onRegister(BiomeConfig eConfig) {
+    public void onRegisterModInit(BiomeConfig eConfig) {
         register(eConfig.getInstance(), eConfig);
     }
 }

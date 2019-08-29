@@ -83,7 +83,7 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig, Block> {
     }
 
     @Override
-    public void onRegister(BlockConfig eConfig) {
+    public void onRegisterModInit(BlockConfig eConfig) {
         Block block = eConfig.getInstance();
 
         // Register block and set creative tab.

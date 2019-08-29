@@ -33,7 +33,7 @@ public class ParticleBlur extends Particle {
 
 	public ParticleBlur(ParticleBlurData data, World world, double x, double y, double z,
 						double motionX, double motionY, double motionZ) {
-		super(world, x, y, z, 0, 0, 0);
+		super(world, x, y, z, motionX, motionY, motionZ);
 		this.motionX = motionX;
 		this.motionY = motionY;
 		this.motionZ = motionZ;

@@ -25,20 +25,11 @@ public abstract class GuiConfig<T extends Container> extends ExtendedConfigForge
      * Create a new config
      *
      * @param mod                The mod instance.
-     * @param enabledDefault     If this should is enabled by default. If this is false, this can still
-     *                           be enabled through the config file.
      * @param namedId            A unique name id
-     * @param comment            A comment that can be added to the config file line
      * @param elementConstructor The element constructor.
      */
-    public GuiConfig(ModBase mod, boolean enabledDefault, String namedId, String comment,
-                     Function<GuiConfig<T>, ? extends ContainerType<T>> elementConstructor) {
-        super(mod, enabledDefault, namedId, comment, elementConstructor);
-    }
-
-    @Override
-    public boolean isDisableable() {
-        return false;
+    public GuiConfig(ModBase mod, String namedId, Function<GuiConfig<T>, ? extends ContainerType<T>> elementConstructor) {
+        super(mod, namedId, elementConstructor);
     }
 
     @Override

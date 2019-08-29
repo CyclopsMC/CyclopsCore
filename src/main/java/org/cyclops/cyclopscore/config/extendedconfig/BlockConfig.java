@@ -36,14 +36,11 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
     /**
      * Make a new instance.
      * @param mod     The mod instance.
-     * @param enabled If this should is enabled.
      * @param namedId The unique name ID for the configurable.
-     * @param comment The comment to add in the config file for this configurable.
      * @param elementConstructor The element constructor.
      */
-    public BlockConfig(ModBase mod, boolean enabled, String namedId, String comment,
-                       Function<BlockConfig, ? extends Block> elementConstructor) {
-        super(mod, enabled, namedId, comment, elementConstructor);
+    public BlockConfig(ModBase mod, String namedId, Function<BlockConfig, ? extends Block> elementConstructor) {
+        super(mod, namedId, elementConstructor);
     }
 
     @Override
