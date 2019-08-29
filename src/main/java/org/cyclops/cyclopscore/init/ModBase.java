@@ -39,6 +39,7 @@ import org.cyclops.cyclopscore.proxy.ICommonProxy;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * Base class for mods which adds a few convenience methods.
@@ -46,7 +47,7 @@ import java.util.Map;
  * @author rubensworks
  */
 @Data
-public abstract class ModBase {
+public abstract class ModBase<T extends ModBase> {
 
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_GUI = EnumReferenceKey.create("texture_path_gui", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_MODELS = EnumReferenceKey.create("texture_path_models", String.class);
@@ -74,7 +75,8 @@ public abstract class ModBase {
 
     private ItemGroup defaultCreativeTab = null;
 
-    public ModBase(String modId, String modName) {
+    public ModBase(String modId, String modName, Consumer<T> instanceSetter) {
+        instanceSetter.accept((T) this);
         this.modId = modId;
         this.modName = modName;
         this.loggerHelper = constructLoggerHelper();
@@ -233,9 +235,6 @@ public abstract class ModBase {
             proxy.registerPacketHandlers(getPacketHandler());
             proxy.registerTickHandlers();
         }
-
-        // Gui Handlers
-        //NetworkRegistry.registerGuiHandler(getModId(), getGuiHandler()); // TODO: guis are now handled by ContainerType registry
 
         // Initialize the creative tab
         getDefaultItemGroup();

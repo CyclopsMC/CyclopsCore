@@ -16,9 +16,9 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public class CommandVersion implements Command<CommandSource> {
 
-    private final ModBase mod;
+    private final ModBase<?> mod;
 
-    public CommandVersion(ModBase mod) {
+    public CommandVersion(ModBase<?> mod) {
         this.mod = mod;
     }
 

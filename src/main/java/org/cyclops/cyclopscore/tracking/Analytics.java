@@ -73,7 +73,7 @@ public class Analytics {
         }
     }
 
-    protected static String createRequestURL(ModBase mod, String trackingId) throws UnsupportedEncodingException {
+    protected static String createRequestURL(ModBase<?> mod, String trackingId) throws UnsupportedEncodingException {
         String mcVersion = URLEncoder.encode(Reference.MOD_MC_VERSION, "UTF-8");
         return String.format(REQUEST_PATTERN, trackingId, GeneralConfig.anonymousAnalyticsID,
                 URLEncoder.encode(mod.getModName(), "UTF-8"),

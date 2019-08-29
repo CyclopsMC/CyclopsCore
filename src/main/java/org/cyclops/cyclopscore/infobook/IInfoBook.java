@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public interface IInfoBook {
 
-    public ModBase getMod();
+    public ModBase<?> getMod();
     public int getPagesPerView();
     public String getBaseUrl();
 

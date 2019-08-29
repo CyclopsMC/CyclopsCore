@@ -13,6 +13,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
+import org.cyclops.cyclopscore.client.particle.ParticleBlurConfig;
 import org.cyclops.cyclopscore.command.CommandDebug;
 import org.cyclops.cyclopscore.command.CommandDumpRegistries;
 import org.cyclops.cyclopscore.command.CommandIgnite;
@@ -22,7 +23,6 @@ import org.cyclops.cyclopscore.ingredient.recipe.IRecipeInputOutputDefinitionReg
 import org.cyclops.cyclopscore.ingredient.recipe.RecipeInputOutputDefinitionHandlers;
 import org.cyclops.cyclopscore.ingredient.recipe.RecipeInputOutputDefinitionRegistry;
 import org.cyclops.cyclopscore.init.ModBaseVersionable;
-import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.metadata.IRegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportables;
@@ -43,7 +43,7 @@ import org.cyclops.cyclopscore.tracking.Versions;
  */
 @Mod(Reference.MOD_ID)
 // TODO: guiFactory = "org.cyclops.cyclopscore.GuiConfigOverview$ExtendedConfigGuiFactory"
-public class CyclopsCore extends ModBaseVersionable {
+public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
     /**
      * The unique instance of this mod.
@@ -53,9 +53,8 @@ public class CyclopsCore extends ModBaseVersionable {
     private boolean loaded = false;
 
     public CyclopsCore() {
-        super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION);
+        super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION, (instance) -> _instance = instance);
         FluidRegistry.enableUniversalBucket();
-        _instance = this;
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
     }
@@ -100,7 +99,6 @@ public class CyclopsCore extends ModBaseVersionable {
         getRegistryManager().addRegistry(IRegistryExportableRegistry.class, RegistryExportableRegistry.getInstance());
 
         super.setup(event);
-        System.out.println("SETUP OVERRIDDEN CALLED"); // TODO: check if this is properly called
 
         // Populate registries
         Advancements.load();
@@ -123,7 +121,12 @@ public class CyclopsCore extends ModBaseVersionable {
     @Override
     public void onConfigsRegister(ConfigHandler configHandler) {
         configHandler.addConfigurable(new GeneralConfig());
+
+        // Capabilities
         configHandler.addConfigurable(new FluidHandlerItemCapacityConfig());
+
+        // Particles
+        configHandler.addConfigurable(new ParticleBlurConfig());
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {

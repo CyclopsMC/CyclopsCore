@@ -24,7 +24,7 @@ public class RetroGenRegistry implements IRetroGenRegistry {
 	private final Set<IRetroGen> retroGeneratables = Sets.newHashSet();
 	private final Random random = new Random();
 	@Getter
-	private final ModBase mod;
+	private final ModBase<?> mod;
 	
 	public RetroGenRegistry(ModBase mod) {
 		this.mod = mod;

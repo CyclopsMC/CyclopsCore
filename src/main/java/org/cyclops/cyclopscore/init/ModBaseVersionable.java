@@ -4,19 +4,22 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.cyclops.cyclopscore.tracking.IModVersion;
 
+import java.util.concurrent.Callable;
+import java.util.function.Consumer;
+
 /**
  * A {@link ModBase} which is also a {@link org.cyclops.cyclopscore.tracking.IModVersion}.
  * @author rubensworks
  */
-public abstract class ModBaseVersionable extends ModBase implements IModVersion {
+public abstract class ModBaseVersionable<T extends ModBaseVersionable> extends ModBase<T> implements IModVersion {
 
     private boolean versionInfo = false;
     private String version;
     private String info;
     private String updateUrl;
 
-    public ModBaseVersionable(String modId, String modName, String modVersion) {
-        super(modId, modName);
+    public ModBaseVersionable(String modId, String modName, String modVersion, Consumer<T> instanceSetter) {
+        super(modId, modName, instanceSetter);
         putGenericReference(REFKEY_MOD_VERSION, modVersion);
     }
 
