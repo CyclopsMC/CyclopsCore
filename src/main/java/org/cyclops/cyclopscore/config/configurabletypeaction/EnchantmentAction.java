@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.EnchantmentConfig;
 public class EnchantmentAction extends ConfigurableTypeAction<EnchantmentConfig, Enchantment> {
 
     @Override
-    public void onRegisterModInit(EnchantmentConfig eConfig) {
+    public void onRegisterForge(EnchantmentConfig eConfig) {
         register(eConfig.getInstance(), eConfig);
     }
 

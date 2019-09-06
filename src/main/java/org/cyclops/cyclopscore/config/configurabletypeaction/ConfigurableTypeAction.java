@@ -27,7 +27,17 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I>, I> 
      * Logic to register the eConfig target when the config is being loaded during mod construction.
      * @param eConfig The config to be registered.
      */
-    public abstract void onRegisterModInit(C eConfig);
+    public void onRegisterModInit(C eConfig) {
+
+    }
+
+    /**
+     * Logic to register things before Forge registries are being filled.
+     * @param eConfig The config to be registered.
+     */
+    public void onRegisterForge(C eConfig) {
+
+    }
 
     /**
      * Logic to register the eConfig target when the config is being loaded during the

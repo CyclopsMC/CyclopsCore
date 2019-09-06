@@ -12,7 +12,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.RecipeConfig;
 public class RecipeAction<T extends IRecipe<?>> extends ConfigurableTypeAction<RecipeConfig<T>, IRecipeSerializer<T>> {
 
     @Override
-    public void onRegisterModInit(RecipeConfig<T> eConfig) {
+    public void onRegisterForge(RecipeConfig<T> eConfig) {
         register(eConfig.getInstance(), (RecipeConfig) eConfig);
     }
 }

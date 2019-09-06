@@ -139,6 +139,16 @@ public class ConfigHandler {
     }
 
     /**
+     * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeAction#onRegisterForge(ExtendedConfig)}
+     * during the {@link RegistryEvent.NewRegistry} event.
+     */
+    public void loadForgeRegistries() {
+        for (ExtendedConfig<?, ?> eConfig : this.configurables) {
+            eConfig.getConfigurableType().getConfigurableTypeAction().onRegisterForge(eConfig);
+        }
+    }
+
+    /**
      * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeAction#onRegisterSetup(ExtendedConfig)}
      * during the {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent}.
      */

@@ -13,7 +13,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.EntityConfig;
 public class EntityAction<T extends Entity> extends ConfigurableTypeAction<EntityConfig<T>, EntityType<T>> {
 
     @Override
-    public void onRegisterModInit(EntityConfig<T> eConfig) {
+    public void onRegisterForge(EntityConfig<T> eConfig) {
         register(eConfig.getInstance(), (EntityConfig) eConfig);
 
         // Register

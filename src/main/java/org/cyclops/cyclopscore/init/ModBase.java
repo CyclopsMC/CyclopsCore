@@ -10,6 +10,8 @@ import net.minecraft.item.ItemGroup;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModContainer;
@@ -91,7 +93,7 @@ public abstract class ModBase<T extends ModBase> {
 
         // Register listeners
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        MinecraftForge.EVENT_BUS.register(this);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::afterRegistriesCreated);
 
         // Register proxies
         DistExecutor.runForDist(
@@ -242,6 +244,14 @@ public abstract class ModBase<T extends ModBase> {
 
         // Initialize the creative tab
         getDefaultItemGroup();
+    }
+
+    /**
+     * Load things after Forge registries have been created.
+     * @param event The Forge registry creation event.
+     */
+    protected void afterRegistriesCreated(RegistryEvent.NewRegistry event) {
+        getConfigHandler().loadForgeRegistries();
     }
 
     /**
