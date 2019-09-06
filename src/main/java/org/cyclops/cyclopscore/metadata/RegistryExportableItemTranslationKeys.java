@@ -2,12 +2,9 @@ package org.cyclops.cyclopscore.metadata;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.UniversalBucket;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
@@ -27,11 +24,6 @@ public class RegistryExportableItemTranslationKeys implements IRegistryExportabl
             String translationKey = itemStack.getTranslationKey();
             if (!translationKey.endsWith(".name")) {
                 translationKey += ".name";
-            }
-
-            // Forge's universal bucket doesn't override the translation key, so we do it manually
-            if (value instanceof UniversalBucket) {
-                translationKey = ((UniversalBucket) value).getFluid(itemStack).getUnlocalizedName();
             }
 
             JsonObject object = new JsonObject();

@@ -1,9 +1,8 @@
 package org.cyclops.cyclopscore.fluid;
 
+import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 /**
  * A simple fluid tank.
@@ -16,11 +15,9 @@ public class Tank extends FluidTank {
     /**
      * Make a new fluid tank.
      * @param capacity The capacity (mB) for the tank.
-     * @param tile The {@link TileEntity} that uses this tank.
      */
-    public Tank(int capacity, TileEntity tile) {
+    public Tank(int capacity) {
         super(capacity);
-        this.tile = tile;
     }
     
     /**
@@ -28,7 +25,7 @@ public class Tank extends FluidTank {
      * @return If the tank is empty; no fluid is inside of it.
      */
     public boolean isEmpty() {
-        return getFluid() == null || getFluid().amount <= 0;
+        return getFluid().isEmpty() || getFluid().getAmount() <= 0;
     }
 
     /**
@@ -36,7 +33,7 @@ public class Tank extends FluidTank {
      * @return If this tank is full.
      */
     public boolean isFull() {
-        return getFluid() != null && getFluid().amount >= getCapacity();
+        return !getFluid().isEmpty() && getFluid().getAmount() >= getCapacity();
     }
 
     /**
@@ -44,7 +41,7 @@ public class Tank extends FluidTank {
      * @return The inner fluid.
      */
     public Fluid getFluidType() {
-        return getFluid() != null ? getFluid().getFluid() : null;
+        return !getFluid().isEmpty() ? getFluid().getFluid() : null;
     }
 
     protected boolean replaceInnerFluid() {

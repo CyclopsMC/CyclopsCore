@@ -34,10 +34,10 @@ public interface IRegistryExportable {
     public static JsonObject serializeFluidStack(FluidStack fluidStack) {
         JsonObject object = new JsonObject();
 
-        object.addProperty("fluid", fluidStack.getFluid().getName());
-        object.addProperty("amount", fluidStack.amount);
-        if (fluidStack.tag != null) {
-            object.addProperty("nbt", fluidStack.tag.toString());
+        object.addProperty("fluid", fluidStack.getFluid().getRegistryName().toString());
+        object.addProperty("amount", fluidStack.getAmount());
+        if (fluidStack.hasTag()) {
+            object.addProperty("nbt", fluidStack.getTag().toString());
         }
 
         return object;

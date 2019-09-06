@@ -5,7 +5,6 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -54,8 +53,6 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
     public CyclopsCore() {
         super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION, (instance) -> _instance = instance);
-        FluidRegistry.enableUniversalBucket();
-
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
     }
 

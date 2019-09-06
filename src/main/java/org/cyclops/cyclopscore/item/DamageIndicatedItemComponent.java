@@ -1,18 +1,20 @@
 package org.cyclops.cyclopscore.item;
 
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
+import org.cyclops.cyclopscore.helper.L10NHelpers;
 
 import java.util.List;
 
@@ -56,7 +58,7 @@ public class DamageIndicatedItemComponent {
         // Add the 'full' container.
         ItemStack itemStackFull = new ItemStack(this.item);
         IFluidHandlerItemCapacity fluidHanderFull = FluidHelpers.getFluidHandlerItemCapacity(itemStackFull).orElse(null);
-        fluidHanderFull.fill(new FluidStack(fluid, fluidHanderFull.getCapacity()), true);
+        fluidHanderFull.fill(new FluidStack(fluid, fluidHanderFull.getCapacity()), IFluidHandler.FluidAction.EXECUTE);
         items.add(itemStackFull);
         
         // Add the 'empty' container.
@@ -73,8 +75,8 @@ public class DamageIndicatedItemComponent {
         int amount = 0;
         IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack).orElse(null);
         FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(null);
-        if(fluidStack != null)
-            amount = fluidStack.amount;
+        if (!fluidStack.isEmpty())
+            amount = fluidStack.getAmount();
         return getInfo(fluidStack, amount, fluidHander.getCapacity());
     }
     
@@ -88,7 +90,7 @@ public class DamageIndicatedItemComponent {
     public static String getInfo(FluidStack fluidStack, int amount, int capacity) {
     	String prefix = "";
     	if(fluidStack != null) {
-    		prefix = fluidStack.getFluid().getLocalizedName(fluidStack) + ": ";
+    		prefix = L10NHelpers.localize(fluidStack.getTranslationKey()) + ": ";
     	}
         return prefix + String.format("%,d", amount) +
                 " / " + String.format("%,d", capacity) + " mB";

@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.item;
 
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -12,7 +13,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -110,8 +110,8 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     public boolean canDrain(int amount, ItemStack itemStack) {
         IFluidHandler fluidHandler = FluidUtil.getFluidHandler(itemStack).orElse(null);
         if (fluidHandler == null) return false;
-    	FluidStack simulatedDrain = fluidHandler.drain(amount, false);
-    	return simulatedDrain != null && simulatedDrain.amount == amount;
+    	FluidStack simulatedDrain = fluidHandler.drain(amount, IFluidHandler.FluidAction.SIMULATE);
+    	return simulatedDrain != null && simulatedDrain.getAmount() == amount;
     }
 
     @Override

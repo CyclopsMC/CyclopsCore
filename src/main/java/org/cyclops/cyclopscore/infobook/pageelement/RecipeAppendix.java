@@ -156,8 +156,8 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         GlStateManager.pushMatrix();
         if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && fluidStack != null ) {
             List<String> lines = Lists.newArrayList();
-            lines.add(fluidStack.getFluid().getRarity().color + fluidStack.getLocalizedName());
-            lines.add(TextFormatting.GRAY.toString() + fluidStack.amount + " mB");
+            lines.add(fluidStack.getFluid().getAttributes().getRarity(fluidStack).color + L10NHelpers.localize(fluidStack.getTranslationKey()));
+            lines.add(TextFormatting.GRAY.toString() + fluidStack.getAmount() + " mB");
             gui.renderTooltip(lines, mx, my);
         }
         GlStateManager.popMatrix();
@@ -303,7 +303,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
         @Override
         protected String getTranslationKey(FluidStack element) {
-            return element.getUnlocalizedName();
+            return element.getTranslationKey();
         }
 
         @Override

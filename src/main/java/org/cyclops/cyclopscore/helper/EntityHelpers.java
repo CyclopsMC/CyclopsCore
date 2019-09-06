@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -82,9 +83,10 @@ public class EntityHelpers {
 	 * Spawn the entity in the world.
 	 * @param world The world.
 	 * @param entityLiving The entity to spawn.
+	 * @param spawnReason The spawn reason.
 	 * @return If the entity was spawned.
 	 */
-	public static boolean spawnEntity(World world, MobEntity entityLiving) {
+	public static boolean spawnEntity(World world, MobEntity entityLiving, SpawnReason spawnReason) {
 		AbstractSpawner spawner = new AbstractSpawner() {
 			@Override
 			public void broadcastEvent(int id) {
@@ -102,10 +104,10 @@ public class EntityHelpers {
 			}
 		};
 		Event.Result canSpawn = ForgeEventFactory.canEntitySpawn(entityLiving, world, (float) entityLiving.posX,
-				(float) entityLiving.posY, (float) entityLiving.posZ, spawner);
+				(float) entityLiving.posY, (float) entityLiving.posZ, spawner, spawnReason);
         if (canSpawn == Event.Result.ALLOW || (canSpawn == Event.Result.DEFAULT)) { //  && entityliving.getCanSpawnHere()
             if (!ForgeEventFactory.doSpecialSpawn(entityLiving, world, (float) entityLiving.posX,
-					(float) entityLiving.posY, (float) entityLiving.posZ, spawner)) {
+					(float) entityLiving.posY, (float) entityLiving.posZ, spawner, spawnReason)) {
             	world.addEntity(entityLiving);
                 return true;
             }
@@ -148,7 +150,7 @@ public class EntityHelpers {
 	 * @return The player's persisted NBT tag.
 	 */
 	public static CompoundNBT getPersistedPlayerNbt(PlayerEntity player) {
-		CompoundNBT tag = player.getEntityData();
+		CompoundNBT tag = player.getPersistantData();
 		CompoundNBT persistedTag = tag.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
 		if (persistedTag == null) {
 			persistedTag = new CompoundNBT();

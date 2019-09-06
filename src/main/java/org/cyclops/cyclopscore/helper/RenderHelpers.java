@@ -5,7 +5,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
@@ -20,6 +19,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
@@ -31,7 +31,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.opengl.GL11;
@@ -270,23 +269,11 @@ public class RenderHelpers {
      * @return The icon.
      */
     public static TextureAtlasSprite getFluidIcon(FluidStack fluid, Direction side) {
-        Block defaultBlock = Blocks.WATER;
-        Block block = defaultBlock;
-        if(fluid.getFluid().getBlock() != null) {
-            block = fluid.getFluid().getBlock();
-        }
-
         if(side == null) side = Direction.UP;
 
-        TextureAtlasSprite icon = TEXTURE_GETTER.apply(fluid.getFluid().getFlowing(fluid));
+        TextureAtlasSprite icon = TEXTURE_GETTER.apply(fluid.getFluid().getAttributes().getFlowing(fluid));
         if(icon == null || (side == Direction.UP || side == Direction.DOWN)) {
-            icon = TEXTURE_GETTER.apply(fluid.getFluid().getStill(fluid));
-        }
-        if(icon == null) {
-            icon = getBlockIcon(block);
-            if(icon == null) {
-                icon = getBlockIcon(defaultBlock);
-            }
+            icon = TEXTURE_GETTER.apply(fluid.getFluid().getAttributes().getStill(fluid));
         }
 
         return icon;
@@ -301,7 +288,7 @@ public class RenderHelpers {
      * @param render The actual fluid renderer.
      */
     public static void renderFluidContext(FluidStack fluid, double x, double y, double z, IFluidContextRender render) {
-        if(fluid != null && fluid.amount > 0) {
+        if(fluid != null && fluid.getAmount() > 0) {
             GlStateManager.pushMatrix();
 
             // Make sure both sides are rendered
@@ -349,7 +336,7 @@ public class RenderHelpers {
      * @return The RGB colors.
      */
     public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidStack fluidStack) {
-        int color = fluidStack.getFluid().getColor(fluidStack);
+        int color = fluidStack.getFluid().getAttributes().getColor(fluidStack);
         return Helpers.intToRGB(color);
     }
 
@@ -359,7 +346,7 @@ public class RenderHelpers {
      * @return The BGR colors.
      */
     public static int getFluidBakedQuadColor(FluidStack fluidStack) {
-        Triple<Float, Float, Float> colorParts = Helpers.intToRGB(fluidStack.getFluid().getColor(fluidStack));
+        Triple<Float, Float, Float> colorParts = Helpers.intToRGB(fluidStack.getFluid().getAttributes().getColor(fluidStack));
         return Helpers.RGBAToInt(
                 (int) (colorParts.getRight() * 255),
                 (int) (colorParts.getMiddle() * 255),

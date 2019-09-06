@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.recipe.xml;
 
 import com.google.common.collect.Maps;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;

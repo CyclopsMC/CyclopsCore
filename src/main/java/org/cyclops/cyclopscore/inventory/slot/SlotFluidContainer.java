@@ -4,6 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.cyclops.cyclopscore.fluid.SingleUseTank;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
 
@@ -58,7 +59,7 @@ public class SlotFluidContainer extends Slot {
         if (!itemStack.isEmpty()) {
             itemStack = itemStack.copy();
             return FluidUtil.getFluidHandler(itemStack.split(1))
-                    .map((fluidHandler) -> tank.canFillFluidType(FluidHelpers.getFluid(fluidHandler)))
+                    .map((fluidHandler) -> tank.fill(FluidHelpers.getFluid(fluidHandler), IFluidHandler.FluidAction.SIMULATE) > 0)
                     .orElse(false);
         }
         return false;

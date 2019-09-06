@@ -59,7 +59,7 @@ public class GuiHelpers {
             GlStateManager.enableRescaleNormal();
             GL11.glEnable(GL11.GL_DEPTH_TEST);
 
-            int level = (int) (height * (((double) fluidStack.amount) / capacity));
+            int level = (int) (height * (((double) fluidStack.getAmount()) / capacity));
             TextureAtlasSprite icon = RenderHelpers.getFluidIcon(fluidStack, Direction.UP);
             int verticalOffset = 0;
             while(level > 0) {
@@ -75,7 +75,7 @@ public class GuiHelpers {
                 RenderHelpers.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
                 // Fluids can have a custom overlay color, use this to render.
-                Triple<Float, Float, Float> colorParts = Helpers.intToRGB(fluidStack.getFluid().getColor(fluidStack));
+                Triple<Float, Float, Float> colorParts = Helpers.intToRGB(fluidStack.getFluid().getAttributes().getColor(fluidStack));
                 GlStateManager.color3f(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight());
 
                 AbstractGui.blit(x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
@@ -105,7 +105,7 @@ public class GuiHelpers {
      */
     public static void renderFluidSlot(AbstractGui gui, @Nullable FluidStack fluidStack, int x, int y) {
         if (fluidStack != null) {
-            GuiHelpers.renderFluidTank(gui, fluidStack, fluidStack.amount, x, y, SLOT_SIZE_INNER, SLOT_SIZE_INNER);
+            GuiHelpers.renderFluidTank(gui, fluidStack, fluidStack.getAmount(), x, y, SLOT_SIZE_INNER, SLOT_SIZE_INNER);
         }
     }
 
@@ -270,7 +270,7 @@ public class GuiHelpers {
     /**
      * Render a rectangle.
      *
-     * Static variant of {@link AbstractGui#fillGradient(int, int, int, int, int, int)}.
+     * Static variant of AbstractGui#fillGradient(int, int, int, int, int, int)}.
      *
      * @param left Left X.
      * @param top Top Y.

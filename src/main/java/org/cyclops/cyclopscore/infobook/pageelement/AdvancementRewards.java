@@ -61,7 +61,7 @@ public class AdvancementRewards {
             }
 
             // Set NBT
-            CompoundNBT tag = player.getEntityData();
+            CompoundNBT tag = player.getPersistantData();
             if (!tag.contains(PlayerEntity.PERSISTED_NBT_TAG)) {
                 tag.put(PlayerEntity.PERSISTED_NBT_TAG, new CompoundNBT());
             }
