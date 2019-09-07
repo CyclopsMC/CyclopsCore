@@ -8,30 +8,31 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.StringTextComponent;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collection;
 
 /**
  * Command for igniting players by name.
  * @author rubensworks
- *
  */
 public class CommandIgnite implements Command<CommandSource> {
 
+    private final boolean durationParam;
+
+    public CommandIgnite(boolean durationParam) {
+        this.durationParam = durationParam;
+    }
+
     @Override
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(context, "targets");
-        int duration = IntegerArgumentType.getInteger(context, "duration");
-        if (duration == 0) {
-            duration = 2;
-        }
-        for (ServerPlayerEntity player : players) {
-            player.setFire(duration);
-            context.getSource().asPlayer()
-                    .sendMessage(new StringTextComponent(L10NHelpers.localize("chat.cyclopscore.command.ignitedPlayer", player.getDisplayName(), duration)));
+        Collection<? extends Entity> entities = EntityArgument.getEntities(context, "targets");
+        int duration = this.durationParam ? IntegerArgumentType.getInteger(context, "duration") : 2;
+        for (Entity entity : entities) {
+            entity.setFire(duration);
+            context.getSource().asPlayer().sendMessage(new TranslationTextComponent(
+                    "chat.cyclopscore.command.ignitedPlayer", entity.getDisplayName(), duration));
         }
         return 0;
     }
@@ -39,9 +40,10 @@ public class CommandIgnite implements Command<CommandSource> {
     public static LiteralArgumentBuilder<CommandSource> make() {
         return Commands.literal("ignite")
                 .requires((commandSource) -> commandSource.hasPermissionLevel(2))
-                .then(Commands.argument("targets", EntityArgument.players()))
-                .then(Commands.argument("duration", IntegerArgumentType.integer()))
-                .executes(new CommandIgnite());
+                .then(Commands.argument("targets", EntityArgument.entities())
+                        .executes(new CommandIgnite(false))
+                        .then(Commands.argument("duration", IntegerArgumentType.integer())
+                                .executes(new CommandIgnite(true))));
     }
 
 }

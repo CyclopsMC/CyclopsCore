@@ -96,6 +96,7 @@ public abstract class ModBase<T extends ModBase> {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
+        MinecraftForge.EVENT_BUS.register(this);
 
         // Register proxies
         DistExecutor.runForDist(

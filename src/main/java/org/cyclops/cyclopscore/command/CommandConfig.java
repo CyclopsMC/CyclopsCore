@@ -32,18 +32,20 @@ import java.util.concurrent.CompletableFuture;
 public class CommandConfig implements Command<CommandSource> {
 
     private final ModBase mod;
+    private final boolean valueSet;
 
-    public CommandConfig(ModBase mod) {
+    public CommandConfig(ModBase mod, boolean valueSet) {
         this.mod = mod;
+        this.valueSet = valueSet;
     }
 
     @Override
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
         ConfigurablePropertyData property = context.getArgument("property", ConfigurablePropertyData.class);
-        String value = context.getArgument("value", String.class);
-        if (value == null) {
+        if (!this.valueSet) {
             context.getSource().asPlayer().sendMessage(new StringTextComponent(property.getConfigProperty().get().toString()));
         } else {
+            String value = context.getArgument("value", String.class);
             Object newValue = Helpers.tryParse(value, property.getConfigProperty().get());
             if(newValue != null) {
                 property.getConfigProperty().set(newValue);
@@ -61,9 +63,10 @@ public class CommandConfig implements Command<CommandSource> {
     public static LiteralArgumentBuilder<CommandSource> make(ModBase mod) {
         return Commands.literal("config")
                 .requires((commandSource) -> commandSource.hasPermissionLevel(2))
-                .then(Commands.argument("property", new ArgumentTypeProperty(mod)))
-                .then(Commands.argument("value", StringArgumentType.string()))
-                .executes(new CommandConfig(mod));
+                .then(Commands.argument("property", new ArgumentTypeProperty(mod))
+                        .executes(new CommandConfig(mod, false))
+                        .then(Commands.argument("value", StringArgumentType.string())
+                                .executes(new CommandConfig(mod, true))));
     }
 
     public static class ArgumentTypeProperty implements ArgumentType<ConfigurablePropertyData> {
@@ -76,7 +79,7 @@ public class CommandConfig implements Command<CommandSource> {
 
         @Override
         public ConfigurablePropertyData parse(StringReader reader) throws CommandSyntaxException {
-            ConfigurablePropertyData property = mod.getConfigHandler().getCommandableProperties().get(reader.getString());
+            ConfigurablePropertyData property = mod.getConfigHandler().getCommandableProperties().get(reader.readString());
             if (property == null) {
                 throw new SimpleCommandExceptionType(new StringTextComponent("Unknown property")).create();
             }

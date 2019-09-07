@@ -52,8 +52,8 @@ public class CommandDebug implements Command<CommandSource> {
     public static LiteralArgumentBuilder<CommandSource> make() {
         return Commands.literal("debug")
                 .requires((commandSource) -> commandSource.hasPermissionLevel(2))
-                .then(Commands.argument("packet", ArgumentTypePacket.INSTANCE))
-                .executes(new CommandDebug());
+                .then(Commands.argument("packet", ArgumentTypePacket.INSTANCE)
+                        .executes(new CommandDebug()));
     }
 
     public static class ArgumentTypePacket implements ArgumentType<PacketCodec> {
