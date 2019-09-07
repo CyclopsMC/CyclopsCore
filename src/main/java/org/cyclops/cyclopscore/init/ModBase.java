@@ -22,6 +22,7 @@ import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
@@ -94,6 +95,7 @@ public abstract class ModBase<T extends ModBase> {
         // Register listeners
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
 
         // Register proxies
         DistExecutor.runForDist(
@@ -250,8 +252,19 @@ public abstract class ModBase<T extends ModBase> {
      * Load things after Forge registries have been created.
      * @param event The Forge registry creation event.
      */
-    protected void afterRegistriesCreated(RegistryEvent.NewRegistry event) {
+    private void afterRegistriesCreated(RegistryEvent.NewRegistry event) {
         getConfigHandler().loadForgeRegistries();
+    }
+
+    /**
+     * Load things before Forge registries are being filled.
+     * @param event The Forge registry filling event.
+     */
+    private void beforeRegistriedFilled(RegistryEvent.Register event) {
+        // We only need to call this once, and the blocks event is emitted first.
+        if (event.getRegistry() == ForgeRegistries.BLOCKS) {
+            getConfigHandler().loadForgeRegistriesFilled();
+        }
     }
 
     /**

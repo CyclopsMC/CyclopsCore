@@ -32,10 +32,18 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I>, I> 
     }
 
     /**
-     * Logic to register things before Forge registries are being filled.
+     * Logic to register things right after the Forge registries have been created.
      * @param eConfig The config to be registered.
      */
     public void onRegisterForge(C eConfig) {
+
+    }
+
+    /**
+     * Logic to register things before Forge registries are being filled.
+     * @param eConfig The config to be registered.
+     */
+    public void onRegisterForgeFilled(C eConfig) {
 
     }
 
