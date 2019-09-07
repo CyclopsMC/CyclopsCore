@@ -22,6 +22,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -222,7 +223,7 @@ public class CapabilityConstructorRegistry {
     protected <K, V> void addLoadedCapabilityProvider(AttachCapabilitiesEvent<?> event, K keyObject, V valueObject, ICapabilityConstructor<?, ?, ?> constructor) {
         ICapabilityProvider provider = createProvider(keyObject, valueObject, constructor);
         if (provider != null) {
-            ResourceLocation id = new ResourceLocation(getMod().getModId(), constructor.getCapability().getName());
+            ResourceLocation id = new ResourceLocation(getMod().getModId(), constructor.getCapability().getName().toLowerCase(Locale.ENGLISH));
             if (!event.getCapabilities().containsKey(id)) {
                 event.addCapability(id, provider);
             } else {
