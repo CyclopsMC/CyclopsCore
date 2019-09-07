@@ -16,7 +16,7 @@ public class TagItemTypeHandler extends DefaultItemTypeHandler {
         if (nbtSensitive) {
             throw new IllegalArgumentException("NBT-sensitivity can not be defined on oredict ingredients: " + key);
         }
-        return Ingredient.fromTag(ItemTags.getCollection().get(ResourceLocation.tryCreate(key)));
+        return Ingredient.fromTag(ItemTags.getCollection().get(new ResourceLocation(key)));
     }
 	
 }

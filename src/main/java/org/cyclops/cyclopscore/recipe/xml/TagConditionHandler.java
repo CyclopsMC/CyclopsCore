@@ -20,7 +20,7 @@ public class TagConditionHandler<T> implements IRecipeConditionHandler {
 
 	@Override
 	public boolean isSatisfied(RecipeHandler recipeHandler, String param) {
-		Tag<T> collection = this.tagCollection.get(ResourceLocation.tryCreate(param));
+		Tag<T> collection = this.tagCollection.get(new ResourceLocation(param));
 		return collection != null && collection.getAllElements().size() > 0;
 	}
 

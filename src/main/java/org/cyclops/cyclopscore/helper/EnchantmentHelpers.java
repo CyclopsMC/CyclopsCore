@@ -24,7 +24,7 @@ public class EnchantmentHelpers {
 	public static int doesEnchantApply(ItemStack itemStack, Enchantment enchantment) {
 		ListNBT enchantmentList = itemStack.getEnchantmentTagList();
 		for(int i = 0; i < enchantmentList.size(); i++) {
-			if (enchantment.getRegistryName().equals(ResourceLocation.tryCreate(enchantmentList.getCompound(i).getString("id")))) {
+			if (enchantment.getRegistryName().equals(new ResourceLocation(enchantmentList.getCompound(i).getString("id")))) {
 				return i;
 			}
 		}
@@ -54,7 +54,7 @@ public class EnchantmentHelpers {
 	 */
 	public static Enchantment getEnchantment(ItemStack itemStack, int enchantmentListID) {
 	    ListNBT enchlist = itemStack.getEnchantmentTagList();
-	    return ForgeRegistries.ENCHANTMENTS.getValue(ResourceLocation.tryCreate(
+	    return ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(
 	    		enchlist.getCompound(enchantmentListID).getString("id")));
 	}
 

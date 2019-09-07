@@ -108,7 +108,7 @@ public class SingleUseTank extends Tank {
     @Override
     public void readTankFromNBT(CompoundNBT nbt) {
         super.readTankFromNBT(nbt);
-        setAcceptedFluid(ForgeRegistries.FLUIDS.getValue(ResourceLocation.tryCreate(nbt.getString(NBT_ACCEPTED_FLUID))));
+        setAcceptedFluid(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(nbt.getString(NBT_ACCEPTED_FLUID))));
     }
     
 }

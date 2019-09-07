@@ -124,7 +124,7 @@ public final class ItemStackHelpers {
     public static ItemStack parseItemStack(String itemStackString) {
         String[] split = itemStackString.split(":");
         String itemName = split[0] + ":" + split[1];
-        Item item =  ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(itemName));
+        Item item =  ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
         if(item == null) {
             throw new IllegalArgumentException("Invalid ItemStack item: " + itemName);
         }

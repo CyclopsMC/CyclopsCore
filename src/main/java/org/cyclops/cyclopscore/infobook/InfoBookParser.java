@@ -315,7 +315,7 @@ public class InfoBookParser {
             }
             return itemStack;
         }
-        Item item = ForgeRegistries.ITEMS.getValue(ResourceLocation.tryCreate(node.getTextContent()));
+        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(node.getTextContent()));
         if(item == null) {
             throw new InvalidAppendixException("Invalid item " + node.getTextContent());
         }

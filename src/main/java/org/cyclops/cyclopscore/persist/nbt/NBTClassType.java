@@ -154,7 +154,7 @@ public abstract class NBTClassType<T> {
             @Override
             public Fluid readPersistedField(String name, CompoundNBT tag) {
                 String fluidName = tag.getString(name);
-                return ForgeRegistries.FLUIDS.getValue(ResourceLocation.tryCreate(fluidName));
+                return ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
             }
 
             @Override
@@ -408,7 +408,7 @@ public abstract class NBTClassType<T> {
             public DimPos readPersistedField(String name, CompoundNBT tag) {
                 CompoundNBT dimPos = tag.getCompound(name);
                 String dimensionName = dimPos.getString("dim");
-                Optional<DimensionType> dimensionType = Registry.DIMENSION_TYPE.getValue(ResourceLocation.tryCreate(dimensionName));
+                Optional<DimensionType> dimensionType = Registry.DIMENSION_TYPE.getValue(new ResourceLocation(dimensionName));
                 if (!dimensionType.isPresent()) {
                     CyclopsCore.clog(Level.WARN, String.format("Could not find dimension %s", dimensionName));
                 }
