@@ -24,7 +24,9 @@ public class DefaultSidedCapabilityProvider<T> implements ICapabilityProvider {
     @Override
     public <T2> LazyOptional<T2> getCapability(Capability<T2> capability, Direction facing) {
         Pair<Capability<T>, T> value = capabilities.get(facing);
-        if(value != null && value.getKey() == capability) {
+        if(value != null
+                && Objects.requireNonNull(value.getKey(), "A registered capability is null")
+                == Objects.requireNonNull(capability, "A given capability is null")) {
             return LazyOptional.of(() -> value.getValue()).cast();
         }
         return LazyOptional.empty();

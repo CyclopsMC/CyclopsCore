@@ -34,7 +34,7 @@ public class MultipleCapabilityProvider implements ICapabilityProvider {
 
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
-        int capabilityId = getCapabilityId(capability);
+        int capabilityId = getCapabilityId(Objects.requireNonNull(capability));
         if(capabilityId >= 0) {
             return LazyOptional.of(() -> capabilities[capabilityId]).cast();
         }

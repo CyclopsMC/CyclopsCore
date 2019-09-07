@@ -30,12 +30,12 @@ public class DefaultCapabilityProvider<T> implements ICapabilityProvider {
     }
 
     public Capability<T> getCapabilityType() {
-        return capabilityGetter.getCapability();
+        return Objects.requireNonNull(capabilityGetter.getCapability(), "A registered capability is null");
     }
 
     @Override
     public <T2> LazyOptional<T2> getCapability(Capability<T2> capability, Direction facing) {
-        if(this.getCapabilityType() == capability) {
+        if(this.getCapabilityType() == Objects.requireNonNull(capability, "A given capability is null")) {
             return LazyOptional.of(() -> this.capability).cast();
         }
         return LazyOptional.empty();
