@@ -16,59 +16,30 @@ import java.util.UUID;
  *
  */
 public class GeneralConfig extends DummyConfig {
-    
-    /**
-     * The version at which the config file was generated.
-     */
+
     @ConfigurableProperty(category = "core", comment = "The version at which the config file was generated.", showInGui = false)
     public static String version = Reference.MOD_VERSION;
-    
-    /**
-     * If the debug mode should be enabled. @see Debug
-     */
+
     @ConfigurableProperty(category = "core", comment = "Set 'true' to enable development debug mode. This will result in a lower performance!", requiresMcRestart = true)
     public static boolean debug = false;
 
-    /**
-     * If the recipe loader should crash when finding invalid recipes.
-     */
     @ConfigurableProperty(category = "core", comment = "If the recipe loader should crash when finding invalid recipes.", requiresMcRestart = true)
     public static boolean crashOnInvalidRecipe = false;
 
-    /**
-     * If mod compatibility loader should crash hard if errors occur in that process.
-     */
     @ConfigurableProperty(category = "core", comment = "If mod compatibility loader should crash hard if errors occur in that process.", requiresMcRestart = true)
     public static boolean crashOnModCompatCrash = false;
 
-    /**
-     * If an anonymous mod startup analytics request may be sent to our analytics service.
-     */
     @ConfigurableProperty(category = "core", comment = "If an anonymous mod startup analytics request may be sent to our analytics service.")
     public static boolean analytics = true;
 
-    /**
-     * The anonymous id used by the analytics service.
-     */
     @ConfigurableProperty(category = "core", comment = "The anonymous id used by the analytics service.")
     public static String anonymousAnalyticsID = UUID.randomUUID().toString();
 
-    /**
-     * If the version checker should be enabled.
-     */
     @ConfigurableProperty(category = "core", comment = "If the version checker should be enabled.")
     public static boolean versionChecker = true;
 
-    /**
-     * If a button should be added to the main menu to open a dev world (shift-click creates a new world).
-     */
     @ConfigurableProperty(category = "general", comment = "If a button should be added to the main menu to open a dev world (shift-click creates a new world).", configLocation = ModConfig.Type.CLIENT)
     public static boolean devWorldButton = true; // TODO: (Boolean) Launcher.INSTANCE.blackboard().get("fml.deobfuscatedEnvironment");
-
-    /**
-     * The type of this config.
-     */
-    public static ConfigurableType TYPE = ConfigurableType.DUMMY;
     
     /**
      * Create a new instance.
