@@ -93,7 +93,7 @@ public abstract class ModBase<T extends ModBase> {
 
         // Register listeners
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::afterRegistriesCreated);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
 
         // Register proxies
         DistExecutor.runForDist(
