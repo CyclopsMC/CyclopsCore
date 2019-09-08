@@ -19,6 +19,7 @@ org.cyclops.cyclopscore.client.particle
 org.cyclops.cyclopscore.client.render.model
 org.cyclops.cyclopscore.client.render.tileentity
 org.cyclops.cyclopscore.command
+org.cyclops.cyclopscore.command.argument
 org.cyclops.cyclopscore.config
 org.cyclops.cyclopscore.config.configurabletypeaction
 org.cyclops.cyclopscore.config.extendedconfig
