@@ -48,7 +48,7 @@ public class ButtonText extends ButtonExtended {
 	@Override
 	protected void drawButtonInner(int mouseX, int mouseY) {
         int color = 0xe0e0e0;
-        if (!isFocused()) {
+        if (!active) {
             color = 0xffa0a0a0;
         } else if (isHovered()) {
             color = 0xffffa0;

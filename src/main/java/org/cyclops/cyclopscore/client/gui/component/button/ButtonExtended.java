@@ -33,7 +33,7 @@ public abstract class ButtonExtended extends Button {
 		RenderHelpers.bindTexture(WIDGETS_LOCATION);
 		GlStateManager.color4f(1, 1, 1, 1);
 
-		int hoverState = isHovered() ? 1 : 0;
+		int hoverState = getYImage(isHovered());
 		blit(x, y, 0, 46 + hoverState * 20, width / 2, height / 2); // top left
 		blit(x + width / 2, y, 200 - width / 2, 46 + hoverState * 20, width / 2, height / 2); // top right
 		blit(x, y + height / 2, 0, 46 + hoverState * 20 + 20 - height / 2, width / 2, height / 2); // bottom left
