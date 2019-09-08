@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.network.packet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,9 +21,7 @@ import org.cyclops.cyclopscore.network.PacketCodec;
 public class ValueNotifyPacket extends PacketCodec {
 
 	@CodecField
-	private String guiModId;
-	@CodecField
-	private int guiId;
+	private String containerType;
 	@CodecField
 	private int valueId;
 	@CodecField
@@ -32,9 +31,8 @@ public class ValueNotifyPacket extends PacketCodec {
 
     }
 
-    public ValueNotifyPacket(String guiModId, int guiId, int valueId, CompoundNBT value) {
-    	this.guiModId = guiModId;
-    	this.guiId = guiId;
+    public ValueNotifyPacket(ContainerType<?> containerType, int valueId, CompoundNBT value) {
+    	this.containerType = containerType.getRegistryName().toString();
 		this.valueId = valueId;
 		this.value = value;
     }
@@ -45,7 +43,7 @@ public class ValueNotifyPacket extends PacketCodec {
 	}
 
 	protected boolean isContainerValid(IValueNotifiable container) {
-    	return container.getGuiId() == guiId && container.getGuiModId().equals(guiModId);
+    	return container.getType().getRegistryName().toString().equals(containerType);
 	}
 
 	@Override

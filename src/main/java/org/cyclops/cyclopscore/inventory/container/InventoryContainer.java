@@ -464,9 +464,9 @@ public abstract class InventoryContainer extends Container implements IContainer
     public void setValue(int valueId, CompoundNBT value) {
         if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
             if (!player.getEntityWorld().isRemote()) { // server -> client
-                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getGuiModId(), getGuiId(), valueId, value), (ServerPlayerEntity) player);
+                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getType(), valueId, value), (ServerPlayerEntity) player);
             } else { // client -> server
-                CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getGuiModId(), getGuiId(), valueId, value));
+                CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getType(), valueId, value));
             }
             values.put(valueId, value);
         }

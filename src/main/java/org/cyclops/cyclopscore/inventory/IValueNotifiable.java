@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.inventory;
 
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.nbt.CompoundNBT;
 
 /**
@@ -10,14 +11,9 @@ import net.minecraft.nbt.CompoundNBT;
 public interface IValueNotifiable {
 
     /**
-     * @return The mod the gui belongs to.
+     * @return The container type.
      */
-    String getGuiModId();
-
-    /**
-     * @return The id of the gui.
-     */
-    int getGuiId();
+    public ContainerType<?> getType();
 
     /**
      * Called by the server if the value has changed.

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
@@ -149,12 +150,7 @@ public abstract class ContainerScreenExtended<T extends InventoryContainer> exte
     }
 
     @Override
-    public String getGuiModId() {
-        return getContainer().getGuiModId();
-    }
-
-    @Override
-    public int getGuiId() {
-        return getContainer().getGuiId();
+    public ContainerType<?> getType() {
+        return getContainer().getType();
     }
 }
