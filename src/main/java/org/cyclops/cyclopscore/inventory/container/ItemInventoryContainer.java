@@ -8,6 +8,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Hand;
 import org.cyclops.cyclopscore.helper.InventoryHelpers;
 
@@ -15,9 +16,23 @@ import javax.annotation.Nullable;
 
 /**
  * A container for an item.
- * @author rubensworks
+ *
+ * Implementations of this class will typically have two constructors,
+ * which will look something like this:
+ * <pre>
+ *     // Called by the client-side screen factory
+ *     public MyContainer(int id, PlayerInventory inventory, PacketBuffer packetBuffer) {
+ *         this(id, inventory, readItemIndex(packetBuffer), readHand(packetBuffer));
+ *     }
+ *
+ *     // Called by the server-side container provider
+ *     public MyContainer(int id, PlayerInventory inventory, int itemIndex, Hand hand) {
+ *         super(RegistryEntries.CONTAINER_MY, id, inventory, itemIndex, hand);
+ *     }
+ * </pre>
  *
  * @param <I> The item instance.
+ * @author rubensworks
  */
 public abstract class ItemInventoryContainer<I extends Item> extends InventoryContainer {
 	
@@ -30,27 +45,22 @@ public abstract class ItemInventoryContainer<I extends Item> extends InventoryCo
 	 * @param type The container type.
 	 * @param id The container id.
 	 * @param inventory The player inventory.
-	 * @param item The item.
-	 * @param itemIndex The index of the item in use inside the player inventory.
-	 */
-	public ItemInventoryContainer(@Nullable ContainerType<?> type, int id,  PlayerInventory inventory, I item, int itemIndex) {
-		this(type, id, inventory, item, itemIndex, Hand.MAIN_HAND);
-	}
-
-	/**
-	 * Make a new instance.
-	 * @param type The container type.
-	 * @param id The container id.
-	 * @param inventory The player inventory.
-	 * @param item The item.
 	 * @param itemIndex The index of the item in use inside the player inventory.
 	 * @param hand The hand the player is using.
 	 */
-	public ItemInventoryContainer(@Nullable ContainerType<?> type, int id, PlayerInventory inventory, I item, int itemIndex, Hand hand) {
+	public ItemInventoryContainer(@Nullable ContainerType<?> type, int id, PlayerInventory inventory, int itemIndex, Hand hand) {
 		super(type, id, inventory);
-		this.item = item;
+		this.item = (I) InventoryHelpers.getItemFromIndex(inventory.player, itemIndex, hand).getItem();
 		this.itemIndex = itemIndex;
 		this.hand = hand;
+	}
+
+	public static int readItemIndex(PacketBuffer packetBuffer) {
+		return packetBuffer.readInt();
+	}
+
+	public static Hand readHand(PacketBuffer packetBuffer) {
+		return packetBuffer.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
 	}
 
 	/**

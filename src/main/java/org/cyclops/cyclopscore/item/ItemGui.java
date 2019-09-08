@@ -6,6 +6,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.stats.Stat;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
@@ -13,6 +14,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -55,12 +57,11 @@ public abstract class ItemGui extends Item {
      * @param itemIndex The item index in the player inventory.
 	 * @param hand The hand the player is using.
      */
-    public void openGuiForItemIndex(World world, PlayerEntity player, int itemIndex, Hand hand) {
-		// TODO: temp data?: getConfig().getMod().getGuiHandler().setTemporaryData(GuiHandler.GuiType.ITEM, Pair.of(itemIndex, hand));
-    	if(!world.isRemote() || isClientSideOnlyGui()) {
+    public void openGuiForItemIndex(World world, ServerPlayerEntity player, int itemIndex, Hand hand) {
+    	if (!world.isRemote()) {
 			INamedContainerProvider containerProvider = this.getContainer(world, player, itemIndex, hand, player.getHeldItem(hand));
 			if (containerProvider != null) {
-				player.openContainer(containerProvider);
+				NetworkHooks.openGui(player, containerProvider, packetBuffer -> this.writeExtraGuiData(packetBuffer, world, player, itemIndex, hand));
 				Stat<ResourceLocation> openStat = this.getOpenStat();
 				if (openStat != null) {
 					player.addStat(openStat);
@@ -69,9 +70,19 @@ public abstract class ItemGui extends Item {
     	}
     }
 
-    protected boolean isClientSideOnlyGui() {
-        return false;
-    }
+	/**
+	 * Write additional data to a packet buffer that will be sent to the client when opening the gui.
+	 * @param packetBuffer A packet buffer to write to.
+	 * @param world The world.
+	 * @param player The player.
+	 * @param itemIndex The item index in the player inventory.
+	 * @param hand The hand the player is using.
+	 */
+    public void writeExtraGuiData(PacketBuffer packetBuffer, World world, ServerPlayerEntity player,
+								  int itemIndex, Hand hand) {
+    	packetBuffer.writeInt(itemIndex);
+    	packetBuffer.writeBoolean(hand == Hand.MAIN_HAND);
+	}
 
 	/**
 	 * @return An optional gui opening statistic.
@@ -87,7 +98,9 @@ public abstract class ItemGui extends Item {
 		if (player instanceof FakePlayer) {
 			return new ActionResult<>(ActionResultType.FAIL, itemStack);
 		}
-		openGuiForItemIndex(world, player, player.inventory.currentItem, hand);
+		if (player instanceof ServerPlayerEntity) {
+			openGuiForItemIndex(world, (ServerPlayerEntity) player, player.inventory.currentItem, hand);
+		}
 		return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
 	}
 

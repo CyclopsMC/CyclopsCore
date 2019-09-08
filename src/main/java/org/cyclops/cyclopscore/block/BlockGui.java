@@ -3,13 +3,16 @@ package org.cyclops.cyclopscore.block;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.stats.Stat;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -43,7 +46,8 @@ public abstract class BlockGui extends Block {
         if (!world.isRemote()) {
             INamedContainerProvider containerProvider = this.getContainer(blockState, world, blockPos);
             if (containerProvider != null) {
-                player.openContainer(containerProvider);
+                NetworkHooks.openGui((ServerPlayerEntity) player, containerProvider,
+                        packetBuffer -> this.writeExtraGuiData(packetBuffer, world, player, blockPos, hand, rayTraceResult));
                 Stat<ResourceLocation> openStat = this.getOpenStat();
                 if (openStat != null) {
                     player.addStat(openStat);
@@ -52,6 +56,10 @@ public abstract class BlockGui extends Block {
         }
 
         return true;
+    }
+
+    protected void writeExtraGuiData(PacketBuffer packetBuffer, World world, PlayerEntity player, BlockPos blockPos, Hand hand, BlockRayTraceResult rayTraceResult) {
+
     }
 
     /**
