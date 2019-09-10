@@ -25,28 +25,4 @@ public class CraftingHelpers {
                 + itemStack.getTag() + " with index " + index);
     }
 
-    @Deprecated // TODO: rm
-    public static ResourceLocation newRecipeIdentifier(ItemStack output) {
-        ResourceLocation id = new ResourceLocation(ModLoadingContext.get().getActiveContainer().getModId(),
-                output.getItem().getRegistryName().getPath());
-        int counter = 10;
-        while (ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipe(id).isPresent()) {
-            id = new ResourceLocation(id.getNamespace(), output.getItem().getRegistryName().getPath() + "_" + ++counter);
-        }
-        return id;
-    }
-
-    /**
-     * Register a crafting recipe.
-     * @param id The recipe id
-     * @param recipe The recipe
-     * @return The recipe
-     */
-    @Deprecated // TODO: rm
-    public static IRecipe<?> registerRecipe(ResourceLocation id, IRecipe<?> recipe) {
-        /*recipe.setRegistryName(id);
-        ForgeRegistries.RECIPES.register(recipe);*/
-        return recipe;
-    }
-
 }

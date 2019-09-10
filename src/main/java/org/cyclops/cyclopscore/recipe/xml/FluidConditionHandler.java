@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.recipe.xml;
 
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 
 /**
@@ -11,8 +13,7 @@ public class FluidConditionHandler implements IRecipeConditionHandler {
 
 	@Override
 	public boolean isSatisfied(RecipeHandler recipeHandler, String param) {
-		return false;
-		// return FluidRegistry.isFluidRegistered(param); // // TODO: update when Forge is updated with Fluids.
+		return ForgeRegistries.FLUIDS.containsKey(new ResourceLocation(param));
 	}
 
 }

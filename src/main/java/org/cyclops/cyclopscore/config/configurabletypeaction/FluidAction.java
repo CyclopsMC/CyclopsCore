@@ -12,9 +12,7 @@ public class FluidAction extends ConfigurableTypeAction<FluidConfig, Fluid> {
 
     @Override
     public void onRegisterForge(FluidConfig eConfig) {
-        // TODO: Implement when Forge has implemented Fluids
-//        FluidRegistry.registerFluid((Fluid) eConfig.getSubInstance());
-//        FluidRegistry.addBucketForFluid((Fluid) eConfig.getSubInstance());
+        register(eConfig.getInstance(), eConfig);
     }
 
 }

@@ -41,7 +41,6 @@ import org.cyclops.cyclopscore.tracking.Versions;
  *
  */
 @Mod(Reference.MOD_ID)
-// TODO: guiFactory = "org.cyclops.cyclopscore.GuiConfigOverview$ExtendedConfigGuiFactory"
 public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
     /**

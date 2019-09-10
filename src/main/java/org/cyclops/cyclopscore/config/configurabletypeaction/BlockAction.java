@@ -12,7 +12,6 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.client.gui.GuiHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
@@ -94,25 +93,16 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig, Block> {
         });
 
         // Also register tile entity
-        GuiHandler.GuiType<Void> guiType = GuiHandler.GuiType.BLOCK;
 //        if(eConfig.getConfigurableType().equals(ConfigurableType.BLOCKCONTAINER)) {
 //            ConfigurableBlockContainer container = (ConfigurableBlockContainer) block;
 //            // This alternative registration is required to remain compatible with old worlds.
 //            try {
-//                // TODO: register guis via registry
 ////                GameRegistry.registerTileEntity(container.getTileEntity(),
 ////                        eConfig.getMod().getModId() + ":" + eConfig.getSubUniqueName());
 //            } catch (IllegalArgumentException e) {
 //                // Ignore duplicate tile entity registration errors
 //            }
 //            guiType = GuiHandler.GuiType.TILE;
-//        }
-
-        // If the block has a GUI, go ahead and register that.
-        // TODO: handle guis
-//        if(block instanceof IConfigurableBlock && ((IConfigurableBlock) block).hasGui()) {
-//            IGuiContainerProvider gui = (IGuiContainerProvider) block;
-//            eConfig.getMod().getGuiHandler().registerGUI(gui, guiType);
 //        }
 
         if (MinecraftHelpers.isClientSide()) {

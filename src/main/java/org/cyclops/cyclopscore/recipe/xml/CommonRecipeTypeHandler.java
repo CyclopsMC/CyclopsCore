@@ -3,7 +3,9 @@ package org.cyclops.cyclopscore.recipe.xml;
 import com.google.common.collect.Maps;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
@@ -63,7 +65,7 @@ public abstract class CommonRecipeTypeHandler<I extends IRecipeInput, O extends 
 			amount = Integer.parseInt(amountNode.getTextContent());
 		}
 		String fluidName = fluidNode.getTextContent();
-		Fluid fluid = null; // TODO: update when Forge is updated with Fluids. FluidRegistry.getFluid(fluidName);
+		Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
 		if(fluid == null) {
 			throw new XmlRecipeLoader.XmlRecipeException(String.format("Fluid by name '%s' has not been found.", fluidName));
 		}

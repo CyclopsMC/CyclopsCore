@@ -471,7 +471,7 @@ public class InfoBookParser {
         if(!node.getAttribute("amount").isEmpty()) {
             amount = Integer.parseInt(node.getAttribute("amount"));
         }
-        Fluid fluid = null; // TODO: enable when Forge implements fluids. FluidRegistry.getFluid(node.getTextContent());
+        Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(node.getTextContent()));
         if(fluid == null) {
             throw new InvalidAppendixException("Invalid fluid " + node.getTextContent());
         }
