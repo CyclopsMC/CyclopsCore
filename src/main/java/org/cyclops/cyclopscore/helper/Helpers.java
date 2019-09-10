@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
+import cpw.mods.modlauncher.Launcher;
+import cpw.mods.modlauncher.api.IEnvironment;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.Level;
@@ -172,6 +174,13 @@ public class Helpers {
             return Integer.MAX_VALUE;
         }
         return casted;
+    }
+
+    /**
+     * @return If we are currently running inside a deobfuscated development environment.
+     */
+    public static boolean isDevEnvironment() {
+        return "mcp".equals(Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.NAMING.get()).orElse("mojang"));
     }
 
     /**

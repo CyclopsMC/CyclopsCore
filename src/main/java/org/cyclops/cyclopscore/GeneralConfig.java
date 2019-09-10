@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore;
 
 import net.minecraftforge.fml.config.ModConfig;
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
-import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.extendedconfig.DummyConfig;
+import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.tracking.Analytics;
 import org.cyclops.cyclopscore.tracking.Versions;
@@ -39,7 +39,7 @@ public class GeneralConfig extends DummyConfig {
     public static boolean versionChecker = true;
 
     @ConfigurableProperty(category = "general", comment = "If a button should be added to the main menu to open a dev world (shift-click creates a new world).", configLocation = ModConfig.Type.CLIENT)
-    public static boolean devWorldButton = true; // TODO: (Boolean) Launcher.INSTANCE.blackboard().get("fml.deobfuscatedEnvironment");
+    public static boolean devWorldButton = Helpers.isDevEnvironment();
     
     /**
      * Create a new instance.
