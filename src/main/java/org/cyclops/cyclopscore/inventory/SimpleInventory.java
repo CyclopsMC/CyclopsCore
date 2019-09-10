@@ -252,7 +252,7 @@ public class SimpleInventory implements INBTInventory, IInventoryState {
 
 
     @Override
-    public int getHash() {
+    public int getState() {
         return hash;
     }
 }
