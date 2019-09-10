@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore;
 import net.minecraftforge.fml.config.ModConfig;
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
 import org.cyclops.cyclopscore.config.extendedconfig.DummyConfig;
-import org.cyclops.cyclopscore.helper.Helpers;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.tracking.Analytics;
 import org.cyclops.cyclopscore.tracking.Versions;
@@ -16,9 +16,6 @@ import java.util.UUID;
  *
  */
 public class GeneralConfig extends DummyConfig {
-
-    @ConfigurableProperty(category = "core", comment = "The version at which the config file was generated.", showInGui = false)
-    public static String version = Reference.MOD_VERSION;
 
     @ConfigurableProperty(category = "core", comment = "Set 'true' to enable development debug mode. This will result in a lower performance!", requiresMcRestart = true)
     public static boolean debug = false;
@@ -39,7 +36,7 @@ public class GeneralConfig extends DummyConfig {
     public static boolean versionChecker = true;
 
     @ConfigurableProperty(category = "general", comment = "If a button should be added to the main menu to open a dev world (shift-click creates a new world).", configLocation = ModConfig.Type.CLIENT)
-    public static boolean devWorldButton = Helpers.isDevEnvironment();
+    public static boolean devWorldButton = MinecraftHelpers.isDevEnvironment();
     
     /**
      * Create a new instance.

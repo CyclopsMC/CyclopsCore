@@ -55,13 +55,12 @@ public abstract class ModBase<T extends ModBase> {
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_GUI = EnumReferenceKey.create("texture_path_gui", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_MODELS = EnumReferenceKey.create("texture_path_models", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_SKINS = EnumReferenceKey.create("texture_path_skins", String.class);
-    public static final EnumReferenceKey<String> REFKEY_MOD_VERSION = EnumReferenceKey.create("mod_version", String.class);
     public static final EnumReferenceKey<Boolean> REFKEY_RETROGEN = EnumReferenceKey.create("retrogen", Boolean.class);
     public static final EnumReferenceKey<Boolean> REFKEY_CRASH_ON_INVALID_RECIPE = EnumReferenceKey.create("crash_on_invalid_recipe", Boolean.class);
     public static final EnumReferenceKey<Boolean> REFKEY_CRASH_ON_MODCOMPAT_CRASH = EnumReferenceKey.create("crash_on_modcompat_crash", Boolean.class);
     public static final EnumReferenceKey<Boolean> REFKEY_INFOBOOK_REWARDS = EnumReferenceKey.create("rewards", Boolean.class);
 
-    private final String modId, modName;
+    private final String modId;
     private final LoggerHelper loggerHelper;
     private final ConfigHandler configHandler;
     private final Map<EnumReferenceKey<?>, Object> genericReference = Maps.newHashMap();
@@ -75,13 +74,13 @@ public abstract class ModBase<T extends ModBase> {
     private final IMCHandler imcHandler;
 
     private ICommonProxy proxy;
+    private ModContainer container;
 
     private ItemGroup defaultCreativeTab = null;
 
-    public ModBase(String modId, String modName, Consumer<T> instanceSetter) {
+    public ModBase(String modId, Consumer<T> instanceSetter) {
         instanceSetter.accept((T) this);
         this.modId = modId;
-        this.modName = modName;
         this.loggerHelper = constructLoggerHelper();
         this.configHandler = constructConfigHandler();
         this.registryManager = constructRegistryManager();
@@ -116,8 +115,22 @@ public abstract class ModBase<T extends ModBase> {
         loadModCompats(getModCompatLoader());
     }
 
+    public String getModName() {
+        return getContainer().getModInfo().getDisplayName();
+    }
+
+    /**
+     * @return The mod container of this mod.
+     */
+    public ModContainer getContainer() {
+        if (container == null) {
+            container = ModList.get().getModContainerByObject(this).get();
+        }
+        return container;
+    }
+
     protected LoggerHelper constructLoggerHelper() {
-        return new LoggerHelper(this.modName);
+        return new LoggerHelper(getModId());
     }
 
     protected ConfigHandler constructConfigHandler() {

@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.helper;
 
+import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.TransformingClassLoader;
+import cpw.mods.modlauncher.api.IEnvironment;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -10,6 +12,10 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.versions.mcp.MCPVersion;
+import org.cyclops.cyclopscore.CyclopsCore;
+
+import java.util.Arrays;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -62,6 +68,34 @@ public class MinecraftHelpers {
 	public static boolean isPlayerInventoryFull(PlayerEntity player) {
 	    return player.inventory.getFirstEmptyStack() == -1;
 	}
+
+    /**
+     * @return If we are currently running inside a deobfuscated development environment.
+     */
+    public static boolean isDevEnvironment() {
+        return "mcp".equals(Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.NAMING.get()).orElse("mojang"));
+    }
+
+    /**
+     * @return If minecraft has been fully loaded.
+     */
+    public static boolean isMinecraftInitialized() {
+        return CyclopsCore._instance.isLoaded();
+    }
+
+    /**
+     * @return The Minecraft version (e.g. "1.14.4")
+     */
+    public static String getMinecraftVersion() {
+        return MCPVersion.getMCVersion();
+    }
+
+    /**
+     * @return The Minecraft major and minor version (e.g. "1.14")
+     */
+    public static String getMinecraftVersionMajorMinor() {
+        return String.join(".", Arrays.asList(getMinecraftVersion().split("\\.")).subList(0, 2));
+    }
 
     /**
      * Check if we are inside a modded minecraft environment.

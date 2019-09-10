@@ -103,17 +103,6 @@ dependencies {
     testCompile "org.mockito:mockito-core:1.+"
 }
 
-// TODO: fix process resources (it breaks run configs)
-//processResources {
-//    from(sourceSets.main.resources.srcDirs) {
-//        expand '@VERSION@': project.version,
-//                '@MC_VERSION@' : project.config.minecraft_version,
-//                '@FORGE_VERSION@' : project.config.forge_version,
-//                '@BUILD_NUMBER@' : project.buildnumber,
-//                '@FINGERPRINT@' : project.config.fingerprint
-//    }
-//}
-
 minecraft {
     mappings channel: "${config.mcp_mappings_channel}", version: "${config.mcp_mappings_version}"
 

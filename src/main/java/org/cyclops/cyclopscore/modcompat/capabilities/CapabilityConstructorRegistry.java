@@ -17,7 +17,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.helper.Helpers;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.Collection;
@@ -196,8 +196,8 @@ public class CapabilityConstructorRegistry {
     protected <K, V> void onLoad(Map<Class<? extends K>, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allConstructors,
                                  Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors,
                                  K keyObject, V valueObject, AttachCapabilitiesEvent<?> event, Class<? extends K> baseClass) {
-        boolean initialized = baked || Helpers.isMinecraftInitialized();
-        if (!baked && Helpers.isMinecraftInitialized()) {
+        boolean initialized = baked || MinecraftHelpers.isMinecraftInitialized();
+        if (!baked && MinecraftHelpers.isMinecraftInitialized()) {
             bake();
         }
 

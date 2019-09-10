@@ -51,7 +51,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
     private boolean loaded = false;
 
     public CyclopsCore() {
-        super(Reference.MOD_ID, Reference.MOD_NAME, Reference.MOD_VERSION, (instance) -> _instance = instance);
+        super(Reference.MOD_ID, (instance) -> _instance = instance);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
     }
 

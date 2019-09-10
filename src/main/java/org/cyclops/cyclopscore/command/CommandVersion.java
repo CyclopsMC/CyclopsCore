@@ -24,7 +24,7 @@ public class CommandVersion implements Command<CommandSource> {
 
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
         context.getSource().asPlayer()
-                .sendMessage(new StringTextComponent(this.mod.getReferenceValue(ModBase.REFKEY_MOD_VERSION)));
+                .sendMessage(new StringTextComponent(this.mod.getContainer().getModInfo().getVersion().toString()));
         return 0;
     }
 

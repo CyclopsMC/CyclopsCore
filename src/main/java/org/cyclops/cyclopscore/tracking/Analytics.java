@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.GeneralConfig;
 import org.cyclops.cyclopscore.Reference;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.io.IOException;
@@ -74,10 +75,10 @@ public class Analytics {
     }
 
     protected static String createRequestURL(ModBase<?> mod, String trackingId) throws UnsupportedEncodingException {
-        String mcVersion = URLEncoder.encode(Reference.MOD_MC_VERSION, "UTF-8");
+        String mcVersion = URLEncoder.encode(MinecraftHelpers.getMinecraftVersion(), "UTF-8");
         return String.format(REQUEST_PATTERN, trackingId, GeneralConfig.anonymousAnalyticsID,
                 URLEncoder.encode(mod.getModName(), "UTF-8"),
-                mcVersion + "-" + URLEncoder.encode(mod.getReferenceValue(ModBase.REFKEY_MOD_VERSION), "UTF-8"),
+                mcVersion + "-" + URLEncoder.encode(mod.getContainer().getModInfo().getVersion().toString(), "UTF-8"),
                 mcVersion, FMLEnvironment.dist.isClient() ? "client" : "server", System.getProperty("java.version"));
     }
 

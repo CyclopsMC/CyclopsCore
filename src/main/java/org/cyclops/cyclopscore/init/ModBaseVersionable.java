@@ -4,7 +4,6 @@ import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.cyclops.cyclopscore.tracking.IModVersion;
 
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
 /**
@@ -18,9 +17,8 @@ public abstract class ModBaseVersionable<T extends ModBaseVersionable> extends M
     private String info;
     private String updateUrl;
 
-    public ModBaseVersionable(String modId, String modName, String modVersion, Consumer<T> instanceSetter) {
-        super(modId, modName, instanceSetter);
-        putGenericReference(REFKEY_MOD_VERSION, modVersion);
+    public ModBaseVersionable(String modId, Consumer<T> instanceSetter) {
+        super(modId, instanceSetter);
     }
 
     @Override
@@ -53,12 +51,11 @@ public abstract class ModBaseVersionable<T extends ModBaseVersionable> extends M
 
     @Override
     public boolean needsUpdate() {
-        String currentVersionString = getReferenceValue(REFKEY_MOD_VERSION);
+        ArtifactVersion currentVersion = getContainer().getModInfo().getVersion();
         String latestVersionString = getVersion();
-        if (latestVersionString == null || "@VERSION@".equals(currentVersionString)) {
+        if (latestVersionString == null) {
             return false; // We're running offline or in this mod's dev environment
         }
-        ArtifactVersion currentVersion = new DefaultArtifactVersion(currentVersionString);
         ArtifactVersion newVersion = new DefaultArtifactVersion(latestVersionString);
         return getVersion() != null && currentVersion.compareTo(newVersion) < 0;
     }

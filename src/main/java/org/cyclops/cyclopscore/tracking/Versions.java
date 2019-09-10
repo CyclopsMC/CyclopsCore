@@ -25,6 +25,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.io.IOException;
@@ -152,8 +153,8 @@ public class Versions {
                     Style downloadStyle = new Style();
                     downloadStyle.setColor(TextFormatting.BLUE);
 
-                    String currentVersion = Reference.MOD_MC_VERSION + "-" + triple.getLeft().getReferenceValue(ModBase.REFKEY_MOD_VERSION);
-                    String newVersion = Reference.MOD_MC_VERSION + "-" + triple.getMiddle().getVersion();
+                    String currentVersion = MinecraftHelpers.getMinecraftVersion() + "-" + triple.getLeft().getContainer().getModInfo().getVersion().toString();
+                    String newVersion = MinecraftHelpers.getMinecraftVersion() + "-" + triple.getMiddle().getVersion();
                     ITextComponent versionTransition = new StringTextComponent(String.format("%s -> %s", currentVersion, newVersion)).setStyle(versionStyle);
                     modNameStyle.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, versionTransition));
                     ITextComponent modNameComponent = new StringTextComponent(String.format("[%s]", triple.getLeft().getModName())).setStyle(modNameStyle);
