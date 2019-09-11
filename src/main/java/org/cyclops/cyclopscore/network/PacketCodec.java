@@ -39,7 +39,7 @@ public abstract class PacketCodec extends PacketBase {
 
 			@Override
 			public Object decode(PacketBuffer input) {
-				return input.readString();
+				return input.readString(32767); // The arg-less version is client-side only, so we copy its implementation.
 			}
 		});
 		
