@@ -53,7 +53,6 @@ public class ConfigHandler {
         }
     });
     private boolean registryEventPassed = false;
-    private final Map<Class<? extends ExtendedConfig<?, ?>>, ExtendedConfig<?, ?>> enabledConfigs = Maps.newIdentityHashMap();
 
     public ConfigHandler(ModBase mod) {
         this.mod = mod;
@@ -68,7 +67,6 @@ public class ConfigHandler {
         Map<ModConfig.Type, ForgeConfigSpec.Builder> configBuilders = new EnumMap<>(ModConfig.Type.class);
 
         // Pass config builder to all configurables
-        enabledConfigs.clear();
         for (ExtendedConfig<?, ?> eConfig : this.configurables) {
             ForgeConfigSpec.Builder configBuilder = configBuilders.get(ModConfig.Type.COMMON);
             if (configBuilder == null) {
@@ -134,7 +132,6 @@ public class ConfigHandler {
             mod.log(Level.TRACE, "Registering " + eConfig.getNamedId());
             eConfig.save();
             eConfig.getConfigurableType().getConfigurableTypeAction().onRegisterModInit(eConfig);
-            enabledConfigs.put((Class<? extends ExtendedConfig<?, ?>>) eConfig.getClass(), eConfig);
         }
     }
 
@@ -200,15 +197,6 @@ public class ConfigHandler {
 	}
 
     /**
-     * A safe way to check if a config is enabled. @see ExtendedConfig#isEnabled()
-     * @param config The config to check.
-     * @return If the given config is enabled.
-     */
-    public boolean isConfigEnabled(Class<? extends ExtendedConfig<?, ?>> config) {
-        return enabledConfigs.containsKey(config);
-    }
-
-    /**
      * Register the given entry to the given registry.
      * This method will safely wait until the correct registry event for registering the entry.
      * @param registry The registry.
@@ -259,21 +247,5 @@ public class ConfigHandler {
 //                recipeHandler.registerRecipes(getMod().getConfigFolder());
 //            }
 //        }
-    }
-
-    /**
-     * Get the instance corresponding to the given config.
-     *
-     * This will throw an NPE when no instance could be found.
-     *
-     * @param clazz A config class.
-     * @param <C> Class of the extension of ExtendedConfig
-     * @param <I> The instance corresponding to this config.
-     * @return An instance.
-     */
-    public <C extends ExtendedConfig<C, I>, I> I getInstance(Class<? extends ExtendedConfig<C, I>> clazz) {
-        ExtendedConfig<C, I> eConfig = (ExtendedConfig<C, I>) this.enabledConfigs.get(clazz);
-        Objects.requireNonNull(eConfig, "Could not find an enabled config by class " + clazz.getName());
-        return eConfig.getInstance();
     }
 }
