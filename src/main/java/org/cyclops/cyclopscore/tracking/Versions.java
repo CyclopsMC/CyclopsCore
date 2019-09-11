@@ -23,7 +23,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.Level;
 import org.apache.maven.artifact.versioning.ComparableVersion;
-import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -159,7 +158,7 @@ public class Versions {
                     modNameStyle.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, versionTransition));
                     ITextComponent modNameComponent = new StringTextComponent(String.format("[%s]", triple.getLeft().getModName())).setStyle(modNameStyle);
 
-                    ITextComponent downloadComponent = new StringTextComponent(String.format("[%s]", L10NHelpers.localize("general.cyclopscore.version.download"))).setStyle(downloadStyle);
+                    ITextComponent downloadComponent = new TranslationTextComponent(L10NHelpers.localize("general.cyclopscore.version.download")).setStyle(downloadStyle);
                     downloadStyle.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("general.cyclopscore.version.clickToDownload")));
                     downloadStyle.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, triple.getMiddle().getUpdateUrl()));
 

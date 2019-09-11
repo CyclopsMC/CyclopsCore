@@ -6,8 +6,11 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.item.IInformationProvider;
@@ -35,6 +38,7 @@ public final class L10NHelpers {
      * @param params The parameters of the formatting
      * @return The localized string.
      */
+    @OnlyIn(Dist.CLIENT)
     public static String localize(String key, Object... params) {
         if(MinecraftHelpers.isModdedEnvironment()) {
             return I18n.format(key, params);
@@ -51,6 +55,7 @@ public final class L10NHelpers {
      * @param statusPrefixKey The prefix for the l10n key that will show if it is enabled,
      *                        this should be a formatted string with one parameter.
      */
+    @OnlyIn(Dist.CLIENT)
     public static void addStatusInfo(List<String> infoLines, boolean isEnabled, String statusPrefixKey) {
         String autoSupply = localize(KEY_DISABLED);
         if (isEnabled) {
@@ -65,6 +70,7 @@ public final class L10NHelpers {
      * @param entityId The unique entity name id.
      * @return The localized name.
      */
+    @OnlyIn(Dist.CLIENT)
     public static String getLocalizedEntityName(String entityId) {
         return L10NHelpers.localize("entity." + entityId + ".name");
     }
@@ -75,6 +81,7 @@ public final class L10NHelpers {
      * @param list   The list to add the lines to.
      * @param prefix The I18N key prefix, being the unlocalized name of blocks or items.
      */
+    @OnlyIn(Dist.CLIENT)
     public static void addOptionalInfo(List<ITextComponent> list, String prefix) {
         String key = prefix + ".info";
         if (I18n.hasKey(key)) {
@@ -85,9 +92,10 @@ public final class L10NHelpers {
                         .map(StringTextComponent::new)
                         .collect(Collectors.toList()));
             } else {
-                list.add(new TranslationTextComponent(TextFormatting.GRAY.toString()
-                        + TextFormatting.ITALIC.toString()
-                        + localize("general." + Reference.MOD_ID + ".tooltip.info")));
+                list.add(new TranslationTextComponent("general." + Reference.MOD_ID + ".tooltip.info")
+                        .setStyle(new Style()
+                                .setColor(TextFormatting.GRAY)
+                                .setItalic(true)));
             }
         }
     }

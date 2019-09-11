@@ -15,6 +15,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.ISuggestionProvider;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
@@ -50,10 +51,10 @@ public class CommandConfig implements Command<CommandSource> {
             if(newValue != null) {
                 property.getConfigProperty().set(newValue);
                 property.getConfigProperty().save();
-                context.getSource().asPlayer().sendMessage(new StringTextComponent(L10NHelpers.localize("chat.cyclopscore.command.updatedValue",
-                        property.getName(), newValue.toString())));
+                context.getSource().asPlayer().sendMessage(new TranslationTextComponent("chat.cyclopscore.command.updatedValue",
+                        property.getName(), newValue.toString()));
             } else {
-                context.getSource().asPlayer().sendMessage(new StringTextComponent(L10NHelpers.localize("chat.cyclopscore.command.invalidNewValue")));
+                context.getSource().asPlayer().sendMessage(new TranslationTextComponent("chat.cyclopscore.command.invalidNewValue"));
                 return 1;
             }
         }

@@ -8,6 +8,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -87,6 +89,7 @@ public class DamageIndicatedItemComponent {
      * @param capacity The capacity to show.
      * @return The info generated from the given parameters.
      */
+    @OnlyIn(Dist.CLIENT)
     public static String getInfo(FluidStack fluidStack, int amount, int capacity) {
     	String prefix = "";
     	if(fluidStack != null) {

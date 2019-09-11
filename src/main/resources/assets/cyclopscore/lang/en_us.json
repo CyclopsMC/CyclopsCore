@@ -6,7 +6,7 @@
     "general.cyclopscore.info.enabled": "§aEnabled",
     "general.cyclopscore.info.disabled": "Disabled",
     "general.cyclopscore.version.updateAvailable": "Update available",
-    "general.cyclopscore.version.download": "Download",
+    "general.cyclopscore.version.download": "[Download]",
     "general.cyclopscore.version.clickToDownload": "Click to download",
 
     "_comment": "Gui",
