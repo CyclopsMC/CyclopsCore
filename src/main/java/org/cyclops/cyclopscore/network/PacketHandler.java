@@ -6,6 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -69,15 +71,15 @@ public final class PacketHandler {
                         NetworkEvent.Context context = contextSupplier.get();
                         if (context.getDirection().getReceptionSide().isClient()) {
                             if (packet.isAsync()) {
-                                packet.actionClient(Minecraft.getInstance().player.world, Minecraft.getInstance().player);
+                                handlePacketClient(context, packet);
                             } else {
-                                context.enqueueWork(() -> packet.actionClient(Minecraft.getInstance().player.world, Minecraft.getInstance().player));
+                                context.enqueueWork(() -> handlePacketClient(context, packet));
                             }
                         } else {
                             if (packet.isAsync()) {
-                                packet.actionServer(context.getSender().getServerWorld(), context.getSender());
+                                handlePacketServer(context, packet);
                             } else {
-                                context.enqueueWork(() -> packet.actionServer(context.getSender().getServerWorld(), context.getSender()));
+                                context.enqueueWork(() -> handlePacketServer(context, packet));
                             }
                         }
                         context.setPacketHandled(true);
@@ -86,6 +88,15 @@ public final class PacketHandler {
             e.printStackTrace();
             CyclopsCore.clog(Level.ERROR, "Could not find a default constructor for packet " + packetType.getName());
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void handlePacketClient(NetworkEvent.Context context, PacketBase packet) {
+        packet.actionClient(Minecraft.getInstance().player.world, Minecraft.getInstance().player);
+    }
+
+    public void handlePacketServer(NetworkEvent.Context context, PacketBase packet) {
+        packet.actionServer(context.getSender().getServerWorld(), context.getSender());
     }
     
     /**

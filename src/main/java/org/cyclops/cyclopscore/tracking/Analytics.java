@@ -57,7 +57,7 @@ public class Analytics {
             checked = true;
             if (FMLEnvironment.dist.isClient()
                     ? Minecraft.getInstance().getSnooper().isSnooperRunning()
-                    : ServerLifecycleHooks.getCurrentServer().getSnooper().isSnooperRunning()) {
+                    : ServerLifecycleHooks.getCurrentServer().snooper.isSnooperRunning()) {
                 new Thread(() -> {
                     List<Pair<ModBase, String>> trackingMods = getTrackingMods();
                     for (Pair<ModBase, String> pair : trackingMods) {

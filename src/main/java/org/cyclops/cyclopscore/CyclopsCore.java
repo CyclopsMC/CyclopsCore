@@ -9,6 +9,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
@@ -102,6 +103,11 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
             RecipeInputOutputDefinitionHandlers.load();
         }
         RegistryExportables.load();
+    }
+
+    @Override
+    protected void onServerStarting(FMLServerStartingEvent event) {
+        super.onServerStarting(event);
 
         // Handle metadata
         Analytics.sendAll();
