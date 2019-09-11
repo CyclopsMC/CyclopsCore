@@ -2,6 +2,8 @@ package org.cyclops.cyclopscore;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.command.CommandSource;
+import net.minecraft.command.arguments.ArgumentSerializer;
+import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,6 +20,10 @@ import org.cyclops.cyclopscore.command.CommandDebug;
 import org.cyclops.cyclopscore.command.CommandDumpRegistries;
 import org.cyclops.cyclopscore.command.CommandIgnite;
 import org.cyclops.cyclopscore.command.CommandReloadResources;
+import org.cyclops.cyclopscore.command.argument.ArgumentSerializerMod;
+import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigProperty;
+import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacket;
+import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnum;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.ingredient.recipe.IRecipeInputOutputDefinitionRegistry;
 import org.cyclops.cyclopscore.ingredient.recipe.RecipeInputOutputDefinitionHandlers;
@@ -103,6 +109,17 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
             RecipeInputOutputDefinitionHandlers.load();
         }
         RegistryExportables.load();
+
+        // Register argument types
+        ArgumentTypes.register(Reference.MOD_ID + ":" + "enum",
+                (Class<ArgumentTypeEnum<?>>) (Class) ArgumentTypeEnum.class,
+                new ArgumentTypeEnum.Serializer());
+        ArgumentTypes.register(Reference.MOD_ID + ":" + "config_property",
+                ArgumentTypeConfigProperty.class, new ArgumentSerializerMod<>(ArgumentTypeConfigProperty::new,
+                        ArgumentTypeConfigProperty::getMod));
+        ArgumentTypes.register(Reference.MOD_ID + ":" + "debug_packet",
+                ArgumentTypeDebugPacket.class,
+                new ArgumentSerializer<>(() -> ArgumentTypeDebugPacket.INSTANCE));
     }
 
     @Override

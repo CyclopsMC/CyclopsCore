@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.command.argument;
 
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -9,6 +10,9 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.ISuggestionProvider;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.command.arguments.IArgumentSerializer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.StringTextComponent;
 
 import java.util.Arrays;
@@ -53,6 +57,28 @@ public class ArgumentTypeEnum<T extends Enum<T>> implements ArgumentType<T> {
 
     public static <T extends Enum<T>> T getValue(CommandContext<CommandSource> context, String name, Class<T> enumClass) {
         return context.getArgument(name, enumClass);
+    }
+
+    public static class Serializer implements IArgumentSerializer<ArgumentTypeEnum<?>> {
+
+        @Override
+        public void write(ArgumentTypeEnum argumentTypeEnum, PacketBuffer packetBuffer) {
+            packetBuffer.writeString(argumentTypeEnum.enumClass.getName());
+        }
+
+        @Override
+        public ArgumentTypeEnum read(PacketBuffer packetBuffer) {
+            try {
+                return new ArgumentTypeEnum(Class.forName(packetBuffer.readString()));
+            } catch (ClassNotFoundException e) {
+                return null;
+            }
+        }
+
+        @Override
+        public void write(ArgumentTypeEnum argumentTypeEnum, JsonObject jsonObject) {
+            jsonObject.addProperty("class", argumentTypeEnum.enumClass.getName());
+        }
     }
 
 }
