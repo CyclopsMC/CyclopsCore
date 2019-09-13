@@ -55,9 +55,11 @@ public class Analytics {
     public static void sendAll() {
         if(!checked) {
             checked = true;
-            if (FMLEnvironment.dist.isClient()
+            // Snooper settings don't seem to exist anymore, so we always run.
+            // Analytics are still disableable from the mod config itself.
+            if (true/*FMLEnvironment.dist.isClient()
                     ? Minecraft.getInstance().getSnooper().isSnooperRunning()
-                    : ServerLifecycleHooks.getCurrentServer().snooper.isSnooperRunning()) {
+                    : ServerLifecycleHooks.getCurrentServer().snooper.isSnooperRunning()*/) {
                 new Thread(() -> {
                     List<Pair<ModBase, String>> trackingMods = getTrackingMods();
                     for (Pair<ModBase, String> pair : trackingMods) {
