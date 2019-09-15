@@ -12,6 +12,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.item.ItemInformationProvider;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
@@ -71,6 +72,14 @@ public abstract class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> i
         // TODO: model mapping
         // ModelLoader.setCustomModelResourceLocation(getItemInstance(), 0, itemLocation);
         return itemLocation;
+    }
+
+    @Override
+    public void onForgeRegistered() {
+        super.onForgeRegistered();
+
+        // Add item to information provider
+        ItemInformationProvider.registerItem(getInstance());
     }
 
     /**

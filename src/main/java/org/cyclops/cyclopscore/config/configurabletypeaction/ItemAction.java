@@ -23,7 +23,7 @@ import java.util.List;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class ItemAction extends ConfigurableTypeAction<ItemConfig, Item>{
+public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
 
     private static final List<ExtendedConfig<?, ?>> MODEL_ENTRIES = Lists.newArrayList();
 
@@ -33,10 +33,8 @@ public class ItemAction extends ConfigurableTypeAction<ItemConfig, Item>{
 
     @Override
     public void onRegisterForge(ItemConfig eConfig) {
-        Item item = eConfig.getInstance();
-
         // Register item and set creative tab.
-        register(item, eConfig, () -> {
+        register(eConfig, () -> {
             this.polish(eConfig);
             return null;
         });

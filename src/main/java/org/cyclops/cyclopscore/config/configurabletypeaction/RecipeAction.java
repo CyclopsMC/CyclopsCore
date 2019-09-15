@@ -9,10 +9,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.RecipeConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class RecipeAction<T extends IRecipe<?>> extends ConfigurableTypeAction<RecipeConfig<T>, IRecipeSerializer<T>> {
+public class RecipeAction<T extends IRecipe<?>> extends ConfigurableTypeActionForge<RecipeConfig<T>, IRecipeSerializer<T>> {
 
-    @Override
-    public void onRegisterForge(RecipeConfig<T> eConfig) {
-        register(eConfig.getInstance(), (RecipeConfig) eConfig);
-    }
 }

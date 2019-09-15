@@ -150,7 +150,7 @@ public class EntityHelpers {
 	 * @return The player's persisted NBT tag.
 	 */
 	public static CompoundNBT getPersistedPlayerNbt(PlayerEntity player) {
-		CompoundNBT tag = player.getPersistantData();
+		CompoundNBT tag = player.getPersistentData();
 		CompoundNBT persistedTag = tag.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
 		if (persistedTag == null) {
 			persistedTag = new CompoundNBT();

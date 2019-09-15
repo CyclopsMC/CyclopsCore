@@ -8,11 +8,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class FluidAction extends ConfigurableTypeAction<FluidConfig, Fluid> {
-
-    @Override
-    public void onRegisterForge(FluidConfig eConfig) {
-        register(eConfig.getInstance(), eConfig);
-    }
+public class FluidAction extends ConfigurableTypeActionForge<FluidConfig, Fluid> {
 
 }

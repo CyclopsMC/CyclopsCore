@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add more-info tooltips on Cyclops items and blocks
+
+Changes:
+* Bump to Forge 28.1
+* Refactor config handler to support block, item, and tile connections

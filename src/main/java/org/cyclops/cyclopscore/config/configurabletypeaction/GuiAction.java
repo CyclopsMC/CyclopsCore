@@ -9,10 +9,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.GuiConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class GuiAction<T extends Container> extends ConfigurableTypeAction<GuiConfig<T>, ContainerType<T>> {
+public class GuiAction<T extends Container> extends ConfigurableTypeActionForge<GuiConfig<T>, ContainerType<T>> {
 
-    @Override
-    public void onRegisterForge(GuiConfig<T> eConfig) {
-        register(eConfig.getInstance(), (GuiConfig) eConfig);
-    }
 }

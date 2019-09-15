@@ -5,12 +5,17 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -18,13 +23,15 @@ import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * The action used for {@link BlockConfig}.
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class BlockAction extends ConfigurableTypeAction<BlockConfig, Block> {
+public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block> {
 
     private static final List<BlockConfig> MODEL_ENTRIES = Lists.newArrayList();
 
@@ -33,77 +40,42 @@ public class BlockAction extends ConfigurableTypeAction<BlockConfig, Block> {
     }
 
     /**
-     * Registers a block.
-     * @param block The block instance.
-     * @param config The config.
-     */
-    public static void register(Block block, BlockConfig config) {
-        register(block, config, null);
-    }
-
-    /**
-     * Registers a block.
-     * @param block The block instance.
+     * Registers a block and its optional item block.
+     * @param itemBlockConstructor The optional item block constructor.
      * @param config The config.
      * @param callback A callback that will be called when the entry is registered.
      */
-    public static void register(Block block, BlockConfig config, @Nullable Callable<?> callback) {
-        register(block, null, config, callback);
-    }
-
-    /**
-     * Registers a block.
-     * @param block The block instance.
-     * @param itemBlockClass The optional item block class.
-     * @param config The config.
-     */
-    public static void register(Block block, @Nullable Class<? extends Item> itemBlockClass, BlockConfig config) {
-        register(block, itemBlockClass, config, null);
-    }
-
-    /**
-     * Registers a block.
-     * @param block The block instance.
-     * @param itemBlockClass The optional item block class.
-     * @param config The config.
-     * @param callback A callback that will be called when the entry is registered.
-     */
-    public static void register(Block block, @Nullable Class<? extends Item> itemBlockClass, BlockConfig config, @Nullable Callable<?> callback) {
-        register(block, config, null); // Delay onForgeRegistered callback until item has been registered
-        if(itemBlockClass != null) {
-            // TODO: handle item registration for ItemBlock
-//            try {
-//                Item item = itemBlockClass.getConstructor(Block.class).newInstance(block);
-//                register(ForgeRegistries.ITEMS, item, config, callback);
-//            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-//                e.printStackTrace();
-//            }
+    public static void register(@Nullable BiFunction<BlockConfig, Block, ? extends BlockItem> itemBlockConstructor, BlockConfig config, @Nullable Callable<?> callback) {
+        register(config, itemBlockConstructor == null ? callback : null); // Delay onForgeRegistered callback until item has been registered if one is applicable
+        if(itemBlockConstructor != null) {
+            FMLJavaModLoadingContext.get().getModEventBus().addListener((RegistryEvent.Register<Item> event) -> {
+                if (event.getRegistry() == ForgeRegistries.ITEMS) {
+                    BlockItem itemBlock = itemBlockConstructor.apply(config, config.getInstance());
+                    if (itemBlock.getRegistryName() == null) {
+                        itemBlock.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
+                    }
+                    event.getRegistry().register(itemBlock);
+                    config.setItemInstance(itemBlock);
+                    try {
+                        if (callback != null) {
+                            callback.call();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
     }
 
     @Override
     public void onRegisterForge(BlockConfig eConfig) {
-        Block block = eConfig.getInstance();
-
         // Register block and set creative tab.
-        register(block, eConfig.getItemBlockClass(), eConfig, () -> {
+        register(eConfig.getItemConstructor(), eConfig, () -> {
             eConfig.onForgeRegistered(); // Manually call after item has been registered
             this.polish(eConfig);
             return null;
         });
-
-        // Also register tile entity
-//        if(eConfig.getConfigurableType().equals(ConfigurableType.BLOCKCONTAINER)) {
-//            ConfigurableBlockContainer container = (ConfigurableBlockContainer) block;
-//            // This alternative registration is required to remain compatible with old worlds.
-//            try {
-////                GameRegistry.registerTileEntity(container.getTileEntity(),
-////                        eConfig.getMod().getModId() + ":" + eConfig.getSubUniqueName());
-//            } catch (IllegalArgumentException e) {
-//                // Ignore duplicate tile entity registration errors
-//            }
-//            guiType = GuiHandler.GuiType.TILE;
-//        }
 
         if (MinecraftHelpers.isClientSide()) {
             ItemAction.handleItemModel(eConfig);

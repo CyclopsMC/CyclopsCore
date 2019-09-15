@@ -7,6 +7,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import lombok.Data;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,6 +20,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeAction;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
@@ -45,10 +47,10 @@ public class ConfigHandler {
     private final Map<String, ExtendedConfig<?, ?>> configDictionary = Maps.newHashMap();
     private final Set<String> categories = Sets.newHashSet();
     private final Map<String, ConfigurablePropertyData> commandableProperties = Maps.newHashMap();
-    private final Multimap<Class<?>, Pair<IForgeRegistryEntry<?>, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<Class<?>, Collection<Pair<IForgeRegistryEntry<?>, Callable<?>>>>newIdentityHashMap(), new Supplier<List<Pair<IForgeRegistryEntry<?>, Callable<?>>>>() {
+    private final Multimap<Class<?>, Pair<ExtendedConfigForge<?, ?>, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<Class<?>, Collection<Pair<ExtendedConfigForge<?, ?>, Callable<?>>>>newIdentityHashMap(), new Supplier<List<Pair<ExtendedConfigForge<?, ?>, Callable<?>>>>() {
         // Compiler complains when this is replaced with a lambda :-(
         @Override
-        public List<Pair<IForgeRegistryEntry<?>, Callable<?>>> get() {
+        public List<Pair<ExtendedConfigForge<?, ?>, Callable<?>>> get() {
             return Lists.newArrayList();
         }
     });
@@ -130,7 +132,6 @@ public class ConfigHandler {
     public void loadModInit() {
         for (ExtendedConfig<?, ?> eConfig : this.configurables) {
             mod.log(Level.TRACE, "Registering " + eConfig.getNamedId());
-            eConfig.save();
             eConfig.getConfigurableType().getConfigurableTypeAction().onRegisterModInit(eConfig);
         }
     }
@@ -200,29 +201,18 @@ public class ConfigHandler {
      * Register the given entry to the given registry.
      * This method will safely wait until the correct registry event for registering the entry.
      * @param registry The registry.
-     * @param entry The entry.
+     * @param config The config.
      * @param callback A callback that will be called when the entry is registered.
      * @param <V> The entry type.
      */
-    public <V extends IForgeRegistryEntry<V>> void registerToRegistry(IForgeRegistry<? super V> registry,
-                                                                      IForgeRegistryEntry<V> entry,
-                                                                      @Nullable Callable<?> callback) {
+    public <V extends IForgeRegistryEntry<? super V>> void registerToRegistry(IForgeRegistry<? super V> registry,
+                                                                              ExtendedConfigForge<?, V> config,
+                                                                              @Nullable Callable<?> callback) {
         if (this.registryEventPassed) {
             throw new IllegalStateException(String.format("Tried registering %s after its registration event.",
-                    entry.getRegistryName()));
+                    config.getNamedId()));
         }
-        registryEntriesHolder.put(registry.getRegistrySuperType(), Pair.of(entry, callback));
-    }
-
-    /**
-     * Register the given entry to the given registry.
-     * This method will safely wait until the correct registry event for registering the entry.
-     * @param registry The registry.
-     * @param entry The entry.
-     * @param <V> The entry type.
-     */
-    public <V extends IForgeRegistryEntry<V>> void registerToRegistry(IForgeRegistry<V> registry, IForgeRegistryEntry<V> entry) {
-        registerToRegistry(registry, entry, null);
+        registryEntriesHolder.put(registry.getRegistrySuperType(), Pair.of(config, callback));
     }
 
     @SubscribeEvent
@@ -230,7 +220,12 @@ public class ConfigHandler {
         this.registryEventPassed = true;
         IForgeRegistry registry = event.getRegistry();
         registryEntriesHolder.get(registry.getRegistrySuperType()).forEach((pair) -> {
-            registry.register(pair.getLeft());
+            ExtendedConfigForge<?, ?> config = pair.getLeft();
+            IForgeRegistryEntry<?> instance = config.getInstance();
+            if (instance.getRegistryName() == null) {
+                instance.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
+            }
+            registry.register(instance);
             try {
                 if (pair.getRight() != null) {
                     pair.getRight().call();

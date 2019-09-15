@@ -9,19 +9,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.cyclops.cyclopscore.block.CyclopsBlock;
+import org.cyclops.cyclopscore.block.BlockTile;
 
 import javax.annotation.Nullable;
 
 /**
- * An extended {@link ItemBlockMetadata} that will add the NBT data that is stored inside
+ * An extended {@link BlockItem} that will add the NBT data that is stored inside
  * the item to the placed {@link TileEntity} for the blockState.
- * Subinstances of {@link CyclopsBlock} will perform the inverse operation, being
+ * Subinstances of {@link BlockTile} will perform the inverse operation, being
  * that broken blocks will save the NBT data inside the dropped {@link BlockItem}.
  * @author rubensworks
  *
  */
-public class ItemBlockNBT extends ItemBlockMetadata {
+public class ItemBlockNBT extends BlockItem {
     
     /**
      * Make a new instance.

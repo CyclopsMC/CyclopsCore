@@ -36,7 +36,7 @@ public class SendPlayerNbtPacket extends PacketCodec {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void actionClient(World world, PlayerEntity player) {
-		player.getPersistantData().put(PlayerEntity.PERSISTED_NBT_TAG, nbtData);
+		player.getPersistentData().put(PlayerEntity.PERSISTED_NBT_TAG, nbtData);
 	}
 
 	@Override
