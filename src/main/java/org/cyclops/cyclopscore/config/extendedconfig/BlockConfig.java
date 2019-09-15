@@ -16,6 +16,7 @@ import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurabletypeaction.BlockAction;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.item.ItemInformationProvider;
 
 import javax.annotation.Nullable;
 import java.util.function.BiFunction;
@@ -108,6 +109,17 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
         if(MinecraftHelpers.isClientSide() && getInstance() instanceof IDynamicModelElement &&
                 ((IDynamicModelElement) getInstance()).hasDynamicModel()) {
             BlockAction.handleDynamicBlockModel(this);
+        }
+    }
+
+    @Override
+    public void onForgeRegistered() {
+        super.onForgeRegistered();
+
+        // Add item to information provider
+        BlockItem item = getItemInstance();
+        if (item != null) {
+            ItemInformationProvider.registerItem(item);
         }
     }
 
