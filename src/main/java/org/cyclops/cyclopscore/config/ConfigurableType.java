@@ -58,6 +58,10 @@ public class ConfigurableType {
      * Particle type.
      */
     public static final ConfigurableType PARTICLE = new ConfigurableType(true, ParticleConfig.class, new ParticleAction(), "particle");
+    /**
+     * Tile entity type.
+     */
+    public static final ConfigurableType TILE_ENTITY = new ConfigurableType(true, TileEntityConfig.class, new TileEntityAction(), "tile_entity");
 
     /**
      * Dummy type, only used for configs that refer to nothing.

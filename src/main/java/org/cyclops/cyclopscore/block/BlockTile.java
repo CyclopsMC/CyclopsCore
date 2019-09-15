@@ -34,11 +34,11 @@ import java.util.function.Supplier;
  *
  * @author rubensworks
  */
-public class CyclopsBlock extends ContainerBlock {
+public class BlockTile extends ContainerBlock {
 
     private final Supplier<CyclopsTileEntity> tileEntitySupplier;
 
-    public CyclopsBlock(Properties properties, Supplier<CyclopsTileEntity> tileEntitySupplier) {
+    public BlockTile(Properties properties, Supplier<CyclopsTileEntity> tileEntitySupplier) {
         super(properties);
         this.tileEntitySupplier = tileEntitySupplier;
     }

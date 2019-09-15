@@ -10,12 +10,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.EntityConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class EntityAction<T extends Entity> extends ConfigurableTypeAction<EntityConfig<T>, EntityType<T>> {
-
-    @Override
-    public void onRegisterForge(EntityConfig<T> eConfig) {
-        register(eConfig.getInstance(), (EntityConfig) eConfig);
-
+public class EntityAction<T extends Entity> extends ConfigurableTypeActionForge<EntityConfig<T>, EntityType<T>> {
         // Register
         // TODO: is this still needed?
 //        EntityRegistry.registerModEntity(
@@ -28,6 +23,5 @@ public class EntityAction<T extends Entity> extends ConfigurableTypeAction<Entit
 //                eConfig.getUpdateFrequency(),
 //                eConfig.sendVelocityUpdates()
 //        );
-    }
 
 }

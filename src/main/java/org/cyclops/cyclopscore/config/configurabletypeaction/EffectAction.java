@@ -8,11 +8,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.EffectConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class EffectAction extends ConfigurableTypeAction<EffectConfig, Effect> {
-
-    @Override
-    public void onRegisterForge(EffectConfig eConfig) {
-        register(eConfig.getInstance(), eConfig);
-    }
+public class EffectAction extends ConfigurableTypeActionForge<EffectConfig, Effect> {
 
 }

@@ -96,19 +96,23 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
 		return this.getNamedId();
 	}
 
+	protected void initializeInstance() {
+        I instance = this.getElementConstructor().apply(this.downCast());
+        if (this.instance == null) {
+            this.instance = instance;
+        } else {
+            showDoubleInitError();
+        }
+    }
+
 	/**
      * Save this config inside the correct element and inside the implementation if itself.
      */
-    public void save() {
+    protected void save() {
         try {
             // Construct the instance
             if (this.getConfigurableType().hasUniqueInstance()) {
-                I instance = this.getElementConstructor().apply(this.downCast());
-                if(this.instance == null) {
-                    this.instance = instance;
-                } else {
-                    showDoubleInitError();
-                }
+                this.initializeInstance();
             }
         } catch (RuntimeException e) {
             mod.getLoggerHelper().getLogger().error(String.format("Registering %s caused an issue. ", getNamedId()), e);
@@ -143,6 +147,9 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
     public I getInstance() {
         if (!this.getConfigurableType().hasUniqueInstance()) {
             throw new IllegalStateException("Tried calling getInstance() on a config of type that has no unique instances.");
+        }
+        if (this.instance == null) {
+            this.save();
         }
         return this.instance;
     }

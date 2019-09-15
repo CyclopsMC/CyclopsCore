@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -15,10 +16,9 @@ import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurabletypeaction.BlockAction;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
-import org.cyclops.cyclopscore.item.ItemBlockMetadata;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -28,19 +28,37 @@ import java.util.function.Function;
  */
 public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block> implements IModelProviderConfig {
 
+    private final BiFunction<BlockConfig, Block, ? extends BlockItem> itemConstructor;
+
+    @Nullable
+    private BlockItem itemInstance;
+
     @OnlyIn(Dist.CLIENT)
     public ModelResourceLocation dynamicBlockVariantLocation;
     @OnlyIn(Dist.CLIENT)
     public ModelResourceLocation dynamicItemVariantLocation;
 
-    /**
-     * Make a new instance.
-     * @param mod     The mod instance.
-     * @param namedId The unique name ID for the configurable.
-     * @param elementConstructor The element constructor.
-     */
-    public BlockConfig(ModBase mod, String namedId, Function<BlockConfig, ? extends Block> elementConstructor) {
-        super(mod, namedId, elementConstructor);
+    public BlockConfig(ModBase mod, String namedId, Function<BlockConfig, ? extends Block> blockConstructor,
+                       @Nullable BiFunction<BlockConfig, Block, ? extends BlockItem> itemConstructor) {
+        super(mod, namedId, blockConstructor);
+        this.itemConstructor = itemConstructor;
+    }
+
+    protected static BiFunction<BlockConfig, Block, ? extends BlockItem> getDefaultItemConstructor(ModBase mod) {
+        return (eConfig, block) -> new BlockItem(block, new Item.Properties().group(mod.getDefaultItemGroup()));
+    }
+
+    public BiFunction<BlockConfig, Block, ? extends BlockItem> getItemConstructor() {
+        return itemConstructor;
+    }
+
+    @Nullable
+    public BlockItem getItemInstance() {
+        return itemInstance;
+    }
+
+    public void setItemInstance(@Nullable BlockItem itemInstance) {
+        this.itemInstance = itemInstance;
     }
 
     @Override
@@ -62,24 +80,6 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.BLOCK;
 	}
-    
-    /**
-     * If hasSubTypes() returns true this method can be overwritten to define another ItemBlock class
-     * @return the ItemBlock class to use for the target blockState.
-     */
-    public Class<? extends Item> getItemBlockClass() {
-        return ItemBlockMetadata.class;
-    }
-
-    /**
-     * Get the item corresponding to the block.
-     * Will return Items.AIR rather than null if there isn't one.
-     * @return The item.
-     */
-    @Nonnull
-    public Item getItemInstance() {
-        return Item.getItemFromBlock(getInstance());
-    }
 
     /**
      * Register default block and item models for this block.

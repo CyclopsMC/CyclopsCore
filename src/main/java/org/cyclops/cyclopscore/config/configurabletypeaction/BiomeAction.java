@@ -8,10 +8,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.BiomeConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class BiomeAction extends ConfigurableTypeAction<BiomeConfig, Biome> {
+public class BiomeAction extends ConfigurableTypeActionForge<BiomeConfig, Biome> {
 
-    @Override
-    public void onRegisterForge(BiomeConfig eConfig) {
-        register(eConfig.getInstance(), eConfig);
-    }
 }

@@ -8,11 +8,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.VillagerConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class VillagerAction extends ConfigurableTypeAction<VillagerConfig, VillagerProfession> {
-
-    @Override
-    public void onRegisterForge(VillagerConfig eConfig) {
-        register(eConfig.getInstance(), eConfig);
-    }
+public class VillagerAction extends ConfigurableTypeActionForge<VillagerConfig, VillagerProfession> {
 
 }

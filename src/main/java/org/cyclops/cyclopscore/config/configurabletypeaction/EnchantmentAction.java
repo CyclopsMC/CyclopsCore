@@ -8,11 +8,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.EnchantmentConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class EnchantmentAction extends ConfigurableTypeAction<EnchantmentConfig, Enchantment> {
-
-    @Override
-    public void onRegisterForge(EnchantmentConfig eConfig) {
-        register(eConfig.getInstance(), eConfig);
-    }
+public class EnchantmentAction extends ConfigurableTypeActionForge<EnchantmentConfig, Enchantment> {
 
 }
