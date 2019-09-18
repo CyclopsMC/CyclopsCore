@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
  * @param <I> The item instance.
  * @author rubensworks
  */
-public abstract class ItemInventoryContainer<I extends Item> extends InventoryContainer {
+public abstract class ItemInventoryContainer<I extends Item> extends ContainerExtended {
 	
 	protected I item;
 	protected int itemIndex;
