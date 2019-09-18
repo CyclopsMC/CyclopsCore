@@ -1,27 +1,26 @@
 package org.cyclops.cyclopscore.block;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.World;
+import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
+
+import java.util.function.Supplier;
 
 /**
- * Block with a gui.
+ * Base block with a tile entity and gui.
  *
- * Implement {@link #getContainer(BlockState, World, BlockPos)} to specify the gui.
- *
- * Optionally implement {@link #getOpenStat()} to specify a stat on gui opening.
- *
+ * @see BlockTile
+ * @see BlockGui
  * @author rubensworks
- *
  */
-public abstract class BlockGui extends Block implements IBlockGui {
+public class BlockTileGui extends BlockTile implements IBlockGui {
 
-    public BlockGui(Block.Properties properties) {
-        super(properties);
+    public BlockTileGui(Properties properties, Supplier<CyclopsTileEntity> tileEntitySupplier) {
+        super(properties, tileEntitySupplier);
     }
 
     @Override

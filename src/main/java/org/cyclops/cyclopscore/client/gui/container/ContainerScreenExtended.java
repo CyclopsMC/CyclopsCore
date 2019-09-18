@@ -13,7 +13,7 @@ import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.GuiHelpers;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
-import org.cyclops.cyclopscore.inventory.container.InventoryContainer;
+import org.cyclops.cyclopscore.inventory.container.ContainerExtended;
 import org.cyclops.cyclopscore.inventory.container.button.IContainerButtonAction;
 import org.cyclops.cyclopscore.network.packet.ButtonClickPacket;
 
@@ -25,7 +25,7 @@ import java.util.List;
  * An extended GUI container.
  * @author rubensworks
  */
-public abstract class ContainerScreenExtended<T extends InventoryContainer> extends ContainerScreen<T>
+public abstract class ContainerScreenExtended<T extends ContainerExtended> extends ContainerScreen<T>
         implements IValueNotifiable {
 
     protected T container;

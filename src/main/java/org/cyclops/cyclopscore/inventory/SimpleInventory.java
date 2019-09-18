@@ -8,7 +8,6 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import org.cyclops.commoncapabilities.api.capability.inventorystate.IInventoryState;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.Objects;
  * @author rubensworks
  *
  */
-public class SimpleInventory implements INBTInventory, IInventoryState {
+public class SimpleInventory implements INBTInventory {
 
     protected final ItemStack[] contents;
     private final int stackLimit;
@@ -250,8 +249,9 @@ public class SimpleInventory implements INBTInventory, IInventoryState {
         return new InvWrapper(this);
     }
 
-
-    @Override
+    /**
+     * @return The inventory state.
+     */
     public int getState() {
         return hash;
     }

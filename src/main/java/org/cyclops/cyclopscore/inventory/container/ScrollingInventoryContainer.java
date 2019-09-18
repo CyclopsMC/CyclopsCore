@@ -21,7 +21,7 @@ import java.util.regex.PatternSyntaxException;
  *      unfiltered: All items, pattern searching will happen in this list.
  * @author rubensworks
  */
-public abstract class ScrollingInventoryContainer<E> extends InventoryContainer {
+public abstract class ScrollingInventoryContainer<E> extends ContainerExtended {
 
     private final List<E> unfilteredItems;
     private List<Pair<Integer, E>> filteredItems; // Pair: original index - item

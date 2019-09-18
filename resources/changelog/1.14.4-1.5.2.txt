@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Improve guis and containers for tile entities
+
+Changes:
+* Remove unneeded config translations
+* Detach IInventoryState from SimpleInventory
+  This fixes compilation issues when commoncaps is not installed.
