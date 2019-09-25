@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 /**
  * Block gui component.
  *
- * Implement {@link #getContainer(BlockState, World, BlockPos)} to specify the gui.
+ * Pass {@link IBlockContainerProvider#get(BlockState, World, BlockPos)} ass a lambda to specify the gui.
  *
  * Optionally implement {@link #getOpenStat()} to specify a stat on gui opening.
  *
@@ -38,17 +38,14 @@ public interface IBlockGui {
         return null;
     }
 
-    @Nullable
-    public INamedContainerProvider getContainer(BlockState state, World worldIn, BlockPos pos);
-
-    public static boolean onBlockActivatedHook(IBlockGui block, BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+    public static boolean onBlockActivatedHook(IBlockGui block, IBlockContainerProvider blockContainerProvider, BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
         // Drop through if the player is sneaking
         if (player.isSneaking()) {
             return false;
         }
 
         if (!world.isRemote()) {
-            INamedContainerProvider containerProvider = block.getContainer(blockState, world, blockPos);
+            INamedContainerProvider containerProvider = blockContainerProvider.get(blockState, world, blockPos);
             if (containerProvider != null) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, containerProvider,
                         packetBuffer -> block.writeExtraGuiData(packetBuffer, world, player, blockPos, hand, rayTraceResult));
@@ -60,6 +57,11 @@ public interface IBlockGui {
         }
 
         return true;
+    }
+
+    public static interface IBlockContainerProvider {
+        @Nullable
+        public INamedContainerProvider get(BlockState blockState, World world, BlockPos blockPos);
     }
 
 }
