@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix onForgeRegistered not being called for item configs
+* Fix abstract method error when opening block guis
+  This only occurred in obfuscated environments.
+  Closes CyclopsMC/CapabilityProxy#19
+* Fix entity type registration failing

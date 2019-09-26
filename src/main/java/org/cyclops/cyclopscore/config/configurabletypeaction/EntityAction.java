@@ -11,17 +11,5 @@ import org.cyclops.cyclopscore.config.extendedconfig.EntityConfig;
  * @see ConfigurableTypeAction
  */
 public class EntityAction<T extends Entity> extends ConfigurableTypeActionForge<EntityConfig<T>, EntityType<T>> {
-        // Register
-        // TODO: is this still needed?
-//        EntityRegistry.registerModEntity(
-//                new ResourceLocation(eConfig.getMod().getModId(), eConfig.getSubUniqueName()),
-//                clazz,
-//                eConfig.getSubUniqueName(),
-//                Helpers.getNewId(eConfig.getMod(), Helpers.IDType.ENTITY),
-//                eConfig.getMod(),
-//                eConfig.getTrackingRange(),
-//                eConfig.getUpdateFrequency(),
-//                eConfig.sendVelocityUpdates()
-//        );
 
 }

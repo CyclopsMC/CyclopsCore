@@ -21,7 +21,7 @@ public class ConfigurableType {
     /**
      * Regular entity type.
      */
-    public static final ConfigurableType ENTITY = new ConfigurableType(false, EntityConfig.class, new EntityAction(), "entity");
+    public static final ConfigurableType ENTITY = new ConfigurableType(true, EntityConfig.class, new EntityAction(), "entity");
     /**
      * Fluid type.
      */

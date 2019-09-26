@@ -36,6 +36,7 @@ public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
         // Register item and set creative tab.
         register(eConfig, () -> {
             this.polish(eConfig);
+            eConfig.onForgeRegistered();
             return null;
         });
 

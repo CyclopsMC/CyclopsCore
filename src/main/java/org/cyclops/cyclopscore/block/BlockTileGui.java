@@ -28,7 +28,7 @@ public class BlockTileGui extends BlockTile implements IBlockGui {
         if (super.onBlockActivated(blockState, world, blockPos, player, hand, rayTraceResult)) {
             return true;
         }
-        return IBlockGui.onBlockActivatedHook(this, blockState, world, blockPos, player, hand, rayTraceResult);
+        return IBlockGui.onBlockActivatedHook(this, this::getContainer, blockState, world, blockPos, player, hand, rayTraceResult);
     }
 
 }
