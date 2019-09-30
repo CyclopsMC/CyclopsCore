@@ -20,10 +20,13 @@ import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * Registry for capabilities created by this mod.
@@ -42,6 +45,10 @@ public class CapabilityConstructorRegistry {
             capabilityConstructorsEntitySuper = Sets.newHashSet();
     private Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>>
             capabilityConstructorsItemSuper = Sets.newHashSet();
+    private final Map<Item, List<ICapabilityConstructor<?, ? extends Item, ? extends ItemStack>>>
+            capabilityConstructorsItemInstance = Maps.newIdentityHashMap();
+    private final List<Pair<Supplier<Item>, ICapabilityConstructor<?, ? extends Item, ? extends ItemStack>>>
+            capabilityConstructorsItemInstancePending = Lists.newArrayList();
 
     protected final ModBase mod;
     protected boolean baked = false;
@@ -182,6 +189,39 @@ public class CapabilityConstructorRegistry {
         }
     }
 
+    /**
+     * Register an item capability constructor for the given item instance.
+     * @param itemSupplier An item supplier.
+     * @param constructor The capability constructor.
+     * @param <T> The tile type.
+     */
+    public <T extends Item> void registerItem(Supplier<T> itemSupplier, ICapabilityConstructor<?, T, ItemStack> constructor) {
+        checkNotBaked();
+        capabilityConstructorsItemInstancePending.add((Pair) Pair.of(itemSupplier, constructor));
+
+        if (!registeredItemStackEventListener) {
+            registeredItemStackEventListener = true;
+            MinecraftForge.EVENT_BUS.register(new ItemStackEventListener());
+        }
+    }
+
+    protected void registerItemsEffective() {
+        for (Pair<Supplier<Item>, ICapabilityConstructor<?, ? extends Item, ? extends ItemStack>> entry : capabilityConstructorsItemInstancePending) {
+            registerItemEffective(entry.getLeft(), (ICapabilityConstructor) entry.getRight());
+        }
+        capabilityConstructorsItemInstancePending.clear();
+    }
+
+    protected <T extends Item> void registerItemEffective(Supplier<T> itemSupplier, ICapabilityConstructor<?, T, ItemStack> constructor) {
+        T item = Objects.requireNonNull(itemSupplier.get(), "Tried to register an item capability for a null item with constructor for " + constructor.getCapability().getName());
+        List<ICapabilityConstructor<?, ? extends Item, ? extends ItemStack>> constructors = capabilityConstructorsItemInstance.get(item);
+        if (constructors == null) {
+            constructors = Lists.newArrayList();
+            capabilityConstructorsItemInstance.put(item, constructors);
+        }
+        constructors.add(constructor);
+    }
+
     @SuppressWarnings("unchecked")
     protected <K, KE, H, HE> ICapabilityProvider createProvider(KE hostType, HE host, ICapabilityConstructor<?, K, H> capabilityConstructor) {
         return capabilityConstructor.createProvider((K) hostType, (H) host);
@@ -189,12 +229,14 @@ public class CapabilityConstructorRegistry {
 
     protected <T> void onLoad(Map<Class<? extends T>, List<ICapabilityConstructor<?, ? extends T, ? extends T>>> allConstructors,
                               Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors,
+                              @Nullable Map<? extends T, List<ICapabilityConstructor<?, ? extends T, ? extends T>>> allInstanceConstructors,
                               T object, AttachCapabilitiesEvent<?> event, Class<? extends T> baseClass) {
-        onLoad(allConstructors, allInheritableConstructors, object, object, event, baseClass);
+        onLoad(allConstructors, allInheritableConstructors, allInstanceConstructors, object, object, event, baseClass);
     }
 
     protected <K, V> void onLoad(Map<Class<? extends K>, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allConstructors,
                                  Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors,
+                                 @Nullable Map<? extends K, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allInstanceConstructors,
                                  K keyObject, V valueObject, AttachCapabilitiesEvent<?> event, Class<? extends K> baseClass) {
         boolean initialized = baked || MinecraftHelpers.isMinecraftInitialized();
         if (!baked && MinecraftHelpers.isMinecraftInitialized()) {
@@ -218,6 +260,18 @@ public class CapabilityConstructorRegistry {
                 addLoadedCapabilityProvider(event, keyObject, valueObject, constructorEntry.getRight());
             }
         }
+
+        // Instance constructors
+        if (allInstanceConstructors != null) {
+            Collection<ICapabilityConstructor<?, ? extends K, ? extends V>> instanceConstructors = allInstanceConstructors.get(keyObject);
+            if (instanceConstructors != null) {
+                for (ICapabilityConstructor<?, ? extends K, ? extends V> constructor : instanceConstructors) {
+                    if (initialized || constructor.getCapability() != null) {
+                        addLoadedCapabilityProvider(event, keyObject, valueObject, constructor);
+                    }
+                }
+            }
+        }
     }
 
     protected <K, V> void addLoadedCapabilityProvider(AttachCapabilitiesEvent<?> event, K keyObject, V valueObject, ICapabilityConstructor<?, ?, ?> constructor) {
@@ -233,7 +287,8 @@ public class CapabilityConstructorRegistry {
     }
 
     protected <K, V> void removeNullCapabilities(Map<Class<? extends K>, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allConstructors,
-                                                 Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors) {
+                                                 Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> allInheritableConstructors,
+                                                 @Nullable Map<? extends K, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allInstanceConstructors) {
         // Normal constructors
         Multimap<Class<? extends K>, ICapabilityConstructor<?, ? extends K, ? extends V>> toRemoveMap = HashMultimap.create();
         for (Class<? extends K> key : allConstructors.keySet()) {
@@ -259,6 +314,23 @@ public class CapabilityConstructorRegistry {
         for (Pair<Class<?>, ICapabilityConstructor<?, ?, ?>> toRemove : toRemoveInheritableList) {
             allInheritableConstructors.remove(toRemove);
         }
+
+        // Instance constructors
+        if (allInstanceConstructors != null) {
+            Multimap<K, ICapabilityConstructor<?, ? extends K, ? extends V>> toRemoveMapInstance = HashMultimap.create();
+            for (K key : allInstanceConstructors.keySet()) {
+                Collection<ICapabilityConstructor<?, ? extends K, ? extends V>> constructors = allInstanceConstructors.get(key);
+                for (ICapabilityConstructor<?, ? extends K, ? extends V> constructor : constructors) {
+                    if (constructor.getCapability() == null) {
+                        toRemoveMapInstance.put(key, constructor);
+                    }
+                }
+            }
+            for (Map.Entry<K, ICapabilityConstructor<?, ? extends K, ? extends V>> entry : toRemoveMapInstance.entries()) {
+                List<ICapabilityConstructor<?, ? extends K, ? extends V>> constructors = allInstanceConstructors.get(entry.getKey());
+                constructors.remove(entry.getValue());
+            }
+        }
     }
 
     /**
@@ -267,10 +339,12 @@ public class CapabilityConstructorRegistry {
     public void bake() {
         baked = true;
 
+        this.registerItemsEffective();
+
         // Remove capability constructors for capabilities that are not initialized.
-        removeNullCapabilities(capabilityConstructorsTile, capabilityConstructorsTileSuper);
-        removeNullCapabilities(capabilityConstructorsEntity, capabilityConstructorsEntitySuper);
-        removeNullCapabilities(capabilityConstructorsItem, capabilityConstructorsItemSuper);
+        removeNullCapabilities(capabilityConstructorsTile, capabilityConstructorsTileSuper, null);
+        removeNullCapabilities(capabilityConstructorsEntity, capabilityConstructorsEntitySuper, null);
+        removeNullCapabilities(capabilityConstructorsItem, capabilityConstructorsItemSuper, capabilityConstructorsItemInstance);
 
         // Bake all collections
         capabilityConstructorsTileSuper = ImmutableList.copyOf(capabilityConstructorsTileSuper);
@@ -282,14 +356,14 @@ public class CapabilityConstructorRegistry {
     public class TileEventListener {
         @SubscribeEvent
         public void onTileLoad(AttachCapabilitiesEvent<TileEntity> event) {
-            onLoad(capabilityConstructorsTile, capabilityConstructorsTileSuper, event.getObject(), event, TileEntity.class);
+            onLoad(capabilityConstructorsTile, capabilityConstructorsTileSuper, null, event.getObject(), event, TileEntity.class);
         }
     }
 
     public class EntityEventListener {
         @SubscribeEvent
         public void onEntityLoad(AttachCapabilitiesEvent<Entity> event) {
-            onLoad(capabilityConstructorsEntity, capabilityConstructorsEntitySuper, event.getObject(), event, Entity.class);
+            onLoad(capabilityConstructorsEntity, capabilityConstructorsEntitySuper, null, event.getObject(), event, Entity.class);
         }
     }
 
@@ -297,7 +371,7 @@ public class CapabilityConstructorRegistry {
         @SubscribeEvent
         public void onItemStackLoad(AttachCapabilitiesEvent<ItemStack> event) {
             if (!event.getObject().isEmpty()) {
-                onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, event.getObject().getItem(), event.getObject(), event, Item.class);
+                onLoad(capabilityConstructorsItem, capabilityConstructorsItemSuper, capabilityConstructorsItemInstance, event.getObject().getItem(), event.getObject(), event, Item.class);
             }
         }
     }
