@@ -107,9 +107,7 @@ public abstract class ModBase<T extends ModBase> {
 
         // Initialize config handler
         this.onConfigsRegister(getConfigHandler());
-        getConfigHandler().initialize(Lists.newArrayList(
-                getModCompatLoader()
-        ));
+        getConfigHandler().initialize(Lists.newArrayList());
         getConfigHandler().loadModInit();
 
         loadModCompats(getModCompatLoader());

@@ -1,17 +1,12 @@
 package org.cyclops.cyclopscore.modcompat;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.config.ModConfig;
 import org.cyclops.cyclopscore.Reference;
-import org.cyclops.cyclopscore.config.IConfigInitializer;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -19,11 +14,9 @@ import java.util.Set;
  * @author rubensworks
  *
  */
-public class ModCompatLoader implements IConfigInitializer {
+public class ModCompatLoader {
 
     private static final String CONFIG_CATEGORY = "mod compat";
-
-    private final Map<String, ForgeConfigSpec.ConfigValue<Boolean>> propertiesEnabled = Maps.newIdentityHashMap();
 
     protected final ModBase mod;
     protected final List<IExternalCompat> compats = Lists.newLinkedList();
@@ -66,35 +59,15 @@ public class ModCompatLoader implements IConfigInitializer {
      * @return If it should be loaded.
      */
     public boolean shouldLoadModCompat(IModCompat modCompat) {
-    	return isModLoaded(modCompat) && isEnabled(modCompat) && isNotCrashed(modCompat.getModId());
+    	return isModLoaded(modCompat) && isNotCrashed(modCompat.getModId());
     }
     
     private boolean isModLoaded(IModCompat modCompat) {
         return Reference.MOD_VANILLA.equals(modCompat.getModId()) || ModList.get().isLoaded(modCompat.getModId());
-    }
-    
-    private boolean isEnabled(IExternalCompat compat) {
-        ForgeConfigSpec.ConfigValue<Boolean> property = propertiesEnabled.get(compat.getId());
-        return property != null && property.get();
     }
 
     private boolean isNotCrashed(String id) {
         return !crashedcompats.contains(id);
     }
 
-    @Override
-    public void initializeConfig(Map<ModConfig.Type, ForgeConfigSpec.Builder> configBuilders) {
-        ForgeConfigSpec.Builder configBuilder = configBuilders.get(ModConfig.Type.SERVER);
-        if (configBuilder == null) {
-            configBuilder = new ForgeConfigSpec.Builder();
-            configBuilders.put(ModConfig.Type.SERVER, configBuilder);
-        }
-        for (IExternalCompat compat : compats) {
-            ForgeConfigSpec.ConfigValue<Boolean> configProperty = configBuilder
-                    .comment(compat.getComment())
-                    .translation("config." + mod.getModId() + "." + compat.getId().replaceAll("\\s", ""))
-                    .define(compat.getId(), compat.isEnabledDefault());
-            propertiesEnabled.put(compat.getId(), configProperty);
-        }
-    }
 }
