@@ -7,7 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
+import net.minecraft.world.IWorldReader;
 import org.cyclops.cyclopscore.algorithm.Dimension;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
@@ -84,13 +84,13 @@ public class CubeDetector {
 		return listeners;
 	}
 
-	protected void notifyListeners(World world, BlockPos location, Vec3i size, boolean valid, BlockPos originCorner) {
+	protected void notifyListeners(IWorldReader world, BlockPos location, Vec3i size, boolean valid, BlockPos originCorner) {
 		for(IDetectionListener listener : getListeners()) {
 			listener.onDetect(world, location, size, valid, originCorner);
 		}
 	}
 	
-	protected L10NHelpers.UnlocalizedString isValidLocation(World world, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
+	protected L10NHelpers.UnlocalizedString isValidLocation(IWorldReader world, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
 		BlockState blockState = world.getBlockState(location);
 		Block block = blockState.getBlock();
 		boolean contains = location.equals(excludeLocation) || blockInfo.containsKey(block);
@@ -102,11 +102,11 @@ public class CubeDetector {
 				LocationHelpers.toCompactString(location), new L10NHelpers.UnlocalizedString(block.getTranslationKey() + ".name"));
 	}
 
-    protected L10NHelpers.UnlocalizedString isValidLocation(World world, BlockPos location, BlockPos excludeLocation) {
+    protected L10NHelpers.UnlocalizedString isValidLocation(IWorldReader world, BlockPos location, BlockPos excludeLocation) {
         return isValidLocation(world, location, null, excludeLocation);
     }
 	
-	protected boolean isAir(World world, BlockPos location) {
+	protected boolean isAir(IWorldReader world, BlockPos location) {
 		return world.isAirBlock(location);
 	}
 	
@@ -119,7 +119,7 @@ public class CubeDetector {
      * @param excludeLocation The location of the block that is being removed, used for invalidating, null for validating.
 	 * @return The found border.
 	 */
-	protected BlockPos navigateToBorder(World world, BlockPos startLocation, int dimension, int direction, BlockPos excludeLocation) {
+	protected BlockPos navigateToBorder(IWorldReader world, BlockPos startLocation, int dimension, int direction, BlockPos excludeLocation) {
 		BlockPos loopLocation = LocationHelpers.copyLocation(startLocation);
 		
 		// Loop until we find a non-valid location.
@@ -143,7 +143,7 @@ public class CubeDetector {
 	 * otherwise negative.
 	 * @return The found border.
 	 */
-	protected BlockPos navigateToBorder(World world, BlockPos startLocation, int dimension, boolean max, BlockPos excludeLocation) {
+	protected BlockPos navigateToBorder(IWorldReader world, BlockPos startLocation, int dimension, boolean max, BlockPos excludeLocation) {
 		return navigateToBorder(world, startLocation, dimension, max ? 1 : -1, excludeLocation);
 	}
 	
@@ -157,7 +157,7 @@ public class CubeDetector {
      * @param excludeLocation The location of the block that is being removed, used for invalidating, null for validating.
 	 * @return The corner location.
 	 */
-	protected BlockPos navigateToCorner(World world, BlockPos startLocation, int[] dimensions, boolean max, BlockPos excludeLocation) {
+	protected BlockPos navigateToCorner(IWorldReader world, BlockPos startLocation, int[] dimensions, boolean max, BlockPos excludeLocation) {
 		BlockPos navigateLocation = LocationHelpers.copyLocation(startLocation);
 		for(int dimension : dimensions) {
 			navigateLocation = navigateToBorder(world, navigateLocation, dimension, max, excludeLocation);
@@ -165,7 +165,7 @@ public class CubeDetector {
 		return navigateLocation;
 	}
 	
-	protected boolean isEdge(World world, int[][] dimensionEgdes, BlockPos location) {
+	protected boolean isEdge(IWorldReader world, int[][] dimensionEgdes, BlockPos location) {
         int[] c = LocationHelpers.toArray(location);
 		for (int i = 0; i < dimensionEgdes.length; i++) {
 			for (int j = 0; j < dimensionEgdes[i].length; j++) {
@@ -187,7 +187,7 @@ public class CubeDetector {
      * @param excludeLocation The location of the block that is being removed, used for invalidating, null for validating.
 	 * @return If the location was valid.
 	 */
-	protected L10NHelpers.UnlocalizedString validateLocationInStructure(World world, int[][] dimensionEgdes, BlockPos location,
+	protected L10NHelpers.UnlocalizedString validateLocationInStructure(IWorldReader world, int[][] dimensionEgdes, BlockPos location,
                                                   IValidationAction action, BlockPos excludeLocation) {
 		return isValidLocation(world, location, action, excludeLocation);
 	}
@@ -199,7 +199,7 @@ public class CubeDetector {
 	 * @param locationAction The runnable that will be called for each location in the structure.
 	 * @return If the structure is valid for the given edges.
 	 */
-	protected boolean coordinateRecursion(World world, int[][] dimensionEgdes, BlockPosAction locationAction) {
+	protected boolean coordinateRecursion(IWorldReader world, int[][] dimensionEgdes, BlockPosAction locationAction) {
 		return coordinateRecursion(world, dimensionEgdes, new int[]{}, locationAction);
 	}
 	
@@ -213,7 +213,7 @@ public class CubeDetector {
 	 * @param locationAction The runnable that will be called for each location in the structure.
 	 * @return If the structure is valid for the given edges.
 	 */
-	protected boolean coordinateRecursion(World world, int[][] dimensionEgdes, int[] accumulatedCoordinates,
+	protected boolean coordinateRecursion(IWorldReader world, int[][] dimensionEgdes, int[] accumulatedCoordinates,
                                           BlockPosAction locationAction) {
 		if(accumulatedCoordinates.length == dimensionEgdes.length) { // Leaf of recursion
 			BlockPos location = LocationHelpers.fromArray(accumulatedCoordinates);
@@ -241,7 +241,7 @@ public class CubeDetector {
 	 * @param location The location.
 	 * @return Null if the size is valid, otherwise the error message.
 	 */
-	protected L10NHelpers.UnlocalizedString validateAllowedBlockConditions(World world, BlockPos location) {
+	protected L10NHelpers.UnlocalizedString validateAllowedBlockConditions(IWorldReader world, BlockPos location) {
 		Block block = world.getBlockState(location).getBlock();
 		if(blockInfo.containsKey(block)) {
 			Integer occurences = blockOccurences.get(block);
@@ -273,7 +273,7 @@ public class CubeDetector {
      * @param excludeLocation The location of the block that is being removed, used for invalidating, null for validating.
 	 * @return Null the structure is valid for the given edges, the error otherwise.
 	 */
-	protected L10NHelpers.UnlocalizedString validateDimensionEdges(World world, final int[][] dimensionEgdes,
+	protected L10NHelpers.UnlocalizedString validateDimensionEdges(IWorldReader world, final int[][] dimensionEgdes,
 			final boolean valid, final IValidationAction action, final BlockPos excludeLocation) {
 		// Init the blockState occurences counter on zero for all blocks.
 		blockOccurences.clear();
@@ -286,7 +286,7 @@ public class CubeDetector {
 		boolean minimumValid = coordinateRecursion(world, dimensionEgdes, new BlockPosAction() {
 
 			@Override
-			public boolean run(World world, BlockPos location) {
+			public boolean run(IWorldReader world, BlockPos location) {
 				// Only check the allowed blockState conditions if in validation mode,
 				// normally this 'valid' check is not needed, but bugs are always possible...
 				if(!valid) return true;
@@ -314,12 +314,12 @@ public class CubeDetector {
 		return minimumValid ? null : (errors.isEmpty() ? null : errors.get(0));
 	}
 
-	protected void postValidate(World world, final Vec3i size, int[][] dimensionEgdes,
+	protected void postValidate(IWorldReader world, final Vec3i size, int[][] dimensionEgdes,
 			final boolean valid, final BlockPos originCorner, final BlockPos excludeLocation) {
 		coordinateRecursion(world, dimensionEgdes, new BlockPosAction() {
 
 			@Override
-			public boolean run(World world, BlockPos location) {
+			public boolean run(IWorldReader world, BlockPos location) {
 				notifyListeners(world, location, size, valid, originCorner);
 				return true;
 			}
@@ -338,7 +338,7 @@ public class CubeDetector {
      * here starts counting from 0, so a 1x1x1 structure (=1 blockState) will return a
      * size of 0 in each dimension.
      */
-    public DetectionResult detect(World world, BlockPos startLocation, BlockPos excludeLocation, boolean changeState) {
+    public DetectionResult detect(IWorldReader world, BlockPos startLocation, BlockPos excludeLocation, boolean changeState) {
         return detect(world, startLocation, excludeLocation, null, changeState);
     }
 	
@@ -354,7 +354,7 @@ public class CubeDetector {
 	 * here starts counting from 0, so a 1x1x1 structure (=1 blockState) will return a
 	 * size of 0 in each dimension.
 	 */
-	public DetectionResult detect(World world, BlockPos startLocation, BlockPos excludeLocation, IValidationAction action, boolean changeState) {
+	public DetectionResult detect(IWorldReader world, BlockPos startLocation, BlockPos excludeLocation, IValidationAction action, boolean changeState) {
 		// Next to the origin, we only need one corner for each dimension,
 		// we can easily derive if the structure is valid with these 4 corners.
 		L10NHelpers.UnlocalizedString error;
@@ -435,20 +435,20 @@ public class CubeDetector {
 		 * @param valid True if the structure should be validated, false if it should be invalidated.
 		 * @param originCorner The origin corner block of the structure.
 		 */
-		public void onDetect(World world, BlockPos location, Vec3i size, boolean valid, BlockPos originCorner);
+		public void onDetect(IWorldReader world, BlockPos location, Vec3i size, boolean valid, BlockPos originCorner);
 		
 	}
 	
 	protected interface BlockPosAction {
 		
 		/**
-		 * An action for {@link CubeDetector#coordinateRecursion(World, int[][], BlockPosAction)}.
+		 * An action for {@link CubeDetector#coordinateRecursion(IWorldReader, int[][], BlockPosAction)}.
 		 * @param world The world.
 		 * @param location The location.
 		 * @return If the recursion should continue. If one is false, the full
-		 * {@link CubeDetector#coordinateRecursion(World, int[][], BlockPosAction)} will return false.
+		 * {@link CubeDetector#coordinateRecursion(IWorldReader, int[][], BlockPosAction)} will return false.
 		 */
-		public boolean run(World world, BlockPos location);
+		public boolean run(IWorldReader world, BlockPos location);
 		
 	}
 

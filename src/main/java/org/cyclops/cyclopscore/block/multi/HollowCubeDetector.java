@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.block.multi;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
+import net.minecraft.world.IWorldReader;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
@@ -25,11 +25,11 @@ public class HollowCubeDetector extends CubeDetector {
 	}
 	
 	@Override
-	protected void postValidate(World world, final Vec3i size, final int[][] dimensionEgdes, final boolean valid, final BlockPos originCorner, final BlockPos excludeLocation) {
+	protected void postValidate(IWorldReader world, final Vec3i size, final int[][] dimensionEgdes, final boolean valid, final BlockPos originCorner, final BlockPos excludeLocation) {
 		coordinateRecursion(world, dimensionEgdes, new BlockPosAction() {
 
 			@Override
-			public boolean run(World world, BlockPos location) {
+			public boolean run(IWorldReader world, BlockPos location) {
 				if(isEdge(world, dimensionEgdes, location) && isValidLocation(world, location, excludeLocation) == null) {
 					notifyListeners(world, location, size, valid, originCorner);
 				}
@@ -40,7 +40,7 @@ public class HollowCubeDetector extends CubeDetector {
 	}
 	
 	@Override
-	protected L10NHelpers.UnlocalizedString validateLocationInStructure(World world, int[][] dimensionEgdes, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
+	protected L10NHelpers.UnlocalizedString validateLocationInStructure(IWorldReader world, int[][] dimensionEgdes, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
 		// Validate edge or air.
 		L10NHelpers.UnlocalizedString error;
 		if (isEdge(world, dimensionEgdes, location)) {
