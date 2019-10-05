@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.inventory.container;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ContainerType;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -21,7 +22,7 @@ import java.util.regex.PatternSyntaxException;
  *      unfiltered: All items, pattern searching will happen in this list.
  * @author rubensworks
  */
-public abstract class ScrollingInventoryContainer<E> extends ContainerExtended {
+public abstract class ScrollingInventoryContainer<E> extends InventoryContainer {
 
     private final List<E> unfilteredItems;
     private List<Pair<Integer, E>> filteredItems; // Pair: original index - item
@@ -30,17 +31,10 @@ public abstract class ScrollingInventoryContainer<E> extends ContainerExtended {
     private String lastSearchString = "";
     private int firstElement = 0;
 
-    /**
-     * Make a new instance.
-     * @param type The container type.
-     * @param id The container id.
-     * @param inventory   The player inventory.
-     * @param items       All items to potentially show in this list.
-     * @param filterer    The predicate that is used to filter on the given items.
-     */
     @SuppressWarnings("unchecked")
-    public ScrollingInventoryContainer(@Nullable ContainerType<?> type, int id, PlayerInventory inventory, List<E> items, IItemPredicate<E> filterer) {
-        super(type, id, inventory);
+    public ScrollingInventoryContainer(@Nullable ContainerType<?> type, int id, PlayerInventory playerInventory,
+                                       IInventory inventory, List<E> items, IItemPredicate<E> filterer) {
+        super(type, id, playerInventory, inventory);
         this.unfilteredItems = Lists.newArrayList(items);
         this.filteredItems = Lists.newLinkedList();
         this.visibleItems = (List<E>) Arrays.asList(new Object[getPageSize() * getColumns()]);
