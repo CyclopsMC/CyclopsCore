@@ -118,7 +118,7 @@ public class WidgetScrollBar extends Widget {
         return getTotalRows() - getVisibleRows() + 1;
     }
 
-    protected void scrollRelative(double step) {
+    public void scrollRelative(double step) {
         float scroll = (float)(this.currentScroll - step / getScrollStep());
         scroll = MathHelper.clamp(scroll, 0.0F, 1.0F);
         scrollTo(scroll);
