@@ -58,10 +58,10 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
         }
 
         if (scrollbar == null) {
-            this.scrollbar = new WidgetScrollBar(getScrollX(), getScrollY(), getScrollHeight(),
-                    L10NHelpers.localize("gui.cyclopscore.scrollbar"), null,
+            this.scrollbar = new WidgetScrollBar(this.guiLeft + getScrollX(), this.guiTop + getScrollY(), getScrollHeight(),
+                    L10NHelpers.localize("gui.cyclopscore.scrollbar"), getContainer(),
                     getContainer().getPageSize());
-            this.scrollbar.setVisibleRows(getContainer().getFilteredItemCount() / getContainer().getColumns());
+            this.scrollbar.setTotalRows(getContainer().getFilteredItemCount() / getContainer().getColumns());
         }
         this.children.add(this.scrollbar);
 
@@ -69,7 +69,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
         if(resetFilter) {
             getContainer().updateFilter("");
         }
-        getContainer().scrollTo(this.scrollbar.getCurrentScroll());
+        getScrollbar().scrollTo(this.scrollbar.getCurrentScroll());
     }
 
     @Override
@@ -120,6 +120,15 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
         super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
         if(isSearchEnabled()) this.searchField.render(mouseX, mouseY, partialTicks);
         this.scrollbar.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double mouseXPrev, double mouseYPrev) {
+        if (this.getFocused() != null && this.isDragging() && mouseButton == 0
+                && this.getFocused().mouseDragged(mouseX, mouseY, mouseButton, mouseXPrev, mouseYPrev)) {
+            return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, mouseButton, mouseXPrev, mouseYPrev);
     }
 
     protected void updateSearch(String searchString) {

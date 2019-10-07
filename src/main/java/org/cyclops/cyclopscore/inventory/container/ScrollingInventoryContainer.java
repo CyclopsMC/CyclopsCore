@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ContainerType;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cyclops.cyclopscore.client.gui.component.WidgetScrollBar;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ import java.util.regex.PatternSyntaxException;
  *      unfiltered: All items, pattern searching will happen in this list.
  * @author rubensworks
  */
-public abstract class ScrollingInventoryContainer<E> extends InventoryContainer {
+public abstract class ScrollingInventoryContainer<E> extends InventoryContainer implements WidgetScrollBar.IScrollCallback {
 
     private final List<E> unfilteredItems;
     private List<Pair<Integer, E>> filteredItems; // Pair: original index - item
@@ -78,15 +79,9 @@ public abstract class ScrollingInventoryContainer<E> extends InventoryContainer 
         return getColumns();
     }
 
-    /**
-     * Scroll to the given relative position.
-     * @param scroll A value between 0 and 1.
-     */
-    public void scrollTo(float scroll) {
-        onScroll();
-        int elements = (getFilteredItemCount() + getColumns() - 1) - getPageSize() * getColumns();
-        firstElement = (int)((double)(scroll * (float)elements) + 0.5D);
-        firstElement -= firstElement % getScrollStepSize();
+    @Override
+    public void onScroll(int firstRow) {
+        firstElement = firstRow * getScrollStepSize();
         if(firstElement < 0) firstElement = 0;
         for(int i = 0; i < getPageSize(); i++) {
             for(int j = 0; j < getColumns(); j++) {
@@ -99,10 +94,6 @@ public abstract class ScrollingInventoryContainer<E> extends InventoryContainer 
                 }
             }
         }
-    }
-
-    protected void onScroll() {
-
     }
 
     /**
@@ -156,7 +147,7 @@ public abstract class ScrollingInventoryContainer<E> extends InventoryContainer 
             pattern = Pattern.compile(".*");
         }
         this.filteredItems = filter(getUnfilteredItems(), itemSearchPredicate, pattern);
-        scrollTo(0); // Reset scroll, will also refresh items on-screen.
+        onScroll(0); // Reset scroll, will also refresh items on-screen.
     }
 
     protected List<Pair<Integer, E>> filter(List<E> input, IItemPredicate<E> predicate, Pattern pattern) {
