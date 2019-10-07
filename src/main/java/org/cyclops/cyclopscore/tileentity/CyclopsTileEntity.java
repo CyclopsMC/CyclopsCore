@@ -16,6 +16,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
 import org.cyclops.cyclopscore.helper.DirectionHelpers;
+import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
 import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
 
@@ -33,7 +34,7 @@ import java.util.Map;
  * @author rubensworks
  *
  */
-public class CyclopsTileEntity extends TileEntity implements INBTProvider {
+public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirtyMarkListener {
 
     private static final int UPDATE_BACKOFF_TICKS = 1;
 
@@ -274,6 +275,11 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider {
 
     protected Map<Pair<Capability<?>, Direction>, Object> getStoredCapabilities() {
         return capabilities;
+    }
+
+    @Override
+    public void onDirty() {
+        this.markDirty();
     }
 
     /**
