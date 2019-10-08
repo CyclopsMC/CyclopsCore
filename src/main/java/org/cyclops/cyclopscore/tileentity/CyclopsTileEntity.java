@@ -44,7 +44,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
     private boolean shouldSendUpdate = false;
     private int sendUpdateBackoff = 0;
     private final boolean ticking;
-    private Map<Pair<Capability<?>, Direction>, Object> capabilities = Maps.newHashMap();
+    private Map<Pair<Capability<?>, Direction>, LazyOptional<?>> capabilities = Maps.newHashMap();
 
     public CyclopsTileEntity(TileEntityType<?> type) {
         super(type);
@@ -237,17 +237,21 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
         if (capabilities != null) {
-            Object value = capabilities.get(Pair.<Capability<?>,
+            LazyOptional<?> value = capabilities.get(Pair.<Capability<?>,
                     Direction>of(capability, transformFacingForRotation(facing)));
             if (value == null && facing != null) {
                 value = capabilities.get(Pair.<Capability<?>, Direction>of(capability, null));
             }
             if (value != null) {
-                Object finalValue = value;
-                return LazyOptional.of(() -> finalValue).cast();
+                return value.cast();
             }
         }
         return super.getCapability(capability, facing);
+    }
+
+    @Override
+    protected void invalidateCaps() {
+        super.invalidateCaps();
     }
 
     /**
@@ -257,7 +261,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
      * @param value The capability.
      * @param <T> The capability type.
      */
-    public <T> void addCapabilityInternal(Capability<T> capability, T value) { // TODO: make something to auto-serialize caps
+    public <T> void addCapabilityInternal(Capability<T> capability, LazyOptional<T> value) { // TODO: make something to auto-serialize caps
         capabilities.put(Pair.<Capability<?>, Direction>of(capability, null), value);
     }
 
@@ -269,11 +273,11 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
      * @param value The capability.
      * @param <T> The capability type.
      */
-    public <T> void addCapabilitySided(Capability<T> capability, Direction facing, T value) {
+    public <T> void addCapabilitySided(Capability<T> capability, Direction facing, LazyOptional<T> value) {
         capabilities.put(Pair.<Capability<?>, Direction>of(capability, facing), value);
     }
 
-    protected Map<Pair<Capability<?>, Direction>, Object> getStoredCapabilities() {
+    protected Map<Pair<Capability<?>, Direction>, LazyOptional<?>> getStoredCapabilities() {
         return capabilities;
     }
 
