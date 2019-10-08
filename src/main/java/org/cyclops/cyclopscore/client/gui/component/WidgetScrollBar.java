@@ -115,7 +115,7 @@ public class WidgetScrollBar extends Widget {
     }
 
     protected int getScrollStep() {
-        return getTotalRows() - getVisibleRows() + 1;
+        return getTotalRows() - getVisibleRows();
     }
 
     public void scrollRelative(double step) {
