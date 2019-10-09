@@ -62,7 +62,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
 	/**
      * Generate the list of ConfigProperties by checking all the fields with the ConfigurableProperty
      * annotation.
-     * 
+     *
      * @throws IllegalArgumentException
      * @throws IllegalAccessException
      */
@@ -90,6 +90,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
     }
     
     /**
+     * @param annotation The annotation to define the prefix for.
      * @return The prefix that will be used inside the config file for {@link ConfigurableProperty}'s.
      */
     protected String getConfigPropertyPrefix(ConfigurableProperty annotation) {
