@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import lombok.Getter;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
@@ -10,8 +10,8 @@ import org.cyclops.cyclopscore.config.CyclopsCoreConfigException;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -40,7 +40,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
     /**
      * A list of {@link ConfigurablePropertyData} that can contain additional settings for this configurable.
      */
-    public List<ConfigurablePropertyData<?>> configProperties = Lists.newLinkedList();
+    public Map<String, ConfigurablePropertyData<?>> configProperties = Maps.newHashMap();
 
     /**
      * Create a new config
@@ -73,7 +73,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
                 ConfigurablePropertyData<?> configProperty = new ConfigurablePropertyData<>(
                         getMod(),
                         annotation.category(),
-                        getConfigPropertyPrefix() + "." + field.getName(),
+                        getConfigPropertyPrefix(annotation) + "." + field.getName(),
                         field.get(null),
                         annotation.comment(),
                         annotation.isCommandable(),
@@ -84,7 +84,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
                         annotation.showInGui(),
                         annotation.minimalValue(),
                         annotation.maximalValue());
-                configProperties.add(configProperty);
+                configProperties.put(configProperty.getName(), configProperty);
             }
         }
     }
@@ -92,8 +92,8 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
     /**
      * @return The prefix that will be used inside the config file for {@link ConfigurableProperty}'s.
      */
-    protected String getConfigPropertyPrefix() {
-		return this.getNamedId();
+    protected String getConfigPropertyPrefix(ConfigurableProperty annotation) {
+		return annotation.namedId().isEmpty() ? this.getNamedId() : annotation.namedId();
 	}
 
 	protected void initializeInstance() {

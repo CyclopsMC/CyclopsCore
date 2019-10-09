@@ -17,6 +17,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface ConfigurableProperty {
     /**
+     * Override the named id if multiple instances of a given config class exists.
+     * @return A custom named id to place this property under.
+     *         If empty, then the named id of the hosting config will be used.
+     */
+    String namedId() default "";
+    /**
      * The category of the field.
      * @return The category.
      */

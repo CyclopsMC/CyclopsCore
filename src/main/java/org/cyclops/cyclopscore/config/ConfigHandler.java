@@ -29,7 +29,6 @@ import java.util.EnumMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -78,7 +77,7 @@ public class ConfigHandler {
             addCategory(eConfig.getConfigurableType().getCategory());
 
             // Save additional properties
-            for (ConfigurablePropertyData configProperty : eConfig.configProperties) {
+            for (ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
                 ForgeConfigSpec.Builder configBuilderProperty = configBuilders.get(configProperty.getConfigLocation());
                 if (configBuilderProperty == null) {
                     configBuilderProperty = new ForgeConfigSpec.Builder();
@@ -183,7 +182,7 @@ public class ConfigHandler {
 	public void syncProcessedConfigs() {
     	for(ExtendedConfig<?, ?> eConfig : this.configurables) {
     		// Re-save additional properties
-            for(ConfigurablePropertyData configProperty : eConfig.configProperties) {
+            for(ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
                 configProperty.saveToField();
             }
     	}
