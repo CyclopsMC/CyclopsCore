@@ -21,11 +21,11 @@ public class SerializableCapabilityProvider<T> extends DefaultCapabilityProvider
 
     @Override
     public INBT serializeNBT() {
-        return this.getCapabilityType().writeNBT(capability, null);
+        return this.getCapabilityType().writeNBT(capability.orElse(null), null);
     }
 
     @Override
     public void deserializeNBT(INBT nbt) {
-        this.getCapabilityType().readNBT(capability, null, nbt);
+        this.getCapabilityType().readNBT(capability.orElse(null), null, nbt);
     }
 }

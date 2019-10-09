@@ -14,11 +14,15 @@ import java.util.Objects;
 public class DefaultCapabilityProvider<T> implements ICapabilityProvider {
 
     protected final ICapabilityTypeGetter<T> capabilityGetter;
-    protected final T capability;
+    protected final LazyOptional<T> capability;
 
-    public DefaultCapabilityProvider(ICapabilityTypeGetter<T> capabilityGetter, T capability) {
+    public DefaultCapabilityProvider(ICapabilityTypeGetter<T> capabilityGetter, LazyOptional<T> capability) {
         this.capabilityGetter = Objects.requireNonNull(capabilityGetter);
         this.capability = Objects.requireNonNull(capability);
+    }
+
+    public DefaultCapabilityProvider(ICapabilityTypeGetter<T> capabilityGetter, T capability) {
+        this(capabilityGetter, LazyOptional.of(() -> Objects.requireNonNull(capability)));
     }
 
     @Deprecated
@@ -26,7 +30,7 @@ public class DefaultCapabilityProvider<T> implements ICapabilityProvider {
         Objects.requireNonNull(capabilityType,
                 "The given capability can not be null, this is probably being called too early during init");
         this.capabilityGetter = () -> capabilityType;
-        this.capability = Objects.requireNonNull(capability);
+        this.capability = LazyOptional.of(() -> Objects.requireNonNull(capability));
     }
 
     public Capability<T> getCapabilityType() {
@@ -36,7 +40,7 @@ public class DefaultCapabilityProvider<T> implements ICapabilityProvider {
     @Override
     public <T2> LazyOptional<T2> getCapability(Capability<T2> capability, Direction facing) {
         if(this.getCapabilityType() == Objects.requireNonNull(capability, "A given capability is null")) {
-            return LazyOptional.of(() -> this.capability).cast();
+            return this.capability.cast();
         }
         return LazyOptional.empty();
     }
