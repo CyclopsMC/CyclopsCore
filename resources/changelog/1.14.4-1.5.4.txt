@@ -1,0 +1,23 @@
+As always, don't forget to backup your world before updating!
+
+Lib Additions:
+* Add LazyOptional-based DefaultCapabilityProvider constructor
+* Allow configurable properties to have custom named ids
+  This is important in cases where multiple instances of config classes
+  are created, and only one instance of a config property is needed.
+
+Lib Changes:
+* Make CyclopsTileEntity implement IDirtyMarkListener
+* Make scrollRelative public in scrollbar widget
+* Make scrolling containers extend from inventory containers
+* Loosen world interface for cube detectors
+* Allow item capabilities to be registered to item instances
+
+Fixes:
+* Fix internal capabilities not being invalidated
+* Fix scrolling inventories showing one row too many
+* Fix rare CubeDetector crash when spam-clicking
+* Fix scrolling guis not being able to scroll
+* Fix mod compats never loading
+  This commit removes the ability to disable compats from the config file
+  because Forge loads config files too late to make this possible.
