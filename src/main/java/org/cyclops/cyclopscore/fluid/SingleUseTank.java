@@ -1,10 +1,13 @@
 package org.cyclops.cyclopscore.fluid;
 
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.Objects;
 
 /**
  * A simple tank that can accept and drain fluids until the capacity is reached.
@@ -29,6 +32,7 @@ public class SingleUseTank extends Tank {
      */
     public SingleUseTank(int capacity) {
         super(capacity);
+        setAcceptedFluid(Fluids.EMPTY);
     }
 
     @Override
@@ -38,10 +42,10 @@ public class SingleUseTank extends Tank {
         if (resource.isEmpty()) {
         	filled = 0;
         } else {
-        	if (action.execute() && acceptedFluid == null) {
+        	if (action.execute() && acceptedFluid == Fluids.EMPTY) {
         		acceptedFluid = resource.getFluid();
         	}
-        	if (acceptedFluid == null || acceptedFluid == resource.getFluid()) {
+        	if (acceptedFluid == Fluids.EMPTY || acceptedFluid == resource.getFluid()) {
                 filled = super.fill(resource, action);
             }
         }
@@ -77,7 +81,7 @@ public class SingleUseTank extends Tank {
      * Reset the tank by setting the inner fluid to null.
      */
     public void reset() {
-        acceptedFluid = null;
+        acceptedFluid = Fluids.EMPTY;
         setValidator(fluidStack -> true);
     }
 
@@ -86,8 +90,12 @@ public class SingleUseTank extends Tank {
      * @param fluid The accepted fluid
      */
     public void setAcceptedFluid(Fluid fluid) {
-        this.acceptedFluid = fluid;
-        setValidator(fluidStack -> fluidStack.getFluid() == fluid);
+        this.acceptedFluid = Objects.requireNonNull(fluid);
+        if (fluid == Fluids.EMPTY) {
+            setValidator(fluidStack -> true);
+        } else {
+            setValidator(fluidStack -> fluidStack.getFluid() == fluid);
+        }
     }
 
     /**
@@ -101,8 +109,7 @@ public class SingleUseTank extends Tank {
     @Override
     public void writeTankToNBT(CompoundNBT nbt) {
         super.writeTankToNBT(nbt);
-        if (acceptedFluid != null)
-            nbt.putString(NBT_ACCEPTED_FLUID, acceptedFluid.getRegistryName().toString());
+        nbt.putString(NBT_ACCEPTED_FLUID, acceptedFluid.getRegistryName().toString());
     }
 
     @Override
