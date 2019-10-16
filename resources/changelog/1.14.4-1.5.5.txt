@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix tank data not being written to NBT correctly
+* Fix invalid fluid validation in tanks
