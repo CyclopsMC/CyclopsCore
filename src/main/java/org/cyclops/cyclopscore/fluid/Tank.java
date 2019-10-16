@@ -50,11 +50,10 @@ public class Tank extends FluidTank {
 
     @Override
     public CompoundNBT writeToNBT(CompoundNBT nbt) {
-        CompoundNBT tankData = new CompoundNBT();
         if(replaceInnerFluid()) {
-            super.writeToNBT(tankData);
+            super.writeToNBT(nbt);
         }
-        writeTankToNBT(tankData);
+        writeTankToNBT(nbt);
         return nbt;
     }
 
