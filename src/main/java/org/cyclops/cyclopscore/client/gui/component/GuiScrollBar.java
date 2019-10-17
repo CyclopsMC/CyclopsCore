@@ -125,7 +125,7 @@ public class GuiScrollBar extends Gui {
     }
 
     public void scrollTo(float scroll) {
-        this.currentScroll = scroll;
+        this.currentScroll = Math.max(0, scroll);
         if (scrollCallback != null) {
             int firstRow = (int) ((double) (scroll * getScrollStep()) + 0.5D);
             scrollCallback.onScroll(firstRow);
