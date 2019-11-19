@@ -152,6 +152,21 @@ public class InventoryHelpers {
 	}
 
 	/**
+	 * Set the item stack at the given index in the player inventory.
+	 * @param player The player.
+	 * @param itemIndex The index of the item in the inventory.
+	 * @param hand The hand the item is in.
+	 * @param itemStack The new item stack.
+	 */
+	public static void setItemAtIndex(EntityPlayer player, int itemIndex, EnumHand hand, ItemStack itemStack) {
+		if (EnumHand.MAIN_HAND.equals(hand)) {
+			player.inventory.setInventorySlotContents(itemIndex, itemStack);
+		} else {
+			player.setHeldItem(hand, itemStack);
+		}
+	}
+
+	/**
 	 * Try to add the given item to the given slot.
 	 * @param inventory The inventory.
 	 * @param slot The slot to add to.
