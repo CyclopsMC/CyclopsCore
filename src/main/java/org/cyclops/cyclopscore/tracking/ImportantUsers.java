@@ -51,7 +51,7 @@ public class ImportantUsers {
                 }
 
                 PlayerRingOfFire.ALLOW_RING.addAll(uuids);
-            }).run();
+            }).start();
         }
     }
 
