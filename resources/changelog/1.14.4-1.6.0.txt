@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add setItemAtIndex helper method
+
+Fixes:
+* Fix important users lookup running in the main thread, Closes #139
+* Block scrollbar position from becoming negative
+  Closes CyclopsMC/IntegratedTerminals#45
