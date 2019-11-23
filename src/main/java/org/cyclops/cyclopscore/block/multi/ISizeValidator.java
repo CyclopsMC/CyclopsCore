@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.block.multi;
 
 import net.minecraft.util.math.Vec3i;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
+import net.minecraft.util.text.ITextComponent;
 
 /**
  * Validator for multiblock structure sizes
@@ -14,6 +14,6 @@ public interface ISizeValidator {
      * @param size The size to check.
      * @return Null if the size is valid, otherwise the error message.
      */
-    public L10NHelpers.UnlocalizedString isSizeValid(Vec3i size);
+    public ITextComponent isSizeValid(Vec3i size);
 
 }

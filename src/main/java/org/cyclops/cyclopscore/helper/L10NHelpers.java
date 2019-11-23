@@ -106,7 +106,9 @@ public final class L10NHelpers {
      * Holder class that acts as a parameterized unlocalized string.
      * This can also take other unlocalized strings in the parameter list, and they will recursively
      * be localized when calling {@link UnlocalizedString#localize()}.
+     * @deprecated Use {@link ITextComponent} instead.
      */
+    @Deprecated // TODO: remove once all mods have been ported to 1.14
     public static class UnlocalizedString implements INBTSerializable {
 
         private String parameterizedString;

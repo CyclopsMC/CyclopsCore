@@ -2,8 +2,9 @@ package org.cyclops.cyclopscore.block.multi;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorldReader;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 import java.util.List;
@@ -40,9 +41,9 @@ public class HollowCubeDetector extends CubeDetector {
 	}
 	
 	@Override
-	protected L10NHelpers.UnlocalizedString validateLocationInStructure(IWorldReader world, int[][] dimensionEgdes, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
+	protected ITextComponent validateLocationInStructure(IWorldReader world, int[][] dimensionEgdes, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
 		// Validate edge or air.
-		L10NHelpers.UnlocalizedString error;
+		ITextComponent error;
 		if (isEdge(world, dimensionEgdes, location)) {
 			if ((error = isValidLocation(world, location, action, excludeLocation)) != null) {
 				//System.out.println("No edge at " + location);
@@ -51,7 +52,7 @@ public class HollowCubeDetector extends CubeDetector {
 		} else {
 			if (!isAir(world, location)) {
 				//System.out.println("No air at " + location);
-				return new L10NHelpers.UnlocalizedString("multiblock.cyclopscore.error.hollow.air",
+				return new TranslationTextComponent("multiblock.cyclopscore.error.hollow.air",
 						LocationHelpers.toCompactString(location));
 			}
 		}
