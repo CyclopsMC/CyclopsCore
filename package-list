@@ -5,6 +5,7 @@ org.cyclops.cyclopscore.block
 org.cyclops.cyclopscore.block.component
 org.cyclops.cyclopscore.block.multi
 org.cyclops.cyclopscore.capability.fluid
+org.cyclops.cyclopscore.capability.item
 org.cyclops.cyclopscore.client.gui
 org.cyclops.cyclopscore.client.gui.component
 org.cyclops.cyclopscore.client.gui.component.button
