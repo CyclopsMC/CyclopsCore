@@ -1,12 +1,15 @@
 package org.cyclops.cyclopscore.fluid;
 
+import com.google.common.collect.Lists;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -24,6 +27,8 @@ public class SingleUseTank extends Tank {
      */
     public static final String NBT_ACCEPTED_FLUID = "acceptedFluid";
 
+    private final List<IDirtyMarkListener> dirtyMarkListeners = Lists.newLinkedList();
+
     private Fluid acceptedFluid;
 
     /**
@@ -33,6 +38,22 @@ public class SingleUseTank extends Tank {
     public SingleUseTank(int capacity) {
         super(capacity);
         setAcceptedFluid(Fluids.EMPTY);
+    }
+
+    /**
+     * Add a dirty marking listener.
+     * @param dirtyMarkListener The dirty mark listener.
+     */
+    public synchronized void addDirtyMarkListener(IDirtyMarkListener dirtyMarkListener) {
+        this.dirtyMarkListeners.add(dirtyMarkListener);
+    }
+
+    /**
+     * Remove a dirty marking listener.
+     * @param dirtyMarkListener The dirty mark listener.
+     */
+    public synchronized void removeDirtyMarkListener(IDirtyMarkListener dirtyMarkListener) {
+        this.dirtyMarkListeners.remove(dirtyMarkListener);
     }
 
     @Override
@@ -74,7 +95,13 @@ public class SingleUseTank extends Tank {
     }
 
     protected void sendUpdate() {
-
+        List<IDirtyMarkListener> dirtyMarkListeners;
+        synchronized (this) {
+            dirtyMarkListeners = Lists.newLinkedList(this.dirtyMarkListeners);
+        }
+        for(IDirtyMarkListener dirtyMarkListener : dirtyMarkListeners) {
+            dirtyMarkListener.onDirty();
+        }
     }
 
     /**
