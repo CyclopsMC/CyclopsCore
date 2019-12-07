@@ -206,4 +206,13 @@ public final class FluidHelpers {
         player.setHeldItem(hand, itemStackResult);
     }
 
+    /**
+     * Convert a boolean-based simulate to a fluid action enum value.
+     * @param simulate If in simulation mode.
+     * @return The fluid action.
+     */
+    public static IFluidHandler.FluidAction simulateBooleanToAction(boolean simulate) {
+        return simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE;
+    }
+
 }
