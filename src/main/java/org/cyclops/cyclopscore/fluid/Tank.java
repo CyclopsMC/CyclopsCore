@@ -57,6 +57,13 @@ public class Tank extends FluidTank {
         return nbt;
     }
 
+    public CompoundNBT writeToNBT(CompoundNBT nbt, String tag) {
+        CompoundNBT subTag = new CompoundNBT();
+        writeToNBT(subTag);
+        nbt.put(tag, subTag);
+        return nbt;
+    }
+
     @Override
     public FluidTank readFromNBT(CompoundNBT nbt) {
         if(replaceInnerFluid()) {
@@ -67,6 +74,11 @@ public class Tank extends FluidTank {
         }
         readTankFromNBT(nbt);
         return this;
+    }
+
+    public FluidTank readFromNBT(CompoundNBT data, String tag) {
+        CompoundNBT subTag = data.getCompound(tag);
+        return readFromNBT(subTag);
     }
 
     /**
