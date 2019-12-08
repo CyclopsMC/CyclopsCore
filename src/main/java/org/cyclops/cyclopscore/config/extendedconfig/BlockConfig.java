@@ -29,10 +29,10 @@ import java.util.function.Function;
  */
 public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block> implements IModelProviderConfig {
 
-    private final BiFunction<BlockConfig, Block, ? extends BlockItem> itemConstructor;
+    private final BiFunction<BlockConfig, Block, ? extends Item> itemConstructor;
 
     @Nullable
-    private BlockItem itemInstance;
+    private Item itemInstance;
 
     @OnlyIn(Dist.CLIENT)
     public ModelResourceLocation dynamicBlockVariantLocation;
@@ -40,7 +40,7 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
     public ModelResourceLocation dynamicItemVariantLocation;
 
     public BlockConfig(ModBase mod, String namedId, Function<BlockConfig, ? extends Block> blockConstructor,
-                       @Nullable BiFunction<BlockConfig, Block, ? extends BlockItem> itemConstructor) {
+                       @Nullable BiFunction<BlockConfig, Block, ? extends Item> itemConstructor) {
         super(mod, namedId, blockConstructor);
         this.itemConstructor = itemConstructor;
     }
@@ -49,12 +49,12 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
         return (eConfig, block) -> new BlockItem(block, new Item.Properties().group(mod.getDefaultItemGroup()));
     }
 
-    public BiFunction<BlockConfig, Block, ? extends BlockItem> getItemConstructor() {
+    public BiFunction<BlockConfig, Block, ? extends Item> getItemConstructor() {
         return itemConstructor;
     }
 
     @Nullable
-    public BlockItem getItemInstance() {
+    public Item getItemInstance() {
         return itemInstance;
     }
 
@@ -117,7 +117,7 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
         super.onForgeRegistered();
 
         // Add item to information provider
-        BlockItem item = getItemInstance();
+        Item item = getItemInstance();
         if (item != null) {
             ItemInformationProvider.registerItem(item);
         }
