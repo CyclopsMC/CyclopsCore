@@ -45,12 +45,12 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
      * @param config The config.
      * @param callback A callback that will be called when the entry is registered.
      */
-    public static void register(@Nullable BiFunction<BlockConfig, Block, ? extends BlockItem> itemBlockConstructor, BlockConfig config, @Nullable Callable<?> callback) {
+    public static void register(@Nullable BiFunction<BlockConfig, Block, ? extends Item> itemBlockConstructor, BlockConfig config, @Nullable Callable<?> callback) {
         register(config, itemBlockConstructor == null ? callback : null); // Delay onForgeRegistered callback until item has been registered if one is applicable
         if(itemBlockConstructor != null) {
             FMLJavaModLoadingContext.get().getModEventBus().addListener((RegistryEvent.Register<Item> event) -> {
                 if (event.getRegistry() == ForgeRegistries.ITEMS) {
-                    BlockItem itemBlock = itemBlockConstructor.apply(config, config.getInstance());
+                    Item itemBlock = itemBlockConstructor.apply(config, config.getInstance());
                     if (itemBlock.getRegistryName() == null) {
                         itemBlock.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
                     }

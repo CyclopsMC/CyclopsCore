@@ -58,7 +58,7 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
         return itemInstance;
     }
 
-    public void setItemInstance(@Nullable BlockItem itemInstance) {
+    public void setItemInstance(@Nullable Item itemInstance) {
         this.itemInstance = itemInstance;
     }
 
