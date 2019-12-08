@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -205,6 +206,22 @@ public abstract class PacketCodec extends PacketBase {
 			@Override
 			public Object decode(PacketBuffer input) {
 				return input.readCompoundTag();
+			}
+		});
+
+		codecActions.put(INBT.class, new ICodecAction() {
+
+			@Override
+			public void encode(Object object, PacketBuffer output) {
+				CompoundNBT tag = new CompoundNBT();
+				tag.put("v", (INBT) object);
+				output.writeCompoundTag(tag);
+			}
+
+			@Override
+			public Object decode(PacketBuffer input) {
+				CompoundNBT tag = input.readCompoundTag();
+				return tag.get("v");
 			}
 		});
 
