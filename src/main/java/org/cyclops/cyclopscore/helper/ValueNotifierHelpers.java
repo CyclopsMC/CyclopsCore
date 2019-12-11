@@ -1,8 +1,15 @@
 package org.cyclops.cyclopscore.helper;
 
+import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.inventory.IValueNotifier;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Helper methods for {@link org.cyclops.cyclopscore.inventory.IValueNotifiable} and
@@ -50,6 +57,22 @@ public class ValueNotifierHelpers {
     }
 
     /**
+     * Set the {@link ITextComponent} list value
+     * @param notifier The notifier instance
+     * @param valueId The value id
+     * @param values The values
+     */
+    public static void setValue(IValueNotifier notifier, int valueId, List<ITextComponent> values) {
+        CompoundNBT tag = new CompoundNBT();
+        ListNBT list = new ListNBT();
+        for (ITextComponent value : values) {
+            list.add(new StringNBT(ITextComponent.Serializer.toJson(value)));
+        }
+        tag.put(KEY, list);
+        notifier.setValue(valueId, tag);
+    }
+
+    /**
      * get the int value
      * @param notifier The notifier instance
      * @param valueId The value id
@@ -69,6 +92,7 @@ public class ValueNotifierHelpers {
      * @param valueId The value id
      * @return The value
      */
+    @Nullable
     public static String getValueString(IValueNotifier notifier, int valueId) {
         CompoundNBT tag = notifier.getValue(valueId);
         if(tag != null) {
@@ -83,10 +107,31 @@ public class ValueNotifierHelpers {
      * @param valueId The value id
      * @return The value
      */
+    @Nullable
     public static ITextComponent getValueTextComponent(IValueNotifier notifier, int valueId) {
         CompoundNBT tag = notifier.getValue(valueId);
         if(tag != null) {
             return ITextComponent.Serializer.fromJson(tag.getString(KEY));
+        }
+        return null;
+    }
+
+    /**
+     * Get the {@link ITextComponent} list value
+     * @param notifier The notifier instance
+     * @param valueId The value id
+     * @return The value
+     */
+    @Nullable
+    public static List<ITextComponent> getValueTextComponentList(IValueNotifier notifier, int valueId) {
+        CompoundNBT tag = notifier.getValue(valueId);
+        if(tag != null) {
+            ListNBT listTag = tag.getList(KEY, Constants.NBT.TAG_STRING);
+            List<ITextComponent> list = Lists.newArrayList();
+            for (int i = 0; i < listTag.size(); i++) {
+                list.add(ITextComponent.Serializer.fromJson(listTag.getString(i)));
+            }
+            return list;
         }
         return null;
     }
