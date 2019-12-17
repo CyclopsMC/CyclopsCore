@@ -37,7 +37,7 @@ public interface IInformationProvider {
      * @param itemStack The itemStack that must be given information.
      * @return Information for that itemStack.
      */
-    public String getInfo(ItemStack itemStack);
+    public ITextComponent getInfo(ItemStack itemStack);
     /**
      * An extended way to provide additional information.
      * @param itemStack The itemStack that must be given information.

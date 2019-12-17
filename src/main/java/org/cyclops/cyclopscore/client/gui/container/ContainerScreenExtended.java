@@ -98,7 +98,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     	return isPointInRegion(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
     }
 
-    public void drawTooltip(List<String> lines, int x, int y) {
+    public void drawTooltip(List<ITextComponent> lines, int x, int y) {
         GuiHelpers.drawTooltip(this, lines, x, y);
     }
 

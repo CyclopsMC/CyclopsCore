@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -16,7 +17,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
 
 import java.util.List;
 
@@ -73,7 +73,7 @@ public class DamageIndicatedItemComponent {
      * @param itemStack The item stack to add the info for.
      * @return The info for the item.
      */
-    public String getInfo(ItemStack itemStack) {
+    public ITextComponent getInfo(ItemStack itemStack) {
         int amount = 0;
         IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack).orElse(null);
         FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(null);
@@ -90,13 +90,16 @@ public class DamageIndicatedItemComponent {
      * @return The info generated from the given parameters.
      */
     @OnlyIn(Dist.CLIENT)
-    public static String getInfo(FluidStack fluidStack, int amount, int capacity) {
-    	String prefix = "";
+    public static ITextComponent getInfo(FluidStack fluidStack, int amount, int capacity) {
+    	ITextComponent prefix = new StringTextComponent("");
     	if(fluidStack != null) {
-    		prefix = L10NHelpers.localize(fluidStack.getTranslationKey()) + ": ";
+    		prefix = new TranslationTextComponent(fluidStack.getTranslationKey()).appendText(": ");
     	}
-        return prefix + String.format("%,d", amount) +
-                " / " + String.format("%,d", capacity) + " mB";
+        return prefix
+                .appendText(String.format("%,d", amount))
+                .appendText(" / ")
+                .appendText(String.format("%,d", capacity))
+                .appendText(" mB");
     }
     
     /**

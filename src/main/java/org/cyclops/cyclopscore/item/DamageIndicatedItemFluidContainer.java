@@ -61,7 +61,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     }
 
     @Override
-    public String getInfo(ItemStack itemStack) {
+    public ITextComponent getInfo(ItemStack itemStack) {
         return component.getInfo(itemStack);
     }
     

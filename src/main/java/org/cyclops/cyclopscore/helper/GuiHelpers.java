@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -187,7 +188,7 @@ public class GuiHelpers {
      * @param x Tooltip X.
      * @param y Tooltip Y.
      */
-    public static void drawTooltip(ContainerScreen gui, List<String> lines, int x, int y) {
+    public static void drawTooltip(ContainerScreen gui, List<ITextComponent> lines, int x, int y) {
         int guiLeft = gui.getGuiLeft();
         int guiTop = gui.getGuiTop();
         int width = gui.width;
@@ -204,8 +205,8 @@ public class GuiHelpers {
         int xStart;
         int yStart;
 
-        for(String line : lines) {
-            tempWidth = mc.fontRenderer.getStringWidth(line);
+        for(ITextComponent line : lines) {
+            tempWidth = mc.fontRenderer.getStringWidth(line.getFormattedText());
 
             if(tempWidth > tooltipWidth) {
                 tooltipWidth = tempWidth;
@@ -244,15 +245,15 @@ public class GuiHelpers {
         fillGradient(xStart - 3, yStart + tooltipHeight + 2, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color3, color3, zLevel);
 
         for(int stringIndex = 0; stringIndex < lines.size(); ++stringIndex) {
-            String line = lines.get(stringIndex);
+            ITextComponent line = lines.get(stringIndex);
 
             if(stringIndex == 0) {
-                line = "\u00a7" + Integer.toHexString(15) + line;
+                line.appendText("\u00a7" + Integer.toHexString(15) + line);
             } else {
-                line = "\u00a77" + line;
+                line.appendText("\u00a77" + line);
             }
 
-            mc.fontRenderer.drawStringWithShadow(line, xStart, yStart, -1);
+            mc.fontRenderer.drawStringWithShadow(line.getFormattedText(), xStart, yStart, -1);
 
             if(stringIndex == 0) {
                 yStart += 2;
@@ -323,7 +324,7 @@ public class GuiHelpers {
      *                      This will only be called when needed.
      */
     public static void renderTooltipOptional(ContainerScreen gui, int x, int y, int width, int height,
-                                             int mouseX, int mouseY, Supplier<Optional<List<String>>> linesSupplier) {
+                                             int mouseX, int mouseY, Supplier<Optional<List<ITextComponent>>> linesSupplier) {
         if(RenderHelpers.isPointInRegion(x, y, width, height, mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop())) {
             linesSupplier.get().ifPresent(
                     lines -> drawTooltip(gui, lines, mouseX - gui.getGuiLeft(), mouseY - gui.getGuiTop()));
@@ -343,7 +344,7 @@ public class GuiHelpers {
      *                      This will only be called when needed.
      */
     public static void renderTooltip(ContainerScreen gui, int x, int y, int width, int height,
-                                     int mouseX, int mouseY, Supplier<List<String>> linesSupplier) {
+                                     int mouseX, int mouseY, Supplier<List<ITextComponent>> linesSupplier) {
         renderTooltipOptional(gui, x, y, width, height, mouseX, mouseY, () -> Optional.of(linesSupplier.get()));
     }
 
