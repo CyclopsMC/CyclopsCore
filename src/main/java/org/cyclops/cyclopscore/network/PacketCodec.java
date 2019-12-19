@@ -7,10 +7,13 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.ClassUtils;
+import org.cyclops.cyclopscore.datastructure.DimPos;
 import org.cyclops.cyclopscore.datastructure.SingleCache;
 
 import javax.annotation.Nullable;
@@ -20,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -277,6 +281,35 @@ public abstract class PacketCodec extends PacketBase {
 			}
 		});
 
+		codecActions.put(DimensionType.class, new ICodecAction() {
+
+			@Override
+			public void encode(Object object, PacketBuffer output) {
+				output.writeString(((DimensionType) object).getRegistryName().toString());
+			}
+
+			@Override
+			public Object decode(PacketBuffer input) {
+				return DimensionType.byName(new ResourceLocation(input.readString()));
+			}
+		});
+
+		codecActions.put(DimPos.class, new ICodecAction() {
+
+			@Override
+			public void encode(Object object, PacketBuffer output) {
+				write(output, ((DimPos) object).getDimension());
+				write(output, ((DimPos) object).getBlockPos());
+			}
+
+			@Override
+			public Object decode(PacketBuffer input) {
+				DimensionType dimensionType = read(input, DimensionType.class);
+				BlockPos blockPos = read(input, BlockPos.class);
+				return DimPos.of(dimensionType, blockPos);
+			}
+		});
+
 		codecActions.put(List.class, new ICodecAction() {
 
 			// Packet structure:
@@ -349,6 +382,15 @@ public abstract class PacketCodec extends PacketBase {
 				return list;
 			}
 		});
+	}
+
+	/**
+	 * Register a new coded action.
+	 * @param clazz A class type.
+	 * @param action A codec action for the given type.
+	 */
+	public static void addCodedAction(Class<?> clazz, ICodecAction action) {
+		codecActions.put(clazz, action);
 	}
 
     protected SingleCache<Void, List<Field>> fieldCache = new SingleCache<Void, List<Field>>(
@@ -465,8 +507,31 @@ public abstract class PacketCodec extends PacketBase {
             }
         });
 	}
+
+	/**
+	 * Write the given object into the packet buffer.
+	 * @param packetBuffer A packet buffer.
+	 * @param object An object.
+	 */
+	public static void write(PacketBuffer packetBuffer, Object object) {
+		ICodecAction action = Objects.requireNonNull(getActionSuper(object.getClass()),
+				"No codec action was registered for " + object.getClass().getName());
+		action.encode(object, packetBuffer);
+	}
+
+	/**
+	 * Read the an object of the given type from the packet buffer.
+	 * @param packetBuffer A packet buffer.
+	 * @param clazz The class type to read.
+	 * @param <T> The type of object.
+	 * @return The read object.
+	 */
+	public static <T> T read(PacketBuffer packetBuffer, Class<T> clazz) {
+		ICodecAction action = Objects.requireNonNull(getActionSuper(clazz));
+		return (T) action.decode(packetBuffer);
+	}
 	
-	private interface ICodecAction {
+	public static interface ICodecAction {
 		
 		/**
 		 * Encode the given object.
@@ -483,8 +548,8 @@ public abstract class PacketCodec extends PacketBase {
 	    public Object decode(PacketBuffer input);
 	    
 	}
-	
-	private interface ICodecRunnable {
+
+	public static interface ICodecRunnable {
 		
 		/**
 		 * Run a type of codec.
