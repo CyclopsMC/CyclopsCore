@@ -46,6 +46,18 @@ public class ValueNotifierHelpers {
     }
 
     /**
+     * Set the boolean value
+     * @param notifier The notifier instance
+     * @param valueId The value id
+     * @param value The value
+     */
+    public static void setValue(IValueNotifier notifier, int valueId, boolean value) {
+        CompoundNBT tag = new CompoundNBT();
+        tag.putBoolean(KEY, value);
+        notifier.setValue(valueId, tag);
+    }
+
+    /**
      * Set the string value
      * @param notifier The notifier instance
      * @param valueId The value id
@@ -112,6 +124,20 @@ public class ValueNotifierHelpers {
             return tag.getInt(KEY);
         }
         return 0;
+    }
+
+    /**
+     * get the boolean value
+     * @param notifier The notifier instance
+     * @param valueId The value id
+     * @return The value
+     */
+    public static boolean getValueBoolean(IValueNotifier notifier, int valueId) {
+        CompoundNBT tag = notifier.getValue(valueId);
+        if(tag != null) {
+            return tag.getBoolean(KEY);
+        }
+        return false;
     }
 
     /**
