@@ -6,23 +6,22 @@ import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.client.gui.container.ContainerScreenExtended;
 import org.cyclops.cyclopscore.helper.Helpers;
-import org.cyclops.cyclopscore.helper.InventoryHelpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
+import org.cyclops.cyclopscore.inventory.container.ContainerExtended;
 import org.cyclops.cyclopscore.network.packet.RequestPlayerNbtPacket;
 import org.lwjgl.opengl.GL11;
 
@@ -33,7 +32,7 @@ import java.util.List;
  * Base gui for {@link IInfoBook}.
  * @author rubensworks
  */
-public abstract class ScreenInfoBook extends Screen {
+public abstract class ScreenInfoBook<T extends ContainerExtended> extends ContainerScreenExtended {
 
     private static final int HR_WIDTH = 88;
     private static final int HR_HEIGHT = 10;
@@ -48,8 +47,6 @@ public abstract class ScreenInfoBook extends Screen {
     private static final int BORDER_Y = 206;
 
     protected final IInfoBook infoBook;
-    protected final ItemStack itemStack;
-    protected final ResourceLocation texture;
 
     protected NextPageButton buttonNextPage;
     protected NextPageButton buttonPreviousPage;
@@ -63,11 +60,9 @@ public abstract class ScreenInfoBook extends Screen {
 
     private int left, top;
 
-    public ScreenInfoBook(PlayerEntity player, int itemIndex, IInfoBook infoBook, ResourceLocation texture) {
-        super(new TranslationTextComponent("gui.cyclopscore.infobook"));
-        itemStack = InventoryHelpers.getItemFromIndex(player, itemIndex);
+    public ScreenInfoBook(T container, PlayerInventory playerInventory, ITextComponent title, IInfoBook infoBook) {
+        super(container, playerInventory, title);
         this.infoBook = infoBook;
-        this.texture = texture;
         if(infoBook.getCurrentSection() == null) {
             InfoSection root = infoBook.getMod().getRegistryManager().getRegistry(IInfoBookRegistry.class).getRoot(infoBook);
             if (root == null) {
@@ -206,7 +201,7 @@ public abstract class ScreenInfoBook extends Screen {
     }
 
     @Override
-    public void render(int x, int y, float partialTicks) {
+    public void drawCurrentScreen(int x, int y, float partialTicks) {
         GlStateManager.color4f(1F, 1F, 1F, 1F);
         RenderHelpers.bindTexture(texture);
 
