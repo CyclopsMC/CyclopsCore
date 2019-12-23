@@ -2,12 +2,16 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.datastructure.Wrapper;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -25,6 +29,23 @@ public abstract class FluidConfig extends ExtendedConfigForge<FluidConfig, Fluid
      */
     public FluidConfig(ModBase mod, String namedId, Function<FluidConfig, ? extends Fluid> elementConstructor) {
         super(mod, namedId, elementConstructor);
+    }
+
+    protected static ForgeFlowingFluid.Properties getDefaultFluidProperties(ModBase mod, String texturePrefixPath,
+                                                                            Consumer<FluidAttributes.Builder> fluidAttributesConsumer) {
+        FluidAttributes.Builder fluidAttributes = FluidAttributes.builder(
+                new ResourceLocation(mod.getModId(), texturePrefixPath + "_still.png"),
+                new ResourceLocation(mod.getModId(), texturePrefixPath + "_flow.png")
+        );
+        fluidAttributesConsumer.accept(fluidAttributes);
+
+        Wrapper<ForgeFlowingFluid.Properties> properties = new Wrapper<>();
+        properties.set(new ForgeFlowingFluid.Properties(
+                () -> new ForgeFlowingFluid.Source(properties.get()),
+                () -> new ForgeFlowingFluid.Flowing(properties.get()),
+                fluidAttributes
+        ));
+        return properties.get();
     }
 
     @Override
