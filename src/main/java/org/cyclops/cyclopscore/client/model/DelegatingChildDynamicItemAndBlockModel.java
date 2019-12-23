@@ -6,6 +6,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.IModelData;
+
+import java.util.Random;
 
 /**
  * A dynamic model with a parent that can be used for items and blocks that delegates its blockstate.
@@ -20,8 +23,9 @@ public abstract class DelegatingChildDynamicItemAndBlockModel extends Delegating
         this.baseModel = baseModel;
     }
 
-    public DelegatingChildDynamicItemAndBlockModel(IBakedModel baseModel, BlockState blockState, Direction facing, long rand) {
-        super(blockState, facing, rand);
+    public DelegatingChildDynamicItemAndBlockModel(IBakedModel baseModel, BlockState blockState, Direction facing,
+                                                   Random rand, IModelData modelData) {
+        super(blockState, facing, rand, modelData);
         this.baseModel = baseModel;
     }
 

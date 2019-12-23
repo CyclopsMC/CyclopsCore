@@ -10,8 +10,11 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.resources.IResource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.model.TRSRTransformation;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -155,5 +158,29 @@ public final class ModelHelpers {
         return new ImmutableMap.Builder<ItemCameraTransforms.TransformType, TRSRTransformation>()
                 .putAll(transforms).build();
 
+    }
+
+    /**
+     * Safely get a model data property for a data state and value that may not have been set yet.
+     * @param modelData The model data.
+     * @param property The property to get the value for.
+     * @param fallback The fallback value when something has failed.
+     * @param <T> The type of value to fetch.
+     * @return The value.
+     */
+    public static <T> T getSafeProperty(@Nullable IModelData modelData, ModelProperty<T> property, T fallback) {
+        if(modelData == null) {
+            return fallback;
+        }
+        T value;
+        try {
+            value = modelData.getData(property);
+        } catch (IllegalArgumentException e) {
+            return fallback;
+        }
+        if(value == null) {
+            return fallback;
+        }
+        return value;
     }
 }
