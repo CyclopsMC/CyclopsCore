@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
@@ -19,7 +18,6 @@ import org.cyclops.cyclopscore.persist.nbt.INBTSerializable;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -58,12 +56,12 @@ public final class L10NHelpers {
      *                        this should be a formatted string with one parameter.
      */
     @OnlyIn(Dist.CLIENT)
-    public static void addStatusInfo(List<String> infoLines, boolean isEnabled, String statusPrefixKey) {
-        String autoSupply = localize(KEY_DISABLED);
+    public static void addStatusInfo(List<ITextComponent> infoLines, boolean isEnabled, String statusPrefixKey) {
+        ITextComponent autoSupply = new TranslationTextComponent(KEY_DISABLED);
         if (isEnabled) {
-            autoSupply = localize(KEY_ENABLED);
+            autoSupply = new TranslationTextComponent(KEY_ENABLED);
         }
-        infoLines.add(localize(statusPrefixKey, autoSupply));
+        infoLines.add(new TranslationTextComponent(statusPrefixKey, autoSupply));
     }
 
     /**
