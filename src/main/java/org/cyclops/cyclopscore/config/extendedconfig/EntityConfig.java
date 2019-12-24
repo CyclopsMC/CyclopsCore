@@ -34,9 +34,10 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
      * @param elementConstructor The element constructor.
      * @param entityClass The class of the entity.
      */
-    public EntityConfig(ModBase mod, String namedId, Function<EntityConfig<T>, ? extends EntityType<T>> elementConstructor,
+    public EntityConfig(ModBase mod, String namedId, Function<EntityConfig<T>, EntityType.Builder<T>> elementConstructor,
                         Class<? extends T> entityClass) {
-        super(mod, namedId, elementConstructor);
+        super(mod, namedId, elementConstructor
+                .andThen(builder -> builder.build(mod.getModId() + ":" + namedId)));
         this.entityClass = entityClass;
     }
     
@@ -63,30 +64,6 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
         RenderingRegistry.registerEntityRenderingHandler(clazz,
                 (IRenderFactory<T>) manager -> EntityConfig.this.getRender(manager, Minecraft.getInstance().getItemRenderer()));
 
-    }
-    
-    /**
-     * The range at which MC will send tracking updates.
-     * @return The tracking range.
-     */
-    public int getTrackingRange() {
-        return 160;
-    }
-    
-    /**
-     * The frequency of tracking updates.
-     * @return The update frequency.
-     */
-    public int getUpdateFrequency() {
-        return 10;
-    }
-    
-    /**
-     * Whether to send velocity information packets as well.
-     * @return Send velocity updates?
-     */
-    public boolean sendVelocityUpdates() {
-        return false;
     }
 
     /**
