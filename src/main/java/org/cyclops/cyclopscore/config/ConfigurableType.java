@@ -62,6 +62,10 @@ public class ConfigurableType {
      * Tile entity type.
      */
     public static final ConfigurableType TILE_ENTITY = new ConfigurableType(true, TileEntityConfig.class, new TileEntityAction(), "tile_entity");
+    /**
+     * World feature type.
+     */
+    public static final ConfigurableType WORLD_FEATURE = new ConfigurableType(true, WorldFeatureConfig.class, new WorldFeatureAction(), "world_feature");
 
     /**
      * Dummy type, only used for configs that refer to nothing.
