@@ -31,6 +31,13 @@ public interface IInformationProvider {
      * A prefix for additional info.
      */
     public static String INFO_PREFIX = TextFormatting.DARK_PURPLE.toString() + TextFormatting.ITALIC.toString();
+    /**
+     * Additional info prefix styles
+     */
+    public static TextFormatting[] INFO_PREFIX_STYLES = new TextFormatting[]{
+            TextFormatting.DARK_PURPLE,
+            TextFormatting.ITALIC
+    };
     
     /**
      * Get info for a given itemStack.
