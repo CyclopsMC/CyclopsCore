@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -248,9 +249,9 @@ public class GuiHelpers {
             ITextComponent line = lines.get(stringIndex);
 
             if(stringIndex == 0) {
-                line.appendText("\u00a7" + Integer.toHexString(15) + line);
+                line = new StringTextComponent("\u00a7" + Integer.toHexString(15)).appendSibling(line);
             } else {
-                line.appendText("\u00a77" + line);
+                line = new StringTextComponent("\u00a77").appendSibling(line);
             }
 
             mc.fontRenderer.drawStringWithShadow(line.getFormattedText(), xStart, yStart, -1);
