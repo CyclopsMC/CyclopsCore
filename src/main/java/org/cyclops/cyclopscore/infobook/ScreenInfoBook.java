@@ -32,7 +32,7 @@ import java.util.List;
  * Base gui for {@link IInfoBook}.
  * @author rubensworks
  */
-public abstract class ScreenInfoBook<T extends ContainerExtended> extends ContainerScreenExtended {
+public abstract class ScreenInfoBook<T extends ContainerExtended> extends ContainerScreenExtended<T> {
 
     private static final int HR_WIDTH = 88;
     private static final int HR_HEIGHT = 10;
