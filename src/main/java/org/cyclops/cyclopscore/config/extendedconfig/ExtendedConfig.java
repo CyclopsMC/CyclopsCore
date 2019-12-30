@@ -110,15 +110,9 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
      * Save this config inside the correct element and inside the implementation if itself.
      */
     protected void save() {
-        try {
-            // Construct the instance
-            if (this.getConfigurableType().hasUniqueInstance()) {
-                this.initializeInstance();
-            }
-        } catch (RuntimeException e) {
-            mod.getLoggerHelper().getLogger().error(String.format("Registering %s caused an issue. ", getNamedId()), e);
-            throw new CyclopsCoreConfigException(String.format("Registering %s caused the issue: %s",
-                    this.getNamedId(), e.getMessage()));
+        // Construct the instance
+        if (this.getConfigurableType().hasUniqueInstance()) {
+            this.initializeInstance();
         }
     }
     
