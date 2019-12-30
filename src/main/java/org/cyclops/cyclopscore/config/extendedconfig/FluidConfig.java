@@ -34,8 +34,8 @@ public abstract class FluidConfig extends ExtendedConfigForge<FluidConfig, Fluid
     protected static ForgeFlowingFluid.Properties getDefaultFluidProperties(ModBase mod, String texturePrefixPath,
                                                                             Consumer<FluidAttributes.Builder> fluidAttributesConsumer) {
         FluidAttributes.Builder fluidAttributes = FluidAttributes.builder(
-                new ResourceLocation(mod.getModId(), texturePrefixPath + "_still.png"),
-                new ResourceLocation(mod.getModId(), texturePrefixPath + "_flow.png")
+                new ResourceLocation(mod.getModId(), texturePrefixPath + "_still"),
+                new ResourceLocation(mod.getModId(), texturePrefixPath + "_flow")
         );
         fluidAttributesConsumer.accept(fluidAttributes);
 
