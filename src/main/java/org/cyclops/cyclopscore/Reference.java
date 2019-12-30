@@ -21,6 +21,6 @@ public final class Reference {
     public static final String MOD_COMMONCAPABILITIES = "commoncapabilities";
 
     // Paths
-    public static final String TEXTURE_PATH_PARTICLES = "textures/particles/";
+    public static final String TEXTURE_PATH_PARTICLES = "textures/particle/";
 
 }
