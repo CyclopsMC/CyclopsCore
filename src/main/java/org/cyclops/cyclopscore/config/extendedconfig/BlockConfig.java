@@ -90,16 +90,8 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
     @OnlyIn(Dist.CLIENT)
     public Pair<ModelResourceLocation, ModelResourceLocation> registerDynamicModel() {
         String blockName = getMod().getModId() + ":" + getNamedId();
-        final ModelResourceLocation blockLocation = new ModelResourceLocation(blockName, "normal");
+        ModelResourceLocation blockLocation = new ModelResourceLocation(blockName, "");
         ModelResourceLocation itemLocation = new ModelResourceLocation(blockName, "inventory");
-        // TODO: implement statemapping if still needed
-//        ModelLoader.setCustomStateMapper(getBlockInstance(), new StateMapperBase() {
-//            @Override
-//            protected ModelResourceLocation getModelResourceLocation(BlockState blockState) {
-//                return blockLocation;
-//            }
-//        });
-//        ModelLoader.setCustomModelResourceLocation(getItemInstance(), 0, itemLocation);
         return Pair.of(blockLocation, itemLocation);
     }
 
