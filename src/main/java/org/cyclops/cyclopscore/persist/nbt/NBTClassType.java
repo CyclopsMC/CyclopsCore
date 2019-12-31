@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
@@ -184,20 +185,20 @@ public abstract class NBTClassType<T> {
             }
         });
         
-        NBTYPES.put(CompoundNBT.class, new NBTClassType<CompoundNBT>() {
+        NBTYPES.put(INBT.class, new NBTClassType<INBT>() {
 
             @Override
-            public void writePersistedField(String name, CompoundNBT object, CompoundNBT tag) {
+            public void writePersistedField(String name, INBT object, CompoundNBT tag) {
                 tag.put(name, object);
             }
 
             @Override
-            public CompoundNBT readPersistedField(String name, CompoundNBT tag) {
-                return tag.getCompound(name);
+            public INBT readPersistedField(String name, CompoundNBT tag) {
+                return tag.get(name);
             }
 
             @Override
-            public CompoundNBT getDefaultValue() {
+            public INBT getDefaultValue() {
                 return null;
             }
         });
