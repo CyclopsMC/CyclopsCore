@@ -7,8 +7,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.proxy.ClientProxyComponent;
 
@@ -27,7 +26,8 @@ public class IconProvider {
 
     public IconProvider(ClientProxyComponent clientProxy) {
         this.clientProxy = clientProxy;
-        MinecraftForge.EVENT_BUS.register(this);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onPreTextureStitch);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onPostTextureStitch);
     }
 
     protected void registerIcon(Object object, Field field, String location) {
@@ -38,17 +38,30 @@ public class IconProvider {
         return textureMap.getSprite(new ResourceLocation(clientProxy.getMod().getModId(), location));
     }
 
-    @SubscribeEvent
+    protected ResourceLocation getIconId(String location) {
+        return new ResourceLocation(clientProxy.getMod().getModId(), location);
+    }
+
     public void onPreTextureStitch(TextureStitchEvent.Pre event) {
-        for(Pair<Pair<Object, Field>, String> entry : toRegister) {
-            TextureAtlasSprite icon = registerIcon(event.getMap(), entry.getValue());
-            Object object = entry.getLeft().getLeft();
-            Field field = entry.getLeft().getRight();
-            try {
-                field.set(object, icon);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(String.format("The icon field %s in class %s could not be set.",
-                        field.getName(), object.getClass().getCanonicalName()));
+        if (event.getMap().getBasePath().equals("textures")) {
+            for (Pair<Pair<Object, Field>, String> entry : toRegister) {
+                event.addSprite(getIconId(entry.getValue()));
+            }
+        }
+    }
+
+    public void onPostTextureStitch(TextureStitchEvent.Post event) {
+        if (event.getMap().getBasePath().equals("textures")) {
+            for (Pair<Pair<Object, Field>, String> entry : toRegister) {
+                TextureAtlasSprite icon = event.getMap().getSprite(getIconId(entry.getValue()));
+                Object object = entry.getLeft().getLeft();
+                Field field = entry.getLeft().getRight();
+                try {
+                    field.set(object, icon);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(String.format("The icon field %s in class %s could not be set.",
+                            field.getName(), object.getClass().getCanonicalName()));
+                }
             }
         }
     }
