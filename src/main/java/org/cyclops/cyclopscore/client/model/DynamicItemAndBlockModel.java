@@ -8,6 +8,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -36,6 +37,11 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
 
     protected boolean isItemStack() {
         return item;
+    }
+
+    @Override
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+        return this.getQuads(state, side, rand, EmptyModelData.INSTANCE);
     }
 
     @Override
