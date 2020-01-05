@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.helper;
 import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.TransformingClassLoader;
 import cpw.mods.modlauncher.api.IEnvironment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -146,6 +147,14 @@ public class MinecraftHelpers {
      */
     public static boolean isClientSide() {
         return FMLEnvironment.dist == Dist.CLIENT;
+    }
+
+    /**
+     * @return If we are physically running on a client and are running in the client thread.
+     */
+    public static boolean isClientSideThread() {
+        return isClientSide() && Minecraft.getInstance().world != null
+                && Thread.currentThread() == Minecraft.getInstance().world.mainThread;
     }
 
 }

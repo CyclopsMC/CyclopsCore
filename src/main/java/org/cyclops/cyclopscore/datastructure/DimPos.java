@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.datastructure;
 
 import lombok.Data;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -32,9 +34,20 @@ public class DimPos implements Comparable<DimPos> {
         this(dimension, blockPos, null);
     }
 
-    public @Nullable World getWorld(boolean forceLoad) {
+    @Nullable
+    public World getWorld(boolean forceLoad) {
         if (worldReference == null) {
-            return DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), dimension, false, forceLoad);
+            if (MinecraftHelpers.isClientSideThread()) {
+                ClientWorld world = Minecraft.getInstance().world;
+                if (world.getDimension().getDimension().getType() == this.getDimension()) {
+                    this.worldReference = new WeakReference(world);
+                    return this.worldReference.get();
+                } else {
+                    return null;
+                }
+            } else {
+                return DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), dimension, false, forceLoad);
+            }
         }
         World world = worldReference.get();
         if (world == null) {
