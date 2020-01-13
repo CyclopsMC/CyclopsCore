@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.client.gui.container;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
@@ -9,6 +10,7 @@ import org.cyclops.cyclopscore.client.gui.component.WidgetScrollBar;
 import org.cyclops.cyclopscore.client.gui.component.input.WidgetTextFieldExtended;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.inventory.container.ScrollingInventoryContainer;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -32,13 +34,11 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
         super.init();
         this.minecraft.keyboardListener.enableRepeatEvents(true);
 
-        boolean resetFilter = false;
         if(isSearchEnabled()) {
             int searchWidth = getSearchWidth();
             int searchX = getSearchX();
             int searchY = getSearchY();
             if(this.searchField == null) {
-                resetFilter = true;
                 this.searchField = new WidgetTextFieldExtended(this.font, this.guiLeft + searchX, this.guiTop + searchY, searchWidth, this.font.FONT_HEIGHT, L10NHelpers.localize("gui.cyclopscore.search"));
                 this.searchField.setMaxStringLength(64);
                 this.searchField.setMaxStringLength(15);
@@ -57,19 +57,24 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
             this.children.add(this.searchField);
         }
 
+        // Initial element load.
         if (scrollbar == null) {
+            getContainer().updateFilter("");
             this.scrollbar = new WidgetScrollBar(this.guiLeft + getScrollX(), this.guiTop + getScrollY(), getScrollHeight(),
                     L10NHelpers.localize("gui.cyclopscore.scrollbar"), getContainer(),
-                    getContainer().getPageSize());
+                    getContainer().getPageSize(), isScrollAnywhere());
             this.scrollbar.setTotalRows(getContainer().getFilteredItemCount() / getContainer().getColumns());
         }
-        this.children.add(this.scrollbar);
 
-        // Initial element load.
-        if(resetFilter) {
-            getContainer().updateFilter("");
-        }
+        this.children.add(this.scrollbar);
         getScrollbar().scrollTo(this.scrollbar.getCurrentScroll());
+    }
+
+    /**
+     * @return If scrolling should be possible, even if the mouse is not hovering over the scrollbar.
+     */
+    protected boolean isScrollAnywhere() {
+        return false;
     }
 
     @Override
@@ -79,12 +84,32 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
+    public void tick() {
+        super.tick();
+        this.searchField.tick();
+    }
+
+    @Override
     public boolean charTyped(char typedChar, int keyCode) {
-        if (isSearchEnabled() && this.searchField.charTyped(typedChar, keyCode)) {
-            this.updateSearch(searchField.getText());
+        if (isSearchEnabled()) {
+            if (this.searchField.charTyped(typedChar, keyCode)) {
+                this.updateSearch(searchField.getText());
+            }
             return true;
         } else {
             return super.charTyped(typedChar, keyCode);
+        }
+    }
+
+    @Override
+    public boolean keyPressed(int typedChar, int keyCode, int modifiers) {
+        if (isSearchEnabled() && typedChar != GLFW.GLFW_KEY_ESCAPE) {
+            if (this.searchField.keyPressed(typedChar, keyCode, modifiers)) {
+                this.updateSearch(searchField.getText());
+            }
+            return true;
+        } else {
+            return super.keyPressed(typedChar, keyCode, modifiers);
         }
     }
 
@@ -132,8 +157,9 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     protected void updateSearch(String searchString) {
-        this.scrollbar.scrollTo(0);
         getContainer().updateFilter(searchString);
+        this.scrollbar.setTotalRows(getContainer().getFilteredItemCount() / getContainer().getColumns());
+        this.scrollbar.scrollTo(0);
     }
 
     public TextFieldWidget getSearchField() {
