@@ -58,6 +58,7 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
      */
     public void setMinValue(int minValue) {
         this.minValue = minValue;
+        updateArrowsState();
     }
 
     public int getMaxValue() {
@@ -144,6 +145,22 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     @Override
     public boolean charTyped(char typedChar, int keyCode) {
         boolean ret = super.charTyped(typedChar, keyCode);
+        updateArrowsState();
+        return ret;
+    }
+
+    @Override
+    public boolean keyPressed(int typedChar, int keyCode, int modifiers) {
+        boolean ret = super.keyPressed(typedChar, keyCode, modifiers);
+        updateArrowsState();
+        return ret;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        boolean ret = arrowUp.mouseClicked(mouseX, mouseY, mouseButton)
+                || arrowDown.mouseClicked(mouseX, mouseY, mouseButton)
+                || super.mouseClicked(mouseX, mouseY, mouseButton);
         updateArrowsState();
         return ret;
     }
