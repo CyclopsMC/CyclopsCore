@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -436,6 +437,24 @@ public abstract class NBTClassType<T> {
 
             @Override
             public ItemStack getDefaultValue() {
+                return null;
+            }
+        });
+        NBTYPES.put(ITextComponent.class, new NBTClassType<ITextComponent>() {
+            @Override
+            public void writePersistedField(String name, ITextComponent object, CompoundNBT tag) {
+                if (object != null) {
+                    tag.putString(name, ITextComponent.Serializer.toJson(object));
+                }
+            }
+
+            @Override
+            public ITextComponent readPersistedField(String name, CompoundNBT tag) {
+                return ITextComponent.Serializer.fromJson(tag.getString(name));
+            }
+
+            @Override
+            public ITextComponent getDefaultValue() {
                 return null;
             }
         });
