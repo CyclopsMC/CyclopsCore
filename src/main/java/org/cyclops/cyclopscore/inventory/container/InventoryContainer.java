@@ -18,8 +18,14 @@ public abstract class InventoryContainer extends ContainerExtended {
 	public InventoryContainer(@Nullable ContainerType<?> type, int id, PlayerInventory playerInventory, IInventory inventory) {
 		super(type, id, playerInventory);
 		this.inventory = inventory;
-		assertInventorySize(inventory, getSizeInventory());
+		if (isAssertInventorySize()) {
+			assertInventorySize(inventory, getSizeInventory());
+		}
 		this.inventory.openInventory(playerInventory.player);
+	}
+
+	protected boolean isAssertInventorySize() {
+		return true;
 	}
 
 	public IInventory getContainerInventory() {
