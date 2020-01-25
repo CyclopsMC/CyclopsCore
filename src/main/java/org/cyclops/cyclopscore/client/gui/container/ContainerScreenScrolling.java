@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.client.gui.container;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.util.text.ITextComponent;
@@ -12,6 +11,7 @@ import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.inventory.container.ScrollingInventoryContainer;
 import org.lwjgl.glfw.GLFW;
 
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -62,7 +62,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
             getContainer().updateFilter("");
             this.scrollbar = new WidgetScrollBar(this.guiLeft + getScrollX(), this.guiTop + getScrollY(), getScrollHeight(),
                     L10NHelpers.localize("gui.cyclopscore.scrollbar"), getContainer(),
-                    getContainer().getPageSize(), isScrollAnywhere());
+                    getContainer().getPageSize(), getScrollRegion());
             this.scrollbar.setTotalRows(getContainer().getFilteredItemCount() / getContainer().getColumns());
         }
 
@@ -71,10 +71,10 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     /**
-     * @return If scrolling should be possible, even if the mouse is not hovering over the scrollbar.
+     * @return A custom region in which scrolling should also be allowed next to the scrollbar itself.
      */
-    protected boolean isScrollAnywhere() {
-        return false;
+    protected Rectangle getScrollRegion() {
+        return null;
     }
 
     @Override

@@ -6,6 +6,7 @@ import net.minecraft.util.math.MathHelper;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 
 /**
  * A reusable scrollbar for screens.
@@ -27,7 +28,8 @@ public class WidgetScrollBar extends Widget {
     private final int height;
     @Nullable
     private final IScrollCallback scrollCallback;
-    private final boolean scrollAnywhere;
+    @Nullable
+    private final Rectangle scollRegion;
 
     private int totalRows;
     private int visibleRows;
@@ -37,17 +39,17 @@ public class WidgetScrollBar extends Widget {
 
     public WidgetScrollBar(int x, int y, int height, String narrationMessage,
                            @Nullable IScrollCallback scrollCallback, int visibleRows) {
-        this(x, y, height, narrationMessage, scrollCallback, visibleRows, false);
+        this(x, y, height, narrationMessage, scrollCallback, visibleRows, null);
     }
 
     public WidgetScrollBar(int x, int y, int height, String narrationMessage,
-                           @Nullable IScrollCallback scrollCallback, int visibleRows, boolean scrollAnywhere) {
+                           @Nullable IScrollCallback scrollCallback, int visibleRows, Rectangle scollRegion) {
         super(x, y, WidgetScrollBar.SCROLL_BUTTON_WIDTH, height, narrationMessage);
         this.x = x;
         this.y = y;
         this.height = height;
         this.scrollCallback = scrollCallback;
-        this.scrollAnywhere = scrollAnywhere;
+        this.scollRegion = scollRegion;
 
         this.currentScroll = 0;
         this.isScrolling = false;
@@ -55,16 +57,14 @@ public class WidgetScrollBar extends Widget {
         setVisibleRows(visibleRows);
     }
 
-    /**
-     * @return If scrolling should be possible, even if the mouse is not hovering over the scrollbar.
-     */
-    public boolean isScrollAnywhere() {
-        return scrollAnywhere;
-    }
-
     @Override
     public boolean isMouseOver(double x, double y) {
-        return this.isScrollAnywhere() || super.isMouseOver(x, y);
+        if (scollRegion != null) {
+            if (RenderHelpers.isPointInRegion(scollRegion, new Point((int) x, (int) y))) {
+                return true;
+            }
+        }
+        return super.isMouseOver(x, y);
     }
 
     /**
