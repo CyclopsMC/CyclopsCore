@@ -99,4 +99,10 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
         setActiveElement((activeElement - 1 + elements.size()) % elements.size());
     }
 
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
+        return arrowLeft.mouseClicked(mouseX, mouseY, mouseButton)
+                || arrowRight.mouseClicked(mouseX, mouseY, mouseButton)
+                || super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
 }
