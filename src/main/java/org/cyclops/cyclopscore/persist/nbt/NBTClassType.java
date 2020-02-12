@@ -412,7 +412,7 @@ public abstract class NBTClassType<T> {
                 int dim = dimPos.getInteger("dim");
                 World world;
                 if(!MinecraftHelpers.isClientSide()) {
-                    if (FMLCommonHandler.instance().getMinecraftServerInstance().worlds.length >= dim) {
+                    if (dim >= FMLCommonHandler.instance().getMinecraftServerInstance().worlds.length) {
                         dim = 0;
                     }
                     world = FMLCommonHandler.instance().getMinecraftServerInstance().worlds[dim];
