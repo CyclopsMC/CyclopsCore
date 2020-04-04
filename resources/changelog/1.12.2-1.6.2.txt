@@ -1,0 +1,4 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix crash on WeightedItemStack with empty stacks, Closes CyclopsMC/CyclopsCore#141
