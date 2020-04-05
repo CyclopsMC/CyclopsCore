@@ -3,31 +3,36 @@ package org.cyclops.cyclopscore.infobook;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.minecraft.client.Minecraft;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.ICraftingRecipe;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.util.Strings;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
+import org.cyclops.cyclopscore.infobook.condition.ConfigSectionConditionHandler;
+import org.cyclops.cyclopscore.infobook.condition.FluidSectionConditionHandler;
+import org.cyclops.cyclopscore.infobook.condition.ISectionConditionHandler;
+import org.cyclops.cyclopscore.infobook.condition.ItemSectionConditionHandler;
+import org.cyclops.cyclopscore.infobook.condition.ModSectionConditionHandler;
+import org.cyclops.cyclopscore.infobook.condition.PredefinedSectionConditionHandler;
+import org.cyclops.cyclopscore.infobook.condition.TagSectionConditionHandler;
 import org.cyclops.cyclopscore.infobook.pageelement.*;
 import org.cyclops.cyclopscore.init.ModBase;
-import org.cyclops.cyclopscore.init.RecipeHandler;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
-import org.cyclops.cyclopscore.recipe.custom.component.DummyPropertiesComponent;
-import org.cyclops.cyclopscore.recipe.custom.component.IngredientRecipeComponent;
-import org.cyclops.cyclopscore.recipe.custom.component.IngredientsRecipeComponent;
-import org.cyclops.cyclopscore.recipe.xml.ConfigRecipeConditionHandler;
-import org.cyclops.cyclopscore.recipe.xml.IRecipeConditionHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -41,9 +46,10 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -58,10 +64,11 @@ public class InfoBookParser {
     private static final Map<String, IAppendixListFactory> APPENDIX_LIST_FACTORIES = Maps.newHashMap();
     private static final Map<String, IAppendixItemFactory> APPENDIX_RECIPELIST_FACTORIES = Maps.newHashMap();
     private static final Map<String, IRewardFactory> REWARD_FACTORIES = Maps.newHashMap();
+    public static final Map<String, ISectionConditionHandler> RECIPE_CONDITION_HANDLERS = Maps.newHashMap();
 
     static {
         // Infosection factories
-        registerFactory("", new IInfoSectionFactory() {
+        registerSectionFactory("", new IInfoSectionFactory() {
 
             @Override
             public InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
@@ -73,7 +80,7 @@ public class InfoBookParser {
         });
 
         // Appendix factories
-        registerFactory("image", new IAppendixFactory() {
+        registerAppendixFactory("image", new IAppendixFactory() {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
@@ -82,33 +89,33 @@ public class InfoBookParser {
             }
 
         });
-        registerFactory("crafting_recipe", new IAppendixFactory() {
+        registerAppendixFactory("crafting_recipe", new IAppendixFactory() {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
                 try {
                     return new CraftingRecipeAppendix(infoBook,
-                            CraftingHelpers.findRecipe(createStack(node, infoBook.getMod().getRecipeHandler()), IRecipeType.CRAFTING, getIndex(node)));
+                            CraftingHelpers.findClientRecipe(createStack(node), IRecipeType.CRAFTING, getIndex(node)));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }
             }
 
         });
-        registerFactory("furnace_recipe", new IAppendixFactory() {
+        registerAppendixFactory("furnace_recipe", new IAppendixFactory() {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
                 try {
                     return new FurnaceRecipeAppendix(infoBook,
-                        CraftingHelpers.findRecipe(createStack(node, infoBook.getMod().getRecipeHandler()), IRecipeType.SMELTING, getIndex(node)));
+                        CraftingHelpers.findClientRecipe(createStack(node), IRecipeType.SMELTING, getIndex(node)));
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }
             }
 
         });
-        registerFactory("advancement_rewards", new InfoBookParser.IAppendixFactory() {
+        registerAppendixFactory("advancement_rewards", new InfoBookParser.IAppendixFactory() {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InfoBookParser.InvalidAppendixException {
@@ -154,7 +161,7 @@ public class InfoBookParser {
             }
         });
 
-        InfoBookParser.registerFactory("keybinding", new InfoBookParser.IAppendixFactory() {
+        InfoBookParser.registerAppendixFactory("keybinding", new InfoBookParser.IAppendixFactory() {
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InfoBookParser.InvalidAppendixException {
                 return new KeyBindingAppendix(infoBook, node.getTextContent());
@@ -162,13 +169,14 @@ public class InfoBookParser {
         });
 
         // Appendix list factories
-        registerFactory("default", new IAppendixListFactory() {
+        registerAppendixListFactory("default", new IAppendixListFactory() {
             @Override
             public List<SectionAppendix> create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
                 List<SectionAppendix> appendixList = Lists.newArrayList();
                 String type = node.getAttribute("type");
-                Collection<IRecipe> recipes = infoBook.getMod().getRecipeHandler().getTaggedRecipes().get(type + ":" + node.getTextContent());
-                for (IRecipe recipe : recipes) {
+                IRecipeType recipeType = Registry.RECIPE_TYPE.getValue(new ResourceLocation(type)).get();
+                Map<ResourceLocation, IRecipe<?>> recipes = Minecraft.getInstance().getConnection().getRecipeManager().getRecipes(recipeType);
+                for (IRecipe<?> recipe : recipes.values()) {
                     try {
                         appendixList.add(createAppendix(infoBook, type, recipe));
                     } catch (InvalidAppendixException e) {
@@ -182,24 +190,12 @@ public class InfoBookParser {
         });
 
         // Appendix item factories
-        registerFactory("crafting_recipe", new IAppendixItemFactory<IngredientsRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent>() {
+        registerAppendixItemFactory("crafting_recipe", new IAppendixItemFactory<CraftingInventory, ICraftingRecipe>() {
 
             @Override
-            public SectionAppendix create(IInfoBook infoBook, IRecipe<IngredientsRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent> recipe) throws InvalidAppendixException {
+            public SectionAppendix create(IInfoBook infoBook, ICraftingRecipe recipe) throws InvalidAppendixException {
                 try {
-                    return new CraftingRecipeAppendix(infoBook, CraftingHelpers.findRecipe(recipe.getOutput().getFirstItemStack(), IRecipeType.CRAFTING, 0));
-                } catch (IllegalArgumentException e) {
-                    throw new InvalidAppendixException(e.getMessage());
-                }
-            }
-
-        });
-        registerFactory("furnace_recipe", new IAppendixItemFactory<IngredientRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent>() {
-
-            @Override
-            public SectionAppendix create(IInfoBook infoBook, IRecipe<IngredientRecipeComponent, IngredientRecipeComponent, DummyPropertiesComponent> recipe) throws InvalidAppendixException {
-                try {
-                    return new FurnaceRecipeAppendix(infoBook, CraftingHelpers.findRecipe(recipe.getOutput().getFirstItemStack(), IRecipeType.SMELTING, 0));
+                    return new CraftingRecipeAppendix(infoBook, recipe);
                 } catch (IllegalArgumentException e) {
                     throw new InvalidAppendixException(e.getMessage());
                 }
@@ -208,13 +204,21 @@ public class InfoBookParser {
         });
 
         // Reward factories
-        registerFactory("item", new IRewardFactory() {
+        registerAppendixRewardFactory("item", new IRewardFactory() {
             @Override
             public IReward create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
-                ItemStack itemStack = InfoBookParser.createStack(node, infoBook.getMod().getRecipeHandler());
+                ItemStack itemStack = InfoBookParser.createStack(node);
                 return new RewardItem(itemStack);
             }
         });
+
+        RECIPE_CONDITION_HANDLERS.put("config", new ConfigSectionConditionHandler());
+        RECIPE_CONDITION_HANDLERS.put("predefined", new PredefinedSectionConditionHandler());
+        RECIPE_CONDITION_HANDLERS.put("mod", new ModSectionConditionHandler());
+        RECIPE_CONDITION_HANDLERS.put("itemtag", new TagSectionConditionHandler<>(ItemTags.getCollection()));
+        RECIPE_CONDITION_HANDLERS.put("blocktag", new TagSectionConditionHandler<>(BlockTags.getCollection()));
+        RECIPE_CONDITION_HANDLERS.put("fluid", new FluidSectionConditionHandler());
+        RECIPE_CONDITION_HANDLERS.put("item", new ItemSectionConditionHandler());
     }
 
     /**
@@ -222,7 +226,7 @@ public class InfoBookParser {
      * @param name The unique name for this factory, make sure to namespace this to your mod to avoid collisions.
      * @param factory The factory
      */
-    public static void registerFactory(String name, IInfoSectionFactory factory) {
+    public static void registerSectionFactory(String name, IInfoSectionFactory factory) {
         if(SECTION_FACTORIES.put(name, factory) != null) {
             throw new RuntimeException(String.format("A section factory with name %s was registered while another one already existed!", name));
         }
@@ -242,7 +246,7 @@ public class InfoBookParser {
      * @param name The unique name for this factory, make sure to namespace this to your mod to avoid collisions.
      * @param factory The factory
      */
-    public static void registerFactory(String name, IAppendixFactory factory) {
+    public static void registerAppendixFactory(String name, IAppendixFactory factory) {
         if(APPENDIX_FACTORIES.put(name, factory) != null) {
             throw new RuntimeException(String.format("An appendix factory with name %s was registered while another one already existed!", name));
         }
@@ -253,10 +257,30 @@ public class InfoBookParser {
      * @param name The unique name for this factory, make sure to namespace this to your mod to avoid collisions.
      * @param factory The factory
      */
-    public static void registerFactory(String name, IAppendixItemFactory factory) {
+    public static void registerAppendixItemFactory(String name, IAppendixItemFactory factory) {
         if(APPENDIX_RECIPELIST_FACTORIES.put(name, factory) != null) {
             throw new RuntimeException(String.format("An appendix item factory with name %s was registered while another one already existed!", name));
         }
+    }
+
+    /**
+     * Register new appendix recipe factories.
+     * @param name The unique name for this factory, make sure to namespace this to your mod to avoid collisions.
+     * @param recipeType The recipe type
+     * @param factory The factory
+     * @param <C> The recipe inventory type
+     * @param <R> The recipe type
+     */
+    public static <C extends IInventory, R extends IRecipe<C>> void registerAppendixRecipeFactories(String name, IRecipeType<R> recipeType, IAppendixItemFactory<C, R> factory) {
+        registerAppendixFactory(name, (infoBook, node) -> {
+            String recipeName = node.getTextContent();
+            Optional<R> recipe = CraftingHelpers.getClientRecipe(recipeType, new ResourceLocation(recipeName));
+            if (!recipe.isPresent()) {
+                throw new InvalidAppendixException("Could not find " + name + " recipe for " + recipeName);
+            }
+            return factory.create(infoBook, recipe.get());
+        });
+        registerAppendixItemFactory(name, factory);
     }
 
     /**
@@ -264,7 +288,7 @@ public class InfoBookParser {
      * @param name The unique name for this factory, make sure to namespace this to your mod to avoid collisions.
      * @param factory The factory
      */
-    public static void registerFactory(String name, IAppendixListFactory factory) {
+    public static void registerAppendixListFactory(String name, IAppendixListFactory factory) {
         if(APPENDIX_LIST_FACTORIES.put(name, factory) != null) {
             throw new RuntimeException(String.format("An appendix item factory with name %s was registered while another one already existed!", name));
         }
@@ -275,7 +299,7 @@ public class InfoBookParser {
      * @param name The unique name for this factory, make sure to namespace this to your mod to avoid collisions.
      * @param factory The factory
      */
-    public static void registerFactory(String name, IRewardFactory factory) {
+    public static void registerAppendixRewardFactory(String name, IRewardFactory factory) {
         if(REWARD_FACTORIES.put(name, factory) != null) {
             throw new RuntimeException(String.format("A reward factory with name %s was registered while another one already existed!", name));
         }
@@ -299,21 +323,16 @@ public class InfoBookParser {
      * Interpreted attributes:
      * amount: the stacksize, defaults to 1.
      * @param node A node
-     * @param recipeHandler A recipe handler.
      * @return An itemstack.
      * @throws InvalidAppendixException If the node was incorrectly structured.
      */
-    public static ItemStack createStack(Element node, RecipeHandler recipeHandler) throws InvalidAppendixException {
+    public static ItemStack createStack(Element node) throws InvalidAppendixException {
         int amount = 1;
         if(!node.getAttribute("amount").isEmpty()) {
             amount = Integer.parseInt(node.getAttribute("amount"));
         }
         if("true".equals(node.getAttribute("predefined"))) {
-            ItemStack itemStack = recipeHandler.getPredefinedItem(node.getTextContent());
-            if(itemStack == null) {
-                throw new InvalidAppendixException("Could not find predefined item " + node.getTextContent());
-            }
-            return itemStack;
+            throw new UnsupportedOperationException("Could not find predefined item " + node.getTextContent());
         }
         Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(node.getTextContent()));
         if(item == null) {
@@ -325,16 +344,15 @@ public class InfoBookParser {
     /**
      * Get a list of stacks from the given ingredient node.
      * @param ingredientNode A node that can contain 'item' nodes.
-     * @param recipeHandler A recipe handler.
      * @return The list of stacks.
      * @throws InvalidAppendixException If one of the item nodes was invalid
      */
-    public static NonNullList<ItemStack> createStacksFromIngredient(Element ingredientNode, RecipeHandler recipeHandler)
+    public static NonNullList<ItemStack> createStacksFromIngredient(Element ingredientNode)
             throws InvalidAppendixException {
         NonNullList<ItemStack> stacks = NonNullList.create();
         NodeList nodes = ingredientNode.getElementsByTagName("item");
         for (int i = 0; i < nodes.getLength(); i++) {
-            stacks.add(InfoBookParser.createStack((Element) nodes.item(i), recipeHandler));
+            stacks.add(InfoBookParser.createStack((Element) nodes.item(i)));
         }
         return stacks;
     }
@@ -342,13 +360,12 @@ public class InfoBookParser {
     /**
      * Get the item from the given ingredient node.
      * @param ingredientNode A node that can contain 'item' nodes.
-     * @param recipeHandler A recipe handler.
      * @return The stack.
      * @throws InvalidAppendixException If not exactly one item node was found or if the item node was invalid.
      */
-    public static ItemStack createStackFromIngredient(Element ingredientNode, RecipeHandler recipeHandler)
+    public static ItemStack createStackFromIngredient(Element ingredientNode)
             throws InvalidAppendixException {
-        NonNullList<ItemStack> stacks = createStacksFromIngredient(ingredientNode, recipeHandler);
+        NonNullList<ItemStack> stacks = createStacksFromIngredient(ingredientNode);
         if (stacks.size() != 1) {
             throw new InvalidAppendixException("At least one item node is required");
         }
@@ -358,25 +375,23 @@ public class InfoBookParser {
     /**
      * Get the item from the given ingredient node.
      * @param ingredientNode A node that can contain 'item' nodes.
-     * @param recipeHandler A recipe handler.
      * @return The valid stack.
      */
-    public static ItemStack createOptionalStackFromIngredient(Element ingredientNode, RecipeHandler recipeHandler) {
-        return invalidAppendixExceptionThrowableOr(() -> createStackFromIngredient(ingredientNode, recipeHandler), ItemStack.EMPTY);
+    public static ItemStack createOptionalStackFromIngredient(Element ingredientNode) {
+        return invalidAppendixExceptionThrowableOr(() -> createStackFromIngredient(ingredientNode), ItemStack.EMPTY);
     }
 
     /**
      * Get a list of stacks from the given ingredient node.
      * @param ingredientNode A node that can contain 'item' nodes.
-     * @param recipeHandler A recipe handler.
      * @return The list of valid stacks.
      */
-    public static NonNullList<ItemStack> createOptionalStacksFromIngredient(Element ingredientNode, RecipeHandler recipeHandler) {
+    public static NonNullList<ItemStack> createOptionalStacksFromIngredient(Element ingredientNode) {
         NonNullList<ItemStack> stacks = NonNullList.create();
         NodeList nodes = ingredientNode.getElementsByTagName("item");
         for (int i = 0; i < nodes.getLength(); i++) {
             try {
-                stacks.add(createStackFromIngredient((Element) nodes.item(i), recipeHandler));
+                stacks.add(createStackFromIngredient((Element) nodes.item(i)));
             } catch (InvalidAppendixException e) {
                 // Ignore element
             }
@@ -387,27 +402,25 @@ public class InfoBookParser {
     /**
      * Get the ingredient from the given node.
      * @param node A node
-     * @param recipeHandler A recipe handler
      * @return An ingredient
      * @throws InvalidAppendixException If the node was incorrectly structured.
      */
-    public static Ingredient createIngredient(Element node, RecipeHandler recipeHandler) throws InvalidAppendixException {
-        return Ingredient.fromStacks(createStack(node, recipeHandler));
+    public static Ingredient createIngredient(Element node) throws InvalidAppendixException {
+        return Ingredient.fromStacks(createStack(node));
     }
 
     /**
      * Get a list of ingredients from the given ingredient node.
      * @param ingredientNode A node that can contain 'item' nodes.
-     * @param recipeHandler A recipe handler.
      * @return The list of ingredients.
      * @throws InvalidAppendixException If one of the item nodes was invalid
      */
-    public static NonNullList<Ingredient> createIngredientsFromIngredient(Element ingredientNode, RecipeHandler recipeHandler)
+    public static NonNullList<Ingredient> createIngredientsFromIngredient(Element ingredientNode)
             throws InvalidAppendixException {
         NonNullList<Ingredient> ingredients = NonNullList.create();
         NodeList nodes = ingredientNode.getElementsByTagName("item");
         for (int i = 0; i < nodes.getLength(); i++) {
-            ingredients.add(InfoBookParser.createIngredient((Element) nodes.item(i), recipeHandler));
+            ingredients.add(InfoBookParser.createIngredient((Element) nodes.item(i)));
         }
         return ingredients;
     }
@@ -415,25 +428,23 @@ public class InfoBookParser {
     /**
      * Get the ingredient from the given ingredient node.
      * @param ingredientNode A node that can contain 'item' nodes.
-     * @param recipeHandler A recipe handler.
      * @return The valid ingredient.
      */
-    public static Ingredient createOptionalIngredientFromIngredient(Element ingredientNode, RecipeHandler recipeHandler) {
-        return invalidAppendixExceptionThrowableOr(() -> createIngredientFromIngredient(ingredientNode, recipeHandler), Ingredient.EMPTY);
+    public static Ingredient createOptionalIngredientFromIngredient(Element ingredientNode) {
+        return invalidAppendixExceptionThrowableOr(() -> createIngredientFromIngredient(ingredientNode), Ingredient.EMPTY);
     }
 
     /**
      * Get a list of ingredients from the given ingredient node.
      * @param ingredientNode A node that can contain 'item' nodes.
-     * @param recipeHandler A recipe handler.
      * @return The list of valid ingredients.
      */
-    public static NonNullList<Ingredient> createOptionalIngredientsFromIngredient(Element ingredientNode, RecipeHandler recipeHandler) {
+    public static NonNullList<Ingredient> createOptionalIngredientsFromIngredient(Element ingredientNode) {
         NonNullList<Ingredient> ingredients = NonNullList.create();
         NodeList nodes = ingredientNode.getElementsByTagName("item");
         for (int i = 0; i < nodes.getLength(); i++) {
             try {
-                ingredients.add(createIngredientFromIngredient((Element) nodes.item(i), recipeHandler));
+                ingredients.add(createIngredientFromIngredient((Element) nodes.item(i)));
             } catch (InvalidAppendixException e) {
                 // Ignore element
             }
@@ -444,13 +455,12 @@ public class InfoBookParser {
     /**
      * Get the ingredient from the given ingredient node.
      * @param ingredientNode A node that can contain 'item' nodes.
-     * @param recipeHandler A recipe handler.
      * @return The ingredient.
      * @throws InvalidAppendixException If not exactly one item node was found or if the item node was invalid.
      */
-    public static Ingredient createIngredientFromIngredient(Element ingredientNode, RecipeHandler recipeHandler)
+    public static Ingredient createIngredientFromIngredient(Element ingredientNode)
             throws InvalidAppendixException {
-        NonNullList<Ingredient> ingredients = createIngredientsFromIngredient(ingredientNode, recipeHandler);
+        NonNullList<Ingredient> ingredients = createIngredientsFromIngredient(ingredientNode);
         if (ingredients.size() != 1) {
             throw new InvalidAppendixException("At least one item node is required");
         }
@@ -462,11 +472,10 @@ public class InfoBookParser {
      * Interpreted attributes:
      * amount: the fluid amount, defaults to 1000.
      * @param node A node
-     * @param recipeHandler A recipe handler.
      * @return A fluidstack.
      * @throws InvalidAppendixException If the node was incorrectly structured.
      */
-    public static FluidStack createFluidStack(Element node, RecipeHandler recipeHandler) throws InvalidAppendixException {
+    public static FluidStack createFluidStack(Element node) throws InvalidAppendixException {
         int amount = FluidHelpers.BUCKET_VOLUME;
         if(!node.getAttribute("amount").isEmpty()) {
             amount = Integer.parseInt(node.getAttribute("amount"));
@@ -481,16 +490,15 @@ public class InfoBookParser {
     /**
      * Get a list of fluidstacks from the given ingredient node.
      * @param ingredientNode A node that can contain 'fluid' nodes.
-     * @param recipeHandler A recipe handler.
      * @return The list of fluidstacks.
      * @throws InvalidAppendixException If one of the fluid nodes was invalid
      */
-    public static List<FluidStack> createFluidStacksFromIngredient(Element ingredientNode, RecipeHandler recipeHandler)
+    public static List<FluidStack> createFluidStacksFromIngredient(Element ingredientNode)
             throws InvalidAppendixException {
         List<FluidStack> stacks = NonNullList.create();
         NodeList nodes = ingredientNode.getElementsByTagName("fluid");
         for (int i = 0; i < nodes.getLength(); i++) {
-            stacks.add(InfoBookParser.createFluidStack((Element) nodes.item(i), recipeHandler));
+            stacks.add(InfoBookParser.createFluidStack((Element) nodes.item(i)));
         }
         return stacks;
     }
@@ -498,14 +506,13 @@ public class InfoBookParser {
     /**
      * Get the fluidstack from the given ingredient node.
      * @param ingredientNode A node that can contain 'fluid' nodes.
-     * @param recipeHandler A recipe handler.
      * @return The ingredient.
      * @throws InvalidAppendixException If not exactly one fluid node was found or if the fluid node was invalid.
      */
     @Nullable
-    public static FluidStack createFluidStackFromIngredient(Element ingredientNode, RecipeHandler recipeHandler)
+    public static FluidStack createFluidStackFromIngredient(Element ingredientNode)
             throws InvalidAppendixException {
-        List<FluidStack> stacks = createFluidStacksFromIngredient(ingredientNode, recipeHandler);
+        List<FluidStack> stacks = createFluidStacksFromIngredient(ingredientNode);
         if (stacks.size() != 1) {
             throw new InvalidAppendixException("At least one fluid node is required");
         }
@@ -515,26 +522,24 @@ public class InfoBookParser {
     /**
      * Get the fluidstack from the given ingredient node.
      * @param ingredientNode A node that can contain 'fluid' nodes.
-     * @param recipeHandler A recipe handler.
      * @return The valid fluidstack.
      */
     @Nullable
-    public static FluidStack createOptionalFluidStackFromIngredient(Element ingredientNode, RecipeHandler recipeHandler) {
-        return invalidAppendixExceptionThrowableOr(() -> createFluidStackFromIngredient(ingredientNode, recipeHandler), null);
+    public static FluidStack createOptionalFluidStackFromIngredient(Element ingredientNode) {
+        return invalidAppendixExceptionThrowableOr(() -> createFluidStackFromIngredient(ingredientNode), null);
     }
 
     /**
      * Get a list of fluidstacks from the given ingredient node.
      * @param ingredientNode A node that can contain 'fluid' nodes.
-     * @param recipeHandler A recipe handler.
      * @return The list of valid fluidstacks.
      */
-    public static List<FluidStack> createOptionalFluidStacksFromIngredient(Element ingredientNode, RecipeHandler recipeHandler) {
+    public static List<FluidStack> createOptionalFluidStacksFromIngredient(Element ingredientNode) {
         List<FluidStack> stacks = NonNullList.create();
         NodeList nodes = ingredientNode.getElementsByTagName("fluid");
         for (int i = 0; i < nodes.getLength(); i++) {
             try {
-                stacks.add(createFluidStackFromIngredient((Element) nodes.item(i), recipeHandler));
+                stacks.add(createFluidStackFromIngredient((Element) nodes.item(i)));
             } catch (InvalidAppendixException e) {
                 // Ignore element
             }
@@ -624,13 +629,13 @@ public class InfoBookParser {
                     tagString = split[1];
                 }
 
-                IRecipeConditionHandler conditionHandler = modRecipe.getRecipeHandler().getRecipeConditionHandlers().get(type);
-                if(!conditionHandler.isSatisfied(modRecipe.getRecipeHandler(), tagString)) {
+                ISectionConditionHandler conditionHandler = Objects.requireNonNull(RECIPE_CONDITION_HANDLERS.get(type), "Could not find a recipe condition handler by name " + type);
+                if(!conditionHandler.isSatisfied(modRecipe, tagString)) {
                     return null;
                 }
                 // Yes, I know this isn't very clean, I am currently more interested in eating grapes than abstracting
                 // this whole conditional system.
-                if(conditionHandler instanceof ConfigRecipeConditionHandler) {
+                if(conditionHandler instanceof ConfigSectionConditionHandler) {
                     tagList.add(tag.getTextContent());
                 }
             }
@@ -693,7 +698,7 @@ public class InfoBookParser {
         return factory.create(infoBook, node);
     }
 
-    protected static SectionAppendix createAppendix(IInfoBook infoBook, String type, IRecipe recipe) throws InvalidAppendixException {
+    protected static SectionAppendix createAppendix(IInfoBook infoBook, String type, IRecipe<?> recipe) throws InvalidAppendixException {
         if(type == null) type = "";
         IAppendixItemFactory factory = APPENDIX_RECIPELIST_FACTORIES.get(type);
         if(factory == null) {
@@ -740,9 +745,9 @@ public class InfoBookParser {
 
     }
 
-    public static interface IAppendixItemFactory<I extends IRecipeInput, O extends IRecipeOutput, P extends IRecipeProperties> {
+    public static interface IAppendixItemFactory<C extends IInventory, R extends IRecipe<C>> {
 
-        public SectionAppendix create(IInfoBook infoBook, IRecipe<I, O, P> recipe) throws InvalidAppendixException;
+        public SectionAppendix create(IInfoBook infoBook, R recipe) throws InvalidAppendixException;
 
     }
 

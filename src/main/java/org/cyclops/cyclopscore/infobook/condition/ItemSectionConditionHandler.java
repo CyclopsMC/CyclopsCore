@@ -1,18 +1,18 @@
-package org.cyclops.cyclopscore.recipe.xml;
+package org.cyclops.cyclopscore.infobook.condition;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.cyclops.cyclopscore.init.RecipeHandler;
+import org.cyclops.cyclopscore.init.ModBase;
 
 /**
  * Condition handler for checking if an item has been registered.
  * @author rubensworks
  *
  */
-public class ItemConditionHandler implements IRecipeConditionHandler {
+public class ItemSectionConditionHandler implements ISectionConditionHandler {
 
 	@Override
-	public boolean isSatisfied(RecipeHandler recipeHandler, String param) {
+	public boolean isSatisfied(ModBase<?> mod, String param) {
 		return ForgeRegistries.ITEMS.containsKey(new ResourceLocation(param));
 	}
 

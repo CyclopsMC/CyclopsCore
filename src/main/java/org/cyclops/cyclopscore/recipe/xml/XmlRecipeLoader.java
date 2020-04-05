@@ -3,6 +3,8 @@ package org.cyclops.cyclopscore.recipe.xml;
 import com.google.common.collect.Lists;
 import lombok.Getter;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.infobook.InfoBookParser;
+import org.cyclops.cyclopscore.infobook.condition.ISectionConditionHandler;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.init.RecipeHandler;
 import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
@@ -137,13 +139,13 @@ public class XmlRecipeLoader {
 		while(j < conditions.getLength() && enable) {
 			Node condition = conditions.item(j);
 			String conditionType = condition.getAttributes().getNamedItem("type").getTextContent();
-			IRecipeConditionHandler handler = recipeHandler.getRecipeConditionHandlers().get(conditionType);
+			ISectionConditionHandler handler = InfoBookParser.RECIPE_CONDITION_HANDLERS.get(conditionType);
 			if(handler == null) {
 				throw new XmlRecipeException(String.format(
 						"Could not find a recipe condition handler of type '%s'", conditionType));
 			}
 			String param = condition.getTextContent();
-			enable = handler.isSatisfied(recipeHandler, param);
+			enable = handler.isSatisfied(getMod(), param);
 			j++;
 		}
 		return enable;
@@ -159,7 +161,7 @@ public class XmlRecipeLoader {
 		IRecipe recipeHolder = handler.loadRecipe(recipeHandler, recipe);
 		if(recipeHolder != null) {
 			for (String tag : getTags(recipe)) {
-				getMod().getRecipeHandler().getTaggedRecipes().put(handler.getCategoryId() + ":" + tag, recipeHolder);
+				//getMod().getRecipeHandler().getTaggedRecipes().put(handler.getCategoryId() + ":" + tag, recipeHolder);
 			}
 		}
     }

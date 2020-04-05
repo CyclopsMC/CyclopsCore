@@ -1,10 +1,12 @@
 package org.cyclops.cyclopscore.infobook;
 
 import com.google.common.collect.Maps;
+import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;
@@ -41,16 +43,13 @@ public class InfoBookRegistry implements IInfoBookRegistry {
         return bookRoots.get(infoBook);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onRegistryEvent(RegistryEvent.Register event) {
-        // Load _after_ recipes are loaded
-        if (event.getRegistry() == ForgeRegistries.RECIPE_SERIALIZERS) {
-            for (Map.Entry<IInfoBook, String> entry : bookPaths.entrySet()) {
-                bookRoots.put(entry.getKey(), InfoBookParser.initializeInfoBook(entry.getKey(), entry.getValue(), null));
-                // Reset the infobook history
-                entry.getKey().setCurrentSection(null);
-            }
-
+    @SubscribeEvent
+    public void onRecipesLoaded(RecipesUpdatedEvent event) {
+        // Load after recipes are loaded client-side
+        for (Map.Entry<IInfoBook, String> entry : bookPaths.entrySet()) {
+            bookRoots.put(entry.getKey(), InfoBookParser.initializeInfoBook(entry.getKey(), entry.getValue(), null));
+            // Reset the infobook history
+            entry.getKey().setCurrentSection(null);
         }
     }
 }

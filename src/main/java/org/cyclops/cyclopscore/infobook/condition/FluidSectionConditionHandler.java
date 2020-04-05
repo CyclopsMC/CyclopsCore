@@ -1,18 +1,18 @@
-package org.cyclops.cyclopscore.recipe.xml;
+package org.cyclops.cyclopscore.infobook.condition;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.cyclops.cyclopscore.init.RecipeHandler;
+import org.cyclops.cyclopscore.init.ModBase;
 
 /**
  * Condition handler for checking if a fluid has been registered.
  * @author rubensworks
  *
  */
-public class FluidConditionHandler implements IRecipeConditionHandler {
+public class FluidSectionConditionHandler implements ISectionConditionHandler {
 
 	@Override
-	public boolean isSatisfied(RecipeHandler recipeHandler, String param) {
+	public boolean isSatisfied(ModBase<?> mod, String param) {
 		return ForgeRegistries.FLUIDS.containsKey(new ResourceLocation(param));
 	}
 

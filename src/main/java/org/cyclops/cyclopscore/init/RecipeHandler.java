@@ -36,7 +36,6 @@ public class RecipeHandler {
 
     private final Multimap<String, IRecipe> taggedRecipes = LinkedListMultimap.create();
     private final Map<String, IRecipeTypeHandler> recipeTypeHandlers = Maps.newHashMap();
-    private final Map<String, IRecipeConditionHandler> recipeConditionHandlers = Maps.newHashMap();
     private final Map<String, ItemStack> predefinedItems = Maps.newHashMap();
     private final Set<String> predefinedValues = Sets.newHashSet();
     private final ModBase mod;
@@ -50,21 +49,13 @@ public class RecipeHandler {
     public RecipeHandler(ModBase mod, String... fileNames) {
         this.mod = mod;
         this.recipeFiles = Lists.newArrayList(fileNames);
-        registerHandlers(recipeTypeHandlers, recipeConditionHandlers);
+        registerHandlers(recipeTypeHandlers);
     }
 
-    protected void registerHandlers(Map<String, IRecipeTypeHandler> recipeTypeHandlers, Map<String, IRecipeConditionHandler> recipeConditionHandlers) {
+    protected void registerHandlers(Map<String, IRecipeTypeHandler> recipeTypeHandlers) {
         recipeTypeHandlers.put("shaped", new ShapedRecipeTypeHandler());
         recipeTypeHandlers.put("shapeless", new ShapelessRecipeTypeHandler());
         recipeTypeHandlers.put("smelting", new SmeltingRecipeTypeHandler());
-
-        recipeConditionHandlers.put("config", new ConfigRecipeConditionHandler());
-        recipeConditionHandlers.put("predefined", new PredefinedRecipeConditionHandler());
-        recipeConditionHandlers.put("mod", new ModRecipeConditionHandler());
-        recipeConditionHandlers.put("itemtag", new TagConditionHandler<>(ItemTags.getCollection()));
-        recipeConditionHandlers.put("blocktag", new TagConditionHandler<>(BlockTags.getCollection()));
-        recipeConditionHandlers.put("fluid", new FluidConditionHandler());
-        recipeConditionHandlers.put("item", new ItemConditionHandler());
     }
 
     protected XmlRecipeLoader constructXmlRecipeLoader(InputStream is, String fileName) {

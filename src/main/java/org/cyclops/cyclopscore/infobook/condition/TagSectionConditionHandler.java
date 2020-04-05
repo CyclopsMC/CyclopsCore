@@ -1,25 +1,25 @@
-package org.cyclops.cyclopscore.recipe.xml;
+package org.cyclops.cyclopscore.infobook.condition;
 
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagCollection;
 import net.minecraft.util.ResourceLocation;
-import org.cyclops.cyclopscore.init.RecipeHandler;
+import org.cyclops.cyclopscore.init.ModBase;
 
 /**
  * Condition handler for checking if a tag key is present.
  * @author rubensworks
  *
  */
-public class TagConditionHandler<T> implements IRecipeConditionHandler {
+public class TagSectionConditionHandler<T> implements ISectionConditionHandler {
 
 	private final TagCollection<T> tagCollection;
 
-	public TagConditionHandler(TagCollection<T> tagCollection) {
+	public TagSectionConditionHandler(TagCollection<T> tagCollection) {
 		this.tagCollection = tagCollection;
 	}
 
 	@Override
-	public boolean isSatisfied(RecipeHandler recipeHandler, String param) {
+	public boolean isSatisfied(ModBase<?> mod, String param) {
 		Tag<T> collection = this.tagCollection.get(new ResourceLocation(param));
 		return collection != null && collection.getAllElements().size() > 0;
 	}

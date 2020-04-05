@@ -22,6 +22,7 @@ import org.cyclops.cyclopscore.infobook.InfoSection;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +51,10 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
     protected int getTick(ScreenInfoBook gui) {
         return gui.getTick() / TICK_DELAY;
+    }
+
+    protected ItemStack prepareItemStacks(ItemStack[] itemStacks, int tick) {
+        return prepareItemStacks(Arrays.asList(itemStacks), tick);
     }
 
     protected ItemStack prepareItemStacks(List<ItemStack> itemStacks, int tick) {
@@ -90,7 +95,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     public static void renderItemForButton(ScreenInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, ItemButton button, float chance) {
         if(renderOverlays) gui.drawOuterBorder(x, y, SLOT_SIZE, SLOT_SIZE, 1, 1, 1, 0.2f);
 
-        if (itemStack != null) {
+        if (!itemStack.isEmpty()) {
             ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
@@ -129,7 +134,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     public static void renderFluidForButton(ScreenInfoBook gui, int x, int y, FluidStack fluidStack, int mx, int my, boolean renderOverlays, FluidButton button) {
         if(renderOverlays) gui.drawOuterBorder(x, y, SLOT_SIZE, SLOT_SIZE, 1, 1, 1, 0.2f);
 
-        if (fluidStack != null) {
+        if (!fluidStack.isEmpty()) {
             GuiHelpers.renderFluidSlot(gui, fluidStack, x, y);
 
             if (button != null && renderOverlays) button.update(x, y, fluidStack, gui);
@@ -139,7 +144,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     @OnlyIn(Dist.CLIENT)
     public static void renderItemTooltip(ScreenInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my) {
         GlStateManager.pushMatrix();
-        if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && itemStack != null ) {
+        if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && !itemStack.isEmpty() ) {
             gui.renderTooltip(itemStack, mx, my);
         }
         GlStateManager.popMatrix();
@@ -154,7 +159,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     @OnlyIn(Dist.CLIENT)
     public static void renderFluidTooltip(ScreenInfoBook gui, int x, int y, FluidStack fluidStack, int mx, int my) {
         GlStateManager.pushMatrix();
-        if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && fluidStack != null ) {
+        if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && !fluidStack.isEmpty() ) {
             List<String> lines = Lists.newArrayList();
             lines.add(fluidStack.getFluid().getAttributes().getRarity(fluidStack).color + L10NHelpers.localize(fluidStack.getTranslationKey()));
             lines.add(TextFormatting.GRAY.toString() + fluidStack.getAmount() + " mB");
