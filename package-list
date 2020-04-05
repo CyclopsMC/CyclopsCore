@@ -63,6 +63,7 @@ org.cyclops.cyclopscore.recipe.custom
 org.cyclops.cyclopscore.recipe.custom.api
 org.cyclops.cyclopscore.recipe.custom.component
 org.cyclops.cyclopscore.recipe.event
+org.cyclops.cyclopscore.recipe.type
 org.cyclops.cyclopscore.recipe.xml
 org.cyclops.cyclopscore.tileentity
 org.cyclops.cyclopscore.tracking
