@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.helper;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
@@ -10,14 +11,17 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -27,9 +31,25 @@ import java.util.concurrent.TimeUnit;
  */
 public class CraftingHelpers {
 
-    public static <C extends IInventory, T extends IRecipe<C>> IRecipe<C> findRecipe(ItemStack itemStack, IRecipeType<T> recipeType, int index) throws IllegalArgumentException {
+    @OnlyIn(Dist.CLIENT)
+    public static <C extends IInventory, T extends IRecipe<C>> Optional<T> findServerRecipe(IRecipeType<T> recipeType, C container, World world) {
+        return world.getRecipeManager().getRecipe(recipeType, container, world);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static <C extends IInventory, T extends IRecipe<C>> Optional<T> getClientRecipe(IRecipeType<T> recipeType, ResourceLocation recipeName) {
+        return (Optional<T>) Optional.ofNullable(Minecraft.getInstance().getConnection().getRecipeManager().getRecipes(recipeType).get(recipeName));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static <C extends IInventory, T extends IRecipe<C>> Collection<T> getClientRecipes(IRecipeType<T> recipeType) {
+        return (Collection<T>) Minecraft.getInstance().getConnection().getRecipeManager().getRecipes(recipeType).values();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static <C extends IInventory, T extends IRecipe<C>> T findClientRecipe(ItemStack itemStack, IRecipeType<T> recipeType, int index) throws IllegalArgumentException {
         int indexAttempt = index;
-        for(IRecipe<C> recipe : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipes(recipeType).values()) {
+        for(T recipe : getClientRecipes(recipeType)) {
             if(ItemStack.areItemStacksEqual(recipe.getRecipeOutput(), itemStack) && indexAttempt-- == 0) {
                 return recipe;
             }
