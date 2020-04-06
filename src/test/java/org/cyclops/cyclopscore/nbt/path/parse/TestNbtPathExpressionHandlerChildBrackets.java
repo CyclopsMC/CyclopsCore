@@ -135,7 +135,7 @@ public class TestNbtPathExpressionHandlerChildBrackets {
     @Test
     public void testExpressionStreamSingleLeaf() {
         INbtPathExpression expression = handler.handlePrefixOf("aa[\"abc\"]", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
+        assertThat(expression.match(Stream.of(StringNBT.valueOf("a"))).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
     }
 
@@ -143,9 +143,9 @@ public class TestNbtPathExpressionHandlerChildBrackets {
     public void testExpressionStreamMultipleLeaf() {
         INbtPathExpression expression = handler.handlePrefixOf("aa[\"abc\"]", 2).getPrefixExpression();
         Stream<INBT> stream = Stream.of(
-                new StringNBT("a"),
-                new StringNBT("b"),
-                new StringNBT("c")
+                StringNBT.valueOf("a"),
+                StringNBT.valueOf("b"),
+                StringNBT.valueOf("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
@@ -188,7 +188,7 @@ public class TestNbtPathExpressionHandlerChildBrackets {
         INbtPathExpression expression = handler.handlePrefixOf("aa[\"abc\"]", 2).getPrefixExpression();
         assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new StringNBT("123")
+                        StringNBT.valueOf("123")
                 )));
     }
 
@@ -209,9 +209,9 @@ public class TestNbtPathExpressionHandlerChildBrackets {
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new StringNBT("1"),
-                        new StringNBT("2"),
-                        new StringNBT("3")
+                        StringNBT.valueOf("1"),
+                        StringNBT.valueOf("2"),
+                        StringNBT.valueOf("3")
                 )));
     }
 
@@ -232,8 +232,8 @@ public class TestNbtPathExpressionHandlerChildBrackets {
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new StringNBT("1"),
-                        new StringNBT("3")
+                        StringNBT.valueOf("1"),
+                        StringNBT.valueOf("3")
                 )));
     }
 

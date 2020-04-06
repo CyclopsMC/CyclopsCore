@@ -33,7 +33,7 @@ public class WorldHelpers {
      */
     //@SideOnly(Side.SERVER)
     public static void setBiome(World world, BlockPos pos, Biome biome) {
-        IChunk chunk = world.getChunk(pos);
+        /*IChunk chunk = world.getChunk(pos);
         if(chunk != null) {
         	BlockPos c = getChunkLocationFromWorldLocation(pos.getX(), 0, pos.getZ());
             int rx = c.getX();
@@ -45,7 +45,8 @@ public class WorldHelpers {
             // world.markBlockRangeForRenderUpdate(pos, pos); // TODO?
         } else {
             CyclopsCore.clog(Level.WARN, "Tried changing biome at non-existing chunk for position " + pos);
-        }
+        }*/
+        throw new UnsupportedOperationException("TODO: reimplement setBiome");
     }
 
 	/**

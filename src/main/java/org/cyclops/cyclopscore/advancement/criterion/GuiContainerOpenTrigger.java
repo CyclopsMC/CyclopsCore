@@ -42,8 +42,8 @@ public class GuiContainerOpenTrigger extends BaseCriterionTrigger<Container, Gui
 
     @SubscribeEvent
     public void onEvent(PlayerContainerEvent.Open event) {
-        if (event.getEntityPlayer() != null && event.getEntityPlayer() instanceof ServerPlayerEntity) {
-            this.trigger((ServerPlayerEntity) event.getEntityPlayer(), event.getContainer());
+        if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayerEntity) {
+            this.trigger((ServerPlayerEntity) event.getPlayer(), event.getContainer());
         }
     }
 

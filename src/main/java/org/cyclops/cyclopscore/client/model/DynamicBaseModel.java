@@ -4,20 +4,14 @@ import com.google.common.primitives.Ints;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.common.model.TRSRTransformation;
-import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.Helpers;
-import org.cyclops.cyclopscore.helper.ModelHelpers;
 
 import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
 import java.awt.*;
 import java.util.Collections;
 import java.util.List;
@@ -230,7 +224,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
                 vertexToInts((float) v4.x, (float) v4.y, (float) v4.z, shadeColor, texture, uvs[(3 + rotation) % 4][0] * 16, uvs[(3 + rotation) % 4][1] * 16)
         );
         ForgeHooksClient.fillNormal(data, side); // This fixes lighting issues when item is rendered in hand/inventory
-        quads.add(new BakedQuad(data, -1, side, texture, false, DefaultVertexFormats.ITEM));
+        quads.add(new BakedQuad(data, -1, side, texture, false));
     }
 
     @Override
@@ -251,14 +245,6 @@ public abstract class DynamicBaseModel implements IBakedModel {
     @Override
     public boolean isBuiltInRenderer() {
         return false;
-    }
-
-    @Override
-    public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
-        TRSRTransformation tr = ModelHelpers.DEFAULT_PERSPECTIVE_TRANSFORMS.get(cameraTransformType);
-        Matrix4f mat = null;
-        if(tr != null && !tr.equals(TRSRTransformation.identity())) mat = TRSRTransformation.blockCornerToCenter(tr).getMatrix(Direction.UP);
-        return Pair.of(this, mat);
     }
 
     @Override

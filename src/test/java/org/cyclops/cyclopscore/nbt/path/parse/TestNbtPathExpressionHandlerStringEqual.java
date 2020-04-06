@@ -72,37 +72,37 @@ public class TestNbtPathExpressionHandlerStringEqual {
     @Test
     public void testExpressionStreamSingleLeafStringInvalid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa == \"abc\"", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 0))));
+        assertThat(expression.match(Stream.of(StringNBT.valueOf("a"))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 0))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafStringValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa == \"abc\"", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new StringNBT("abc"))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 1))));
+        assertThat(expression.match(Stream.of(StringNBT.valueOf("abc"))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 1))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafInt() {
         INbtPathExpression expression = handler.handlePrefixOf("aa == \"abc\"", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new IntNBT(2))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 0))));
+        assertThat(expression.match(Stream.of(IntNBT.valueOf(2))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 0))));
     }
 
     @Test
     public void testExpressionStreamMultipleLeafString() {
         INbtPathExpression expression = handler.handlePrefixOf("aa == \"b\"", 2).getPrefixExpression();
         Stream<INBT> stream = Stream.of(
-                new StringNBT("a"),
-                new StringNBT("b"),
-                new StringNBT("c")
+                StringNBT.valueOf("a"),
+                StringNBT.valueOf("b"),
+                StringNBT.valueOf("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new ByteNBT((byte) 0),
-                        new ByteNBT((byte) 1),
-                        new ByteNBT((byte) 0)
+                        ByteNBT.valueOf((byte) 0),
+                        ByteNBT.valueOf((byte) 1),
+                        ByteNBT.valueOf((byte) 0)
                 )));
     }
 

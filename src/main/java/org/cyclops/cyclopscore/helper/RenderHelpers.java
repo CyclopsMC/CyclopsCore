@@ -13,14 +13,12 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
@@ -204,44 +202,8 @@ public class RenderHelpers {
         }
     }
 
-    /**
-     * Render the given item in the world.
-     * @param itemStack The item stack.
-     */
-    public static void renderItem(ItemStack itemStack) {
-        ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
-        renderItem.renderItem(itemStack, ItemCameraTransforms.TransformType.NONE);
-    }
-
-    /**
-     * Render the given item in the world.
-     * @param itemStack The item stack.
-     * @param transformType A transform type.
-     */
-    public static void renderItem(ItemStack itemStack, ItemCameraTransforms.TransformType transformType) {
-        ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
-        GlStateManager.translatef(8.0F, 8.0F, 0.0F);
-        GlStateManager.scalef(1.0F, 1.0F, -1.0F);
-        GlStateManager.scalef(0.5F, 0.5F, 0.5F);
-        IBakedModel ibakedmodel = renderItem.getItemModelMesher().getItemModel(itemStack);
-        if (ibakedmodel.isGui3d()){
-            GlStateManager.scalef(40.0F, 40.0F, 40.0F);
-            GlStateManager.rotatef(210.0F, 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotatef(-135.0F, 0.0F, 1.0F, 0.0F);
-            GlStateManager.enableLighting();
-        } else {
-            GlStateManager.scalef(64.0F, 64.0F, 64.0F);
-            GlStateManager.rotatef(180.0F, 1.0F, 0.0F, 0.0F);
-            GlStateManager.disableLighting();
-        }
-        renderItem.renderItem(itemStack, transformType);
-    }
-
-    public static final Function<ResourceLocation, TextureAtlasSprite> TEXTURE_GETTER = new Function<ResourceLocation, TextureAtlasSprite>() {
-        public TextureAtlasSprite apply(ResourceLocation location) {
-            return Minecraft.getInstance().getTextureMap().getAtlasSprite(location.toString());
-        }
-    };
+    public static final Function<ResourceLocation, TextureAtlasSprite> TEXTURE_GETTER =
+            location -> Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(location);
 
     /**
      * Get the default icon from a block.
@@ -271,9 +233,9 @@ public class RenderHelpers {
     public static TextureAtlasSprite getFluidIcon(FluidStack fluid, Direction side) {
         if(side == null) side = Direction.UP;
 
-        TextureAtlasSprite icon = TEXTURE_GETTER.apply(fluid.getFluid().getAttributes().getFlowing(fluid));
+        TextureAtlasSprite icon = TEXTURE_GETTER.apply(fluid.getFluid().getAttributes().getFlowingTexture(fluid));
         if(icon == null || (side == Direction.UP || side == Direction.DOWN)) {
-            icon = TEXTURE_GETTER.apply(fluid.getFluid().getAttributes().getStill(fluid));
+            icon = TEXTURE_GETTER.apply(fluid.getFluid().getAttributes().getStillTexture(fluid));
         }
 
         return icon;

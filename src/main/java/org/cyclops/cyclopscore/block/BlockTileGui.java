@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.block;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -24,9 +25,10 @@ public class BlockTileGui extends BlockTile implements IBlockGui {
     }
 
     @Override
-    public boolean onBlockActivated(BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        if (super.onBlockActivated(blockState, world, blockPos, player, hand, rayTraceResult)) {
-            return true;
+    public ActionResultType onBlockActivated(BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+        ActionResultType superActivated = super.onBlockActivated(blockState, world, blockPos, player, hand, rayTraceResult);
+        if (superActivated.isSuccessOrConsume()) {
+            return superActivated;
         }
         return IBlockGui.onBlockActivatedHook(this, this::getContainer, blockState, world, blockPos, player, hand, rayTraceResult);
     }

@@ -1,7 +1,11 @@
 package org.cyclops.cyclopscore.client.render.tileentity;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.Material;
 import net.minecraft.client.renderer.model.Model;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 
 /**
@@ -12,12 +16,14 @@ import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
  */
 public class RenderTileEntityModelBase<T extends CyclopsTileEntity, M extends Model> extends RenderTileEntityModel<T, M> {
 
-    public RenderTileEntityModelBase(M model, ResourceLocation texture) {
-        super(model, texture);
+    public RenderTileEntityModelBase(TileEntityRendererDispatcher renderDispatcher, M model, Material material) {
+        super(renderDispatcher, model, material);
     }
 
     @Override
-    protected void renderModel(T tile, M model, float partialTick, int destroyStage) {
-        model.getRandomModelBox(getWorld().rand).render(1);
+    protected void renderModel(T tile, M model, float partialTick, MatrixStack matrixStack,
+                               IVertexBuilder vertexBuilder, IRenderTypeBuffer buffer,
+                               int combinedLight, int combinedOverlay) {
+        model.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1); // Last params are RGBA
     }
 }

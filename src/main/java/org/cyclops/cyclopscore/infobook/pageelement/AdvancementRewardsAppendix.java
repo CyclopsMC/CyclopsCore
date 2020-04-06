@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -155,7 +155,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
             float g = hovering ? 1.0F : (((float) (gui.getTick() % 20)) / 20) * 0.4F + 0.6F;
             float r = hovering ? 0.2F : 0.7F;
             float b = hovering ? 0.2F : 0.7F;
-            GlStateManager.color3f(r, g, b);
+            RenderSystem.color3f(r, g, b);
             Images.ARROW_DOWN.draw(gui, x, y + offsetY - 11);
             Images.ARROW_DOWN.draw(gui, x + 60, y + offsetY - 11);
 

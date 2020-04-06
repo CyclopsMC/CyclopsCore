@@ -6,6 +6,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.stats.Stat;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -38,10 +39,10 @@ public interface IBlockGui {
         return null;
     }
 
-    public static boolean onBlockActivatedHook(IBlockGui block, IBlockContainerProvider blockContainerProvider, BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+    public static ActionResultType onBlockActivatedHook(IBlockGui block, IBlockContainerProvider blockContainerProvider, BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
         // Drop through if the player is sneaking
-        if (player.isSneaking()) {
-            return false;
+        if (player.isCrouching()) {
+            return ActionResultType.PASS;
         }
 
         if (!world.isRemote()) {
@@ -56,7 +57,7 @@ public interface IBlockGui {
             }
         }
 
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     public static interface IBlockContainerProvider {

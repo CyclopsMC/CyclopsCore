@@ -40,7 +40,7 @@ public interface IRenderBauble {
 		 * Use for renders under {@link RenderType#BODY}.
 		 */
 		public static void rotateIfSneaking(PlayerEntity player) {
-			if(player.isSneaking())
+			if(player.isCrouching())
 				applySneakingRotation();
 		}
 

@@ -7,8 +7,6 @@ import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Slot that is used to hold armor.
@@ -34,6 +32,7 @@ public class SlotArmor extends Slot {
         super(inventory, index, x, y);
         this.armorType = armorType;
         this.player = player;
+        setBackground(PlayerContainer.LOCATION_BLOCKS_TEXTURE, PlayerContainer.ARMOR_SLOT_TEXTURES[armorType.getIndex()]);
     }
 
     @Override
@@ -46,12 +45,6 @@ public class SlotArmor extends Slot {
         if (itemStack == null) return false;
         // return itemStack.getItem().isValidArmor(itemStack, armorType, player); // TODO
         return itemStack.getItem() instanceof ArmorItem;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public String getSlotTexture() {
-        return PlayerContainer.ARMOR_SLOT_TEXTURES[armorType.getIndex()];
     }
     
 }

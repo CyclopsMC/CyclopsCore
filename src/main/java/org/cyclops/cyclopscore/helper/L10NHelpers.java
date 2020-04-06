@@ -152,7 +152,7 @@ public final class L10NHelpers {
                     list.add(objectTag);
                 } else {
                     CompoundNBT stringTag = new CompoundNBT();
-                    stringTag.put("value", new StringNBT((String) parameter));
+                    stringTag.put("value", StringNBT.valueOf((String) parameter));
                     stringTag.putString("type", "string");
                     list.add(stringTag);
                 }

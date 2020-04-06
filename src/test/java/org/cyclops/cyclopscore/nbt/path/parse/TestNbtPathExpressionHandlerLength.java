@@ -67,7 +67,7 @@ public class TestNbtPathExpressionHandlerLength {
     @Test
     public void testExpressionStreamSingleNoChildren() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerLength.Expression.INSTANCE;
-        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
+        assertThat(expression.match(Stream.of(StringNBT.valueOf("a"))).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
     }
 
@@ -75,22 +75,22 @@ public class TestNbtPathExpressionHandlerLength {
     public void testExpressionStreamSingleTagList() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerLength.Expression.INSTANCE;
         ListNBT list = new ListNBT();
-        list.add(new StringNBT("a"));
-        list.add(new StringNBT("b"));
-        list.add(new StringNBT("c"));
+        list.add(StringNBT.valueOf("a"));
+        list.add(StringNBT.valueOf("b"));
+        list.add(StringNBT.valueOf("c"));
         assertThat(expression.match(Stream.of(list)).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new IntNBT(3))));
+                is(Lists.newArrayList(IntNBT.valueOf(3))));
     }
 
     @Test
     public void testExpressionStreamSingleTagCompound() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerLength.Expression.INSTANCE;
         CompoundNBT tag = new CompoundNBT();
-        tag.put("1", new StringNBT("a"));
-        tag.put("2", new StringNBT("b"));
-        tag.put("3", new StringNBT("c"));
+        tag.put("1", StringNBT.valueOf("a"));
+        tag.put("2", StringNBT.valueOf("b"));
+        tag.put("3", StringNBT.valueOf("c"));
         assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new IntNBT(3))));
+                is(Lists.newArrayList(IntNBT.valueOf(3))));
     }
 
     @Test
@@ -98,18 +98,18 @@ public class TestNbtPathExpressionHandlerLength {
         INbtPathExpression expression = NbtPathExpressionParseHandlerLength.Expression.INSTANCE;
 
         ListNBT list1 = new ListNBT();
-        list1.add(new StringNBT("a1"));
-        list1.add(new StringNBT("b1"));
-        list1.add(new StringNBT("c1"));
+        list1.add(StringNBT.valueOf("a1"));
+        list1.add(StringNBT.valueOf("b1"));
+        list1.add(StringNBT.valueOf("c1"));
 
         ListNBT list2 = new ListNBT();
-        list2.add(new StringNBT("a2"));
-        list2.add(new StringNBT("b2"));
+        list2.add(StringNBT.valueOf("a2"));
+        list2.add(StringNBT.valueOf("b2"));
 
         ListNBT list3 = new ListNBT();
-        list3.add(new StringNBT("a3"));
-        list3.add(new StringNBT("b3"));
-        list3.add(new StringNBT("c3"));
+        list3.add(StringNBT.valueOf("a3"));
+        list3.add(StringNBT.valueOf("b3"));
+        list3.add(StringNBT.valueOf("c3"));
 
         Stream<INBT> stream = Stream.of(
                 list1,
@@ -118,9 +118,9 @@ public class TestNbtPathExpressionHandlerLength {
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new IntNBT(3),
-                        new IntNBT(2),
-                        new IntNBT(3)
+                        IntNBT.valueOf(3),
+                        IntNBT.valueOf(2),
+                        IntNBT.valueOf(3)
                 )));
     }
 
@@ -129,18 +129,18 @@ public class TestNbtPathExpressionHandlerLength {
         INbtPathExpression expression = NbtPathExpressionParseHandlerLength.Expression.INSTANCE;
 
         CompoundNBT tag1 = new CompoundNBT();
-        tag1.put("1a", new StringNBT("a1"));
-        tag1.put("2a", new StringNBT("b1"));
-        tag1.put("3a", new StringNBT("c1"));
+        tag1.put("1a", StringNBT.valueOf("a1"));
+        tag1.put("2a", StringNBT.valueOf("b1"));
+        tag1.put("3a", StringNBT.valueOf("c1"));
 
         CompoundNBT tag2 = new CompoundNBT();
-        tag2.put("1b", new StringNBT("a2"));
-        tag2.put("2b", new StringNBT("b2"));
+        tag2.put("1b", StringNBT.valueOf("a2"));
+        tag2.put("2b", StringNBT.valueOf("b2"));
 
         CompoundNBT tag3 = new CompoundNBT();
-        tag3.put("1c", new StringNBT("a3"));
-        tag3.put("2c", new StringNBT("b3"));
-        tag3.put("3c", new StringNBT("c3"));
+        tag3.put("1c", StringNBT.valueOf("a3"));
+        tag3.put("2c", StringNBT.valueOf("b3"));
+        tag3.put("3c", StringNBT.valueOf("c3"));
 
         Stream<INBT> stream = Stream.of(
                 tag1,
@@ -149,9 +149,9 @@ public class TestNbtPathExpressionHandlerLength {
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toSet()),
                 is(Sets.newHashSet(
-                        new IntNBT(3),
-                        new IntNBT(2),
-                        new IntNBT(3)
+                        IntNBT.valueOf(3),
+                        IntNBT.valueOf(2),
+                        IntNBT.valueOf(3)
                 )));
     }
 

@@ -15,6 +15,7 @@ import net.minecraft.inventory.container.IContainerListener;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
@@ -26,6 +27,8 @@ import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
 import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -112,9 +115,26 @@ public abstract class ContainerExtended extends Container implements IContainerB
     	return new Slot(inventory, index, x, y);
     }
 
+    static void setSlotPos(Slot slot, String fieldName, int newValue) {
+        try {
+            Field field = ObfuscationReflectionHelper.findField(Slot.class, fieldName);
+
+            field.setAccessible(true);
+
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+            field.set(slot, newValue);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected Slot addSlot(Slot slot) {
-        slot.xPos += offsetX;
-        slot.yPos += offsetY;
+        setSlotPos(slot, "xPos", slot.xPos + offsetX);
+        setSlotPos(slot, "yPos", slot.yPos + offsetY);
         return super.addSlot(slot);
     }
     

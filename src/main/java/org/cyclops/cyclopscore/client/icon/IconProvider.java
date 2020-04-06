@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.client.icon;
 import com.google.common.collect.Lists;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,7 +44,7 @@ public class IconProvider {
     }
 
     public void onPreTextureStitch(TextureStitchEvent.Pre event) {
-        if (event.getMap().getBasePath().equals("textures")) {
+        if (event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE)) {
             for (Pair<Pair<Object, Field>, String> entry : toRegister) {
                 event.addSprite(getIconId(entry.getValue()));
             }
@@ -51,7 +52,7 @@ public class IconProvider {
     }
 
     public void onPostTextureStitch(TextureStitchEvent.Post event) {
-        if (event.getMap().getBasePath().equals("textures")) {
+        if (event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE)) {
             for (Pair<Pair<Object, Field>, String> entry : toRegister) {
                 TextureAtlasSprite icon = event.getMap().getSprite(getIconId(entry.getValue()));
                 Object object = entry.getLeft().getLeft();

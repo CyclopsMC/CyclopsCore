@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -57,7 +58,7 @@ public class GuiHelpers {
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            RenderHelper.enableGUIStandardItemLighting();
+            RenderHelper.enableStandardItemLighting();
             GlStateManager.enableRescaleNormal();
             GL11.glEnable(GL11.GL_DEPTH_TEST);
 
@@ -78,7 +79,7 @@ public class GuiHelpers {
 
                 // Fluids can have a custom overlay color, use this to render.
                 Triple<Float, Float, Float> colorParts = Helpers.intToRGB(fluidStack.getFluid().getAttributes().getColor(fluidStack));
-                GlStateManager.color3f(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight());
+                RenderSystem.color3f(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight());
 
                 AbstractGui.blit(x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
 
@@ -294,7 +295,7 @@ public class GuiHelpers {
         GlStateManager.disableTexture();
         GlStateManager.enableBlend();
         GlStateManager.disableAlphaTest();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.shadeModel(7425);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();

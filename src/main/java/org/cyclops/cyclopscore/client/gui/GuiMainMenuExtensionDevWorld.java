@@ -84,7 +84,7 @@ public class GuiMainMenuExtensionDevWorld {
                 // MCP: used to be CreateWorldScreen.getUncollidingSaveDirName
                 String saveName = null;
                 try {
-                    saveName = FileUtil.func_214992_a(mc.getSaveLoader().func_215781_c(), WORLD_NAME_PREFIX, "");
+                    saveName = FileUtil.func_214992_a(mc.getSaveLoader().getSavesDir(), WORLD_NAME_PREFIX, "");
                 } catch (IOException e) {
                     saveName = "World";
                 }

@@ -61,10 +61,10 @@ public abstract class NbtPathExpressionParseHandlerBooleanRelationalAdapter impl
                         if (nbt instanceof NumberNBT) {
                             NumberNBT tag = (NumberNBT) nbt;
                             return new NbtPathExpressionExecutionContext(
-                                    new ByteNBT(this.handler.getRelationalValue(tag.getDouble(), getTargetDouble())
+                                    ByteNBT.valueOf(this.handler.getRelationalValue(tag.getDouble(), getTargetDouble())
                                             ? (byte) 1 : (byte) 0), executionContext);
                         }
-                        return new NbtPathExpressionExecutionContext(new ByteNBT((byte) 0), executionContext);
+                        return new NbtPathExpressionExecutionContext(ByteNBT.valueOf((byte) 0), executionContext);
                     })
             );
         }

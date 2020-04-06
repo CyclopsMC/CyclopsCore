@@ -50,22 +50,22 @@ public class TestNbtPathExpressionHandlerBooleanRelationalGreaterThan {
     @Test
     public void testExpressionStreamSingleLeafIntInvalid1() {
         INbtPathExpression expression = handler.handlePrefixOf("aa > 3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new IntNBT(2))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 0))));
+        assertThat(expression.match(Stream.of(IntNBT.valueOf(2))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 0))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafIntInvalid2() {
         INbtPathExpression expression = handler.handlePrefixOf("aa > 3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new IntNBT(3))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 0))));
+        assertThat(expression.match(Stream.of(IntNBT.valueOf(3))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 0))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafIntValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa > 3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new IntNBT(4))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 1))));
+        assertThat(expression.match(Stream.of(IntNBT.valueOf(4))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 1))));
     }
 
 }

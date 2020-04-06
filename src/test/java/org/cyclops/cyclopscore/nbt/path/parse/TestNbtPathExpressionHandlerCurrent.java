@@ -63,23 +63,23 @@ public class TestNbtPathExpressionHandlerCurrent {
     @Test
     public void testExpressionStreamSingle() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerCurrent.Expression.INSTANCE;
-        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new StringNBT("a"))));
+        assertThat(expression.match(Stream.of(StringNBT.valueOf("a"))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(StringNBT.valueOf("a"))));
     }
 
     @Test
     public void testExpressionStreamMultiple() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerCurrent.Expression.INSTANCE;
         Stream<INBT> stream = Stream.of(
-                new StringNBT("a"),
-                new StringNBT("b"),
-                new StringNBT("c")
+                StringNBT.valueOf("a"),
+                StringNBT.valueOf("b"),
+                StringNBT.valueOf("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new StringNBT("a"),
-                        new StringNBT("b"),
-                        new StringNBT("c")
+                        StringNBT.valueOf("a"),
+                        StringNBT.valueOf("b"),
+                        StringNBT.valueOf("c")
                 )));
     }
 
@@ -87,13 +87,13 @@ public class TestNbtPathExpressionHandlerCurrent {
     public void testExpressionNotStartFromRoot() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerCurrent.Expression.INSTANCE;
         Stream<NbtPathExpressionExecutionContext> stream = Stream.of(
-                new NbtPathExpressionExecutionContext(new StringNBT("a"), new NbtPathExpressionExecutionContext(
-                        new StringNBT("b"), new NbtPathExpressionExecutionContext(new StringNBT("c"))
+                new NbtPathExpressionExecutionContext(StringNBT.valueOf("a"), new NbtPathExpressionExecutionContext(
+                        StringNBT.valueOf("b"), new NbtPathExpressionExecutionContext(StringNBT.valueOf("c"))
                 ))
         );
         assertThat(expression.matchContexts(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new StringNBT("a")
+                        StringNBT.valueOf("a")
                 )));
     }
 

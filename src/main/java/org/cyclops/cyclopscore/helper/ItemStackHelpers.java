@@ -85,9 +85,9 @@ public final class ItemStackHelpers {
             ItemEntity entityitem = new ItemEntity(world, (double)pos.getX() + xo, (double)pos.getY() + yo, (double)pos.getZ() + zo, stack);
 
             double d0 = 8.0D;
-            double d1 = (player.posX - entityitem.posX) / d0;
-            double d2 = (player.posY + (double)player.getEyeHeight() - entityitem.posY) / d0;
-            double d3 = (player.posZ - entityitem.posZ) / d0;
+            double d1 = (player.getPosX() - entityitem.getPosX()) / d0;
+            double d2 = (player.getPosY() + (double)player.getEyeHeight() - entityitem.getPosY()) / d0;
+            double d3 = (player.getPosZ() - entityitem.getPosZ()) / d0;
 
             entityitem.setMotion(entityitem.getMotion().add(d1, d2, d3));
             entityitem.setNoPickupDelay();

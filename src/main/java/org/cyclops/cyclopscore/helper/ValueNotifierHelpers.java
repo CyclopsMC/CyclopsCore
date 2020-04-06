@@ -91,7 +91,7 @@ public class ValueNotifierHelpers {
         CompoundNBT tag = new CompoundNBT();
         ListNBT list = new ListNBT();
         for (ITextComponent value : values) {
-            list.add(new StringNBT(ITextComponent.Serializer.toJson(value)));
+            list.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(value)));
         }
         tag.put(KEY, list);
         notifier.setValue(valueId, tag);

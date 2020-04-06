@@ -100,7 +100,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            RenderHelper.enableGUIStandardItemLighting();
+            RenderHelper.enableStandardItemLighting();
             GlStateManager.enableRescaleNormal();
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             renderItem.renderItemAndEffectIntoGUI(itemStack, x, y);

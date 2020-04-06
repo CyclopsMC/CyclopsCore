@@ -33,7 +33,7 @@ public class IngredientRecipeComponent implements IRecipeInput, IRecipeOutput, I
     }
 
     public IngredientRecipeComponent(ItemStack itemStack, boolean nbtSensitive) {
-        this(nbtSensitive ? new DefaultItemTypeHandler.IngredientNBT(itemStack) : Ingredient.fromStacks(itemStack));
+        this(nbtSensitive ? new DefaultItemTypeHandler.NBTIngredient(itemStack) : Ingredient.fromStacks(itemStack));
     }
 
     @Override

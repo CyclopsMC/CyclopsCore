@@ -50,8 +50,8 @@ public class TestNbtPathExpressionHandlerBooleanRelationalLessThan {
     @Test
     public void testExpressionStreamSingleLeafIntValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new IntNBT(2))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 1))));
+        assertThat(expression.match(Stream.of(IntNBT.valueOf(2))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 1))));
     }
 
 }

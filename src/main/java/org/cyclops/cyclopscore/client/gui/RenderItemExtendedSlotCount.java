@@ -124,11 +124,6 @@ public class RenderItemExtendedSlotCount extends ItemRenderer {
     }
 
     @Override
-    public boolean shouldRenderItemIn3D(ItemStack stack) {
-        return renderItemInner.shouldRenderItemIn3D(stack);
-    }
-
-    @Override
     public IBakedModel getItemModelWithOverrides(ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entitylivingbaseIn) {
         return renderItemInner.getItemModelWithOverrides(stack, worldIn, entitylivingbaseIn);
     }

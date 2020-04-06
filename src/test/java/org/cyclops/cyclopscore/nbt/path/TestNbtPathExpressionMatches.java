@@ -20,9 +20,9 @@ public class TestNbtPathExpressionMatches {
     @Before
     public void beforeEach() {
         stream = Stream.of(
-                new NbtPathExpressionExecutionContext(new StringNBT("a")),
-                new NbtPathExpressionExecutionContext(new StringNBT("b")),
-                new NbtPathExpressionExecutionContext(new StringNBT("c"))
+                new NbtPathExpressionExecutionContext(StringNBT.valueOf("a")),
+                new NbtPathExpressionExecutionContext(StringNBT.valueOf("b")),
+                new NbtPathExpressionExecutionContext(StringNBT.valueOf("c"))
         );
         matches = new NbtPathExpressionMatches(stream);
     }
@@ -35,9 +35,9 @@ public class TestNbtPathExpressionMatches {
     @Test
     public void testForAll() {
         matches = NbtPathExpressionMatches.forAll(
-                new NbtPathExpressionExecutionContext(new StringNBT("a")),
-                new NbtPathExpressionExecutionContext(new StringNBT("b")),
-                new NbtPathExpressionExecutionContext(new StringNBT("c"))
+                new NbtPathExpressionExecutionContext(StringNBT.valueOf("a")),
+                new NbtPathExpressionExecutionContext(StringNBT.valueOf("b")),
+                new NbtPathExpressionExecutionContext(StringNBT.valueOf("c"))
         );
         assertThat(matches.getContexts().collect(Collectors.toList()), equalTo(stream.collect(Collectors.toList())));
     }

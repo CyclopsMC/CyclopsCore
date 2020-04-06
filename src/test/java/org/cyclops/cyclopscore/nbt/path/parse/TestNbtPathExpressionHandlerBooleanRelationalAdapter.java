@@ -116,65 +116,65 @@ public class TestNbtPathExpressionHandlerBooleanRelationalAdapter {
     @Test
     public void testExpressionStreamSingleLeafString() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 0))));
+        assertThat(expression.match(Stream.of(StringNBT.valueOf("a"))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 0))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafIntValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new IntNBT(2))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 1))));
+        assertThat(expression.match(Stream.of(IntNBT.valueOf(2))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 1))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafIntInvalid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new IntNBT(3))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 0))));
+        assertThat(expression.match(Stream.of(IntNBT.valueOf(3))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 0))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafDoubleValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3.3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new DoubleNBT(2.2))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 1))));
+        assertThat(expression.match(Stream.of(DoubleNBT.valueOf(2.2))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 1))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafFloatValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3.3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new FloatNBT(2.2f))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 1))));
+        assertThat(expression.match(Stream.of(FloatNBT.valueOf(2.2f))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 1))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafShortValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3.3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new ShortNBT((short) 2))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 1))));
+        assertThat(expression.match(Stream.of(ShortNBT.valueOf((short) 2))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 1))));
     }
 
     @Test
     public void testExpressionStreamSingleLeafByteValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3.3", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(new ShortNBT((byte) 1))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new ByteNBT((byte) 1))));
+        assertThat(expression.match(Stream.of(ShortNBT.valueOf((byte) 1))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(ByteNBT.valueOf((byte) 1))));
     }
 
     @Test
     public void testExpressionStreamMultipleLeafString() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
         Stream<INBT> stream = Stream.of(
-                new StringNBT("a"),
-                new StringNBT("b"),
-                new StringNBT("c")
+                StringNBT.valueOf("a"),
+                StringNBT.valueOf("b"),
+                StringNBT.valueOf("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new ByteNBT((byte) 0),
-                        new ByteNBT((byte) 0),
-                        new ByteNBT((byte) 0)
+                        ByteNBT.valueOf((byte) 0),
+                        ByteNBT.valueOf((byte) 0),
+                        ByteNBT.valueOf((byte) 0)
                 )));
     }
 
@@ -182,15 +182,15 @@ public class TestNbtPathExpressionHandlerBooleanRelationalAdapter {
     public void testExpressionStreamMultipleLeafIntValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
         Stream<INBT> stream = Stream.of(
-                new IntNBT(2),
-                new IntNBT(1),
-                new IntNBT(0)
+                IntNBT.valueOf(2),
+                IntNBT.valueOf(1),
+                IntNBT.valueOf(0)
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new ByteNBT((byte) 1),
-                        new ByteNBT((byte) 1),
-                        new ByteNBT((byte) 1)
+                        ByteNBT.valueOf((byte) 1),
+                        ByteNBT.valueOf((byte) 1),
+                        ByteNBT.valueOf((byte) 1)
                 )));
     }
 
@@ -198,15 +198,15 @@ public class TestNbtPathExpressionHandlerBooleanRelationalAdapter {
     public void testExpressionStreamMultipleLeafIntPartialValid() {
         INbtPathExpression expression = handler.handlePrefixOf("aa < 3", 2).getPrefixExpression();
         Stream<INBT> stream = Stream.of(
-                new IntNBT(2),
-                new IntNBT(3),
-                new IntNBT(4)
+                IntNBT.valueOf(2),
+                IntNBT.valueOf(3),
+                IntNBT.valueOf(4)
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new ByteNBT((byte) 1),
-                        new ByteNBT((byte) 0),
-                        new ByteNBT((byte) 0)
+                        ByteNBT.valueOf((byte) 1),
+                        ByteNBT.valueOf((byte) 0),
+                        ByteNBT.valueOf((byte) 0)
                 )));
     }
 

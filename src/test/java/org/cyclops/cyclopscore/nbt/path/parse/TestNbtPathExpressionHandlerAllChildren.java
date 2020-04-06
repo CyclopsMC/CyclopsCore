@@ -77,7 +77,7 @@ public class TestNbtPathExpressionHandlerAllChildren {
     @Test
     public void testExpressionStreamSingleNoChildren() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerAllChildren.Expression.INSTANCE;
-        assertThat(expression.match(Stream.of(new StringNBT("a"))).getMatches().collect(Collectors.toList()),
+        assertThat(expression.match(Stream.of(StringNBT.valueOf("a"))).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
     }
 
@@ -85,22 +85,22 @@ public class TestNbtPathExpressionHandlerAllChildren {
     public void testExpressionStreamSingleTagList() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerAllChildren.Expression.INSTANCE;
         ListNBT list = new ListNBT();
-        list.add(new StringNBT("a"));
-        list.add(new StringNBT("b"));
-        list.add(new StringNBT("c"));
+        list.add(StringNBT.valueOf("a"));
+        list.add(StringNBT.valueOf("b"));
+        list.add(StringNBT.valueOf("c"));
         assertThat(expression.match(Stream.of(list)).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new StringNBT("a"), new StringNBT("b"), new StringNBT("c"))));
+                is(Lists.newArrayList(StringNBT.valueOf("a"), StringNBT.valueOf("b"), StringNBT.valueOf("c"))));
     }
 
     @Test
     public void testExpressionStreamSingleTagCompound() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerAllChildren.Expression.INSTANCE;
         CompoundNBT tag = new CompoundNBT();
-        tag.put("1", new StringNBT("a"));
-        tag.put("2", new StringNBT("b"));
-        tag.put("3", new StringNBT("c"));
+        tag.put("1", StringNBT.valueOf("a"));
+        tag.put("2", StringNBT.valueOf("b"));
+        tag.put("3", StringNBT.valueOf("c"));
         assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new StringNBT("a"), new StringNBT("b"), new StringNBT("c"))));
+                is(Lists.newArrayList(StringNBT.valueOf("a"), StringNBT.valueOf("b"), StringNBT.valueOf("c"))));
     }
 
     @Test
@@ -108,19 +108,19 @@ public class TestNbtPathExpressionHandlerAllChildren {
         INbtPathExpression expression = NbtPathExpressionParseHandlerAllChildren.Expression.INSTANCE;
 
         ListNBT list1 = new ListNBT();
-        list1.add(new StringNBT("a1"));
-        list1.add(new StringNBT("b1"));
-        list1.add(new StringNBT("c1"));
+        list1.add(StringNBT.valueOf("a1"));
+        list1.add(StringNBT.valueOf("b1"));
+        list1.add(StringNBT.valueOf("c1"));
 
         ListNBT list2 = new ListNBT();
-        list2.add(new StringNBT("a2"));
-        list2.add(new StringNBT("b2"));
-        list2.add(new StringNBT("c2"));
+        list2.add(StringNBT.valueOf("a2"));
+        list2.add(StringNBT.valueOf("b2"));
+        list2.add(StringNBT.valueOf("c2"));
 
         ListNBT list3 = new ListNBT();
-        list3.add(new StringNBT("a3"));
-        list3.add(new StringNBT("b3"));
-        list3.add(new StringNBT("c3"));
+        list3.add(StringNBT.valueOf("a3"));
+        list3.add(StringNBT.valueOf("b3"));
+        list3.add(StringNBT.valueOf("c3"));
 
         Stream<INBT> stream = Stream.of(
                 list1,
@@ -129,15 +129,15 @@ public class TestNbtPathExpressionHandlerAllChildren {
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        new StringNBT("a1"),
-                        new StringNBT("b1"),
-                        new StringNBT("c1"),
-                        new StringNBT("a2"),
-                        new StringNBT("b2"),
-                        new StringNBT("c2"),
-                        new StringNBT("a3"),
-                        new StringNBT("b3"),
-                        new StringNBT("c3")
+                        StringNBT.valueOf("a1"),
+                        StringNBT.valueOf("b1"),
+                        StringNBT.valueOf("c1"),
+                        StringNBT.valueOf("a2"),
+                        StringNBT.valueOf("b2"),
+                        StringNBT.valueOf("c2"),
+                        StringNBT.valueOf("a3"),
+                        StringNBT.valueOf("b3"),
+                        StringNBT.valueOf("c3")
                 )));
     }
 
@@ -146,19 +146,19 @@ public class TestNbtPathExpressionHandlerAllChildren {
         INbtPathExpression expression = NbtPathExpressionParseHandlerAllChildren.Expression.INSTANCE;
 
         CompoundNBT tag1 = new CompoundNBT();
-        tag1.put("1a", new StringNBT("a1"));
-        tag1.put("2a", new StringNBT("b1"));
-        tag1.put("3a", new StringNBT("c1"));
+        tag1.put("1a", StringNBT.valueOf("a1"));
+        tag1.put("2a", StringNBT.valueOf("b1"));
+        tag1.put("3a", StringNBT.valueOf("c1"));
 
         CompoundNBT tag2 = new CompoundNBT();
-        tag2.put("1b", new StringNBT("a2"));
-        tag2.put("2b", new StringNBT("b2"));
-        tag2.put("3b", new StringNBT("c2"));
+        tag2.put("1b", StringNBT.valueOf("a2"));
+        tag2.put("2b", StringNBT.valueOf("b2"));
+        tag2.put("3b", StringNBT.valueOf("c2"));
 
         CompoundNBT tag3 = new CompoundNBT();
-        tag3.put("1c", new StringNBT("a3"));
-        tag3.put("2c", new StringNBT("b3"));
-        tag3.put("3c", new StringNBT("c3"));
+        tag3.put("1c", StringNBT.valueOf("a3"));
+        tag3.put("2c", StringNBT.valueOf("b3"));
+        tag3.put("3c", StringNBT.valueOf("c3"));
 
         Stream<INBT> stream = Stream.of(
                 tag1,
@@ -167,15 +167,15 @@ public class TestNbtPathExpressionHandlerAllChildren {
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toSet()),
                 is(Sets.newHashSet(
-                        new StringNBT("a1"),
-                        new StringNBT("b1"),
-                        new StringNBT("c1"),
-                        new StringNBT("a2"),
-                        new StringNBT("b2"),
-                        new StringNBT("c2"),
-                        new StringNBT("a3"),
-                        new StringNBT("b3"),
-                        new StringNBT("c3")
+                        StringNBT.valueOf("a1"),
+                        StringNBT.valueOf("b1"),
+                        StringNBT.valueOf("c1"),
+                        StringNBT.valueOf("a2"),
+                        StringNBT.valueOf("b2"),
+                        StringNBT.valueOf("c2"),
+                        StringNBT.valueOf("a3"),
+                        StringNBT.valueOf("b3"),
+                        StringNBT.valueOf("c3")
                 )));
     }
 

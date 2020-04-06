@@ -30,8 +30,8 @@ public class ModItemObtainedTrigger extends BaseCriterionTrigger<ItemStack, ModI
 
     @SubscribeEvent
     public void onPickup(EntityItemPickupEvent event) {
-        if (event.getEntityPlayer() != null && event.getEntityPlayer() instanceof ServerPlayerEntity) {
-            this.trigger((ServerPlayerEntity) event.getEntityPlayer(), event.getItem().getItem());
+        if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayerEntity) {
+            this.trigger((ServerPlayerEntity) event.getPlayer(), event.getItem().getItem());
         }
     }
 

@@ -9,7 +9,7 @@ public class IngredientSerializerInt implements IIngredientSerializer<Integer, B
 
     @Override
     public INBT serializeInstance(Integer instance) {
-        return new IntNBT(instance);
+        return IntNBT.valueOf(instance);
     }
 
     @Override
@@ -22,7 +22,7 @@ public class IngredientSerializerInt implements IIngredientSerializer<Integer, B
 
     @Override
     public INBT serializeCondition(Boolean matchCondition) {
-        return new ByteNBT((byte) (matchCondition ? 1 : 0));
+        return ByteNBT.valueOf((byte) (matchCondition ? 1 : 0));
     }
 
     @Override

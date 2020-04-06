@@ -2,22 +2,18 @@ package org.cyclops.cyclopscore.client.particle;
 
 import com.google.common.collect.Queues;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.cyclops.cyclopscore.Reference;
-import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Queue;
@@ -27,24 +23,16 @@ import java.util.Queue;
  * @author rubensworks
  *
  */
-@Mod.EventBusSubscriber(Dist.CLIENT)
-public class ParticleBlur extends Particle {
+public class ParticleBlur extends SpriteTexturedParticle {
 
 	private static final Queue<ParticleBlur> BLURS_PENDING_RENDER = Queues.newLinkedBlockingDeque();
 	private static final ResourceLocation TEXTURE = new ResourceLocation(
 			Reference.MOD_ID, Reference.TEXTURE_PATH_PARTICLES + "particle_blur.png");
 	private static final int MAX_VIEW_DISTANCE = 30;
-	
-	private float scaleLife;
-	private float originalScale;
+	private static final RenderType RENDER_TYPE = new RenderType();
 
-	// Last params from renderParticle
-	private float f;
-	private float f1;
-	private float f2;
-	private float f3;
-	private float f4;
-	private float f5;
+	protected float originalScale;
+	protected float scaleLife;
 
 	public ParticleBlur(ParticleBlurData data, World world, double x, double y, double z,
 						double motionX, double motionY, double motionZ) {
@@ -86,21 +74,9 @@ public class ParticleBlur extends Particle {
 		}
 	}
 
-    @Override
-    public void renderParticle(BufferBuilder worldRenderer, ActiveRenderInfo renderInfo,
-							   float f, float f1, float f2, float f3, float f4, float f5) {
-		this.f = f;
-		this.f1 = f1;
-		this.f2 = f2;
-		this.f3 = f3;
-		this.f4 = f4;
-		this.f5 = f5;
-		BLURS_PENDING_RENDER.add(this);
-	}
-
 	@Override
 	public IParticleRenderType getRenderType() {
-		return IParticleRenderType.CUSTOM;
+		return RENDER_TYPE;
 	}
 
 	@Override
@@ -130,63 +106,45 @@ public class ParticleBlur extends Particle {
 		this.particleGravity = particleGravity;
 	}
 
-	private void renderQueued(BufferBuilder worldRenderer) {
-		float agescale = (float)age / (float) scaleLife;
-		if(agescale > 1F) {
+	@Override
+	public float getScale(float p_217561_1_) {
+		float agescale = age / this.scaleLife;
+		if (agescale > 1F) {
 			agescale = 2 - agescale;
 		}
-
-		float currentScale = originalScale * agescale;
-
-		float f10 = 0.5F * currentScale;
-		float f11 = (float)(prevPosX + (posX - prevPosX) * f - interpPosX);
-		float f12 = (float)(prevPosY + (posY - prevPosY) * f - interpPosY);
-		float f13 = (float)(prevPosZ + (posZ - prevPosZ) * f - interpPosZ);
-
-		int i = this.getBrightnessForRender(f5);
-		int j = i >> 16 & 65535;
-		int k = i & 65535;
-		worldRenderer.pos(f11 - f1 * f10 - f4 * f10, f12 - f2 * f10, f13 - f3 * f10 - f5 * f10).tex(0, 1).
-				color(particleRed, particleGreen, particleBlue, 0.9F).lightmap(j, k).endVertex();
-		worldRenderer.pos(f11 - f1 * f10 + f4 * f10, f12 + f2 * f10, f13 - f3 * f10 + f5 * f10).tex(1, 1).
-				color(particleRed, particleGreen, particleBlue, 0.9F).lightmap(j, k).endVertex();
-		worldRenderer.pos(f11 + f1 * f10 + f4 * f10, f12 + f2 * f10, f13 + f3 * f10 + f5 * f10).tex(1, 0).
-				color(particleRed, particleGreen, particleBlue, 0.9F).lightmap(j, k).endVertex();
-		worldRenderer.pos(f11 + f1 * f10 - f4 * f10, f12 - f2 * f10, f13 + f3 * f10 - f5 * f10).tex(0, 0).
-				color(particleRed, particleGreen, particleBlue, 0.9F).lightmap(j, k).endVertex();
+		particleScale = originalScale * agescale * 0.5F;
+		return particleScale;
 	}
 
-	@SubscribeEvent
-	public static void onRenderWorldLast(RenderWorldLastEvent event) {
-		if (!BLURS_PENDING_RENDER.isEmpty()) {
-			GlStateManager.pushMatrix();
+	public static class RenderType implements IParticleRenderType {
+
+		@Override
+		public void beginRender(BufferBuilder bufferBuilder, TextureManager textureManager) {
+			RenderSystem.pushMatrix();
 
 			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
-			GlStateManager.depthMask(false);
-			GlStateManager.enableBlend();
-			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-			GlStateManager.disableLighting();
+			RenderSystem.depthMask(false);
+			RenderSystem.enableBlend();
+			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+			RenderSystem.disableLighting();
 
-			RenderHelpers.bindTexture(TEXTURE);
+			textureManager.bindTexture(TEXTURE);
 
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
 
-			BufferBuilder worldRenderer = Tessellator.getInstance().getBuffer();
-			worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+			bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+		}
 
-			ParticleBlur particleBlur;
-			while ((particleBlur = BLURS_PENDING_RENDER.poll()) != null) {
-				particleBlur.renderQueued(worldRenderer);
-			}
+		@Override
+		public void finishRender(Tessellator tessellator) {
+			tessellator.draw();
 
-			Tessellator.getInstance().draw();
+			RenderSystem.disableBlend();
+			RenderSystem.depthMask(true);
+			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-			GlStateManager.disableBlend();
-			GlStateManager.depthMask(true);
-			GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-			GlStateManager.popMatrix();
-			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1F);
+			RenderSystem.popMatrix();
+			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1F);
 			GL11.glPopAttrib();
 		}
 	}

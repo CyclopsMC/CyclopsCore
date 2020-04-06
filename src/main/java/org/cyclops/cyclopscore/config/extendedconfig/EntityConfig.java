@@ -25,20 +25,15 @@ import java.util.function.Function;
  */
 public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge<EntityConfig<T>, EntityType<T>> {
 
-    private final Class<? extends T> entityClass;
-
     /**
      * Make a new instance.
      * @param mod     The mod instance.
      * @param namedId The unique name ID for the configurable.
      * @param elementConstructor The element constructor.
-     * @param entityClass The class of the entity.
      */
-    public EntityConfig(ModBase mod, String namedId, Function<EntityConfig<T>, EntityType.Builder<T>> elementConstructor,
-                        Class<? extends T> entityClass) {
+    public EntityConfig(ModBase mod, String namedId, Function<EntityConfig<T>, EntityType.Builder<T>> elementConstructor) {
         super(mod, namedId, elementConstructor
                 .andThen(builder -> builder.build(mod.getModId() + ":" + namedId)));
-        this.entityClass = entityClass;
     }
     
     @Override
@@ -51,18 +46,12 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
 		return ConfigurableType.ENTITY;
 	}
 
-    public Class<? extends T> getEntityClass() {
-        return entityClass;
-    }
-
     @Override
     @OnlyIn(Dist.CLIENT)
     public void onRegistered() {
         super.onRegistered();
-        @SuppressWarnings("unchecked")
-        Class<? extends T> clazz = this.getEntityClass();
-        RenderingRegistry.registerEntityRenderingHandler(clazz,
-                (IRenderFactory<T>) manager -> EntityConfig.this.getRender(manager, Minecraft.getInstance().getItemRenderer()));
+        RenderingRegistry.registerEntityRenderingHandler(getInstance(),
+                manager -> EntityConfig.this.getRender(manager, Minecraft.getInstance().getItemRenderer()));
 
     }
 

@@ -15,7 +15,7 @@ import org.w3c.dom.Node;
 public class DefaultItemTypeHandler implements IItemTypeHandler {
 
 	protected Ingredient createItemIngredient(ItemStack itemStack, boolean nbtSensitive) {
-		return nbtSensitive ? new IngredientNBT(itemStack) : Ingredient.fromStacks(itemStack);
+		return nbtSensitive ? new NBTIngredient(itemStack) : Ingredient.fromStacks(itemStack);
 	}
 
 	protected Ingredient makeIngredient(RecipeHandler recipeHandler, String key, int amount, boolean nbtSensitive) throws XmlRecipeLoader.XmlRecipeException {
@@ -43,8 +43,8 @@ public class DefaultItemTypeHandler implements IItemTypeHandler {
 		return makeIngredient(recipeHandler, element, amount, nbtSensitive);
 	}
 
-	public static class IngredientNBT extends net.minecraftforge.common.crafting.IngredientNBT {
-		public IngredientNBT(ItemStack stack) {
+	public static class NBTIngredient extends net.minecraftforge.common.crafting.NBTIngredient {
+		public NBTIngredient(ItemStack stack) {
 			super(stack);
 		}
 	}

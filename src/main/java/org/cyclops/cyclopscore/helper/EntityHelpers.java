@@ -103,11 +103,11 @@ public class EntityHelpers {
 				return entityLiving.getPosition();
 			}
 		};
-		Event.Result canSpawn = ForgeEventFactory.canEntitySpawn(entityLiving, world, (float) entityLiving.posX,
-				(float) entityLiving.posY, (float) entityLiving.posZ, spawner, spawnReason);
+		Event.Result canSpawn = ForgeEventFactory.canEntitySpawn(entityLiving, world, (float) entityLiving.getPosX(),
+				(float) entityLiving.getPosY(), (float) entityLiving.getPosZ(), spawner, spawnReason);
         if (canSpawn == Event.Result.ALLOW || (canSpawn == Event.Result.DEFAULT)) { //  && entityliving.getCanSpawnHere()
-            if (!ForgeEventFactory.doSpecialSpawn(entityLiving, world, (float) entityLiving.posX,
-					(float) entityLiving.posY, (float) entityLiving.posZ, spawner, spawnReason)) {
+            if (!ForgeEventFactory.doSpecialSpawn(entityLiving, world, (float) entityLiving.getPosX(),
+					(float) entityLiving.getPosY(), (float) entityLiving.getPosZ(), spawner, spawnReason)) {
             	world.addEntity(entityLiving);
                 return true;
             }
@@ -139,7 +139,7 @@ public class EntityHelpers {
 				int current;
 				current = ExperienceOrbEntity.getXPSplit(xp);
 				xp -= current;
-				world.addEntity(new ExperienceOrbEntity(world, player.posX, player.posY + 0.5D, player.posZ + 0.5D, current));
+				world.addEntity(new ExperienceOrbEntity(world, player.getPosX(), player.getPosY() + 0.5D, player.getPosZ() + 0.5D, current));
 			}
 		}
 	}

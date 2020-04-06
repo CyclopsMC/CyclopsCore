@@ -109,7 +109,7 @@ public class ConfigHandler {
     }
 
     @SubscribeEvent
-    public void onReload(ModConfig.ConfigReloading configEvent) {
+    public void onReload(ModConfig.Reloading configEvent) {
         this.mod.log(Level.TRACE, "Reload config");
         syncProcessedConfigs();
     }

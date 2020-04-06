@@ -18,9 +18,9 @@ public class TestNbtPathExpressionList {
     @Test
     public void testEmptyList() {
         NbtPathExpressionList list = new NbtPathExpressionList();
-        Stream<INBT> stream = Stream.of(new StringNBT("a"));
+        Stream<INBT> stream = Stream.of(StringNBT.valueOf("a"));
         assertThat(list.match(stream).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(new StringNBT("a"))));
+                is(Lists.newArrayList(StringNBT.valueOf("a"))));
     }
 
     @Test
@@ -40,7 +40,7 @@ public class TestNbtPathExpressionList {
 
         Stream<INBT> stream = Stream.of(tag1);
         assertThat(list.match(stream).getMatches().collect(Collectors.toList()), is(Lists.newArrayList(
-                new StringNBT("x")
+                StringNBT.valueOf("x")
         )));
     }
 

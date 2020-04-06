@@ -53,10 +53,10 @@ public class NbtPathExpressionParseHandlerStringEqual implements INbtPathExpress
                         if (nbt.getId() == Constants.NBT.TAG_STRING) {
                             StringNBT tag = (StringNBT) nbt;
                             return new NbtPathExpressionExecutionContext(
-                                    new ByteNBT(getTargetString().equals(tag.getString())
+                                    ByteNBT.valueOf(getTargetString().equals(tag.getString())
                                             ? (byte) 1 : (byte) 0), executionContext);
                         }
-                        return new NbtPathExpressionExecutionContext(new ByteNBT((byte) 0), executionContext);
+                        return new NbtPathExpressionExecutionContext(ByteNBT.valueOf((byte) 0), executionContext);
                     })
             );
         }
