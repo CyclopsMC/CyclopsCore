@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -11,6 +12,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
+import javax.annotation.Nullable;
 import java.util.function.Function;
 
 /**
@@ -53,13 +55,25 @@ public abstract class ParticleConfig<T extends IParticleData> extends ExtendedCo
     }
 
     @OnlyIn(Dist.CLIENT)
+    @Nullable
     public abstract IParticleFactory<T> getParticleFactory();
+
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
+    public abstract ParticleManager.IParticleMetaFactory<T> getParticleMetaFactory();
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void onRegistered() {
         super.onRegistered();
-        Minecraft.getInstance().particles.registerFactory(getInstance(), getParticleFactory());
+        IParticleFactory<T> factory = getParticleFactory();
+        if (factory != null) {
+            Minecraft.getInstance().particles.registerFactory(getInstance(), factory);
+        }
+        ParticleManager.IParticleMetaFactory<T> metaFactory = getParticleMetaFactory();
+        if (metaFactory != null) {
+            Minecraft.getInstance().particles.registerFactory(getInstance(), metaFactory);
+        }
     }
 
 }

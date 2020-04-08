@@ -1,22 +1,17 @@
 package org.cyclops.cyclopscore.client.particle;
 
-import com.google.common.collect.Queues;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import org.cyclops.cyclopscore.Reference;
 import org.lwjgl.opengl.GL11;
-
-import java.util.Queue;
 
 /**
  * A blurred static fading particle with any possible color.
@@ -25,9 +20,6 @@ import java.util.Queue;
  */
 public class ParticleBlur extends SpriteTexturedParticle {
 
-	private static final Queue<ParticleBlur> BLURS_PENDING_RENDER = Queues.newLinkedBlockingDeque();
-	private static final ResourceLocation TEXTURE = new ResourceLocation(
-			Reference.MOD_ID, Reference.TEXTURE_PATH_PARTICLES + "particle_blur.png");
 	private static final int MAX_VIEW_DISTANCE = 30;
 	private static final RenderType RENDER_TYPE = new RenderType();
 
@@ -59,7 +51,7 @@ public class ParticleBlur extends SpriteTexturedParticle {
 		
 		validateDistance();
 	}
-	
+
 	private void validateDistance() {
 		LivingEntity renderentity = Minecraft.getInstance().player;
 		int visibleDistance = MAX_VIEW_DISTANCE;
@@ -98,6 +90,11 @@ public class ParticleBlur extends SpriteTexturedParticle {
 		motionZ *= 0.98000001907348633D;
 	}
 
+	@Override
+	protected int getBrightnessForRender(float partialTicks) {
+		return 0xF000F0;
+	}
+
 	/**
 	 * Set the gravity for this particle.
 	 * @param particleGravity The new gravity
@@ -120,17 +117,14 @@ public class ParticleBlur extends SpriteTexturedParticle {
 
 		@Override
 		public void beginRender(BufferBuilder bufferBuilder, TextureManager textureManager) {
-			RenderSystem.pushMatrix();
-
-			GL11.glPushAttrib(GL11.GL_LIGHTING_BIT);
 			RenderSystem.depthMask(false);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
+			RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
 			RenderSystem.disableLighting();
 
-			textureManager.bindTexture(TEXTURE);
-
-			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 0.75F);
+			textureManager.bindTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE);
+			textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE).setBlurMipmap(true, false);
 
 			bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
 		}
@@ -138,14 +132,10 @@ public class ParticleBlur extends SpriteTexturedParticle {
 		@Override
 		public void finishRender(Tessellator tessellator) {
 			tessellator.draw();
-
+			Minecraft.getInstance().textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE).restoreLastBlurMipmap();
+			RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 			RenderSystem.disableBlend();
 			RenderSystem.depthMask(true);
-			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-			RenderSystem.popMatrix();
-			RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1F);
-			GL11.glPopAttrib();
 		}
 	}
 
