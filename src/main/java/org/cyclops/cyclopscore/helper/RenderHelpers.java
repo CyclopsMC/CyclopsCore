@@ -1,7 +1,9 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.base.Function;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
@@ -21,7 +23,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -242,54 +243,34 @@ public class RenderHelpers {
     }
 
     /**
-     * Prepare a GL context for rendering fluids.
+     * Prepare a render system context for rendering fluids.
      * @param fluid The fluid stack.
-     * @param x X
-     * @param y Y
-     * @param z Z
+     * @param matrixStack The matrix stack.
      * @param render The actual fluid renderer.
      */
-    public static void renderFluidContext(FluidStack fluid, double x, double y, double z, IFluidContextRender render) {
+    public static void renderFluidContext(FluidStack fluid, MatrixStack matrixStack, IFluidContextRender render) {
         if(fluid != null && fluid.getAmount() > 0) {
-            GlStateManager.pushMatrix();
+            matrixStack.push();
 
             // Make sure both sides are rendered
-            GlStateManager.enableBlend();
-            GlStateManager.disableCull();
+            RenderSystem.enableBlend();
+            RenderSystem.disableCull();
 
             // Correct color & lighting
-            GlStateManager.color4f(1, 1, 1, 1);
-            GlStateManager.disableLighting();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-            // Set to current relative player location
-            GlStateManager.translated(x, y, z);
+            RenderSystem.color4f(1, 1, 1, 1);
+            RenderSystem.disableLighting();
+            RenderSystem.enableBlend();
+            RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
             // Set blockState textures
             Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
-            render.renderFluid(fluid);
+            render.render();
 
-            //GlStateManager.enableCull();
-            GlStateManager.enableLighting();
-            GlStateManager.disableBlend();
-            //GlStateManager.disableDepth();
-            GlStateManager.popMatrix();
+            RenderSystem.enableLighting();
+            RenderSystem.disableBlend();
+            matrixStack.pop();
         }
-    }
-
-    /**
-     * Prepare a GL context for rendering fluids for tile entities.
-     * @param fluid The fluid stack.
-     * @param x X
-     * @param y Y
-     * @param z Z
-     * @param tile The tile.
-     * @param render The actual fluid renderer.
-     */
-    public static void renderTileFluidContext(final FluidStack fluid, final double x, final double y, final double z, final TileEntity tile, final IFluidContextRender render) {
-        renderFluidContext(fluid, x, y, z, render);
     }
 
     /**
@@ -353,16 +334,15 @@ public class RenderHelpers {
     }
 
     /**
-     * Runnable for {@link RenderHelpers#renderFluidContext(FluidStack, double, double, double, IFluidContextRender)}.
+     * Runnable for {@link RenderHelpers#renderFluidContext(FluidStack, MatrixStack, IFluidContextRender)}}}.
      * @author rubensworks
      */
     public static interface IFluidContextRender {
 
         /**
          * Render the fluid.
-         * @param fluid The fluid stack.
          */
-        public void renderFluid(FluidStack fluid);
+        public void render();
 
     }
 
