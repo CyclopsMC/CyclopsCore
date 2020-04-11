@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -54,7 +55,7 @@ public class GuiHelpers {
      */
     public static void renderFluidTank(AbstractGui gui, @Nullable FluidStack fluidStack, int capacity,
                                        int x, int y, int width, int height) {
-        if (fluidStack != null && capacity > 0) {
+        if (fluidStack != null && !fluidStack.isEmpty() && capacity > 0) {
             GlStateManager.pushMatrix();
             GlStateManager.enableBlend();
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -79,6 +80,10 @@ public class GuiHelpers {
 
                 // Fluids can have a custom overlay color, use this to render.
                 Triple<Float, Float, Float> colorParts = Helpers.intToRGB(fluidStack.getFluid().getAttributes().getColor(fluidStack));
+                // Override water color, otherwise it's gray, since it depends on world biome.
+                if (fluidStack.getFluid() == Fluids.WATER || fluidStack.getFluid() == Fluids.FLOWING_WATER) {
+                    colorParts = Triple.of(0F, 0.335F, 1F);
+                }
                 RenderSystem.color3f(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight());
 
                 AbstractGui.blit(x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
