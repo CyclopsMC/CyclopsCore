@@ -131,10 +131,18 @@ public abstract class ContainerExtended extends Container implements IContainerB
         }
     }
 
+    public static void setSlotPosX(Slot slot, int newValue) {
+        setSlotPos(slot, "field_75223_e", newValue);
+    }
+
+    public static void setSlotPosY(Slot slot, int newValue) {
+        setSlotPos(slot, "field_75221_f", newValue);
+    }
+
     @Override
     protected Slot addSlot(Slot slot) {
-        setSlotPos(slot, "xPos", slot.xPos + offsetX);
-        setSlotPos(slot, "yPos", slot.yPos + offsetY);
+        setSlotPosX(slot, slot.xPos + offsetX);
+        setSlotPosY(slot, slot.yPos + offsetY);
         return super.addSlot(slot);
     }
     
