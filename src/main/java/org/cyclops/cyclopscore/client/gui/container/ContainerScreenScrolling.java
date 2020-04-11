@@ -86,7 +86,9 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     @Override
     public void tick() {
         super.tick();
-        this.searchField.tick();
+        if (this.searchField != null) {
+            this.searchField.tick();
+        }
     }
 
     @Override
