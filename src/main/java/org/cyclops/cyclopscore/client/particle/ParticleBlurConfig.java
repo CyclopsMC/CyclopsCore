@@ -23,11 +23,13 @@ public class ParticleBlurConfig extends ParticleConfig<ParticleBlurData> {
     }
 
     @OnlyIn(Dist.CLIENT)
+    @Nullable
     @Override
     public IParticleFactory<ParticleBlurData> getParticleFactory() {
         return null;
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Nullable
     @Override
     public ParticleManager.IParticleMetaFactory<ParticleBlurData> getParticleMetaFactory() {
