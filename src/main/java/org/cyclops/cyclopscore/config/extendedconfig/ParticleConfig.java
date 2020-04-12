@@ -7,6 +7,10 @@ import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -31,6 +35,7 @@ public abstract class ParticleConfig<T extends IParticleData> extends ExtendedCo
      */
     public ParticleConfig(ModBase mod, String namedId, Function<ParticleConfig<T>, ? extends ParticleType<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
+        FMLJavaModLoadingContext.get().getModEventBus().register(this);
     }
 
     @Override
@@ -63,9 +68,8 @@ public abstract class ParticleConfig<T extends IParticleData> extends ExtendedCo
     public abstract ParticleManager.IParticleMetaFactory<T> getParticleMetaFactory();
 
     @OnlyIn(Dist.CLIENT)
-    @Override
-    public void onRegistered() {
-        super.onRegistered();
+    @SubscribeEvent
+    public void onParticleFactoryRegister(ParticleFactoryRegisterEvent event) {
         IParticleFactory<T> factory = getParticleFactory();
         if (factory != null) {
             Minecraft.getInstance().particles.registerFactory(getInstance(), factory);
