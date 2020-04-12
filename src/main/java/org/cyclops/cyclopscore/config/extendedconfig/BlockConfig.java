@@ -46,7 +46,17 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
     }
 
     protected static BiFunction<BlockConfig, Block, ? extends BlockItem> getDefaultItemConstructor(ModBase mod) {
-        return (eConfig, block) -> new BlockItem(block, new Item.Properties().group(mod.getDefaultItemGroup()));
+        return getDefaultItemConstructor(mod, null);
+    }
+
+    protected static BiFunction<BlockConfig, Block, ? extends BlockItem> getDefaultItemConstructor(ModBase mod, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
+        return (eConfig, block) -> {
+            Item.Properties itemProperties = new Item.Properties().group(mod.getDefaultItemGroup());
+            if (itemPropertiesModifier != null) {
+                itemProperties = itemPropertiesModifier.apply(itemProperties);
+            }
+            return new BlockItem(block, itemProperties);
+        };
     }
 
     public BiFunction<BlockConfig, Block, ? extends Item> getItemConstructor() {
