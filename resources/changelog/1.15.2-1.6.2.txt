@@ -1,0 +1,4 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add supplier-based ItemStackTileEntityRendererBase. Required for CyclopsMC/ColossalChests#131
