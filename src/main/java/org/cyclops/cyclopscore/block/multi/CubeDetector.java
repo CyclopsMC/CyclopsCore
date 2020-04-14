@@ -302,7 +302,7 @@ public class CubeDetector {
 
 		if(minimumValid) {
 			for(AllowedBlock allowed : allowedBlocks) {
-				int occurences = blockOccurences.get(allowed.getBlock());
+				int occurences = blockOccurences.getOrDefault(allowed.getBlock(), 0);
 				for(IBlockCountValidator validator : allowed.getCountValidators()) {
 					L10NHelpers.UnlocalizedString error;
 					if((error = validator.isValid(occurences, true, allowed.getBlock())) != null) {
