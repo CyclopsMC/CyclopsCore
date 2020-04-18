@@ -84,7 +84,7 @@ public class InfoBookParser {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
-                return new ImageAppendix(infoBook, new ResourceLocation(node.getTextContent()),
+                return new ImageAppendix(infoBook, getNodeResourceLocation(node),
                         Integer.parseInt(node.getAttribute("width")), Integer.parseInt(node.getAttribute("height")));
             }
 
@@ -174,7 +174,11 @@ public class InfoBookParser {
             public List<SectionAppendix> create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
                 List<SectionAppendix> appendixList = Lists.newArrayList();
                 String type = node.getAttribute("type");
-                IRecipeType recipeType = Registry.RECIPE_TYPE.getValue(new ResourceLocation(type)).get();
+                Optional<IRecipeType<?>> recipeTypeOptional = Registry.RECIPE_TYPE.getValue(new ResourceLocation(type));
+                if (!recipeTypeOptional.isPresent()) {
+                    throw new InvalidAppendixException("Could not find a recipe type: " + type);
+                }
+                IRecipeType recipeType = recipeTypeOptional.get();
                 Map<ResourceLocation, IRecipe<?>> recipes = Minecraft.getInstance().getConnection().getRecipeManager().getRecipes(recipeType);
                 for (IRecipe<?> recipe : recipes.values()) {
                     try {
@@ -219,6 +223,10 @@ public class InfoBookParser {
         RECIPE_CONDITION_HANDLERS.put("blocktag", new TagSectionConditionHandler<>(BlockTags.getCollection()));
         RECIPE_CONDITION_HANDLERS.put("fluid", new FluidSectionConditionHandler());
         RECIPE_CONDITION_HANDLERS.put("item", new ItemSectionConditionHandler());
+    }
+
+    protected static ResourceLocation getNodeResourceLocation(Element node) {
+        return new ResourceLocation(node.getTextContent().trim());
     }
 
     /**
@@ -273,10 +281,10 @@ public class InfoBookParser {
      */
     public static <C extends IInventory, R extends IRecipe<C>> void registerAppendixRecipeFactories(String name, IRecipeType<R> recipeType, IAppendixItemFactory<C, R> factory) {
         registerAppendixFactory(name, (infoBook, node) -> {
-            String recipeName = node.getTextContent();
-            Optional<R> recipe = CraftingHelpers.getClientRecipe(recipeType, new ResourceLocation(recipeName));
+            ResourceLocation recipeId = getNodeResourceLocation(node);
+            Optional<R> recipe = CraftingHelpers.getClientRecipe(recipeType, recipeId);
             if (!recipe.isPresent()) {
-                throw new InvalidAppendixException("Could not find " + name + " recipe for " + recipeName);
+                throw new InvalidAppendixException("Could not find " + name + " recipe for " + recipeId);
             }
             return factory.create(infoBook, recipe.get());
         });
@@ -334,9 +342,10 @@ public class InfoBookParser {
         if("true".equals(node.getAttribute("predefined"))) {
             throw new UnsupportedOperationException("Could not find predefined item " + node.getTextContent());
         }
-        Item item = ForgeRegistries.ITEMS.getValue(new ResourceLocation(node.getTextContent()));
+        ResourceLocation itemId = getNodeResourceLocation(node);
+        Item item = ForgeRegistries.ITEMS.getValue(itemId);
         if(item == null) {
-            throw new InvalidAppendixException("Invalid item " + node.getTextContent());
+            throw new InvalidAppendixException("Invalid item " + itemId);
         }
         return new ItemStack(item, amount);
     }
@@ -480,9 +489,10 @@ public class InfoBookParser {
         if(!node.getAttribute("amount").isEmpty()) {
             amount = Integer.parseInt(node.getAttribute("amount"));
         }
-        Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(node.getTextContent()));
+        ResourceLocation fluidId = getNodeResourceLocation(node);
+        Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidId);
         if(fluid == null) {
-            throw new InvalidAppendixException("Invalid fluid " + node.getTextContent());
+            throw new InvalidAppendixException("Invalid fluid " + fluidId);
         }
         return new FluidStack(fluid, amount);
     }
