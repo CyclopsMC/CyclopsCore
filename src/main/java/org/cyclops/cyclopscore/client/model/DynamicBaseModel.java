@@ -87,6 +87,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
                 color,
                 Float.floatToRawIntBits(texture.getInterpolatedU(u)),
                 Float.floatToRawIntBits(texture.getInterpolatedV(v)),
+                0,
                 0
         };
     }
