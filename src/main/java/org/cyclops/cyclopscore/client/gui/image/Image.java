@@ -1,9 +1,14 @@
 package org.cyclops.cyclopscore.client.gui.image;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import lombok.Data;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -36,48 +41,22 @@ public class Image implements IImage {
     }
 
     @Override
-    public void drawWorld(TextureManager textureManager, float x1, float x2, float y1, float y2, float z) {
-        drawWorldWithAlpha(textureManager, x1, x2, y1, y2, z, 1);
-    }
-
-    @Override
-    public void drawWorld(TextureManager textureManager, float x1, float x2, float y1, float y2) {
-        drawWorldWithAlpha(textureManager, x1, x2, y1, y2, 1);
-    }
-
-    @Override
-    public void drawWorld(TextureManager textureManager, float x2, float y2) {
-        drawWorldWithAlpha(textureManager, x2, y2, 1);
-    }
-
-    @Override
-    public void drawWorldWithAlpha(TextureManager textureManager, float x1, float x2, float y1, float y2, float z, float alpha) {
-        GlStateManager.pushMatrix();
-        BufferBuilder worldRenderer = Tessellator.getInstance().getBuffer();
-        worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-        textureManager.bindTexture(getResourceLocation());
+    public void drawWorldWithAlpha(TextureManager textureManager, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer,
+                                   int combinedLight, int combinedOverlay, float x1, float x2, float y1, float y2, float z, float alpha) {
+        matrixStack.push();
+        IVertexBuilder vb = renderTypeBuffer.getBuffer(RenderType.getText(getResourceLocation()));
         float u1, u2, v1, v2;
         u1 = (float) (getSheetX()) / 256F;
         u2 = (float) (getSheetX() + getSheetWidth()) / 256F;
         v1 = (float) (getSheetY()) / 256F;
         v2 = (float) (getSheetY() + getSheetHeight()) / 256F;
         int a = Math.round(alpha * 255F);
-        worldRenderer.pos(x2, y2, z).tex(u2, v2).color(255, 255, 255, a).endVertex();
-        worldRenderer.pos(x2, y1, z).tex(u2, v1).color(255, 255, 255, a).endVertex();
-        worldRenderer.pos(x1, y1, z).tex(u1, v1).color(255, 255, 255, a).endVertex();
-        worldRenderer.pos(x1, y2, z).tex(u1, v2).color(255, 255, 255, a).endVertex();
-        Tessellator.getInstance().draw();
-        GlStateManager.popMatrix();
-    }
-
-    @Override
-    public void drawWorldWithAlpha(TextureManager textureManager, float x1, float x2, float y1, float y2, float alpha) {
-        this.drawWorldWithAlpha(textureManager, x1, x2, y1, y2, 0, alpha);
-    }
-
-    @Override
-    public void drawWorldWithAlpha(TextureManager textureManager, float x2, float y2, float alpha) {
-        this.drawWorldWithAlpha(textureManager, 0, x2, 0, y2, alpha);
+        Matrix4f matrix = matrixStack.getLast().getMatrix();
+        vb.pos(matrix, x2, y2, z).color(255, 255, 255, a).tex(u2, v2).lightmap(combinedLight).endVertex();
+        vb.pos(matrix, x2, y1, z).color(255, 255, 255, a).tex(u2, v1).lightmap(combinedLight).endVertex();
+        vb.pos(matrix, x1, y1, z).color(255, 255, 255, a).tex(u1, v1).lightmap(combinedLight).endVertex();
+        vb.pos(matrix, x1, y2, z).color(255, 255, 255, a).tex(u1, v2).lightmap(combinedLight).endVertex();
+        matrixStack.pop();
     }
 
     @Override
