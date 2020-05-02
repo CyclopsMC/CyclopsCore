@@ -44,8 +44,15 @@ public class RecipeSerializerHelpers {
             String itemName = JSONUtils.getString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(itemName);
             return Ingredient.fromStacks(new ItemStack(Registry.ITEM.getValue(resourcelocation)
-                    .orElseThrow(() -> new IllegalStateException("Item: " + itemName + " does not exist"))));
+                    .orElseThrow(() -> new JsonSyntaxException("Item: " + itemName + " does not exist"))));
         }
+    }
+
+    public static ItemStack getJsonItemStackOrTag(JsonObject json, boolean required) {
+        if (json.has("tag")) {
+            return getJsonItemStackFromTag(json, "tag");
+        }
+        return getJsonItemStack(json, "item", required);
     }
 
     public static ItemStack getJsonItemStack(JsonObject json, String key, boolean required) {
@@ -62,8 +69,16 @@ public class RecipeSerializerHelpers {
             String itemName = JSONUtils.getString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(itemName);
             return new ItemStack(Registry.ITEM.getValue(resourcelocation)
-                    .orElseThrow(() -> new IllegalStateException("Item: " + itemName + " does not exist")));
+                    .orElseThrow(() -> new JsonSyntaxException("Item: " + itemName + " does not exist")));
         }
+    }
+
+    public static ItemStack getJsonItemStackFromTag(JsonObject json, String key) {
+        ItemStack[] matchingStacks = Ingredient.deserialize(JSONUtils.getJsonObject(json, key)).getMatchingStacks();
+        if (matchingStacks.length == 0) {
+            throw new IllegalStateException("No tag value found for " + key + " does not exist");
+        }
+        return matchingStacks[0];
     }
 
     public static FluidStack deserializeFluidStack(JsonObject json, boolean readNbt) {
