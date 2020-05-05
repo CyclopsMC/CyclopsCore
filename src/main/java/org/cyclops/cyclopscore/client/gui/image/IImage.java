@@ -105,6 +105,10 @@ public interface IImage {
     /**
      * Draw the image in the world.
      * @param textureManager The texture manager.
+     * @param matrixStack The matrix stack
+     * @param renderTypeBuffer The render type buffer
+     * @param combinedLight The combined light
+     * @param combinedOverlay The combined overlay
      * @param x1 Start X
      * @param x2 End X
      * @param y1 Start Y
