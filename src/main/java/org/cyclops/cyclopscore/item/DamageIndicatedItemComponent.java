@@ -92,7 +92,7 @@ public class DamageIndicatedItemComponent {
     @OnlyIn(Dist.CLIENT)
     public static ITextComponent getInfo(FluidStack fluidStack, int amount, int capacity) {
     	ITextComponent prefix = new StringTextComponent("");
-    	if(fluidStack != null) {
+    	if (!fluidStack.isEmpty()) {
     		prefix = new TranslationTextComponent(fluidStack.getTranslationKey()).appendText(": ");
     	}
         return prefix
