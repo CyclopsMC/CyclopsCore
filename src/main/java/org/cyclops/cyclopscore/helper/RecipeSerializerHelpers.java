@@ -74,10 +74,15 @@ public class RecipeSerializerHelpers {
     }
 
     public static ItemStack getJsonItemStackFromTag(JsonObject json, String key) {
-        ItemStack[] matchingStacks = Ingredient.deserialize(JSONUtils.getJsonObject(json, key)).getMatchingStacks();
+        ItemStack[] matchingStacks = Ingredient.deserialize(json).getMatchingStacks();
         if (matchingStacks.length == 0) {
             throw new IllegalStateException("No tag value found for " + key + " does not exist");
         }
+        int count = 1;
+        if (json.has("count")) {
+            count = json.get("count").getAsInt();
+        }
+        matchingStacks[0].setCount(count);
         return matchingStacks[0];
     }
 
