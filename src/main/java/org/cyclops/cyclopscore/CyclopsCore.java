@@ -19,12 +19,17 @@ import org.cyclops.cyclopscore.client.particle.ParticleBlurConfig;
 import org.cyclops.cyclopscore.command.CommandDebug;
 import org.cyclops.cyclopscore.command.CommandDumpRegistries;
 import org.cyclops.cyclopscore.command.CommandIgnite;
+import org.cyclops.cyclopscore.command.CommandInfoBookTest;
 import org.cyclops.cyclopscore.command.CommandReloadResources;
 import org.cyclops.cyclopscore.command.argument.ArgumentSerializerMod;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigProperty;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacket;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnum;
 import org.cyclops.cyclopscore.config.ConfigHandler;
+import org.cyclops.cyclopscore.infobook.IInfoBookRegistry;
+import org.cyclops.cyclopscore.infobook.InfoBookRegistry;
+import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTestConfig;
+import org.cyclops.cyclopscore.infobook.test.InfoBookTest;
 import org.cyclops.cyclopscore.ingredient.recipe.IRecipeInputOutputDefinitionRegistry;
 import org.cyclops.cyclopscore.ingredient.recipe.RecipeInputOutputDefinitionHandlers;
 import org.cyclops.cyclopscore.ingredient.recipe.RecipeInputOutputDefinitionRegistry;
@@ -60,6 +65,8 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
     public CyclopsCore() {
         super(Reference.MOD_ID, (instance) -> _instance = instance);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
+
+        getRegistryManager().addRegistry(IInfoBookRegistry.class, new InfoBookRegistry());
     }
 
     @Override
@@ -91,6 +98,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         root.then(CommandDebug.make());
         root.then(CommandReloadResources.make());
         root.then(CommandDumpRegistries.make());
+        root.then(CommandInfoBookTest.make());
 
         return root;
     }
@@ -120,6 +128,9 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         ArgumentTypes.register(Reference.MOD_ID + ":" + "debug_packet",
                 ArgumentTypeDebugPacket.class,
                 new ArgumentSerializer<>(() -> ArgumentTypeDebugPacket.INSTANCE));
+
+        getRegistryManager().getRegistry(IInfoBookRegistry.class).registerInfoBook(
+                InfoBookTest.getInstance(), "/data/" + Reference.MOD_ID + "/info/test.xml");
     }
 
     @Override
@@ -146,6 +157,9 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
         // Particles
         configHandler.addConfigurable(new ParticleBlurConfig());
+
+        // Containers
+        configHandler.addConfigurable(new ContainerInfoBookTestConfig());
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {
