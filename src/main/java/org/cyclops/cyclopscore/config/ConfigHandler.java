@@ -238,13 +238,5 @@ public class ConfigHandler {
                 e.printStackTrace();
             }
         });
-
-//        if (event.getRegistry() == null) { // TODO: Deprecate XML Recipe Loader, and move to JSON recipes
-//            // Register recipes
-//            RecipeHandler recipeHandler = getMod().getRecipeHandler();
-//            if (recipeHandler != null) {
-//                recipeHandler.registerRecipes(getMod().getConfigFolder());
-//            }
-//        }
     }
 }

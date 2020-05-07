@@ -410,7 +410,7 @@ public class CubeDetector {
 			// Check if the size iis valid.
 			// If it is invalid we immediately return a null-size, but if we are in invalidation-mode,
 			// we skip this step because we always want to be able to invalidate existing structures.
-			// TODO: the 'valid' condition might be impossible to have influence if all structure
+			// NOTE: the 'valid' condition might be impossible to have influence if all structure
 			// handling goes according to plan.
 			if ((error = validator.isSizeValid(size)) != null && excludeLocation == null) {
 				return new DetectionResult(error);

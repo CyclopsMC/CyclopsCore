@@ -1,9 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
@@ -11,10 +8,8 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.item.IInformationProvider;
-import org.cyclops.cyclopscore.persist.nbt.INBTSerializable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -98,86 +93,6 @@ public final class L10NHelpers {
                                 .setItalic(true)));
             }
         }
-    }
-
-    /**
-     * Holder class that acts as a parameterized unlocalized string.
-     * This can also take other unlocalized strings in the parameter list, and they will recursively
-     * be localized when calling {@link UnlocalizedString#localize()}.
-     * @deprecated Use {@link ITextComponent} instead.
-     */
-    @Deprecated // TODO: remove once all mods have been ported to 1.14
-    public static class UnlocalizedString implements INBTSerializable {
-
-        private String parameterizedString;
-        private Object[] parameters;
-
-        public UnlocalizedString(String parameterizedString, Object... parameters) {
-            this.parameterizedString = parameterizedString;
-            this.parameters = parameters;
-            for(int i = 0; i < parameters.length; i++) {
-                if(!(parameters[i] instanceof UnlocalizedString || parameters[i] instanceof String)) {
-                    parameters[i] = String.valueOf(parameters[i]);
-                }
-            }
-        }
-
-        public UnlocalizedString() {
-            this.parameterizedString = null;
-            this.parameters = null;
-        }
-
-        public String localize() {
-            Object[] realParameters = new Object[parameters.length];
-            for(int i = 0; i < parameters.length; i++) {
-                Object param = parameters[i];
-                if(param instanceof UnlocalizedString) {
-                    realParameters[i] = ((UnlocalizedString) param).localize();
-                } else {
-                    realParameters[i] = param;
-                }
-            }
-            return L10NHelpers.localize(parameterizedString, realParameters);
-        }
-
-        @Override
-        public CompoundNBT toNBT() {
-            CompoundNBT tag = new CompoundNBT();
-            tag.putString("parameterizedString", parameterizedString);
-            ListNBT list = new ListNBT();
-            for (Object parameter : parameters) {
-                if(parameter instanceof UnlocalizedString) {
-                    CompoundNBT objectTag = ((UnlocalizedString) parameter).toNBT();
-                    objectTag.putString("type", "object");
-                    list.add(objectTag);
-                } else {
-                    CompoundNBT stringTag = new CompoundNBT();
-                    stringTag.put("value", StringNBT.valueOf((String) parameter));
-                    stringTag.putString("type", "string");
-                    list.add(stringTag);
-                }
-            }
-            tag.put("parameters", list);
-            return tag;
-        }
-
-        @Override
-        public void fromNBT(CompoundNBT tag) {
-            this.parameterizedString = tag.getString("parameterizedString");
-            ListNBT list = tag.getList("parameters", Constants.NBT.TAG_COMPOUND);
-            this.parameters = new Object[list.size()];
-            for (int i = 0; i < this.parameters.length; i++) {
-                CompoundNBT elementTag = list.getCompound(i);
-                if("object".equals(elementTag.getString("type"))) {
-                    UnlocalizedString object = new UnlocalizedString();
-                    object.fromNBT(elementTag);
-                    this.parameters[i] = object;
-                } else {
-                    this.parameters[i] = elementTag.getString("value");
-                }
-            }
-        }
-
     }
 
 }

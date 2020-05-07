@@ -7,20 +7,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameters;
-import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.TileHelpers;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -68,16 +62,6 @@ public class BlockTile extends ContainerBlock {
             });
         }
         return itemStack;
-    }
-
-    @Override
-    public List<ItemStack> getDrops(BlockState blockState, LootContext.Builder builder) {
-        TileEntity tileEntity = builder.get(LootParameters.BLOCK_ENTITY);
-        if (tileEntity instanceof CyclopsTileEntity) {
-            CyclopsTileEntity tile = (CyclopsTileEntity) tileEntity;
-            // TODO: make something to add NBT to loot table stack. (take inspiration from shulkerbox) (do something like getPickBlock)
-        }
-        return super.getDrops(blockState, builder);
     }
 
     @Override
