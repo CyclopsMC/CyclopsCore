@@ -1,61 +1,58 @@
 package org.cyclops.cyclopscore.modcompat.jei;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
-import org.cyclops.cyclopscore.recipe.custom.api.IMachine;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipeRegistry;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import org.cyclops.cyclopscore.helper.CraftingHelpers;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 /**
- * A base implementation of a super-recipe-based JEI recipe wrapper.
+ * A base implementation of a recipe-based JEI recipe wrapper.
  * This caches all created recipe wrappers so they can be reused (or removed).
- * @param <I> The type of the recipe input of all recipes associated with the machine.
- * @param <O> The type of the recipe output of all recipes associated with the machine.
- * @param <P> The type of the recipe properties of all recipes associated with the machine.
+ * @param <T> The type of the recipe.
+ * @param <C> The type of the recipe container.
+ * @param <R> The type of the recipe instance.
  * @author rubensworks
  */
-public abstract class RecipeRegistryJeiRecipeWrapper<M extends IMachine<M, I, O, P>, I extends IRecipeInput,
-        O extends IRecipeOutput, P extends IRecipeProperties, T extends RecipeRegistryJeiRecipeWrapper<M, I, O, P, T>> {
+public abstract class RecipeRegistryJeiRecipeWrapper<T extends IRecipeType<R>, C extends IInventory, R extends IRecipe<C>,
+        J extends RecipeRegistryJeiRecipeWrapper<T, C, R, J>> {
 
-    private static final Map<IRecipe<?, ?, ?>, RecipeRegistryJeiRecipeWrapper<?, ?, ?, ?, ?>> RECIPE_WRAPPERS = Maps.newIdentityHashMap();
+    private static final Map<IRecipe<?>, RecipeRegistryJeiRecipeWrapper<?, ?, ?, ?>> RECIPE_WRAPPERS = Maps.newIdentityHashMap();
 
-    protected final IRecipe<I, O, P> recipe;
+    protected final R recipe;
 
-    protected RecipeRegistryJeiRecipeWrapper(IRecipe<I, O, P> recipe) {
+    protected RecipeRegistryJeiRecipeWrapper(T recipeType, R recipe) {
         this.recipe = recipe;
     }
 
-    public IRecipe<I, O, P> getRecipe() {
+    public R getRecipe() {
         return recipe;
     }
 
-    protected abstract IRecipeRegistry<M, I, O, P> getRecipeRegistry();
+    protected abstract T getRecipeType();
 
-    protected abstract T newInstance(IRecipe<I, O, P> input);
+    protected abstract J newInstance(R input);
 
-    public static <M extends IMachine<M, I, O, P>, I extends IRecipeInput, O extends IRecipeOutput,
-            P extends IRecipeProperties, T extends RecipeRegistryJeiRecipeWrapper<M, I, O, P, T>>
-            T getJeiRecipeWrapper(IRecipe<I, O, P> input) {
+    public static <T extends IRecipeType<R>, C extends IInventory, R extends IRecipe<C>,
+            J extends RecipeRegistryJeiRecipeWrapper<T, C, R, J>> T getJeiRecipeWrapper(R input) {
         return (T) RECIPE_WRAPPERS.get(input);
     }
 
-    public List<T> createAllRecipes() {
-        return Lists.transform(getRecipeRegistry().allRecipes(), new Function<IRecipe<I, O, P>, T>() {
+    public Collection<J> createAllRecipes() {
+        return Collections2.transform(CraftingHelpers.getClientRecipes(getRecipeType()), new Function<R, J>() {
             @Nullable
             @Override
-            public T apply(IRecipe<I, O, P> input) {
+            public J apply(R input) {
                 if (!RECIPE_WRAPPERS.containsKey(input)) {
                     RECIPE_WRAPPERS.put(input, newInstance(input));
                 }
-                return (T) RECIPE_WRAPPERS.get(input);
+                return (J) RECIPE_WRAPPERS.get(input);
             }
         });
     }

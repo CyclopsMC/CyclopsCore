@@ -4,33 +4,23 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.AbstractCookingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+
+import java.util.function.Supplier;
 
 /**
  * Furnace recipe exporter.
  */
-public class RegistryExportableFurnaceRecipe implements IRegistryExportable {
+public class RegistryExportableAbstractCookingRecipe<T extends IRecipeType<? extends AbstractCookingRecipe>> extends RegistryExportableRecipeAbstract<T, AbstractCookingRecipe, IInventory> {
 
-    @Override
-    public JsonObject export() {
-        JsonObject root = new JsonObject();
-        JsonArray elements = new JsonArray();
-        for (IRecipe<IInventory> recipe: ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipes(IRecipeType.SMELTING).values()) {
-            elements.add(serializeRecipe(recipe));
-        }
-        root.add("elements", elements);
-        return root;
+    protected RegistryExportableAbstractCookingRecipe(Supplier<T> recipeType) {
+        super(recipeType);
     }
 
     @Override
-    public String getName() {
-        return "furnace_recipe";
-    }
-
-    public JsonObject serializeRecipe(IRecipe<IInventory> recipe) {
+    public JsonObject serializeRecipe(AbstractCookingRecipe recipe) {
         JsonObject object = new JsonObject();
         JsonArray variants = new JsonArray();
         for (Ingredient ingredient : recipe.getIngredients()) {

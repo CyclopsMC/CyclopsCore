@@ -11,6 +11,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
@@ -18,6 +19,7 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -31,18 +33,21 @@ import java.util.concurrent.TimeUnit;
  */
 public class CraftingHelpers {
 
-    @OnlyIn(Dist.CLIENT)
     public static <C extends IInventory, T extends IRecipe<C>> Optional<T> findServerRecipe(IRecipeType<T> recipeType, C container, World world) {
         return world.getRecipeManager().getRecipe(recipeType, container, world);
     }
 
+    public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findServerRecipes(IRecipeType<? extends T> recipeType) {
+        return (Collection<T>) ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.OVERWORLD).getRecipeManager().getRecipes(recipeType).values();
+    }
+
     @OnlyIn(Dist.CLIENT)
-    public static <C extends IInventory, T extends IRecipe<C>> Optional<T> getClientRecipe(IRecipeType<T> recipeType, ResourceLocation recipeName) {
+    public static <C extends IInventory, T extends IRecipe<C>> Optional<T> getClientRecipe(IRecipeType<? extends T> recipeType, ResourceLocation recipeName) {
         return (Optional<T>) Optional.ofNullable(Minecraft.getInstance().getConnection().getRecipeManager().getRecipes(recipeType).get(recipeName));
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <C extends IInventory, T extends IRecipe<C>> Collection<T> getClientRecipes(IRecipeType<T> recipeType) {
+    public static <C extends IInventory, T extends IRecipe<C>> Collection<T> getClientRecipes(IRecipeType<? extends T> recipeType) {
         return (Collection<T>) Minecraft.getInstance().getConnection().getRecipeManager().getRecipes(recipeType).values();
     }
 

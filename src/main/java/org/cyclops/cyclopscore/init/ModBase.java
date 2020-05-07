@@ -66,7 +66,6 @@ public abstract class ModBase<T extends ModBase> {
     private final Map<EnumReferenceKey<?>, Object> genericReference = Maps.newHashMap();
     private final List<WorldStorage> worldStorages = Lists.newLinkedList();
     private final RegistryManager registryManager;
-    private final RecipeHandler recipeHandler;
     private final IKeyRegistry keyRegistry;
     private final PacketHandler packetHandler;
     private final ModCompatLoader modCompatLoader;
@@ -84,7 +83,6 @@ public abstract class ModBase<T extends ModBase> {
         this.loggerHelper = constructLoggerHelper();
         this.configHandler = constructConfigHandler();
         this.registryManager = constructRegistryManager();
-        this.recipeHandler = constructRecipeHandler();
         this.keyRegistry = new KeyRegistry();
         this.packetHandler = constructPacketHandler();
         this.modCompatLoader = constructModCompatLoader();
@@ -137,11 +135,6 @@ public abstract class ModBase<T extends ModBase> {
 
     protected RegistryManager constructRegistryManager() {
         return new RegistryManager();
-    }
-
-    @Deprecated // TODO: rm
-    protected RecipeHandler constructRecipeHandler() {
-        return null;
     }
 
     protected PacketHandler constructPacketHandler() {

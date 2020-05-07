@@ -1,81 +1,26 @@
 package org.cyclops.cyclopscore.metadata;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.IShapedRecipe;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
-import org.cyclops.cyclopscore.init.ModBase;
-import org.cyclops.cyclopscore.init.RecipeHandler;
-import org.cyclops.cyclopscore.recipe.custom.component.IngredientRecipeComponent;
-
-import java.util.Map;
 
 /**
  * Crafting recipe exporter.
  */
-public class RegistryExportableCraftingRecipe implements IRegistryExportable {
+public class RegistryExportableCraftingRecipe extends RegistryExportableRecipeAbstract<IRecipeType<ICraftingRecipe>, ICraftingRecipe, CraftingInventory> {
 
-    @Override
-    public JsonObject export() {
-        // Calculate tags for all recipes
-        Multimap<ItemStack, String> taggedRecipeReverse = Multimaps.newListMultimap(Maps.newHashMap(), Lists::newArrayList);
-        ModList.get().forEachModContainer(((s, modContainer) -> {
-            if (modContainer.getMod() instanceof ModBase) {
-                RecipeHandler recipeHandler = ((ModBase) modContainer.getMod()).getRecipeHandler();
-                if (recipeHandler != null) {
-                    for (Map.Entry<String, org.cyclops.cyclopscore.recipe.custom.api.IRecipe> entry : recipeHandler.getTaggedRecipes().entries()) {
-                        if (entry.getValue().getOutput() instanceof IngredientRecipeComponent) {
-                            ItemStack outputStack = ((IngredientRecipeComponent) entry.getValue().getOutput()).getFirstItemStack();
-                            taggedRecipeReverse.put(outputStack, entry.getKey());
-                        }
-                    }
-                }
-            }
-        }));
-
-        JsonObject elements = new JsonObject();
-        for (Map.Entry<ResourceLocation, IRecipe<CraftingInventory>> recipeEntry : ServerLifecycleHooks.getCurrentServer().getRecipeManager().getRecipes(IRecipeType.CRAFTING).entrySet()) {
-            IRecipe value = recipeEntry.getValue();
-            JsonObject serializedRecipe = serializeRecipe(value);
-            ItemStack outputItem = value.getRecipeOutput();
-
-            // Determine tags
-            JsonArray tags = new JsonArray();
-            for (Map.Entry<ItemStack, String> entry : taggedRecipeReverse.entries()) {
-                if (ItemStack.areItemStacksEqual(entry.getKey(), outputItem)) {
-                    tags.add(entry.getValue());
-                }
-            }
-            serializedRecipe.add("tags", tags);
-
-            // Add to results
-            String outputKey = outputItem.getItem().getRegistryName().toString();
-            if (!elements.has(outputKey)) {
-                elements.add(outputKey, new JsonArray());
-            }
-            elements.getAsJsonArray(outputKey).add(serializedRecipe);
-        }
-        return elements;
+    protected RegistryExportableCraftingRecipe() {
+        super(() -> IRecipeType.CRAFTING);
     }
 
     @Override
-    public String getName() {
-        return "crafting_recipe";
-    }
-
-    public JsonObject serializeRecipe(IRecipe recipe) {
+    public JsonObject serializeRecipe(ICraftingRecipe recipe) {
         JsonObject object = new JsonObject();
 
         NonNullList<Ingredient> inputs = recipe.getIngredients();
@@ -87,6 +32,7 @@ public class RegistryExportableCraftingRecipe implements IRegistryExportable {
             }
             arrayInputs.add(arrayInputAlternatives);
         }
+        object.addProperty("id", recipe.getId().toString());
         object.add("input", arrayInputs);
         object.add("output", IRegistryExportable.serializeItemStack(recipe.getRecipeOutput()));
 

@@ -1,35 +1,28 @@
 package org.cyclops.cyclopscore.metadata;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipe;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipeInput;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipeOutput;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipeProperties;
-import org.cyclops.cyclopscore.recipe.custom.api.IRecipeRegistry;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.util.registry.Registry;
+import org.cyclops.cyclopscore.helper.CraftingHelpers;
 
-import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * An abstract recipe exporter for {@link IRecipeRegistry} recipes.
+ * An abstract recipe exporter for {@link IRecipe} recipes.
  */
-public abstract class RegistryExportableRecipeAbstract<I extends IRecipeInput, O extends IRecipeOutput, P extends IRecipeProperties> implements IRegistryExportable {
+public abstract class RegistryExportableRecipeAbstract<T extends IRecipeType<? extends R>, R extends IRecipe<C>, C extends IInventory> implements IRegistryExportable {
 
-    private final Supplier<IRecipeRegistry<?, I, O, P>> recipeRegistry;
-    private final String name;
+    private final Supplier<T> recipeType;
 
-    protected RegistryExportableRecipeAbstract(Supplier<IRecipeRegistry<?, I, O, P>> recipeRegistry, String name) {
-        this.recipeRegistry = recipeRegistry;
-        this.name = name;
+    protected RegistryExportableRecipeAbstract(Supplier<T> recipeType) {
+        this.recipeType = recipeType;
     }
 
-    public IRecipeRegistry<?, I, O, P> getRecipeRegistry() {
-        return recipeRegistry.get();
+    public T getRecipeType() {
+        return recipeType.get();
     }
 
     @Override
@@ -38,20 +31,10 @@ public abstract class RegistryExportableRecipeAbstract<I extends IRecipeInput, O
         JsonArray elements = new JsonArray();
         element.add("recipes", elements);
 
-        // Calculate tags for all recipes
-        Multimap<IRecipe, String> taggedRecipeReverse = Multimaps.newListMultimap(Maps.newHashMap(), Lists::newArrayList);
-        for (Map.Entry<String, IRecipe> entry : getRecipeRegistry().getMod().getRecipeHandler().getTaggedRecipes().entries()) {
-            taggedRecipeReverse.put(entry.getValue(), entry.getKey());
-        }
-
-        for (IRecipe<I, O, P> recipe : getRecipeRegistry().allRecipes()) {
+        for (R recipe : CraftingHelpers.findServerRecipes(getRecipeType())) {
             JsonObject serializedRecipe = serializeRecipe(recipe);
 
-            JsonArray tagsArray = new JsonArray();
-            for (String tag : taggedRecipeReverse.get(recipe)) {
-                tagsArray.add(tag);
-            }
-            serializedRecipe.add("tags", tagsArray);
+            serializedRecipe.addProperty("id", recipe.getId().toString());
 
             elements.add(serializedRecipe);
         }
@@ -61,9 +44,9 @@ public abstract class RegistryExportableRecipeAbstract<I extends IRecipeInput, O
 
     @Override
     public String getName() {
-        return this.name;
+        return Registry.RECIPE_TYPE.getKey(getRecipeType()).toString().replaceAll(":", "__");
     }
 
-    public abstract JsonObject serializeRecipe(IRecipe<I, O, P> recipe);
+    public abstract JsonObject serializeRecipe(R recipe);
 
 }

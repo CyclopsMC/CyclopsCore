@@ -31,7 +31,7 @@ import org.cyclops.cyclopscore.infobook.InfoBookRegistry;
 import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTestConfig;
 import org.cyclops.cyclopscore.infobook.test.InfoBookTest;
 import org.cyclops.cyclopscore.ingredient.recipe.IRecipeInputOutputDefinitionRegistry;
-import org.cyclops.cyclopscore.ingredient.recipe.RecipeInputOutputDefinitionHandlers;
+import org.cyclops.cyclopscore.ingredient.recipe.RecipeDefinitionHandlers;
 import org.cyclops.cyclopscore.ingredient.recipe.RecipeInputOutputDefinitionRegistry;
 import org.cyclops.cyclopscore.init.ModBaseVersionable;
 import org.cyclops.cyclopscore.metadata.IRegistryExportableRegistry;
@@ -114,7 +114,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         // Populate registries
         Advancements.load();
         if (ModList.get().isLoaded(Reference.MOD_COMMONCAPABILITIES)) {
-            RecipeInputOutputDefinitionHandlers.load();
+            RecipeDefinitionHandlers.load();
         }
         RegistryExportables.load();
 
