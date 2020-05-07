@@ -47,12 +47,12 @@ public abstract class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> i
     
     @Override
 	public String getTranslationKey() {
-		return "items." + getMod().getModId() + "." + getNamedId();
+		return "item." + getMod().getModId() + "." + getNamedId();
 	}
 
     @Override
     public String getFullTranslationKey() {
-        return "item." + getTranslationKey() + ".name";
+        return getTranslationKey();
     }
     
     @Override

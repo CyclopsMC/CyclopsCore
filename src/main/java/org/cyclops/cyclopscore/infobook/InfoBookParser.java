@@ -22,6 +22,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.util.Strings;
+import org.cyclops.cyclopscore.RegistryEntries;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
 import org.cyclops.cyclopscore.infobook.condition.ConfigSectionConditionHandler;
@@ -89,32 +90,8 @@ public class InfoBookParser {
             }
 
         });
-        registerAppendixFactory("crafting_recipe", new IAppendixFactory() {
-
-            @Override
-            public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
-                try {
-                    return new CraftingRecipeAppendix(infoBook,
-                            CraftingHelpers.findClientRecipe(createStack(node), IRecipeType.CRAFTING, getIndex(node)));
-                } catch (IllegalArgumentException e) {
-                    throw new InvalidAppendixException(e.getMessage());
-                }
-            }
-
-        });
-        registerAppendixFactory("furnace_recipe", new IAppendixFactory() {
-
-            @Override
-            public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
-                try {
-                    return new FurnaceRecipeAppendix(infoBook,
-                        CraftingHelpers.findClientRecipe(createStack(node), IRecipeType.SMELTING, getIndex(node)));
-                } catch (IllegalArgumentException e) {
-                    throw new InvalidAppendixException(e.getMessage());
-                }
-            }
-
-        });
+        InfoBookParser.registerAppendixRecipeFactories(IRecipeType.CRAFTING, CraftingRecipeAppendix::new);
+        InfoBookParser.registerAppendixRecipeFactories(IRecipeType.SMELTING, FurnaceRecipeAppendix::new);
         registerAppendixFactory("advancement_rewards", new InfoBookParser.IAppendixFactory() {
 
             @Override
@@ -173,6 +150,7 @@ public class InfoBookParser {
             @Override
             public List<SectionAppendix> create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
                 List<SectionAppendix> appendixList = Lists.newArrayList();
+
                 String type = node.getAttribute("type");
                 Optional<IRecipeType<?>> recipeTypeOptional = Registry.RECIPE_TYPE.getValue(new ResourceLocation(type));
                 if (!recipeTypeOptional.isPresent()) {
@@ -180,9 +158,14 @@ public class InfoBookParser {
                 }
                 IRecipeType recipeType = recipeTypeOptional.get();
                 Map<ResourceLocation, IRecipe<?>> recipes = Minecraft.getInstance().getConnection().getRecipeManager().getRecipes(recipeType);
+
+                String idRegexString = node.getTextContent().trim();
+
                 for (IRecipe<?> recipe : recipes.values()) {
                     try {
-                        appendixList.add(createAppendix(infoBook, type, recipe));
+                        if (idRegexString.isEmpty() || recipe.getId().toString().matches(idRegexString)) {
+                            appendixList.add(createAppendix(infoBook, type, recipe));
+                        }
                     } catch (InvalidAppendixException e) {
                         // Skip this appendix.
                         e.setState(infoBook, null);
@@ -191,20 +174,6 @@ public class InfoBookParser {
                 }
                 return appendixList;
             }
-        });
-
-        // Appendix item factories
-        registerAppendixItemFactory("crafting_recipe", new IAppendixItemFactory<CraftingInventory, ICraftingRecipe>() {
-
-            @Override
-            public SectionAppendix create(IInfoBook infoBook, ICraftingRecipe recipe) throws InvalidAppendixException {
-                try {
-                    return new CraftingRecipeAppendix(infoBook, recipe);
-                } catch (IllegalArgumentException e) {
-                    throw new InvalidAppendixException(e.getMessage());
-                }
-            }
-
         });
 
         // Reward factories
@@ -273,13 +242,13 @@ public class InfoBookParser {
 
     /**
      * Register new appendix recipe factories.
-     * @param name The unique name for this factory, make sure to namespace this to your mod to avoid collisions.
      * @param recipeType The recipe type
      * @param factory The factory
      * @param <C> The recipe inventory type
      * @param <R> The recipe type
      */
-    public static <C extends IInventory, R extends IRecipe<C>> void registerAppendixRecipeFactories(String name, IRecipeType<R> recipeType, IAppendixItemFactory<C, R> factory) {
+    public static <C extends IInventory, R extends IRecipe<C>> void registerAppendixRecipeFactories(IRecipeType<R> recipeType, IAppendixItemFactory<C, R> factory) {
+        String name = Registry.RECIPE_TYPE.getKey(recipeType).toString();
         registerAppendixFactory(name, (infoBook, node) -> {
             ResourceLocation recipeId = getNodeResourceLocation(node);
             Optional<R> recipe = CraftingHelpers.getClientRecipe(recipeType, recipeId);

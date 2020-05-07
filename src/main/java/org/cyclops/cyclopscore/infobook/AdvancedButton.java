@@ -30,6 +30,13 @@ public class AdvancedButton extends Button {
         return this.onPress;
     }
 
+    @Override
+    public void onPress() {
+        if (this.onPress != null) {
+            this.onPress.onPress(this);
+        }
+    }
+
     /**
      * This is called each render tick to update the button to the latest render state.
      * @param x The X position.

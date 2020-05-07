@@ -19,8 +19,11 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeAction;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
+import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
@@ -120,7 +123,9 @@ public class ConfigHandler {
     }
 
     public void addToConfigDictionary(ExtendedConfig<?, ?> e) {
-        configDictionary.put(e.getNamedId(), e);
+        if (e instanceof BlockConfig || e instanceof ItemConfig || e instanceof FluidConfig) {
+            configDictionary.put(e.getNamedId(), e);
+        }
     }
     
     /**

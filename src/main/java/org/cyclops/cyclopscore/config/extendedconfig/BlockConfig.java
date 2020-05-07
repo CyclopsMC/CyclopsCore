@@ -79,12 +79,12 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
 
     @Override
 	public String getTranslationKey() {
-		return "blocks." + getMod().getModId() + "." + getNamedId();
+		return "block." + getMod().getModId() + "." + getNamedId();
 	}
 
     @Override
     public String getFullTranslationKey() {
-        return "tile." + getTranslationKey() + ".name";
+        return getTranslationKey();
     }
     
     @Override

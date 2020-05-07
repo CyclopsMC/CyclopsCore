@@ -49,7 +49,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe<CraftingInven
 
     @Override
     protected String getUnlocalizedTitle() {
-        return "tile.workbench.name";
+        return "block.minecraft.crafting_table";
     }
 
     @Override

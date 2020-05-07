@@ -112,8 +112,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
             if (chance != 1.0F) {
                 String chanceString = chance * 100F + "%";
-                gui.drawScaledCenteredString(chanceString, x - 3, y + 4, gui.getFontRenderer().getStringWidth(chanceString), 1f, 18, 0);
-                gui.drawScaledCenteredString(chanceString, x - 4, y + 3, gui.getFontRenderer().getStringWidth(chanceString), 1f, 18, Helpers.RGBToInt(255, 255, 255));
+                gui.drawScaledCenteredString(chanceString, x - 4, y + 3, gui.getFontRenderer().getStringWidth(chanceString), 1f, 18, Helpers.RGBToInt(255, 255, 255), true);
             }
 
             if (button != null && renderOverlays) button.update(x, y, itemStack, gui);

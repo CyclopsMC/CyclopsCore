@@ -43,7 +43,7 @@ public class FurnaceRecipeAppendix extends RecipeAppendix<IRecipe<IInventory>> {
 
     @Override
     protected String getUnlocalizedTitle() {
-        return "tile.furnace.name";
+        return "block.minecraft.furnace";
     }
 
     @Override

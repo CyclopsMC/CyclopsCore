@@ -21,7 +21,7 @@ public abstract class RecipeTypeConfig<T extends IRecipe<?>> extends ExtendedCon
      * @param namedId            A unique name id
      */
     public RecipeTypeConfig(ModBase mod, String namedId) {
-        super(mod, namedId, (eConfig) -> IRecipeType.register(namedId));
+        super(mod, namedId, (eConfig) -> IRecipeType.register(mod.getModId() + ":" + namedId));
     }
 
     @Override

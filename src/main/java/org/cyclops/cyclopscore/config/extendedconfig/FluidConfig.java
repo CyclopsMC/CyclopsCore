@@ -50,7 +50,7 @@ public abstract class FluidConfig extends ExtendedConfigForge<FluidConfig, Fluid
 
     @Override
 	public String getTranslationKey() {
-		return "fluid.fluids." + getMod().getModId() + "." + getNamedId();
+		return "block." + getMod().getModId() + ".block_" + getNamedId();
 	}
     
     @Override

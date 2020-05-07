@@ -6,17 +6,19 @@ import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.client.gui.container.ContainerScreenExtended;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -25,14 +27,13 @@ import org.cyclops.cyclopscore.inventory.container.ContainerExtended;
 import org.cyclops.cyclopscore.network.packet.RequestPlayerNbtPacket;
 import org.lwjgl.opengl.GL11;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
  * Base gui for {@link IInfoBook}.
  * @author rubensworks
  */
-public abstract class ScreenInfoBook<T extends ContainerExtended> extends ContainerScreenExtended<T> {
+public abstract class ScreenInfoBook<T extends ContainerExtended> extends ContainerScreen<T> {
 
     private static final int HR_WIDTH = 88;
     private static final int HR_HEIGHT = 10;
@@ -47,6 +48,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     private static final int BORDER_Y = 206;
 
     protected final IInfoBook infoBook;
+    protected final ResourceLocation texture;
 
     protected NextPageButton buttonNextPage;
     protected NextPageButton buttonPreviousPage;
@@ -63,6 +65,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     public ScreenInfoBook(T container, PlayerInventory playerInventory, ITextComponent title, IInfoBook infoBook) {
         super(container, playerInventory, title);
         this.infoBook = infoBook;
+        this.texture = constructGuiTexture();
         if(infoBook.getCurrentSection() == null) {
             InfoSection root = infoBook.getMod().getRegistryManager().getRegistry(IInfoBookRegistry.class).getRoot(infoBook);
             if (root == null) {
@@ -75,6 +78,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         // Request an up-to-date persisted player NBT tag to make sure our advancement reward status is synced.
         CyclopsCore._instance.getPacketHandler().sendToServer(new RequestPlayerNbtPacket());
     }
+
+    protected abstract ResourceLocation constructGuiTexture();
 
     /**
      * @return The amount of pages to show at once.
@@ -114,6 +119,9 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     public void init() {
         super.init();
 
+        this.buttons.clear();
+        this.children.clear();
+
         left = (width - getGuiWidth()) / 2;
         top = (height - getGuiHeight()) / 2;
 
@@ -123,6 +131,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             nextSection = location.getInfoSection();
             nextPage = location.getPage();
             infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
+            applyNavigation();
         }, this));
         this.addButton(this.buttonPreviousPage = new NextPageButton(left + 23 - getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 193, 18, 10, (button) -> {
             InfoSection.Location location = infoBook.getCurrentSection().getPrevious(infoBook.getCurrentPage(), MinecraftHelpers.isShifted());
@@ -131,6 +140,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             // We can not set the new 'page', because the infoBook.getCurrentSection() hasn't been baked yet and we do not know the last page yet.
             goToLastPage = nextSection != infoBook.getCurrentSection() && !MinecraftHelpers.isShifted();
             infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
+            applyNavigation();
         }, this));
         this.addButton(this.buttonParent = new NextPageButton(left + 2, top + 2, 36, 180, 8, 8, (button) -> {
             goToLastPage = false;
@@ -144,12 +154,14 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             }
             nextPage = 0;
             infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
+            applyNavigation();
         }, this));
         this.addButton(this.buttonBack = new NextPageButton(left + getPageWidth() + 127, top + 2, 0, 223, 13, 18, (button) -> {
             InfoSection.Location location = infoBook.getHistory().pop();
             goToLastPage = false;
             nextSection = location.getInfoSection();
             nextPage = location.getPage();
+            applyNavigation();
         }, this));
         this.addButton(this.buttonExternal = new NextPageButton(left + 130, top, 26, 203, 11, 11, (button) -> {
             Helpers.openUrl(infoBook.getBaseUrl() + infoBook.getCurrentSection().getRelativeWebPath());
@@ -165,6 +177,9 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         int page = infoBook.getCurrentPage();
         for(int innerPage = page; innerPage <= page + getPages() - 1; innerPage++) {
             for (HyperLink link : infoBook.getCurrentSection().getLinks(innerPage)) {
+                if (link.getTranslationKey().equals(L10NHelpers.localize(link.getTranslationKey()))) {
+                    CyclopsCore.clog(Level.WARN, "Could not find hyperlink localization for " + link.getTranslationKey());
+                }
                 int xOffset = getOffsetXForPageWithWidths(innerPage % getPages());
                 this.addButton(new TextOverlayButton(link, left + xOffset + link.getX(), top + getPageYOffset() / 2 + link.getY(),
                         InfoSection.getFontHeight(getFontRenderer()), getPageWidth() - getOffsetXTotal() - link.getX(), (button) -> {
@@ -172,6 +187,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
                     nextSection = ((TextOverlayButton) button).getLink().getTarget();
                     nextPage = 0;
                     if(nextSection != infoBook.getCurrentSection()) infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
+                    applyNavigation();
                 }, this));
             }
             for (AdvancedButton advancedButton : infoBook.getCurrentSection().getAdvancedButtons(innerPage)) {
@@ -180,6 +196,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
                     nextSection = ((AdvancedButton) button).getTarget();
                     nextPage = 0;
                     if(nextSection != infoBook.getCurrentSection()) infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
+                    applyNavigation();
                 });
                 this.addButton(advancedButton);
             }
@@ -201,7 +218,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     }
 
     @Override
-    public void drawCurrentScreen(int x, int y, float partialTicks) {
+    public void render(int x, int y, float partialTicks) {
         GlStateManager.color4f(1F, 1F, 1F, 1F);
         RenderHelpers.bindTexture(texture);
 
@@ -231,6 +248,11 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         if (this.buttonExternal.visible && RenderHelpers.isPointInButton(this.buttonExternal, x, y)) {
             drawTooltip(x, y, Lists.newArrayList(L10NHelpers.localize("infobook.cyclopscore.external")));
         }
+    }
+
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+        // Do nothing
     }
 
     public void drawTooltip(int mx, int my, List<String> lines) {
@@ -314,9 +336,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         this.buttonBack.visible = infoBook.getHistory().currentSize() > 0;
     }
 
-    protected void mouseClicked(int x, int y, int p_73864_3_) throws IOException {
-        super.mouseClicked(x, y, p_73864_3_);
-        if(p_73864_3_ == 0 && (nextSection != null && (nextSection != infoBook.getCurrentSection() || infoBook.getCurrentPage() != nextPage))) {
+    protected void applyNavigation() {
+        if(nextSection != null && (nextSection != infoBook.getCurrentSection() || infoBook.getCurrentPage() != nextPage)) {
             infoBook.setCurrentSection(nextSection);
             nextSection = null;
             infoBook.setCurrentPage(nextPage);
@@ -325,17 +346,29 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     }
 
     public void drawScaledCenteredString(String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
+        drawScaledCenteredString(string, x, y, width, originalScale, maxWidth, color, false);
+    }
+
+    public void drawScaledCenteredString(String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow) {
         float originalWidth = getFontRenderer().getStringWidth(string) * originalScale;
         float scale = Math.min(originalScale, maxWidth / originalWidth * originalScale);
-        drawScaledCenteredString(string, x, y, width, scale, color);
+        drawScaledCenteredString(string, x, y, width, scale, color, shadow);
     }
 
     public void drawScaledCenteredString(String string, int x, int y, int width, float scale, int color) {
+        drawScaledCenteredString(string, x, y, width, scale, color, false);
+    }
+
+    public void drawScaledCenteredString(String string, int x, int y, int width, float scale, int color, boolean shadow) {
         GlStateManager.pushMatrix();
         GlStateManager.scalef(scale, scale, 1.0f);
         int titleLength = font.getStringWidth(string);
         int titleHeight = font.FONT_HEIGHT;
-        font.drawString(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+        if (shadow) {
+            font.drawStringWithShadow(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+        } else {
+            font.drawString(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+        }
         GlStateManager.popMatrix();
     }
 

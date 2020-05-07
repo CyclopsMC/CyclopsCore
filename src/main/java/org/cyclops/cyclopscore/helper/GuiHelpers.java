@@ -86,7 +86,9 @@ public class GuiHelpers {
                 }
                 RenderSystem.color3f(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight());
 
+                RenderHelper.setupGuiFlatDiffuseLighting();
                 AbstractGui.blit(x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
+                RenderHelper.setupGui3DDiffuseLighting();
 
                 // Reset color when done
                 GlStateManager.color4f(1, 1, 1, 1);
