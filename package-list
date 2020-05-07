@@ -35,7 +35,6 @@ org.cyclops.cyclopscore.infobook.test
 org.cyclops.cyclopscore.ingredient.collection
 org.cyclops.cyclopscore.ingredient.collection.diff
 org.cyclops.cyclopscore.ingredient.recipe
-org.cyclops.cyclopscore.ingredient.recipe.handler
 org.cyclops.cyclopscore.ingredient.storage
 org.cyclops.cyclopscore.init
 org.cyclops.cyclopscore.inventory
@@ -60,12 +59,8 @@ org.cyclops.cyclopscore.persist.nbt
 org.cyclops.cyclopscore.persist.world
 org.cyclops.cyclopscore.potion
 org.cyclops.cyclopscore.proxy
-org.cyclops.cyclopscore.recipe.custom
-org.cyclops.cyclopscore.recipe.custom.api
-org.cyclops.cyclopscore.recipe.custom.component
-org.cyclops.cyclopscore.recipe.event
+org.cyclops.cyclopscore.recipe
 org.cyclops.cyclopscore.recipe.type
-org.cyclops.cyclopscore.recipe.xml
 org.cyclops.cyclopscore.tileentity
 org.cyclops.cyclopscore.tracking
 org.cyclops.cyclopscore.world.gen
