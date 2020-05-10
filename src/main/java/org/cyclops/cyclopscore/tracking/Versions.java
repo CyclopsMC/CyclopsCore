@@ -98,7 +98,7 @@ public class Versions {
                     }
                     allDone = true;
                 }
-            }).run();
+            }).start();
         }
     }
 
