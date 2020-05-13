@@ -1,18 +1,20 @@
 package org.cyclops.cyclopscore.ingredient.recipe;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.NBTIngredient;
+import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.IPrototypedIngredientAlternatives;
-import org.cyclops.commoncapabilities.api.ingredient.IMixedIngredients;
+import org.cyclops.commoncapabilities.api.capability.recipehandler.PrototypedIngredientAlternativesList;
+import org.cyclops.commoncapabilities.api.ingredient.IPrototypedIngredient;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
-import org.cyclops.commoncapabilities.api.ingredient.MixedIngredients;
+import org.cyclops.commoncapabilities.api.ingredient.PrototypedIngredient;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Helpers for the conversion between {@link org.cyclops.commoncapabilities.api.capability.recipehandler.IRecipeDefinition}
@@ -20,54 +22,26 @@ import java.util.Objects;
  */
 public class IngredientRecipeHelpers {
 
-    public static <T extends IRecipeType<R>, C extends IInventory, R extends IRecipe<C>>
-    Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> toRecipeDefinitionInput(T recipeType, R recipe) {
-        IRecipeDefinitionHandler<T, C, R> handler = RecipeDefinitionHandlers.REGISTRY.getRecipeHandler(recipeType);
-        Objects.requireNonNull(handler, "No handler was registered for " + recipeType.getClass());
-        return handler.toRecipeDefinitionInput(recipe);
-    }
-
-    public static <T extends IRecipeType<R>, C extends IInventory, R extends IRecipe<C>>
-    IMixedIngredients toRecipeDefinitionOutput(T recipeType, R recipe) {
-        IRecipeDefinitionHandler<T, C, R> handler = RecipeDefinitionHandlers.REGISTRY.getRecipeHandler(recipeType);
-        Objects.requireNonNull(handler, "No handler was registered for " + recipeType.getClass());
-        return handler.toRecipeDefinitionOutput(recipe);
-    }
-
-    public static <T extends IRecipeType<R>, C extends IInventory, R extends IRecipe<C>>
-    Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> mergeInputs(T recipeType, R... recipes) {
-        Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> inputs = Maps.newIdentityHashMap();
-        for (R recipe : recipes) {
-            Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> subInput = toRecipeDefinitionInput(recipeType, recipe);
-            for (Map.Entry<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> entry : subInput.entrySet()) {
-                List<IPrototypedIngredientAlternatives<?, ?>> list = inputs.get(entry.getKey());
-                if (list == null) {
-                    list = Lists.newArrayList();
-                    inputs.put(entry.getKey(), list);
-                }
-                list.addAll(entry.getValue());
-            }
+    /**
+     * Create prototyped ingredient alternatives from the given ingredient.
+     * @param ingredient An ingredient.
+     * @return Prototyped alternatives.
+     */
+    public static IPrototypedIngredientAlternatives<ItemStack, Integer> getPrototypesFromIngredient(Ingredient ingredient) {
+        List<IPrototypedIngredient<ItemStack, Integer>> items;
+        if (ingredient instanceof NBTIngredient) {
+            items = Lists.newArrayList(new PrototypedIngredient<>(IngredientComponent.ITEMSTACK,
+                    ingredient.getMatchingStacks()[0], ItemMatch.ITEM | ItemMatch.NBT));
+//        } else if (ingredient instanceof OreIngredient) { // TODO: somehow detect tags in the future, see ShapelessRecipeBuilder
+//            return Arrays.stream(ingredient.getMatchingStacks())
+//                    .map(itemStack -> new PrototypedIngredient<>(IngredientComponent.ITEMSTACK, itemStack, ItemMatch.ITEM))
+//                    .collect(Collectors.toList());
+        } else {
+            items = Arrays.stream(ingredient.getMatchingStacks())
+                    .map(itemStack -> new PrototypedIngredient<>(IngredientComponent.ITEMSTACK, itemStack, ItemMatch.ITEM))
+                    .collect(Collectors.toList());
         }
-        return inputs;
-    }
-
-    public static <T extends IRecipeType<R>, C extends IInventory, R extends IRecipe<C>>
-    IMixedIngredients mergeOutputs(T recipeType, R... recipes) {
-        Map<IngredientComponent<?, ?>, List<?>> outputs = Maps.newIdentityHashMap();
-
-        for (R recipe : recipes) {
-            IMixedIngredients subOutput = toRecipeDefinitionOutput(recipeType, recipe);
-            for (IngredientComponent<?, ?> component : subOutput.getComponents()) {
-                List<?> list = outputs.get(component);
-                if (list == null) {
-                    list = Lists.newArrayList();
-                    outputs.put(component, list);
-                }
-                list.addAll((List) subOutput.getInstances(component));
-            }
-        }
-
-        return new MixedIngredients(outputs);
+        return new PrototypedIngredientAlternativesList<>(items);
     }
 
 }

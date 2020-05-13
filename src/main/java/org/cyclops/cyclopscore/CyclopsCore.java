@@ -7,7 +7,6 @@ import net.minecraft.command.arguments.ArgumentTypes;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -30,9 +29,6 @@ import org.cyclops.cyclopscore.infobook.IInfoBookRegistry;
 import org.cyclops.cyclopscore.infobook.InfoBookRegistry;
 import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTestConfig;
 import org.cyclops.cyclopscore.infobook.test.InfoBookTest;
-import org.cyclops.cyclopscore.ingredient.recipe.IRecipeInputOutputDefinitionRegistry;
-import org.cyclops.cyclopscore.ingredient.recipe.RecipeDefinitionHandlers;
-import org.cyclops.cyclopscore.ingredient.recipe.RecipeInputOutputDefinitionRegistry;
 import org.cyclops.cyclopscore.init.ModBaseVersionable;
 import org.cyclops.cyclopscore.metadata.IRegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportableRegistry;
@@ -106,16 +102,12 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
     @Override
     protected void setup(FMLCommonSetupEvent event) {
         // Registries
-        getRegistryManager().addRegistry(IRecipeInputOutputDefinitionRegistry.class, new RecipeInputOutputDefinitionRegistry());
         getRegistryManager().addRegistry(IRegistryExportableRegistry.class, RegistryExportableRegistry.getInstance());
 
         super.setup(event);
 
         // Populate registries
         Advancements.load();
-        if (ModList.get().isLoaded(Reference.MOD_COMMONCAPABILITIES)) {
-            RecipeDefinitionHandlers.load();
-        }
         RegistryExportables.load();
 
         // Register argument types
