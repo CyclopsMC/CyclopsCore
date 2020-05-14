@@ -4,7 +4,12 @@ import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.item.Item;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
@@ -17,7 +22,14 @@ import java.util.List;
  */
 public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
 
-    private static final List<ExtendedConfig<?, ?>> MODEL_ENTRIES = Lists.newArrayList();
+    private static final List<ItemConfig> MODEL_ENTRIES = Lists.newArrayList();
+
+    static {
+        if (MinecraftHelpers.isClientSide()) {
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(ItemAction::onModelRegistryLoad);
+            FMLJavaModLoadingContext.get().getModEventBus().addListener(ItemAction::onModelBakeEvent);
+        }
+    }
 
     @Override
     public void onRegisterForge(ItemConfig eConfig) {
@@ -27,16 +39,25 @@ public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
             eConfig.onForgeRegistered();
             return null;
         });
+    }
 
-        if(MinecraftHelpers.isClientSide()) {
-            handleItemModel(eConfig);
+    @OnlyIn(Dist.CLIENT)
+    public static void onModelRegistryLoad(ModelRegistryEvent event) {
+        for (ItemConfig config : MODEL_ENTRIES) {
+            config.dynamicItemVariantLocation  = config.registerDynamicModel();
         }
     }
 
-    public static void handleItemModel(ExtendedConfig<?, ?> extendedConfig) {
-        if(MinecraftHelpers.isClientSide()) {
-            MODEL_ENTRIES.add(extendedConfig);
+    @OnlyIn(Dist.CLIENT)
+    public static void onModelBakeEvent(ModelBakeEvent event){
+        for (ItemConfig config : MODEL_ENTRIES) {
+            IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
+            event.getModelRegistry().put(config.dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(event));
         }
+    }
+
+    public static void handleItemModel(ItemConfig extendedConfig) {
+        MODEL_ENTRIES.add(extendedConfig);
     }
 
     protected void polish(ItemConfig config) {

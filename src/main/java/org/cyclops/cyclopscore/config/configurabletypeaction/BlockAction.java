@@ -78,10 +78,6 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
             this.polish(eConfig);
             return null;
         });
-
-        if (MinecraftHelpers.isClientSide()) {
-            ItemAction.handleItemModel(eConfig);
-        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -97,7 +93,7 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     public static void onModelBakeEvent(ModelBakeEvent event){
         for (BlockConfig config : MODEL_ENTRIES) {
             IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
-            IBakedModel dynamicModel = dynamicModelElement.createDynamicModel();
+            IBakedModel dynamicModel = dynamicModelElement.createDynamicModel(event);
             event.getModelRegistry().put(config.dynamicBlockVariantLocation, dynamicModel);
             event.getModelRegistry().put(config.dynamicItemVariantLocation, dynamicModel);
         }

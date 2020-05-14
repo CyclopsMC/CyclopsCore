@@ -9,7 +9,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
+import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.configurabletypeaction.ItemAction;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.item.ItemInformationProvider;
@@ -67,11 +69,17 @@ public abstract class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> i
      */
     @OnlyIn(Dist.CLIENT)
     public ModelResourceLocation registerDynamicModel() {
-        String blockName = getMod().getModId() + ":" + getNamedId();
-        ModelResourceLocation itemLocation = new ModelResourceLocation(blockName, "inventory");
-        // TODO: model mapping
-        // ModelLoader.setCustomModelResourceLocation(getItemInstance(), 0, itemLocation);
-        return itemLocation;
+        String itemName = getMod().getModId() + ":" + getNamedId();
+        return new ModelResourceLocation(itemName, "inventory");
+    }
+
+    @Override
+    public void onRegistered() {
+        super.onRegistered();
+        if(MinecraftHelpers.isClientSide() && getInstance() instanceof IDynamicModelElement &&
+                ((IDynamicModelElement) getInstance()).hasDynamicModel()) {
+            ItemAction.handleItemModel(this);
+        }
     }
 
     @Override
