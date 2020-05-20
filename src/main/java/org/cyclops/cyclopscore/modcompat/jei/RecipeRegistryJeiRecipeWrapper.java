@@ -15,19 +15,18 @@ import java.util.Map;
 /**
  * A base implementation of a recipe-based JEI recipe wrapper.
  * This caches all created recipe wrappers so they can be reused (or removed).
- * @param <T> The type of the recipe.
  * @param <C> The type of the recipe container.
  * @param <R> The type of the recipe instance.
  * @author rubensworks
  */
-public abstract class RecipeRegistryJeiRecipeWrapper<T extends IRecipeType<R>, C extends IInventory, R extends IRecipe<C>,
-        J extends RecipeRegistryJeiRecipeWrapper<T, C, R, J>> {
+public abstract class RecipeRegistryJeiRecipeWrapper<C extends IInventory, R extends IRecipe<C>,
+        J extends RecipeRegistryJeiRecipeWrapper<C, R, J>> {
 
-    private static final Map<IRecipe<?>, RecipeRegistryJeiRecipeWrapper<?, ?, ?, ?>> RECIPE_WRAPPERS = Maps.newIdentityHashMap();
+    private static final Map<IRecipe<?>, RecipeRegistryJeiRecipeWrapper<?, ?, ?>> RECIPE_WRAPPERS = Maps.newIdentityHashMap();
 
     protected final R recipe;
 
-    protected RecipeRegistryJeiRecipeWrapper(T recipeType, R recipe) {
+    protected RecipeRegistryJeiRecipeWrapper(IRecipeType<R> recipeType, R recipe) {
         this.recipe = recipe;
     }
 
@@ -35,12 +34,12 @@ public abstract class RecipeRegistryJeiRecipeWrapper<T extends IRecipeType<R>, C
         return recipe;
     }
 
-    protected abstract T getRecipeType();
+    protected abstract IRecipeType<R> getRecipeType();
 
     protected abstract J newInstance(R input);
 
     public static <T extends IRecipeType<R>, C extends IInventory, R extends IRecipe<C>,
-            J extends RecipeRegistryJeiRecipeWrapper<T, C, R, J>> T getJeiRecipeWrapper(R input) {
+            J extends RecipeRegistryJeiRecipeWrapper<C, R, J>> T getJeiRecipeWrapper(R input) {
         return (T) RECIPE_WRAPPERS.get(input);
     }
 
