@@ -150,7 +150,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     @Override
-    public ContainerType<?> getType() {
-        return getContainer().getType();
+    public ContainerType<?> getContainerType() {
+        return getContainer().getContainerType();
     }
 }

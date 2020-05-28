@@ -26,6 +26,7 @@ import org.cyclops.cyclopscore.inventory.slot.SlotArmor;
 import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
 import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -137,6 +138,12 @@ public abstract class ContainerExtended extends Container implements IContainerB
 
     public static void setSlotPosY(Slot slot, int newValue) {
         setSlotPos(slot, "field_75221_f", newValue);
+    }
+
+    @Override
+    @Nonnull
+    public ContainerType<?> getContainerType() {
+        return super.getType();
     }
 
     @Override
@@ -492,9 +499,11 @@ public abstract class ContainerExtended extends Container implements IContainerB
     public void setValue(int valueId, CompoundNBT value) {
         if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
             if (!player.getEntityWorld().isRemote()) { // server -> client
-                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getType(), valueId, value), (ServerPlayerEntity) player);
+                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(
+                    getContainerType(), valueId, value), (ServerPlayerEntity) player);
             } else { // client -> server
-                CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getType(), valueId, value));
+                CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(
+                    getContainerType(), valueId, value));
             }
             values.put(valueId, value);
         }

@@ -13,7 +13,7 @@ public interface IValueNotifiable {
     /**
      * @return The container type.
      */
-    public ContainerType<?> getType();
+    public ContainerType<?> getContainerType();
 
     /**
      * Called by the server if the value has changed.
