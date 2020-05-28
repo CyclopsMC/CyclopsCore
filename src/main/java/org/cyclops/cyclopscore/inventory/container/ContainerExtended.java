@@ -511,6 +511,11 @@ public abstract class ContainerExtended extends Container implements IContainerB
     }
 
     @Override
+    public ContainerType<?> getValueNotifiableType() {
+        return getType();
+    }
+
+    @Override
     public void onUpdate(int valueId, CompoundNBT value) {
         values.put(valueId, value);
         if(guiValueListener != null) {

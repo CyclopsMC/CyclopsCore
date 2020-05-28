@@ -150,7 +150,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     @Override
-    public ContainerType<?> getType() {
+    public ContainerType<?> getValueNotifiableType() {
         return getContainer().getType();
     }
 }

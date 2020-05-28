@@ -43,7 +43,7 @@ public class ValueNotifyPacket extends PacketCodec {
 	}
 
 	protected boolean isContainerValid(IValueNotifiable container) {
-    	return container.getType().getRegistryName().toString().equals(containerType);
+    	return container.getValueNotifiableType().getRegistryName().toString().equals(containerType);
 	}
 
 	@Override
