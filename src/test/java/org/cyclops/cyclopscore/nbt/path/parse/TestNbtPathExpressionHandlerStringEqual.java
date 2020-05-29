@@ -45,6 +45,30 @@ public class TestNbtPathExpressionHandlerStringEqual {
     }
 
     @Test
+    public void testNonMatchOneEqual() {
+        assertThat(handler.handlePrefixOf("= \"a\"", 0),
+            is(INbtPathExpressionParseHandler.HandleResult.INVALID));
+    }
+
+    @Test
+    public void testNonMatchOnlyOneQuote() {
+        assertThat(handler.handlePrefixOf("== \"", 0),
+            is(INbtPathExpressionParseHandler.HandleResult.INVALID));
+    }
+
+    @Test
+    public void testNonMatchUnfinishedEscape() {
+        assertThat(handler.handlePrefixOf("== \"\\", 0),
+            is(INbtPathExpressionParseHandler.HandleResult.INVALID));
+    }
+
+    @Test
+    public void testNonMatchInvalidEscape() {
+        assertThat(handler.handlePrefixOf("== \"\\w\"", 0),
+            is(INbtPathExpressionParseHandler.HandleResult.INVALID));
+    }
+
+    @Test
     public void testMatchExpressionStringEmpty() {
         INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("==\"\"", 0);
         assertThat(result.isValid(), is(true));
@@ -60,6 +84,34 @@ public class TestNbtPathExpressionHandlerStringEqual {
         assertThat(result.getConsumedExpressionLength(), is(7));
         assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerStringEqual.Expression.class));
         assertThat(((NbtPathExpressionParseHandlerStringEqual.Expression) result.getPrefixExpression()).getTargetString(), is("abc"));
+    }
+
+
+    @Test
+    public void testMatchExpressionSpaces() {
+        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("     ==     \"abc\"", 0);
+        assertThat(result.isValid(), is(true));
+        assertThat(result.getConsumedExpressionLength(), is(17));
+        assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerStringEqual.Expression.class));
+        assertThat(((NbtPathExpressionParseHandlerStringEqual.Expression) result.getPrefixExpression()).getTargetString(), is("abc"));
+    }
+
+    @Test
+    public void testMatchExpressionEscapeBackslash() {
+        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("==\"a\\\\\\\\b\\\\c\"", 0);
+        assertThat(result.isValid(), is(true));
+        assertThat(result.getConsumedExpressionLength(), is(13));
+        assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerStringEqual.Expression.class));
+        assertThat(((NbtPathExpressionParseHandlerStringEqual.Expression) result.getPrefixExpression()).getTargetString(), is("a\\\\b\\c"));
+    }
+
+    @Test
+    public void testMatchExpressionEscapeDoubleQuote() {
+        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("==\"a\\\"\\\"b\\\"c\"", 0);
+        assertThat(result.isValid(), is(true));
+        assertThat(result.getConsumedExpressionLength(), is(13));
+        assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerStringEqual.Expression.class));
+        assertThat(((NbtPathExpressionParseHandlerStringEqual.Expression) result.getPrefixExpression()).getTargetString(), is("a\"\"b\"c"));
     }
 
     @Test

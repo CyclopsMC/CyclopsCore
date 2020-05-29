@@ -55,6 +55,24 @@ public class TestNbtPathExpressionHandlerChildBrackets {
     }
 
     @Test
+    public void testNonMatchUnfinishedEscape() {
+        assertThat(handler.handlePrefixOf("[\"\\", 0),
+            is(INbtPathExpressionParseHandler.HandleResult.INVALID));
+    }
+
+    @Test
+    public void testNonMatchInvalidEscape() {
+        assertThat(handler.handlePrefixOf("[\"\\w\"]", 0),
+            is(INbtPathExpressionParseHandler.HandleResult.INVALID));
+    }
+
+    @Test
+    public void testNonMatchNoClosingBrackets() {
+        assertThat(handler.handlePrefixOf("[\"abc\"", 0),
+            is(INbtPathExpressionParseHandler.HandleResult.INVALID));
+    }
+
+    @Test
     public void testMatchEmpty() {
         INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("[\"\"]", 0);
         assertThat(result.isValid(), is(true));
@@ -123,6 +141,24 @@ public class TestNbtPathExpressionHandlerChildBrackets {
         assertThat(result.isValid(), is(true));
         assertThat(result.getConsumedExpressionLength(), is(7));
         assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerChild.Expression.class));
+    }
+
+    @Test
+    public void testMatchEscapeBackslash() {
+        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("aa[\"c\\\\d\"]bb", 2);
+        assertThat(result.isValid(), is(true));
+        assertThat(result.getConsumedExpressionLength(), is(8));
+        assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerChild.Expression.class));
+        assertThat(((NbtPathExpressionParseHandlerChild.Expression) result.getPrefixExpression()).getChildName(), equalTo("c\\d"));
+    }
+
+    @Test
+    public void testMatchEscapeDoubleQuotes() {
+        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("aa[\"c\\\"d\"]bb", 2);
+        assertThat(result.isValid(), is(true));
+        assertThat(result.getConsumedExpressionLength(), is(8));
+        assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerChild.Expression.class));
+        assertThat(((NbtPathExpressionParseHandlerChild.Expression) result.getPrefixExpression()).getChildName(), equalTo("c\"d"));
     }
 
     @Test

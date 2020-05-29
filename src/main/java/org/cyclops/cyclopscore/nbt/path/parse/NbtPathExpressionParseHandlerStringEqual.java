@@ -6,31 +6,45 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
+import org.cyclops.cyclopscore.nbt.path.parse.StringParser.StringParseResult;
 
-import javax.annotation.Nullable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
  * A handler that handles boolean expressions in the form of " == "abc"".
  */
 public class NbtPathExpressionParseHandlerStringEqual implements INbtPathExpressionParseHandler {
+    /**
+     * Skips all consecutive spaces.
+     * @param string Source string
+     * @param pos Index of the first potential space
+     * @return Index of first encountered non space character
+     */
+    private static int skipSpaces(String string, int pos) {
+        while (pos < string.length() && string.charAt(pos) == ' ') {
+            pos++;
+        }
+        return pos;
+    }
 
-    private static final Pattern REGEX_EQUAL = Pattern.compile("^ *== *\"([^\"]*)\"");
-
-    @Nullable
     @Override
     public HandleResult handlePrefixOf(String nbtPathExpression, int pos) {
-        Matcher matcher = REGEX_EQUAL
-                .matcher(nbtPathExpression)
-                .region(pos, nbtPathExpression.length());
-        if (!matcher.find()) {
+        int currentPos = skipSpaces(nbtPathExpression, pos);
+        if ((currentPos + 1) >= nbtPathExpression.length()) {
             return HandleResult.INVALID;
         }
-
-        String targetString = matcher.group(1);
-        return new HandleResult(new Expression(targetString), matcher.group().length());
+        if (nbtPathExpression.charAt(currentPos) != '=' || nbtPathExpression.charAt(currentPos + 1) != '=') {
+            return HandleResult.INVALID;
+        }
+        currentPos = skipSpaces(nbtPathExpression, currentPos + 2);
+        StringParseResult parseResult = StringParser.parse(nbtPathExpression, currentPos);
+        if (!parseResult.isSuccess()) {
+            return HandleResult.INVALID;
+        }
+        return new HandleResult(
+            new Expression(parseResult.getResult()),
+            currentPos - pos + parseResult.getConsumed()
+        );
     }
 
     public static class Expression implements INbtPathExpression {

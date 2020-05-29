@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
+import org.cyclops.cyclopscore.nbt.path.parse.StringParser.StringParseResult;
+
 import javax.annotation.Nullable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,20 +13,23 @@ import java.util.regex.Pattern;
  * but allows special characters to be used.
  */
 public class NbtPathExpressionParseHandlerChildBrackets implements INbtPathExpressionParseHandler {
-
-    private static final Pattern REGEX_CHILDNAME = Pattern.compile("^\\[\"([^\"]*)\"\\]");
-
     @Nullable
     @Override
     public HandleResult handlePrefixOf(String nbtPathExpression, int pos) {
-        Matcher matcher = REGEX_CHILDNAME
-                .matcher(nbtPathExpression)
-                .region(pos, nbtPathExpression.length());
-        if (!matcher.find()) {
+        if (pos >= nbtPathExpression.length() || nbtPathExpression.charAt(pos) != '[') {
             return HandleResult.INVALID;
         }
-
-        String childName = matcher.group(1);
-        return new HandleResult(new NbtPathExpressionParseHandlerChild.Expression(childName), 4 + childName.length());
+        StringParseResult parseResult = StringParser.parse(nbtPathExpression, pos + 1);
+        if (!parseResult.isSuccess()) {
+            return HandleResult.INVALID;
+        }
+        int closingBracketIndex = pos + parseResult.getConsumed() + 1;
+        if (closingBracketIndex >= nbtPathExpression.length() || nbtPathExpression.charAt(closingBracketIndex) != ']') {
+            return HandleResult.INVALID;
+        }
+        return new HandleResult(
+            new NbtPathExpressionParseHandlerChild.Expression(parseResult.getResult()),
+            2 + parseResult.getConsumed()
+        );
     }
 }
