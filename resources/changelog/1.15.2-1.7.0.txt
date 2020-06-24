@@ -1,0 +1,21 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add support for string escaping in NBT Path
+* Restore dynamic item model loading
+* Add RecipeHandlerRecipeType
+* Add tag-based JSON recipe helpers
+
+Changes:
+* Simplify RecipeRegistryJeiRecipeWrapper
+* Remove deprecated xml and custom recipe systems
+* Update IImage world rendering to MC 1.15
+* Restore camera transform helpers
+
+Fixes:
+* Fix value notification crash when obfuscated
+* Fix version checker running in main thread causing slowdown, Closes #143
+* Fix infobook for MC 1.15
+* Fix tag-based recipe output not accepting counts
+* Fix fluidstack null check in DamageIndicatedItemComponent
+* Fix DynamicBaseModel creating invalid quads in MC 1.15
