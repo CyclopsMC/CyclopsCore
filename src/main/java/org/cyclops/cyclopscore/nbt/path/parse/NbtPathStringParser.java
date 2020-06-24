@@ -1,18 +1,32 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-public class StringParser {
-    @AllArgsConstructor
+/**
+ * A parser for strings within NBT path expressions in the form of "ab\"c".
+ */
+public class NbtPathStringParser {
     public static class StringParseResult {
         private static StringParseResult FAIL = new StringParseResult(false, 0, "");
-        @Getter
         private final boolean success;
-        @Getter
         private final int consumed;
-        @Getter
         private final String result;
+
+        public StringParseResult(boolean success, int consumed, String result) {
+            this.success = success;
+            this.consumed = consumed;
+            this.result = result;
+        }
+
+        public boolean isSuccess() {
+            return success;
+        }
+
+        public int getConsumed() {
+            return consumed;
+        }
+
+        public String getResult() {
+            return result;
+        }
 
         private static StringParseResult success(int consumed, String result) {
             return new StringParseResult(true, consumed, result);

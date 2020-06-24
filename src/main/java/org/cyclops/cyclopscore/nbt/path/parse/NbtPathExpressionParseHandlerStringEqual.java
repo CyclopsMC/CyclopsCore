@@ -6,7 +6,7 @@ import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
-import org.cyclops.cyclopscore.nbt.path.parse.StringParser.StringParseResult;
+import org.cyclops.cyclopscore.nbt.path.parse.NbtPathStringParser.StringParseResult;
 
 import java.util.stream.Stream;
 
@@ -37,7 +37,7 @@ public class NbtPathExpressionParseHandlerStringEqual implements INbtPathExpress
             return HandleResult.INVALID;
         }
         currentPos = skipSpaces(nbtPathExpression, currentPos + 2);
-        StringParseResult parseResult = StringParser.parse(nbtPathExpression, currentPos);
+        StringParseResult parseResult = NbtPathStringParser.parse(nbtPathExpression, currentPos);
         if (!parseResult.isSuccess()) {
             return HandleResult.INVALID;
         }

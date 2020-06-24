@@ -1,10 +1,8 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import org.cyclops.cyclopscore.nbt.path.parse.StringParser.StringParseResult;
+import org.cyclops.cyclopscore.nbt.path.parse.NbtPathStringParser.StringParseResult;
 
 import javax.annotation.Nullable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * A handler that handles child path expressions in the form of "["childName"]",
@@ -19,7 +17,7 @@ public class NbtPathExpressionParseHandlerChildBrackets implements INbtPathExpre
         if (pos >= nbtPathExpression.length() || nbtPathExpression.charAt(pos) != '[') {
             return HandleResult.INVALID;
         }
-        StringParseResult parseResult = StringParser.parse(nbtPathExpression, pos + 1);
+        StringParseResult parseResult = NbtPathStringParser.parse(nbtPathExpression, pos + 1);
         if (!parseResult.isSuccess()) {
             return HandleResult.INVALID;
         }
