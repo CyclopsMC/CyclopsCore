@@ -62,6 +62,8 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         super(Reference.MOD_ID, (instance) -> _instance = instance);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
 
+        // Registries
+        getRegistryManager().addRegistry(IRegistryExportableRegistry.class, RegistryExportableRegistry.getInstance());
         getRegistryManager().addRegistry(IInfoBookRegistry.class, new InfoBookRegistry());
     }
 
@@ -101,9 +103,6 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
     @Override
     protected void setup(FMLCommonSetupEvent event) {
-        // Registries
-        getRegistryManager().addRegistry(IRegistryExportableRegistry.class, RegistryExportableRegistry.getInstance());
-
         super.setup(event);
 
         // Populate registries
