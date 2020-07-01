@@ -22,6 +22,7 @@ import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.BiFunction;
 
@@ -53,6 +54,7 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
             FMLJavaModLoadingContext.get().getModEventBus().addListener((RegistryEvent.Register<Item> event) -> {
                 if (event.getRegistry() == ForgeRegistries.ITEMS) {
                     Item itemBlock = itemBlockConstructor.apply(config, config.getInstance());
+                    Objects.requireNonNull(itemBlock, "Received a null item for the item block constructor of " + config.getNamedId());
                     if (itemBlock.getRegistryName() == null) {
                         itemBlock.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
                     }

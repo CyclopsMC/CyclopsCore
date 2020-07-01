@@ -29,6 +29,7 @@ import java.util.function.Function;
  */
 public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block> implements IModelProviderConfig {
 
+    @Nullable
     private final BiFunction<BlockConfig, Block, ? extends Item> itemConstructor;
 
     @Nullable
@@ -59,6 +60,7 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
         };
     }
 
+    @Nullable
     public BiFunction<BlockConfig, Block, ? extends Item> getItemConstructor() {
         return itemConstructor;
     }
