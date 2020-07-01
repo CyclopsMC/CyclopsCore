@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Create RegistryExportableRegistry during mod construction
+  This may be a fix for CyclopsMC/IntegratedDynamics#875
