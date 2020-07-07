@@ -109,7 +109,7 @@ public final class BlockHelpers {
      */
     public static IBlockState getBlockStateFromItemStack(ItemStack itemStack) {
         Block block = ((ItemBlock) itemStack.getItem()).getBlock();
-        return block.getStateFromMeta(itemStack.getMetadata());
+        return block.getStateFromMeta(itemStack.getItem().getMetadata(itemStack.getMetadata()));
     }
 
     /**
@@ -122,7 +122,12 @@ public final class BlockHelpers {
         if(item == null) {
             return ItemStack.EMPTY;
         }
-        return new ItemStack(item, 1, item.getHasSubtypes() ? blockState.getBlock().damageDropped(blockState) : 0);
+        try {
+            // Try getItem as best as we can, otherwise fallback to a less safe variant.
+            return blockState.getBlock().getItem(null, null, blockState);
+        } catch (RuntimeException e) {
+            return new ItemStack(item, 1, item.getHasSubtypes() ? blockState.getBlock().damageDropped(blockState) : 0);
+        }
     }
 
     /**
