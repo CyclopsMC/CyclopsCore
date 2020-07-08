@@ -115,7 +115,7 @@ public abstract class InventoryTileEntityBase extends CyclopsTileEntity implemen
 
     @Override
     public boolean canInteractWith(EntityPlayer entityPlayer) {
-        return world.getTileEntity(getPos()) == this && entityPlayer.getDistanceSq(getPos().add(0.5D, 0.5D, 0.5D)) <= 64.0D;
+        return world.getTileEntity(getPos()) == this;
     }
 
     @Override
