@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix containers not opening from 8+ blocks
+  Closes CyclopsMC/ColossalChests#136
+  Closes CyclopsMC/IntegratedDynamics#842
+* Fix item-block conversion operators not always being correct
+  This caused problems with certain types of leaves.
+  Closes CyclopsMC/IntegratedDynamics#847
