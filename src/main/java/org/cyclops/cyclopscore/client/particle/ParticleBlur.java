@@ -102,7 +102,7 @@ public class ParticleBlur extends Particle {
 		GlStateManager.pushMatrix();
 
 		GlStateManager.depthMask(false);
-		GlStateManager.enableBlend();
+		//GlStateManager.enableBlend(); // Should there be problems, we may have to enable this
 		GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 
 		Minecraft.getMinecraft().renderEngine.bindTexture(TEXTURE);
@@ -129,7 +129,8 @@ public class ParticleBlur extends Particle {
 
         Tessellator.getInstance().draw();
 
-		GlStateManager.disableBlend();
+		//GlStateManager.disableBlend(); // Like above, should not be needed.
+		GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 		GlStateManager.depthMask(true);
 
 		GlStateManager.popMatrix();
