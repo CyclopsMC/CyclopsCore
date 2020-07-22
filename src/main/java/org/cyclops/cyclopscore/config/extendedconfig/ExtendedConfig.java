@@ -196,4 +196,12 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
         return (C) this;
     }
 
+    /**
+     * Called when the config is loaded or reloaded
+     * @param reload If we are reloading, otherwise this is an initial load.
+     * @param configProperty The config property
+     */
+    public void onConfigPropertyReload(ConfigurablePropertyData<?> configProperty, boolean reload) {
+
+    }
 }

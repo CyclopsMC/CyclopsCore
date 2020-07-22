@@ -108,13 +108,13 @@ public class ConfigHandler {
     @SubscribeEvent
     public void onLoad(ModConfig.Loading configEvent) {
         this.mod.log(Level.TRACE, "Load config");
-        syncProcessedConfigs();
+        syncProcessedConfigs(configEvent.getConfig(), false);
     }
 
     @SubscribeEvent
     public void onReload(ModConfig.Reloading configEvent) {
         this.mod.log(Level.TRACE, "Reload config");
-        syncProcessedConfigs();
+        syncProcessedConfigs(configEvent.getConfig(), true);
     }
 
     public boolean addConfigurable(ExtendedConfig<?, ?> e) {
@@ -182,13 +182,18 @@ public class ConfigHandler {
     /**
      * Sync the config values that were already loaded.
      * This will update the values in-game and in the config file.
+     * @param config The mod config that is being loaded.
+     * @param reload If we are reloading, otherwise this is an initial load.
      */
     @SuppressWarnings("unchecked")
-	public void syncProcessedConfigs() {
+	public void syncProcessedConfigs(ModConfig config, boolean reload) {
     	for(ExtendedConfig<?, ?> eConfig : this.configurables) {
     		// Re-save additional properties
             for(ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
-                configProperty.saveToField();
+                if (configProperty.getConfigLocation() == config.getType()) {
+                    configProperty.saveToField();
+                    eConfig.onConfigPropertyReload(configProperty, reload);
+                }
             }
     	}
     }
