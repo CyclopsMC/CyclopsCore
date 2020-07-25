@@ -59,6 +59,10 @@ public class ConfigurableType {
      */
     public static final ConfigurableType RECIPE_TYPE = new ConfigurableType(true, RecipeTypeConfig.class, new RecipeTypeAction(), "recipe_type");
     /**
+     * Recipe condition type.
+     */
+    public static final ConfigurableType RECIPE_CONDITION = new ConfigurableType(true, RecipeConditionConfig.class, new RecipeConditionAction(), "recipe_condition");
+    /**
      * Particle type.
      */
     public static final ConfigurableType PARTICLE = new ConfigurableType(true, ParticleConfig.class, new ParticleAction(), "particle");
