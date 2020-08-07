@@ -1,6 +1,6 @@
 ## CyclopsCore
 
-[![Build Status](https://travis-ci.org/CyclopsMC/CyclopsCore.svg?branch=master-1.14)](https://travis-ci.org/CyclopsMC/CyclopsCore)
+[![Build Status](https://travis-ci.org/CyclopsMC/CyclopsCore.svg)](https://travis-ci.org/CyclopsMC/CyclopsCore)
 [![Coverage Status](https://coveralls.io/repos/github/CyclopsMC/CyclopsCore/badge.svg)](https://coveralls.io/github/CyclopsMC/CyclopsCore)
 [![Download](https://img.shields.io/maven-metadata/v/https/oss.jfrog.org/artifactory/simple/libs-release/org/cyclops/cyclopscore/CyclopsCore/maven-metadata.xml.svg) ](https://oss.jfrog.org/artifactory/simple/libs-release/org/cyclops/cyclopscore/CyclopsCore/)
 [![CurseForge](http://cf.way2muchnoise.eu/full_232758_downloads.svg)](http://minecraft.curseforge.com/projects/232758)
