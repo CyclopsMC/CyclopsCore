@@ -1,12 +1,15 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -253,6 +256,11 @@ public class GuiHelpers {
         fillGradient(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart - 3 + 1, color2, color2, zLevel);
         fillGradient(xStart - 3, yStart + tooltipHeight + 2, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color3, color3, zLevel);
 
+        MatrixStack matrixstack = new MatrixStack();
+        IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+        matrixstack.translate(0.0D, 0.0D, (double)mc.getItemRenderer().zLevel);
+        Matrix4f matrix4f = matrixstack.getLast().getMatrix();
+
         for(int stringIndex = 0; stringIndex < lines.size(); ++stringIndex) {
             ITextComponent line = lines.get(stringIndex);
 
@@ -262,7 +270,8 @@ public class GuiHelpers {
                 line = new StringTextComponent("\u00a77").appendSibling(line);
             }
 
-            mc.fontRenderer.drawStringWithShadow(line.getFormattedText(), xStart, yStart, -1);
+            mc.fontRenderer.renderString(line.getFormattedText(), xStart, yStart, -1, true, matrix4f,
+                    irendertypebuffer$impl, false, 0, 15728880);
 
             if(stringIndex == 0) {
                 yStart += 2;
@@ -270,6 +279,8 @@ public class GuiHelpers {
 
             yStart += 10;
         }
+
+        irendertypebuffer$impl.finish();
 
         GlStateManager.popMatrix();
         GL11.glEnable(GL11.GL_DEPTH_TEST);
