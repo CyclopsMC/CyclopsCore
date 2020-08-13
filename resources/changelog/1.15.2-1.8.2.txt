@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix tooltip rendering having incorrect depth
+* Fix RenderItemExtendedSlotCount rendering amount behind item
