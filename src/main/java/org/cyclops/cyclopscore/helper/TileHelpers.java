@@ -5,10 +5,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.cyclops.cyclopscore.datastructure.DimPos;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -16,6 +18,12 @@ import java.util.Optional;
  * @author rubensworks
  */
 public final class TileHelpers {
+
+    /**
+     * If tile entities should be retrieved in an unsafe manner from the non-main thread.
+     * USE WITH CAUTION!!!
+     */
+    public static boolean UNSAFE_TILE_ENTITY_GETTER = false;
 
     /**
      * Safely cast a tile entity.
@@ -41,7 +49,7 @@ public final class TileHelpers {
      * @return The optional tile entity.
      */
     public static <T> Optional<T> getSafeTile(IBlockReader world, BlockPos pos, Class<T> targetClazz) {
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = UNSAFE_TILE_ENTITY_GETTER && world instanceof World ? getWorldTileEntityUnchecked((World) world, pos) : world.getTileEntity(pos);
         if (tile == null) {
             return Optional.empty();
         }
@@ -49,6 +57,27 @@ public final class TileHelpers {
             return Optional.of(targetClazz.cast(tile));
         } catch (ClassCastException e) {
             return Optional.empty();
+        }
+    }
+
+    /* WARNING: Hack to allow tile entities to be retrieved from other threads. Needed for our IngredientObserver. */
+    /* This is just a copy of {@link World#getTileEntity} without the thread checks. */
+    @Nullable
+    static TileEntity getWorldTileEntityUnchecked(World world, BlockPos pos) {
+        if (World.isOutsideBuildHeight(pos)) {
+            return null;
+        } else {
+            TileEntity tileentity = null;
+            if (world.processingLoadedTiles) {
+                tileentity = world.getPendingTileEntityAt(pos);
+            }
+            if (tileentity == null) {
+                tileentity = world.getChunkAt(pos).getTileEntity(pos, Chunk.CreateEntityType.IMMEDIATE);
+            }
+            if (tileentity == null) {
+                tileentity = world.getPendingTileEntityAt(pos);
+            }
+            return tileentity;
         }
     }
 
