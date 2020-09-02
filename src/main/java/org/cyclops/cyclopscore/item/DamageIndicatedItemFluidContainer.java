@@ -20,6 +20,7 @@ import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacity;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * This extension on {@link ItemFluidContainer} with a fluid capability will show a damage indicator depending on how full
@@ -34,7 +35,7 @@ import java.util.List;
 public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContainer implements IInformationProvider {
 
     protected DamageIndicatedItemComponent component;
-    protected Fluid fluid;
+    protected Supplier<Fluid> fluid;
     
     /**
      * Create a new DamageIndicatedItemFluidContainer.
@@ -43,7 +44,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
      * @param capacity The capacity this container will have.
      * @param fluid The Fluid instance this container must hold.
      */
-    public DamageIndicatedItemFluidContainer(Item.Properties builder, int capacity, Fluid fluid) {
+    public DamageIndicatedItemFluidContainer(Item.Properties builder, int capacity, Supplier<Fluid> fluid) {
         super(builder, capacity);
         this.fluid = fluid;
         init();
@@ -56,7 +57,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     @Override
     public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> items) {
         if (this.isInGroup(group)) {
-            component.fillItemGroup(itemGroup, items, fluid);
+            component.fillItemGroup(itemGroup, items, fluid.get());
         }
     }
 
@@ -98,7 +99,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
      * @return The fluid.
      */
     public Fluid getFluid() {
-        return this.fluid;
+        return this.fluid.get();
     }
     
     /**
