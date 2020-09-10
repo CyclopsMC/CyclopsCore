@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix fluid helpers not correctly handling empty stacks
+* Fix IInventoryIndexReference clashing with vanilla method name
+  This could cause an AbstractMethodError.
+  Closes CyclopsMC/IntegratedDynamics#910
