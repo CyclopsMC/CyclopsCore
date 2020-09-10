@@ -33,8 +33,8 @@ public final class FluidHelpers {
      * @param fluidStack The fluid stack
      * @return The fluid amount.
      */
-    public static int getAmount(@Nullable FluidStack fluidStack) {
-        return fluidStack != null ? fluidStack.getAmount() : 0;
+    public static int getAmount(FluidStack fluidStack) {
+        return fluidStack.getAmount();
     }
 
     /**
@@ -42,8 +42,8 @@ public final class FluidHelpers {
      * @param fluidStack The fluid stack to copy.
      * @return A copy of the fluid stack.
      */
-    public static FluidStack copy(@Nullable FluidStack fluidStack) {
-        if(fluidStack == null) return null;
+    public static FluidStack copy(FluidStack fluidStack) {
+        if(fluidStack.isEmpty()) return FluidStack.EMPTY;
         return fluidStack.copy();
     }
 
@@ -64,7 +64,7 @@ public final class FluidHelpers {
      * @return The fluid.
      */
     public static FluidStack getFluid(@Nullable IFluidHandler fluidHandler) {
-        return fluidHandler != null ? fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE) : null;
+        return fluidHandler != null ? fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE) : FluidStack.EMPTY;
     }
 
     /**
@@ -73,7 +73,7 @@ public final class FluidHelpers {
      * @return If it is not empty.
      */
     public static boolean hasFluid(@Nullable IFluidHandler fluidHandler) {
-        return getFluid(fluidHandler) != null;
+        return !getFluid(fluidHandler).isEmpty();
     }
 
     /**
@@ -96,7 +96,7 @@ public final class FluidHelpers {
      * @return The item capacity fluid handler.
      */
     public static LazyOptional<IFluidHandlerItemCapacity> getFluidHandlerItemCapacity(ItemStack itemStack) {
-        return itemStack.getCapability(FluidHandlerItemCapacityConfig.CAPABILITY, null);
+        return itemStack.getCapability(FluidHandlerItemCapacityConfig.CAPABILITY);
     }
 
     /**
@@ -108,7 +108,6 @@ public final class FluidHelpers {
      * @param action The fluid action.
      * @return The extracted fluidstack.
      */
-    @Nullable
     public static FluidStack extractFromInventory(int amount, @Nullable ItemStack blacklistedStack,
                                                   @Nullable Fluid fluidWhitelist, PlayerEntity player,
                                                   IFluidHandler.FluidAction action) {
@@ -123,7 +122,7 @@ public final class FluidHelpers {
                     if (!totalFluid.isEmpty() && (fluidWhitelist == null || totalFluid.getFluid() == fluidWhitelist)) {
                         FluidStack thisDrained = fluidHandler.drain(amountHolder.get(), action);
                         if (!thisDrained.isEmpty() && (fluidWhitelist == null || thisDrained.getFluid() == fluidWhitelist)) {
-                            if (drained.get() == null) {
+                            if (drained.get().isEmpty()) {
                                 drained.set(thisDrained);
                             } else {
                                 drained.get().setAmount(drained.get().getAmount() + thisDrained.getAmount());
@@ -135,7 +134,7 @@ public final class FluidHelpers {
             }
         }
         if(drained.get() != null && drained.get().getAmount() == 0) {
-            drained.set(null);
+            drained.set(FluidStack.EMPTY);
         }
         return drained.get();
     }
@@ -148,14 +147,13 @@ public final class FluidHelpers {
      * @param action The fluid action.
      * @return The extracted fluidstack.
      */
-    @Nullable
     public static FluidStack extractFromItemOrInventory(int amount, ItemStack itemStack,
                                                         @Nullable PlayerEntity player,
                                                         IFluidHandler.FluidAction action) {
         if (action.execute() && player != null && player.isCreative() && !player.world.isRemote()) {
             action = IFluidHandler.FluidAction.SIMULATE;
         }
-        if (amount == 0) return null;
+        if (amount == 0) return FluidStack.EMPTY;
         IFluidHandler.FluidAction finalAction = action;
         return FluidUtil.getFluidHandler(itemStack).map((fluidHandler) -> {
             FluidStack drained = fluidHandler.drain(amount, finalAction);
