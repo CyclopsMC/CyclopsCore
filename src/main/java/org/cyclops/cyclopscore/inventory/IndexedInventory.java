@@ -118,6 +118,11 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
     }
 
     @Override
+    public int getInventoryReferenceStackLimit() {
+        return getInventoryStackLimit();
+    }
+
+    @Override
     public Map<Item, Int2ObjectMap<ItemStack>> getIndex() {
         return index;
     }

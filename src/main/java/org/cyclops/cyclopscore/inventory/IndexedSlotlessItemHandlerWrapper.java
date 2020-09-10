@@ -52,7 +52,7 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
             return stacks.int2ObjectEntrySet()
                     .stream()
                     .filter(entry -> entry.getValue().getCount()
-                            < Math.min(inventory.getInventoryStackLimit(), entry.getValue().getMaxStackSize())
+                            < Math.min(inventory.getInventoryReferenceStackLimit(), entry.getValue().getMaxStackSize())
                             && ItemMatch.areItemStacksEqual(entry.getValue(), itemStack, matchFlags))
                     .mapToInt(Int2ObjectMap.Entry::getIntKey)
                     .iterator();
@@ -119,7 +119,7 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
 
     public static interface IInventoryIndexReference {
 
-        public int getInventoryStackLimit();
+        public int getInventoryReferenceStackLimit(); // Named like this due to conflict with obfuscated vanilla method name
         public Map<Item, Int2ObjectMap<ItemStack>> getIndex();
         public PrimitiveIterator.OfInt getEmptySlots();
         public PrimitiveIterator.OfInt getNonEmptySlots();
