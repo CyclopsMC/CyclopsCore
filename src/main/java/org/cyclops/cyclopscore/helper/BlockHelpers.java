@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTDynamicOps;
 import net.minecraft.state.IProperty;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -115,7 +115,7 @@ public final class BlockHelpers {
      * @param blockPos The block to check the top of.
      * @return If it has a solid top surface.
      */
-    public static boolean doesBlockHaveSolidTopSurface(IWorld world, BlockPos blockPos) {
+    public static boolean doesBlockHaveSolidTopSurface(IWorldReader world, BlockPos blockPos) {
         return world.getBlockState(blockPos.add(0, -1, 0)).isOpaqueCube(world, blockPos);
     }
 

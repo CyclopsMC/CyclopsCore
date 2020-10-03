@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.helper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.World;
+import net.minecraft.world.IWorldReader;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.Random;
@@ -38,8 +38,7 @@ public class LocationHelpers {
 	 * @param range The range of the {@link PacketDistributor.TargetPoint}.
 	 * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
 	 */
-	public static PacketDistributor.TargetPoint createTargetPointFromLocation(World world, BlockPos location,
-			int range) {
+	public static PacketDistributor.TargetPoint createTargetPointFromLocation(IWorldReader world, BlockPos location, int range) {
 		return new PacketDistributor.TargetPoint(location.getX(), location.getY(), location.getZ(), range, world.getDimension().getType());
 	}
 	
