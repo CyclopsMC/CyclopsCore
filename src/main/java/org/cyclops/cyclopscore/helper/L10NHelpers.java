@@ -60,17 +60,6 @@ public final class L10NHelpers {
     }
 
     /**
-     * Localize a given entity id.
-     *
-     * @param entityId The unique entity name id.
-     * @return The localized name.
-     */
-    @OnlyIn(Dist.CLIENT)
-    public static String getLocalizedEntityName(String entityId) {
-        return L10NHelpers.localize("entity." + entityId + ".name");
-    }
-
-    /**
      * Add the optional info lines to the item tooltip.
      *
      * @param list   The list to add the lines to.
