@@ -1,12 +1,16 @@
 package org.cyclops.cyclopscore.inventory.slot;
 
+import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import org.cyclops.cyclopscore.fluid.SingleUseTank;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
+
+import javax.annotation.Nullable;
 
 /**
  * Slots that will accept buckets and fluid containers.
@@ -14,54 +18,37 @@ import org.cyclops.cyclopscore.helper.FluidHelpers;
  *
  */
 public class SlotFluidContainer extends Slot {
-    
-    private SingleUseTank tank = null;
-    
-    /**
-     * Make a new instance that accepts containers for all fluids.
-     * @param inventory The inventory this slot will be in.
-     * @param index The index of this slot.
-     * @param x X coordinate.
-     * @param y Y coordinate.
-     */
-    public SlotFluidContainer(IInventory inventory, int index, int x,
-                              int y) {
+
+    @Nullable
+    private final Fluid fluid;
+
+    public SlotFluidContainer(IInventory inventory, int index, int x, int y, @Nullable Fluid fluid) {
         super(inventory, index, x, y);
+        this.fluid = fluid;
     }
-    
-    /**
-     * Make a new instance that accepts containers for a given fluid.
-     * @param inventory The inventory this slot will be in.
-     * @param index The index of this slot.
-     * @param x X coordinate.
-     * @param y Y coordinate.
-     * @param tank The accepting tank.
-     */
-    public SlotFluidContainer(IInventory inventory, int index, int x,
-                              int y, SingleUseTank tank) {
-        this(inventory, index, x, y);
-        this.tank = tank;
-    }
-    
+
     @Override
     public boolean isItemValid(ItemStack itemStack) {
-        return checkIsItemValid(itemStack, tank);
+        return checkIsItemValid(itemStack, fluid);
     }
-    
-    /**
-     * Check if the given item is valid and the fluid equals the fluid inside the
-     * container (or the fluid in the container is null).
-     * @param itemStack The item that will be checked.
-     * @param tank The accepting tank.
-     * @return If the given item is valid.
-     */
-    public static boolean checkIsItemValid(ItemStack itemStack, SingleUseTank tank) {
+
+    public static boolean checkIsItemValid(ItemStack itemStack, @Nullable Fluid fluid) {
         if (!itemStack.isEmpty()) {
-            itemStack = itemStack.copy();
-            return FluidUtil.getFluidHandler(itemStack.split(1))
-                    .map((fluidHandler) -> tank.fill(FluidHelpers.getFluid(fluidHandler), IFluidHandler.FluidAction.SIMULATE) > 0)
-                    .orElse(false);
+            LazyOptional<IFluidHandlerItem> fluidHandler = FluidUtil.getFluidHandler(itemStack);
+            return fluidHandler.map(h -> {
+                if (fluid == null) {
+                    return true;
+                }
+                for (int i = 0; i < h.getTanks(); i++) {
+                    if (h.isFluidValid(0, new FluidStack(fluid, 1))
+                            || h.isFluidValid(0, new FluidStack(fluid, FluidHelpers.BUCKET_VOLUME))) {
+                        return true;
+                    }
+                }
+                return false;
+            }).orElse(false);
         }
+
         return false;
     }
     
