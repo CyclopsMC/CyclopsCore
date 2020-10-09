@@ -14,6 +14,7 @@ import java.awt.*;
  * The using screen must add this as a child
  * and call the following method from its respective method:
  * * {@link #drawGuiContainerBackgroundLayer(float, int, int)}
+ * * {@link #mouseDragged(double, double, int, double, double)} (@see ContainerScreenScrolling for an example)
  *
  * @author rubensworks
  */
