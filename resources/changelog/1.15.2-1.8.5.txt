@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Handle cross-thread chunk retrieval in unsafe tile getter
+  Required for CyclopsMC/IntegratedDynamics#917
+
+Fixes:
+* Fix server crash due to call to client-only packet reading method, Closes CyclopsMC/IntegratedTerminals#59
