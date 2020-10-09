@@ -2,23 +2,28 @@ package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Lists;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 /**
  * A basic inventory implementation.
  * @author rubensworks
  *
  */
-public class SimpleInventory implements INBTInventory {
+public class SimpleInventory implements INBTInventory, ISidedInventory {
 
     protected final ItemStack[] contents;
     private final int stackLimit;
@@ -249,10 +254,29 @@ public class SimpleInventory implements INBTInventory {
         return new InvWrapper(this);
     }
 
+    public IItemHandler getItemHandlerSided(Direction side) {
+        return new SidedInvWrapper(this, side);
+    }
+
     /**
      * @return The inventory state.
      */
     public int getState() {
         return hash;
+    }
+
+    @Override
+    public int[] getSlotsForFace(Direction side) {
+        return IntStream.range(0, getSizeInventory()).toArray();
+    }
+
+    @Override
+    public boolean canInsertItem(int index, ItemStack itemStackIn, @Nullable Direction direction) {
+        return true;
+    }
+
+    @Override
+    public boolean canExtractItem(int index, ItemStack stack, Direction direction) {
+        return true;
     }
 }
