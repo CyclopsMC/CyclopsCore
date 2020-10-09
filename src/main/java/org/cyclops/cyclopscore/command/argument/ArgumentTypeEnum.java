@@ -14,6 +14,7 @@ import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.command.arguments.IArgumentSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.StringTextComponent;
+import org.cyclops.cyclopscore.network.PacketCodec;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -69,7 +70,7 @@ public class ArgumentTypeEnum<T extends Enum<T>> implements ArgumentType<T> {
         @Override
         public ArgumentTypeEnum read(PacketBuffer packetBuffer) {
             try {
-                return new ArgumentTypeEnum(Class.forName(packetBuffer.readString()));
+                return new ArgumentTypeEnum(Class.forName(packetBuffer.readString(PacketCodec.READ_STRING_MAX_LENGTH)));
             } catch (ClassNotFoundException e) {
                 return null;
             }

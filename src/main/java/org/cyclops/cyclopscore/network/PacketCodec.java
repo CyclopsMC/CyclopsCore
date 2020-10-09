@@ -32,6 +32,8 @@ import java.util.Set;
  *
  */
 public abstract class PacketCodec extends PacketBase {
+
+	public static final int READ_STRING_MAX_LENGTH = 32767;
 	
 	private static Map<Class<?>, ICodecAction> codecActions = Maps.newHashMap();
 	static {
@@ -186,8 +188,8 @@ public abstract class PacketCodec extends PacketBase {
 					return map;
 				}
 				try {
-					ICodecAction keyAction = getAction(Class.forName(input.readString()));
-					ICodecAction valueAction = getAction(Class.forName(input.readString()));
+					ICodecAction keyAction = getAction(Class.forName(input.readString(READ_STRING_MAX_LENGTH)));
+					ICodecAction valueAction = getAction(Class.forName(input.readString(READ_STRING_MAX_LENGTH)));
 					for(int i = 0; i < size; i++) {
 						Object key = keyAction.decode(input);
 						Object value = valueAction.decode(input);
@@ -290,7 +292,7 @@ public abstract class PacketCodec extends PacketBase {
 
 			@Override
 			public Object decode(PacketBuffer input) {
-				return DimensionType.byName(new ResourceLocation(input.readString()));
+				return DimensionType.byName(new ResourceLocation(input.readString(READ_STRING_MAX_LENGTH)));
 			}
 		});
 
@@ -354,7 +356,7 @@ public abstract class PacketCodec extends PacketBase {
 					list = Lists.newArrayListWithExpectedSize(size);
 				}
 				try {
-					String className = input.readString();
+					String className = input.readString(READ_STRING_MAX_LENGTH);
 					if(!className.equals("__noclass")) {
 						ICodecAction valueAction = getAction(Class.forName(className));
                         int i, currentLength = 0;

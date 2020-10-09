@@ -6,6 +6,7 @@ import net.minecraft.command.arguments.IArgumentSerializer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.ModList;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.network.PacketCodec;
 
 import java.util.function.Function;
 
@@ -30,7 +31,7 @@ public class ArgumentSerializerMod<T extends ArgumentType<?>> implements IArgume
 
     @Override
     public T read(PacketBuffer packetBuffer) {
-        return argumentConstructor.apply((ModBase) ModList.get().getModObjectById(packetBuffer.readString()).get());
+        return argumentConstructor.apply((ModBase) ModList.get().getModObjectById(packetBuffer.readString(PacketCodec.READ_STRING_MAX_LENGTH)).get());
     }
 
     @Override
