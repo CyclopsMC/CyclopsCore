@@ -24,7 +24,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements IModelProviderConfig {
+public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements IModelProviderConfig {
 
     @OnlyIn(Dist.CLIENT)
     public ModelResourceLocation dynamicItemVariantLocation;
