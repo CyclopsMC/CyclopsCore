@@ -1,0 +1,11 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add support for spawn egg registration in entity config
+
+Fixes:
+* Fix random client crash on getSafeTile
+  Closes CyclopsMC/IntegratedDynamics#929
+
+
+
