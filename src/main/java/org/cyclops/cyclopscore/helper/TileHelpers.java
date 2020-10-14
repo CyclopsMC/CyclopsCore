@@ -60,7 +60,7 @@ public final class TileHelpers {
      * @return The optional tile entity.
      */
     public static <T> Optional<T> getSafeTile(IBlockReader world, BlockPos pos, Class<T> targetClazz) {
-        TileEntity tile = UNSAFE_TILE_ENTITY_GETTER && world instanceof World ? getWorldTileEntityUnchecked((World) world, pos) : world.getTileEntity(pos);
+        TileEntity tile = UNSAFE_TILE_ENTITY_GETTER && world instanceof World && !((World) world).isRemote() ? getWorldTileEntityUnchecked((World) world, pos) : world.getTileEntity(pos);
         if (tile == null) {
             return Optional.empty();
         }
