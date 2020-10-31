@@ -74,6 +74,10 @@ public class ConfigurableType {
      * World feature type.
      */
     public static final ConfigurableType WORLD_FEATURE = new ConfigurableType(true, WorldFeatureConfig.class, new WorldFeatureAction(), "world_feature");
+    /**
+     * World decorator type.
+     */
+    public static final ConfigurableType WORLD_DECORATOR = new ConfigurableType(true, WorldDecoratorConfig.class, new WorldDecoratorAction(), "world_decorator");
 
     /**
      * Dummy type, only used for configs that refer to nothing.
