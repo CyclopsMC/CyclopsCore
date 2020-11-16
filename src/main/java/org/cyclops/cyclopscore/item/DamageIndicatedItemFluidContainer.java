@@ -15,6 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacity;
@@ -75,7 +76,10 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     @OnlyIn(Dist.CLIENT)
     @Override
     public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
-        component.addInformation(itemStack, world, list, flag);
+        // Can be null during startup
+        if (CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY != null) {
+            component.addInformation(itemStack, world, list, flag);
+        }
         super.addInformation(itemStack, world, list, flag);
     }
     
