@@ -40,8 +40,8 @@ public class InformationProviderComponent {
     public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
         if(hasInfo) {
             if(((IInformationProvider) block).getInfo(itemStack) != null) {
-                list.add(new StringTextComponent(IInformationProvider.BLOCK_PREFIX
-                        + ((IInformationProvider) block).getInfo(itemStack)));
+                list.add(((IInformationProvider) block).getInfo(itemStack)
+                        .applyTextStyle(IInformationProvider.BLOCK_PREFIX));
             }
             ((IInformationProvider) block).provideInformation(itemStack, world, list, flag);
         }

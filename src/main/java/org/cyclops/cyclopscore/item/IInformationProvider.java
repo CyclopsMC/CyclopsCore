@@ -22,11 +22,11 @@ public interface IInformationProvider {
     /**
      * A prefix for blockState information.
      */
-    public static String BLOCK_PREFIX = TextFormatting.RED.toString();
+    public static TextFormatting BLOCK_PREFIX = TextFormatting.RED;
     /**
      * A prefix for item information.
      */
-    public static String ITEM_PREFIX = BLOCK_PREFIX;
+    public static TextFormatting ITEM_PREFIX = BLOCK_PREFIX;
     /**
      * A prefix for additional info.
      */

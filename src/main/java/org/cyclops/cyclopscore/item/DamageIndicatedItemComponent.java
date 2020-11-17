@@ -110,7 +110,8 @@ public class DamageIndicatedItemComponent {
      * @param flag the tooltip flag
      */
     public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
-        list.add(new StringTextComponent(IInformationProvider.ITEM_PREFIX+((IInformationProvider) itemStack.getItem()).getInfo(itemStack)));
+        list.add(((IInformationProvider) itemStack.getItem()).getInfo(itemStack)
+                .applyTextStyle(IInformationProvider.ITEM_PREFIX));
     }
     
     /**
