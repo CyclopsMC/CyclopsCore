@@ -70,7 +70,7 @@ public class SingleUseTank extends Tank {
                 filled = super.fill(resource, action);
             }
         }
-        if(filled > 0) {
+        if(action.execute() && filled > 0) {
         	sendUpdate();
         }
         return filled;
@@ -79,7 +79,7 @@ public class SingleUseTank extends Tank {
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
         FluidStack drained = super.drain(maxDrain, action);
-    	if (!drained.isEmpty()) {
+    	if (action.execute() && !drained.isEmpty()) {
     		sendUpdate();
     	}
     	return drained;
@@ -88,7 +88,7 @@ public class SingleUseTank extends Tank {
     @Override
     public FluidStack drain(FluidStack resource, FluidAction action) {
         FluidStack drained = super.drain(resource, action);
-        if (!drained.isEmpty()) {
+        if (action.execute() && !drained.isEmpty()) {
             sendUpdate();
         }
         return drained;
