@@ -267,7 +267,6 @@ public class RenderHelpers {
 
             render.render();
 
-            RenderSystem.enableLighting();
             RenderSystem.disableBlend();
             matrixStack.pop();
         }
