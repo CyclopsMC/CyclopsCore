@@ -1,12 +1,8 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.IChunk;
-import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.CyclopsCore;
 
 import javax.annotation.Nullable;
 
@@ -23,31 +19,6 @@ public class WorldHelpers {
     public static final int CHUNK_SIZE = 16;
     
     private static final double TICK_LAG_REDUCTION_MODULUS_MODIFIER = 1.0D;
-
-    /**
-     * Set the biome for the given coordinates.
-     * CAN ONLY BE CALLED ON SERVERS!
-     * @param world The world.
-     * @param pos The position.
-     * @param biome The biome to change to.
-     */
-    //@SideOnly(Side.SERVER)
-    public static void setBiome(World world, BlockPos pos, Biome biome) {
-        /*IChunk chunk = world.getChunk(pos);
-        if(chunk != null) {
-        	BlockPos c = getChunkLocationFromWorldLocation(pos.getX(), 0, pos.getZ());
-            int rx = c.getX();
-            int rz = c.getZ();
-            Biome[] biomeArray = chunk.getBiomes();
-            biomeArray[rz << 4 | rx] = biome;
-            chunk.setModified(true);
-            world.getChunkProvider().forceChunk(chunk.getPos(), false);
-            // world.markBlockRangeForRenderUpdate(pos, pos); // TODO?
-        } else {
-            CyclopsCore.clog(Level.WARN, "Tried changing biome at non-existing chunk for position " + pos);
-        }*/
-        throw new UnsupportedOperationException("TODO: reimplement setBiome");
-    }
 
 	/**
 	 * Check if an efficient tick can happen.
@@ -76,17 +47,6 @@ public class WorldHelpers {
     public static boolean efficientTick(World world, int baseModulus, BlockPos blockPos) {
         return efficientTick(world, baseModulus, blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
-	
-	/**
-	 * Get the chunk location (coordinates within one chunk.) from a world location.
-	 * @param x The world X.
-	 * @param y The world Y.
-	 * @param z The world Z.
-	 * @return The chunk location.
-	 */
-	public static BlockPos getChunkLocationFromWorldLocation(int x, int y, int z) {
-		return new BlockPos(x & (CHUNK_SIZE - 1), y, z & (CHUNK_SIZE - 1));
-	}
 
     /**
      * Loop over a 3D area while accumulating a value.
@@ -97,9 +57,10 @@ public class WorldHelpers {
      * @param folder The folding function.
      * @param value The start value.
      * @param <T> The type of value to accumulate.
+     * @param <W> The world type.
      * @return The resulting value.
      */
-    public static <T> T foldArea(World world, int[] areaMin, int[] areaMax, BlockPos blockPos, WorldFoldingFunction<T, T> folder, T value) {
+    public static <T, W extends IWorld> T foldArea(W world, int[] areaMin, int[] areaMax, BlockPos blockPos, WorldFoldingFunction<T, T, W> folder, T value) {
         int x = blockPos.getX();
         int y = blockPos.getY();
         int z = blockPos.getZ();
@@ -121,16 +82,17 @@ public class WorldHelpers {
      * @param folder The folding function.
      * @param value The start value.
      * @param <T> The type of value to accumulate.
+     * @param <W> The world type.
      * @return The resulting value.
      */
-    public static <T> T foldArea(World world, int area, BlockPos blockPos, WorldFoldingFunction<T, T> folder, T value) {
+    public static <T, W extends IWorld> T foldArea(W world, int area, BlockPos blockPos, WorldFoldingFunction<T, T, W> folder, T value) {
         return foldArea(world, new int[]{area, area, area}, new int[]{area, area, area}, blockPos, folder, value);
     }
 
-    public static interface WorldFoldingFunction<F, T> {
+    public static interface WorldFoldingFunction<F, T, W> {
 
         @Nullable
-        public T apply(@Nullable F from, World world, BlockPos pos);
+        public T apply(@Nullable F from, W world, BlockPos pos);
 
     }
     
