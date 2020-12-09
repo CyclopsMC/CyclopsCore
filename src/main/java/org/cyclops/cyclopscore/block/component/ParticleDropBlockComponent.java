@@ -1,12 +1,11 @@
 package org.cyclops.cyclopscore.block.component;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.particle.Particle;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.cyclops.cyclopscore.client.particle.ExtendedParticleDrop;
+import org.cyclops.cyclopscore.client.particle.ParticleDropColoredData;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
-import org.cyclops.cyclopscore.helper.RenderHelpers;
 
 import java.util.Random;
 
@@ -63,8 +62,9 @@ public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock {
             double py = (double) blockPos.getY() - 0.05D - offset;
             double pz = (double) ((float) blockPos.getZ() + rand.nextFloat());
 
-            Particle fx = new ExtendedParticleDrop(world, px, py, pz, particleRed, particleGreen, particleBlue);
-            RenderHelpers.emitParticle(fx);
+            Minecraft.getInstance().worldRenderer.addParticle(
+                    new ParticleDropColoredData(particleRed, particleGreen, particleBlue), false,
+                    px, py, pz, 0, 0, 0);
         }
     }
     

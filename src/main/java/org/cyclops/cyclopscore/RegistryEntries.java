@@ -13,6 +13,8 @@ public class RegistryEntries {
 
     @ObjectHolder("cyclopscore:blur")
     public static final ParticleType<?> PARTICLE_BLUR = null;
+    @ObjectHolder("cyclopscore:drop_colored")
+    public static final ParticleType<?> PARTICLE_DROP_COLORED = null;
 
     @ObjectHolder("cyclopscore:test_infobook")
     public static final ContainerType<ContainerInfoBookTest> CONTAINER_INFOBOOK_TEST = null;

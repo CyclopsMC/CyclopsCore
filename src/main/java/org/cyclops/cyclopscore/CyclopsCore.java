@@ -15,6 +15,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
 import org.cyclops.cyclopscore.client.particle.ParticleBlurConfig;
+import org.cyclops.cyclopscore.client.particle.ParticleDropColoredConfig;
 import org.cyclops.cyclopscore.command.CommandDebug;
 import org.cyclops.cyclopscore.command.CommandDumpRegistries;
 import org.cyclops.cyclopscore.command.CommandIgnite;
@@ -148,6 +149,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
         // Particles
         configHandler.addConfigurable(new ParticleBlurConfig());
+        configHandler.addConfigurable(new ParticleDropColoredConfig());
 
         // Containers
         configHandler.addConfigurable(new ContainerInfoBookTestConfig());

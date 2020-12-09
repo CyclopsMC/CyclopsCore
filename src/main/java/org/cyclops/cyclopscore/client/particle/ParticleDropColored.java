@@ -16,30 +16,20 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Particle that appears underneath blocks for simulating drops.
  */
 @OnlyIn(Dist.CLIENT)
-public class ExtendedParticleDrop extends SpriteTexturedParticle {
+public class ParticleDropColored extends SpriteTexturedParticle {
 
     /**
      * The height of the current bob
      */
     private int bobTimer;
 
-    /**
-     * Make a new instance.
-     * @param world The world.
-     * @param x X coordinate.
-     * @param y Y coordinate.
-     * @param z Z coordinate.
-     * @param particleRed Red color.
-     * @param particleGreen Green color.
-     * @param particleBlue Blue color.
-     */
-    public ExtendedParticleDrop(World world, double x, double y, double z, float particleRed, float particleGreen, float particleBlue) {
+    public ParticleDropColored(ParticleDropColoredData data, World world, double x, double y, double z) {
         super(world, x, y, z);
         this.motionX = this.motionY = this.motionZ= 0.0D;
 
-        this.particleRed = particleRed;
-        this.particleGreen = particleGreen;
-        this.particleBlue = particleBlue;
+        this.particleRed = data.getRed();
+        this.particleGreen = data.getGreen();
+        this.particleBlue = data.getBlue();
 
         this.setSize(0.01F, 0.01F);
         this.particleGravity = 0.06F;
