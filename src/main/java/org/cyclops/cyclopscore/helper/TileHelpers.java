@@ -85,53 +85,13 @@ public final class TileHelpers {
             if (tileentity == null) {
                 // The following line causes another thread check in ServerChunkProvider#getChunk
                 // So we override it inline
-                //tileentity = world.getChunkAt(pos).getTileEntity(pos, Chunk.CreateEntityType.IMMEDIATE);
-                tileentity = getChunkAtUnchecked(world, pos).getTileEntity(pos, Chunk.CreateEntityType.IMMEDIATE);
+                tileentity = world.getChunkAt(pos).getTileEntity(pos, Chunk.CreateEntityType.IMMEDIATE);
             }
             if (tileentity == null) {
                 tileentity = world.getPendingTileEntityAt(pos);
             }
             return tileentity;
         }
-    }
-
-    static Chunk getChunkAtUnchecked(World world, BlockPos pos) {
-        int chunkX = pos.getX() >> 4;
-        int chunkZ = pos.getZ() >> 4;
-        ChunkStatus requiredStatus = ChunkStatus.FULL;
-        boolean load = true;
-
-        ServerChunkProvider chunkProvider = (ServerChunkProvider) world.getChunkProvider();
-
-        // The following is copied from ServerChunkProvider#getChunk, with the necessary AT additions
-
-        IProfiler iprofiler = world.getProfiler();
-        iprofiler.func_230035_c_("getChunk");
-        long i = ChunkPos.asLong(chunkX, chunkZ);
-
-        for(int j = 0; j < 4; ++j) {
-            if (i == chunkProvider.recentPositions[j] && requiredStatus == chunkProvider.recentStatuses[j]) {
-                IChunk ichunk = chunkProvider.recentChunks[j];
-                if (ichunk != null || !load) {
-                    return (Chunk) ichunk;
-                }
-            }
-        }
-
-        iprofiler.func_230035_c_("getChunkCacheMiss");
-        CompletableFuture<Either<IChunk, ChunkHolder.IChunkLoadingError>> completablefuture = chunkProvider.func_217233_c(chunkX, chunkZ, requiredStatus, load);
-        ((ThreadTaskExecutor<?>) chunkProvider.executor).driveUntil(completablefuture::isDone);
-        IChunk ichunk1 = completablefuture.join().map((p_222874_0_) -> {
-            return p_222874_0_;
-        }, (p_222870_1_) -> {
-            if (load) {
-                throw (IllegalStateException) Util.pauseDevMode(new IllegalStateException("Chunk not there when requested: " + p_222870_1_));
-            } else {
-                return null;
-            }
-        });
-        chunkProvider.func_225315_a(i, ichunk1, requiredStatus);
-        return (Chunk) ichunk1;
     }
 
     /**
