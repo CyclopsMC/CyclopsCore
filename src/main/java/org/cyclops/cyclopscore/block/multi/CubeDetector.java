@@ -101,7 +101,7 @@ public class CubeDetector {
 			return error;
 		}
         return contains ? null : new TranslationTextComponent("multiblock.cyclopscore.error.invalidBlock",
-				LocationHelpers.toCompactString(location), new TranslationTextComponent(block.getTranslationKey() + ".name"));
+				LocationHelpers.toCompactString(location), new TranslationTextComponent(block.getTranslationKey()));
 	}
 
     protected ITextComponent isValidLocation(IWorldReader world, BlockPos location, BlockPos excludeLocation) {
