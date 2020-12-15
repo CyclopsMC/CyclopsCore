@@ -2,7 +2,10 @@ package org.cyclops.cyclopscore.fluid;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerCapacity;
+import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerMutable;
 
 /**
  * A simple fluid tank.
@@ -10,7 +13,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
  * @author rubensworks
  *
  */
-public class Tank extends FluidTank {
+public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHandlerMutable {
 
     /**
      * Make a new fluid tank.
@@ -99,4 +102,25 @@ public class Tank extends FluidTank {
     	}
     }
 
+    @Override
+    public void setFluidInTank(int tank, FluidStack fluidStack) {
+        if (tank == 0) {
+            setFluid(fluidStack);
+        }
+    }
+
+    @Override
+    public void setTankCapacity(int tank, int capacity) {
+        if (tank == 0) {
+            setCapacity(capacity);
+        }
+    }
+
+    @Override
+    public int getTankCapacity(int tank) {
+        if (tank == 0) {
+            return getCapacity();
+        }
+        return 0;
+    }
 }

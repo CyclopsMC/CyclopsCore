@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
  * An itemfluid handler with a mutable capacity.
  * @author rubensworks
  */
-public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements IFluidHandlerItemCapacity {
+public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements IFluidHandlerItemCapacity, IFluidHandlerMutable {
 
     private final Fluid fluid;
 
@@ -68,6 +68,13 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
         return capability == FluidHandlerItemCapacityConfig.CAPABILITY ? LazyOptional.of(() -> this).cast() : super.getCapability(capability, facing);
+    }
+
+    @Override
+    public void setFluidInTank(int tank, FluidStack fluidStack) {
+        if (tank == 0) {
+            setFluid(fluidStack);
+        }
     }
 
     public static class Storage implements Capability.IStorage<IFluidHandlerItemCapacity> {
