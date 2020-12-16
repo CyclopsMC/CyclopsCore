@@ -113,13 +113,10 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe<CraftingInven
         NonNullList<Ingredient> ingredients;
 
         if(recipe instanceof ShapedRecipe) {
-            ingredients = formatShapedGrid(((ShapedRecipe) recipe).getIngredients(),
+            ingredients = formatShapedGrid(recipe.getIngredients(),
                     ((ShapedRecipe) recipe).getRecipeWidth(), ((ShapedRecipe) recipe).getRecipeHeight());
-        } else if(recipe instanceof ShapelessRecipe) {
-            ingredients = recipe.getIngredients();
         } else {
-            getInfoBook().getMod().log(Level.ERROR, "Recipe of type " + recipe.getClass() + " is not supported.");
-            return Ingredient.EMPTY;
+            ingredients = recipe.getIngredients();
         }
         if(ingredients.size() <= index) return Ingredient.EMPTY;
         return ingredients.get(index);
