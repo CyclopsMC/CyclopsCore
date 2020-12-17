@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.List;
@@ -38,8 +40,24 @@ public class InfoBookRegistry implements IInfoBookRegistry {
         return bookRoots.get(infoBook);
     }
 
-    @SubscribeEvent
+    // Reload infobooks if BOTH tags and recipes are initialized (can occur out-of-order in SMP)
+    private volatile int infobookStageEvents = 0;
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onTagsLoaded(TagsUpdatedEvent event) {
+        if (++infobookStageEvents >= 2) {
+            afterRecipesAndTagsLoaded();
+        }
+    }
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onRecipesLoaded(RecipesUpdatedEvent event) {
+        if (++infobookStageEvents >= 2) {
+            afterRecipesAndTagsLoaded();
+        }
+    }
+
+    public void afterRecipesAndTagsLoaded() {
+        this.infobookStageEvents = 0;
+
         // Load after recipes are loaded client-side
         for (Map.Entry<IInfoBook, String> entry : bookPaths.entrySet()) {
             bookRoots.put(entry.getKey(), InfoBookParser.initializeInfoBook(entry.getKey(), entry.getValue(), null));
