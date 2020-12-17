@@ -56,7 +56,7 @@ public class EntityHelpers {
 	 */
 	public static List<Entity> getEntitiesInArea(World world, BlockPos blockPos, int area) {
 	    AxisAlignedBB box = new AxisAlignedBB(blockPos.getX(), blockPos.getY(), blockPos.getZ(),
-				blockPos.getX(), blockPos.getY(), blockPos.getZ()).expand(area, area, area);
+				blockPos.getX(), blockPos.getY(), blockPos.getZ()).grow(area, area, area);
 	    List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, box);
 	    return entities;
 	}
