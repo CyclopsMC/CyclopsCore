@@ -1,0 +1,25 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add mutable fluid handler interface
+* Restore Colored Drop particle
+* Add FluidHandlerWrapper
+* Add safety to damage indicated fluid container during startup
+* Add WorldDecoratorConfig
+
+Changes:
+* Revert unsafe tile retrieval mode
+  This reverts c0a3522f8cb649b34199cc6616d483396b3b54ef
+  Needed because it caused horrible race conditions, CyclopsMC/IntegratedDynamics#931
+* Ensure infobook loading after recipes and tags are at clients
+* Move setBiome to EvilCraft
+* Only send tank updates on execution
+* Warn when an infobook section is skipped
+
+Fixes:
+* Fix crash when skipping infobook appendix
+* Fix incorrect bounds in getEntitiesInArea
+* Fix special crafting recipes not being handled in infobook appendix
+* Fix incorrect L10N on cube detector error messages
+* Fix lighting issues after rendering fluids
+* Fix information providers showing incorrect tooltip
