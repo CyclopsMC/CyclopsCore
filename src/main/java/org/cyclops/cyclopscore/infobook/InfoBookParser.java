@@ -605,7 +605,7 @@ public class InfoBookParser {
 
                 ISectionConditionHandler conditionHandler = Objects.requireNonNull(RECIPE_CONDITION_HANDLERS.get(type), "Could not find a recipe condition handler by name " + type);
                 if(!conditionHandler.isSatisfied(modRecipe, tagString)) {
-                    infoBook.getMod().log(Level.WARN, new InvalidAppendixException("Skipped section " + sectionName + " due to unsatisfied " + type + " condition.").toString());
+                    infoBook.getMod().log(Level.INFO, "Skipped section " + sectionName + " due to unsatisfied " + type + " condition.");
                     return null;
                 }
                 // Yes, I know this isn't very clean, I am currently more interested in eating grapes than abstracting
