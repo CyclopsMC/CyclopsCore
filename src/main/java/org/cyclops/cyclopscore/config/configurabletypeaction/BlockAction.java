@@ -51,22 +51,20 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     public static void register(@Nullable BiFunction<BlockConfig, Block, ? extends Item> itemBlockConstructor, BlockConfig config, @Nullable Callable<?> callback) {
         register(config, itemBlockConstructor == null ? callback : null); // Delay onForgeRegistered callback until item has been registered if one is applicable
         if(itemBlockConstructor != null) {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((RegistryEvent.Register<Item> event) -> {
-                if (event.getRegistry() == ForgeRegistries.ITEMS) {
-                    Item itemBlock = itemBlockConstructor.apply(config, config.getInstance());
-                    Objects.requireNonNull(itemBlock, "Received a null item for the item block constructor of " + config.getNamedId());
-                    if (itemBlock.getRegistryName() == null) {
-                        itemBlock.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
+            FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, (RegistryEvent.Register<Item> event) -> {
+                Item itemBlock = itemBlockConstructor.apply(config, config.getInstance());
+                Objects.requireNonNull(itemBlock, "Received a null item for the item block constructor of " + config.getNamedId());
+                if (itemBlock.getRegistryName() == null) {
+                    itemBlock.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
+                }
+                event.getRegistry().register(itemBlock);
+                config.setItemInstance(itemBlock);
+                try {
+                    if (callback != null) {
+                        callback.call();
                     }
-                    event.getRegistry().register(itemBlock);
-                    config.setItemInstance(itemBlock);
-                    try {
-                        if (callback != null) {
-                            callback.call();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             });
         }
