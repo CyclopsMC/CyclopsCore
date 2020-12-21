@@ -516,7 +516,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             this.width = fontRenderer.func_243245_a(getMessage().func_241878_f());
             // Trim string if it is too long
             if (this.width > maxWidth) {
-                String originalMessage = getMessage().getUnformattedComponentText();
+                String originalMessage = getMessage().getString();
                 originalMessage = originalMessage.substring(0, (int) (((float) maxWidth) / this.width * originalMessage.length()) - 1);
                 originalMessage = originalMessage + "…";
                 setMessage(new StringTextComponent(originalMessage));

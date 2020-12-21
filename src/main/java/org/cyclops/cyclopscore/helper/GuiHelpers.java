@@ -222,7 +222,7 @@ public class GuiHelpers {
         int yStart;
 
         for(ITextComponent line : lines) {
-            tempWidth = mc.fontRenderer.getStringWidth(line.getUnformattedComponentText());
+            tempWidth = mc.fontRenderer.getStringWidth(line.getString());
 
             if(tempWidth > tooltipWidth) {
                 tooltipWidth = tempWidth;
