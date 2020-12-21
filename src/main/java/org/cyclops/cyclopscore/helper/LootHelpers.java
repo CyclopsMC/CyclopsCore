@@ -2,11 +2,15 @@ package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import net.minecraft.loot.ILootSerializer;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.functions.ILootFunction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.loot.TableLootEntry;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -49,6 +53,16 @@ public class LootHelpers {
                 .addEntry(TableLootEntry.builder(source))
                 .name(source.toString())
                 .build());
+    }
+
+    /**
+     * Register a new loot function.
+     * @param id The loot function id.
+     * @param serializer The loot function serializer.
+     * @return The created loot function type
+     */
+    public static LootFunctionType registerFunction(ResourceLocation id, ILootSerializer<? extends ILootFunction> serializer) {
+        return Registry.register(Registry.LOOT_FUNCTION_TYPE, id, new LootFunctionType(serializer));
     }
 
 }
