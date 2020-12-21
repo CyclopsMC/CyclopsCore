@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.particles.BlockParticleData;
@@ -66,6 +67,7 @@ public class RenderHelpers {
 
     /**
      * Draw the given text with the given scale.
+     * @param matrixStack The matrix stack
      * @param fontRenderer The font renderer
      * @param string The string to draw
      * @param x The center X
@@ -73,16 +75,17 @@ public class RenderHelpers {
      * @param scale The scale to render the string by.
      * @param color The color to draw
      */
-    public static void drawScaledString(FontRenderer fontRenderer, String string, int x, int y, float scale, int color) {
+    public static void drawScaledString(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, float scale, int color) {
         GlStateManager.pushMatrix();
         GlStateManager.translatef(x, y, 0);
         GlStateManager.scalef(scale, scale, 1.0f);
-        fontRenderer.drawString(string, 0, 0, color);
+        fontRenderer.drawString(matrixStack, string, 0, 0, color);
         GlStateManager.popMatrix();
     }
 
     /**
      * Draw the given text with the given scale with a shadow.
+     * @param matrixStack The matrix stack
      * @param fontRenderer The font renderer
      * @param string The string to draw
      * @param x The center X
@@ -90,16 +93,17 @@ public class RenderHelpers {
      * @param scale The scale to render the string by.
      * @param color The color to draw
      */
-    public static void drawScaledStringWithShadow(FontRenderer fontRenderer, String string, int x, int y, float scale, int color) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(x, y, 0);
-        GlStateManager.scalef(scale, scale, 1.0f);
-        fontRenderer.drawStringWithShadow(string, 0, 0, color);
-        GlStateManager.popMatrix();
+    public static void drawScaledStringWithShadow(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, float scale, int color) {
+        matrixStack.push();
+        matrixStack.translate(x, y, 0);
+        matrixStack.scale(scale, scale, 1.0f);
+        fontRenderer.drawStringWithShadow(matrixStack, string, 0, 0, color);
+        matrixStack.pop();
     }
 
     /**
      * Draw the given text and scale it to the max width.
+     * @param matrixStack The matrix stack
      * @param fontRenderer The font renderer
      * @param string The string to draw
      * @param x The center X
@@ -107,13 +111,14 @@ public class RenderHelpers {
      * @param maxWidth The maximum width to scale to
      * @param color The color to draw
      */
-    public static void drawScaledCenteredString(FontRenderer fontRenderer, String string, int x, int y, int maxWidth, int color) {
-        drawScaledCenteredString(fontRenderer, string, x, y, maxWidth, 1.0F, maxWidth, color);
+    public static void drawScaledCenteredString(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, int maxWidth, int color) {
+        drawScaledCenteredString(matrixStack, fontRenderer, string, x, y, maxWidth, 1.0F, maxWidth, color);
     }
 
     /**
      * Draw the given text and scale it to the max width.
      * The given string may already be scaled and its width must be passed in that case.
+     * @param matrixStack The matrix stack
      * @param fontRenderer The font renderer
      * @param string The string to draw
      * @param x The center X
@@ -123,14 +128,15 @@ public class RenderHelpers {
      * @param maxWidth The maximum width to scale to
      * @param color The color to draw
      */
-    public static void drawScaledCenteredString(FontRenderer fontRenderer, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
+    public static void drawScaledCenteredString(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
         float originalWidth = fontRenderer.getStringWidth(string) * originalScale;
         float scale = Math.min(originalScale, maxWidth / originalWidth * originalScale);
-        drawScaledCenteredString(fontRenderer, string, x, y, width, scale, color);
+        drawScaledCenteredString(matrixStack, fontRenderer, string, x, y, width, scale, color);
     }
 
     /**
      * Draw the given text with the given width and desired scale.
+     * @param matrixStack The matrix stack
      * @param fontRenderer The font renderer
      * @param string The string to draw
      * @param x The center X
@@ -139,13 +145,13 @@ public class RenderHelpers {
      * @param scale The desired scale
      * @param color The color to draw
      */
-    public static void drawScaledCenteredString(FontRenderer fontRenderer, String string, int x, int y, int width, float scale, int color) {
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(scale, scale, 1.0f);
+    public static void drawScaledCenteredString(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, int width, float scale, int color) {
+        matrixStack.push();
+        matrixStack.scale(scale, scale, 1.0f);
         int titleLength = fontRenderer.getStringWidth(string);
         int titleHeight = fontRenderer.FONT_HEIGHT;
-        fontRenderer.drawString(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
-        GlStateManager.popMatrix();
+        fontRenderer.drawString(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+        matrixStack.pop();
     }
 
     /**
@@ -180,7 +186,7 @@ public class RenderHelpers {
      * @param pos The position.
      * @param side The hit side.
      */
-    public static void addBlockHitEffects(ParticleManager particleManager, World world, BlockState blockState, BlockPos pos, Direction side)  {
+    public static void addBlockHitEffects(ParticleManager particleManager, ClientWorld world, BlockState blockState, BlockPos pos, Direction side)  {
         if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
             int i = pos.getX();
             int j = pos.getY();
@@ -329,7 +335,7 @@ public class RenderHelpers {
      * @return If the point is inside the button's region.
      */
     public static boolean isPointInButton(Button button, int pointX, int pointY) {
-        return isPointInRegion(button.x, button.y, button.getWidth(), button.getHeight(), pointX, pointY);
+        return isPointInRegion(button.x, button.y, button.getWidth(), button.getHeightRealms(), pointX, pointY);
     }
 
     /**

@@ -7,10 +7,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.ClassUtils;
 import org.cyclops.cyclopscore.datastructure.DimPos;
@@ -128,10 +128,10 @@ public abstract class PacketCodec extends PacketBase {
 			}
 		});
 
-		codecActions.put(Vec3d.class, new ICodecAction() {
+		codecActions.put(Vector3d.class, new ICodecAction() {
 			@Override
 			public void encode(Object object, PacketBuffer output) {
-				Vec3d v = (Vec3d)object;
+				Vector3d v = (Vector3d)object;
 				output.writeDouble(v.x);
 				output.writeDouble(v.y);
 				output.writeDouble(v.z);
@@ -142,7 +142,7 @@ public abstract class PacketCodec extends PacketBase {
 				double x = input.readDouble();
 				double y = input.readDouble();
 				double z = input.readDouble();
-				return new Vec3d(x, y, z);
+				return new Vector3d(x, y, z);
 			}
 		});
 		
@@ -283,16 +283,19 @@ public abstract class PacketCodec extends PacketBase {
 			}
 		});
 
-		codecActions.put(DimensionType.class, new ICodecAction() {
+		codecActions.put(RegistryKey.class, new ICodecAction() {
 
 			@Override
 			public void encode(Object object, PacketBuffer output) {
-				output.writeString(((DimensionType) object).getRegistryName().toString());
+				output.writeString(((RegistryKey) object).getRegistryName().toString());
+				output.writeString(((RegistryKey) object).getLocation().toString());
 			}
 
 			@Override
 			public Object decode(PacketBuffer input) {
-				return DimensionType.byName(new ResourceLocation(input.readString(READ_STRING_MAX_LENGTH)));
+				return RegistryKey.getOrCreateKey(
+						RegistryKey.getOrCreateRootKey(new ResourceLocation(input.readString(READ_STRING_MAX_LENGTH))),
+						new ResourceLocation(input.readString(READ_STRING_MAX_LENGTH)));
 			}
 		});
 
@@ -300,13 +303,13 @@ public abstract class PacketCodec extends PacketBase {
 
 			@Override
 			public void encode(Object object, PacketBuffer output) {
-				write(output, ((DimPos) object).getDimension());
+				write(output, ((DimPos) object).getWorld());
 				write(output, ((DimPos) object).getBlockPos());
 			}
 
 			@Override
 			public Object decode(PacketBuffer input) {
-				DimensionType dimensionType = read(input, DimensionType.class);
+				RegistryKey dimensionType = read(input, RegistryKey.class);
 				BlockPos blockPos = read(input, BlockPos.class);
 				return DimPos.of(dimensionType, blockPos);
 			}

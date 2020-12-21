@@ -1,10 +1,11 @@
 package org.cyclops.cyclopscore.client.particle;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -19,7 +20,11 @@ import javax.annotation.Nullable;
 public class ParticleDropColoredConfig extends ParticleConfig<ParticleDropColoredData> {
 
     public ParticleDropColoredConfig() {
-        super(CyclopsCore._instance, "drop_colored", eConfig -> new ParticleType<>(false, ParticleDropColoredData.DESERIALIZER));
+        super(CyclopsCore._instance, "drop_colored", eConfig -> new ParticleType<ParticleDropColoredData>(false, ParticleDropColoredData.DESERIALIZER){
+            public Codec<ParticleDropColoredData> func_230522_e_() {
+                return ParticleDropColoredData.CODEC;
+            }
+        });
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -36,7 +41,7 @@ public class ParticleDropColoredConfig extends ParticleConfig<ParticleDropColore
         return sprite -> new IParticleFactory<ParticleDropColoredData>() {
             @Nullable
             @Override
-            public Particle makeParticle(ParticleDropColoredData particleDropColoredData, World world, double x, double y, double z,
+            public Particle makeParticle(ParticleDropColoredData particleDropColoredData, ClientWorld world, double x, double y, double z,
                                          double motionX, double motionY, double motionZ) {
                 ParticleDropColored particle = new ParticleDropColored(particleDropColoredData, world, x, y, z);
                 particle.selectSpriteRandomly(sprite);

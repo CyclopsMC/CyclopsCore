@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.tileentity;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import lombok.experimental.Delegate;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
@@ -189,8 +190,12 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
     }
     
     @Override
+    public final void read(BlockState state, CompoundNBT tag) {
+        super.read(state, tag);
+        read(tag);
+    }
+
     public void read(CompoundNBT tag) {
-        super.read(tag);
         readGeneratedFieldsFromNBT(tag);
         onLoad();
     }

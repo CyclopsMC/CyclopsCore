@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.infobook;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
@@ -15,6 +16,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
@@ -218,46 +221,45 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     }
 
     @Override
-    public void render(int x, int y, float partialTicks) {
-        GlStateManager.color4f(1F, 1F, 1F, 1F);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         RenderHelpers.bindTexture(texture);
 
-        blit(left, top, 0, 0, getPageWidth(), getGuiHeight());
+        blit(matrixStack, left, top, 0, 0, getPageWidth(), getGuiHeight());
         blitMirrored(left + getPageWidth() - 1, top, 0, 0, getPageWidth(), getGuiHeight());
         int width = getPageWidth() - getOffsetXTotal();
         for(int i = 0; i < getPages(); i++) {
-            infoBook.getCurrentSection().drawScreen(this, left + getOffsetXForPageWithWidths(i), top, getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, x, y, getFootnoteOffsetX(), getFootnoteOffsetY());
+            infoBook.getCurrentSection().drawScreen(this, matrixStack, left + getOffsetXForPageWithWidths(i), top, getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY, getFootnoteOffsetX(), getFootnoteOffsetY());
         }
-        super.render(x, y, partialTicks);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
         for(int i = 0; i < getPages(); i++) {
-            infoBook.getCurrentSection().postDrawScreen(this, left + getOffsetXForPageWithWidths(i), top + getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, x, y);
+            infoBook.getCurrentSection().postDrawScreen(this, matrixStack, left + getOffsetXForPageWithWidths(i), top + getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY);
         }
 
-        if (this.buttonNextPage.visible && RenderHelpers.isPointInButton(this.buttonNextPage, x, y)) {
-            drawTooltip(x, y, Lists.newArrayList(L10NHelpers.localize("infobook.cyclopscore.next_page")));
+        if (this.buttonNextPage.visible && RenderHelpers.isPointInButton(this.buttonNextPage, mouseX, mouseY)) {
+            drawTooltip(matrixStack, mouseX, mouseY, new TranslationTextComponent("infobook.cyclopscore.next_page"));
         }
-        if (this.buttonPreviousPage.visible && RenderHelpers.isPointInButton(this.buttonPreviousPage, x, y)) {
-            drawTooltip(x, y, Lists.newArrayList(L10NHelpers.localize("infobook.cyclopscore.previous_page")));
+        if (this.buttonPreviousPage.visible && RenderHelpers.isPointInButton(this.buttonPreviousPage, mouseX, mouseY)) {
+            drawTooltip(matrixStack, mouseX, mouseY, new TranslationTextComponent("infobook.cyclopscore.previous_page"));
         }
-        if (this.buttonBack.visible && RenderHelpers.isPointInButton(this.buttonBack, x, y)) {
-            drawTooltip(x, y, Lists.newArrayList(L10NHelpers.localize("infobook.cyclopscore.last_page")));
+        if (this.buttonBack.visible && RenderHelpers.isPointInButton(this.buttonBack, mouseX, mouseY)) {
+            drawTooltip(matrixStack, mouseX, mouseY, new TranslationTextComponent("infobook.cyclopscore.last_page"));
         }
-        if (this.buttonParent.visible && RenderHelpers.isPointInButton(this.buttonParent, x, y)) {
-            drawTooltip(x, y, Lists.newArrayList(L10NHelpers.localize("infobook.cyclopscore.parent_section")));
+        if (this.buttonParent.visible && RenderHelpers.isPointInButton(this.buttonParent, mouseX, mouseY)) {
+            drawTooltip(matrixStack, mouseX, mouseY, new TranslationTextComponent("infobook.cyclopscore.parent_section"));
         }
-        if (this.buttonExternal.visible && RenderHelpers.isPointInButton(this.buttonExternal, x, y)) {
-            drawTooltip(x, y, Lists.newArrayList(L10NHelpers.localize("infobook.cyclopscore.external")));
+        if (this.buttonExternal.visible && RenderHelpers.isPointInButton(this.buttonExternal, mouseX, mouseY)) {
+            drawTooltip(matrixStack, mouseX, mouseY, new TranslationTextComponent("infobook.cyclopscore.external"));
         }
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         // Do nothing
     }
 
-    public void drawTooltip(int mx, int my, List<String> lines) {
+    public void drawTooltip(MatrixStack matrixStack, int mx, int my, ITextComponent lines) {
         GlStateManager.pushMatrix();
-        renderTooltip(lines, mx, my);
+        renderTooltip(matrixStack, lines, mx, my);
         GlStateManager.popMatrix();
 
         GlStateManager.disableLighting();
@@ -293,8 +295,6 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     }
 
     private void updateGui() {
-        boolean oldUnicode = getMinecraft().fontRenderer.getBidiFlag();
-        getMinecraft().fontRenderer.setBidiFlag(true);
         int width = getPageWidth() - getOffsetXTotal();
         int lineHeight = InfoSection.getFontHeight(getFontRenderer());
         int maxLines = (getGuiHeight() - 2 * getPageYOffset() - 5) / lineHeight;
@@ -309,7 +309,6 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         }
 
         updateButtons();
-        getMinecraft().fontRenderer.setBidiFlag(oldUnicode);
     }
 
     protected void getPreviousSections(List<InfoSection> sections) {
@@ -345,75 +344,75 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         }
     }
 
-    public void drawScaledCenteredString(String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
-        drawScaledCenteredString(string, x, y, width, originalScale, maxWidth, color, false);
+    public void drawScaledCenteredString(MatrixStack matrixStack, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
+        drawScaledCenteredString(matrixStack, string, x, y, width, originalScale, maxWidth, color, false);
     }
 
-    public void drawScaledCenteredString(String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow) {
+    public void drawScaledCenteredString(MatrixStack matrixStack, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow) {
         float originalWidth = getFontRenderer().getStringWidth(string) * originalScale;
         float scale = Math.min(originalScale, maxWidth / originalWidth * originalScale);
-        drawScaledCenteredString(string, x, y, width, scale, color, shadow);
+        drawScaledCenteredString(matrixStack, string, x, y, width, scale, color, shadow);
     }
 
-    public void drawScaledCenteredString(String string, int x, int y, int width, float scale, int color) {
-        drawScaledCenteredString(string, x, y, width, scale, color, false);
+    public void drawScaledCenteredString(MatrixStack matrixStack, String string, int x, int y, int width, float scale, int color) {
+        drawScaledCenteredString(matrixStack, string, x, y, width, scale, color, false);
     }
 
-    public void drawScaledCenteredString(String string, int x, int y, int width, float scale, int color, boolean shadow) {
+    public void drawScaledCenteredString(MatrixStack matrixStack, String string, int x, int y, int width, float scale, int color, boolean shadow) {
         GlStateManager.pushMatrix();
         GlStateManager.scalef(scale, scale, 1.0f);
         int titleLength = font.getStringWidth(string);
         int titleHeight = font.FONT_HEIGHT;
         if (shadow) {
-            font.drawStringWithShadow(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+            font.drawStringWithShadow(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
         } else {
-            font.drawString(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+            font.drawString(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
         }
         GlStateManager.popMatrix();
     }
 
-    public void drawHorizontalRule(int x, int y) {
+    public void drawHorizontalRule(MatrixStack matrixStack, int x, int y) {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelpers.bindTexture(texture);
-        this.blit(x - HR_WIDTH / 2, y - HR_HEIGHT / 2, 52, 180, HR_WIDTH, HR_HEIGHT);
+        this.blit(matrixStack, x - HR_WIDTH / 2, y - HR_HEIGHT / 2, 52, 180, HR_WIDTH, HR_HEIGHT);
         GlStateManager.disableBlend();
     }
 
-    public void drawTextBanner(int x, int y) {
+    public void drawTextBanner(MatrixStack matrixStack, int x, int y) {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelpers.bindTexture(texture);
-        this.blit(x - BANNER_WIDTH / 2, y - BANNER_HEIGHT / 2, 52, 191, BANNER_WIDTH, BANNER_HEIGHT);
+        this.blit(matrixStack, x - BANNER_WIDTH / 2, y - BANNER_HEIGHT / 2, 52, 191, BANNER_WIDTH, BANNER_HEIGHT);
         GlStateManager.disableBlend();
     }
 
-    public void drawArrowRight(int x, int y) {
+    public void drawArrowRight(MatrixStack matrixStack, int x, int y) {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelpers.bindTexture(texture);
-        this.blit(x, y, 0, 210, ARROW_WIDTH, ARROW_HEIGHT);
+        this.blit(matrixStack, x, y, 0, 210, ARROW_WIDTH, ARROW_HEIGHT);
         GlStateManager.disableBlend();
     }
 
-    public void drawOuterBorder(int x, int y, int width, int height) {
-        drawOuterBorder(x, y, width, height, 1, 1, 1, 1);
+    public void drawOuterBorder(MatrixStack matrixStack, int x, int y, int width, int height) {
+        drawOuterBorder(matrixStack, x, y, width, height, 1, 1, 1, 1);
     }
 
-    public void drawOuterBorder(int x, int y, int width, int height, float r, float g, float b, float alpha) {
+    public void drawOuterBorder(MatrixStack matrixStack, int x, int y, int width, int height, float r, float g, float b, float alpha) {
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GlStateManager.color4f(r, g, b, alpha);
         RenderHelpers.bindTexture(texture);
 
         // Corners
-        this.blit(x - BORDER_WIDTH, y - BORDER_WIDTH, BORDER_X, BORDER_Y, BORDER_CORNER, BORDER_CORNER);
-        this.blit(x + width - BORDER_WIDTH, y - BORDER_WIDTH, BORDER_X + BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER);
-        this.blit(x - BORDER_WIDTH, y + height - BORDER_WIDTH, BORDER_X + 3 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER);
-        this.blit(x + width - BORDER_WIDTH, y + height - BORDER_WIDTH, BORDER_X + 2 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER);
+        this.blit(matrixStack, x - BORDER_WIDTH, y - BORDER_WIDTH, BORDER_X, BORDER_Y, BORDER_CORNER, BORDER_CORNER);
+        this.blit(matrixStack, x + width - BORDER_WIDTH, y - BORDER_WIDTH, BORDER_X + BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER);
+        this.blit(matrixStack, x - BORDER_WIDTH, y + height - BORDER_WIDTH, BORDER_X + 3 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER);
+        this.blit(matrixStack, x + width - BORDER_WIDTH, y + height - BORDER_WIDTH, BORDER_X + 2 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER);
 
         // Sides
         for(int i = BORDER_WIDTH; i < width - BORDER_WIDTH; i+=BORDER_WIDTH) {
@@ -421,8 +420,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             if(i + BORDER_WIDTH >= width - BORDER_CORNER) {
                 drawWidth -= i - (width - BORDER_CORNER);
             }
-            this.blit(x + i, y - BORDER_WIDTH, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH);
-            this.blit(x + i, y + height, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH);
+            this.blit(matrixStack, x + i, y - BORDER_WIDTH, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH);
+            this.blit(matrixStack, x + i, y + height, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH);
         }
         for(int i = BORDER_WIDTH; i < height - BORDER_WIDTH; i+=BORDER_WIDTH) {
             int drawHeight = BORDER_WIDTH;
@@ -430,16 +429,16 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
                 drawHeight -= i - (height - BORDER_CORNER);
             }
             if(drawHeight > 0) {
-                this.blit(x - BORDER_WIDTH, y + i, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight);
-                this.blit(x + width, y + i, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight);
+                this.blit(matrixStack, x - BORDER_WIDTH, y + i, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight);
+                this.blit(matrixStack, x + width, y + i, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight);
             }
         }
 
         GlStateManager.color4f(1, 1, 1, 1);
     }
 
-    public void renderTooltip(ItemStack itemStack, int x, int y) {
-        super.renderTooltip(itemStack, x, y);
+    public void renderTooltip(MatrixStack matrixStack, ItemStack itemStack, int x, int y) {
+        super.renderTooltip(matrixStack, itemStack, x, y);
     }
 
     public int getTick() {
@@ -466,14 +465,14 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
 
         public NextPageButton(int x, int y, int textureX, int textureY, int width, int height,
                               Button.IPressable onPress, ScreenInfoBook guiInfoBook) {
-            super(x, y, width, height, "", onPress);
+            super(x, y, width, height, new StringTextComponent(""), onPress);
             this.textureX = textureX;
             this.textureY = textureY;
             this.guiInfoBook = guiInfoBook;
         }
 
         @Override
-        public void renderButton(int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.x && mouseY >= this.y &&
                                mouseX < this.x + this.width && mouseY < this.y + this.height;
@@ -488,7 +487,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
 
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                this.blit(this.x, this.y, k, l, width, height);
+                this.blit(matrixStack, this.x, this.y, k, l, width, height);
                 GlStateManager.disableBlend();
             }
         }
@@ -508,37 +507,32 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
 
         public TextOverlayButton(HyperLink link, int x, int y, int height, int maxWidth, Button.IPressable onPress,
                                  ScreenInfoBook guiInfoBook) {
-            super(x, y, 0, height, InfoSection.formatString(L10NHelpers.localize(link.getTranslationKey())), onPress);
+            super(x, y, 0, height, new StringTextComponent(InfoSection.formatString(L10NHelpers.localize(link.getTranslationKey()))), onPress);
             this.guiInfoBook = guiInfoBook;
             this.link = link;
             FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
 
-            boolean oldUnicode = fontRenderer.getBidiFlag();
-            fontRenderer.setBidiFlag(true);
-            this.width = fontRenderer.getStringWidth(getMessage());
+            // MCP: getStringWidth
+            this.width = fontRenderer.func_243245_a(getMessage().func_241878_f());
             // Trim string if it is too long
             if (this.width > maxWidth) {
-                String originalMessage = getMessage();
+                String originalMessage = getMessage().getUnformattedComponentText();
                 originalMessage = originalMessage.substring(0, (int) (((float) maxWidth) / this.width * originalMessage.length()) - 1);
                 originalMessage = originalMessage + "…";
-                setMessage(originalMessage);
+                setMessage(new StringTextComponent(originalMessage));
                 this.width = maxWidth;
             }
-            fontRenderer.setBidiFlag(oldUnicode);
         }
 
         @Override
-        public void renderButton(int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.x && mouseY >= this.y &&
                         mouseX < this.x + this.width && mouseY < this.y + this.height;
                 GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 Minecraft minecraft = Minecraft.getInstance();
-                boolean oldUnicode = minecraft.fontRenderer.getBidiFlag();
-                minecraft.fontRenderer.setBidiFlag(true);
-                minecraft.fontRenderer.drawString((isHover ? "§n" : "") + getMessage() + "§r", x, y,
+                minecraft.fontRenderer.drawString(matrixStack, (isHover ? "§n" : "") + getMessage() + "§r", x, y,
                         Helpers.RGBToInt(isHover ? 100 : 0, isHover ? 100 : 0, isHover ? 150 : 125));
-                minecraft.fontRenderer.setBidiFlag(oldUnicode);
             }
         }
 

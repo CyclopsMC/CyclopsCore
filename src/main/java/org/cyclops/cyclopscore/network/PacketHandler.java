@@ -4,8 +4,10 @@ import com.google.common.base.Predicates;
 import io.netty.channel.ChannelHandler.Sharable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.DimensionType;
+import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -131,7 +133,7 @@ public final class PacketHandler {
      * @param packet The packet.
      * @param dimension The dimension to send to.
      */
-    public void sendToDimension(PacketBase packet, DimensionType dimension) {
+    public void sendToDimension(PacketBase packet, RegistryKey<World> dimension) {
         PacketDistributor.PacketTarget target = PacketDistributor.DIMENSION.with(() -> dimension);
         target.send(networkChannel.toVanillaPacket(packet, target.getDirection()));
     }

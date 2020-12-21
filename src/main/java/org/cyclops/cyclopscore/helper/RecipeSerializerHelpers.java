@@ -43,7 +43,7 @@ public class RecipeSerializerHelpers {
         } else {
             String itemName = JSONUtils.getString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(itemName);
-            return Ingredient.fromStacks(new ItemStack(Registry.ITEM.getValue(resourcelocation)
+            return Ingredient.fromStacks(new ItemStack(Registry.ITEM.getOptional(resourcelocation)
                     .orElseThrow(() -> new JsonSyntaxException("Item: " + itemName + " does not exist"))));
         }
     }
@@ -68,7 +68,7 @@ public class RecipeSerializerHelpers {
         } else {
             String itemName = JSONUtils.getString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(itemName);
-            return new ItemStack(Registry.ITEM.getValue(resourcelocation)
+            return new ItemStack(Registry.ITEM.getOptional(resourcelocation)
                     .orElseThrow(() -> new JsonSyntaxException("Item: " + itemName + " does not exist")));
         }
     }

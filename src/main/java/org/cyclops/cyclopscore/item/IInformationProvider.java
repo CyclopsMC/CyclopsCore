@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.item;
 
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -44,7 +45,7 @@ public interface IInformationProvider {
      * @param itemStack The itemStack that must be given information.
      * @return Information for that itemStack.
      */
-    public ITextComponent getInfo(ItemStack itemStack);
+    public IFormattableTextComponent getInfo(ItemStack itemStack);
     /**
      * An extended way to provide additional information.
      * @param itemStack The itemStack that must be given information.

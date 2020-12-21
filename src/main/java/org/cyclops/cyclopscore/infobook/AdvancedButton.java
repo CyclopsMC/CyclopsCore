@@ -1,7 +1,10 @@
 package org.cyclops.cyclopscore.infobook;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -19,7 +22,7 @@ public class AdvancedButton extends Button {
     private Button.IPressable onPress;
 
     public AdvancedButton() {
-        super(0, 0, 0, 0, "", null);
+        super(0, 0, 0, 0, new StringTextComponent(""), null);
     }
 
     public void setOnPress(IPressable onPress) {
@@ -45,7 +48,7 @@ public class AdvancedButton extends Button {
      * @param target The target section.
      * @param gui The gui.
      */
-    public void update(int x, int y, String displayName, InfoSection target, ScreenInfoBook gui) {
+    public void update(int x, int y, ITextComponent displayName, InfoSection target, ScreenInfoBook gui) {
         this.x = x;
         this.y = y;
         this.setMessage(displayName);
@@ -57,19 +60,20 @@ public class AdvancedButton extends Button {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(isVisible() && isHover(mouseX, mouseY)) {
-            Minecraft.getInstance().fontRenderer.drawString(("§n") + getMessage() + "§r", x, y,
+            Minecraft.getInstance().fontRenderer.drawString(matrixStack, ("§n") + getMessage() + "§r", x, y,
                     Helpers.RGBToInt(100, 100, 150));
         }
     }
 
     /**
      * Render the button tooltip.
+     * @param matrixStack The matrix stack.
      * @param mx Mouse x.
      * @param my Mouse Y.
      */
-    public void renderTooltip(int mx, int my) {
+    public void renderTooltip(MatrixStack matrixStack, int mx, int my) {
 
     }
 

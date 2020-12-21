@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -61,8 +62,8 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe<CraftingInven
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    protected void drawElementInner(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
-        gui.drawArrowRight(x + (SLOT_SIZE + SLOT_OFFSET_X) * 3 - 3, y + SLOT_OFFSET_Y + SLOT_SIZE + 2);
+    protected void drawElementInner(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
+        gui.drawArrowRight(matrixStack, x + (SLOT_SIZE + SLOT_OFFSET_X) * 3 - 3, y + SLOT_OFFSET_Y + SLOT_SIZE + 2);
 
         // Prepare items
         int tick = getTick(gui);
@@ -77,14 +78,14 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe<CraftingInven
         // Items
         for(int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                renderItem(gui, x + (SLOT_SIZE + SLOT_OFFSET_X) * i, y+ (SLOT_SIZE + SLOT_OFFSET_Y) * j,
+                renderItem(gui, matrixStack, x + (SLOT_SIZE + SLOT_OFFSET_X) * i, y+ (SLOT_SIZE + SLOT_OFFSET_Y) * j,
                         grid[i + j * 3], mx, my, INPUT[i + j * 3]);
             }
         }
-        renderItem(gui, x + START_X_RESULT, y + (SLOT_SIZE + SLOT_OFFSET_Y), result, mx, my, RESULT);
+        renderItem(gui, matrixStack, x + START_X_RESULT, y + (SLOT_SIZE + SLOT_OFFSET_Y), result, mx, my, RESULT);
 
         // Crafting Table icon
-        renderItem(gui, x + (SLOT_SIZE + SLOT_OFFSET_X) * 3, y + SLOT_OFFSET_Y + SLOT_SIZE,
+        renderItem(gui, matrixStack, x + (SLOT_SIZE + SLOT_OFFSET_X) * 3, y + SLOT_OFFSET_Y + SLOT_SIZE,
                 new ItemStack(Blocks.CRAFTING_TABLE), mx, my, false, null);
     }
 

@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook.condition;
 
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.ITag;
+import net.minecraft.tags.ITagCollection;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -12,15 +12,15 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public class TagSectionConditionHandler<T> implements ISectionConditionHandler {
 
-	private final TagCollection<T> tagCollection;
+	private final ITagCollection<T> tagCollection;
 
-	public TagSectionConditionHandler(TagCollection<T> tagCollection) {
+	public TagSectionConditionHandler(ITagCollection<T> tagCollection) {
 		this.tagCollection = tagCollection;
 	}
 
 	@Override
 	public boolean isSatisfied(ModBase<?> mod, String param) {
-		Tag<T> collection = this.tagCollection.get(new ResourceLocation(param));
+		ITag<T> collection = this.tagCollection.get(new ResourceLocation(param));
 		return collection != null && collection.getAllElements().size() > 0;
 	}
 

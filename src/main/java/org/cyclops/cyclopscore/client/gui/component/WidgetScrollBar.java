@@ -1,8 +1,10 @@
 package org.cyclops.cyclopscore.client.gui.component;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
 
 import javax.annotation.Nullable;
@@ -13,7 +15,7 @@ import java.awt.*;
  *
  * The using screen must add this as a child
  * and call the following method from its respective method:
- * * {@link #drawGuiContainerBackgroundLayer(float, int, int)}
+ * * {@link #drawGuiContainerBackgroundLayer(MatrixStack, float, int, int)}}
  * * {@link #mouseDragged(double, double, int, double, double)} (@see ContainerScreenScrolling for an example)
  *
  * @author rubensworks
@@ -38,12 +40,12 @@ public class WidgetScrollBar extends Widget {
     private boolean isScrolling; // if the scrollbar is being dragged
     private boolean wasClicking; // if the left mouse button was held down last time drawScreen was called
 
-    public WidgetScrollBar(int x, int y, int height, String narrationMessage,
+    public WidgetScrollBar(int x, int y, int height, ITextComponent narrationMessage,
                            @Nullable IScrollCallback scrollCallback, int visibleRows) {
         this(x, y, height, narrationMessage, scrollCallback, visibleRows, null);
     }
 
-    public WidgetScrollBar(int x, int y, int height, String narrationMessage,
+    public WidgetScrollBar(int x, int y, int height, ITextComponent narrationMessage,
                            @Nullable IScrollCallback scrollCallback, int visibleRows, Rectangle scollRegion) {
         super(x, y, WidgetScrollBar.SCROLL_BUTTON_WIDTH, height, narrationMessage);
         this.x = x;
@@ -116,12 +118,13 @@ public class WidgetScrollBar extends Widget {
         return false;
     }
 
-    public void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    public void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         int scrollX = x;
         int scrollMinY = y;
         int scrollMaxY = scrollMinY + height;
         RenderHelpers.bindTexture(SCROLLBUTTON);
         this.blit(
+                matrixStack,
                 scrollX,
                 scrollMinY + (int)((float)(scrollMaxY - scrollMinY - SCROLL_BUTTON_HEIGHT - 2) * this.currentScroll),
                 232 + (this.needsScrollBars() ? 0 : SCROLL_BUTTON_WIDTH),

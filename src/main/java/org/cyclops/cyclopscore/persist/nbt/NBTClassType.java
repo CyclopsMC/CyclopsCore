@@ -3,23 +3,20 @@ package org.cyclops.cyclopscore.persist.nbt;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.client.Minecraft;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -36,7 +33,6 @@ import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -299,29 +295,29 @@ public abstract class NBTClassType<T> {
             }
         });
 
-        NBTYPES.put(Vec3i.class, new NBTClassType<Vec3i>() {
+        NBTYPES.put(Vector3i.class, new NBTClassType<Vector3i>() {
 
             @Override
-            public void writePersistedField(String name, Vec3i object, CompoundNBT tag) {
+            public void writePersistedField(String name, Vector3i object, CompoundNBT tag) {
                 tag.putIntArray(name, new int[]{object.getX(), object.getY(), object.getZ()});
             }
 
             @Override
-            public Vec3i readPersistedField(String name, CompoundNBT tag) {
+            public Vector3i readPersistedField(String name, CompoundNBT tag) {
                 int[] array = tag.getIntArray(name);
-                return new Vec3i(array[0], array[1], array[2]);
+                return new Vector3i(array[0], array[1], array[2]);
             }
 
             @Override
-            public Vec3i getDefaultValue() {
+            public Vector3i getDefaultValue() {
                 return null;
             }
         });
 
-        NBTYPES.put(Vec3d.class, new NBTClassType<Vec3d>() {
+        NBTYPES.put(Vector3d.class, new NBTClassType<Vector3d>() {
 
             @Override
-            public void writePersistedField(String name, Vec3d object, CompoundNBT tag) {
+            public void writePersistedField(String name, Vector3d object, CompoundNBT tag) {
                 CompoundNBT vec = new CompoundNBT();
                 vec.putDouble("x", object.x);
                 vec.putDouble("y", object.y);
@@ -330,13 +326,13 @@ public abstract class NBTClassType<T> {
             }
 
             @Override
-            public Vec3d readPersistedField(String name, CompoundNBT tag) {
+            public Vector3d readPersistedField(String name, CompoundNBT tag) {
                 CompoundNBT vec = tag.getCompound(name);
-                return new Vec3d(vec.getDouble("x"), vec.getDouble("y"), vec.getDouble("z"));
+                return new Vector3d(vec.getDouble("x"), vec.getDouble("y"), vec.getDouble("z"));
             }
 
             @Override
-            public Vec3d getDefaultValue() {
+            public Vector3d getDefaultValue() {
                 return null;
             }
         });
@@ -399,7 +395,7 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, DimPos object, CompoundNBT tag) {
                 CompoundNBT dimPos = new CompoundNBT();
-                dimPos.putString("dim", object.getDimension().getRegistryName().toString());
+                dimPos.putString("dim", object.getWorld());
                 dimPos.putInt("x", object.getBlockPos().getX());
                 dimPos.putInt("y", object.getBlockPos().getY());
                 dimPos.putInt("z", object.getBlockPos().getZ());
@@ -410,11 +406,8 @@ public abstract class NBTClassType<T> {
             public DimPos readPersistedField(String name, CompoundNBT tag) {
                 CompoundNBT dimPos = tag.getCompound(name);
                 String dimensionName = dimPos.getString("dim");
-                Optional<DimensionType> dimensionType = Registry.DIMENSION_TYPE.getValue(new ResourceLocation(dimensionName));
-                if (!dimensionType.isPresent()) {
-                    CyclopsCore.clog(Level.WARN, String.format("Could not find dimension %s", dimensionName));
-                }
-                return DimPos.of(dimensionType.orElse(DimensionType.OVERWORLD), new BlockPos(dimPos.getInt("x"), dimPos.getInt("y"), dimPos.getInt("z")));
+                RegistryKey<World> dimensionType = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(dimensionName));
+                return DimPos.of(dimensionType, new BlockPos(dimPos.getInt("x"), dimPos.getInt("y"), dimPos.getInt("z")));
             }
 
             @Override
@@ -450,7 +443,7 @@ public abstract class NBTClassType<T> {
 
             @Override
             public ITextComponent readPersistedField(String name, CompoundNBT tag) {
-                return ITextComponent.Serializer.fromJson(tag.getString(name));
+                return ITextComponent.Serializer.getComponentFromJson(tag.getString(name));
             }
 
             @Override

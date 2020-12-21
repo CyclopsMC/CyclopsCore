@@ -6,12 +6,11 @@ import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorldReader;
 import org.cyclops.cyclopscore.algorithm.Dimension;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 import java.util.Arrays;
@@ -26,7 +25,7 @@ import java.util.Map;
  */
 public class CubeDetector {
 	
-	private static Vec3i NULL_SIZE = Vec3i.NULL_VECTOR;
+	private static Vector3i NULL_SIZE = Vector3i.NULL_VECTOR;
 	
 	private Collection<AllowedBlock> allowedBlocks = Sets.newHashSet();
 	private Map<Block, AllowedBlock> blockInfo = Maps.newHashMap();
@@ -86,7 +85,7 @@ public class CubeDetector {
 		return listeners;
 	}
 
-	protected void notifyListeners(IWorldReader world, BlockPos location, Vec3i size, boolean valid, BlockPos originCorner) {
+	protected void notifyListeners(IWorldReader world, BlockPos location, Vector3i size, boolean valid, BlockPos originCorner) {
 		for(IDetectionListener listener : getListeners()) {
 			listener.onDetect(world, location, size, valid, originCorner);
 		}
@@ -316,8 +315,8 @@ public class CubeDetector {
 		return minimumValid ? null : (errors.isEmpty() ? null : errors.get(0));
 	}
 
-	protected void postValidate(IWorldReader world, final Vec3i size, int[][] dimensionEgdes,
-			final boolean valid, final BlockPos originCorner, final BlockPos excludeLocation) {
+	protected void postValidate(IWorldReader world, final Vector3i size, int[][] dimensionEgdes,
+								final boolean valid, final BlockPos originCorner, final BlockPos excludeLocation) {
 		coordinateRecursion(world, dimensionEgdes, new BlockPosAction() {
 
 			@Override
@@ -388,7 +387,7 @@ public class CubeDetector {
             int[] cCorner = LocationHelpers.toArray(corners[i]);
 
 			// Distance measurement
-            Vec3i sizeDifference = LocationHelpers.subtract(corners[i], originCorner);
+            Vector3i sizeDifference = LocationHelpers.subtract(corners[i], originCorner);
 			distances[i] = LocationHelpers.toArray(sizeDifference)[i];
 
 			// Start and stop coordinate measurement.
@@ -405,7 +404,7 @@ public class CubeDetector {
 			return new DetectionResult(error);
 		}
 
-		Vec3i size = LocationHelpers.fromArray(distances);
+		Vector3i size = LocationHelpers.fromArray(distances);
 		for(ISizeValidator validator : getSizeValidators()) {
 			// Check if the size iis valid.
 			// If it is invalid we immediately return a null-size, but if we are in invalidation-mode,
@@ -437,7 +436,7 @@ public class CubeDetector {
 		 * @param valid True if the structure should be validated, false if it should be invalidated.
 		 * @param originCorner The origin corner block of the structure.
 		 */
-		public void onDetect(IWorldReader world, BlockPos location, Vec3i size, boolean valid, BlockPos originCorner);
+		public void onDetect(IWorldReader world, BlockPos location, Vector3i size, boolean valid, BlockPos originCorner);
 		
 	}
 	

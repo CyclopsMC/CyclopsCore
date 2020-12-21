@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.block.multi;
 
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IWorldReader;
@@ -26,7 +26,7 @@ public class HollowCubeDetector extends CubeDetector {
 	}
 	
 	@Override
-	protected void postValidate(IWorldReader world, final Vec3i size, final int[][] dimensionEgdes, final boolean valid, final BlockPos originCorner, final BlockPos excludeLocation) {
+	protected void postValidate(IWorldReader world, final Vector3i size, final int[][] dimensionEgdes, final boolean valid, final BlockPos originCorner, final BlockPos excludeLocation) {
 		coordinateRecursion(world, dimensionEgdes, new BlockPosAction() {
 
 			@Override

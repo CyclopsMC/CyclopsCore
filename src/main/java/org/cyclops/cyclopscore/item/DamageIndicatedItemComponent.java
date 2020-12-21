@@ -5,8 +5,10 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -73,7 +75,7 @@ public class DamageIndicatedItemComponent {
      * @param itemStack The item stack to add the info for.
      * @return The info for the item.
      */
-    public ITextComponent getInfo(ItemStack itemStack) {
+    public IFormattableTextComponent getInfo(ItemStack itemStack) {
         int amount = 0;
         IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack).orElse(null);
         FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(null);
@@ -90,16 +92,16 @@ public class DamageIndicatedItemComponent {
      * @return The info generated from the given parameters.
      */
     @OnlyIn(Dist.CLIENT)
-    public static ITextComponent getInfo(FluidStack fluidStack, int amount, int capacity) {
-    	ITextComponent prefix = new StringTextComponent("");
+    public static IFormattableTextComponent getInfo(FluidStack fluidStack, int amount, int capacity) {
+        IFormattableTextComponent prefix = new StringTextComponent("");
     	if (!fluidStack.isEmpty()) {
-    		prefix = new TranslationTextComponent(fluidStack.getTranslationKey()).appendText(": ");
+    		prefix = new TranslationTextComponent(fluidStack.getTranslationKey()).appendString(": ");
     	}
         return prefix
-                .appendText(String.format("%,d", amount))
-                .appendText(" / ")
-                .appendText(String.format("%,d", capacity))
-                .appendText(" mB");
+                .appendString(String.format("%,d", amount))
+                .appendString(" / ")
+                .appendString(String.format("%,d", capacity))
+                .appendString(" mB");
     }
     
     /**
@@ -111,7 +113,7 @@ public class DamageIndicatedItemComponent {
      */
     public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
         list.add(((IInformationProvider) itemStack.getItem()).getInfo(itemStack)
-                .applyTextStyle(IInformationProvider.ITEM_PREFIX));
+                .setStyle(Style.EMPTY.setFormatting(IInformationProvider.ITEM_PREFIX)));
     }
     
     /**

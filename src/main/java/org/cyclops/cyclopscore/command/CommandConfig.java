@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigProperty;
@@ -33,7 +34,7 @@ public class CommandConfig implements Command<CommandSource> {
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
         ConfigurablePropertyData property = context.getArgument("property", ConfigurablePropertyData.class);
         if (!this.valueSet) {
-            context.getSource().asPlayer().sendMessage(new StringTextComponent(property.getConfigProperty().get().toString()));
+            context.getSource().asPlayer().sendMessage(new StringTextComponent(property.getConfigProperty().get().toString()), Util.DUMMY_UUID);
         } else {
             String value = context.getArgument("value", String.class);
             Object newValue = Helpers.tryParse(value, property.getConfigProperty().get());
@@ -41,9 +42,9 @@ public class CommandConfig implements Command<CommandSource> {
                 property.getConfigProperty().set(newValue);
                 property.getConfigProperty().save();
                 context.getSource().asPlayer().sendMessage(new TranslationTextComponent("chat.cyclopscore.command.updatedValue",
-                        property.getName(), newValue.toString()));
+                        property.getName(), newValue.toString()), Util.DUMMY_UUID);
             } else {
-                context.getSource().asPlayer().sendMessage(new TranslationTextComponent("chat.cyclopscore.command.invalidNewValue"));
+                context.getSource().asPlayer().sendMessage(new TranslationTextComponent("chat.cyclopscore.command.invalidNewValue"), Util.DUMMY_UUID);
                 return 1;
             }
         }

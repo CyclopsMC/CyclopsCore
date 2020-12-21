@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
@@ -26,7 +27,7 @@ public class ParticleBlur extends SpriteTexturedParticle {
 	protected float originalScale;
 	protected float scaleLife;
 
-	public ParticleBlur(ParticleBlurData data, World world, double x, double y, double z,
+	public ParticleBlur(ParticleBlurData data, ClientWorld world, double x, double y, double z,
 						double motionX, double motionY, double motionZ) {
 		super(world, x, y, z, motionX, motionY, motionZ);
 		this.motionX = motionX;
@@ -56,7 +57,7 @@ public class ParticleBlur extends SpriteTexturedParticle {
 		LivingEntity renderentity = Minecraft.getInstance().player;
 		int visibleDistance = MAX_VIEW_DISTANCE;
 		
-		if(!Minecraft.getInstance().gameSettings.fancyGraphics) {
+		if(Minecraft.getInstance().gameSettings.graphicFanciness.func_238162_a_() == 0) {
 			visibleDistance = visibleDistance / 2;
 		}
 

@@ -8,7 +8,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import org.junit.Test;
 
 import java.util.List;
@@ -98,7 +98,7 @@ public class TestPacketCodec {
     @Test
     public void testVec3() {
         Vec3PacketCodec packet1 = new Vec3PacketCodec();
-        packet1.value = new Vec3d(1, 2, 3);
+        packet1.value = new Vector3d(1, 2, 3);
         Vec3PacketCodec packet2 = new Vec3PacketCodec();
         encodeDecode(packet1, packet2);
         assertThat("Input equals output", packet1.value.x, equalTo(packet2.value.x));
@@ -277,7 +277,7 @@ public class TestPacketCodec {
 
     public static class Vec3PacketCodec extends SimplePacketCodec {
         @CodecField
-        public Vec3d value;
+        public Vector3d value;
     }
 
     public static class MapPacketCodec extends SimplePacketCodec {

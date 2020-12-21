@@ -9,7 +9,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.storage.IServerWorldInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -55,10 +56,10 @@ public class MinecraftHelpers {
      * @param world the world to manipulate time in.
      * @param toDay if true, set to day, otherwise to night.
      */
-    public static void setDay(World world, boolean toDay) {
+    public static void setDay(ServerWorld world, boolean toDay) {
         int currentTime = (int) world.getGameTime();
         int newTime = currentTime - (currentTime % (MINECRAFT_DAY / 2)) + MINECRAFT_DAY / 2;
-        world.setGameTime(newTime);
+        ((IServerWorldInfo) world.getWorldInfo()).setGameTime(newTime);
     }
 
 	/**

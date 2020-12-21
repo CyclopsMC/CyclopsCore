@@ -11,7 +11,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 import net.minecraft.world.spawner.AbstractSpawner;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -120,11 +120,11 @@ public class EntityHelpers {
      * @param entity The entity.
      * @return The size.
      */
-    public static Vec3i getEntitySize(Entity entity) {
+    public static Vector3i getEntitySize(Entity entity) {
         int x = ((int) Math.ceil(entity.getWidth()));
         int y = ((int) Math.ceil(entity.getHeight()));
         int z = x;
-        return new Vec3i(x, y, z);
+        return new Vector3i(x, y, z);
     }
 
 	/**

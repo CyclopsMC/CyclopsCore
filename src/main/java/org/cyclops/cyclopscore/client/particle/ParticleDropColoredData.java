@@ -2,6 +2,8 @@ package org.cyclops.cyclopscore.client.particle;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
@@ -32,6 +34,11 @@ public class ParticleDropColoredData implements IParticleData {
             return new ParticleDropColoredData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
     };
+    public static final Codec<ParticleDropColoredData> CODEC = RecordCodecBuilder.create((builder) -> builder
+            .group(Codec.FLOAT.fieldOf("r").forGetter(ParticleDropColoredData::getRed),
+                    Codec.FLOAT.fieldOf("g").forGetter(ParticleDropColoredData::getGreen),
+                    Codec.FLOAT.fieldOf("b").forGetter(ParticleDropColoredData::getBlue))
+            .apply(builder, ParticleDropColoredData::new));
 
     private final float red;
     private final float green;

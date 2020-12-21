@@ -2,11 +2,16 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -67,33 +72,33 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected void renderItem(ScreenInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButtonEnum buttonEnum) {
-        renderItem(gui, x, y, itemStack, mx, my, buttonEnum, 1.0F);
+    protected void renderItem(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButtonEnum buttonEnum) {
+        renderItem(gui, matrixStack, x, y, itemStack, mx, my, buttonEnum, 1.0F);
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected void renderItem(ScreenInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum) {
-        renderItem(gui, x, y, itemStack, mx, my, renderOverlays, buttonEnum, 1.0F);
+    protected void renderItem(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum) {
+        renderItem(gui, matrixStack, x, y, itemStack, mx, my, renderOverlays, buttonEnum, 1.0F);
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected void renderItem(ScreenInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButtonEnum buttonEnum, float chance) {
-        renderItem(gui, x, y, itemStack, mx, my, true, buttonEnum, chance);
+    protected void renderItem(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButtonEnum buttonEnum, float chance) {
+        renderItem(gui, matrixStack, x, y, itemStack, mx, my, true, buttonEnum, chance);
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected void renderItem(ScreenInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum, float chance) {
-        renderItemForButton(gui, x, y, itemStack, mx, my, renderOverlays, buttonEnum != null ? (ItemButton) renderItemHolders.get(buttonEnum) : null, chance);
+    protected void renderItem(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum, float chance) {
+        renderItemForButton(gui,matrixStack, x, y, itemStack, mx, my, renderOverlays, buttonEnum != null ? (ItemButton) renderItemHolders.get(buttonEnum) : null, chance);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderItemForButton(ScreenInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, ItemButton button) {
-        renderItemForButton(gui, x, y, itemStack, mx, my, renderOverlays, button, 1.0F);
+    public static void renderItemForButton(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, ItemButton button) {
+        renderItemForButton(gui, matrixStack, x, y, itemStack, mx, my, renderOverlays, button, 1.0F);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderItemForButton(ScreenInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, ItemButton button, float chance) {
-        if(renderOverlays) gui.drawOuterBorder(x, y, SLOT_SIZE, SLOT_SIZE, 1, 1, 1, 0.2f);
+    public static void renderItemForButton(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, ItemButton button, float chance) {
+        if(renderOverlays) gui.drawOuterBorder(matrixStack, x, y, SLOT_SIZE, SLOT_SIZE, 1, 1, 1, 0.2f);
 
         if (!itemStack.isEmpty()) {
             ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
@@ -112,7 +117,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
             if (chance != 1.0F) {
                 String chanceString = chance * 100F + "%";
-                gui.drawScaledCenteredString(chanceString, x - 4, y + 3, gui.getFontRenderer().getStringWidth(chanceString), 1f, 18, Helpers.RGBToInt(255, 255, 255), true);
+                gui.drawScaledCenteredString(matrixStack, chanceString, x - 4, y + 3, gui.getFontRenderer().getStringWidth(chanceString), 1f, 18, Helpers.RGBToInt(255, 255, 255), true);
             }
 
             if (button != null && renderOverlays) button.update(x, y, itemStack, gui);
@@ -120,31 +125,31 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected void renderFluid(ScreenInfoBook gui, int x, int y, FluidStack fluidStack, int mx, int my, AdvancedButtonEnum buttonEnum) {
-        renderFluid(gui, x, y, fluidStack, mx, my, true, buttonEnum);
+    protected void renderFluid(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, FluidStack fluidStack, int mx, int my, AdvancedButtonEnum buttonEnum) {
+        renderFluid(gui, matrixStack, x, y, fluidStack, mx, my, true, buttonEnum);
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected void renderFluid(ScreenInfoBook gui, int x, int y, FluidStack fluidStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum) {
-        renderFluidForButton(gui, x, y, fluidStack, mx, my, renderOverlays, buttonEnum != null ? (FluidButton) renderItemHolders.get(buttonEnum) : null);
+    protected void renderFluid(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, FluidStack fluidStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum) {
+        renderFluidForButton(gui, matrixStack, x, y, fluidStack, mx, my, renderOverlays, buttonEnum != null ? (FluidButton) renderItemHolders.get(buttonEnum) : null);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderFluidForButton(ScreenInfoBook gui, int x, int y, FluidStack fluidStack, int mx, int my, boolean renderOverlays, FluidButton button) {
-        if(renderOverlays) gui.drawOuterBorder(x, y, SLOT_SIZE, SLOT_SIZE, 1, 1, 1, 0.2f);
+    public static void renderFluidForButton(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, FluidStack fluidStack, int mx, int my, boolean renderOverlays, FluidButton button) {
+        if(renderOverlays) gui.drawOuterBorder(matrixStack, x, y, SLOT_SIZE, SLOT_SIZE, 1, 1, 1, 0.2f);
 
         if (!fluidStack.isEmpty()) {
-            GuiHelpers.renderFluidSlot(gui, fluidStack, x, y);
+            GuiHelpers.renderFluidSlot(gui, matrixStack, fluidStack, x, y);
 
             if (button != null && renderOverlays) button.update(x, y, fluidStack, gui);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderItemTooltip(ScreenInfoBook gui, int x, int y, ItemStack itemStack, int mx, int my) {
+    public static void renderItemTooltip(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, ItemStack itemStack, int mx, int my) {
         GlStateManager.pushMatrix();
         if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && !itemStack.isEmpty() ) {
-            gui.renderTooltip(itemStack, mx, my);
+            gui.renderTooltip(matrixStack, itemStack, mx, my);
         }
         GlStateManager.popMatrix();
 
@@ -156,13 +161,19 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void renderFluidTooltip(ScreenInfoBook gui, int x, int y, FluidStack fluidStack, int mx, int my) {
+    public static void renderFluidTooltip(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, FluidStack fluidStack, int mx, int my) {
         GlStateManager.pushMatrix();
         if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && !fluidStack.isEmpty() ) {
-            List<String> lines = Lists.newArrayList();
-            lines.add(fluidStack.getFluid().getAttributes().getRarity(fluidStack).color + L10NHelpers.localize(fluidStack.getTranslationKey()));
-            lines.add(TextFormatting.GRAY.toString() + fluidStack.getAmount() + " mB");
-            gui.renderTooltip(lines, mx, my);
+            List<IReorderingProcessor> lines = Lists.newArrayList();
+            lines.add(IReorderingProcessor.fromString(
+                    L10NHelpers.localize(fluidStack.getTranslationKey()),
+                    Style.EMPTY.setColor(Color.fromTextFormatting(fluidStack.getFluid().getAttributes().getRarity(fluidStack).color)))
+            );
+            lines.add(IReorderingProcessor.fromString(
+                    fluidStack.getAmount() + " mB",
+                    Style.EMPTY.setColor(Color.fromTextFormatting(TextFormatting.GRAY)))
+            );
+            gui.renderTooltip(matrixStack, lines, mx, my);
         }
         GlStateManager.popMatrix();
 
@@ -192,27 +203,27 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public final void drawElement(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
+    public final void drawElement(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
         int yOffset = getAdditionalHeight();
-        gui.drawOuterBorder(x - 1, y - 1 - yOffset, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
-        gui.drawTextBanner(x + width / 2, y - 2 - yOffset);
-        gui.drawScaledCenteredString(L10NHelpers.localize(getUnlocalizedTitle()), x, y - 2 - yOffset, width, 0.9f, gui.getBannerWidth() - 6, gui.getTitleColor());
+        gui.drawOuterBorder(matrixStack, x - 1, y - 1 - yOffset, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
+        gui.drawTextBanner(matrixStack, x + width / 2, y - 2 - yOffset);
+        gui.drawScaledCenteredString(matrixStack, L10NHelpers.localize(getUnlocalizedTitle()), x, y - 2 - yOffset, width, 0.9f, gui.getBannerWidth() - 6, gui.getTitleColor());
 
-        drawElementInner(gui, x, y, width, height, page, mx, my);
+        drawElementInner(gui, matrixStack, x, y, width, height, page, mx, my);
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected void postDrawElement(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
-        renderToolTips(gui, mx, my);
+    protected void postDrawElement(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
+        renderToolTips(gui, matrixStack, mx, my);
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected abstract void drawElementInner(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my);
+    protected abstract void drawElementInner(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my);
 
     @OnlyIn(Dist.CLIENT)
-    protected void renderToolTips(ScreenInfoBook gui, int mx, int my) {
+    protected void renderToolTips(ScreenInfoBook gui, MatrixStack matrixStack, int mx, int my) {
         for(AdvancedButton renderItemHolder : renderItemHolders.values()) {
-            renderItemHolder.renderTooltip(mx, my);
+            renderItemHolder.renderTooltip(matrixStack, mx, my);
         }
     }
 
@@ -257,15 +268,15 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
                     target = pair.getLeft();
                 }
             }
-            super.update(x, y, "empty", target, gui);
+            super.update(x, y, new StringTextComponent("empty"), target, gui);
         }
 
         protected abstract String getTranslationKey(E element);
 
         @Override
-        public void renderButton(int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
             if(isVisible() && isHover(mouseX, mouseY)) {
-                gui.drawOuterBorder(x, y, 16, 16, 0.392f, 0.392f, 0.6f, 0.9f);
+                gui.drawOuterBorder(matrixStack, x, y, 16, 16, 0.392f, 0.392f, 0.6f, 0.9f);
             }
         }
 
@@ -288,8 +299,8 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         }
 
         @Override
-        public void renderTooltip(int mx, int my) {
-            RecipeAppendix.renderItemTooltip(gui, x, y, getElement(), mx, my);
+        public void renderTooltip(MatrixStack matrixStack, int mx, int my) {
+            RecipeAppendix.renderItemTooltip(gui, matrixStack, x, y, getElement(), mx, my);
         }
 
         @Override
@@ -311,8 +322,8 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         }
 
         @Override
-        public void renderTooltip(int mx, int my) {
-            RecipeAppendix.renderFluidTooltip(gui, x, y, getElement(), mx, my);
+        public void renderTooltip(MatrixStack matrixStack, int mx, int my) {
+            RecipeAppendix.renderFluidTooltip(gui, matrixStack, x, y, getElement(), mx, my);
         }
     }
 

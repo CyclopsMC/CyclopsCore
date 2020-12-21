@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.network.packet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,7 +28,7 @@ public abstract class PlayerPositionPacket extends PacketCodec {
     @CodecField
     protected String uuid;
     @CodecField
-    protected Vec3d position = new Vec3d(0, 0, 0);
+    protected Vector3d position = new Vector3d(0, 0, 0);
     @CodecField
     private int range = DEFAULT_RANGE;
 
@@ -55,7 +55,7 @@ public abstract class PlayerPositionPacket extends PacketCodec {
      */
     public PlayerPositionPacket(PlayerEntity player, int range) {
         this.uuid = player.getUniqueID().toString();
-        this.position = player.getPositionVector();
+        this.position = player.getPositionVec();
         this.range = range;
     }
 

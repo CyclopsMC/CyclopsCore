@@ -14,10 +14,11 @@ public interface IImage {
     /**
      * Draw this image.
      * @param gui The gui helper object.
+     * @param matrixStack The matrix stack.
      * @param x The x position.
      * @param y The y position.
      */
-    public void draw(AbstractGui gui, int x, int y);
+    public void draw(AbstractGui gui, MatrixStack matrixStack, int x, int y);
 
     /**
      * Draw the image in the world.

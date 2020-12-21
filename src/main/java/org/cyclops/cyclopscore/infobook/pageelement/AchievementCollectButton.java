@@ -1,10 +1,15 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -37,15 +42,21 @@ public class AchievementCollectButton extends AdvancedButton {
     }
 
     @Override
-    public void renderTooltip(int mx, int my) {
-        super.renderTooltip(mx, my);
+    public void renderTooltip(MatrixStack matrixStack, int mx, int my) {
+        super.renderTooltip(matrixStack, mx, my);
         GlStateManager.pushMatrix();
         if(mx >= x && my >= y && mx <= x + width && my <= y + height) {
-            List<String> lines = Lists.newArrayList();
+            List<IReorderingProcessor> lines = Lists.newArrayList();
             if (advancementRewards.isObtained(Minecraft.getInstance().player)) {
-                lines.add(TextFormatting.ITALIC + L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collected"));
+                lines.add(IReorderingProcessor.fromString(
+                        L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collected"),
+                        Style.EMPTY.setItalic(true)
+                ));
             } else {
-                lines.add(TextFormatting.BOLD + L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collect"));
+                lines.add(IReorderingProcessor.fromString(
+                        L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collect"),
+                        Style.EMPTY.setBold(true)
+                ));
                 boolean canObtain = true;
                 for (IReward reward : advancementRewards.getRewards()) {
                     if (!reward.canObtain(Minecraft.getInstance().player)) {
@@ -53,10 +64,13 @@ public class AchievementCollectButton extends AdvancedButton {
                     }
                 }
                 if (!canObtain) {
-                    lines.add(TextFormatting.RED + L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collectFailure"));
+                    lines.add(IReorderingProcessor.fromString(
+                            L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collectFailure"),
+                            Style.EMPTY.setColor(Color.fromTextFormatting(TextFormatting.RED))
+                    ));
                 }
             }
-            gui.renderTooltip(lines, mx, my);
+            gui.renderTooltip(matrixStack, lines, mx, my);
         }
         GlStateManager.popMatrix();
 
@@ -92,7 +106,7 @@ public class AchievementCollectButton extends AdvancedButton {
     }
 
     @Override
-    public void update(int x, int y, String displayName, InfoSection target, ScreenInfoBook gui) {
+    public void update(int x, int y, ITextComponent displayName, InfoSection target, ScreenInfoBook gui) {
         super.update(x, y, displayName, target, gui);
         this.width = AdvancementRewardsAppendix.MAX_WIDTH;
     }

@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -53,8 +54,8 @@ public class RewardItem implements IReward {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void drawElementInner(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button) {
-        RecipeAppendix.renderItemForButton(gui, x, y, itemStack, mx, my, true, (RecipeAppendix.ItemButton) button);
+    public void drawElementInner(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button) {
+        RecipeAppendix.renderItemForButton(gui, matrixStack, x, y, itemStack, mx, my, true, (RecipeAppendix.ItemButton) button);
     }
 
 

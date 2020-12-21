@@ -51,7 +51,7 @@ public class RetroGenRegistry implements IRetroGenRegistry {
 			
 			boolean atLeastOneModified = false;
 			for(IRetroGen retroGen : retroGeneratables) {
-				if(retroGen.shouldRetroGen(tag, event.getWorld().getDimension().getType())) {
+				if(retroGen.shouldRetroGen(tag, event.getWorld().getDimensionType())) {
 					retroGen.retroGenerateChunk(tag, event.getChunk(), random);
 					getMod().log(Level.INFO, "Retrogenerating chunk at "
                             + event.getChunk().getPos().x + ":" + event.getChunk().getPos().z);
@@ -67,11 +67,12 @@ public class RetroGenRegistry implements IRetroGenRegistry {
 	
 	private void setChunkSeed(IWorld world, IChunk chunk) {
 		// Based on RWTema's DenseOres retrogen
-        random.setSeed(world.getSeed());
+		// TODO: Restore retrogen
+        /*random.setSeed(world.getSeed());
         long xSeed = random.nextLong() >> 2 + 1L;
         long zSeed = random.nextLong() >> 2 + 1L;
         long chunkSeed = (xSeed * chunk.getPos().x + zSeed * chunk.getPos().z) ^ world.getSeed();
-        random.setSeed(chunkSeed);
+        random.setSeed(chunkSeed);*/
 	}
 
 	@Override

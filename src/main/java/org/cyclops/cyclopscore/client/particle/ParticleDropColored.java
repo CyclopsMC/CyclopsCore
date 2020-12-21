@@ -4,7 +4,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -23,7 +24,7 @@ public class ParticleDropColored extends SpriteTexturedParticle {
      */
     private int bobTimer;
 
-    public ParticleDropColored(ParticleDropColoredData data, World world, double x, double y, double z) {
+    public ParticleDropColored(ParticleDropColoredData data, ClientWorld world, double x, double y, double z) {
         super(world, x, y, z);
         this.motionX = this.motionY = this.motionZ= 0.0D;
 
@@ -77,7 +78,7 @@ public class ParticleDropColored extends SpriteTexturedParticle {
 
         if (material.isLiquid() || material.isSolid()) {
             float h = 1;
-            IFluidState fluidState = world.getFluidState(blockPos);
+            FluidState fluidState = world.getFluidState(blockPos);
             if(!fluidState.isEmpty()) {
                 h = ((float) fluidState.getLevel()) / 8;
             }

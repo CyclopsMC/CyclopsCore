@@ -2,10 +2,17 @@ package org.cyclops.cyclopscore.infobook;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.IBidiRenderer;
+import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.LanguageMap;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
@@ -131,7 +138,7 @@ public class InfoSection {
         }
 
         // Wrap the text into pages.
-        List<String> allLines = fontRenderer.listFormattedStringToWidth(contents, width);
+        List<IReorderingProcessor> allLines = fontRenderer.trimStringToWidth(ITextProperties.func_240652_a_(contents), width);
         localizedPages = Lists.newLinkedList();
         int linesOnPage = 0;
         StringBuilder currentPage = new StringBuilder();
@@ -140,7 +147,7 @@ public class InfoSection {
             linesOnPage += TITLE_LINES;
         }
         pages = 1;
-        for(String line : allLines) {
+        for(IReorderingProcessor line : allLines) {
             if(linesOnPage >= maxLines) {
                 linesOnPage = 0;
                 pages++;
@@ -280,8 +287,9 @@ public class InfoSection {
     /**
      * Draw the screen for a given page.
      * @param gui The gui.
-     * @param x X.
-     * @param y Y.
+     * @param matrixStack The matrix stack.
+     * @param mouseX X.
+     * @param mouseY Y.
      * @param yOffset The y offset.
      * @param width The width of the page.
      * @param height The height of the page.
@@ -292,32 +300,31 @@ public class InfoSection {
      * @param footnoteOffsetY Footnote offset y
      */
     @OnlyIn(Dist.CLIENT)
-    public void drawScreen(ScreenInfoBook gui, int x, int y, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
+    public void drawScreen(ScreenInfoBook gui, MatrixStack matrixStack, int mouseX, int mouseY, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
         if(page < getPages()) {
             FontRenderer fontRenderer = gui.getFontRenderer();
-            boolean oldUnicode = fontRenderer.getBidiFlag();
-            fontRenderer.setBidiFlag(true);
-            fontRenderer.setBidiFlag(false);
 
             // Draw text content
             String content = getLocalizedPageString(page);
-            if (content != null) fontRenderer.drawSplitString(content, x, y + yOffset, width, 0);
+            if (content != null) {
+                IBidiRenderer.func_243258_a(fontRenderer, new StringTextComponent(content), width)
+                        .func_241863_a(matrixStack, mouseX, mouseY + yOffset);
+            }
 
             // Draw title if on first page
             if (isTitlePage(page)) {
-                gui.drawScaledCenteredString(getLocalizedTitle(), x, y + yOffset + 10, width, 1.5f, width, gui.getTitleColor());
-                gui.drawHorizontalRule(x + width / 2, y + yOffset);
-                gui.drawHorizontalRule(x + width / 2, y + yOffset + 21);
+                gui.drawScaledCenteredString(matrixStack, getLocalizedTitle(), mouseX, mouseY + yOffset + 10, width, 1.5f, width, gui.getTitleColor());
+                gui.drawHorizontalRule(matrixStack, mouseX + width / 2, mouseY + yOffset);
+                gui.drawHorizontalRule(matrixStack, mouseX + width / 2, mouseY + yOffset + 21);
             }
-            fontRenderer.setBidiFlag(oldUnicode);
 
             // Draw current page/section indication
-            gui.drawScaledCenteredString(getLocalizedTitle() + " - " + (page + 1) +  "/" + getPages(), x + (((page % 2 == 0) ? 1 : -1) * footnoteOffsetX), y + height + footnoteOffsetY, width, 0.6f, (int) (width * 0.75f), Helpers.RGBToInt(190, 190, 190));
+            gui.drawScaledCenteredString(matrixStack, getLocalizedTitle() + " - " + (page + 1) +  "/" + getPages(), mouseX + (((page % 2 == 0) ? 1 : -1) * footnoteOffsetX), mouseY + height + footnoteOffsetY, width, 0.6f, (int) (width * 0.75f), Helpers.RGBToInt(190, 190, 190));
 
             // Draw appendixes
             for (SectionAppendix appendix : appendixes) {
                 if (appendix.getPage() == page) {
-                    appendix.drawScreen(gui, x, y + yOffset + getAppendixOffsetLine(fontRenderer, appendix), width,
+                    appendix.drawScreen(gui, matrixStack, mouseX, mouseY + yOffset + getAppendixOffsetLine(fontRenderer, appendix), width,
                             height, page, mx, my, true);
                 }
             }
@@ -327,8 +334,9 @@ public class InfoSection {
     /**
      * Draw the overlays for the given page, for tooltips and such.
      * @param gui The gui.
-     * @param x X.
-     * @param y Y.
+     * @param matrixStack The matrix stack.
+     * @param mouseX X.
+     * @param mouseY Y.
      * @param width The width of the page.
      * @param height The height of the page.
      * @param page The page to render.
@@ -336,13 +344,13 @@ public class InfoSection {
      * @param my Mouse Y.
      */
     @OnlyIn(Dist.CLIENT)
-    public void postDrawScreen(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my) {
+    public void postDrawScreen(ScreenInfoBook gui, MatrixStack matrixStack, int mouseX, int mouseY, int width, int height, int page, int mx, int my) {
         if(page < getPages()) {
             FontRenderer fontRenderer = gui.getFontRenderer();
             // Post draw appendixes
             for (SectionAppendix appendix : appendixes) {
                 if (appendix.getPage() == page) {
-                    appendix.drawScreen(gui, x, y + getAppendixOffsetLine(fontRenderer, appendix), width,
+                    appendix.drawScreen(gui, matrixStack, mouseX, mouseY + getAppendixOffsetLine(fontRenderer, appendix), width,
                             height, page, mx, my, false);
                 }
             }

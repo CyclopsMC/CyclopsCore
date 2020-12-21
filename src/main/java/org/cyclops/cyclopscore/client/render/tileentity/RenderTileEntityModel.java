@@ -7,8 +7,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.util.Direction;
@@ -27,7 +27,7 @@ import java.util.function.Function;
 public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> extends TileEntityRenderer<T> {
 
     protected final M model;
-	private final Material material;
+	private final RenderMaterial material;
 
     /**
      * Make a new instance.
@@ -35,7 +35,7 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
      * @param model The model to render.
      * @param material The material to render the model with.
      */
-    public RenderTileEntityModel(TileEntityRendererDispatcher renderDispatcher, M model, Material material) {
+    public RenderTileEntityModel(TileEntityRendererDispatcher renderDispatcher, M model, RenderMaterial material) {
         super(renderDispatcher);
         this.model = model;
         this.material = material;
@@ -45,7 +45,7 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
      * Get the material.
      * @return The material.
      */
-	public Material getMaterial() {
+	public RenderMaterial getMaterial() {
 		return material;
 	}
 

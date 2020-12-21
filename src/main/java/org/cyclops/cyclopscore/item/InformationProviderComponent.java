@@ -5,6 +5,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,7 +42,7 @@ public class InformationProviderComponent {
         if(hasInfo) {
             if(((IInformationProvider) block).getInfo(itemStack) != null) {
                 list.add(((IInformationProvider) block).getInfo(itemStack)
-                        .applyTextStyle(IInformationProvider.BLOCK_PREFIX));
+                        .setStyle(Style.EMPTY.setFormatting(IInformationProvider.BLOCK_PREFIX)));
             }
             ((IInformationProvider) block).provideInformation(itemStack, world, list, flag);
         }

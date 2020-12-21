@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.client.render.tileentity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.Material;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
@@ -16,7 +16,7 @@ import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
  */
 public class RenderTileEntityModelBase<T extends CyclopsTileEntity, M extends Model> extends RenderTileEntityModel<T, M> {
 
-    public RenderTileEntityModelBase(TileEntityRendererDispatcher renderDispatcher, M model, Material material) {
+    public RenderTileEntityModelBase(TileEntityRendererDispatcher renderDispatcher, M model, RenderMaterial material) {
         super(renderDispatcher, model, material);
     }
 

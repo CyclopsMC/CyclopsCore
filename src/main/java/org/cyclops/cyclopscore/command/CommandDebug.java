@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.StringTextComponent;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacket;
@@ -37,7 +38,7 @@ public class CommandDebug implements Command<CommandSource> {
     @Override
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
         PacketCodec packet = context.getArgument("packet", PacketCodec.class);
-        context.getSource().asPlayer().sendMessage(new StringTextComponent(String.format("Sending %s from client to server...", packet.getClass())));
+        context.getSource().asPlayer().sendMessage(new StringTextComponent(String.format("Sending %s from client to server...", packet.getClass())), Util.DUMMY_UUID);
         CyclopsCore._instance.getPacketHandler().sendToPlayer(packet, context.getSource().asPlayer());
         return 0;
     }

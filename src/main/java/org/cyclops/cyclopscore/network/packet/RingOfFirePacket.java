@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.network.packet;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,7 +28,7 @@ public class RingOfFirePacket extends PlayerPositionPacket {
     }
     
 	@OnlyIn(Dist.CLIENT)
-    private static void showFireRing(World world, Vec3d pos) {
+    private static void showFireRing(World world, Vector3d pos) {
         double area = RING_AREA;
         int points = 40;
         for(double point = -points; point <= points; point++) {

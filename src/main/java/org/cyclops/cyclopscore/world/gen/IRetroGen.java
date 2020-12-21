@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.world.gen;
 
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.dimension.DimensionType;
 
 import java.util.Random;
 

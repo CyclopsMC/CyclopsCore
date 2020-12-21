@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -63,7 +64,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     }
 
     @Override
-    public ITextComponent getInfo(ItemStack itemStack) {
+    public IFormattableTextComponent getInfo(ItemStack itemStack) {
         return component.getInfo(itemStack);
     }
     

@@ -9,6 +9,7 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.EntityArgument;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.Collection;
@@ -32,7 +33,7 @@ public class CommandIgnite implements Command<CommandSource> {
         for (Entity entity : entities) {
             entity.setFire(duration);
             context.getSource().asPlayer().sendMessage(new TranslationTextComponent(
-                    "chat.cyclopscore.command.ignitedPlayer", entity.getDisplayName(), duration));
+                    "chat.cyclopscore.command.ignitedPlayer", entity.getDisplayName(), duration), Util.DUMMY_UUID);
         }
         return 0;
     }

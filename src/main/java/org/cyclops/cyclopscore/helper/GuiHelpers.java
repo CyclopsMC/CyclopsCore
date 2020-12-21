@@ -9,7 +9,7 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -49,6 +49,7 @@ public class GuiHelpers {
      * Render a fluid tank in a gui.
      *
      * @param gui The gui to render in.
+     * @param matrixStack The matrix stack.
      * @param fluidStack The fluid to render.
      * @param capacity The tank capacity.
      * @param x The gui x position, including gui left.
@@ -56,7 +57,7 @@ public class GuiHelpers {
      * @param width The tank width.
      * @param height The tank height.
      */
-    public static void renderFluidTank(AbstractGui gui, @Nullable FluidStack fluidStack, int capacity,
+    public static void renderFluidTank(AbstractGui gui, MatrixStack matrixStack, @Nullable FluidStack fluidStack, int capacity,
                                        int x, int y, int width, int height) {
         if (fluidStack != null && !fluidStack.isEmpty() && capacity > 0) {
             GlStateManager.pushMatrix();
@@ -90,7 +91,7 @@ public class GuiHelpers {
                 RenderSystem.color3f(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight());
 
                 RenderHelper.setupGuiFlatDiffuseLighting();
-                AbstractGui.blit(x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
+                AbstractGui.blit(matrixStack, x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
                 RenderHelper.setupGui3DDiffuseLighting();
 
                 // Reset color when done
@@ -112,13 +113,14 @@ public class GuiHelpers {
     /**
      * Render the given fluid in a standard slot.
      * @param gui The gui to render in.
+     * @param matrixStack The matrix stack.
      * @param fluidStack The fluid to render.
      * @param x The slot X position.
      * @param y The slot Y position.
      */
-    public static void renderFluidSlot(AbstractGui gui, @Nullable FluidStack fluidStack, int x, int y) {
+    public static void renderFluidSlot(AbstractGui gui, MatrixStack matrixStack, @Nullable FluidStack fluidStack, int x, int y) {
         if (fluidStack != null) {
-            GuiHelpers.renderFluidTank(gui, fluidStack, fluidStack.getAmount(), x, y, SLOT_SIZE_INNER, SLOT_SIZE_INNER);
+            GuiHelpers.renderFluidTank(gui, matrixStack, fluidStack, fluidStack.getAmount(), x, y, SLOT_SIZE_INNER, SLOT_SIZE_INNER);
         }
     }
 
@@ -127,6 +129,7 @@ public class GuiHelpers {
      * This assumes that the tank overlay has the provided width and height.
      *
      * @param gui The gui to render in.
+     * @param matrixStack The matrix stack.
      * @param fluidStack The fluid to render.
      * @param capacity The tank capacity.
      * @param x The gui x position, including gui left.
@@ -137,14 +140,14 @@ public class GuiHelpers {
      * @param overlayTextureX The overlay x texture position.
      * @param overlayTextureY The overlay y texture position.
      */
-    public static void renderOverlayedFluidTank(AbstractGui gui, @Nullable FluidStack fluidStack, int capacity,
+    public static void renderOverlayedFluidTank(AbstractGui gui, MatrixStack matrixStack, @Nullable FluidStack fluidStack, int capacity,
                                                 int x, int y, int width, int height,
                                                 ResourceLocation textureOverlay, int overlayTextureX, int overlayTextureY) {
-        renderFluidTank(gui, fluidStack, capacity, x, y, width, height);
+        renderFluidTank(gui, matrixStack, fluidStack, capacity, x, y, width, height);
         if (fluidStack != null && capacity > 0) {
             GlStateManager.enableBlend();
             RenderHelpers.bindTexture(textureOverlay);
-            gui.blit(x, y, overlayTextureX, overlayTextureY, width, height);
+            gui.blit(matrixStack, x, y, overlayTextureX, overlayTextureY, width, height);
         }
     }
 
@@ -153,6 +156,7 @@ public class GuiHelpers {
      * The currently bound texture will be used to render the progress bar.
      *
      * @param gui The gui to render in.
+     * @param matrixStack The matrix stack.
      * @param x The gui x position, including gui left.
      * @param y The gui y position, including gui top.
      * @param width The progress bar width.
@@ -163,7 +167,7 @@ public class GuiHelpers {
      * @param progress The current progress.
      * @param progressMax The maximum progress.
      */
-    public static void renderProgressBar(AbstractGui gui, int x, int y, int width, int height, int textureX, int textureY,
+    public static void renderProgressBar(AbstractGui gui, MatrixStack matrixStack, int x, int y, int width, int height, int textureX, int textureY,
                                          ProgressDirection direction, int progress, int progressMax) {
         if (progressMax > 0 && progress > 0) {
             int scaledWidth = width;
@@ -189,7 +193,7 @@ public class GuiHelpers {
                 textureY += offset;
             }
 
-            gui.blit(x, y, textureX, textureY, scaledWidth, scaledHeight);
+            gui.blit(matrixStack, x, y, textureX, textureY, scaledWidth, scaledHeight);
         }
     }
 
@@ -218,7 +222,7 @@ public class GuiHelpers {
         int yStart;
 
         for(ITextComponent line : lines) {
-            tempWidth = mc.fontRenderer.getStringWidth(line.getFormattedText());
+            tempWidth = mc.fontRenderer.getStringWidth(line.getUnformattedComponentText());
 
             if(tempWidth > tooltipWidth) {
                 tooltipWidth = tempWidth;
@@ -265,12 +269,12 @@ public class GuiHelpers {
             ITextComponent line = lines.get(stringIndex);
 
             if(stringIndex == 0) {
-                line = new StringTextComponent("\u00a7" + Integer.toHexString(15)).appendSibling(line);
+                line = new StringTextComponent("\u00a7" + Integer.toHexString(15)).append(line);
             } else {
-                line = new StringTextComponent("\u00a77").appendSibling(line);
+                line = new StringTextComponent("\u00a77").append(line);
             }
 
-            mc.fontRenderer.renderString(line.getFormattedText(), xStart, yStart, -1, true, matrix4f,
+            mc.fontRenderer.func_238416_a_(line.func_241878_f(), xStart, yStart, -1, true, matrix4f,
                     irendertypebuffer$impl, false, 0, 15728880);
 
             if(stringIndex == 0) {

@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.network.packet.debug;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -40,7 +41,7 @@ public class PingPongPacketAsync extends PacketCodec {
 	}
 
 	protected void log(PlayerEntity player, String message) {
-		player.sendMessage(new StringTextComponent(message));
+		player.sendMessage(new StringTextComponent(message), Util.DUMMY_UUID);
 	}
 
 	protected PingPongPacketAsync newPacket() {

@@ -3,10 +3,11 @@ package org.cyclops.cyclopscore.datastructure;
 import lombok.Data;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
-import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
@@ -20,18 +21,18 @@ import java.lang.ref.WeakReference;
 @Data(staticConstructor = "of")
 public class DimPos implements Comparable<DimPos> {
 
-    private final DimensionType dimension;
+    private final String world;
     private final BlockPos blockPos;
     private WeakReference<World> worldReference;
 
-    private DimPos(DimensionType dimension, BlockPos blockPos, World world) {
-        this.dimension = dimension;
+    private DimPos(String dimension, BlockPos blockPos, World world) {
+        this.world = dimension;
         this.blockPos = blockPos;
         this.worldReference = world != null && world.isRemote() ? new WeakReference<>(world) : null;
     }
 
-    private DimPos(DimensionType dimension, BlockPos blockPos) {
-        this(dimension, blockPos, null);
+    private DimPos(String world, BlockPos blockPos) {
+        this(world, blockPos, null);
     }
 
     @Nullable
@@ -39,19 +40,19 @@ public class DimPos implements Comparable<DimPos> {
         if (worldReference == null) {
             if (MinecraftHelpers.isClientSideThread()) {
                 ClientWorld world = Minecraft.getInstance().world;
-                if (world.getDimension().getDimension().getType() == this.getDimension()) {
-                    this.worldReference = new WeakReference(world);
+                if (world.getDimensionKey().getLocation().toString().equals(this.getWorld())) {
+                    this.worldReference = new WeakReference<>(world);
                     return this.worldReference.get();
                 } else {
                     return null;
                 }
             } else {
-                return DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), dimension, false, forceLoad);
+                return ServerLifecycleHooks.getCurrentServer().getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(getWorld())));
             }
         }
         World world = worldReference.get();
         if (world == null) {
-            world = DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), dimension, false, forceLoad);
+            world = ServerLifecycleHooks.getCurrentServer().getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(getWorld())));
             worldReference = new WeakReference<>(world);
         }
         return world;
@@ -64,8 +65,7 @@ public class DimPos implements Comparable<DimPos> {
 
     @Override
     public int compareTo(DimPos o) {
-        int compareDim = Integer.compare(getDimension().getId(),
-                o.getDimension().getId());
+        int compareDim = getWorld().compareTo(o.getWorld());
         if(compareDim == 0) {
             return MinecraftHelpers.compareBlockPos(getBlockPos(), o.getBlockPos());
         }
@@ -79,15 +79,15 @@ public class DimPos implements Comparable<DimPos> {
 
     @Override
     public int hashCode() {
-        return 31 * getDimension().getId() + getBlockPos().hashCode();
+        return 31 * getWorld().hashCode() + getBlockPos().hashCode();
     }
 
     public static DimPos of(World world, BlockPos blockPos) {
-        return new DimPos(world.getDimension().getType(), blockPos, world);
+        return of(world.getDimensionKey(), blockPos);
     }
 
-    public static DimPos of(DimensionType dimension, BlockPos blockPos) {
-        return new DimPos(dimension, blockPos);
+    public static DimPos of(RegistryKey<World> world, BlockPos blockPos) {
+        return new DimPos(world.getLocation().toString(), blockPos);
     }
 
 }

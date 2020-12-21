@@ -3,10 +3,10 @@ package org.cyclops.cyclopscore.helper;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootPool;
-import net.minecraft.world.storage.loot.LootTable;
-import net.minecraft.world.storage.loot.LootTables;
-import net.minecraft.world.storage.loot.TableLootEntry;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.LootTables;
+import net.minecraft.loot.TableLootEntry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -39,7 +39,6 @@ public class LootHelpers {
      * @param targets The targets to inject to.
      */
     public static void injectLootTable(ResourceLocation source, ResourceLocation... targets) {
-        LootTables.register(source);
         for (ResourceLocation target : targets) {
             INJECT_LOOTTABLES.put(target, source);
         }

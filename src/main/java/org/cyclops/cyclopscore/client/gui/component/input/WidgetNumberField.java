@@ -1,7 +1,10 @@
 package org.cyclops.cyclopscore.client.gui.component.input;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.cyclops.cyclopscore.client.gui.component.button.ButtonArrow;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
@@ -19,14 +22,14 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     private boolean isEnabled = true;
 
     public WidgetNumberField(FontRenderer fontrenderer, int x, int y, int width, int height, boolean arrows,
-                             String narrationMessage, boolean background) {
+                             ITextComponent narrationMessage, boolean background) {
         super(fontrenderer, x, y, width, height, narrationMessage, background);
         this.arrows = arrows;
 
         if(this.arrows) {
-            arrowUp = new ButtonArrow(x, y + height / 2, "gui.cyclopscore.up", (button) -> this.increase(), ButtonArrow.Direction.NORTH);
-            arrowDown = new ButtonArrow(x, y + height / 2, "gui.cyclopscore.down", (button) -> this.decrease(), ButtonArrow.Direction.SOUTH);
-            arrowUp.y -= arrowUp.getHeight();
+            arrowUp = new ButtonArrow(x, y + height / 2, new TranslationTextComponent("gui.cyclopscore.up"), (button) -> this.increase(), ButtonArrow.Direction.NORTH);
+            arrowDown = new ButtonArrow(x, y + height / 2, new TranslationTextComponent("gui.cyclopscore.down"), (button) -> this.decrease(), ButtonArrow.Direction.SOUTH);
+            arrowUp.y -= arrowUp.getHeightRealms();
         }
         setEnableBackgroundDrawing(true);
         setText("0");
@@ -85,17 +88,17 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         int offsetX = 0;
         GlStateManager.color4f(1, 1, 1, 1);
         if(arrows) {
-            arrowUp.renderButton(mouseX, mouseY, partialTicks);
-            arrowDown.renderButton(mouseX, mouseY, partialTicks);
+            arrowUp.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+            arrowDown.renderButton(matrixStack, mouseX, mouseY, partialTicks);
             offsetX = arrowUp.getWidth();
             x += offsetX;
             width -= offsetX;
         }
-        super.renderButton(mouseX, mouseY, partialTicks);
+        super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
         if(arrows) {
             x -= offsetX;
             width += offsetX;

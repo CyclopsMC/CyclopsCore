@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.network.packet;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,7 +35,7 @@ public class ReloadResourcesPacket extends PacketCodec {
 		long start = System.currentTimeMillis();
 		Minecraft.getInstance().reloadResources();
 		long end = System.currentTimeMillis();
-		player.sendMessage(new StringTextComponent(String.format("Reloaded all resources in %s ms", end - start)));
+		player.sendMessage(new StringTextComponent(String.format("Reloaded all resources in %s ms", end - start)), Util.DUMMY_UUID);
 	}
 
 	@Override

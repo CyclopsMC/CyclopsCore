@@ -1,20 +1,15 @@
 package org.cyclops.cyclopscore.client.gui.image;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import lombok.Data;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
-import org.lwjgl.opengl.GL11;
 
 /**
  * A wrapper that contains a reference to a {@link net.minecraft.util.ResourceLocation} and its sheet position.
@@ -35,9 +30,9 @@ public class Image implements IImage {
     }
 
     @Override
-    public void draw(AbstractGui gui, int x, int y) {
+    public void draw(AbstractGui gui, MatrixStack matrixStack, int x, int y) {
         RenderHelpers.bindTexture(resourceLocation);
-        gui.blit(x, y, sheetX, sheetY, sheetWidth, sheetHeight);
+        gui.blit(matrixStack, x, y, sheetX, sheetY, sheetWidth, sheetHeight);
     }
 
     @Override

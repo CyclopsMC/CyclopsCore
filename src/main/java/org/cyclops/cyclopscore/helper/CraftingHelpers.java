@@ -11,15 +11,13 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -38,7 +36,7 @@ public class CraftingHelpers {
     }
 
     public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findServerRecipes(IRecipeType<? extends T> recipeType) {
-        return (Collection<T>) ServerLifecycleHooks.getCurrentServer().getWorld(DimensionType.OVERWORLD).getRecipeManager().getRecipes(recipeType).values();
+        return (Collection<T>) ServerLifecycleHooks.getCurrentServer().getWorld(World.OVERWORLD).getRecipeManager().getRecipes(recipeType).values();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -63,12 +61,12 @@ public class CraftingHelpers {
                 + itemStack.getTag() + " with index " + index);
     }
 
-    private static final LoadingCache<Triple<IRecipeType<?>, CacheableCraftingInventory, DimensionType>, Optional<IRecipe>> CACHE_RECIPES = CacheBuilder.newBuilder()
+    private static final LoadingCache<Triple<IRecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<IRecipe>> CACHE_RECIPES = CacheBuilder.newBuilder()
             .expireAfterWrite(1, TimeUnit.MINUTES)
-            .build(new CacheLoader<Triple<IRecipeType<?>, CacheableCraftingInventory, DimensionType>, Optional<IRecipe>>() {
+            .build(new CacheLoader<Triple<IRecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<IRecipe>>() {
                 @Override
-                public Optional<IRecipe> load(Triple<IRecipeType<?>, CacheableCraftingInventory, DimensionType> key) throws Exception {
-                    ServerWorld world = DimensionManager.getWorld(ServerLifecycleHooks.getCurrentServer(), key.getRight(), false, false);
+                public Optional<IRecipe> load(Triple<IRecipeType<?>, CacheableCraftingInventory, ResourceLocation> key) throws Exception {
+                    ServerWorld world = ServerLifecycleHooks.getCurrentServer().getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, key.getRight()));
                     return world.getRecipeManager().getRecipe((IRecipeType) key.getLeft(), key.getMiddle().getInventoryCrafting(), world);
                 }
             });
@@ -88,7 +86,7 @@ public class CraftingHelpers {
                                                                                             C inventoryCrafting,
                                                                                             World world, boolean uniqueInventory) {
         return (Optional) CACHE_RECIPES.getUnchecked(Triple.of(recipeType,
-                new CacheableCraftingInventory(inventoryCrafting, !uniqueInventory), world.getDimension().getType()));
+                new CacheableCraftingInventory(inventoryCrafting, !uniqueInventory), world.getDimensionKey().getLocation()));
     }
 
     public static class CacheableCraftingInventory {

@@ -1,8 +1,10 @@
 package org.cyclops.cyclopscore.client.gui.component.input;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.text.ITextComponent;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
 
@@ -16,13 +18,13 @@ public class WidgetTextFieldExtended extends TextFieldWidget {
     private IInputListener listener;
 
     public WidgetTextFieldExtended(FontRenderer fontrenderer, int x, int y, int width, int height,
-                                   String narrationMessage, boolean background) {
+                                   ITextComponent narrationMessage, boolean background) {
         super(fontrenderer, x, y, width, height, narrationMessage);
         this.background = background;
     }
 
     public WidgetTextFieldExtended(FontRenderer fontrenderer, int x, int y, int width, int height,
-                                   String narrationMessage) {
+                                   ITextComponent narrationMessage) {
         this(fontrenderer, x, y, width, height, narrationMessage, false);
     }
 
@@ -30,16 +32,16 @@ public class WidgetTextFieldExtended extends TextFieldWidget {
         this.listener = listener;
     }
 
-    protected void drawBackground(int mouseX, int mouseY, float partialTicks) {
+    protected void drawBackground(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         RenderHelpers.bindTexture(Images.WIDGETS);
         GlStateManager.color4f(1, 1, 1, 1);
 
         x--;
         y--;
-        blit(x, y, 0, 0, width / 2, height / 2);//top left
-        blit(x + width / 2, y, 200 - width / 2, 0, width / 2, height / 2);//top right
-        blit(x, y + height / 2, 0, 20 - height / 2, width / 2, height / 2);//bottom left
-        blit(x + width / 2, y + height / 2, 200 - width / 2, 20 - height / 2, width / 2, height / 2);//bottom right
+        blit(matrixStack, x, y, 0, 0, width / 2, height / 2);//top left
+        blit(matrixStack, x + width / 2, y, 200 - width / 2, 0, width / 2, height / 2);//top right
+        blit(matrixStack, x, y + height / 2, 0, 20 - height / 2, width / 2, height / 2);//bottom left
+        blit(matrixStack, x + width / 2, y + height / 2, 200 - width / 2, 20 - height / 2, width / 2, height / 2);//bottom right
         x++;
         y++;
     }
@@ -51,11 +53,11 @@ public class WidgetTextFieldExtended extends TextFieldWidget {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(background) {
-            drawBackground(mouseX, mouseY, partialTicks);
+            drawBackground(matrixStack, mouseX, mouseY, partialTicks);
         }
-        super.renderButton(mouseX, mouseY, partialTicks);
+        super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override

@@ -4,6 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
@@ -83,7 +84,7 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
     public class ItemOverrides extends ItemOverrideList {
         @Nullable
         @Override
-        public IBakedModel getModelWithOverrides(IBakedModel model, ItemStack stack, @Nullable World world, @Nullable LivingEntity entity) {
+        public IBakedModel getOverrideModel(IBakedModel model, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity) {
             return DynamicItemAndBlockModel.this.handleItemState(stack, world, entity);
         }
     }

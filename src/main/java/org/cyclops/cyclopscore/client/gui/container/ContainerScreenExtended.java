@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -58,14 +59,14 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     @Override
-    public final void render(int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground();
-        this.drawCurrentScreen(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
+    public final void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(matrixStack);
+        this.drawCurrentScreen(matrixStack, mouseX, mouseY, partialTicks);
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
     }
 
-    protected void drawCurrentScreen(int mouseX, int mouseY, float partialTicks) {
-        super.render(mouseX, mouseY, partialTicks);
+    protected void drawCurrentScreen(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     protected int getBaseXSize() {
@@ -77,10 +78,10 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float f, int x, int y) {
         GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelpers.bindTexture(texture);
-        blit(guiLeft + offsetX, guiTop + offsetY, 0, 0, xSize - 2 * offsetX, ySize - 2 * offsetY);
+        blit(matrixStack, guiLeft + offsetX, guiTop + offsetY, 0, 0, xSize - 2 * offsetX, ySize - 2 * offsetY);
     }
 
     @Override

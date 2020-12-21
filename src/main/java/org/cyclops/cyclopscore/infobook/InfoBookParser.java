@@ -148,7 +148,7 @@ public class InfoBookParser {
                 List<SectionAppendix> appendixList = Lists.newArrayList();
 
                 String type = node.getAttribute("type");
-                Optional<IRecipeType<?>> recipeTypeOptional = Registry.RECIPE_TYPE.getValue(new ResourceLocation(type));
+                Optional<IRecipeType<?>> recipeTypeOptional = Registry.RECIPE_TYPE.getOptional(new ResourceLocation(type));
                 if (!recipeTypeOptional.isPresent()) {
                     throw new InvalidAppendixException("Could not find a recipe type: " + type);
                 }

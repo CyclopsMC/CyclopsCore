@@ -1,6 +1,9 @@
 package org.cyclops.cyclopscore.client.gui.component.input;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.cyclops.cyclopscore.client.gui.component.button.ButtonArrow;
 
 import java.util.List;
@@ -20,13 +23,13 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
     private IInputListener listener;
 
     public WidgetArrowedListField(FontRenderer fontrenderer, int x, int y, int width, int height, boolean arrows,
-                                  String narrationMessage, boolean background, List<E> elements) {
+                                  ITextComponent narrationMessage, boolean background, List<E> elements) {
         super(fontrenderer, x, y, width, height, narrationMessage, background);
         this.arrows = arrows;
 
         if(this.arrows) {
-            arrowLeft  = new ButtonArrow(x, y - 1, "gui.cyclopscore.left", (button) -> this.decrease(), ButtonArrow.Direction.WEST);
-            arrowRight = new ButtonArrow(x + width, y - 1, "gui.cyclopscore.right", (button) -> this.increase(), ButtonArrow.Direction.EAST);
+            arrowLeft  = new ButtonArrow(x, y - 1, new TranslationTextComponent("gui.cyclopscore.left"), (button) -> this.decrease(), ButtonArrow.Direction.WEST);
+            arrowRight = new ButtonArrow(x + width, y - 1, new TranslationTextComponent("gui.cyclopscore.right"), (button) -> this.increase(), ButtonArrow.Direction.EAST);
             arrowRight.x -= arrowRight.getWidth();
         }
         setEnableBackgroundDrawing(true);
@@ -75,16 +78,16 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
     }
 
     @Override
-    public void renderButton(int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         int offsetX = 0;
         if(arrows) {
-            arrowLeft.renderButton(mouseX, mouseY, partialTicks);
-            arrowRight.renderButton(mouseX, mouseY, partialTicks);
+            arrowLeft.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+            arrowRight.renderButton(matrixStack, mouseX, mouseY, partialTicks);
             offsetX = arrowLeft.getWidth();
             x += offsetX + 1;
             width -= offsetX * 2;
         }
-        super.renderButton(mouseX, mouseY, partialTicks);
+        super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
         if(arrows) {
             x -= offsetX + 1;
             width += offsetX * 2;

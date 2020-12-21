@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import lombok.Data;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,6 +38,7 @@ import org.lwjgl.opengl.GL11;
     /**
      * Draw the appendix.
      * @param gui The gui.
+     * @param matrixStack The matrix stack.
      * @param x Start X.
      * @param y Start Y.
      * @param width Max width.
@@ -47,29 +49,29 @@ import org.lwjgl.opengl.GL11;
      * @param pre If the normal drawing should occur, otherwise post-drawing: things like tooltips.
      */
     @OnlyIn(Dist.CLIENT)
-    public void drawScreen(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
+    public void drawScreen(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
         int xc = x + width / 2 - getWidth() / 2;
         int yc = y + getOffsetY();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GlStateManager.color4f(1F, 1F, 1F, 1F);
         if(pre) {
-            drawElement(gui, xc, yc, getWidth(), getHeight(), page, mx, my);
+            drawElement(gui, matrixStack, xc, yc, getWidth(), getHeight(), page, mx, my);
         } else {
-            postDrawElement(gui, xc, yc, getWidth(), getHeight(), page, mx, my);
+            postDrawElement(gui, matrixStack, xc, yc, getWidth(), getHeight(), page, mx, my);
         }
         GlStateManager.disableBlend();
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected abstract void drawElement(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my);
+    protected abstract void drawElement(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my);
     @OnlyIn(Dist.CLIENT)
-    protected abstract void postDrawElement(ScreenInfoBook gui, int x, int y, int width, int height, int page, int mx, int my);
+    protected abstract void postDrawElement(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my);
 
     public abstract void preBakeElement(InfoSection infoSection);
     /**
      * Bake this appendix, only called once before changing pages.
-     * @param infoSection The section this appendix is part of.
+     * @param infoSection The section this appendix is part of.w
      */
     public abstract void bakeElement(InfoSection infoSection);
 

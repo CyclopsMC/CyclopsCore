@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -33,11 +32,5 @@ public abstract class BiomeConfig extends ExtendedConfigForge<BiomeConfig, Biome
     @Override
     public IForgeRegistry<Biome> getRegistry() {
         return ForgeRegistries.BIOMES;
-    }
-
-    @Override
-    public void onForgeRegistered() {
-        super.onForgeRegistered();
-        BiomeDictionary.makeBestGuess(getInstance());
     }
 }

@@ -1,13 +1,12 @@
 package org.cyclops.cyclopscore.helper;
 
-import com.mojang.datafixers.Dynamic;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.NBTDynamicOps;
-import net.minecraft.state.IProperty;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.state.Property;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
@@ -30,7 +29,7 @@ public final class BlockHelpers {
      * @param <T> The type of value to fetch.
      * @return The value.
      */
-    public static <T extends Comparable<T>> T getSafeBlockStateProperty(@Nullable BlockState state, IProperty<T> property, T fallback) {
+    public static <T extends Comparable<T>> T getSafeBlockStateProperty(@Nullable BlockState state, Property<T> property, T fallback) {
         if(state == null) {
             return fallback;
         }
@@ -51,17 +50,17 @@ public final class BlockHelpers {
      * @param blockState The blockstate to serialize.
      * @return The blockstate as NBT.
      */
-    public static INBT serializeBlockState(BlockState blockState) {
-        return BlockState.serialize(NBTDynamicOps.INSTANCE, blockState).getValue();
+    public static CompoundNBT serializeBlockState(BlockState blockState) {
+        return NBTUtil.writeBlockState(blockState);
     }
 
     /**
      * Convert the given serialized NBT blockstate to a blockstate instance.
      * @param serializedBlockState The blockstate as NBT.
-     * @return The resulting blockstate. Can be null if the referred block does not exist.
+     * @return The resulting blockstate.
      */
-    public static BlockState deserializeBlockState(INBT serializedBlockState) {
-        return BlockState.deserialize(new Dynamic<>(NBTDynamicOps.INSTANCE, serializedBlockState));
+    public static BlockState deserializeBlockState(CompoundNBT serializedBlockState) {
+        return NBTUtil.readBlockState(serializedBlockState);
     }
 
     /**

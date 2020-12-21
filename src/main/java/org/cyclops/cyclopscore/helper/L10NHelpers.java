@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.Color;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
@@ -77,8 +78,8 @@ public final class L10NHelpers {
                         .collect(Collectors.toList()));
             } else {
                 list.add(new TranslationTextComponent("general." + Reference.MOD_ID + ".tooltip.info")
-                        .setStyle(new Style()
-                                .setColor(TextFormatting.GRAY)
+                        .setStyle(Style.EMPTY
+                                .setColor(Color.fromTextFormatting(TextFormatting.GRAY))
                                 .setItalic(true)));
             }
         }

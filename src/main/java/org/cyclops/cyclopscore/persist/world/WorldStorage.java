@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.persist.world;
 import lombok.experimental.Delegate;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -80,7 +80,7 @@ public abstract class WorldStorage implements INBTProvider {
 
     private NBTDataHolder initDataHolder(MinecraftServer server, boolean loading) {
         String dataId = mod.getModId() + "_" + getDataId();
-        NBTDataHolder data = server.getWorld(DimensionType.OVERWORLD).getSavedData()
+        NBTDataHolder data = server.getWorld(World.OVERWORLD).getSavedData()
                 .getOrCreate(() -> new NBTDataHolder(dataId), dataId);
         if (loading) {
             CompoundNBT tempTag = data.getTempTagAndReset();

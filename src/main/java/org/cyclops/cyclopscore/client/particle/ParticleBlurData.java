@@ -2,9 +2,14 @@ package org.cyclops.cyclopscore.client.particle;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.block.BlockState;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
+import net.minecraft.particles.RedstoneParticleData;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.RegistryEntries;
 
@@ -37,6 +42,13 @@ public class ParticleBlurData implements IParticleData {
                     buffer.readFloat(), buffer.readFloat());
         }
     };
+    public static final Codec<ParticleBlurData> CODEC = RecordCodecBuilder.create((builder) -> builder
+            .group(Codec.FLOAT.fieldOf("r").forGetter(ParticleBlurData::getRed),
+                    Codec.FLOAT.fieldOf("g").forGetter(ParticleBlurData::getGreen),
+                    Codec.FLOAT.fieldOf("b").forGetter(ParticleBlurData::getBlue),
+                    Codec.FLOAT.fieldOf("scale").forGetter(ParticleBlurData::getScale),
+                    Codec.FLOAT.fieldOf("ageMultiplier").forGetter(ParticleBlurData::getAgeMultiplier))
+            .apply(builder, ParticleBlurData::new));
 
     private final float red;
     private final float green;

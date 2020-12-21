@@ -1,8 +1,10 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,17 +33,17 @@ public class AdvancementButton extends AdvancedButton {
     }
 
     @Override
-    public void renderTooltip(int mx, int my) {
-        super.renderTooltip(mx, my);
+    public void renderTooltip(MatrixStack matrixStack, int mx, int my) {
+        super.renderTooltip(matrixStack, mx, my);
         GlStateManager.pushMatrix();
         if(mx >= x && my >= y && mx <= x + AdvancementRewardsAppendix.SLOT_SIZE && my <= y + AdvancementRewardsAppendix.SLOT_SIZE) {
-            List<String> lines = Lists.newArrayList();
+            List<IReorderingProcessor> lines = Lists.newArrayList();
             Advancement advancement = AdvancementHelpers.getAdvancement(Dist.CLIENT, advancementId);
             if (advancement != null) {
-                lines.add(advancement.getDisplay().getTitle().getFormattedText());
-                lines.add(TextFormatting.GRAY.toString() + advancement.getDisplay().getDescription().getFormattedText());
+                lines.add(advancement.getDisplay().getTitle().func_241878_f());
+                lines.add(advancement.getDisplay().getDescription().func_241878_f());
             }
-            gui.renderTooltip(lines, mx, my);
+            gui.renderTooltip(matrixStack, lines, mx, my);
         }
         GlStateManager.popMatrix();
 
