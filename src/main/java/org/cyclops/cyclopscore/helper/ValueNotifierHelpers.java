@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.util.Constants;
 import org.cyclops.cyclopscore.inventory.IValueNotifier;
@@ -75,7 +76,7 @@ public class ValueNotifierHelpers {
      * @param valueId The value id
      * @param value The value
      */
-    public static void setValue(IValueNotifier notifier, int valueId, ITextComponent value) {
+    public static void setValue(IValueNotifier notifier, int valueId, IFormattableTextComponent value) {
         CompoundNBT tag = new CompoundNBT();
         tag.putString(KEY, ITextComponent.Serializer.toJson(value));
         notifier.setValue(valueId, tag);
@@ -87,7 +88,7 @@ public class ValueNotifierHelpers {
      * @param valueId The value id
      * @param values The values
      */
-    public static void setValue(IValueNotifier notifier, int valueId, List<ITextComponent> values) {
+    public static void setValue(IValueNotifier notifier, int valueId, List<IFormattableTextComponent> values) {
         CompoundNBT tag = new CompoundNBT();
         ListNBT list = new ListNBT();
         for (ITextComponent value : values) {
@@ -162,7 +163,7 @@ public class ValueNotifierHelpers {
      * @return The value
      */
     @Nullable
-    public static ITextComponent getValueTextComponent(IValueNotifier notifier, int valueId) {
+    public static IFormattableTextComponent getValueTextComponent(IValueNotifier notifier, int valueId) {
         CompoundNBT tag = notifier.getValue(valueId);
         if(tag != null) {
             return ITextComponent.Serializer.getComponentFromJson(tag.getString(KEY));
@@ -177,11 +178,11 @@ public class ValueNotifierHelpers {
      * @return The value
      */
     @Nullable
-    public static List<ITextComponent> getValueTextComponentList(IValueNotifier notifier, int valueId) {
+    public static List<IFormattableTextComponent> getValueTextComponentList(IValueNotifier notifier, int valueId) {
         CompoundNBT tag = notifier.getValue(valueId);
         if(tag != null) {
             ListNBT listTag = tag.getList(KEY, Constants.NBT.TAG_STRING);
-            List<ITextComponent> list = Lists.newArrayList();
+            List<IFormattableTextComponent> list = Lists.newArrayList();
             for (int i = 0; i < listTag.size(); i++) {
                 list.add(ITextComponent.Serializer.getComponentFromJson(listTag.getString(i)));
             }
