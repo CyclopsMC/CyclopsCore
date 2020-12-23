@@ -3,7 +3,9 @@ package org.cyclops.cyclopscore.helper;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import net.minecraft.loot.ILootSerializer;
+import net.minecraft.loot.LootConditionType;
 import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.functions.ILootFunction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.loot.LootPool;
@@ -63,6 +65,16 @@ public class LootHelpers {
      */
     public static LootFunctionType registerFunction(ResourceLocation id, ILootSerializer<? extends ILootFunction> serializer) {
         return Registry.register(Registry.LOOT_FUNCTION_TYPE, id, new LootFunctionType(serializer));
+    }
+
+    /**
+     * Register a new loot condition.
+     * @param id The loot condition id.
+     * @param serializer The loot condition serializer.
+     * @return The created loot condition type
+     */
+    public static LootConditionType registerCondition(ResourceLocation id, ILootSerializer<? extends ILootCondition> serializer) {
+        return Registry.register(Registry.LOOT_CONDITION_TYPE, id, new LootConditionType(serializer));
     }
 
 }
