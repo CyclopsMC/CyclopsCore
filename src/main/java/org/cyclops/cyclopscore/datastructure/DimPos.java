@@ -35,6 +35,10 @@ public class DimPos implements Comparable<DimPos> {
         this(world, blockPos, null);
     }
 
+    public RegistryKey<World> getWorldKey() {
+        return RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(getWorld()));
+    }
+
     @Nullable
     public World getWorld(boolean forceLoad) {
         if (worldReference == null) {
@@ -47,12 +51,12 @@ public class DimPos implements Comparable<DimPos> {
                     return null;
                 }
             } else {
-                return ServerLifecycleHooks.getCurrentServer().getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(getWorld())));
+                return ServerLifecycleHooks.getCurrentServer().getWorld(getWorldKey());
             }
         }
         World world = worldReference.get();
         if (world == null) {
-            world = ServerLifecycleHooks.getCurrentServer().getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(getWorld())));
+            world = ServerLifecycleHooks.getCurrentServer().getWorld(getWorldKey());
             worldReference = new WeakReference<>(world);
         }
         return world;
