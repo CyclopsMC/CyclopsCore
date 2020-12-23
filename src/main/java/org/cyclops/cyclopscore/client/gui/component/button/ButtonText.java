@@ -12,7 +12,7 @@ import net.minecraft.util.text.ITextComponent;
  */
 public class ButtonText extends ButtonExtended {
 
-	private final String text;
+	private final ITextComponent text;
 
     /**
      * Make a new instance.
@@ -22,8 +22,9 @@ public class ButtonText extends ButtonExtended {
 	 * @param text The text to print.
 	 * @param pressCallback A callback for when this button was pressed.
      */
-    public ButtonText(int x, int y, ITextComponent narrationMessage, String text, Button.IPressable pressCallback) {
-        this(x, y, Minecraft.getInstance().fontRenderer.getStringWidth(text) + 6, 16, narrationMessage, text, pressCallback, true);
+    public ButtonText(int x, int y, ITextComponent narrationMessage, ITextComponent text, Button.IPressable pressCallback) {
+    	// MCP: getStringWidth
+        this(x, y, Minecraft.getInstance().fontRenderer.func_243245_a(text.func_241878_f()) + 6, 16, narrationMessage, text, pressCallback, true);
     }
 
 	/**
@@ -37,13 +38,13 @@ public class ButtonText extends ButtonExtended {
      * @param pressCallback A callback for when this button was pressed.
 	 * @param background If the button background should be rendered.
 	 */
-	public ButtonText(int x, int y, int width, int height, ITextComponent narrationMessage, String text,
+	public ButtonText(int x, int y, int width, int height, ITextComponent narrationMessage, ITextComponent text,
 					  Button.IPressable pressCallback, boolean background) {
 		super(x, y, width, height, narrationMessage, pressCallback, background);
 		this.text = text;
 	}
 
-	public String getText() {
+	public ITextComponent getText() {
 		return text;
 	}
 
