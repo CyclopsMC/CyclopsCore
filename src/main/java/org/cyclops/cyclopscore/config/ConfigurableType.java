@@ -78,6 +78,8 @@ public class ConfigurableType {
      * World decorator type.
      */
     public static final ConfigurableType WORLD_DECORATOR = new ConfigurableType(true, WorldDecoratorConfig.class, new WorldDecoratorAction(), "world_decorator");
+    public static final ConfigurableType FOLIAGE_PLACER = new ConfigurableType(true, FoliagePlacerConfig.class, new FoliagePlacerAction(), "foliage_placer");
+    public static final ConfigurableType TRUNK_PLACER = new ConfigurableType(true, TrunkPlacerConfig.class, new TrunkPlacerAction(), "trunk_placer");
 
     /**
      * Dummy type, only used for configs that refer to nothing.
