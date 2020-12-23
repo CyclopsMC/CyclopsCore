@@ -2,6 +2,8 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.FireBlock;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -110,12 +112,25 @@ public final class BlockHelpers {
 
     /**
      * If the given block has a solid top surface.
-     * @param world The world.
+     * @param world The world`.
      * @param blockPos The block to check the top of.
      * @return If it has a solid top surface.
      */
     public static boolean doesBlockHaveSolidTopSurface(IWorldReader world, BlockPos blockPos) {
         return world.getBlockState(blockPos.add(0, -1, 0)).isOpaqueCube(world, blockPos);
+    }
+
+    /**
+     * Set the fire info of the given block.
+     * This is a copy of {@link FireBlock}'s setFireInfo.
+     * @param blockIn The block.
+     * @param encouragement The fire encouragement
+     * @param flammability The flammability
+     */
+    public static void setFireInfo(Block blockIn, int encouragement, int flammability) {
+        if (blockIn == Blocks.AIR) throw new IllegalArgumentException("Tried to set air on fire... This is bad.");
+        ((FireBlock) Blocks.FIRE).encouragements.put(blockIn, encouragement);
+        ((FireBlock) Blocks.FIRE).flammabilities.put(blockIn, flammability);
     }
 
 }
