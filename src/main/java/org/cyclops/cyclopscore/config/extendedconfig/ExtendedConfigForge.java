@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -29,5 +31,10 @@ public abstract class ExtendedConfigForge<C extends ExtendedConfig<C, I>, I exte
      * @return The registry in which this should be registered.
      */
     public abstract IForgeRegistry<? super I> getRegistry();
+
+    public RegistryKey<I> getRegistryKey() {
+        return RegistryKey.getOrCreateKey(RegistryKey.getOrCreateRootKey(getRegistry().getRegistryName()),
+                new ResourceLocation(getMod().getModId(), getNamedId()));
+    }
 
 }
