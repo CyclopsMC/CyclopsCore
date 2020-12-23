@@ -26,6 +26,7 @@ import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigProperty;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacket;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnum;
 import org.cyclops.cyclopscore.config.ConfigHandler;
+import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.infobook.IInfoBookRegistry;
 import org.cyclops.cyclopscore.infobook.InfoBookRegistry;
 import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTestConfig;
@@ -123,6 +124,9 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
         getRegistryManager().getRegistry(IInfoBookRegistry.class).registerInfoBook(
                 InfoBookTest.getInstance(), "/data/" + Reference.MOD_ID + "/info/test.xml");
+
+        // Load others
+        CraftingHelpers.load();
     }
 
     @Override

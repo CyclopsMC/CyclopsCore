@@ -11,6 +11,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.item.crafting.RecipeManager;
 import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -18,6 +19,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RecipesUpdatedEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.EventPriority;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -31,6 +36,19 @@ import java.util.concurrent.TimeUnit;
  */
 public class CraftingHelpers {
 
+    @OnlyIn(Dist.CLIENT)
+    private static RecipeManager CLIENT_RECIPE_MANAGER;
+
+    public static void load() {
+        MinecraftForge.EVENT_BUS.register(CraftingHelpers.class);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public static void onRecipesLoaded(RecipesUpdatedEvent event) {
+        CLIENT_RECIPE_MANAGER = event.getRecipeManager();
+    }
+
     public static <C extends IInventory, T extends IRecipe<C>> Optional<T> findServerRecipe(IRecipeType<T> recipeType, C container, World world) {
         return world.getRecipeManager().getRecipe(recipeType, container, world);
     }
@@ -41,12 +59,12 @@ public class CraftingHelpers {
 
     @OnlyIn(Dist.CLIENT)
     public static <C extends IInventory, T extends IRecipe<C>> Optional<T> getClientRecipe(IRecipeType<? extends T> recipeType, ResourceLocation recipeName) {
-        return (Optional<T>) Optional.ofNullable(Minecraft.getInstance().getConnection().getRecipeManager().getRecipes(recipeType).get(recipeName));
+        return (Optional<T>) Optional.ofNullable(CLIENT_RECIPE_MANAGER.getRecipes(recipeType).get(recipeName));
     }
 
     @OnlyIn(Dist.CLIENT)
     public static <C extends IInventory, T extends IRecipe<C>> Collection<T> getClientRecipes(IRecipeType<? extends T> recipeType) {
-        return (Collection<T>) Minecraft.getInstance().getConnection().getRecipeManager().getRecipes(recipeType).values();
+        return (Collection<T>) CLIENT_RECIPE_MANAGER.getRecipes(recipeType).values();
     }
 
     @OnlyIn(Dist.CLIENT)

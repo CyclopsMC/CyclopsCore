@@ -41,22 +41,26 @@ public class InfoBookRegistry implements IInfoBookRegistry {
     }
 
     // Reload infobooks if BOTH tags and recipes are initialized (can occur out-of-order in SMP)
-    private volatile int infobookStageEvents = 0;
+    private volatile boolean infobookStageTags = false;
+    private volatile boolean infobookStageRecipes = false;
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onTagsLoaded(TagsUpdatedEvent event) {
-        if (++infobookStageEvents >= 2) {
+        infobookStageTags = true;
+        if (infobookStageTags && infobookStageRecipes) {
             afterRecipesAndTagsLoaded();
         }
     }
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onRecipesLoaded(RecipesUpdatedEvent event) {
-        if (++infobookStageEvents >= 2) {
+        infobookStageRecipes = true;
+        if (infobookStageTags && infobookStageRecipes) {
             afterRecipesAndTagsLoaded();
         }
     }
 
     public void afterRecipesAndTagsLoaded() {
-        this.infobookStageEvents = 0;
+        this.infobookStageTags = false;
+        this.infobookStageRecipes = false;
 
         // Load after recipes are loaded client-side
         for (Map.Entry<IInfoBook, String> entry : bookPaths.entrySet()) {
