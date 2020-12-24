@@ -303,7 +303,7 @@ public abstract class PacketCodec extends PacketBase {
 
 			@Override
 			public void encode(Object object, PacketBuffer output) {
-				write(output, ((DimPos) object).getWorld());
+				write(output, ((DimPos) object).getWorldKey());
 				write(output, ((DimPos) object).getBlockPos());
 			}
 
