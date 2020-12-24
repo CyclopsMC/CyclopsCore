@@ -15,8 +15,10 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -254,6 +256,11 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
 
     @Override
     protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+        // Do nothing
+    }
+
+    @Override
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
         // Do nothing
     }
 
@@ -529,9 +536,13 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             if (this.visible) {
                 boolean isHover = mouseX >= this.x && mouseY >= this.y &&
                         mouseX < this.x + this.width && mouseY < this.y + this.height;
-                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 Minecraft minecraft = Minecraft.getInstance();
-                minecraft.fontRenderer.drawString(matrixStack, (isHover ? "§n" : "") + getMessage() + "§r", x, y,
+                IFormattableTextComponent msg = ((IFormattableTextComponent) getMessage());
+                if (isHover) {
+                    msg = msg.mergeStyle(TextFormatting.UNDERLINE);
+                }
+                // MCP: drawString
+                minecraft.fontRenderer.func_243248_b(matrixStack, msg, x, y,
                         Helpers.RGBToInt(isHover ? 100 : 0, isHover ? 100 : 0, isHover ? 150 : 125));
             }
         }

@@ -3,8 +3,10 @@ package org.cyclops.cyclopscore.infobook;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -62,7 +64,8 @@ public class AdvancedButton extends Button {
     @Override
     public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(isVisible() && isHover(mouseX, mouseY)) {
-            Minecraft.getInstance().fontRenderer.drawString(matrixStack, ("§n") + getMessage() + "§r", x, y,
+            // MCP: drawString
+            Minecraft.getInstance().fontRenderer.func_243248_b(matrixStack, ((IFormattableTextComponent) getMessage()).mergeStyle(TextFormatting.UNDERLINE), x, y,
                     Helpers.RGBToInt(100, 100, 150));
         }
     }

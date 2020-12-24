@@ -9,10 +9,10 @@ import lombok.Getter;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.IBidiRenderer;
 import net.minecraft.util.IReorderingProcessor;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.LanguageMap;
 import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
@@ -35,7 +35,7 @@ import java.util.Map;
 public class InfoSection {
 
     //public static final int Y_OFFSET = 16;
-    private static final int TITLE_LINES = 3;
+    private static final int TITLE_LINES = 4;
     private static final int APPENDIX_OFFSET_LINE = 1;
     private static final int LINK_INDENT = 8;
 
@@ -49,7 +49,7 @@ public class InfoSection {
     protected List<String> paragraphs;
     private ArrayList<String> tagList;
     private int pages;
-    private List<String> localizedPages;
+    private List<List<IReorderingProcessor>> localizedPages;
     private Map<Integer, List<AdvancedButton>> advancedButtons = Maps.newHashMap();
 
     public InfoSection(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
@@ -141,9 +141,9 @@ public class InfoSection {
         List<IReorderingProcessor> allLines = fontRenderer.trimStringToWidth(ITextProperties.func_240652_a_(contents), width);
         localizedPages = Lists.newLinkedList();
         int linesOnPage = 0;
-        StringBuilder currentPage = new StringBuilder();
+        List<IReorderingProcessor> currentPage = Lists.newArrayList();
         if(isTitlePage(0)) {
-            for(int i = 1; i < TITLE_LINES; i++) currentPage.append("\n"); // Make a blank space for the section title.
+            for(int i = 1; i < TITLE_LINES; i++) currentPage.add(IReorderingProcessor.fromString("", Style.EMPTY)); // Make a blank space for the section title.
             linesOnPage += TITLE_LINES;
         }
         pages = 1;
@@ -151,14 +151,13 @@ public class InfoSection {
             if(linesOnPage >= maxLines) {
                 linesOnPage = 0;
                 pages++;
-                localizedPages.add(currentPage.toString());
-                currentPage = new StringBuilder();
+                localizedPages.add(currentPage);
+                currentPage = Lists.newArrayList();
             }
             linesOnPage++;
-            if(linesOnPage > 1) currentPage.append("\n");
-            currentPage.append(line);
+            currentPage.add(line);
         }
-        localizedPages.add(currentPage.toString());
+        localizedPages.add(currentPage);
 
         linesOnPage += APPENDIX_OFFSET_LINE;
 
@@ -250,7 +249,7 @@ public class InfoSection {
         return (string + "&r").replaceAll("&N", "\n").replaceAll("&", "§");
     }
 
-    protected String getLocalizedPageString(int page) {
+    protected List<IReorderingProcessor> getLocalizedPageLines(int page) {
         if(page >= localizedPages.size() || page < 0) return null;
         return localizedPages.get(page);
     }
@@ -305,10 +304,13 @@ public class InfoSection {
             FontRenderer fontRenderer = gui.getFontRenderer();
 
             // Draw text content
-            String content = getLocalizedPageString(page);
-            if (content != null) {
-                IBidiRenderer.func_243258_a(fontRenderer, new StringTextComponent(content), width)
-                        .func_241863_a(matrixStack, mouseX, mouseY + yOffset);
+            List<IReorderingProcessor> lines = getLocalizedPageLines(page);
+            int l = 0;
+            if (lines != null) {
+                for (IReorderingProcessor line : lines) {
+                    fontRenderer.func_238422_b_(matrixStack, line, mouseX, mouseY + yOffset + l * 9, 0);
+                    l++;
+                }
             }
 
             // Draw title if on first page
