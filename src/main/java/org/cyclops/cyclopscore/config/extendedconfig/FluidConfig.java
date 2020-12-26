@@ -13,13 +13,14 @@ import org.cyclops.cyclopscore.init.ModBase;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Config for fluids.
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class FluidConfig extends ExtendedConfigForge<FluidConfig, Fluid> {
+public abstract class FluidConfig extends ExtendedConfig<FluidConfig, ForgeFlowingFluid.Properties> {
 
     /**
      * Make a new instance.
@@ -27,7 +28,7 @@ public abstract class FluidConfig extends ExtendedConfigForge<FluidConfig, Fluid
      * @param namedId The unique name ID for the configurable.
      * @param elementConstructor The element constructor.
      */
-    public FluidConfig(ModBase mod, String namedId, Function<FluidConfig, ? extends Fluid> elementConstructor) {
+    public FluidConfig(ModBase mod, String namedId, Function<FluidConfig, ForgeFlowingFluid.Properties> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 
@@ -40,9 +41,27 @@ public abstract class FluidConfig extends ExtendedConfigForge<FluidConfig, Fluid
         fluidAttributesConsumer.accept(fluidAttributes);
 
         Wrapper<ForgeFlowingFluid.Properties> properties = new Wrapper<>();
+        final Wrapper<Fluid> source = new Wrapper<>();
+        final Wrapper<Fluid> flowing = new Wrapper<>();
         properties.set(new ForgeFlowingFluid.Properties(
-                () -> new ForgeFlowingFluid.Source(properties.get()),
-                () -> new ForgeFlowingFluid.Flowing(properties.get()),
+                new Supplier<Fluid>() {
+                    @Override
+                    public Fluid get() {
+                        if (source.get() == null) {
+                            source.set(new ForgeFlowingFluid.Source(properties.get()));
+                        }
+                        return source.get();
+                    }
+                },
+                new Supplier<Fluid>() {
+                    @Override
+                    public Fluid get() {
+                        if (flowing.get() == null) {
+                            flowing.set(new ForgeFlowingFluid.Flowing(properties.get()));
+                        }
+                        return flowing.get();
+                    }
+                },
                 fluidAttributes
         ));
         return properties.get();
@@ -74,9 +93,4 @@ public abstract class FluidConfig extends ExtendedConfigForge<FluidConfig, Fluid
         return new ResourceLocation(getMod().getModId(), "blocks/" + getNamedId() + "_flow");
     }
 
-    @Nullable
-    @Override
-    public IForgeRegistry<Fluid> getRegistry() {
-        return ForgeRegistries.FLUIDS;
-    }
 }
