@@ -74,6 +74,7 @@ public class ConfigurableType {
      * World feature type.
      */
     public static final ConfigurableType WORLD_FEATURE = new ConfigurableType(true, WorldFeatureConfig.class, new WorldFeatureAction(), "world_feature");
+    public static final ConfigurableType WORLD_STRUCTURE = new ConfigurableType(true, WorldStructureConfig.class, new WorldStructureAction(), "world_structure");
     /**
      * World decorator type.
      */
