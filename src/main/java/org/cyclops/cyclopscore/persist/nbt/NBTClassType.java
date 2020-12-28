@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.IFormattableTextComponent;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -433,21 +434,21 @@ public abstract class NBTClassType<T> {
                 return null;
             }
         });
-        NBTYPES.put(ITextComponent.class, new NBTClassType<ITextComponent>() {
+        NBTYPES.put(IFormattableTextComponent.class, new NBTClassType<IFormattableTextComponent>() {
             @Override
-            public void writePersistedField(String name, ITextComponent object, CompoundNBT tag) {
+            public void writePersistedField(String name, IFormattableTextComponent object, CompoundNBT tag) {
                 if (object != null) {
-                    tag.putString(name, ITextComponent.Serializer.toJson(object));
+                    tag.putString(name, IFormattableTextComponent.Serializer.toJson(object));
                 }
             }
 
             @Override
-            public ITextComponent readPersistedField(String name, CompoundNBT tag) {
+            public IFormattableTextComponent readPersistedField(String name, CompoundNBT tag) {
                 return ITextComponent.Serializer.getComponentFromJson(tag.getString(name));
             }
 
             @Override
-            public ITextComponent getDefaultValue() {
+            public IFormattableTextComponent getDefaultValue() {
                 return null;
             }
         });
