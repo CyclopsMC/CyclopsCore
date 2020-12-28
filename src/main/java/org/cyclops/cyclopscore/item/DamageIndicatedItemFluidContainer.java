@@ -20,6 +20,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.ItemFluidContainer;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacity;
+import org.cyclops.cyclopscore.helper.ItemStackHelpers;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -58,6 +59,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
 
     @Override
     public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> items) {
+        if (!ItemStackHelpers.isValidCreativeTab(this, itemGroup)) return;
         if (this.isInGroup(group)) {
             component.fillItemGroup(itemGroup, items, fluid.get());
         }
