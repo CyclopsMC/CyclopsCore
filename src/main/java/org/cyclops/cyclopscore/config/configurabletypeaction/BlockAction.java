@@ -94,8 +94,12 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
         for (BlockConfig config : MODEL_ENTRIES) {
             IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
             IBakedModel dynamicModel = dynamicModelElement.createDynamicModel(event);
-            event.getModelRegistry().put(config.dynamicBlockVariantLocation, dynamicModel);
-            event.getModelRegistry().put(config.dynamicItemVariantLocation, dynamicModel);
+            if (config.dynamicBlockVariantLocation != null) {
+                event.getModelRegistry().put(config.dynamicBlockVariantLocation, dynamicModel);
+            }
+            if (config.dynamicItemVariantLocation != null) {
+                event.getModelRegistry().put(config.dynamicItemVariantLocation, dynamicModel);
+            }
         }
     }
 

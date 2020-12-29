@@ -52,7 +52,9 @@ public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
     public static void onModelBakeEvent(ModelBakeEvent event){
         for (ItemConfig config : MODEL_ENTRIES) {
             IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
-            event.getModelRegistry().put(config.dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(event));
+            if (config.dynamicItemVariantLocation != null) {
+                event.getModelRegistry().put(config.dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(event));
+            }
         }
     }
 
