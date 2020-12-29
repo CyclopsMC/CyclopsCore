@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix model loading crash with some other mods
+  Closes CyclopsMC/EvilCraft#808
+  Closes CyclopsMC/IntegratedDynamics#947
