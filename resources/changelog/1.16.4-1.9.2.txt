@@ -1,0 +1,11 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add recipe finder safe for both client and server
+
+Fixes:
+* Update support for Baubles Reborn
+  Closes CyclopsMC/EvilCraft#809
+* Only register client-side stuff when on client
+  Closes CyclopsMC/EvilCraft#812
+
