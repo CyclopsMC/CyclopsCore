@@ -27,6 +27,7 @@ import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -53,8 +54,16 @@ public class CraftingHelpers {
         return world.getRecipeManager().getRecipe(recipeType, container, world);
     }
 
+    public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findRecipes(World world, IRecipeType<? extends T> recipeType) {
+        return world.isRemote() ? getClientRecipes(recipeType) : findServerRecipes((ServerWorld) world, recipeType);
+    }
+
     public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findServerRecipes(IRecipeType<? extends T> recipeType) {
-        return (Collection<T>) ServerLifecycleHooks.getCurrentServer().getWorld(World.OVERWORLD).getRecipeManager().getRecipes(recipeType).values();
+        return findServerRecipes(Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getWorld(World.OVERWORLD)), recipeType);
+    }
+
+    public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findServerRecipes(ServerWorld world, IRecipeType<? extends T> recipeType) {
+        return (Collection<T>) world.getRecipeManager().getRecipes(recipeType).values();
     }
 
     @OnlyIn(Dist.CLIENT)

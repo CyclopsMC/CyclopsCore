@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
@@ -28,7 +29,10 @@ public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
         this.iterators = Queues.newArrayDeque();
         iterators.add(new PlayerInventoryIterator(player));
         for (IInventoryExtender inventoryExtender : PlayerExtendedInventoryIterator.INVENTORY_EXTENDERS) {
-            iterators.add(new InventoryIterator(inventoryExtender.getInventory(player)));
+            IItemHandlerModifiable inv = inventoryExtender.getInventory(player);
+            if (inv != null) {
+                iterators.add(new InventoryIterator(inv));
+            }
         }
     }
 
@@ -66,6 +70,7 @@ public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
      */
     public static interface IInventoryExtender {
 
+        @Nullable
         public IItemHandlerModifiable getInventory(PlayerEntity player);
 
     }

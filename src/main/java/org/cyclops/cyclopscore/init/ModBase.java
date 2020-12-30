@@ -17,6 +17,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
@@ -33,6 +34,7 @@ import org.cyclops.cyclopscore.command.CommandConfig;
 import org.cyclops.cyclopscore.command.CommandVersion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.modcompat.IMCHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.capabilities.CapabilityConstructorRegistry;
@@ -93,6 +95,7 @@ public abstract class ModBase<T extends ModBase> {
 
         // Register listeners
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Block.class, EventPriority.HIGHEST, this::beforeRegistriedFilled);
         MinecraftForge.EVENT_BUS.register(this);
@@ -244,8 +247,6 @@ public abstract class ModBase<T extends ModBase> {
         ICommonProxy proxy = getProxy();
         if(proxy != null) {
             proxy.registerEventHooks();
-            proxy.registerRenderers();
-            proxy.registerKeyBindings(getKeyRegistry());
             getPacketHandler().init();
             proxy.registerPacketHandlers(getPacketHandler());
             proxy.registerTickHandlers();
@@ -253,6 +254,19 @@ public abstract class ModBase<T extends ModBase> {
 
         // Initialize the creative tab
         getDefaultItemGroup();
+    }
+
+    /**
+     * Called on the Forge client setup lifecycle event.
+     * @param event The setup event.
+     */
+    protected void setupClient(FMLClientSetupEvent event) {
+        // Register proxy things
+        ICommonProxy proxy = getProxy();
+        if(proxy != null) {
+            proxy.registerRenderers();
+            proxy.registerKeyBindings(getKeyRegistry());
+        }
     }
 
     /**
