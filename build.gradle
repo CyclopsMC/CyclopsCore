@@ -87,6 +87,10 @@ repositories {
         name 'DVS1 Maven FS'
         url 'http://dvs1.progwml6.com/files/maven'
     }
+    maven {
+        name "Baubles maven repo"
+        url "https://jitpack.io"
+    }
 }
 
 dependencies {
@@ -96,6 +100,7 @@ dependencies {
     //    exclude group: 'org.ow2.asm', module: 'asm-debug-all'
     //}
     compileOnly fg.deobf("mezz.jei:jei-${config.jei_version}:api") // https://dvs1.progwml6.com/jenkins/
+    compileOnly fg.deobf("com.github.lazyMods:Baubles:${config.baubles_version}:api") // https://github.com/lazyMods/Baubles/releases
 
     // Project lombok
     compileOnly "org.projectlombok:lombok:1.16.4"
