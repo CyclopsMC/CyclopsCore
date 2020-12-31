@@ -6,7 +6,9 @@ import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
 
 import java.util.List;
 import java.util.Map;
@@ -22,7 +24,9 @@ public class InfoBookRegistry implements IInfoBookRegistry {
     private final List<SectionInjection> sectionInjections = Lists.newArrayList();
 
     public InfoBookRegistry() {
-        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientTagsLoaded);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientRecipesLoaded);
+        MinecraftForge.EVENT_BUS.addListener(this::onServerStarted);
     }
 
     @Override
@@ -43,22 +47,27 @@ public class InfoBookRegistry implements IInfoBookRegistry {
     // Reload infobooks if BOTH tags and recipes are initialized (can occur out-of-order in SMP)
     private volatile boolean infobookStageTags = false;
     private volatile boolean infobookStageRecipes = false;
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onTagsLoaded(TagsUpdatedEvent event) {
+    public void onClientTagsLoaded(TagsUpdatedEvent event) {
         infobookStageTags = true;
         if (infobookStageTags && infobookStageRecipes) {
             afterRecipesAndTagsLoaded();
         }
     }
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onRecipesLoaded(RecipesUpdatedEvent event) {
+    public void onClientRecipesLoaded(RecipesUpdatedEvent event) {
         infobookStageRecipes = true;
         if (infobookStageTags && infobookStageRecipes) {
             afterRecipesAndTagsLoaded();
         }
     }
+    public void onServerStarted(FMLServerStartedEvent event) {
+        if (!MinecraftHelpers.isClientSide()) {
+            // Only call this on dedicated servers, as the RecipesUpdatedEvent won't be emitted there
+            afterRecipesAndTagsLoaded();
+        }
+    }
 
     public void afterRecipesAndTagsLoaded() {
+        AdvancementRewards.reset();
         this.infobookStageTags = false;
         this.infobookStageRecipes = false;
 

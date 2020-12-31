@@ -5,6 +5,7 @@ import net.minecraft.client.gui.FontRenderer;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.SectionAppendix;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -26,6 +27,9 @@ public class InfoSectionTagIndex extends InfoSection {
         infoBook.setConfigLinks(Maps.<String, String, Pair<InfoSection, Integer>>newTreeMap(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
+                if (!MinecraftHelpers.isClientSide()) {
+                    return o1.compareTo(o2);
+                }
                 return L10NHelpers.localize(o1).compareTo(L10NHelpers.localize(o2));
             }
         }));

@@ -37,7 +37,6 @@ import java.util.concurrent.TimeUnit;
  */
 public class CraftingHelpers {
 
-    @OnlyIn(Dist.CLIENT)
     private static RecipeManager CLIENT_RECIPE_MANAGER;
 
     public static void load() {
@@ -50,12 +49,22 @@ public class CraftingHelpers {
         CLIENT_RECIPE_MANAGER = event.getRecipeManager();
     }
 
-    public static <C extends IInventory, T extends IRecipe<C>> Optional<T> findServerRecipe(IRecipeType<T> recipeType, C container, World world) {
-        return world.getRecipeManager().getRecipe(recipeType, container, world);
-    }
-
     public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findRecipes(World world, IRecipeType<? extends T> recipeType) {
         return world.isRemote() ? getClientRecipes(recipeType) : findServerRecipes((ServerWorld) world, recipeType);
+    }
+
+    public static RecipeManager getRecipeManager() {
+        return MinecraftHelpers.isClientSide()
+                ? (CLIENT_RECIPE_MANAGER != null ? CLIENT_RECIPE_MANAGER : Minecraft.getInstance().getConnection().getRecipeManager())
+                : Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getWorld(World.OVERWORLD), "Server is still loading").getRecipeManager();
+    }
+
+    public static <C extends IInventory, T extends IRecipe<C>> Optional<T> getServerRecipe(IRecipeType<? extends T> recipeType, ResourceLocation recipeName) {
+        return (Optional<T>) Optional.ofNullable(getRecipeManager().getRecipes(recipeType).get(recipeName));
+    }
+
+    public static <C extends IInventory, T extends IRecipe<C>> Optional<T> findServerRecipe(IRecipeType<T> recipeType, C container, World world) {
+        return world.getRecipeManager().getRecipe(recipeType, container, world);
     }
 
     public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findServerRecipes(IRecipeType<? extends T> recipeType) {
@@ -68,12 +77,12 @@ public class CraftingHelpers {
 
     @OnlyIn(Dist.CLIENT)
     public static <C extends IInventory, T extends IRecipe<C>> Optional<T> getClientRecipe(IRecipeType<? extends T> recipeType, ResourceLocation recipeName) {
-        return (Optional<T>) Optional.ofNullable(CLIENT_RECIPE_MANAGER.getRecipes(recipeType).get(recipeName));
+        return (Optional<T>) Optional.ofNullable(getRecipeManager().getRecipes(recipeType).get(recipeName));
     }
 
     @OnlyIn(Dist.CLIENT)
     public static <C extends IInventory, T extends IRecipe<C>> Collection<T> getClientRecipes(IRecipeType<? extends T> recipeType) {
-        return (Collection<T>) CLIENT_RECIPE_MANAGER.getRecipes(recipeType).values();
+        return (Collection<T>) getRecipeManager().getRecipes(recipeType).values();
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -1,19 +1,13 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
-import com.google.common.eventbus.Subscribe;
 import lombok.Data;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RecipesUpdatedEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.EntityHelpers;
-import org.cyclops.cyclopscore.infobook.IInfoBook;
-import org.cyclops.cyclopscore.infobook.InfoBookParser;
 import org.cyclops.cyclopscore.network.packet.AdvancementRewardsObtainPacket;
 
 import java.util.List;
@@ -24,12 +18,10 @@ import java.util.Map;
  * @author rubensworks
  */
 @Data
-@Mod.EventBusSubscriber
 public class AdvancementRewards {
 
     private static final Map<String, AdvancementRewards> ACHIEVEMENT_REWARDS = Maps.newHashMap();
-    @SubscribeEvent
-    public static void onRecipesLoaded(RecipesUpdatedEvent event) {
+    public static void reset() {
         ACHIEVEMENT_REWARDS.clear();
     }
 

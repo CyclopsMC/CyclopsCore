@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.infobook;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.client.Minecraft;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -22,6 +21,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.util.Strings;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.infobook.condition.ConfigSectionConditionHandler;
 import org.cyclops.cyclopscore.infobook.condition.FluidSectionConditionHandler;
 import org.cyclops.cyclopscore.infobook.condition.ISectionConditionHandler;
@@ -153,7 +153,7 @@ public class InfoBookParser {
                     throw new InvalidAppendixException("Could not find a recipe type: " + type);
                 }
                 IRecipeType recipeType = recipeTypeOptional.get();
-                Map<ResourceLocation, IRecipe<?>> recipes = Minecraft.getInstance().getConnection().getRecipeManager().getRecipes(recipeType);
+                Map<ResourceLocation, IRecipe<?>> recipes = CraftingHelpers.getRecipeManager().getRecipes(recipeType);
 
                 String idRegexString = node.getTextContent().trim();
 
@@ -246,7 +246,9 @@ public class InfoBookParser {
         String name = Registry.RECIPE_TYPE.getKey(recipeType).toString();
         registerAppendixFactory(name, (infoBook, node) -> {
             ResourceLocation recipeId = getNodeResourceLocation(node);
-            Optional<R> recipe = CraftingHelpers.getClientRecipe(recipeType, recipeId);
+            Optional<R> recipe = MinecraftHelpers.isClientSide()
+                    ? CraftingHelpers.getClientRecipe(recipeType, recipeId)
+                    : CraftingHelpers.getServerRecipe(recipeType, recipeId);
             if (!recipe.isPresent()) {
                 throw new InvalidAppendixException("Could not find " + name + " recipe for " + recipeId);
             }
