@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix infobooks not loading server-side
+  Closes CyclopsMC/IntegratedDynamics#950
+  Closes CyclopsMC/IntegratedDynamics#948
