@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix armor slots not checking armor type
+  Closes CyclopsMC/EvilCraft#821
