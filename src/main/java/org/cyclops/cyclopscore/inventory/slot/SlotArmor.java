@@ -42,9 +42,8 @@ public class SlotArmor extends Slot {
 
     @Override
     public boolean isItemValid(ItemStack itemStack) {
-        if (itemStack == null) return false;
-        // return itemStack.getItem().isValidArmor(itemStack, armorType, player); // TODO
-        return itemStack.getItem() instanceof ArmorItem;
+        return itemStack.getEquipmentSlot() == armorType
+                || (itemStack.getItem() instanceof ArmorItem && ((ArmorItem) itemStack.getItem()).getEquipmentSlot() == armorType);
     }
     
 }
