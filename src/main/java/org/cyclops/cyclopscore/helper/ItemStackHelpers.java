@@ -204,8 +204,9 @@ public final class ItemStackHelpers {
         result = 37 * result + stack.getCount();
         result = 37 * result + stack.getItem().hashCode();
         result = 37 * result + stack.getItemDamage();
-        NBTTagCompound tagCompound = stack.getTagCompound();
-        result = 37 * result + (tagCompound != null ? tagCompound.hashCode() : 0);
+        // Tags can be very large, and expensive to calculate, which is not needed for hashCodes.
+        // NBTTagCompound tagCompound = stack.getTagCompound();
+        // result = 37 * result + (tagCompound != null ? tagCompound.hashCode() : 0);
         // Not factoring in capability compatibility. Doing so would require either reflection (slow)
         // or an access transformer, it's highly unlikely that it'd be the only difference between
         // many ItemStacks in practice, and occasional hash code collisions are okay.
