@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Remove NBT from ItemStack hashCodes
+  Improves performance CyclopsMC/IntegratedDynamics#940
