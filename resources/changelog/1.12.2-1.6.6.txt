@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix blur particles conflicting with other particles alpha
+  Closes CyclopsMC/EverlastingAbilities#173
+  Closes CyclopsMC/EverlastingAbilities#160
