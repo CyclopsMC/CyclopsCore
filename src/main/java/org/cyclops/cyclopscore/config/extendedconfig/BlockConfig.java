@@ -108,15 +108,6 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
     }
 
     @Override
-    public void onRegistered() {
-        super.onRegistered();
-        if(MinecraftHelpers.isClientSide() && getInstance() instanceof IDynamicModelElement &&
-                ((IDynamicModelElement) getInstance()).hasDynamicModel()) {
-            BlockAction.handleDynamicBlockModel(this);
-        }
-    }
-
-    @Override
     public void onForgeRegistered() {
         super.onForgeRegistered();
 
@@ -124,6 +115,12 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
         Item item = getItemInstance();
         if (item != null) {
             ItemInformationProvider.registerItem(item);
+        }
+
+        // Handle dynamic models
+        if(MinecraftHelpers.isClientSide() && getInstance() instanceof IDynamicModelElement &&
+                ((IDynamicModelElement) getInstance()).hasDynamicModel()) {
+            BlockAction.handleDynamicBlockModel(this);
         }
     }
 

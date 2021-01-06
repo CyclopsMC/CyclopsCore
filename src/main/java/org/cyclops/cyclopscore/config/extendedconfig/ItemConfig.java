@@ -74,20 +74,17 @@ public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements
     }
 
     @Override
-    public void onRegistered() {
-        super.onRegistered();
-        if(MinecraftHelpers.isClientSide() && getInstance() instanceof IDynamicModelElement &&
-                ((IDynamicModelElement) getInstance()).hasDynamicModel()) {
-            ItemAction.handleItemModel(this);
-        }
-    }
-
-    @Override
     public void onForgeRegistered() {
         super.onForgeRegistered();
 
         // Add item to information provider
         ItemInformationProvider.registerItem(getInstance());
+
+        // Handle dynamic models
+        if(MinecraftHelpers.isClientSide() && getInstance() instanceof IDynamicModelElement &&
+                ((IDynamicModelElement) getInstance()).hasDynamicModel()) {
+            ItemAction.handleItemModel(this);
+        }
     }
 
     /**
