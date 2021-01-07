@@ -30,7 +30,7 @@ public class BlockCapabilitiesHelpers {
     public static <C> LazyOptional<C> getTileOrBlockCapability(IBlockReader world, BlockPos pos, Direction side,
                                                         Capability<C> capability) {
         LazyOptional<C> instance = TileHelpers.getCapability(world, pos, side, capability);
-        if (instance == null) {
+        if (!instance.isPresent()) {
             BlockState blockState = world.getBlockState(pos);
             return BlockCapabilities.getInstance().getCapability(blockState, capability, world, pos, side);
         }
