@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Remove NBT from ItemStack hashCodes
+  Improves performance CyclopsMC/IntegratedDynamics#940
+
+Fixes:
+* Fix machine reader not reading crafting recipes, Closes CyclopsMC/IntegratedDynamics#936
+* Fix custom item and block models, Closes CyclopsMC/IntegratedDynamics#961
