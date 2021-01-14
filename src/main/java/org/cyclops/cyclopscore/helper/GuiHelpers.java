@@ -245,20 +245,8 @@ public class GuiHelpers {
             yStart = height - tooltipHeight - guiTop - 6;
         }
 
-        float zLevel = 300.0F;
         mc.getItemRenderer().zLevel = 300.0F;
-        int color1 = -267386864;
-        fillGradient(xStart - 3, yStart - 4, xStart + tooltipWidth + 3, yStart - 3, color1, color1, zLevel);
-        fillGradient(xStart - 3, yStart + tooltipHeight + 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 4, color1, color1, zLevel);
-        fillGradient(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color1, color1, zLevel);
-        fillGradient(xStart - 4, yStart - 3, xStart - 3, yStart + tooltipHeight + 3, color1, color1, zLevel);
-        fillGradient(xStart + tooltipWidth + 3, yStart - 3, xStart + tooltipWidth + 4, yStart + tooltipHeight + 3, color1, color1, zLevel);
-        int color2 = 1347420415;
-        int color3 = (color2 & 16711422) >> 1 | color2 & -16777216;
-        fillGradient(xStart - 3, yStart - 3 + 1, xStart - 3 + 1, yStart + tooltipHeight + 3 - 1, color2, color3, zLevel);
-        fillGradient(xStart + tooltipWidth + 2, yStart - 3 + 1, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3 - 1, color2, color3, zLevel);
-        fillGradient(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart - 3 + 1, color2, color2, zLevel);
-        fillGradient(xStart - 3, yStart + tooltipHeight + 2, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color3, color3, zLevel);
+        drawTooltipBackground(xStart, yStart, tooltipWidth, tooltipHeight);
 
         MatrixStack matrixstack = new MatrixStack();
         IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
@@ -290,6 +278,29 @@ public class GuiHelpers {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 
         mc.getItemRenderer().zLevel = 0.0F;
+    }
+
+    /**
+     * Draw the background box for a tooltip.
+     * @param xStart X
+     * @param yStart Y
+     * @param tooltipWidth Width
+     * @param tooltipHeight Height
+     */
+    public static void drawTooltipBackground(int xStart, int yStart, int tooltipWidth, int tooltipHeight) {
+        float zLevel = 300.0F;
+        int color1 = -267386864;
+        fillGradient(xStart - 3, yStart - 4, xStart + tooltipWidth + 3, yStart - 3, color1, color1, zLevel);
+        fillGradient(xStart - 3, yStart + tooltipHeight + 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 4, color1, color1, zLevel);
+        fillGradient(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color1, color1, zLevel);
+        fillGradient(xStart - 4, yStart - 3, xStart - 3, yStart + tooltipHeight + 3, color1, color1, zLevel);
+        fillGradient(xStart + tooltipWidth + 3, yStart - 3, xStart + tooltipWidth + 4, yStart + tooltipHeight + 3, color1, color1, zLevel);
+        int color2 = 1347420415;
+        int color3 = (color2 & 16711422) >> 1 | color2 & -16777216;
+        fillGradient(xStart - 3, yStart - 3 + 1, xStart - 3 + 1, yStart + tooltipHeight + 3 - 1, color2, color3, zLevel);
+        fillGradient(xStart + tooltipWidth + 2, yStart - 3 + 1, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3 - 1, color2, color3, zLevel);
+        fillGradient(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart - 3 + 1, color2, color2, zLevel);
+        fillGradient(xStart - 3, yStart + tooltipHeight + 2, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color3, color3, zLevel);
     }
 
     /**
