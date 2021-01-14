@@ -62,5 +62,13 @@ public class Images {
             new Image(BUTTONS, 15, 30, 15, 10),
             new Image(BUTTONS, 15, 40, 15, 10),
     };
+    /**
+     * 0: default; 1: hovered; 2: checked
+     */
+    public static final Image[] CHECKBOX = new Image[] {
+            new Image(ICONS, 90, 18, 10, 10),
+            new Image(ICONS, 108, 18, 10, 10),
+            new Image(ICONS, 126, 18, 10, 10),
+    };
 
 }
