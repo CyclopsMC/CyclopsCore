@@ -461,7 +461,7 @@ public abstract class PacketCodec extends PacketBase {
 		return action;
 	}
 
-	protected static ICodecAction getAction(Class<?> clazz) {
+	public static ICodecAction getAction(Class<?> clazz) {
 		ICodecAction action = getActionSuper(clazz);
 		if(action == null) {
 			System.err.println("No ICodecAction was found for " + clazz
