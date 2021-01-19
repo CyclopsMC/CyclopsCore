@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add ButtonCheckbox
+
+Changes:
+* Expose PacketCodec#getAction
+* Expose drawTooltipBackground in gui helpers
