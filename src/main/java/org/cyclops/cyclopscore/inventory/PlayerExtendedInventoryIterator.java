@@ -43,11 +43,12 @@ public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
 
     @Override
     public ItemStack next() {
-        if (!iterators.peek().hasNext()) {
-            iterators.poll();
-        }
         if (iterators.peek().hasNext()) {
-            return iterators.peek().next();
+            ItemStack next = iterators.peek().next();
+            if (!iterators.peek().hasNext()) {
+                iterators.poll();
+            }
+            return next;
         }
         throw new IndexOutOfBoundsException();
     }
