@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Enable tag-based recipe output prioritization
+  Required for CyclopsMC/IntegratedDynamics#976
+
+Fixes:
+* Fix reflection console spam on recent Java versions, Closes #148
