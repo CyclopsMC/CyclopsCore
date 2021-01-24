@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -19,6 +20,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Helpers related to recipe serialization.
@@ -48,9 +55,14 @@ public class RecipeSerializerHelpers {
         }
     }
 
+    @Deprecated
     public static ItemStack getJsonItemStackOrTag(JsonObject json, boolean required) {
+        return getJsonItemStackOrTag(json, required, Collections.emptyList());
+    }
+
+    public static ItemStack getJsonItemStackOrTag(JsonObject json, boolean required, List<String> modPriorities) {
         if (json.has("tag")) {
-            return getJsonItemStackFromTag(json, "tag");
+            return getJsonItemStackFromTag(json, "tag", modPriorities);
         }
         return getJsonItemStack(json, "item", required);
     }
@@ -73,17 +85,38 @@ public class RecipeSerializerHelpers {
         }
     }
 
+    @Deprecated
     public static ItemStack getJsonItemStackFromTag(JsonObject json, String key) {
+        return getJsonItemStackFromTag(json, key, Collections.emptyList());
+    }
+
+    public static ItemStack getJsonItemStackFromTag(JsonObject json, String key, List<String> modPriorities) {
+        // Obtain all stacks for the given tag
         ItemStack[] matchingStacks = Ingredient.deserialize(json).getMatchingStacks();
-        if (matchingStacks.length == 0) {
-            throw new IllegalStateException("No tag value found for " + key + " does not exist");
+
+        // Create a mod id to order index map
+        Map<String, Integer> modPriorityIndex = Maps.newHashMap();
+        for (int i = 0; i < modPriorities.size(); i++) {
+            modPriorityIndex.put(modPriorities.get(i), i);
         }
+
+        // Sort stacks by mod id, and take first
+        ItemStack outputStack = Arrays.stream(matchingStacks)
+                .min(Comparator.comparingInt(e -> modPriorityIndex.getOrDefault(
+                        e.getItem().getRegistryName().getNamespace(),
+                        Integer.MAX_VALUE
+                )))
+                .orElseThrow(() -> new IllegalStateException("No tag value found for " + key + " does not exist"))
+                .copy();
+
+        // Determine count
         int count = 1;
         if (json.has("count")) {
             count = json.get("count").getAsInt();
         }
-        matchingStacks[0].setCount(count);
-        return matchingStacks[0];
+        outputStack.setCount(count);
+
+        return outputStack;
     }
 
     public static FluidStack deserializeFluidStack(JsonObject json, boolean readNbt) {
