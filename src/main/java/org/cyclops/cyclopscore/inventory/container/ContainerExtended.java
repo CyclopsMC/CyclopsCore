@@ -118,15 +118,9 @@ public abstract class ContainerExtended extends Container implements IContainerB
     static void setSlotPos(Slot slot, String fieldName, int newValue) {
         try {
             Field field = ObfuscationReflectionHelper.findField(Slot.class, fieldName);
-
             field.setAccessible(true);
-
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-
             field.set(slot, newValue);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
     }

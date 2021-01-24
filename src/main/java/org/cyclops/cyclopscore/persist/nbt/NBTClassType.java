@@ -614,13 +614,6 @@ public abstract class NBTClassType<T> {
         // Make editable if it was not editable before.
         boolean wasAccessible = field.isAccessible();
         if (!wasAccessible) {
-            try {
-                Field modifiersField = Field.class.getDeclaredField("modifiers");
-                modifiersField.setAccessible(true);
-                modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-            } catch (NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
             field.setAccessible(true);
         }
 
