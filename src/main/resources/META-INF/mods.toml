@@ -9,6 +9,7 @@ authors="rubensworks (aka kroeser)"
 modId="cyclopscore"
 version="${file.jarVersion}"
 displayName="Cyclops Core"
+updateJSONURL="https://raw.githubusercontent.com/CyclopsMC/Versions/master/forge_update/cyclops-core.json"
 description='''
 Coremod for Integrated Dynamics, EvilCraft and others.
 '''
