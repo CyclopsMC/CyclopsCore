@@ -47,7 +47,9 @@ import java.util.Map;
  *  [version info]
  *  [update url]
  * @author rubensworks
+ * @deprecated Use Forge update files instead: https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
  */
+@Deprecated
 public class Versions {
 
     private static final List<Triple<ModBase, IModVersion, String>> versionMods = Lists.newLinkedList();

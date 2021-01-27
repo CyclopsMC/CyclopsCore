@@ -135,7 +135,6 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
         // Handle metadata
         Analytics.sendAll();
-        Versions.checkAll();
         ImportantUsers.checkAll();
     }
 
