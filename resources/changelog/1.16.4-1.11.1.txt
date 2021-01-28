@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Enable Forge version checker
+* Deprecate old custom version checker, Closes #137
+
+Fixes:
+* Fix keystore failing when building PRs
