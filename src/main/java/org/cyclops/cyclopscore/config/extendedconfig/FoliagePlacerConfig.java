@@ -8,6 +8,9 @@ import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
@@ -19,9 +22,19 @@ public class FoliagePlacerConfig<T extends FoliagePlacer> extends ExtendedConfig
 
     public FoliagePlacerConfig(ModBase mod, String namedId, Function<FoliagePlacerConfig<T>, Codec<T>> codec) {
         super(mod, namedId, (eConfig) -> {
-            FoliagePlacerType<T> type = new FoliagePlacerType<>(codec.apply(eConfig));
-            type.setRegistryName(mod.getModId(), namedId);
-            return type;
+            try {
+                Constructor<FoliagePlacerType> constructor = FoliagePlacerType.class.getDeclaredConstructor(Codec.class);
+                constructor.setAccessible(true);
+                FoliagePlacerType fpt = constructor.newInstance(codec.apply(eConfig));
+
+                FoliagePlacerType<T> type = fpt;
+                type.setRegistryName(mod.getModId(), namedId);
+
+                return type;
+            }catch(Exception ex){
+                System.out.println("Error reflecting: "+ex.getMessage());
+            }
+            return null;
         });
     }
 
