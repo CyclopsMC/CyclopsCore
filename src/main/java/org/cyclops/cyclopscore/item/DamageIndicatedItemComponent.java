@@ -78,10 +78,10 @@ public class DamageIndicatedItemComponent {
     public IFormattableTextComponent getInfo(ItemStack itemStack) {
         int amount = 0;
         IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack).orElse(null);
-        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(null);
+        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(FluidStack.EMPTY);
         if (!fluidStack.isEmpty())
             amount = fluidStack.getAmount();
-        return getInfo(fluidStack, amount, fluidHander.getCapacity());
+        return getInfo(fluidStack, amount, fluidHander == null ? 0 : fluidHander.getCapacity());
     }
     
     /**
