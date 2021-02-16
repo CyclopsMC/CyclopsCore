@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+
+Changes:
+
+Fixes:
+* Fix rare EvilCraft startup crash, Closes CyclopsMC/EvilCraft#849
+* Fix incorrect translation key metadata export
