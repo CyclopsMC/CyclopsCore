@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix rare null fluid crashes in items
+
+Closes CyclopsMC/EvilCraft#850
+Closes CyclopsMC/EvilCraft#851
+Closes CyclopsMC/EvilCraft#852
