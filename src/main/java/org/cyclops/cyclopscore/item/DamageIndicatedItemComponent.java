@@ -62,7 +62,9 @@ public class DamageIndicatedItemComponent {
         // Add the 'full' container.
         ItemStack itemStackFull = new ItemStack(this.item);
         IFluidHandlerItemCapacity fluidHanderFull = FluidHelpers.getFluidHandlerItemCapacity(itemStackFull).orElse(null);
-        fluidHanderFull.fill(new FluidStack(fluid, fluidHanderFull.getCapacity()), IFluidHandler.FluidAction.EXECUTE);
+        if (fluidHanderFull != null) {
+            fluidHanderFull.fill(new FluidStack(fluid, fluidHanderFull.getCapacity()), IFluidHandler.FluidAction.EXECUTE);
+        }
         items.add(itemStackFull);
         
         // Add the 'empty' container.
@@ -123,8 +125,8 @@ public class DamageIndicatedItemComponent {
      */
     public double getDurability(ItemStack itemStack) {
         IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack).orElse(null);
-        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(null);
-        double capacity = fluidHander.getCapacity();
+        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(FluidStack.EMPTY);
+        double capacity = fluidHander == null ? 0 : fluidHander.getCapacity();
         double amount = FluidHelpers.getAmount(fluidStack);
         return (capacity - amount) / capacity;
     }
