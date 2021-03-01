@@ -12,6 +12,7 @@ import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Registry for info books for a mod.
@@ -94,7 +95,7 @@ public class InfoBookRegistry implements IInfoBookRegistry {
         private final String sectionPath;
 
         private SectionInjection(IInfoBook infoBook, String parentSection, String sectionPath) {
-            this.infoBook = infoBook;
+            this.infoBook = Objects.requireNonNull(infoBook);
             this.parentSection = parentSection;
             this.sectionPath = sectionPath;
         }
