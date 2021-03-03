@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Add non-null check in infobook injection registrations
+  Related to #152
+
