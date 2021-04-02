@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.ingredient.collection;
 
 import com.google.common.collect.Iterators;
-import com.google.common.collect.Sets;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientInstanceWrapper;
 
@@ -71,7 +70,7 @@ public abstract class IngredientMapWrappedAdapter<T, M, V, C extends Map<Ingredi
 
     @Override
     public IngredientSet<T, M> keySet() {
-        return new IngredientHashSet<>(this.getComponent(), Sets.newHashSet(this.collection.keySet()));
+        return new IngredientSet<>(this.getComponent(), this.collection.keySet());
     }
 
     @Override
