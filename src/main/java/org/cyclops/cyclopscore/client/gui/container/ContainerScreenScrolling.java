@@ -95,7 +95,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
 
     @Override
     public boolean charTyped(char typedChar, int keyCode) {
-        if (isSearchEnabled()) {
+        if (isSearchEnabled() && this.searchField.isFocused()) {
             if (this.searchField.charTyped(typedChar, keyCode)) {
                 this.updateSearch(searchField.getText());
             }
@@ -107,7 +107,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
 
     @Override
     public boolean keyPressed(int typedChar, int keyCode, int modifiers) {
-        if (isSearchEnabled() && typedChar != GLFW.GLFW_KEY_ESCAPE) {
+        if (isSearchEnabled() && this.searchField.isFocused() && typedChar != GLFW.GLFW_KEY_ESCAPE) {
             if (this.searchField.keyPressed(typedChar, keyCode, modifiers)) {
                 this.updateSearch(searchField.getText());
             }
