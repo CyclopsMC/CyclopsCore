@@ -1,0 +1,12 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Create it_it.json
+
+Fixes:
+* Fix scrolling guis blocking JEI hotkeys
+  Closes CyclopsMC/IntegratedDynamics#1011
+* Avoid expensive IngredientSet copy on keySet invocation
+  Fixes performance issue in large ID storage networks.
+  Closes CyclopsMC/IntegratedDynamics#1008
+
