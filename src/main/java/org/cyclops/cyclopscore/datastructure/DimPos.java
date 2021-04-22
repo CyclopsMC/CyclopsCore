@@ -60,7 +60,7 @@ public class DimPos implements Comparable<DimPos> {
             if (MinecraftHelpers.isClientSideThread()) {
                 final ClientWorld world = Minecraft.getInstance().world;
 
-                if (world.getDimensionKey().getLocation().toString().equals(this.getWorld())) {
+                if (world != null && world.getDimensionKey().getLocation().toString().equals(this.getWorld())) {
                     this.worldReference = new WeakReference<>(world);
                     return this.worldReference.get();
                 }
