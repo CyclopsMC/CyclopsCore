@@ -13,6 +13,8 @@ import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple data class for a block position inside a world.
@@ -25,6 +27,10 @@ public class DimPos implements Comparable<DimPos> {
     private final BlockPos blockPos;
     private WeakReference<World> worldReference;
 
+    // RegistryKey.UNIVERSAL_KEY_MAP is private and can not be shrunken
+    // so it is probably safe to assume that worldKeyCache should never be flushed
+    private static final Map<String, RegistryKey<World>> worldKeyCache = new HashMap<>();
+
     private DimPos(String dimension, BlockPos blockPos, World world) {
         this.world = dimension;
         this.blockPos = blockPos;
@@ -36,29 +42,42 @@ public class DimPos implements Comparable<DimPos> {
     }
 
     public RegistryKey<World> getWorldKey() {
-        return RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(getWorld()));
+        final RegistryKey<World> getKey = worldKeyCache.get(world);
+
+        if (getKey != null) {
+            return getKey;
+        }
+
+        final RegistryKey<World> newKey = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(world));
+        worldKeyCache.put(world, newKey);
+
+        return newKey;
     }
 
     @Nullable
     public World getWorld(boolean forceLoad) {
         if (worldReference == null) {
             if (MinecraftHelpers.isClientSideThread()) {
-                ClientWorld world = Minecraft.getInstance().world;
+                final ClientWorld world = Minecraft.getInstance().world;
+
                 if (world.getDimensionKey().getLocation().toString().equals(this.getWorld())) {
                     this.worldReference = new WeakReference<>(world);
                     return this.worldReference.get();
-                } else {
-                    return null;
                 }
-            } else {
-                return ServerLifecycleHooks.getCurrentServer().getWorld(getWorldKey());
+
+                return null;
             }
+
+            return ServerLifecycleHooks.getCurrentServer().getWorld(getWorldKey());
         }
+
         World world = worldReference.get();
+
         if (world == null) {
             world = ServerLifecycleHooks.getCurrentServer().getWorld(getWorldKey());
             worldReference = new WeakReference<>(world);
         }
+
         return world;
     }
 
