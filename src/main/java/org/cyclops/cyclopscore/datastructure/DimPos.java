@@ -1,6 +1,10 @@
 package org.cyclops.cyclopscore.datastructure;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import lombok.Data;
+import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.RegistryKey;
@@ -13,6 +17,7 @@ import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple data class for a block position inside a world.
@@ -25,6 +30,15 @@ public class DimPos implements Comparable<DimPos> {
     private final BlockPos blockPos;
     private WeakReference<World> worldReference;
 
+    private static final LoadingCache<String, RegistryKey<World>> CACHE_WORLD_KEYS = CacheBuilder.newBuilder()
+            .expireAfterWrite(1, TimeUnit.MINUTES)
+            .build(new CacheLoader<String, RegistryKey<World>>() {
+                @Override
+                public RegistryKey<World> load(String key) {
+                    return RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(key));
+                }
+            });
+
     private DimPos(String dimension, BlockPos blockPos, World world) {
         this.world = dimension;
         this.blockPos = blockPos;
@@ -35,8 +49,9 @@ public class DimPos implements Comparable<DimPos> {
         this(world, blockPos, null);
     }
 
+    @SneakyThrows
     public RegistryKey<World> getWorldKey() {
-        return RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(getWorld()));
+        return CACHE_WORLD_KEYS.get(getWorld());
     }
 
     @Nullable
@@ -44,16 +59,15 @@ public class DimPos implements Comparable<DimPos> {
         if (worldReference == null) {
             if (MinecraftHelpers.isClientSideThread()) {
                 ClientWorld world = Minecraft.getInstance().world;
-                if (world.getDimensionKey().getLocation().toString().equals(this.getWorld())) {
+                if (world != null && world.getDimensionKey().getLocation().toString().equals(this.getWorld())) {
                     this.worldReference = new WeakReference<>(world);
                     return this.worldReference.get();
-                } else {
-                    return null;
                 }
-            } else {
-                return ServerLifecycleHooks.getCurrentServer().getWorld(getWorldKey());
+                return null;
             }
+            return ServerLifecycleHooks.getCurrentServer().getWorld(getWorldKey());
         }
+
         World world = worldReference.get();
         if (world == null) {
             world = ServerLifecycleHooks.getCurrentServer().getWorld(getWorldKey());
