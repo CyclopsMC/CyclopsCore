@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.infobook;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -10,9 +9,10 @@ import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Registry for info books for a mod.
@@ -22,7 +22,7 @@ public class InfoBookRegistry implements IInfoBookRegistry {
 
     private final Map<IInfoBook, String> bookPaths = Maps.newIdentityHashMap();
     private final Map<IInfoBook, InfoSection> bookRoots = Maps.newIdentityHashMap();
-    private final List<SectionInjection> sectionInjections = Lists.newArrayList();
+    private final Queue<SectionInjection> sectionInjections = new LinkedBlockingQueue<>(); // Thread-safe queue
 
     public InfoBookRegistry() {
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientTagsLoaded);
@@ -37,7 +37,9 @@ public class InfoBookRegistry implements IInfoBookRegistry {
 
     @Override
     public void registerSection(IInfoBook infoBook, String parentSection, String sectionPath) {
-        sectionInjections.add(new SectionInjection(infoBook, parentSection, sectionPath));
+        synchronized (sectionInjections) {
+            sectionInjections.add(new SectionInjection(infoBook, parentSection, sectionPath));
+        }
     }
 
     @Override
