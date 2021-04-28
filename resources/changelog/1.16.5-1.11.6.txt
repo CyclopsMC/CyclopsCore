@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Make infobook injections loading thread-safe, Closes #157
+* Cache world key creation in DimPos
+  This fixes performance issues, Closes #155
+
