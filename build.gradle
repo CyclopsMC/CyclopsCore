@@ -280,7 +280,7 @@ uploadArchives {
         pom {
             groupId = project.group
             version = project.version
-            artifactId = project.archivesBaseName
+            artifactId = project.archivesBaseName.toLowerCase()
         }
         pom.project {
             name project.archivesBaseName
