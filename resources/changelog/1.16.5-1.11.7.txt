@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Don't use getSafeTile workaround on main thread
+  Related to CyclopsMC/IntegratedCrafting#62
+
