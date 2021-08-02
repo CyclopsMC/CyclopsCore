@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Display unknown advancements in infobook as locked
+  Closes CyclopsMC/IntegratedDynamics#1070
+
