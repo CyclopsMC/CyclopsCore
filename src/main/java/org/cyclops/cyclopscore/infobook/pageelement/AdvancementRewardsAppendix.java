@@ -127,13 +127,15 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         for (int i = 0; i < advancementRewards.getAdvancements().size(); i++) {
             ResourceLocation advancementId = advancementRewards.getAdvancements().get(i);
             Advancement advancement = AdvancementHelpers.getAdvancement(Dist.CLIENT, advancementId);
+            if (offsetX + SLOT_SIZE > MAX_WIDTH) {
+                offsetY += SLOT_SIZE + SLOT_PADDING * 2;
+                offsetX = 0;
+            }
             if (advancement == null) {
                 allAchievementsValid = false;
+                Images.LOCKED.draw(gui, matrixStack, x + offsetX + 2, y + offsetY + 1);
+                renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, new StringTextComponent(""), null, gui);
             } else {
-                if (offsetX + SLOT_SIZE > MAX_WIDTH) {
-                    offsetY += SLOT_SIZE + SLOT_PADDING * 2;
-                    offsetX = 0;
-                }
                 RecipeAppendix.renderItemForButton(gui, matrixStack, x + offsetX, y + offsetY, advancement.getDisplay().getIcon(), mx, my, true, null);
                 if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getInstance().player, advancementId)) {
                     Images.OK.draw(gui, matrixStack, x + offsetX + 1, y + offsetY + 2);

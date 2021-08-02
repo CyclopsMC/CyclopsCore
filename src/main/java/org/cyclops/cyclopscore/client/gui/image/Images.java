@@ -29,6 +29,7 @@ public class Images {
     public static final Image SHOVEL_BROKEN = new Image(ICONS, 72, 18, 18, 18);
     public static final Image ERROR = new Image(ICONS, 54, 0, 13, 13);
     public static final Image OK = new Image(ICONS, 72, 0, 14, 12);
+    public static final Image LOCKED = new Image(ICONS, 144, 18, 10, 14);
 
     /**
      * 0: default; 1: active; 2: disabled
