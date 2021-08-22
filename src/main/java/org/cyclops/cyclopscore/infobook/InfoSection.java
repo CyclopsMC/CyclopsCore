@@ -7,11 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.IBidiRenderer;
 import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.LanguageMap;
 import net.minecraft.util.text.Style;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,6 +24,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Section of the info book.
@@ -138,7 +138,7 @@ public class InfoSection {
         }
 
         // Wrap the text into pages.
-        List<IReorderingProcessor> allLines = fontRenderer.trimStringToWidth(ITextProperties.func_240652_a_(contents), width);
+        List<IReorderingProcessor> allLines = trimStringToWidth(fontRenderer, ITextProperties.func_240652_a_(contents), width);
         localizedPages = Lists.newLinkedList();
         int linesOnPage = 0;
         List<IReorderingProcessor> currentPage = Lists.newArrayList();
@@ -214,6 +214,58 @@ public class InfoSection {
             appendix.preBakeElement(this);
             appendix.bakeElement(this);
         }
+    }
+
+    // Adapted from FontRenderer#trimStringToWidth
+    // The problem with the vanilla implementation is that it doesn't handle formatting well across multiple lines, see https://github.com/CyclopsMC/IntegratedDynamics/issues/1078
+    // What we do here, is clear the forced Style's on each line, and instead apply the raw string-based formatting codes directly.
+    protected static List<IReorderingProcessor> trimStringToWidth(FontRenderer fontRenderer, ITextProperties text, int width) {
+        List<ITextProperties> textLines = fontRenderer.getCharacterManager().func_238362_b_(text, width, Style.EMPTY);
+        List<IReorderingProcessor> formattedLines = Lists.newArrayList();
+
+        // Keep a memory of active formatting flags, which persists across lines
+        Map<Character, Boolean> activeFlags = Maps.newHashMap();
+        Character activeColor = null;
+        for (ITextProperties textLine : textLines) {
+            String textLineRaw = textLine.getString();
+
+            // Clear the Style formatting, and instead prepend the currently active raw string-based formatting codes.
+            Character finalActiveColor = activeColor;
+            Optional<ITextProperties> textLineUnformatted = textLine.getComponentWithStyle((style, string) -> {
+                if (!activeFlags.isEmpty()) {
+                    string = activeFlags.keySet().stream().map(character -> "§" + character).collect(Collectors.joining()) + string;
+                }
+                if (finalActiveColor != null) {
+                    string = "§" + finalActiveColor + string;
+                }
+                return Optional.of(ITextProperties.func_240653_a_(string, Style.EMPTY));
+            }, Style.EMPTY);
+            if (textLineUnformatted.isPresent()) {
+                textLine = textLineUnformatted.get();
+            }
+            formattedLines.add(LanguageMap.getInstance().func_241870_a(textLine));
+
+            // Loop over each character of the current line, and save the active formatting flags in memory, so that they can be re-applied on the next line.
+            for (int charPos = 0; charPos < textLineRaw.length(); charPos++) {
+                if (textLineRaw.charAt(charPos) == '§') {
+                    charPos++;
+                    char character = textLineRaw.charAt(charPos);
+                    if (Character.isDigit(character) || character == 'a' || character == 'b' || character == 'c' || character == 'e' || character == 'f') {
+                        if (character == '0') {
+                            activeColor = null;
+                        } else {
+                            activeColor = character;
+                        }
+                    } else if (character == 'r') {
+                        activeFlags.clear();
+                    } else {
+                        activeFlags.put(character, true);
+                    }
+                }
+            }
+        }
+
+        return formattedLines;
     }
 
     protected static int getAppendixLineHeight(SectionAppendix appendix, FontRenderer fontRenderer) {
