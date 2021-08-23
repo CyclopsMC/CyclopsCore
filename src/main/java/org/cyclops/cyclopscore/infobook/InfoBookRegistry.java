@@ -6,7 +6,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
 
 import java.util.Map;
@@ -63,7 +63,7 @@ public class InfoBookRegistry implements IInfoBookRegistry {
         }
     }
     public void onServerStarted(FMLServerStartedEvent event) {
-        if (!MinecraftHelpers.isClientSide()) {
+        if (event.getServer().isDedicatedServer()) {
             // Only call this on dedicated servers, as the RecipesUpdatedEvent won't be emitted there
             afterRecipesAndTagsLoaded();
         }
@@ -76,6 +76,7 @@ public class InfoBookRegistry implements IInfoBookRegistry {
 
         // Load after recipes are loaded client-side
         for (Map.Entry<IInfoBook, String> entry : bookPaths.entrySet()) {
+            entry.getKey().getMod().log(Level.INFO, "Loading infobook " + entry.getValue());
             bookRoots.put(entry.getKey(), InfoBookParser.initializeInfoBook(entry.getKey(), entry.getValue(), null));
             // Reset the infobook history
             entry.getKey().setCurrentSection(null);
