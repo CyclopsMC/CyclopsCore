@@ -10,7 +10,7 @@ Library mod for several other [mods](https://github.com/CyclopsMC).
 
 All stable releases (including deobfuscated builds) can be found on [CurseForge](https://minecraft.curseforge.com/projects/cyclops-core/files).
 
-[Development builds](https://oss.jfrog.org/artifactory/simple/libs-release/org/cyclops/cyclopscore/CyclopsCore/) are hosted by [JFrog Artifactory](https://www.jfrog.com/artifactory/).
+[Development builds](https://github.com/CyclopsMC/packages/packages/) are hosted as GitHub packages.
 
 ### Using CyclopsCore
 
