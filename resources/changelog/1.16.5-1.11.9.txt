@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix formatting issues when format spans lines
+  Closes CyclopsMC/IntegratedDynamics#1078
+
