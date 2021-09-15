@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.widget.button.CheckboxButton;
 import net.minecraft.util.text.ITextComponent;
+import org.cyclops.cyclopscore.client.gui.image.Image;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 
 /**
@@ -34,13 +35,23 @@ public class ButtonCheckbox extends Button {
     @Override
     public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(visible) {
+            // Determine image
             int i = 0;
             if (isChecked()) {
                 i = 2;
             } else if (isHovered) {
                 i = 1;
             }
-            Images.CHECKBOX[i].draw(this, matrixStack, x, y);
+            Image image = Images.CHECKBOX[i];
+
+            // Determine position
+            int imageWidth = image.getWidth();
+            int imageWHeight = image.getHeight();
+            int x = this.width <= imageWidth ? this.x : this.x + (this.width - imageWidth) / 2;
+            int y = this.height <= imageWHeight ? this.y : this.y + (this.height - imageWHeight) / 2;
+
+            // Draw image
+            image.draw(this, matrixStack, x, y);
         }
     }
 }
