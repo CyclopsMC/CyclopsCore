@@ -32,6 +32,10 @@ public class WidgetTextFieldExtended extends TextFieldWidget {
         this.listener = listener;
     }
 
+    public int getAdjustedWidth() {
+        return this.width - 7;
+    }
+
     protected void drawBackground(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         RenderHelpers.bindTexture(Images.WIDGETS);
         GlStateManager.color4f(1, 1, 1, 1);
