@@ -58,6 +58,7 @@ public class WidgetTextFieldExtended extends TextFieldWidget {
             drawBackground(matrixStack, mouseX, mouseY, partialTicks);
         }
         super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+        GlStateManager.color4f(1, 1, 1, 1);
     }
 
     @Override
