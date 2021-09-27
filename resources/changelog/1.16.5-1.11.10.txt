@@ -1,0 +1,11 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Center checkbox if bounds are too large
+
+Fixes:
+* Fix text running out of text fields
+* Fix render artifacts when selecting text
+  Closes CyclopsMC/IntegratedDynamics#1086
+
+
