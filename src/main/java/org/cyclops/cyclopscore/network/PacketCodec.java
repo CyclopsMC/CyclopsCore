@@ -13,6 +13,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.datastructure.DimPos;
 import org.cyclops.cyclopscore.datastructure.SingleCache;
 
@@ -385,6 +386,31 @@ public abstract class PacketCodec extends PacketBase {
 					e.printStackTrace();
 				}
 				return list;
+			}
+		});
+
+		codecActions.put(Pair.class, new ICodecAction() {
+
+			@Override
+			public void encode(Object object, PacketBuffer output) {
+				output.writeString(((Pair) object).getLeft().getClass().getName());
+				output.writeString(((Pair) object).getRight().getClass().getName());
+				write(output, ((Pair) object).getLeft());
+				write(output, ((Pair) object).getRight());
+			}
+
+			@Override
+			public Object decode(PacketBuffer input) {
+				try {
+					ICodecAction keyAction = getAction(Class.forName(input.readString(READ_STRING_MAX_LENGTH)));
+					ICodecAction valueAction = getAction(Class.forName(input.readString(READ_STRING_MAX_LENGTH)));
+					Object key = keyAction.decode(input);
+					Object value = valueAction.decode(input);
+					return Pair.of(key, value);
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				}
+				return Pair.of(null, null);
 			}
 		});
 	}
