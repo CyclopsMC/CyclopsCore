@@ -21,6 +21,7 @@ import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A component that has to be added for classes that want to implement the DamageIndicator behaviour.
@@ -100,9 +101,9 @@ public class DamageIndicatedItemComponent {
     		prefix = new TranslationTextComponent(fluidStack.getTranslationKey()).appendString(": ");
     	}
         return prefix
-                .appendString(String.format("%,d", amount))
+                .appendString(String.format(Locale.ROOT, "%,d", amount))
                 .appendString(" / ")
-                .appendString(String.format("%,d", capacity))
+                .appendString(String.format(Locale.ROOT, "%,d", capacity))
                 .appendString(" mB");
     }
     
