@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix amount formatting errors in other locales, Closes CyclopsMC/EvilCraft#891
+
