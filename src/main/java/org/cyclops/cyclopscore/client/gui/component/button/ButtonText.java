@@ -24,7 +24,7 @@ public class ButtonText extends ButtonExtended {
      */
     public ButtonText(int x, int y, ITextComponent narrationMessage, ITextComponent text, Button.IPressable pressCallback) {
     	// MCP: getStringWidth
-        this(x, y, Minecraft.getInstance().fontRenderer.func_243245_a(text.func_241878_f()) + 6, 16, narrationMessage, text, pressCallback, true);
+        this(x, y, Minecraft.getInstance().font.width(text.getVisualOrderText()) + 6, 16, narrationMessage, text, pressCallback, true);
     }
 
 	/**
@@ -57,7 +57,7 @@ public class ButtonText extends ButtonExtended {
             color = 0xffffa0;
         }
 
-        drawCenteredString(matrixStack, Minecraft.getInstance().fontRenderer, getText(), x + width / 2, y + (height - 8) / 2, color);
+        drawCenteredString(matrixStack, Minecraft.getInstance().font, getText(), x + width / 2, y + (height - 8) / 2, color);
     }
 
 }

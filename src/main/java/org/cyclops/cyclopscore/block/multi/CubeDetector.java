@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class CubeDetector {
 	
-	private static Vector3i NULL_SIZE = Vector3i.NULL_VECTOR;
+	private static Vector3i NULL_SIZE = Vector3i.ZERO;
 	
 	private Collection<AllowedBlock> allowedBlocks = Sets.newHashSet();
 	private Map<Block, AllowedBlock> blockInfo = Maps.newHashMap();
@@ -100,7 +100,7 @@ public class CubeDetector {
 			return error;
 		}
         return contains ? null : new TranslationTextComponent("multiblock.cyclopscore.error.invalidBlock",
-				LocationHelpers.toCompactString(location), new TranslationTextComponent(block.getTranslationKey()));
+				LocationHelpers.toCompactString(location), new TranslationTextComponent(block.getDescriptionId()));
 	}
 
     protected ITextComponent isValidLocation(IWorldReader world, BlockPos location, BlockPos excludeLocation) {
@@ -108,7 +108,7 @@ public class CubeDetector {
     }
 	
 	protected boolean isAir(IWorldReader world, BlockPos location) {
-		return world.isAirBlock(location);
+		return world.isEmptyBlock(location);
 	}
 	
 	/**

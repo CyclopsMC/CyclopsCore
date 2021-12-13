@@ -80,8 +80,8 @@ public abstract class WorldStorage implements INBTProvider {
 
     private NBTDataHolder initDataHolder(MinecraftServer server, boolean loading) {
         String dataId = mod.getModId() + "_" + getDataId();
-        NBTDataHolder data = server.getWorld(World.OVERWORLD).getSavedData()
-                .getOrCreate(() -> new NBTDataHolder(dataId), dataId);
+        NBTDataHolder data = server.getLevel(World.OVERWORLD).getDataStorage()
+                .computeIfAbsent(() -> new NBTDataHolder(dataId), dataId);
         if (loading) {
             CompoundNBT tempTag = data.getTempTagAndReset();
             if (tempTag != null) {
@@ -131,7 +131,7 @@ public abstract class WorldStorage implements INBTProvider {
         }
 
         @Override
-        public void read(CompoundNBT tag) {
+        public void load(CompoundNBT tag) {
             if (parentStorage == null) {
                 this.tempTag = tag.getCompound(KEY);
             } else {
@@ -140,7 +140,7 @@ public abstract class WorldStorage implements INBTProvider {
         }
 
         @Override
-        public CompoundNBT write(CompoundNBT tag) {
+        public CompoundNBT save(CompoundNBT tag) {
             CompoundNBT dataTag = new CompoundNBT();
             parentStorage.writeToNBT(dataTag);
             tag.put(KEY, dataTag);

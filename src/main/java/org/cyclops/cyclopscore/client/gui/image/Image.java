@@ -38,20 +38,20 @@ public class Image implements IImage {
     @Override
     public void drawWorldWithAlpha(TextureManager textureManager, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer,
                                    int combinedLight, int combinedOverlay, float x1, float x2, float y1, float y2, float z, float alpha) {
-        matrixStack.push();
-        IVertexBuilder vb = renderTypeBuffer.getBuffer(RenderType.getText(getResourceLocation()));
+        matrixStack.pushPose();
+        IVertexBuilder vb = renderTypeBuffer.getBuffer(RenderType.text(getResourceLocation()));
         float u1, u2, v1, v2;
         u1 = (float) (getSheetX()) / 256F;
         u2 = (float) (getSheetX() + getSheetWidth()) / 256F;
         v1 = (float) (getSheetY()) / 256F;
         v2 = (float) (getSheetY() + getSheetHeight()) / 256F;
         int a = Math.round(alpha * 255F);
-        Matrix4f matrix = matrixStack.getLast().getMatrix();
-        vb.pos(matrix, x2, y2, z).color(255, 255, 255, a).tex(u2, v2).lightmap(combinedLight).endVertex();
-        vb.pos(matrix, x2, y1, z).color(255, 255, 255, a).tex(u2, v1).lightmap(combinedLight).endVertex();
-        vb.pos(matrix, x1, y1, z).color(255, 255, 255, a).tex(u1, v1).lightmap(combinedLight).endVertex();
-        vb.pos(matrix, x1, y2, z).color(255, 255, 255, a).tex(u1, v2).lightmap(combinedLight).endVertex();
-        matrixStack.pop();
+        Matrix4f matrix = matrixStack.last().pose();
+        vb.vertex(matrix, x2, y2, z).color(255, 255, 255, a).uv(u2, v2).uv2(combinedLight).endVertex();
+        vb.vertex(matrix, x2, y1, z).color(255, 255, 255, a).uv(u2, v1).uv2(combinedLight).endVertex();
+        vb.vertex(matrix, x1, y1, z).color(255, 255, 255, a).uv(u1, v1).uv2(combinedLight).endVertex();
+        vb.vertex(matrix, x1, y2, z).color(255, 255, 255, a).uv(u1, v2).uv2(combinedLight).endVertex();
+        matrixStack.popPose();
     }
 
     @Override

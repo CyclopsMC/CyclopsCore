@@ -21,10 +21,10 @@ public class ItemGroupMod extends ItemGroup {
     }
 
     @Override
-    public ItemStack createIcon() {
+    public ItemStack makeIcon() {
         Item i = item.get();
         if (i == null) {
-            i = Item.getItemFromBlock(Blocks.BARRIER);
+            i = Item.byBlock(Blocks.BARRIER);
         }
         return new ItemStack(i);
     }

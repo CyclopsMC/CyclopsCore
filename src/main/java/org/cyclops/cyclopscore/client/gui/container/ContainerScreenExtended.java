@@ -53,8 +53,8 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
 
     @Override
     public void init() {
-        this.xSize = getBaseXSize() + offsetX * 2;
-        this.ySize = getBaseYSize() + offsetY * 2;
+        this.imageWidth = getBaseXSize() + offsetX * 2;
+        this.imageHeight = getBaseYSize() + offsetY * 2;
         super.init();
     }
 
@@ -62,7 +62,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     public final void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         this.drawCurrentScreen(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     protected void drawCurrentScreen(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
@@ -78,25 +78,25 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float f, int x, int y) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+    protected void renderBg(MatrixStack matrixStack, float f, int x, int y) {
+        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelpers.bindTexture(texture);
-        blit(matrixStack, guiLeft + offsetX, guiTop + offsetY, 0, 0, xSize - 2 * offsetX, ySize - 2 * offsetY);
+        blit(matrixStack, leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY);
     }
 
     @Override
-    public boolean isSlotSelected(Slot slotIn, double mouseX, double mouseY) {
-        return this.isPointInRegion(slotIn.xPos - 1, slotIn.yPos - 1,
+    public boolean isHovering(Slot slotIn, double mouseX, double mouseY) {
+        return this.isHovering(slotIn.x - 1, slotIn.y - 1,
                 GuiHelpers.SLOT_SIZE, GuiHelpers.SLOT_SIZE, mouseX, mouseY);
     }
 
     @Override
-    public boolean isPointInRegion(int left, int top, int right, int bottom, double pointX, double pointY) {
-        return RenderHelpers.isPointInRegion(left, top, right, bottom, pointX - this.guiLeft, pointY - this.guiTop);
+    public boolean isHovering(int left, int top, int right, int bottom, double pointX, double pointY) {
+        return RenderHelpers.isPointInRegion(left, top, right, bottom, pointX - this.leftPos, pointY - this.topPos);
     }
 
     public boolean isPointInRegion(Rectangle region, Point mouse) {
-    	return isPointInRegion(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
+    	return isHovering(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
     }
 
     public void drawTooltip(List<ITextComponent> lines, int x, int y) {
@@ -116,7 +116,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
             if (clientPressable != null) {
                 clientPressable.onPress(button);
             }
-            if (getContainer().onButtonClick(buttonId)) {
+            if (getMenu().onButtonClick(buttonId)) {
                 CyclopsCore._instance.getPacketHandler().sendToServer(new ButtonClickPacket(buttonId));
             }
         };
@@ -131,8 +131,8 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
      * Will send client-side onUpdate events for all stored values
      */
     protected void refreshValues() {
-        for (int id : getContainer().getValueIds()) {
-            onUpdate(id, getContainer().getValue(id));
+        for (int id : getMenu().getValueIds()) {
+            onUpdate(id, getMenu().getValue(id));
         }
     }
 
@@ -140,18 +140,18 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
      * @return The total gui left offset.
      */
     public int getGuiLeftTotal() {
-        return this.guiLeft + offsetX;
+        return this.leftPos + offsetX;
     }
 
     /**
      * @return The total gui top offset.
      */
     public int getGuiTopTotal() {
-        return this.guiTop + offsetY;
+        return this.topPos + offsetY;
     }
 
     @Override
     public ContainerType<?> getValueNotifiableType() {
-        return getContainer().getType();
+        return getMenu().getType();
     }
 }

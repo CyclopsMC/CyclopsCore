@@ -45,7 +45,7 @@ public class NbtPathExpressionParseHandlerAllChildren implements INbtPathExpress
                                     .map((subTag) -> new NbtPathExpressionExecutionContext(subTag, executionContext));
                         } else if (nbt.getId() == Constants.NBT.TAG_COMPOUND) {
                             CompoundNBT tag = (CompoundNBT) nbt;
-                            return tag.keySet().stream()
+                            return tag.getAllKeys().stream()
                                     .map((key) -> new NbtPathExpressionExecutionContext(tag.get(key), executionContext));
                         }
                         return null;

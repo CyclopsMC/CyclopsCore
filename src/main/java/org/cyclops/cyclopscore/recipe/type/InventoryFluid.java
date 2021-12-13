@@ -19,13 +19,13 @@ public class InventoryFluid extends CraftingInventory implements IInventoryFluid
     public InventoryFluid(NonNullList<ItemStack> itemStacks, NonNullList<FluidStack> fluidStacks) {
         super(new Container(null, 0) {
             @Override
-            public boolean canInteractWith(PlayerEntity playerIn) {
+            public boolean stillValid(PlayerEntity playerIn) {
                 return false;
             }
         }, itemStacks.size(), 1);
         int slot = 0;
         for (ItemStack itemStack : itemStacks) {
-            setInventorySlotContents(slot++, itemStack);
+            setItem(slot++, itemStack);
         }
         this.fluidHandler = new FluidHandlerListReadOnly(fluidStacks);
     }

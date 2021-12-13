@@ -47,10 +47,10 @@ public class PlayerRingOfFire {
     }
     
     private void spawnRing(PlayerEntity player) {
-        if(!player.world.isRemote() && player.getGameProfile() != null
+        if(!player.level.isClientSide() && player.getGameProfile() != null
     			&& ALLOW_RING.contains(player.getGameProfile().getId())) {
     		CyclopsCore._instance.getPacketHandler().sendToAllAround(new RingOfFirePacket(player),
-                    LocationHelpers.createTargetPointFromLocation(player.world, player.getPosition(), 50));
+                    LocationHelpers.createTargetPointFromLocation(player.level, player.blockPosition(), 50));
     	}
     }
     

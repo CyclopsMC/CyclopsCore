@@ -25,17 +25,17 @@ public class ArgumentSerializerMod<T extends ArgumentType<?>> implements IArgume
     }
 
     @Override
-    public void write(T t, PacketBuffer packetBuffer) {
-        packetBuffer.writeString(modGetter.apply(t).getModId());
+    public void serializeToNetwork(T t, PacketBuffer packetBuffer) {
+        packetBuffer.writeUtf(modGetter.apply(t).getModId());
     }
 
     @Override
-    public T read(PacketBuffer packetBuffer) {
-        return argumentConstructor.apply((ModBase) ModList.get().getModObjectById(packetBuffer.readString(PacketCodec.READ_STRING_MAX_LENGTH)).get());
+    public T deserializeFromNetwork(PacketBuffer packetBuffer) {
+        return argumentConstructor.apply((ModBase) ModList.get().getModObjectById(packetBuffer.readUtf(PacketCodec.READ_STRING_MAX_LENGTH)).get());
     }
 
     @Override
-    public void write(T t, JsonObject jsonObject) {
+    public void serializeToJson(T t, JsonObject jsonObject) {
         jsonObject.addProperty("mod", modGetter.apply(t).getModId());
     }
 }

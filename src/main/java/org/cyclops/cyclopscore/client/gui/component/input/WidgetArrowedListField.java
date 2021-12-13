@@ -32,7 +32,7 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
             arrowRight = new ButtonArrow(x + width, y - 1, new TranslationTextComponent("gui.cyclopscore.right"), (button) -> this.increase(), ButtonArrow.Direction.EAST);
             arrowRight.x -= arrowRight.getWidth();
         }
-        setEnableBackgroundDrawing(true);
+        setBordered(true);
         this.elements = elements;
         setActiveElement(0);
     }
@@ -42,17 +42,17 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
     }
 
     @Override
-    public boolean getEnableBackgroundDrawing() {
+    public boolean isBordered() {
         return false; // We want the offset, but not the drawing itself.
     }
 
     public void setActiveElement(int index) {
         if(index >= elements.size()) {
             this.activeElement = -1;
-            setText("");
+            setValue("");
         } else {
             this.activeElement = index;
-            setText(activeElementToString(getActiveElement()));
+            setValue(activeElementToString(getActiveElement()));
         }
         if(listener != null) listener.onChanged();
     }

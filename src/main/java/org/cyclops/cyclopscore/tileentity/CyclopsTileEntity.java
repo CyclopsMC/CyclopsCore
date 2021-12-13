@@ -116,7 +116,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
      * This contains the logic to send the update, so make sure to call the super!
      */
     protected void onSendUpdate() {
-        BlockHelpers.markForUpdate(getWorld(), getPos());
+        BlockHelpers.markForUpdate(getLevel(), getBlockPos());
     }
 
     /**
@@ -135,13 +135,13 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
 
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getPos(), 1, getNBTTagCompound());
+        return new SUpdateTileEntityPacket(getBlockPos(), 1, getNBTTagCompound());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
         super.onDataPacket(net, packet);
-        CompoundNBT tag = packet.getNbtCompound();
+        CompoundNBT tag = packet.getTag();
         read(tag);
         onUpdateReceived();
     }
@@ -173,8 +173,8 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
     }
     
     @Override
-    public CompoundNBT write(CompoundNBT tag) {
-        tag = super.write(tag);
+    public CompoundNBT save(CompoundNBT tag) {
+        tag = super.save(tag);
         writeGeneratedFieldsToNBT(tag);
         return tag;
     }
@@ -186,12 +186,12 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
      * @return The written tag.
      */
     public CompoundNBT writeToItemStack(CompoundNBT tag) {
-        return this.write(tag);
+        return this.save(tag);
     }
     
     @Override
-    public final void read(BlockState state, CompoundNBT tag) {
-        super.read(state, tag);
+    public final void load(BlockState state, CompoundNBT tag) {
+        super.load(state, tag);
         read(tag);
     }
 
@@ -216,7 +216,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
      */
     public CompoundNBT getNBTTagCompound() {
         CompoundNBT tag = new CompoundNBT();
-        tag = write(tag);
+        tag = save(tag);
         return tag;
     }
 
@@ -288,7 +288,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
 
     @Override
     public void onDirty() {
-        this.markDirty();
+        this.setChanged();
     }
 
     /**

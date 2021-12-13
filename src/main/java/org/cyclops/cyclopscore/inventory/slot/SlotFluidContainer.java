@@ -28,7 +28,7 @@ public class SlotFluidContainer extends Slot {
     }
 
     @Override
-    public boolean isItemValid(ItemStack itemStack) {
+    public boolean mayPlace(ItemStack itemStack) {
         return checkIsItemValid(itemStack, fluid);
     }
 

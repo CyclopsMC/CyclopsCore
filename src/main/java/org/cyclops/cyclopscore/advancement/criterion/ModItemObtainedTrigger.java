@@ -32,14 +32,14 @@ public class ModItemObtainedTrigger extends AbstractCriterionTrigger<ModItemObta
     }
 
     @Override
-    public Instance deserializeTrigger(JsonObject json, EntityPredicate.AndPredicate entityPredicate, ConditionArrayParser conditionsParser) {
+    public Instance createInstance(JsonObject json, EntityPredicate.AndPredicate entityPredicate, ConditionArrayParser conditionsParser) {
         return new Instance(getId(), entityPredicate, json.get("mod_id").getAsString());
     }
 
     @SubscribeEvent
     public void onPickup(EntityItemPickupEvent event) {
         if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayerEntity) {
-            this.triggerListeners((ServerPlayerEntity) event.getPlayer(),
+            this.trigger((ServerPlayerEntity) event.getPlayer(),
                     (i) -> i.test((ServerPlayerEntity) event.getPlayer(), event.getItem().getItem()));
         }
     }
@@ -47,7 +47,7 @@ public class ModItemObtainedTrigger extends AbstractCriterionTrigger<ModItemObta
     @SubscribeEvent
     public void onCrafted(PlayerEvent.ItemCraftedEvent event) {
         if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayerEntity) {
-            this.triggerListeners((ServerPlayerEntity) event.getPlayer(),
+            this.trigger((ServerPlayerEntity) event.getPlayer(),
                     (i) -> i.test((ServerPlayerEntity) event.getPlayer(), event.getCrafting()));
         }
     }
@@ -55,7 +55,7 @@ public class ModItemObtainedTrigger extends AbstractCriterionTrigger<ModItemObta
     @SubscribeEvent
     public void onSmelted(PlayerEvent.ItemSmeltedEvent event) {
         if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayerEntity) {
-            this.triggerListeners((ServerPlayerEntity) event.getPlayer(),
+            this.trigger((ServerPlayerEntity) event.getPlayer(),
                     (i) -> i.test((ServerPlayerEntity) event.getPlayer(), event.getSmelting()));
         }
     }

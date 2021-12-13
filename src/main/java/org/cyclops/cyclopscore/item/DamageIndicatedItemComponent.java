@@ -98,13 +98,13 @@ public class DamageIndicatedItemComponent {
     public static IFormattableTextComponent getInfo(FluidStack fluidStack, int amount, int capacity) {
         IFormattableTextComponent prefix = new StringTextComponent("");
     	if (!fluidStack.isEmpty()) {
-    		prefix = new TranslationTextComponent(fluidStack.getTranslationKey()).appendString(": ");
+    		prefix = new TranslationTextComponent(fluidStack.getTranslationKey()).append(": ");
     	}
         return prefix
-                .appendString(String.format(Locale.ROOT, "%,d", amount))
-                .appendString(" / ")
-                .appendString(String.format(Locale.ROOT, "%,d", capacity))
-                .appendString(" mB");
+                .append(String.format(Locale.ROOT, "%,d", amount))
+                .append(" / ")
+                .append(String.format(Locale.ROOT, "%,d", capacity))
+                .append(" mB");
     }
     
     /**
@@ -116,7 +116,7 @@ public class DamageIndicatedItemComponent {
      */
     public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
         list.add(((IInformationProvider) itemStack.getItem()).getInfo(itemStack)
-                .setStyle(Style.EMPTY.setFormatting(IInformationProvider.ITEM_PREFIX)));
+                .setStyle(Style.EMPTY.withColor(IInformationProvider.ITEM_PREFIX)));
     }
     
     /**

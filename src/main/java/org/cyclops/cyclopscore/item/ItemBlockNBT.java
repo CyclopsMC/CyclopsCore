@@ -33,14 +33,14 @@ public class ItemBlockNBT extends BlockItem {
     }
 
     @Override
-    protected boolean onBlockPlaced(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack itemStack, BlockState blockState) {
-        if (super.onBlockPlaced(pos, world, player, itemStack, blockState)) {
+    protected boolean updateCustomBlockEntityTag(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack itemStack, BlockState blockState) {
+        if (super.updateCustomBlockEntityTag(pos, world, player, itemStack, blockState)) {
             return true;
         }
 
-        TileEntity tile = world.getTileEntity(pos);
+        TileEntity tile = world.getBlockEntity(pos);
         if (tile != null) {
-            if (!world.isRemote() && tile.onlyOpsCanSetNbt() && (player == null || !player.canUseCommandBlock())) {
+            if (!world.isClientSide() && tile.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks())) {
                 return false;
             }
             return itemStackDataToTile(itemStack, tile);

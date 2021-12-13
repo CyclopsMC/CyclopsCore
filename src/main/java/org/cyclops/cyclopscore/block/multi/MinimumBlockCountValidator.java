@@ -20,6 +20,6 @@ public class MinimumBlockCountValidator implements IBlockCountValidator {
             return null;
         }
         return new TranslationTextComponent("multiblock.cyclopscore.error.blockCount.min",
-                getMinimumCount(), new TranslationTextComponent(block.getTranslationKey()), count);
+                getMinimumCount(), new TranslationTextComponent(block.getDescriptionId()), count);
     }
 }

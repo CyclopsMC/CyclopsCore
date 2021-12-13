@@ -1,28 +1,17 @@
 package org.cyclops.cyclopscore.helper;
 
-import com.mojang.datafixers.util.Either;
-import net.minecraft.profiler.IProfiler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.concurrent.ThreadTaskExecutor;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.AbstractChunkProvider;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.server.ChunkHolder;
-import net.minecraft.world.server.ServerChunkProvider;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.cyclops.cyclopscore.datastructure.DimPos;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 /**
  * Contains helper methods for various tile entity specific things.
@@ -60,7 +49,7 @@ public final class TileHelpers {
      * @return The optional tile entity.
      */
     public static <T> Optional<T> getSafeTile(IBlockReader world, BlockPos pos, Class<T> targetClazz) {
-        TileEntity tile = UNSAFE_TILE_ENTITY_GETTER && world instanceof World && !((World) world).isRemote() && Thread.currentThread() != ((World) world).mainThread ? getWorldTileEntityUnchecked((World) world, pos) : world.getTileEntity(pos);
+        TileEntity tile = UNSAFE_TILE_ENTITY_GETTER && world instanceof World && !((World) world).isClientSide() && Thread.currentThread() != ((World) world).thread ? getWorldBlockEntityUnchecked((World) world, pos) : world.getBlockEntity(pos);
         if (tile == null) {
             return Optional.empty();
         }
@@ -71,24 +60,24 @@ public final class TileHelpers {
         }
     }
 
-    /* WARNING: Hack to allow tile entities to be retrieved from other threads. Needed for our IngredientObserver. */
-    /* This is just a copy of {@link World#getTileEntity} without the thread checks. */
+    /* WARNING: Hack to allow block entities to be retrieved from other threads. Needed for our IngredientObserver. */
+    /* This is just a copy of {@link World#getBlockEntity} without the thread checks. */
     @Nullable
-    static TileEntity getWorldTileEntityUnchecked(World world, BlockPos pos) {
+    static TileEntity getWorldBlockEntityUnchecked(World world, BlockPos pos) {
         if (World.isOutsideBuildHeight(pos)) {
             return null;
         } else {
             TileEntity tileentity = null;
-            if (world.processingLoadedTiles) {
-                tileentity = world.getPendingTileEntityAt(pos);
+            if (world.updatingBlockEntities) {
+                tileentity = world.getPendingBlockEntityAt(pos);
             }
             if (tileentity == null) {
                 // The following line causes another thread check in ServerChunkProvider#getChunk
                 // So we override it inline
-                tileentity = world.getChunkAt(pos).getTileEntity(pos, Chunk.CreateEntityType.IMMEDIATE);
+                tileentity = world.getChunkAt(pos).getBlockEntity(pos, Chunk.CreateEntityType.IMMEDIATE);
             }
             if (tileentity == null) {
-                tileentity = world.getPendingTileEntityAt(pos);
+                tileentity = world.getPendingBlockEntityAt(pos);
             }
             return tileentity;
         }

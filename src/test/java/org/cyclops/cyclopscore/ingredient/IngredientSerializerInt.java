@@ -17,7 +17,7 @@ public class IngredientSerializerInt implements IIngredientSerializer<Integer, B
         if (!(tag instanceof IntNBT)) {
             throw new IllegalArgumentException("This deserializer only accepts NBTTagInt");
         }
-        return ((IntNBT) tag).getInt();
+        return ((IntNBT) tag).getAsInt();
     }
 
     @Override
@@ -30,7 +30,7 @@ public class IngredientSerializerInt implements IIngredientSerializer<Integer, B
         if (!(tag instanceof ByteNBT)) {
             throw new IllegalArgumentException("This deserializer only accepts NBTTagByte");
         }
-        return ((ByteNBT) tag).getByte() == 1;
+        return ((ByteNBT) tag).getAsByte() == 1;
     }
 
 }

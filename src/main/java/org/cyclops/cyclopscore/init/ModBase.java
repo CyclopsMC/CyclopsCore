@@ -292,7 +292,7 @@ public abstract class ModBase<T extends ModBase> {
      */
     @SubscribeEvent
     protected void onServerStarting(FMLServerStartingEvent event) {
-        event.getServer().getCommandManager().getDispatcher().register(constructBaseCommand());
+        event.getServer().getCommands().getDispatcher().register(constructBaseCommand());
     }
 
     /**

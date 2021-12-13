@@ -26,10 +26,10 @@ public class InventoryHelpers {
 	 * @param blockPos The position.
 	 */
 	public static void dropItems(World world, IInventory inventory, BlockPos blockPos) {
-		for (int i = 0; i < inventory.getSizeInventory(); i++) {
-			ItemStack itemStack = inventory.getStackInSlot(i);
+		for (int i = 0; i < inventory.getContainerSize(); i++) {
+			ItemStack itemStack = inventory.getItem(i);
 			if (!itemStack.isEmpty() && itemStack.getCount() > 0)
-				ItemStackHelpers.spawnItemStack(world, blockPos, inventory.getStackInSlot(i).copy());
+				ItemStackHelpers.spawnItemStack(world, blockPos, inventory.getItem(i).copy());
 		}
 	}
 
@@ -38,8 +38,8 @@ public class InventoryHelpers {
 	 * @param inventory inventory to clear
 	 */
 	public static void clearInventory(IInventory inventory) {
-	    for (int i = 0; i < inventory.getSizeInventory(); i++) {
-	        inventory.setInventorySlotContents(i, ItemStack.EMPTY);
+	    for (int i = 0; i < inventory.getContainerSize(); i++) {
+	        inventory.setItem(i, ItemStack.EMPTY);
 	    }
 	}
 
@@ -68,13 +68,13 @@ public class InventoryHelpers {
 	public static void tryReAddToStack(PlayerEntity player, ItemStack originalStack, ItemStack newStackPart, Hand hand) {
 		if (!player.isCreative()) {
         	if(!originalStack.isEmpty() && originalStack.getCount() == 1) {
-        		player.inventory.setInventorySlotContents(hand == Hand.MAIN_HAND ? player.inventory.currentItem : 40, newStackPart);
+        		player.inventory.setItem(hand == Hand.MAIN_HAND ? player.inventory.selected : 40, newStackPart);
         	} else {
                 if(!originalStack.isEmpty()) {
 					originalStack.shrink(1);
 				}
-        		if(!player.inventory.addItemStackToInventory(newStackPart)) {
-        			player.dropItem(newStackPart, false);
+        		if(!player.inventory.add(newStackPart)) {
+        			player.drop(newStackPart, false);
         		}
         	}
         }
@@ -104,8 +104,8 @@ public class InventoryHelpers {
 	public static void readFromNBT(IInventory inventory, CompoundNBT data, String tagName) {
         ListNBT nbttaglist = data.getList(tagName, Constants.NBT.TAG_COMPOUND);
         
-        for(int j = 0; j < inventory.getSizeInventory(); j++) {
-        	inventory.setInventorySlotContents(j, ItemStack.EMPTY);
+        for(int j = 0; j < inventory.getContainerSize(); j++) {
+        	inventory.setItem(j, ItemStack.EMPTY);
         }
 
         for(int j = 0; j < nbttaglist.size(); j++) {
@@ -116,8 +116,8 @@ public class InventoryHelpers {
             } else {
                 index = slot.getByte("Slot");
             }
-            if(index >= 0 && index < inventory.getSizeInventory()) {
-            	inventory.setInventorySlotContents(index, ItemStack.read(slot));
+            if(index >= 0 && index < inventory.getContainerSize()) {
+            	inventory.setItem(index, ItemStack.of(slot));
             }
         }
     }
@@ -130,13 +130,13 @@ public class InventoryHelpers {
 	 */
 	public static void writeToNBT(IInventory inventory, CompoundNBT data, String tagName) {
         ListNBT slots = new ListNBT();
-        for(byte index = 0; index < inventory.getSizeInventory(); ++index) {
-        	ItemStack itemStack = inventory.getStackInSlot(index);
+        for(byte index = 0; index < inventory.getContainerSize(); ++index) {
+        	ItemStack itemStack = inventory.getItem(index);
             if(!itemStack.isEmpty() && itemStack.getCount() > 0) {
                 CompoundNBT slot = new CompoundNBT();
                 slot.putInt("index", index);
                 slots.add(slot);
-                itemStack.write(slot);
+                itemStack.save(slot);
             }
         }
         data.put(tagName, slots);
@@ -161,7 +161,7 @@ public class InventoryHelpers {
 	 */
 	public static ItemStack getItemFromIndex(PlayerEntity player, int itemIndex, Hand hand) {
 		return Hand.MAIN_HAND.equals(hand)
-				? player.inventory.mainInventory.get(itemIndex) : player.getHeldItemOffhand();
+				? player.inventory.items.get(itemIndex) : player.getOffhandItem();
 	}
 
 	/**
@@ -173,9 +173,9 @@ public class InventoryHelpers {
 	 */
 	public static void setItemAtIndex(PlayerEntity player, int itemIndex, Hand hand, ItemStack itemStack) {
 		if (Hand.MAIN_HAND.equals(hand)) {
-			player.inventory.setInventorySlotContents(itemIndex, itemStack);
+			player.inventory.setItem(itemIndex, itemStack);
 		} else {
-			player.setHeldItem(hand, itemStack);
+			player.setItemInHand(hand, itemStack);
 		}
 	}
 
@@ -197,8 +197,8 @@ public class InventoryHelpers {
 	 * @return The remainder of the added stack
 	 */
 	public static ItemStack addToStack(ItemStack itemStack, ItemStack toAdd) {
-		if (ItemStack.areItemStackTagsEqual(toAdd, itemStack)
-				&& ItemStack.areItemsEqual(toAdd, itemStack)
+		if (ItemStack.tagMatches(toAdd, itemStack)
+				&& ItemStack.isSame(toAdd, itemStack)
 				&& itemStack.getCount() < itemStack.getMaxStackSize()) {
 			toAdd = toAdd.copy();
 			int toAddCount = Math.min(itemStack.getMaxStackSize() - itemStack.getCount(), toAdd.getCount());
@@ -217,17 +217,17 @@ public class InventoryHelpers {
 	 * @return The remaining itemstack that could not be added anymore.
 	 */
 	public static ItemStack fillSlot(IInventory inventory, int slot, ItemStack itemStack, boolean simulate) {
-		ItemStack produceStack = inventory.getStackInSlot(slot);
+		ItemStack produceStack = inventory.getItem(slot);
 		if(produceStack.isEmpty()) {
 			if (!simulate) {
-				inventory.setInventorySlotContents(slot, itemStack);
+				inventory.setItem(slot, itemStack);
 			}
 			return ItemStack.EMPTY;
 		} else {
 			produceStack = produceStack.copy();
 			ItemStack remainder = addToStack(produceStack, itemStack);
 			if (!simulate && remainder.getCount() != itemStack.getCount()) {
-				inventory.setInventorySlotContents(slot, produceStack);
+				inventory.setItem(slot, produceStack);
 			}
 			return remainder;
 		}

@@ -28,7 +28,7 @@ public class KeyBindingAppendix extends SectionAppendix {
     public KeyBindingAppendix(IInfoBook infoBook, String keybindingName) throws InfoBookParser.InvalidAppendixException {
         super(infoBook);
         if (MinecraftHelpers.isClientSide()) {
-            this.keyBinding = KeyBinding.KEYBIND_ARRAY.get(keybindingName);
+            this.keyBinding = KeyBinding.ALL.get(keybindingName);
             if (this.keyBinding == null) {
                 throw new InfoBookParser.InvalidAppendixException("Could not find a keybinding by name " + keybindingName);
             }
@@ -57,11 +57,11 @@ public class KeyBindingAppendix extends SectionAppendix {
         gui.drawTextBanner(matrixStack, x + width / 2, y - 2);
         gui.drawScaledCenteredString(matrixStack, L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".keybinding"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
 
-        gui.drawScaledCenteredString(matrixStack, TextFormatting.ITALIC.toString() + L10NHelpers.localize(keyBinding.getKeyDescription()),
+        gui.drawScaledCenteredString(matrixStack, TextFormatting.ITALIC.toString() + L10NHelpers.localize(keyBinding.getName()),
                 x, y - 2 + 12, width, 0.9f, gui.getBannerWidth() + 8, Helpers.RGBToInt(30, 20, 120));
 
-        String binding = L10NHelpers.localize(keyBinding.getTranslationKey());
-        int bindingWidth = gui.getFontRenderer().getStringWidth(binding) + 2;
+        String binding = L10NHelpers.localize(keyBinding.saveString());
+        int bindingWidth = gui.getFontRenderer().width(binding) + 2;
         gui.drawOuterBorder(matrixStack, x + width / 2 - bindingWidth / 2 - 1, y + 17, bindingWidth, 10, 1, 1, 1, 0.2f);
         gui.drawScaledCenteredString(matrixStack, binding, x, y + 22, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
     }

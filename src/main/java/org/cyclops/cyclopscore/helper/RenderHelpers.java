@@ -54,7 +54,7 @@ public class RenderHelpers {
      * @param texture The texture to bind.
      */
     public static void bindTexture(ResourceLocation texture) {
-    	Minecraft.getInstance().getTextureManager().bindTexture(texture);
+    	Minecraft.getInstance().getTextureManager().bind(texture);
     }
 
     /**
@@ -62,7 +62,7 @@ public class RenderHelpers {
      * @param particle A particle.
      */
     public static void emitParticle(Particle particle) {
-        Minecraft.getInstance().particles.addEffect(particle);
+        Minecraft.getInstance().particleEngine.add(particle);
     }
 
     /**
@@ -76,11 +76,11 @@ public class RenderHelpers {
      * @param color The color to draw
      */
     public static void drawScaledString(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, float scale, int color) {
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(x, y, 0);
-        GlStateManager.scalef(scale, scale, 1.0f);
-        fontRenderer.drawString(matrixStack, string, 0, 0, color);
-        GlStateManager.popMatrix();
+        GlStateManager._pushMatrix();
+        GlStateManager._translatef(x, y, 0);
+        GlStateManager._scalef(scale, scale, 1.0f);
+        fontRenderer.draw(matrixStack, string, 0, 0, color);
+        GlStateManager._popMatrix();
     }
 
     /**
@@ -94,11 +94,11 @@ public class RenderHelpers {
      * @param color The color to draw
      */
     public static void drawScaledStringWithShadow(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, float scale, int color) {
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(x, y, 0);
         matrixStack.scale(scale, scale, 1.0f);
-        fontRenderer.drawStringWithShadow(matrixStack, string, 0, 0, color);
-        matrixStack.pop();
+        fontRenderer.drawShadow(matrixStack, string, 0, 0, color);
+        matrixStack.popPose();
     }
 
     /**
@@ -129,7 +129,7 @@ public class RenderHelpers {
      * @param color The color to draw
      */
     public static void drawScaledCenteredString(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
-        float originalWidth = fontRenderer.getStringWidth(string) * originalScale;
+        float originalWidth = fontRenderer.width(string) * originalScale;
         float scale = Math.min(originalScale, maxWidth / originalWidth * originalScale);
         drawScaledCenteredString(matrixStack, fontRenderer, string, x, y, width, scale, color);
     }
@@ -146,12 +146,12 @@ public class RenderHelpers {
      * @param color The color to draw
      */
     public static void drawScaledCenteredString(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, int width, float scale, int color) {
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.scale(scale, scale, 1.0f);
-        int titleLength = fontRenderer.getStringWidth(string);
-        int titleHeight = fontRenderer.FONT_HEIGHT;
-        fontRenderer.drawString(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
-        matrixStack.pop();
+        int titleLength = fontRenderer.width(string);
+        int titleHeight = fontRenderer.lineHeight;
+        fontRenderer.draw(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+        matrixStack.popPose();
     }
 
     /**
@@ -161,9 +161,9 @@ public class RenderHelpers {
      */
     public static IBakedModel getBakedModel(BlockState blockState) {
         Minecraft mc = Minecraft.getInstance();
-        BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRendererDispatcher();
-        BlockModelShapes blockModelShapes = blockRendererDispatcher.getBlockModelShapes();
-        return blockModelShapes.getModel(blockState);
+        BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRenderer();
+        BlockModelShapes blockModelShapes = blockRendererDispatcher.getBlockModelShaper();
+        return blockModelShapes.getBlockModel(blockState);
     }
 
     /**
@@ -187,12 +187,12 @@ public class RenderHelpers {
      * @param side The hit side.
      */
     public static void addBlockHitEffects(ParticleManager particleManager, ClientWorld world, BlockState blockState, BlockPos pos, Direction side)  {
-        if (blockState.getRenderType() != BlockRenderType.INVISIBLE) {
+        if (blockState.getRenderShape() != BlockRenderType.INVISIBLE) {
             int i = pos.getX();
             int j = pos.getY();
             int k = pos.getZ();
             float f = 0.1F;
-            AxisAlignedBB bb = blockState.getShape(world, pos).getBoundingBox();
+            AxisAlignedBB bb = blockState.getShape(world, pos).bounds();
             double d0 = (double)i + rand.nextDouble() * (bb.maxX - bb.minX - (double)(f * 2.0F)) + (double)f + bb.minX;
             double d1 = (double)j + rand.nextDouble() * (bb.maxY - bb.minY - (double)(f * 2.0F)) + (double)f + bb.minY;
             double d2 = (double)k + rand.nextDouble() * (bb.maxZ - bb.minZ - (double)(f * 2.0F)) + (double)f + bb.minZ;
@@ -204,13 +204,13 @@ public class RenderHelpers {
             if (side == Direction.WEST)  d0 = (double)i + bb.minX - (double)f;
             if (side == Direction.EAST)  d0 = (double)i + bb.maxX + (double)f;
 
-            Particle fx = new DiggingParticle.Factory().makeParticle(new BlockParticleData(ParticleTypes.BLOCK, blockState), world, d0, d1, d2, 0.0D, 0.0D, 0.0D);
-            particleManager.addEffect(fx);
+            Particle fx = new DiggingParticle.Factory().createParticle(new BlockParticleData(ParticleTypes.BLOCK, blockState), world, d0, d1, d2, 0.0D, 0.0D, 0.0D);
+            particleManager.add(fx);
         }
     }
 
     public static final Function<ResourceLocation, TextureAtlasSprite> TEXTURE_GETTER =
-            location -> Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(location);
+            location -> Minecraft.getInstance().getTextureAtlas(PlayerContainer.BLOCK_ATLAS).apply(location);
 
     /**
      * Get the default icon from a block.
@@ -218,7 +218,7 @@ public class RenderHelpers {
      * @return The icon.
      */
     public static TextureAtlasSprite getBlockIcon(Block block) {
-        return Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getTexture(block.getDefaultState());
+        return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getParticleIcon(block.defaultBlockState());
     }
 
     /**
@@ -256,7 +256,7 @@ public class RenderHelpers {
      */
     public static void renderFluidContext(FluidStack fluid, MatrixStack matrixStack, IFluidContextRender render) {
         if(fluid != null && fluid.getAmount() > 0) {
-            matrixStack.push();
+            matrixStack.pushPose();
 
             // Make sure both sides are rendered
             RenderSystem.enableBlend();
@@ -269,12 +269,12 @@ public class RenderHelpers {
             RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
             // Set blockState textures
-            Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            Minecraft.getInstance().getTextureManager().bind(AtlasTexture.LOCATION_BLOCKS);
 
             render.render();
 
             RenderSystem.disableBlend();
-            matrixStack.pop();
+            matrixStack.popPose();
         }
     }
 
@@ -335,7 +335,7 @@ public class RenderHelpers {
      * @return If the point is inside the button's region.
      */
     public static boolean isPointInButton(Button button, int pointX, int pointY) {
-        return isPointInRegion(button.x, button.y, button.getWidth(), button.getHeightRealms(), pointX, pointY);
+        return isPointInRegion(button.x, button.y, button.getWidth(), button.getHeight(), pointX, pointY);
     }
 
     /**

@@ -33,7 +33,7 @@ public abstract class ButtonExtended extends Button {
 
 	protected void drawBackground(MatrixStack matrixStack) {
 		RenderHelpers.bindTexture(WIDGETS_LOCATION);
-		GlStateManager.color4f(1, 1, 1, 1);
+		GlStateManager._color4f(1, 1, 1, 1);
 
 		int hoverState = getYImage(isHovered());
 		blit(matrixStack, x, y, 0, 46 + hoverState * 20, width / 2, height / 2); // top left

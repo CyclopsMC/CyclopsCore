@@ -30,25 +30,25 @@ public class ParticleBlur extends SpriteTexturedParticle {
 	public ParticleBlur(ParticleBlurData data, ClientWorld world, double x, double y, double z,
 						double motionX, double motionY, double motionZ) {
 		super(world, x, y, z, motionX, motionY, motionZ);
-		this.motionX = motionX;
-		this.motionY = motionY;
-		this.motionZ = motionZ;
+		this.xd = motionX;
+		this.yd = motionY;
+		this.zd = motionZ;
 		
-		this.particleRed = data.getRed();
-		this.particleGreen = data.getGreen();
-		this.particleBlue = data.getBlue();
-		this.particleAlpha = 0.9F;
-		this.particleGravity = 0;
+		this.rCol = data.getRed();
+		this.gCol = data.getGreen();
+		this.bCol = data.getBlue();
+		this.alpha = 0.9F;
+		this.gravity = 0;
 		
-		this.originalScale = (this.rand.nextFloat() * 0.5F + 0.5F) * 2.0F * data.getScale();
-		this.maxAge = (int) ((rand.nextFloat() * 0.33F + 0.66F) * data.getAgeMultiplier());
+		this.originalScale = (this.random.nextFloat() * 0.5F + 0.5F) * 2.0F * data.getScale();
+		this.lifetime = (int) ((random.nextFloat() * 0.33F + 0.66F) * data.getAgeMultiplier());
 		this.setSize(0.01F, 0.01F);
 		
-		this.prevPosX = posX;
-		this.prevPosY = posY;
-		this.prevPosZ = posZ;
+		this.xo = x;
+		this.yo = y;
+		this.zo = z;
 		
-		this.scaleLife = (float) (maxAge / 2.5);
+		this.scaleLife = (float) (lifetime / 2.5);
 		
 		validateDistance();
 	}
@@ -57,13 +57,13 @@ public class ParticleBlur extends SpriteTexturedParticle {
 		LivingEntity renderentity = Minecraft.getInstance().player;
 		int visibleDistance = MAX_VIEW_DISTANCE;
 		
-		if(Minecraft.getInstance().gameSettings.graphicFanciness.func_238162_a_() == 0) {
+		if(Minecraft.getInstance().options.graphicsMode.getId() == 0) {
 			visibleDistance = visibleDistance / 2;
 		}
 
 		if(renderentity == null
-				|| renderentity.getDistanceSq(posX, posY, posZ) > visibleDistance * visibleDistance) {
-			maxAge = 0;
+				|| renderentity.distanceToSqr(x, y, z) > visibleDistance * visibleDistance) {
+			lifetime = 0;
 		}
 	}
 
@@ -74,25 +74,25 @@ public class ParticleBlur extends SpriteTexturedParticle {
 
 	@Override
 	public void tick() {
-		prevPosX = posX;
-		prevPosY = posY;
-		prevPosZ = posZ;
+		xo = x;
+		yo = y;
+		zo = z;
 
-		if (age++ >= maxAge) {
-			setExpired();
+		if (age++ >= lifetime) {
+			remove();
 		}
 
-		motionY -= 0.04D * particleGravity;
-		posX += motionX;
-		posY += motionY;
-		posZ += motionZ;
-		motionX *= 0.98000001907348633D;
-		motionY *= 0.98000001907348633D;
-		motionZ *= 0.98000001907348633D;
+		yd -= 0.04D * gravity;
+		x += xd;
+		y += yd;
+		z += zd;
+		xd *= 0.98000001907348633D;
+		yd *= 0.98000001907348633D;
+		zd *= 0.98000001907348633D;
 	}
 
 	@Override
-	protected int getBrightnessForRender(float partialTicks) {
+	protected int getLightColor(float partialTicks) {
 		return 0xF000F0;
 	}
 
@@ -101,39 +101,39 @@ public class ParticleBlur extends SpriteTexturedParticle {
 	 * @param particleGravity The new gravity
 	 */
 	public void setGravity(float particleGravity) {
-		this.particleGravity = particleGravity;
+		this.gravity = particleGravity;
 	}
 
 	@Override
-	public float getScale(float p_217561_1_) {
+	public float getQuadSize(float p_217561_1_) {
 		float agescale = age / this.scaleLife;
 		if (agescale > 1F) {
 			agescale = 2 - agescale;
 		}
-		particleScale = originalScale * agescale * 0.5F;
-		return particleScale;
+		quadSize = originalScale * agescale * 0.5F;
+		return quadSize;
 	}
 
 	public static class RenderType implements IParticleRenderType {
 
 		@Override
-		public void beginRender(BufferBuilder bufferBuilder, TextureManager textureManager) {
+		public void begin(BufferBuilder bufferBuilder, TextureManager textureManager) {
 			RenderSystem.depthMask(false);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
 			RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
 			RenderSystem.disableLighting();
 
-			textureManager.bindTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE);
-			textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE).setBlurMipmap(true, false);
+			textureManager.bind(AtlasTexture.LOCATION_PARTICLES);
+			textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES).setBlurMipmap(true, false);
 
-			bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+			bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE);
 		}
 
 		@Override
-		public void finishRender(Tessellator tessellator) {
-			tessellator.draw();
-			Minecraft.getInstance().textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE).restoreLastBlurMipmap();
+		public void end(Tessellator tessellator) {
+			tessellator.end();
+			Minecraft.getInstance().textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES).restoreLastBlurMipmap();
 			RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 			RenderSystem.disableBlend();
 			RenderSystem.depthMask(true);

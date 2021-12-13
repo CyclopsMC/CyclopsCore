@@ -42,12 +42,12 @@ public abstract class PacketCodec extends PacketBase {
 
 			@Override
 			public void encode(Object object, PacketBuffer output) {
-				output.writeString((String) object);
+				output.writeUtf((String) object);
 			}
 
 			@Override
 			public Object decode(PacketBuffer input) {
-				return input.readString(32767); // The arg-less version is client-side only, so we copy its implementation.
+				return input.readUtf(32767); // The arg-less version is client-side only, so we copy its implementation.
 			}
 		});
 		
@@ -169,11 +169,11 @@ public abstract class PacketCodec extends PacketBase {
 				for(Map.Entry entry : entries) {
 					if(keyAction == null) {
 						keyAction = getAction(entry.getKey().getClass());
-						output.writeString(entry.getKey().getClass().getName());
+						output.writeUtf(entry.getKey().getClass().getName());
 					}
 					if(valueAction == null) {
 						valueAction = getAction(entry.getValue().getClass());
-						output.writeString(entry.getValue().getClass().getName());
+						output.writeUtf(entry.getValue().getClass().getName());
 					}
 					keyAction.encode(entry.getKey(), output);
 					valueAction.encode(entry.getValue(), output);
@@ -189,8 +189,8 @@ public abstract class PacketCodec extends PacketBase {
 					return map;
 				}
 				try {
-					ICodecAction keyAction = getAction(Class.forName(input.readString(READ_STRING_MAX_LENGTH)));
-					ICodecAction valueAction = getAction(Class.forName(input.readString(READ_STRING_MAX_LENGTH)));
+					ICodecAction keyAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
+					ICodecAction valueAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
 					for(int i = 0; i < size; i++) {
 						Object key = keyAction.decode(input);
 						Object value = valueAction.decode(input);
@@ -207,12 +207,12 @@ public abstract class PacketCodec extends PacketBase {
 
 			@Override
 			public void encode(Object object, PacketBuffer output) {
-				output.writeCompoundTag((CompoundNBT) object);
+				output.writeNbt((CompoundNBT) object);
 			}
 
 			@Override
 			public Object decode(PacketBuffer input) {
-				return input.readCompoundTag();
+				return input.readNbt();
 			}
 		});
 
@@ -222,12 +222,12 @@ public abstract class PacketCodec extends PacketBase {
 			public void encode(Object object, PacketBuffer output) {
 				CompoundNBT tag = new CompoundNBT();
 				tag.put("v", (INBT) object);
-				output.writeCompoundTag(tag);
+				output.writeNbt(tag);
 			}
 
 			@Override
 			public Object decode(PacketBuffer input) {
-				CompoundNBT tag = input.readCompoundTag();
+				CompoundNBT tag = input.readNbt();
 				return tag.get("v");
 			}
 		});
@@ -236,12 +236,12 @@ public abstract class PacketCodec extends PacketBase {
 
 			@Override
 			public void encode(Object object, PacketBuffer output) {
-				output.writeItemStack((ItemStack) object);
+				output.writeItem((ItemStack) object);
 			}
 
 			@Override
 			public Object decode(PacketBuffer input) {
-				return input.readItemStack();
+				return input.readItem();
 			}
 		});
 
@@ -249,12 +249,12 @@ public abstract class PacketCodec extends PacketBase {
 
 			@Override
 			public void encode(Object object, PacketBuffer output) {
-				output.writeCompoundTag(((FluidStack) object).writeToNBT(new CompoundNBT()));
+				output.writeNbt(((FluidStack) object).writeToNBT(new CompoundNBT()));
 			}
 
 			@Override
 			public Object decode(PacketBuffer input) {
-				return FluidStack.loadFluidStackFromNBT(input.readCompoundTag());
+				return FluidStack.loadFluidStackFromNBT(input.readNbt());
 			}
 		});
 
@@ -288,15 +288,15 @@ public abstract class PacketCodec extends PacketBase {
 
 			@Override
 			public void encode(Object object, PacketBuffer output) {
-				output.writeString(((RegistryKey) object).getRegistryName().toString());
-				output.writeString(((RegistryKey) object).getLocation().toString());
+				output.writeUtf(((RegistryKey) object).getRegistryName().toString());
+				output.writeUtf(((RegistryKey) object).location().toString());
 			}
 
 			@Override
 			public Object decode(PacketBuffer input) {
-				return RegistryKey.getOrCreateKey(
-						RegistryKey.getOrCreateRootKey(new ResourceLocation(input.readString(READ_STRING_MAX_LENGTH))),
-						new ResourceLocation(input.readString(READ_STRING_MAX_LENGTH)));
+				return RegistryKey.create(
+						RegistryKey.createRegistryKey(new ResourceLocation(input.readUtf(READ_STRING_MAX_LENGTH))),
+						new ResourceLocation(input.readUtf(READ_STRING_MAX_LENGTH)));
 			}
 		});
 
@@ -336,14 +336,14 @@ public abstract class PacketCodec extends PacketBase {
 					if(value != null) {
 						if (valueAction == null) {
 							valueAction = getAction(value.getClass());
-							output.writeString(value.getClass().getName());
+							output.writeUtf(value.getClass().getName());
 						}
 						output.writeInt(i);
 						valueAction.encode(value, output);
 					}
 				}
                 if(valueAction == null) {
-					output.writeString("__noclass");
+					output.writeUtf("__noclass");
 				} else {
 					output.writeInt(-1);
 				}
@@ -360,7 +360,7 @@ public abstract class PacketCodec extends PacketBase {
 					list = Lists.newArrayListWithExpectedSize(size);
 				}
 				try {
-					String className = input.readString(READ_STRING_MAX_LENGTH);
+					String className = input.readUtf(READ_STRING_MAX_LENGTH);
 					if(!className.equals("__noclass")) {
 						ICodecAction valueAction = getAction(Class.forName(className));
                         int i, currentLength = 0;
@@ -393,8 +393,8 @@ public abstract class PacketCodec extends PacketBase {
 
 			@Override
 			public void encode(Object object, PacketBuffer output) {
-				output.writeString(((Pair) object).getLeft().getClass().getName());
-				output.writeString(((Pair) object).getRight().getClass().getName());
+				output.writeUtf(((Pair) object).getLeft().getClass().getName());
+				output.writeUtf(((Pair) object).getRight().getClass().getName());
 				write(output, ((Pair) object).getLeft());
 				write(output, ((Pair) object).getRight());
 			}
@@ -402,8 +402,8 @@ public abstract class PacketCodec extends PacketBase {
 			@Override
 			public Object decode(PacketBuffer input) {
 				try {
-					ICodecAction keyAction = getAction(Class.forName(input.readString(READ_STRING_MAX_LENGTH)));
-					ICodecAction valueAction = getAction(Class.forName(input.readString(READ_STRING_MAX_LENGTH)));
+					ICodecAction keyAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
+					ICodecAction valueAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
 					Object key = keyAction.decode(input);
 					Object value = valueAction.decode(input);
 					return Pair.of(key, value);

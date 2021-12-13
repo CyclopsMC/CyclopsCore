@@ -21,7 +21,7 @@ public class RegistryExportableItemTranslationKeys implements IRegistryExportabl
         for (ResourceLocation key : ForgeRegistries.ITEMS.getKeys()) {
             Item value = ForgeRegistries.ITEMS.getValue(key);
             ItemStack itemStack = new ItemStack(value);
-            String translationKey = itemStack.getTranslationKey();
+            String translationKey = itemStack.getDescriptionId();
 
             JsonObject object = new JsonObject();
             object.addProperty("translationKey", translationKey);

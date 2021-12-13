@@ -68,26 +68,26 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return contents.length;
     }
 
     @Override
-    public ItemStack getStackInSlot(int slotId) {
+    public ItemStack getItem(int slotId) {
         return contents[slotId];
     }
 
     @Override
-    public ItemStack decrStackSize(int slotId, int count) {
-        ItemStack stack = getStackInSlot(slotId);
-        if (slotId < getSizeInventory() && !stack.isEmpty()) {
+    public ItemStack removeItem(int slotId, int count) {
+        ItemStack stack = getItem(slotId);
+        if (slotId < getContainerSize() && !stack.isEmpty()) {
             if (stack.getCount() > count) {
                 ItemStack slotContents = stack.copy();
                 ItemStack result = slotContents.split(count);
-                setInventorySlotContents(slotId, slotContents);
+                setItem(slotId, slotContents);
                 return result;
             }
-            setInventorySlotContents(slotId, ItemStack.EMPTY);
+            setItem(slotId, ItemStack.EMPTY);
             onInventoryChanged();
             return stack;
         }
@@ -95,39 +95,39 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
     }
 
     @Override
-    public void setInventorySlotContents(int slotId, ItemStack itemstack) {
-        if (slotId >= getSizeInventory()) {
+    public void setItem(int slotId, ItemStack itemstack) {
+        if (slotId >= getContainerSize()) {
             return;
         }
         this.contents[slotId] = Objects.requireNonNull(itemstack);
 
-        if (!itemstack.isEmpty() && itemstack.getCount() > this.getInventoryStackLimit()) {
-            itemstack.setCount(this.getInventoryStackLimit());
+        if (!itemstack.isEmpty() && itemstack.getCount() > this.getMaxStackSize()) {
+            itemstack.setCount(this.getMaxStackSize());
         }
         onInventoryChanged();
     }
 
     @Override
-    public int getInventoryStackLimit() {
+    public int getMaxStackSize() {
         return stackLimit;
     }
 
     protected void onInventoryChanged() {
-        markDirty();
+        setChanged();
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity entityplayer) {
+    public boolean stillValid(PlayerEntity entityplayer) {
         return true;
     }
 
     @Override
-    public void openInventory(PlayerEntity playerIn) {
+    public void startOpen(PlayerEntity playerIn) {
 
     }
 
     @Override
-    public void closeInventory(PlayerEntity playerIn) {
+    public void stopOpen(PlayerEntity playerIn) {
 
     }
 
@@ -144,7 +144,7 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
     public void readFromNBT(CompoundNBT data, String tag) {
         ListNBT nbttaglist = data.getList(tag, Constants.NBT.TAG_COMPOUND);
 
-        for (int j = 0; j < getSizeInventory(); ++j)
+        for (int j = 0; j < getContainerSize(); ++j)
             contents[j] = ItemStack.EMPTY;
 
         for (int j = 0; j < nbttaglist.size(); ++j) {
@@ -155,8 +155,8 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
             } else {
                 index = slot.getByte("Slot");
             }
-            if (index >= 0 && index < getSizeInventory()) {
-                contents[index] = ItemStack.read(slot);
+            if (index >= 0 && index < getContainerSize()) {
+                contents[index] = ItemStack.of(slot);
             }
         }
     }
@@ -173,26 +173,26 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
      */
     public void writeToNBT(CompoundNBT data, String tag) {
         ListNBT slots = new ListNBT();
-        for (byte index = 0; index < getSizeInventory(); ++index) {
-            ItemStack itemStack = getStackInSlot(index);
+        for (byte index = 0; index < getContainerSize(); ++index) {
+            ItemStack itemStack = getItem(index);
             if (!itemStack.isEmpty() && itemStack.getCount() > 0) {
                 CompoundNBT slot = new CompoundNBT();
                 slots.add(slot);
                 slot.putByte("Slot", index);
-                itemStack.write(slot);
+                itemStack.save(slot);
             }
         }
         data.put(tag, slots);
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int slotId) {
-        ItemStack stackToTake = getStackInSlot(slotId);
+    public ItemStack removeItemNoUpdate(int slotId) {
+        ItemStack stackToTake = getItem(slotId);
         if (stackToTake.isEmpty()) {
             return ItemStack.EMPTY;
         }
 
-        setInventorySlotContents(slotId, ItemStack.EMPTY);
+        setItem(slotId, ItemStack.EMPTY);
         return stackToTake;
     }
 
@@ -205,19 +205,19 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
     }
 
     @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack) {
-        return i < getSizeInventory() && i >= 0;
+    public boolean canPlaceItem(int i, ItemStack itemstack) {
+        return i < getContainerSize() && i >= 0;
     }
 
     @Override
-    public void clear() {
-        for(int i = 0; i < getSizeInventory(); i++) {
+    public void clearContent() {
+        for(int i = 0; i < getContainerSize(); i++) {
             contents[i] = ItemStack.EMPTY;
         }
     }
 
     @Override
-	public void markDirty() {
+	public void setChanged() {
         this.hash++;
         List<IDirtyMarkListener> dirtyMarkListeners;
         synchronized (this) {
@@ -230,8 +230,8 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
 
     @Override
     public boolean isEmpty() {
-        for(int i = 0; i < getSizeInventory(); i++) {
-            if(!getStackInSlot(i).isEmpty()) {
+        for(int i = 0; i < getContainerSize(); i++) {
+            if(!getItem(i).isEmpty()) {
                 return false;
             }
         }
@@ -267,16 +267,16 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
 
     @Override
     public int[] getSlotsForFace(Direction side) {
-        return IntStream.range(0, getSizeInventory()).toArray();
+        return IntStream.range(0, getContainerSize()).toArray();
     }
 
     @Override
-    public boolean canInsertItem(int index, ItemStack itemStackIn, @Nullable Direction direction) {
+    public boolean canPlaceItemThroughFace(int index, ItemStack itemStackIn, @Nullable Direction direction) {
         return true;
     }
 
     @Override
-    public boolean canExtractItem(int index, ItemStack stack, Direction direction) {
+    public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
         return true;
     }
 }

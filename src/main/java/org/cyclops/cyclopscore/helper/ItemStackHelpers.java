@@ -60,11 +60,11 @@ public final class ItemStackHelpers {
                     z + (double)offsetZ, dropStack);
 
             float motion = 0.05F;
-            entityitem.setMotion(
+            entityitem.setDeltaMovement(
                     RANDOM.nextGaussian() * (double)motion,
                     RANDOM.nextGaussian() * (double)motion + 0.2D,
                     RANDOM.nextGaussian() * (double)motion);
-            world.addEntity(entityitem);
+            world.addFreshEntity(entityitem);
         }
     }
 
@@ -76,22 +76,22 @@ public final class ItemStackHelpers {
      * @param player The player to direct the motion to
      */
     public static void spawnItemStackToPlayer(World world, BlockPos pos, ItemStack stack, PlayerEntity player) {
-        if (!world.isRemote()) {
+        if (!world.isClientSide()) {
             float f = 0.5F;
 
-            double xo = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-            double yo = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-            double zo = (double)(world.rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+            double xo = (double)(world.random.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+            double yo = (double)(world.random.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+            double zo = (double)(world.random.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
             ItemEntity entityitem = new ItemEntity(world, (double)pos.getX() + xo, (double)pos.getY() + yo, (double)pos.getZ() + zo, stack);
 
             double d0 = 8.0D;
-            double d1 = (player.getPosX() - entityitem.getPosX()) / d0;
-            double d2 = (player.getPosY() + (double)player.getEyeHeight() - entityitem.getPosY()) / d0;
-            double d3 = (player.getPosZ() - entityitem.getPosZ()) / d0;
+            double d1 = (player.getX() - entityitem.getX()) / d0;
+            double d2 = (player.getY() + (double)player.getEyeHeight() - entityitem.getY()) / d0;
+            double d3 = (player.getZ() - entityitem.getZ()) / d0;
 
-            entityitem.setMotion(entityitem.getMotion().add(d1, d2, d3));
-            entityitem.setNoPickupDelay();
-            world.addEntity(entityitem);
+            entityitem.setDeltaMovement(entityitem.getDeltaMovement().add(d1, d2, d3));
+            entityitem.setNoPickUpDelay();
+            world.addFreshEntity(entityitem);
         }
     }
 
@@ -172,7 +172,7 @@ public final class ItemStackHelpers {
             }
         }
         return itemGroup == null
-                || itemGroup == ItemGroup.SEARCH;
+                || itemGroup == ItemGroup.TAB_SEARCH;
     }
 
 }

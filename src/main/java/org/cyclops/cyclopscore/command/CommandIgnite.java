@@ -31,16 +31,16 @@ public class CommandIgnite implements Command<CommandSource> {
         Collection<? extends Entity> entities = EntityArgument.getEntities(context, "targets");
         int duration = this.durationParam ? IntegerArgumentType.getInteger(context, "duration") : 2;
         for (Entity entity : entities) {
-            entity.setFire(duration);
-            context.getSource().asPlayer().sendMessage(new TranslationTextComponent(
-                    "chat.cyclopscore.command.ignitedPlayer", entity.getDisplayName(), duration), Util.DUMMY_UUID);
+            entity.setSecondsOnFire(duration);
+            context.getSource().getPlayerOrException().sendMessage(new TranslationTextComponent(
+                    "chat.cyclopscore.command.ignitedPlayer", entity.getDisplayName(), duration), Util.NIL_UUID);
         }
         return 0;
     }
 
     public static LiteralArgumentBuilder<CommandSource> make() {
         return Commands.literal("ignite")
-                .requires((commandSource) -> commandSource.hasPermissionLevel(2))
+                .requires((commandSource) -> commandSource.hasPermission(2))
                 .then(Commands.argument("targets", EntityArgument.entities())
                         .executes(new CommandIgnite(false))
                         .then(Commands.argument("duration", IntegerArgumentType.integer())

@@ -24,8 +24,8 @@ public class CommandVersion implements Command<CommandSource> {
     }
 
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        context.getSource().asPlayer()
-                .sendMessage(new StringTextComponent(this.mod.getContainer().getModInfo().getVersion().toString()), Util.DUMMY_UUID);
+        context.getSource().getPlayerOrException()
+                .sendMessage(new StringTextComponent(this.mod.getContainer().getModInfo().getVersion().toString()), Util.NIL_UUID);
         return 0;
     }
 

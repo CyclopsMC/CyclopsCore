@@ -71,12 +71,12 @@ public class GuiMainMenuExtensionDevWorld {
                 // If shift is held, create a new world.
                 if (!MinecraftHelpers.isShifted()) {
                     WorldSummary devWorldSummary = null;
-                    mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+                    mc.getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                     try {
-                        for (WorldSummary worldSummary : mc.getSaveLoader().getSaveList()) {
-                            if (worldSummary.getDisplayName().equals(WORLD_NAME_PREFIX)) {
+                        for (WorldSummary worldSummary : mc.getLevelSource().getLevelList()) {
+                            if (worldSummary.getLevelName().equals(WORLD_NAME_PREFIX)) {
                                 if (devWorldSummary == null
-                                        || devWorldSummary.getLastTimePlayed() < worldSummary.getLastTimePlayed()) {
+                                        || devWorldSummary.getLastPlayed() < worldSummary.getLastPlayed()) {
                                     devWorldSummary = worldSummary;
                                 }
                             }
@@ -84,45 +84,45 @@ public class GuiMainMenuExtensionDevWorld {
 
                     } catch (AnvilConverterException e) {
                         CyclopsCore.clog(Level.ERROR, "Couldn't load level list" + e.getMessage());
-                        mc.displayGuiScreen(new ErrorScreen(new TranslationTextComponent("selectWorld.unable_to_load"), new StringTextComponent(e.getMessage())));
+                        mc.setScreen(new ErrorScreen(new TranslationTextComponent("selectWorld.unable_to_load"), new StringTextComponent(e.getMessage())));
                     }
 
-                    if (devWorldSummary != null && mc.getSaveLoader().canLoadWorld(devWorldSummary.getFileName())) {
-                        mc.loadWorld(devWorldSummary.getFileName());
+                    if (devWorldSummary != null && mc.getLevelSource().levelExists(devWorldSummary.getLevelId())) {
+                        mc.loadLevel(devWorldSummary.getLevelId());
                         return;
                     }
                 }
 
                 // Set rules
                 GameRules gameRules = new GameRules();
-                gameRules.get(GameRules.DO_DAYLIGHT_CYCLE).set(false, null);
-                gameRules.get(GameRules.DO_IMMEDIATE_RESPAWN).set(true, null);
-                gameRules.get(GameRules.DO_PATROL_SPAWNING).set(false, null);
-                gameRules.get(GameRules.DO_TRADER_SPAWNING).set(false, null);
+                gameRules.getRule(GameRules.RULE_DAYLIGHT).set(false, null);
+                gameRules.getRule(GameRules.RULE_DO_IMMEDIATE_RESPAWN).set(true, null);
+                gameRules.getRule(GameRules.RULE_DO_PATROL_SPAWNING).set(false, null);
+                gameRules.getRule(GameRules.RULE_DO_TRADER_SPAWNING).set(false, null);
                 WorldSettings worldsettings = new WorldSettings(WORLD_NAME_PREFIX, GameType.CREATIVE,
-                        false, Difficulty.PEACEFUL, true, gameRules, DatapackCodec.VANILLA_CODEC);
+                        false, Difficulty.PEACEFUL, true, gameRules, DatapackCodec.DEFAULT);
 
                 // Create generator settings, based on a flat world preset
                 int seed = new Random().nextInt();
-                DynamicRegistries.Impl dynamicRegistries = DynamicRegistries.func_239770_b_();
-                Registry<DimensionType> registryDimensionType = dynamicRegistries.getRegistry(Registry.DIMENSION_TYPE_KEY);
-                Registry<Biome> registryBiome = dynamicRegistries.getRegistry(Registry.BIOME_KEY);
-                Registry<DimensionSettings> registryDimensionSettings = dynamicRegistries.getRegistry(Registry.NOISE_SETTINGS_KEY);
-                SimpleRegistry<Dimension> simpleregistry = DimensionType.getDefaultSimpleRegistry(registryDimensionType, registryBiome, registryDimensionSettings, seed);
-                FlatGenerationSettings flatgenerationsettings = FlatPresetsScreen.func_243299_a(registryBiome, PRESET_FLAT_WORLD, FlatGenerationSettings.func_242869_a(registryBiome));
+                DynamicRegistries.Impl dynamicRegistries = DynamicRegistries.builtin();
+                Registry<DimensionType> registryDimensionType = dynamicRegistries.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
+                Registry<Biome> registryBiome = dynamicRegistries.registryOrThrow(Registry.BIOME_REGISTRY);
+                Registry<DimensionSettings> registryDimensionSettings = dynamicRegistries.registryOrThrow(Registry.NOISE_GENERATOR_SETTINGS_REGISTRY);
+                SimpleRegistry<Dimension> simpleregistry = DimensionType.defaultDimensions(registryDimensionType, registryBiome, registryDimensionSettings, seed);
+                FlatGenerationSettings flatgenerationsettings = FlatPresetsScreen.fromString(registryBiome, PRESET_FLAT_WORLD, FlatGenerationSettings.getDefault(registryBiome));
                 DimensionGeneratorSettings generatorSettings = new DimensionGeneratorSettings(seed, false, false,
-                        DimensionGeneratorSettings.func_242749_a(registryDimensionType, simpleregistry, new FlatChunkGenerator(flatgenerationsettings)));
+                        DimensionGeneratorSettings.withOverworld(registryDimensionType, simpleregistry, new FlatChunkGenerator(flatgenerationsettings)));
 
                 // Determine a save name
                 String saveName;
                 try {
-                    saveName = FileUtil.findAvailableName(mc.getSaveLoader().getSavesDir(), WORLD_NAME_PREFIX, "");
+                    saveName = FileUtil.findAvailableName(mc.getLevelSource().getBaseDir(), WORLD_NAME_PREFIX, "");
                 } catch (IOException e) {
                     saveName = "World";
                 }
 
                 // Create the world
-                mc.createWorld(saveName, worldsettings, dynamicRegistries, generatorSettings);
+                mc.createLevel(saveName, worldsettings, dynamicRegistries, generatorSettings);
             }));
         }
     }

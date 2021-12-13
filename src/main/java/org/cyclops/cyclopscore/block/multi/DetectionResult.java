@@ -23,7 +23,7 @@ public class DetectionResult {
     }
 
     public DetectionResult(ITextComponent error) {
-        this.size = LocationHelpers.copyLocation(Vector3i.NULL_VECTOR);
+        this.size = LocationHelpers.copyLocation(Vector3i.ZERO);
         this.error = error;
     }
 

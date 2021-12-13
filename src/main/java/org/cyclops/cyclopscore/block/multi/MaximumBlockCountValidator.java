@@ -20,6 +20,6 @@ public class MaximumBlockCountValidator implements IBlockCountValidator {
             return null;
         }
         return new TranslationTextComponent("multiblock.cyclopscore.error.blockCount.max",
-                getMaximumCount(), new TranslationTextComponent(block.getTranslationKey()), count);
+                getMaximumCount(), new TranslationTextComponent(block.getDescriptionId()), count);
     }
 }

@@ -44,18 +44,18 @@ public class AchievementCollectButton extends AdvancedButton {
     @Override
     public void renderTooltip(MatrixStack matrixStack, int mx, int my) {
         super.renderTooltip(matrixStack, mx, my);
-        GlStateManager.pushMatrix();
+        GlStateManager._pushMatrix();
         if(mx >= x && my >= y && mx <= x + width && my <= y + height) {
             List<IReorderingProcessor> lines = Lists.newArrayList();
             if (advancementRewards.isObtained(Minecraft.getInstance().player)) {
-                lines.add(IReorderingProcessor.fromString(
+                lines.add(IReorderingProcessor.forward(
                         L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collected"),
-                        Style.EMPTY.setItalic(true)
+                        Style.EMPTY.withItalic(true)
                 ));
             } else {
-                lines.add(IReorderingProcessor.fromString(
+                lines.add(IReorderingProcessor.forward(
                         L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collect"),
-                        Style.EMPTY.setBold(true)
+                        Style.EMPTY.withBold(true)
                 ));
                 boolean canObtain = true;
                 for (IReward reward : advancementRewards.getRewards()) {
@@ -64,20 +64,20 @@ public class AchievementCollectButton extends AdvancedButton {
                     }
                 }
                 if (!canObtain) {
-                    lines.add(IReorderingProcessor.fromString(
+                    lines.add(IReorderingProcessor.forward(
                             L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collectFailure"),
-                            Style.EMPTY.setColor(Color.fromTextFormatting(TextFormatting.RED))
+                            Style.EMPTY.withColor(Color.fromLegacyFormat(TextFormatting.RED))
                     ));
                 }
             }
             gui.renderTooltip(matrixStack, lines, mx, my);
         }
-        GlStateManager.popMatrix();
+        GlStateManager._popMatrix();
 
-        GlStateManager.disableLighting();
+        GlStateManager._disableLighting();
 
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager._enableBlend();
+        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     @Override

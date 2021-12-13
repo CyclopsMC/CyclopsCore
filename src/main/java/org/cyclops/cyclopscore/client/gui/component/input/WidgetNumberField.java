@@ -29,22 +29,22 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
         if(this.arrows) {
             arrowUp = new ButtonArrow(x, y + height / 2, new TranslationTextComponent("gui.cyclopscore.up"), (button) -> this.increase(), ButtonArrow.Direction.NORTH);
             arrowDown = new ButtonArrow(x, y + height / 2, new TranslationTextComponent("gui.cyclopscore.down"), (button) -> this.decrease(), ButtonArrow.Direction.SOUTH);
-            arrowUp.y -= arrowUp.getHeightRealms();
+            arrowUp.y -= arrowUp.getHeight();
         }
-        setEnableBackgroundDrawing(true);
-        setText("0");
+        setBordered(true);
+        setValue("0");
     }
 
     @Override
-    public void setEnabled(boolean enabled) {
+    public void setEditable(boolean enabled) {
         arrowUp.active = enabled;
         arrowDown.active = enabled;
         isEnabled = enabled;
-        super.setEnabled(enabled);
+        super.setEditable(enabled);
     }
 
     @Override
-    public boolean getEnableBackgroundDrawing() {
+    public boolean isBordered() {
         return false; // We want the offset, but not the drawing itself.
     }
 
@@ -76,21 +76,21 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     }
 
     public int getInt() throws NumberFormatException {
-        return validateNumber(Integer.parseInt(getText()));
+        return validateNumber(Integer.parseInt(getValue()));
     }
 
     public double getDouble() throws NumberFormatException {
-        return validateNumber(Double.parseDouble(getText()));
+        return validateNumber(Double.parseDouble(getValue()));
     }
 
     public float getFloat() throws NumberFormatException {
-        return validateNumber(Float.parseFloat(getText()));
+        return validateNumber(Float.parseFloat(getValue()));
     }
 
     @Override
     public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         int offsetX = 0;
-        GlStateManager.color4f(1, 1, 1, 1);
+        GlStateManager._color4f(1, 1, 1, 1);
         if(arrows) {
             arrowUp.renderButton(matrixStack, mouseX, mouseY, partialTicks);
             arrowDown.renderButton(matrixStack, mouseX, mouseY, partialTicks);
@@ -123,25 +123,25 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
 
     protected void increase() {
         try {
-            setText(Integer.toString(validateNumber(getInt() + getDiffAmount())));
+            setValue(Integer.toString(validateNumber(getInt() + getDiffAmount())));
         } catch (NumberFormatException e) {
-            setText("0");
+            setValue("0");
         }
         updateArrowsState();
     }
 
     protected void decrease() {
         try {
-            setText(Integer.toString(validateNumber(getInt() - getDiffAmount())));
+            setValue(Integer.toString(validateNumber(getInt() - getDiffAmount())));
         } catch (NumberFormatException e) {
-            setText("0");
+            setValue("0");
         }
         updateArrowsState();
     }
 
     @Override
-    public void setText(String value) {
-        super.setText(value);
+    public void setValue(String value) {
+        super.setValue(value);
         updateArrowsState();
     }
 

@@ -31,13 +31,13 @@ public class IngredientRecipeHelpers {
         List<IPrototypedIngredient<ItemStack, Integer>> items;
         if (ingredient instanceof NBTIngredient) {
             items = Lists.newArrayList(new PrototypedIngredient<>(IngredientComponent.ITEMSTACK,
-                    ingredient.getMatchingStacks()[0], ItemMatch.ITEM | ItemMatch.NBT));
+                    ingredient.getItems()[0], ItemMatch.ITEM | ItemMatch.NBT));
 //        } else if (ingredient instanceof OreIngredient) { // TODO: somehow detect tags in the future, see ShapelessRecipeBuilder
 //            return Arrays.stream(ingredient.getMatchingStacks())
 //                    .map(itemStack -> new PrototypedIngredient<>(IngredientComponent.ITEMSTACK, itemStack, ItemMatch.ITEM))
 //                    .collect(Collectors.toList());
         } else {
-            items = Arrays.stream(ingredient.getMatchingStacks())
+            items = Arrays.stream(ingredient.getItems())
                     .map(itemStack -> new PrototypedIngredient<>(IngredientComponent.ITEMSTACK, itemStack, ItemMatch.ITEM))
                     .collect(Collectors.toList());
         }

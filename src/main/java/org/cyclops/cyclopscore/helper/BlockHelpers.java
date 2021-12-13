@@ -37,7 +37,7 @@ public final class BlockHelpers {
         }
         T value;
         try {
-            value = state.get(property);
+            value = state.getValue(property);
         } catch (IllegalArgumentException e) {
             return fallback;
         }
@@ -72,7 +72,7 @@ public final class BlockHelpers {
      */
     public static BlockState getBlockStateFromItemStack(ItemStack itemStack) {
         Block block = ((BlockItem) itemStack.getItem()).getBlock();
-        return block.getDefaultState();
+        return block.defaultBlockState();
     }
 
     /**
@@ -91,7 +91,7 @@ public final class BlockHelpers {
      */
     public static void markForUpdate(World world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
-        world.notifyBlockUpdate(pos, blockState, blockState, MinecraftHelpers.BLOCK_NOTIFY | MinecraftHelpers.BLOCK_NOTIFY_CLIENT);
+        world.sendBlockUpdated(pos, blockState, blockState, MinecraftHelpers.BLOCK_NOTIFY | MinecraftHelpers.BLOCK_NOTIFY_CLIENT);
     }
 
     /**
@@ -103,7 +103,7 @@ public final class BlockHelpers {
      */
     public static void addCollisionBoxToList(BlockPos pos, AxisAlignedBB collidingBox, List<AxisAlignedBB> collisions, AxisAlignedBB addingBox) {
         if (addingBox != null) {
-            AxisAlignedBB axisalignedbb = addingBox.offset(pos);
+            AxisAlignedBB axisalignedbb = addingBox.move(pos);
             if (collidingBox.intersects(axisalignedbb)) {
                 collisions.add(axisalignedbb);
             }
@@ -117,7 +117,7 @@ public final class BlockHelpers {
      * @return If it has a solid top surface.
      */
     public static boolean doesBlockHaveSolidTopSurface(IWorldReader world, BlockPos blockPos) {
-        return world.getBlockState(blockPos.add(0, -1, 0)).isOpaqueCube(world, blockPos);
+        return world.getBlockState(blockPos.offset(0, -1, 0)).isSolidRender(world, blockPos);
     }
 
     /**
@@ -129,8 +129,8 @@ public final class BlockHelpers {
      */
     public static void setFireInfo(Block blockIn, int encouragement, int flammability) {
         if (blockIn == Blocks.AIR) throw new IllegalArgumentException("Tried to set air on fire... This is bad.");
-        ((FireBlock) Blocks.FIRE).encouragements.put(blockIn, encouragement);
-        ((FireBlock) Blocks.FIRE).flammabilities.put(blockIn, flammability);
+        ((FireBlock) Blocks.FIRE).flameOdds.put(blockIn, encouragement);
+        ((FireBlock) Blocks.FIRE).burnOdds.put(blockIn, flammability);
     }
 
 }

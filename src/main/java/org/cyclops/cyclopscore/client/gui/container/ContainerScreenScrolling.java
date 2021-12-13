@@ -34,38 +34,38 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     @Override
     public void init() {
         super.init();
-        this.minecraft.keyboardListener.enableRepeatEvents(true);
+        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
         if(isSearchEnabled()) {
             int searchWidth = getSearchWidth();
             int searchX = getSearchX();
             int searchY = getSearchY();
             if(this.searchField == null) {
-                this.searchField = new WidgetTextFieldExtended(this.font, this.guiLeft + searchX, this.guiTop + searchY, searchWidth, this.font.FONT_HEIGHT, new TranslationTextComponent("gui.cyclopscore.search"));
-                this.searchField.setMaxStringLength(64);
-                this.searchField.setMaxStringLength(15);
-                this.searchField.setEnableBackgroundDrawing(false);
+                this.searchField = new WidgetTextFieldExtended(this.font, this.leftPos + searchX, this.topPos + searchY, searchWidth, this.font.lineHeight, new TranslationTextComponent("gui.cyclopscore.search"));
+                this.searchField.setMaxLength(64);
+                this.searchField.setMaxLength(15);
+                this.searchField.setBordered(false);
                 this.searchField.setVisible(true);
                 this.searchField.setTextColor(16777215);
                 this.searchField.setCanLoseFocus(true);
-                this.searchField.setText("");
+                this.searchField.setValue("");
                 this.searchField.setWidth(searchWidth);
-                this.searchField.x = this.guiLeft + (searchX + searchWidth) - this.searchField.getWidth();
+                this.searchField.x = this.leftPos + (searchX + searchWidth) - this.searchField.getWidth();
             } else {
                 this.searchField.setWidth(searchWidth);
-                this.searchField.x = this.guiLeft + (searchX + searchWidth) - this.searchField.getWidth();
-                this.searchField.y = this.guiTop + searchY;
+                this.searchField.x = this.leftPos + (searchX + searchWidth) - this.searchField.getWidth();
+                this.searchField.y = this.topPos + searchY;
             }
             this.children.add(this.searchField);
         }
 
         // Initial element load.
         if (scrollbar == null) {
-            getContainer().updateFilter("");
-            this.scrollbar = new WidgetScrollBar(this.guiLeft + getScrollX(), this.guiTop + getScrollY(), getScrollHeight(),
-                    new TranslationTextComponent("gui.cyclopscore.scrollbar"), getContainer(),
-                    getContainer().getPageSize(), getScrollRegion());
-            this.scrollbar.setTotalRows(getContainer().getFilteredItemCount() / getContainer().getColumns());
+            getMenu().updateFilter("");
+            this.scrollbar = new WidgetScrollBar(this.leftPos + getScrollX(), this.topPos + getScrollY(), getScrollHeight(),
+                    new TranslationTextComponent("gui.cyclopscore.scrollbar"), getMenu(),
+                    getMenu().getPageSize(), getScrollRegion());
+            this.scrollbar.setTotalRows(getMenu().getFilteredItemCount() / getMenu().getColumns());
         }
 
         this.children.add(this.scrollbar);
@@ -80,9 +80,9 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
-    public void onClose() {
-        super.onClose();
-        this.minecraft.keyboardListener.enableRepeatEvents(false);
+    public void removed() {
+        super.removed();
+        this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
@@ -97,7 +97,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     public boolean charTyped(char typedChar, int keyCode) {
         if (isSearchEnabled() && this.searchField.isFocused()) {
             if (this.searchField.charTyped(typedChar, keyCode)) {
-                this.updateSearch(searchField.getText());
+                this.updateSearch(searchField.getValue());
             }
             return true;
         } else {
@@ -109,7 +109,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     public boolean keyPressed(int typedChar, int keyCode, int modifiers) {
         if (isSearchEnabled() && this.searchField.isFocused() && typedChar != GLFW.GLFW_KEY_ESCAPE) {
             if (this.searchField.keyPressed(typedChar, keyCode, modifiers)) {
-                this.updateSearch(searchField.getText());
+                this.updateSearch(searchField.getValue());
             }
             return true;
         } else {
@@ -121,17 +121,17 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     protected void drawCurrentScreen(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (isSubsetRenderSlots()) {
             // Temporarily swap slot list, to avoid rendering all slots (which would include the hidden ones)
-            List<Slot> oldSlots = Lists.newArrayList(this.container.inventorySlots);
-            int startIndex = getContainer().getFirstElement();
+            List<Slot> oldSlots = Lists.newArrayList(this.container.slots);
+            int startIndex = getMenu().getFirstElement();
             List<Slot> newSlots = Lists.newArrayList();
             newSlots.addAll(oldSlots.subList(startIndex, Math.min(oldSlots.size(), startIndex
-                    + (getContainer().getPageSize() * getContainer().getColumns()))));
-            newSlots.addAll(oldSlots.subList(getContainer().getUnfilteredItemCount(), oldSlots.size()));
-            this.container.inventorySlots.clear();
-            this.container.inventorySlots.addAll(newSlots);
+                    + (getMenu().getPageSize() * getMenu().getColumns()))));
+            newSlots.addAll(oldSlots.subList(getMenu().getUnfilteredItemCount(), oldSlots.size()));
+            this.container.slots.clear();
+            this.container.slots.addAll(newSlots);
             super.drawCurrentScreen(matrixStack, mouseX, mouseY, partialTicks);
-            this.container.inventorySlots.clear();
-            this.container.inventorySlots.addAll(oldSlots);
+            this.container.slots.clear();
+            this.container.slots.addAll(oldSlots);
         } else {
             super.drawCurrentScreen(matrixStack, mouseX, mouseY, partialTicks);
         }
@@ -145,24 +145,24 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        super.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+        super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
         if(isSearchEnabled()) this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
         this.scrollbar.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
     }
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double mouseXPrev, double mouseYPrev) {
-        if (this.getListener() != null && this.isDragging() && mouseButton == 0
-                && this.getListener().mouseDragged(mouseX, mouseY, mouseButton, mouseXPrev, mouseYPrev)) {
+        if (this.getFocused() != null && this.isDragging() && mouseButton == 0
+                && this.getFocused().mouseDragged(mouseX, mouseY, mouseButton, mouseXPrev, mouseYPrev)) {
             return true;
         }
         return super.mouseDragged(mouseX, mouseY, mouseButton, mouseXPrev, mouseYPrev);
     }
 
     protected void updateSearch(String searchString) {
-        getContainer().updateFilter(searchString);
-        this.scrollbar.setTotalRows(getContainer().getFilteredItemCount() / getContainer().getColumns());
+        getMenu().updateFilter(searchString);
+        this.scrollbar.setTotalRows(getMenu().getFilteredItemCount() / getMenu().getColumns());
         this.scrollbar.scrollTo(0);
     }
 

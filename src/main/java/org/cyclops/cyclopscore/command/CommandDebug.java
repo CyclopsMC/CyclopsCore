@@ -38,14 +38,14 @@ public class CommandDebug implements Command<CommandSource> {
     @Override
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
         PacketCodec packet = context.getArgument("packet", PacketCodec.class);
-        context.getSource().asPlayer().sendMessage(new StringTextComponent(String.format("Sending %s from client to server...", packet.getClass())), Util.DUMMY_UUID);
-        CyclopsCore._instance.getPacketHandler().sendToPlayer(packet, context.getSource().asPlayer());
+        context.getSource().getPlayerOrException().sendMessage(new StringTextComponent(String.format("Sending %s from client to server...", packet.getClass())), Util.NIL_UUID);
+        CyclopsCore._instance.getPacketHandler().sendToPlayer(packet, context.getSource().getPlayerOrException());
         return 0;
     }
 
     public static LiteralArgumentBuilder<CommandSource> make() {
         return Commands.literal("debug")
-                .requires((commandSource) -> commandSource.hasPermissionLevel(2))
+                .requires((commandSource) -> commandSource.hasPermission(2))
                 .then(Commands.argument("packet", ArgumentTypeDebugPacket.INSTANCE)
                         .executes(new CommandDebug()));
     }

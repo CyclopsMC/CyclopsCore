@@ -22,7 +22,7 @@ public class EnchantmentHelpers {
 	 * @return The id of the enchantment in the enchantmentlist or -1 if it does not apply.
 	 */
 	public static int doesEnchantApply(ItemStack itemStack, Enchantment enchantment) {
-		ListNBT enchantmentList = itemStack.getEnchantmentTagList();
+		ListNBT enchantmentList = itemStack.getEnchantmentTags();
 		for(int i = 0; i < enchantmentList.size(); i++) {
 			if (enchantment.getRegistryName().equals(new ResourceLocation(enchantmentList.getCompound(i).getString("id")))) {
 				return i;
@@ -40,7 +40,7 @@ public class EnchantmentHelpers {
 	 * @return The level of the enchantment on the given item
 	 */
 	public static int getEnchantmentLevel(ItemStack itemStack, int enchantmentListID) {
-	    ListNBT enchlist = itemStack.getEnchantmentTagList();
+	    ListNBT enchlist = itemStack.getEnchantmentTags();
 	    return enchlist.getCompound(enchantmentListID).getShort("lvl");
 	}
 
@@ -53,7 +53,7 @@ public class EnchantmentHelpers {
 	 * @return The enchantment on the given item
 	 */
 	public static Enchantment getEnchantment(ItemStack itemStack, int enchantmentListID) {
-	    ListNBT enchlist = itemStack.getEnchantmentTagList();
+	    ListNBT enchlist = itemStack.getEnchantmentTags();
 	    return ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(
 	    		enchlist.getCompound(enchantmentListID).getString("id")));
 	}
@@ -68,7 +68,7 @@ public class EnchantmentHelpers {
 	 * @param level The new level of the enchantment on the given item
 	 */
 	public static void setEnchantmentLevel(ItemStack itemStack, int enchantmentListID, int level) {
-	    ListNBT enchlist = itemStack.getEnchantmentTagList();
+	    ListNBT enchlist = itemStack.getEnchantmentTags();
 	    if(level <= 0) {
 	        enchlist.remove(enchantmentListID);
 	        if(enchlist.size() == 0) {
@@ -96,7 +96,7 @@ public class EnchantmentHelpers {
 	    if((existingIndex = doesEnchantApply(itemStack, enchantment)) >= 0) {
 	    	setEnchantmentLevel(itemStack, existingIndex, level);
 	    } else {
-	    	itemStack.addEnchantment(enchantment, level);
+	    	itemStack.enchant(enchantment, level);
 	    }
 	}
 

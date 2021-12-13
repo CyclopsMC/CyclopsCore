@@ -60,6 +60,6 @@ public abstract class GuiConfig<T extends Container> extends ExtendedConfigForge
     @Override
     public void onRegistered() {
         super.onRegistered();
-        ScreenManager.registerFactory(getInstance(), getScreenFactory());
+        ScreenManager.register(getInstance(), getScreenFactory());
     }
 }

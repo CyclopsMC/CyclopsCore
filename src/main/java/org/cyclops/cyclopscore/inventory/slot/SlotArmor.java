@@ -32,18 +32,18 @@ public class SlotArmor extends Slot {
         super(inventory, index, x, y);
         this.armorType = armorType;
         this.player = player;
-        setBackground(PlayerContainer.LOCATION_BLOCKS_TEXTURE, PlayerContainer.ARMOR_SLOT_TEXTURES[armorType.getIndex()]);
+        setBackground(PlayerContainer.BLOCK_ATLAS, PlayerContainer.TEXTURE_EMPTY_SLOTS[armorType.getIndex()]);
     }
 
     @Override
-    public int getSlotStackLimit() {
+    public int getMaxStackSize() {
         return 1;
     }
 
     @Override
-    public boolean isItemValid(ItemStack itemStack) {
+    public boolean mayPlace(ItemStack itemStack) {
         return itemStack.getEquipmentSlot() == armorType
-                || (itemStack.getItem() instanceof ArmorItem && ((ArmorItem) itemStack.getItem()).getEquipmentSlot() == armorType);
+                || (itemStack.getItem() instanceof ArmorItem && ((ArmorItem) itemStack.getItem()).getSlot() == armorType);
     }
     
 }

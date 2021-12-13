@@ -26,17 +26,17 @@ public class ParticleDropColored extends SpriteTexturedParticle {
 
     public ParticleDropColored(ParticleDropColoredData data, ClientWorld world, double x, double y, double z) {
         super(world, x, y, z);
-        this.motionX = this.motionY = this.motionZ= 0.0D;
+        this.xd = this.yd = this.zd= 0.0D;
 
-        this.particleRed = data.getRed();
-        this.particleGreen = data.getGreen();
-        this.particleBlue = data.getBlue();
+        this.rCol = data.getRed();
+        this.gCol = data.getGreen();
+        this.bCol = data.getBlue();
 
         this.setSize(0.01F, 0.01F);
-        this.particleGravity = 0.06F;
+        this.gravity = 0.06F;
         this.bobTimer = 40;
-        this.maxAge = (int) (64.0D / (Math.random() * 0.8D + 0.2D));
-        this.motionX = this.motionY = this.motionZ = 0.0D;
+        this.lifetime = (int) (64.0D / (Math.random() * 0.8D + 0.2D));
+        this.xd = this.yd = this.zd = 0.0D;
     }
 
     @Override
@@ -46,46 +46,46 @@ public class ParticleDropColored extends SpriteTexturedParticle {
 
     @Override
     public void tick() {
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        this.xo = this.x;
+        this.yo = this.y;
+        this.zo = this.z;
 
-        this.motionY -= (double) this.particleGravity;
+        this.yd -= (double) this.gravity;
 
         if (this.bobTimer-- > 0) {
-            this.motionX *= 0.02D;
-            this.motionY *= 0.02D;
-            this.motionZ *= 0.02D;
+            this.xd *= 0.02D;
+            this.yd *= 0.02D;
+            this.zd *= 0.02D;
         }
 
-        this.move(this.motionX, this.motionY, this.motionZ);
-        this.motionX *= 0.9800000190734863D;
-        this.motionY *= 0.9800000190734863D;
-        this.motionZ *= 0.9800000190734863D;
+        this.move(this.xd, this.yd, this.zd);
+        this.xd *= 0.9800000190734863D;
+        this.yd *= 0.9800000190734863D;
+        this.zd *= 0.9800000190734863D;
 
-        if (this.maxAge-- <= 0) {
-            this.setExpired();
+        if (this.lifetime-- <= 0) {
+            this.remove();
         }
 
         if (this.onGround) {
-            this.motionX *= 0.699999988079071D;
-            this.motionZ *= 0.699999988079071D;
+            this.xd *= 0.699999988079071D;
+            this.zd *= 0.699999988079071D;
         }
 
-        BlockPos blockPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.posY), MathHelper.floor(this.posZ));
-        BlockState blockState = this.world.getBlockState(blockPos);
+        BlockPos blockPos = new BlockPos(MathHelper.floor(this.x), MathHelper.floor(this.y), MathHelper.floor(this.z));
+        BlockState blockState = this.level.getBlockState(blockPos);
         Material material = blockState.getMaterial();
 
         if (material.isLiquid() || material.isSolid()) {
             float h = 1;
-            FluidState fluidState = world.getFluidState(blockPos);
+            FluidState fluidState = level.getFluidState(blockPos);
             if(!fluidState.isEmpty()) {
-                h = ((float) fluidState.getLevel()) / 8;
+                h = ((float) fluidState.getAmount()) / 8;
             }
-            double d0 = (double) ((float) (MathHelper.floor(this.posY) + 1) - h);
+            double d0 = (double) ((float) (MathHelper.floor(this.y) + 1) - h);
 
-            if (this.posY < d0) {
-                this.setExpired();
+            if (this.y < d0) {
+                this.remove();
             }
         }
     }

@@ -52,15 +52,15 @@ import org.lwjgl.opengl.GL11;
     public void drawScreen(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
         int xc = x + width / 2 - getWidth() / 2;
         int yc = y + getOffsetY();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color4f(1F, 1F, 1F, 1F);
+        GlStateManager._enableBlend();
+        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager._color4f(1F, 1F, 1F, 1F);
         if(pre) {
             drawElement(gui, matrixStack, xc, yc, getWidth(), getHeight(), page, mx, my);
         } else {
             postDrawElement(gui, matrixStack, xc, yc, getWidth(), getHeight(), page, mx, my);
         }
-        GlStateManager.disableBlend();
+        GlStateManager._disableBlend();
     }
 
     @OnlyIn(Dist.CLIENT)

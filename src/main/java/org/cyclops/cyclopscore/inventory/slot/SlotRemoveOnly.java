@@ -22,7 +22,7 @@ public class SlotRemoveOnly extends SlotExtended {
     }
     
     @Override
-    public boolean isItemValid(ItemStack itemStack) {
+    public boolean mayPlace(ItemStack itemStack) {
         return false;
     }
 

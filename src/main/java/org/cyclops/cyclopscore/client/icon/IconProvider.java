@@ -44,7 +44,7 @@ public class IconProvider {
     }
 
     public void onPreTextureStitch(TextureStitchEvent.Pre event) {
-        if (event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE)) {
+        if (event.getMap().location().equals(PlayerContainer.BLOCK_ATLAS)) {
             for (Pair<Pair<Object, Field>, String> entry : toRegister) {
                 event.addSprite(getIconId(entry.getValue()));
             }
@@ -52,7 +52,7 @@ public class IconProvider {
     }
 
     public void onPostTextureStitch(TextureStitchEvent.Post event) {
-        if (event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE)) {
+        if (event.getMap().location().equals(PlayerContainer.BLOCK_ATLAS)) {
             for (Pair<Pair<Object, Field>, String> entry : toRegister) {
                 TextureAtlasSprite icon = event.getMap().getSprite(getIconId(entry.getValue()));
                 Object object = entry.getLeft().getLeft();

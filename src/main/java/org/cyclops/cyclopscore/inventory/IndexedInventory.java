@@ -46,8 +46,8 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
         this.index.clear();
         this.nonEmptySlots.clear();
         this.emptySlots.clear();
-        for (int i = 0; i < getSizeInventory(); i++) {
-            ItemStack itemStack = getStackInSlot(i);
+        for (int i = 0; i < getContainerSize(); i++) {
+            ItemStack itemStack = getItem(i);
             if (!itemStack.isEmpty()) {
                 Int2ObjectMap<ItemStack> stacks = index.get(itemStack.getItem());
                 if (stacks == null) {
@@ -69,9 +69,9 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
     }
 
     @Override
-    public void setInventorySlotContents(int slotId, ItemStack itemStack) {
+    public void setItem(int slotId, ItemStack itemStack) {
         // Update index
-        ItemStack oldStack = getStackInSlot(slotId);
+        ItemStack oldStack = getItem(slotId);
         boolean wasEmpty = oldStack.isEmpty();
         boolean isEmpty = itemStack.isEmpty();
         if (!oldStack.isEmpty()) {
@@ -93,7 +93,7 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
         }
 
         // Call super
-        super.setInventorySlotContents(slotId, itemStack);
+        super.setItem(slotId, itemStack);
 
         // Update first and last values
         if (wasEmpty && !isEmpty) {
@@ -107,19 +107,19 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
 
         // This is unit-tested, so this *should not* be able to happen.
         // If it happens, trigger a crash!
-        if (this.nonEmptySlots.size() + this.emptySlots.size() != getSizeInventory()) throw new IllegalStateException(String.format(
-                "Indexed inventory at inconsistent state %s %s %s (slot: %s).", this.nonEmptySlots, this.emptySlots, this.getSizeInventory(), slotId));
+        if (this.nonEmptySlots.size() + this.emptySlots.size() != getContainerSize()) throw new IllegalStateException(String.format(
+                "Indexed inventory at inconsistent state %s %s %s (slot: %s).", this.nonEmptySlots, this.emptySlots, this.getContainerSize(), slotId));
     }
 
     @Override
-    public void clear() {
-        super.clear();
+    public void clearContent() {
+        super.clearContent();
         index.clear();
     }
 
     @Override
     public int getInventoryReferenceStackLimit() {
-        return getInventoryStackLimit();
+        return getMaxStackSize();
     }
 
     @Override

@@ -31,8 +31,8 @@ public class RewardItem implements IReward {
 
     @Override
     public void obtain(PlayerEntity player) {
-        if (!player.inventory.addItemStackToInventory(itemStack.copy())) {
-            ItemStackHelpers.spawnItemStack(player.getEntityWorld(), player.getPosition(), itemStack.copy());
+        if (!player.inventory.add(itemStack.copy())) {
+            ItemStackHelpers.spawnItemStack(player.getCommandSenderWorld(), player.blockPosition(), itemStack.copy());
         }
     }
 

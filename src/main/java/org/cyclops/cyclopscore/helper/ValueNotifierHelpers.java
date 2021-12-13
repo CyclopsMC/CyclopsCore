@@ -166,7 +166,7 @@ public class ValueNotifierHelpers {
     public static IFormattableTextComponent getValueTextComponent(IValueNotifier notifier, int valueId) {
         CompoundNBT tag = notifier.getValue(valueId);
         if(tag != null) {
-            return ITextComponent.Serializer.getComponentFromJson(tag.getString(KEY));
+            return ITextComponent.Serializer.fromJson(tag.getString(KEY));
         }
         return null;
     }
@@ -184,7 +184,7 @@ public class ValueNotifierHelpers {
             ListNBT listTag = tag.getList(KEY, Constants.NBT.TAG_STRING);
             List<IFormattableTextComponent> list = Lists.newArrayList();
             for (int i = 0; i < listTag.size(); i++) {
-                list.add(ITextComponent.Serializer.getComponentFromJson(listTag.getString(i)));
+                list.add(ITextComponent.Serializer.fromJson(listTag.getString(i)));
             }
             return list;
         }

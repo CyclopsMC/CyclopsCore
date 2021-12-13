@@ -70,7 +70,7 @@ public class NbtPathExpressionParseHandlerFilterExpression implements INbtPathEx
                         } else if (nbt.getId() == Constants.NBT.TAG_COMPOUND) {
                             CompoundNBT tag = (CompoundNBT) nbt;
                             ListNBT newTagList = new ListNBT();
-                            tag.keySet().stream()
+                            tag.getAllKeys().stream()
                                     .map(tag::get)
                                     .filter(subTag -> getExpression().test(subTag))
                                     .forEach(newTagList::add);

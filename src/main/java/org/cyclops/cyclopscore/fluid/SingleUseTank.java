@@ -12,6 +12,8 @@ import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 import java.util.List;
 import java.util.Objects;
 
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+
 /**
  * A simple tank that can accept and drain fluids until the capacity is reached.
  * Only one fluid can be accepted, which must be specified with {@link SingleUseTank#setAcceptedFluid(Fluid)}.

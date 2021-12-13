@@ -22,9 +22,9 @@ public class CommandDumpRegistries implements Command<CommandSource> {
     public int run(CommandContext<CommandSource> context) {
         try {
             RegistryExportables.REGISTRY.export(context.getSource().getServer()
-                    .getDataDirectory().toPath().resolve("cyclops_registries"));
+                    .getServerDirectory().toPath().resolve("cyclops_registries"));
         } catch (IOException e) {
-            context.getSource().sendErrorMessage(new StringTextComponent(e.getMessage()));
+            context.getSource().sendFailure(new StringTextComponent(e.getMessage()));
             e.printStackTrace();
             return 1;
         }

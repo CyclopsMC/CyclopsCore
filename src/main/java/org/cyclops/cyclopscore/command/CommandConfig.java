@@ -34,17 +34,17 @@ public class CommandConfig implements Command<CommandSource> {
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
         ConfigurablePropertyData property = context.getArgument("property", ConfigurablePropertyData.class);
         if (!this.valueSet) {
-            context.getSource().asPlayer().sendMessage(new StringTextComponent(property.getConfigProperty().get().toString()), Util.DUMMY_UUID);
+            context.getSource().getPlayerOrException().sendMessage(new StringTextComponent(property.getConfigProperty().get().toString()), Util.NIL_UUID);
         } else {
             String value = context.getArgument("value", String.class);
             Object newValue = Helpers.tryParse(value, property.getConfigProperty().get());
             if(newValue != null) {
                 property.getConfigProperty().set(newValue);
                 property.getConfigProperty().save();
-                context.getSource().asPlayer().sendMessage(new TranslationTextComponent("chat.cyclopscore.command.updatedValue",
-                        property.getName(), newValue.toString()), Util.DUMMY_UUID);
+                context.getSource().getPlayerOrException().sendMessage(new TranslationTextComponent("chat.cyclopscore.command.updatedValue",
+                        property.getName(), newValue.toString()), Util.NIL_UUID);
             } else {
-                context.getSource().asPlayer().sendMessage(new TranslationTextComponent("chat.cyclopscore.command.invalidNewValue"), Util.DUMMY_UUID);
+                context.getSource().getPlayerOrException().sendMessage(new TranslationTextComponent("chat.cyclopscore.command.invalidNewValue"), Util.NIL_UUID);
                 return 1;
             }
         }
@@ -53,7 +53,7 @@ public class CommandConfig implements Command<CommandSource> {
 
     public static LiteralArgumentBuilder<CommandSource> make(ModBase mod) {
         return Commands.literal("config")
-                .requires((commandSource) -> commandSource.hasPermissionLevel(2))
+                .requires((commandSource) -> commandSource.hasPermission(2))
                 .then(Commands.argument("property", new ArgumentTypeConfigProperty(mod))
                         .executes(new CommandConfig(mod, false))
                         .then(Commands.argument("value", StringArgumentType.string())

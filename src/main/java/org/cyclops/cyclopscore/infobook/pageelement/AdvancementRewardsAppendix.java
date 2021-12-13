@@ -104,9 +104,9 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
     }
 
     protected void requestAdvancementInfo() {
-        if (Minecraft.getInstance().world.getGameTime() - lastAdvancementInfoRequest > ADVANCEMENT_INFO_REQUEST_TIMEOUT) {
+        if (Minecraft.getInstance().level.getGameTime() - lastAdvancementInfoRequest > ADVANCEMENT_INFO_REQUEST_TIMEOUT) {
             advancementRewards.getAdvancements().forEach(AdvancementHelpers::requestAdvancementUnlockInfo);
-            lastAdvancementInfoRequest = Minecraft.getInstance().world.getGameTime();
+            lastAdvancementInfoRequest = Minecraft.getInstance().level.getGameTime();
         }
     }
 

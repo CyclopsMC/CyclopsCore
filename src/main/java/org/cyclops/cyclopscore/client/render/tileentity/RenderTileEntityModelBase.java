@@ -24,6 +24,6 @@ public class RenderTileEntityModelBase<T extends CyclopsTileEntity, M extends Mo
     protected void renderModel(T tile, M model, float partialTick, MatrixStack matrixStack,
                                IVertexBuilder vertexBuilder, IRenderTypeBuffer buffer,
                                int combinedLight, int combinedOverlay) {
-        model.render(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1); // Last params are RGBA
+        model.renderToBuffer(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1); // Last params are RGBA
     }
 }

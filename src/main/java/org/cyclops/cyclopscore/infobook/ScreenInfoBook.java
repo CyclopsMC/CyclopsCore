@@ -255,37 +255,37 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         // Do nothing
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
+    protected void renderLabels(MatrixStack matrixStack, int x, int y) {
         // Do nothing
     }
 
     public void drawTooltip(MatrixStack matrixStack, int mx, int my, ITextComponent lines) {
-        GlStateManager.pushMatrix();
+        GlStateManager._pushMatrix();
         renderTooltip(matrixStack, lines, mx, my);
-        GlStateManager.popMatrix();
+        GlStateManager._popMatrix();
 
-        GlStateManager.disableLighting();
+        GlStateManager._disableLighting();
 
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager._enableBlend();
+        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public void blitMirrored(int x, int y, int u, int v, int width, int height) {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder worldRenderer = tessellator.getBuffer();
+        BufferBuilder worldRenderer = tessellator.getBuilder();
         worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        worldRenderer.pos(x + 0, y + height, this.getBlitOffset()).tex(((float) (u + width) * f), ((float) (v + height) * f1)).endVertex();
-        worldRenderer.pos(x + width, y + height, this.getBlitOffset()).tex(((float) (u + 0) * f), ((float) (v + height) * f1)).endVertex();
-        worldRenderer.pos(x + width, y + 0, this.getBlitOffset()).tex(((float) (u + 0) * f), ((float) (v + 0) * f1)).endVertex();
-        worldRenderer.pos(x + 0, y + 0, this.getBlitOffset()).tex(((float) (u + width) * f), ((float) (v + 0) * f1)).endVertex();
-        tessellator.draw();
+        worldRenderer.vertex(x + 0, y + height, this.getBlitOffset()).uv(((float) (u + width) * f), ((float) (v + height) * f1)).endVertex();
+        worldRenderer.vertex(x + width, y + height, this.getBlitOffset()).uv(((float) (u + 0) * f), ((float) (v + height) * f1)).endVertex();
+        worldRenderer.vertex(x + width, y + 0, this.getBlitOffset()).uv(((float) (u + 0) * f), ((float) (v + 0) * f1)).endVertex();
+        worldRenderer.vertex(x + 0, y + 0, this.getBlitOffset()).uv(((float) (u + width) * f), ((float) (v + 0) * f1)).endVertex();
+        tessellator.end();
     }
 
     @Override
@@ -356,7 +356,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     }
 
     public void drawScaledCenteredString(MatrixStack matrixStack, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow) {
-        float originalWidth = getFontRenderer().getStringWidth(string) * originalScale;
+        float originalWidth = getFontRenderer().width(string) * originalScale;
         float scale = Math.min(originalScale, maxWidth / originalWidth * originalScale);
         drawScaledCenteredString(matrixStack, string, x, y, width, scale, color, shadow);
     }
@@ -366,43 +366,43 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     }
 
     public void drawScaledCenteredString(MatrixStack matrixStack, String string, int x, int y, int width, float scale, int color, boolean shadow) {
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(scale, scale, 1.0f);
-        int titleLength = font.getStringWidth(string);
-        int titleHeight = font.FONT_HEIGHT;
+        GlStateManager._pushMatrix();
+        GlStateManager._scalef(scale, scale, 1.0f);
+        int titleLength = font.width(string);
+        int titleHeight = font.lineHeight;
         if (shadow) {
-            font.drawStringWithShadow(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+            font.draw(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
         } else {
-            font.drawString(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+            font.draw(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
         }
-        GlStateManager.popMatrix();
+        GlStateManager._popMatrix();
     }
 
     public void drawHorizontalRule(MatrixStack matrixStack, int x, int y) {
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager._enableBlend();
+        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelpers.bindTexture(texture);
         this.blit(matrixStack, x - HR_WIDTH / 2, y - HR_HEIGHT / 2, 52, 180, HR_WIDTH, HR_HEIGHT);
-        GlStateManager.disableBlend();
+        GlStateManager._disableBlend();
     }
 
     public void drawTextBanner(MatrixStack matrixStack, int x, int y) {
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager._enableBlend();
+        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelpers.bindTexture(texture);
         this.blit(matrixStack, x - BANNER_WIDTH / 2, y - BANNER_HEIGHT / 2, 52, 191, BANNER_WIDTH, BANNER_HEIGHT);
-        GlStateManager.disableBlend();
+        GlStateManager._disableBlend();
     }
 
     public void drawArrowRight(MatrixStack matrixStack, int x, int y) {
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager._enableBlend();
+        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelpers.bindTexture(texture);
         this.blit(matrixStack, x, y, 0, 210, ARROW_WIDTH, ARROW_HEIGHT);
-        GlStateManager.disableBlend();
+        GlStateManager._disableBlend();
     }
 
     public void drawOuterBorder(MatrixStack matrixStack, int x, int y, int width, int height) {
@@ -410,9 +410,9 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     }
 
     public void drawOuterBorder(MatrixStack matrixStack, int x, int y, int width, int height, float r, float g, float b, float alpha) {
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color4f(r, g, b, alpha);
+        GlStateManager._enableBlend();
+        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager._color4f(r, g, b, alpha);
         RenderHelpers.bindTexture(texture);
 
         // Corners
@@ -441,7 +441,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             }
         }
 
-        GlStateManager.color4f(1, 1, 1, 1);
+        GlStateManager._color4f(1, 1, 1, 1);
     }
 
     public void renderTooltip(MatrixStack matrixStack, ItemStack itemStack, int x, int y) {
@@ -449,7 +449,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     }
 
     public int getTick() {
-        return (int) getMinecraft().world.getGameTime();
+        return (int) getMinecraft().level.getGameTime();
     }
 
 
@@ -457,7 +457,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     public void tick() {
         super.tick();
         if(!this.minecraft.player.isAlive()) {
-            this.minecraft.player.closeScreen();
+            this.minecraft.player.closeContainer();
         }
     }
 
@@ -483,7 +483,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             if (this.visible) {
                 boolean isHover = mouseX >= this.x && mouseY >= this.y &&
                                mouseX < this.x + this.width && mouseY < this.y + this.height;
-                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 RenderHelpers.bindTexture(guiInfoBook.texture);
                 int k = textureX;
                 int l = textureY;
@@ -492,10 +492,10 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
                     k += width;
                 }
 
-                GlStateManager.enableBlend();
-                GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                GlStateManager._enableBlend();
+                GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 this.blit(matrixStack, this.x, this.y, k, l, width, height);
-                GlStateManager.disableBlend();
+                GlStateManager._disableBlend();
             }
         }
 
@@ -517,10 +517,10 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             super(x, y, 0, height, new StringTextComponent(InfoSection.formatString(L10NHelpers.localize(link.getTranslationKey()))), onPress);
             this.guiInfoBook = guiInfoBook;
             this.link = link;
-            FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
+            FontRenderer fontRenderer = Minecraft.getInstance().font;
 
             // MCP: getStringWidth
-            this.width = fontRenderer.func_243245_a(getMessage().func_241878_f());
+            this.width = fontRenderer.width(getMessage().getVisualOrderText());
             // Trim string if it is too long
             if (this.width > maxWidth) {
                 String originalMessage = getMessage().getString();
@@ -539,10 +539,10 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
                 Minecraft minecraft = Minecraft.getInstance();
                 IFormattableTextComponent msg = ((IFormattableTextComponent) getMessage());
                 if (isHover) {
-                    msg = msg.mergeStyle(TextFormatting.UNDERLINE);
+                    msg = msg.withStyle(TextFormatting.UNDERLINE);
                 }
                 // MCP: drawString
-                minecraft.fontRenderer.func_243248_b(matrixStack, msg, x, y,
+                minecraft.font.draw(matrixStack, msg, x, y,
                         Helpers.RGBToInt(isHover ? 100 : 0, isHover ? 100 : 0, isHover ? 150 : 125));
             }
         }

@@ -153,7 +153,7 @@ public class InfoBookParser {
                     throw new InvalidAppendixException("Could not find a recipe type: " + type);
                 }
                 IRecipeType recipeType = recipeTypeOptional.get();
-                Map<ResourceLocation, IRecipe<?>> recipes = CraftingHelpers.getRecipeManager().getRecipes(recipeType);
+                Map<ResourceLocation, IRecipe<?>> recipes = CraftingHelpers.getRecipeManager().byType(recipeType);
 
                 String idRegexString = node.getTextContent().trim();
 
@@ -183,8 +183,8 @@ public class InfoBookParser {
 
         RECIPE_CONDITION_HANDLERS.put("config", new ConfigSectionConditionHandler());
         RECIPE_CONDITION_HANDLERS.put("mod", new ModSectionConditionHandler());
-        RECIPE_CONDITION_HANDLERS.put("itemtag", new TagSectionConditionHandler<>(ItemTags.getCollection()));
-        RECIPE_CONDITION_HANDLERS.put("blocktag", new TagSectionConditionHandler<>(BlockTags.getCollection()));
+        RECIPE_CONDITION_HANDLERS.put("itemtag", new TagSectionConditionHandler<>(ItemTags.getAllTags()));
+        RECIPE_CONDITION_HANDLERS.put("blocktag", new TagSectionConditionHandler<>(BlockTags.getAllTags()));
         RECIPE_CONDITION_HANDLERS.put("fluid", new FluidSectionConditionHandler());
         RECIPE_CONDITION_HANDLERS.put("item", new ItemSectionConditionHandler());
     }
@@ -381,7 +381,7 @@ public class InfoBookParser {
      * @throws InvalidAppendixException If the node was incorrectly structured.
      */
     public static Ingredient createIngredient(Element node) throws InvalidAppendixException {
-        return Ingredient.fromStacks(createStack(node));
+        return Ingredient.of(createStack(node));
     }
 
     /**

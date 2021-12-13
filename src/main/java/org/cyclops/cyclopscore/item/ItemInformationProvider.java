@@ -33,7 +33,7 @@ public class ItemInformationProvider {
     public static void onTooltip(ItemTooltipEvent event) {
         ItemStack itemStack = event.getItemStack();
         if (ITEMS_INFO.contains(itemStack.getItem())) {
-            L10NHelpers.addOptionalInfo(event.getToolTip(), itemStack.getTranslationKey());
+            L10NHelpers.addOptionalInfo(event.getToolTip(), itemStack.getDescriptionId());
         }
     }
 

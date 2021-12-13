@@ -138,12 +138,12 @@ public class InfoSection {
         }
 
         // Wrap the text into pages.
-        List<IReorderingProcessor> allLines = trimStringToWidth(fontRenderer, ITextProperties.func_240652_a_(contents), width);
+        List<IReorderingProcessor> allLines = trimStringToWidth(fontRenderer, ITextProperties.of(contents), width);
         localizedPages = Lists.newLinkedList();
         int linesOnPage = 0;
         List<IReorderingProcessor> currentPage = Lists.newArrayList();
         if(isTitlePage(0)) {
-            for(int i = 1; i < TITLE_LINES; i++) currentPage.add(IReorderingProcessor.fromString("", Style.EMPTY)); // Make a blank space for the section title.
+            for(int i = 1; i < TITLE_LINES; i++) currentPage.add(IReorderingProcessor.forward("", Style.EMPTY)); // Make a blank space for the section title.
             linesOnPage += TITLE_LINES;
         }
         pages = 1;
@@ -220,7 +220,7 @@ public class InfoSection {
     // The problem with the vanilla implementation is that it doesn't handle formatting well across multiple lines, see https://github.com/CyclopsMC/IntegratedDynamics/issues/1078
     // What we do here, is clear the forced Style's on each line, and instead apply the raw string-based formatting codes directly.
     protected static List<IReorderingProcessor> trimStringToWidth(FontRenderer fontRenderer, ITextProperties text, int width) {
-        List<ITextProperties> textLines = fontRenderer.getCharacterManager().func_238362_b_(text, width, Style.EMPTY);
+        List<ITextProperties> textLines = fontRenderer.getSplitter().splitLines(text, width, Style.EMPTY);
         List<IReorderingProcessor> formattedLines = Lists.newArrayList();
 
         // Keep a memory of active formatting flags, which persists across lines
@@ -231,19 +231,19 @@ public class InfoSection {
 
             // Clear the Style formatting, and instead prepend the currently active raw string-based formatting codes.
             Character finalActiveColor = activeColor;
-            Optional<ITextProperties> textLineUnformatted = textLine.getComponentWithStyle((style, string) -> {
+            Optional<ITextProperties> textLineUnformatted = textLine.visit((style, string) -> {
                 if (!activeFlags.isEmpty()) {
                     string = activeFlags.keySet().stream().map(character -> "§" + character).collect(Collectors.joining()) + string;
                 }
                 if (finalActiveColor != null) {
                     string = "§" + finalActiveColor + string;
                 }
-                return Optional.of(ITextProperties.func_240653_a_(string, Style.EMPTY));
+                return Optional.of(ITextProperties.of(string, Style.EMPTY));
             }, Style.EMPTY);
             if (textLineUnformatted.isPresent()) {
                 textLine = textLineUnformatted.get();
             }
-            formattedLines.add(LanguageMap.getInstance().func_241870_a(textLine));
+            formattedLines.add(LanguageMap.getInstance().getVisualOrder(textLine));
 
             // Loop over each character of the current line, and save the active formatting flags in memory, so that they can be re-applied on the next line.
             for (int charPos = 0; charPos < textLineRaw.length(); charPos++) {
@@ -273,7 +273,7 @@ public class InfoSection {
     }
 
     public static int getFontHeight(FontRenderer fontRenderer) {
-        return fontRenderer.FONT_HEIGHT;
+        return fontRenderer.lineHeight;
     }
 
     public boolean isTitlePage(int page) {
@@ -360,7 +360,7 @@ public class InfoSection {
             int l = 0;
             if (lines != null) {
                 for (IReorderingProcessor line : lines) {
-                    fontRenderer.func_238422_b_(matrixStack, line, mouseX, mouseY + yOffset + l * 9, 0);
+                    fontRenderer.draw(matrixStack, line, mouseX, mouseY + yOffset + l * 9, 0);
                     l++;
                 }
             }

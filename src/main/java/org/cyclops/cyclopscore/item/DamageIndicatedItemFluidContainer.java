@@ -58,9 +58,9 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     }
 
     @Override
-    public void fillItemGroup(ItemGroup itemGroup, NonNullList<ItemStack> items) {
+    public void fillItemCategory(ItemGroup itemGroup, NonNullList<ItemStack> items) {
         if (!ItemStackHelpers.isValidCreativeTab(this, itemGroup)) return;
-        if (this.isInGroup(group)) {
+        if (this.allowdedIn(category)) {
             component.fillItemGroup(itemGroup, items, fluid.get());
         }
     }
@@ -78,12 +78,12 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void addInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
+    public void appendHoverText(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
         // Can be null during startup
         if (CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY != null) {
             component.addInformation(itemStack, world, list, flag);
         }
-        super.addInformation(itemStack, world, list, flag);
+        super.appendHoverText(itemStack, world, list, flag);
     }
     
     @Override
@@ -98,7 +98,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
 
     @Override
     public int getRGBDurabilityForDisplay(ItemStack stack) {
-        return MathHelper.hsvToRGB(Math.max(0.0F, 1 - (float) component.getDurability(stack)) / 3.0F, 1.0F, 1.0F);
+        return MathHelper.hsvToRgb(Math.max(0.0F, 1 - (float) component.getDurability(stack)) / 3.0F, 1.0F, 1.0F);
     }
     
     /**

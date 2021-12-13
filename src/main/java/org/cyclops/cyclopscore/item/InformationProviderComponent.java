@@ -42,7 +42,7 @@ public class InformationProviderComponent {
         if(hasInfo) {
             if(((IInformationProvider) block).getInfo(itemStack) != null) {
                 list.add(((IInformationProvider) block).getInfo(itemStack)
-                        .setStyle(Style.EMPTY.setFormatting(IInformationProvider.BLOCK_PREFIX)));
+                        .setStyle(Style.EMPTY.withColor(IInformationProvider.BLOCK_PREFIX)));
             }
             ((IInformationProvider) block).provideInformation(itemStack, world, list, flag);
         }

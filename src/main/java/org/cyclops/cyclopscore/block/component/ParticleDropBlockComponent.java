@@ -56,13 +56,13 @@ public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock {
     @Override
     public void randomDisplayTick(BlockState blockState, World world, BlockPos blockPos, Random rand) {
         if (rand.nextInt(chance) == 0 &&
-                (offset == 0 || BlockHelpers.doesBlockHaveSolidTopSurface(world, blockPos.add(0, -offset, 0))) &&
-                !world.getBlockState(blockPos.add(0, - offset - 1, 0)).getMaterial().blocksMovement()) {
+                (offset == 0 || BlockHelpers.doesBlockHaveSolidTopSurface(world, blockPos.offset(0, -offset, 0))) &&
+                !world.getBlockState(blockPos.offset(0, - offset - 1, 0)).getMaterial().blocksMotion()) {
             double px = (double) ((float) blockPos.getX() + rand.nextFloat());
             double py = (double) blockPos.getY() - 0.05D - offset;
             double pz = (double) ((float) blockPos.getZ() + rand.nextFloat());
 
-            Minecraft.getInstance().worldRenderer.addParticle(
+            Minecraft.getInstance().levelRenderer.addParticle(
                     new ParticleDropColoredData(particleRed, particleGreen, particleBlue), false,
                     px, py, pz, 0, 0, 0);
         }

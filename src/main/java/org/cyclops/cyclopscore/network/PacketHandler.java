@@ -94,11 +94,11 @@ public final class PacketHandler {
 
     @OnlyIn(Dist.CLIENT)
     public void handlePacketClient(NetworkEvent.Context context, PacketBase packet) {
-        packet.actionClient(Minecraft.getInstance().player.world, Minecraft.getInstance().player);
+        packet.actionClient(Minecraft.getInstance().player.level, Minecraft.getInstance().player);
     }
 
     public void handlePacketServer(NetworkEvent.Context context, PacketBase packet) {
-        packet.actionServer(context.getSender().getServerWorld(), context.getSender());
+        packet.actionServer(context.getSender().getLevel(), context.getSender());
     }
     
     /**
@@ -115,7 +115,7 @@ public final class PacketHandler {
      * @param player The player.
      */
     public void sendToPlayer(PacketBase packet, ServerPlayerEntity player) {
-        networkChannel.sendTo(packet, player.connection.netManager, NetworkDirection.PLAY_TO_CLIENT);
+        networkChannel.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
     /**

@@ -43,7 +43,7 @@ public class EntityHelpers {
 	public static void onEntityCollided(World world, BlockPos blockPos, Entity entity) {
 		if (blockPos != null) {
 			Block block = world.getBlockState(blockPos).getBlock();
-			block.onEntityWalk(world, blockPos, entity);
+			block.stepOn(world, blockPos, entity);
 		}
 	}
 
@@ -56,8 +56,8 @@ public class EntityHelpers {
 	 */
 	public static List<Entity> getEntitiesInArea(World world, BlockPos blockPos, int area) {
 	    AxisAlignedBB box = new AxisAlignedBB(blockPos.getX(), blockPos.getY(), blockPos.getZ(),
-				blockPos.getX(), blockPos.getY(), blockPos.getZ()).grow(area, area, area);
-	    List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, box);
+				blockPos.getX(), blockPos.getY(), blockPos.getZ()).inflate(area, area, area);
+	    List<Entity> entities = world.getEntitiesOfClass(Entity.class, box);
 	    return entities;
 	}
 
@@ -71,10 +71,10 @@ public class EntityHelpers {
 	 * @return the entity that was spawned.
 	 */
 	public static Optional<Entity> spawnEntity(World world, @Nullable ResourceLocation entityName, double x, double y, double z) {
-		return EntityType.byKey(entityName.toString()).map((type) -> {
+		return EntityType.byString(entityName.toString()).map((type) -> {
 			Entity entity = type.create(world);
-			entity.setPosition(x, y, z);
-			world.addEntity(entity);
+			entity.setPos(x, y, z);
+			world.addFreshEntity(entity);
 			return entity;
 		});
 	}
@@ -94,21 +94,21 @@ public class EntityHelpers {
 			}
 
 			@Override
-			public World getWorld() {
+			public World getLevel() {
 				return world;
 			}
 
 			@Override
-			public BlockPos getSpawnerPosition() {
-				return entityLiving.getPosition();
+			public BlockPos getPos() {
+				return entityLiving.blockPosition();
 			}
 		};
-		Event.Result canSpawn = ForgeEventFactory.canEntitySpawn(entityLiving, world, (float) entityLiving.getPosX(),
-				(float) entityLiving.getPosY(), (float) entityLiving.getPosZ(), spawner, spawnReason);
+		Event.Result canSpawn = ForgeEventFactory.canEntitySpawn(entityLiving, world, (float) entityLiving.getX(),
+				(float) entityLiving.getY(), (float) entityLiving.getZ(), spawner, spawnReason);
         if (canSpawn == Event.Result.ALLOW || (canSpawn == Event.Result.DEFAULT)) { //  && entityliving.getCanSpawnHere()
-            if (!ForgeEventFactory.doSpecialSpawn(entityLiving, world, (float) entityLiving.getPosX(),
-					(float) entityLiving.getPosY(), (float) entityLiving.getPosZ(), spawner, spawnReason)) {
-            	world.addEntity(entityLiving);
+            if (!ForgeEventFactory.doSpecialSpawn(entityLiving, world, (float) entityLiving.getX(),
+					(float) entityLiving.getY(), (float) entityLiving.getZ(), spawner, spawnReason)) {
+            	world.addFreshEntity(entityLiving);
                 return true;
             }
         }
@@ -121,8 +121,8 @@ public class EntityHelpers {
      * @return The size.
      */
     public static Vector3i getEntitySize(Entity entity) {
-        int x = ((int) Math.ceil(entity.getWidth()));
-        int y = ((int) Math.ceil(entity.getHeight()));
+        int x = ((int) Math.ceil(entity.getBbWidth()));
+        int y = ((int) Math.ceil(entity.getBbHeight()));
         int z = x;
         return new Vector3i(x, y, z);
     }
@@ -134,12 +134,12 @@ public class EntityHelpers {
 	 * @param xp The amount of experience to spawn.
 	 */
 	public static void spawnXpAtPlayer(World world, PlayerEntity player, int xp) {
-		if(!world.isRemote()) {
+		if(!world.isClientSide()) {
 			while (xp > 0) {
 				int current;
-				current = ExperienceOrbEntity.getXPSplit(xp);
+				current = ExperienceOrbEntity.getExperienceValue(xp);
 				xp -= current;
-				world.addEntity(new ExperienceOrbEntity(world, player.getPosX(), player.getPosY() + 0.5D, player.getPosZ() + 0.5D, current));
+				world.addFreshEntity(new ExperienceOrbEntity(world, player.getX(), player.getY() + 0.5D, player.getZ() + 0.5D, current));
 			}
 		}
 	}

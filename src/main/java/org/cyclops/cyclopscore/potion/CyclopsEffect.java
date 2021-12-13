@@ -31,11 +31,11 @@ public abstract class CyclopsEffect extends Effect {
     }
 
     public boolean isActiveOn(LivingEntity entity, Effect potion) {
-        return entity.getActivePotionEffect(potion) != null;
+        return entity.getEffect(potion) != null;
     }
 
     public int getAmplifier(LivingEntity entity, Effect potion) {
-        return entity != null ? entity.getActivePotionEffect(potion).getAmplifier() : 0;
+        return entity != null ? entity.getEffect(potion).getAmplifier() : 0;
     }
 
     public int getAmplifier(LivingEntity entity) {

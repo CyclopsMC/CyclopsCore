@@ -182,7 +182,7 @@ public class Helpers {
     public static void openUrl(String url) {
         try {
             URI uri = new URI(url);
-            Util.getOSType().openURI(uri);
+            Util.getPlatform().openUri(uri);
         } catch (Throwable e) {
             e.printStackTrace();
             CyclopsCore.clog(Level.ERROR, e.getMessage());

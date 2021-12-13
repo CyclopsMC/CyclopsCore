@@ -53,7 +53,7 @@ public abstract class RecipeHandlerRecipeType<C extends IInventory, R extends IR
 
     @Override
     public Collection<IRecipeDefinition> getRecipes() {
-        return ((Collection<R>) worldSupplier.get().getRecipeManager().getRecipes(recipeType).values()).stream()
+        return ((Collection<R>) worldSupplier.get().getRecipeManager().byType(recipeType).values()).stream()
                 .map(this::getRecipeDefinition)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

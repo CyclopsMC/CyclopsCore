@@ -55,7 +55,7 @@ public class AdvancementRewards {
     public void obtain(PlayerEntity player) {
         if (!isObtained(player)) {
             // If client-side, send packet to server, otherwise, obtain the rewards server-side
-            if (player.world.isRemote()) {
+            if (player.level.isClientSide()) {
                 CyclopsCore._instance.getPacketHandler().sendToServer(new AdvancementRewardsObtainPacket(id));
             } else {
                 for (IReward reward : getRewards()) {

@@ -26,7 +26,7 @@ public class LocationHelpers {
 	 * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
 	 */
 	public static PacketDistributor.TargetPoint createTargetPointFromEntity(Entity entity, int range) {
-		return new PacketDistributor.TargetPoint(entity.getPosX(), entity.getPosY(), entity.getPosZ(), range, entity.world.getDimensionKey());
+		return new PacketDistributor.TargetPoint(entity.getX(), entity.getY(), entity.getZ(), range, entity.level.dimension());
 	}
 
 	/**
@@ -39,7 +39,7 @@ public class LocationHelpers {
 	 * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
 	 */
 	public static PacketDistributor.TargetPoint createTargetPointFromLocation(World world, BlockPos location, int range) {
-		return new PacketDistributor.TargetPoint(location.getX(), location.getY(), location.getZ(), range, world.getDimensionKey());
+		return new PacketDistributor.TargetPoint(location.getX(), location.getY(), location.getZ(), range, world.dimension());
 	}
 	
 	/**
@@ -51,9 +51,9 @@ public class LocationHelpers {
 	public static BlockPos getRandomPointInSphere(BlockPos center, int radius) {
 		BlockPos randomPoint = null;
 	    while(randomPoint == null) {
-            BlockPos coordinates = center.add(- radius + random.nextInt(2 * radius),
+            BlockPos coordinates = center.offset(- radius + random.nextInt(2 * radius),
                     - radius + random.nextInt(2 * radius), - radius + random.nextInt(2 * radius));
-            double totalDistance = center.distanceSq(coordinates);
+            double totalDistance = center.distSqr(coordinates);
 	    	if((int) Math.sqrt(totalDistance) <= radius) {
 	    		randomPoint = coordinates;
 	    	}
@@ -70,9 +70,9 @@ public class LocationHelpers {
     }
 
     public static BlockPos addToDimension(BlockPos blockPos, int dimension, int value) {
-        if(dimension == 0) return blockPos.add(value, 0, 0);
-        if(dimension == 1) return blockPos.add(0, value, 0);
-        if(dimension == 2) return blockPos.add(0, 0, value);
+        if(dimension == 0) return blockPos.offset(value, 0, 0);
+        if(dimension == 1) return blockPos.offset(0, value, 0);
+        if(dimension == 2) return blockPos.offset(0, 0, value);
         return blockPos;
     }
 

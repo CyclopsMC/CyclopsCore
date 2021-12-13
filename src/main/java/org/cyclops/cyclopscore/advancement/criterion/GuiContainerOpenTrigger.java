@@ -34,7 +34,7 @@ public class GuiContainerOpenTrigger extends AbstractCriterionTrigger<GuiContain
     }
 
     @Override
-    public Instance deserializeTrigger(JsonObject json, EntityPredicate.AndPredicate entityPredicate, ConditionArrayParser conditionsParser) {
+    public Instance createInstance(JsonObject json, EntityPredicate.AndPredicate entityPredicate, ConditionArrayParser conditionsParser) {
         JsonElement jsonElement = json.get("container_class");
         String className = jsonElement != null && !jsonElement.isJsonNull() ? jsonElement.getAsString() : null;
         Class<?> clazz = null;
@@ -51,7 +51,7 @@ public class GuiContainerOpenTrigger extends AbstractCriterionTrigger<GuiContain
     @SubscribeEvent
     public void onEvent(PlayerContainerEvent.Open event) {
         if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayerEntity) {
-            this.triggerListeners((ServerPlayerEntity) event.getPlayer(),
+            this.trigger((ServerPlayerEntity) event.getPlayer(),
                     (i) -> i.test((ServerPlayerEntity) event.getPlayer(), event.getContainer()));
         }
     }

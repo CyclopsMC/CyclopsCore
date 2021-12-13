@@ -24,12 +24,12 @@ public class RegistryExportableAbstractCookingRecipe<T extends IRecipeType<? ext
         JsonObject object = new JsonObject();
         JsonArray variants = new JsonArray();
         for (Ingredient ingredient : recipe.getIngredients()) {
-            for (ItemStack matchingStack : ingredient.getMatchingStacks()) {
+            for (ItemStack matchingStack : ingredient.getItems()) {
                 variants.add(IRegistryExportable.serializeItemStack(matchingStack));
             }
         }
         object.add("input", variants);
-        object.add("output", IRegistryExportable.serializeItemStack(recipe.getRecipeOutput()));
+        object.add("output", IRegistryExportable.serializeItemStack(recipe.getResultItem()));
         return object;
     }
 

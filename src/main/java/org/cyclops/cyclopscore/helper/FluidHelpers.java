@@ -150,7 +150,7 @@ public final class FluidHelpers {
     public static FluidStack extractFromItemOrInventory(int amount, ItemStack itemStack,
                                                         @Nullable PlayerEntity player,
                                                         IFluidHandler.FluidAction action) {
-        if (action.execute() && player != null && player.isCreative() && !player.world.isRemote()) {
+        if (action.execute() && player != null && player.isCreative() && !player.level.isClientSide()) {
             action = IFluidHandler.FluidAction.SIMULATE;
         }
         if (amount == 0) return FluidStack.EMPTY;
@@ -178,7 +178,7 @@ public final class FluidHelpers {
      * @param side The target side.
      */
     public static void placeOrPickUpFluid(PlayerEntity player, Hand hand, World world, BlockPos blockPos, Direction side) {
-        ItemStack itemStack = player.getHeldItem(hand);
+        ItemStack itemStack = player.getItemInHand(hand);
         ItemStack itemStackResult = FluidHelpers.getFluidHandlerItemCapacity(itemStack).map(fluidHandler -> {
             FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(FluidStack.EMPTY);
             FluidStack drained = fluidHandler.drain(FluidHelpers.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
@@ -201,7 +201,7 @@ public final class FluidHelpers {
 
             return itemStack;
         }).orElse(itemStack);
-        player.setHeldItem(hand, itemStackResult);
+        player.setItemInHand(hand, itemStackResult);
     }
 
     /**

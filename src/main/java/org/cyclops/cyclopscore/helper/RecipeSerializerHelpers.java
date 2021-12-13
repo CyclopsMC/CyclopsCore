@@ -44,13 +44,13 @@ public class RecipeSerializerHelpers {
                 return Ingredient.EMPTY;
             }
         } else if (element.isJsonObject()) {
-            return Ingredient.deserialize(JSONUtils.getJsonObject(json, key));
+            return Ingredient.fromJson(JSONUtils.getAsJsonObject(json, key));
         } else if (element.isJsonArray()) {
-            return Ingredient.deserialize(JSONUtils.getJsonArray(json, key));
+            return Ingredient.fromJson(JSONUtils.getAsJsonArray(json, key));
         } else {
-            String itemName = JSONUtils.getString(json, key);
+            String itemName = JSONUtils.getAsString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(itemName);
-            return Ingredient.fromStacks(new ItemStack(Registry.ITEM.getOptional(resourcelocation)
+            return Ingredient.of(new ItemStack(Registry.ITEM.getOptional(resourcelocation)
                     .orElseThrow(() -> new JsonSyntaxException("Item: " + itemName + " does not exist"))));
         }
     }
@@ -76,9 +76,9 @@ public class RecipeSerializerHelpers {
                 return ItemStack.EMPTY;
             }
         } else if (element.isJsonObject()) {
-            return ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, key));
+            return ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, key));
         } else {
-            String itemName = JSONUtils.getString(json, key);
+            String itemName = JSONUtils.getAsString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(itemName);
             return new ItemStack(Registry.ITEM.getOptional(resourcelocation)
                     .orElseThrow(() -> new JsonSyntaxException("Item: " + itemName + " does not exist")));
@@ -92,7 +92,7 @@ public class RecipeSerializerHelpers {
 
     public static ItemStack getJsonItemStackFromTag(JsonObject json, String key, List<String> modPriorities) {
         // Obtain all stacks for the given tag
-        ItemStack[] matchingStacks = Ingredient.deserialize(json).getMatchingStacks();
+        ItemStack[] matchingStacks = Ingredient.fromJson(json).getItems();
 
         // Create a mod id to order index map
         Map<String, Integer> modPriorityIndex = Maps.newHashMap();
@@ -125,7 +125,7 @@ public class RecipeSerializerHelpers {
         }
 
         // Read Fluid
-        String fluidName = JSONUtils.getString(json, "fluid");
+        String fluidName = JSONUtils.getAsString(json, "fluid");
         ResourceLocation resourcelocation = new ResourceLocation(fluidName);
         Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourcelocation);
         if (fluid instanceof EmptyFluid) {
@@ -138,9 +138,9 @@ public class RecipeSerializerHelpers {
             try {
                 JsonElement element = json.get("nbt");
                 if (element.isJsonObject()) {
-                    tag = JsonToNBT.getTagFromJson(GSON.toJson(element));
+                    tag = JsonToNBT.parseTag(GSON.toJson(element));
                 } else {
-                    tag = JsonToNBT.getTagFromJson(JSONUtils.getString(element, "nbt"));
+                    tag = JsonToNBT.parseTag(JSONUtils.convertToString(element, "nbt"));
                 }
             } catch (CommandSyntaxException e) {
                 throw new JsonSyntaxException("Invalid NBT Entry: " + e.toString());
@@ -150,7 +150,7 @@ public class RecipeSerializerHelpers {
         // Read amount
         int amount = FluidHelpers.BUCKET_VOLUME;
         if (json.has("amount")) {
-            amount = JSONUtils.getInt(json, "amount");
+            amount = JSONUtils.getAsInt(json, "amount");
         }
 
         return new FluidStack(fluid, amount, tag);
@@ -165,9 +165,9 @@ public class RecipeSerializerHelpers {
                 return FluidStack.EMPTY;
             }
         } else if (element.isJsonObject()) {
-            return deserializeFluidStack(JSONUtils.getJsonObject(json, key), true);
+            return deserializeFluidStack(JSONUtils.getAsJsonObject(json, key), true);
         } else {
-            String fluidName = JSONUtils.getString(json, key);
+            String fluidName = JSONUtils.getAsString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(fluidName);
             Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourcelocation);
             if (fluid instanceof EmptyFluid) {

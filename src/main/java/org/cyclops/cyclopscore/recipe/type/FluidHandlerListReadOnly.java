@@ -6,6 +6,8 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 
+import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+
 /**
  * A simple {@link IFluidHandler} implementation that only allows fluid reading.
  * @author rubensworks

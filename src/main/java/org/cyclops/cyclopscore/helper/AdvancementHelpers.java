@@ -28,7 +28,7 @@ public class AdvancementHelpers {
     public static boolean hasAdvancementUnlocked(PlayerEntity player, Advancement advancement) {
         return player instanceof ServerPlayerEntity
                 && ((ServerPlayerEntity) player).server.getPlayerList()
-                .getPlayerAdvancements((ServerPlayerEntity) player).getProgress(advancement).isDone();
+                .getPlayerAdvancements((ServerPlayerEntity) player).getOrStartProgress(advancement).isDone();
     }
 
     public static boolean hasAdvancementUnlocked(PlayerEntity player, ResourceLocation advancementId) {
@@ -41,17 +41,17 @@ public class AdvancementHelpers {
 
     public static Advancement getAdvancement(Dist dist, ResourceLocation resourceLocation) {
         if (dist.isClient()) {
-            return getAdvancementManagerClient().getAdvancementList().getAdvancement(resourceLocation);
+            return getAdvancementManagerClient().getAdvancements().get(resourceLocation);
         }
         return getAdvancementManagerServer().getAdvancement(resourceLocation);
     }
 
     public static AdvancementManager getAdvancementManagerServer() {
-        return ServerLifecycleHooks.getCurrentServer().getAdvancementManager();
+        return ServerLifecycleHooks.getCurrentServer().getAdvancements();
     }
 
     public static ClientAdvancementManager getAdvancementManagerClient() {
-        return Minecraft.getInstance().player.connection.getAdvancementManager();
+        return Minecraft.getInstance().player.connection.getAdvancements();
     }
 
     public static <T extends ICriterionTrigger<?>> T registerCriteriaTrigger(T criterion) {

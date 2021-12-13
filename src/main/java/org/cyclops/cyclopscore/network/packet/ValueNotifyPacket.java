@@ -49,8 +49,8 @@ public class ValueNotifyPacket extends PacketCodec {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void actionClient(World world, PlayerEntity player) {
-		if(player.openContainer instanceof IValueNotifiable) {
-			IValueNotifiable container = ((IValueNotifiable) player.openContainer);
+		if(player.containerMenu instanceof IValueNotifiable) {
+			IValueNotifiable container = ((IValueNotifiable) player.containerMenu);
 			if (isContainerValid(container)) {
 				container.onUpdate(valueId, value);
 			}
@@ -59,8 +59,8 @@ public class ValueNotifyPacket extends PacketCodec {
 
 	@Override
 	public void actionServer(World world, ServerPlayerEntity player) {
-		if(player.openContainer instanceof IValueNotifiable) {
-			IValueNotifiable container = ((IValueNotifiable) player.openContainer);
+		if(player.containerMenu instanceof IValueNotifiable) {
+			IValueNotifiable container = ((IValueNotifiable) player.containerMenu);
 			if (isContainerValid(container)) {
 				container.onUpdate(valueId, value);
 			}

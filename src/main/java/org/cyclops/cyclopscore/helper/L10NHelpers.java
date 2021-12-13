@@ -37,7 +37,7 @@ public final class L10NHelpers {
     @OnlyIn(Dist.CLIENT)
     public static String localize(String key, Object... params) {
         if(MinecraftHelpers.isModdedEnvironment()) {
-            return I18n.format(key, params);
+            return I18n.get(key, params);
         } else {
             return String.format("%s: %s", key, Arrays.toString(params));
         }
@@ -69,7 +69,7 @@ public final class L10NHelpers {
     @OnlyIn(Dist.CLIENT)
     public static void addOptionalInfo(List<ITextComponent> list, String prefix) {
         String key = prefix + ".info";
-        if (I18n.hasKey(key)) {
+        if (I18n.exists(key)) {
             if (MinecraftHelpers.isShifted()) {
                 String localized = localize(key);
                 list.addAll(StringHelpers.splitLines(localized, MAX_TOOLTIP_LINE_LENGTH, IInformationProvider.INFO_PREFIX)
@@ -79,8 +79,8 @@ public final class L10NHelpers {
             } else {
                 list.add(new TranslationTextComponent("general." + Reference.MOD_ID + ".tooltip.info")
                         .setStyle(Style.EMPTY
-                                .setColor(Color.fromTextFormatting(TextFormatting.GRAY))
-                                .setItalic(true)));
+                                .withColor(Color.fromLegacyFormat(TextFormatting.GRAY))
+                                .withItalic(true)));
             }
         }
     }

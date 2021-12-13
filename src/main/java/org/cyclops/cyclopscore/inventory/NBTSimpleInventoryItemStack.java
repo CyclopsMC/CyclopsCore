@@ -30,7 +30,7 @@ public class NBTSimpleInventoryItemStack extends SimpleInventory {
 	}
 	
 	@Override
-	public void markDirty() {
+	public void setChanged() {
 		CompoundNBT tag = itemStack.getOrCreateTag();
 		writeToNBT(tag, this.tagName);
 		itemStack.setTag(tag);

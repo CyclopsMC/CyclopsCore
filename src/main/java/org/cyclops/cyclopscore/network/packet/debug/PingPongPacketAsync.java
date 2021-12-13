@@ -41,7 +41,7 @@ public class PingPongPacketAsync extends PacketCodec {
 	}
 
 	protected void log(PlayerEntity player, String message) {
-		player.sendMessage(new StringTextComponent(message), Util.DUMMY_UUID);
+		player.sendMessage(new StringTextComponent(message), Util.NIL_UUID);
 	}
 
 	protected PingPongPacketAsync newPacket() {

@@ -407,7 +407,7 @@ public abstract class NBTClassType<T> {
             public DimPos readPersistedField(String name, CompoundNBT tag) {
                 CompoundNBT dimPos = tag.getCompound(name);
                 String dimensionName = dimPos.getString("dim");
-                RegistryKey<World> dimensionType = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(dimensionName));
+                RegistryKey<World> dimensionType = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimensionName));
                 return DimPos.of(dimensionType, new BlockPos(dimPos.getInt("x"), dimPos.getInt("y"), dimPos.getInt("z")));
             }
 
@@ -420,13 +420,13 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, ItemStack object, CompoundNBT tag) {
                 if (object != null) {
-                    tag.put(name, object.copy().write(new CompoundNBT()));
+                    tag.put(name, object.copy().save(new CompoundNBT()));
                 }
             }
 
             @Override
             public ItemStack readPersistedField(String name, CompoundNBT tag) {
-                return ItemStack.read(tag.getCompound(name));
+                return ItemStack.of(tag.getCompound(name));
             }
 
             @Override
@@ -444,7 +444,7 @@ public abstract class NBTClassType<T> {
 
             @Override
             public IFormattableTextComponent readPersistedField(String name, CompoundNBT tag) {
-                return ITextComponent.Serializer.getComponentFromJson(tag.getString(name));
+                return ITextComponent.Serializer.fromJson(tag.getString(name));
             }
 
             @Override

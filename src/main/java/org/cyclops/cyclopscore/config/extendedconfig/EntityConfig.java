@@ -52,7 +52,7 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
 
     public static <T extends Entity> BiFunction<EntityConfig<T>, EntityType<T>, ItemConfig> getDefaultSpawnEggItemConfigConstructor(ModBase mod, String itemName, int primaryColorIn, int secondaryColorIn, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
         return (entityConfig, entityType) -> {
-            Item.Properties itemProperties = new Item.Properties().group(mod.getDefaultItemGroup());
+            Item.Properties itemProperties = new Item.Properties().tab(mod.getDefaultItemGroup());
             if (itemPropertiesModifier != null) {
                 itemProperties = itemPropertiesModifier.apply(itemProperties);
             }

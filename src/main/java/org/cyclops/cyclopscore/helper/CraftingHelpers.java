@@ -50,46 +50,46 @@ public class CraftingHelpers {
     }
 
     public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findRecipes(World world, IRecipeType<? extends T> recipeType) {
-        return world.isRemote() ? getClientRecipes(recipeType) : findServerRecipes((ServerWorld) world, recipeType);
+        return world.isClientSide() ? getClientRecipes(recipeType) : findServerRecipes((ServerWorld) world, recipeType);
     }
 
     public static RecipeManager getRecipeManager() {
         return MinecraftHelpers.isClientSide()
                 ? (CLIENT_RECIPE_MANAGER != null ? CLIENT_RECIPE_MANAGER : Minecraft.getInstance().getConnection().getRecipeManager())
-                : Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getWorld(World.OVERWORLD), "Server is still loading").getRecipeManager();
+                : Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD), "Server is still loading").getRecipeManager();
     }
 
     public static <C extends IInventory, T extends IRecipe<C>> Optional<T> getServerRecipe(IRecipeType<? extends T> recipeType, ResourceLocation recipeName) {
-        return (Optional<T>) Optional.ofNullable(getRecipeManager().getRecipes(recipeType).get(recipeName));
+        return (Optional<T>) Optional.ofNullable(getRecipeManager().byType(recipeType).get(recipeName));
     }
 
     public static <C extends IInventory, T extends IRecipe<C>> Optional<T> findServerRecipe(IRecipeType<T> recipeType, C container, World world) {
-        return world.getRecipeManager().getRecipe(recipeType, container, world);
+        return world.getRecipeManager().getRecipeFor(recipeType, container, world);
     }
 
     public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findServerRecipes(IRecipeType<? extends T> recipeType) {
-        return findServerRecipes(Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getWorld(World.OVERWORLD)), recipeType);
+        return findServerRecipes(Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD)), recipeType);
     }
 
     public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findServerRecipes(ServerWorld world, IRecipeType<? extends T> recipeType) {
-        return (Collection<T>) world.getRecipeManager().getRecipes(recipeType).values();
+        return (Collection<T>) world.getRecipeManager().byType(recipeType).values();
     }
 
     @OnlyIn(Dist.CLIENT)
     public static <C extends IInventory, T extends IRecipe<C>> Optional<T> getClientRecipe(IRecipeType<? extends T> recipeType, ResourceLocation recipeName) {
-        return (Optional<T>) Optional.ofNullable(getRecipeManager().getRecipes(recipeType).get(recipeName));
+        return (Optional<T>) Optional.ofNullable(getRecipeManager().byType(recipeType).get(recipeName));
     }
 
     @OnlyIn(Dist.CLIENT)
     public static <C extends IInventory, T extends IRecipe<C>> Collection<T> getClientRecipes(IRecipeType<? extends T> recipeType) {
-        return (Collection<T>) getRecipeManager().getRecipes(recipeType).values();
+        return (Collection<T>) getRecipeManager().byType(recipeType).values();
     }
 
     @OnlyIn(Dist.CLIENT)
     public static <C extends IInventory, T extends IRecipe<C>> T findClientRecipe(ItemStack itemStack, IRecipeType<T> recipeType, int index) throws IllegalArgumentException {
         int indexAttempt = index;
         for(T recipe : getClientRecipes(recipeType)) {
-            if(ItemStack.areItemStacksEqual(recipe.getRecipeOutput(), itemStack) && indexAttempt-- == 0) {
+            if(ItemStack.isSame(recipe.getResultItem(), itemStack) && indexAttempt-- == 0) {
                 return recipe;
             }
         }
@@ -102,13 +102,13 @@ public class CraftingHelpers {
             .build(new CacheLoader<Triple<IRecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<IRecipe>>() {
                 @Override
                 public Optional<IRecipe> load(Triple<IRecipeType<?>, CacheableCraftingInventory, ResourceLocation> key) throws Exception {
-                    ServerWorld world = ServerLifecycleHooks.getCurrentServer().getWorld(RegistryKey.getOrCreateKey(Registry.WORLD_KEY, key.getRight()));
-                    return world.getRecipeManager().getRecipe((IRecipeType) key.getLeft(), key.getMiddle().getInventoryCrafting(), world);
+                    ServerWorld world = ServerLifecycleHooks.getCurrentServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, key.getRight()));
+                    return world.getRecipeManager().getRecipeFor((IRecipeType) key.getLeft(), key.getMiddle().getInventoryCrafting(), world);
                 }
             });
 
     /**
-     * A cache-based variant of {@link net.minecraft.item.crafting.RecipeManager#getRecipe(IRecipeType, IInventory, World)}.
+     * A cache-based variant of {@link net.minecraft.item.crafting.RecipeManager#getRecipeFor(IRecipeType, IInventory, World)}.
      * @param recipeType The recipe type.
      * @param inventoryCrafting The crafting inventory.
      * @param world The world.
@@ -122,7 +122,7 @@ public class CraftingHelpers {
                                                                                             C inventoryCrafting,
                                                                                             World world, boolean uniqueInventory) {
         return (Optional) CACHE_RECIPES.getUnchecked(Triple.of(recipeType,
-                new CacheableCraftingInventory(inventoryCrafting, !uniqueInventory), world.getDimensionKey().getLocation()));
+                new CacheableCraftingInventory(inventoryCrafting, !uniqueInventory), world.dimension().getRegistryName()));
     }
 
     public static class CacheableCraftingInventory {
@@ -134,12 +134,12 @@ public class CraftingHelpers {
                 // Deep-copy of the inventory to enable caching
                 this.inventoryCrafting = new CraftingInventory(new Container(null, 0) {
                     @Override
-                    public boolean canInteractWith(PlayerEntity playerIn) {
+                    public boolean stillValid(PlayerEntity playerIn) {
                         return false;
                     }
-                }, inventoryCrafting.getSizeInventory(), 1);
-                for (int i = 0; i < inventoryCrafting.getSizeInventory(); i++) {
-                    this.inventoryCrafting.setInventorySlotContents(i, inventoryCrafting.getStackInSlot(i).copy());
+                }, inventoryCrafting.getContainerSize(), 1);
+                for (int i = 0; i < inventoryCrafting.getContainerSize(); i++) {
+                    this.inventoryCrafting.setItem(i, inventoryCrafting.getItem(i).copy());
                 }
             } else {
                 this.inventoryCrafting = inventoryCrafting;
@@ -155,9 +155,9 @@ public class CraftingHelpers {
             if (!(obj instanceof CacheableCraftingInventory)) {
                 return false;
             }
-            for (int i = 0; i < getInventoryCrafting().getSizeInventory(); i++) {
-                if (!ItemStack.areItemStacksEqual(getInventoryCrafting().getStackInSlot(i),
-                        ((CacheableCraftingInventory) obj).getInventoryCrafting().getStackInSlot(i))) {
+            for (int i = 0; i < getInventoryCrafting().getContainerSize(); i++) {
+                if (!ItemStack.isSame(getInventoryCrafting().getItem(i),
+                        ((CacheableCraftingInventory) obj).getInventoryCrafting().getItem(i))) {
                     return false;
                 }
             }
@@ -166,10 +166,10 @@ public class CraftingHelpers {
 
         @Override
         public int hashCode() {
-            int hash = 11 + getInventoryCrafting().getSizeInventory();
-            for (int i = 0; i < getInventoryCrafting().getSizeInventory(); i++) {
+            int hash = 11 + getInventoryCrafting().getContainerSize();
+            for (int i = 0; i < getInventoryCrafting().getContainerSize(); i++) {
                 hash = hash << 1;
-                hash |= ItemStackHelpers.getItemStackHashCode(getInventoryCrafting().getStackInSlot(i));
+                hash |= ItemStackHelpers.getItemStackHashCode(getInventoryCrafting().getItem(i));
             }
             return hash;
         }

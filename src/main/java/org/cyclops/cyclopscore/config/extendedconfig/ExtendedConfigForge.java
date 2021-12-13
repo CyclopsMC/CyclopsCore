@@ -33,7 +33,7 @@ public abstract class ExtendedConfigForge<C extends ExtendedConfig<C, I>, I exte
     public abstract IForgeRegistry<? super I> getRegistry();
 
     public RegistryKey<I> getRegistryKey() {
-        return RegistryKey.getOrCreateKey(RegistryKey.getOrCreateRootKey(getRegistry().getRegistryName()),
+        return RegistryKey.create(RegistryKey.createRegistryKey(getRegistry().getRegistryName()),
                 new ResourceLocation(getMod().getModId(), getNamedId()));
     }
 

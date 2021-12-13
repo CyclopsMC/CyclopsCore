@@ -72,11 +72,11 @@ public abstract class ParticleConfig<T extends IParticleData> extends ExtendedCo
     public void onParticleFactoryRegister(ParticleFactoryRegisterEvent event) {
         IParticleFactory<T> factory = getParticleFactory();
         if (factory != null) {
-            Minecraft.getInstance().particles.registerFactory(getInstance(), factory);
+            Minecraft.getInstance().particleEngine.register(getInstance(), factory);
         }
         ParticleManager.IParticleMetaFactory<T> metaFactory = getParticleMetaFactory();
         if (metaFactory != null) {
-            Minecraft.getInstance().particles.registerFactory(getInstance(), metaFactory);
+            Minecraft.getInstance().particleEngine.register(getInstance(), metaFactory);
         }
     }
 

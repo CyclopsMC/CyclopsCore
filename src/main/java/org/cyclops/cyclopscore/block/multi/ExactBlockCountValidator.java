@@ -20,6 +20,6 @@ public class ExactBlockCountValidator implements IBlockCountValidator {
             return null;
         }
         return new TranslationTextComponent("multiblock.cyclopscore.error.blockCount.exact",
-                getExactCount(), new TranslationTextComponent(block.getTranslationKey()), count);
+                getExactCount(), new TranslationTextComponent(block.getDescriptionId()), count);
     }
 }

@@ -60,11 +60,11 @@ public class GuiHelpers {
     public static void renderFluidTank(AbstractGui gui, MatrixStack matrixStack, @Nullable FluidStack fluidStack, int capacity,
                                        int x, int y, int width, int height) {
         if (fluidStack != null && !fluidStack.isEmpty() && capacity > 0) {
-            GlStateManager.pushMatrix();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
+            GlStateManager._pushMatrix();
+            GlStateManager._enableBlend();
+            GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            RenderHelper.turnBackOn();
+            GlStateManager._enableRescaleNormal();
             GL11.glEnable(GL11.GL_DEPTH_TEST);
 
             int level = (int) (height * (((double) fluidStack.getAmount()) / capacity));
@@ -80,7 +80,7 @@ public class GuiHelpers {
                     level = 0;
                 }
 
-                RenderHelpers.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+                RenderHelpers.bindTexture(AtlasTexture.LOCATION_BLOCKS);
 
                 // Fluids can have a custom overlay color, use this to render.
                 Triple<Float, Float, Float> colorParts = Helpers.intToRGB(fluidStack.getFluid().getAttributes().getColor(fluidStack));
@@ -90,22 +90,22 @@ public class GuiHelpers {
                 }
                 RenderSystem.color3f(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight());
 
-                RenderHelper.setupGuiFlatDiffuseLighting();
+                RenderHelper.setupForFlatItems();
                 AbstractGui.blit(matrixStack, x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
-                RenderHelper.setupGui3DDiffuseLighting();
+                RenderHelper.setupFor3DItems();
 
                 // Reset color when done
-                GlStateManager.color4f(1, 1, 1, 1);
+                GlStateManager._color4f(1, 1, 1, 1);
 
                 verticalOffset = verticalOffset + 16;
             }
 
             TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-            textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-            textureManager.getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+            textureManager.bind(AtlasTexture.LOCATION_BLOCKS);
+            textureManager.getTexture(AtlasTexture.LOCATION_BLOCKS).restoreLastBlurMipmap();
 
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.popMatrix();
+            RenderHelper.turnOff();
+            GlStateManager._popMatrix();
             GL11.glDisable(GL11.GL_DEPTH_TEST);
         }
     }
@@ -145,7 +145,7 @@ public class GuiHelpers {
                                                 ResourceLocation textureOverlay, int overlayTextureX, int overlayTextureY) {
         renderFluidTank(gui, matrixStack, fluidStack, capacity, x, y, width, height);
         if (fluidStack != null && capacity > 0) {
-            GlStateManager.enableBlend();
+            GlStateManager._enableBlend();
             RenderHelpers.bindTexture(textureOverlay);
             gui.blit(matrixStack, x, y, overlayTextureX, overlayTextureY, width, height);
         }
@@ -211,10 +211,10 @@ public class GuiHelpers {
         int height = gui.height;
         Minecraft mc = Minecraft.getInstance();
 
-        GlStateManager.pushMatrix();
+        GlStateManager._pushMatrix();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.disableLighting();
+        GlStateManager._disableRescaleNormal();
+        GlStateManager._disableLighting();
 
         int tooltipWidth = 0;
         int tempWidth;
@@ -222,7 +222,7 @@ public class GuiHelpers {
         int yStart;
 
         for(ITextComponent line : lines) {
-            tempWidth = mc.fontRenderer.getStringWidth(line.getString());
+            tempWidth = mc.font.width(line.getString());
 
             if(tempWidth > tooltipWidth) {
                 tooltipWidth = tempWidth;
@@ -245,13 +245,13 @@ public class GuiHelpers {
             yStart = height - tooltipHeight - guiTop - 6;
         }
 
-        mc.getItemRenderer().zLevel = 300.0F;
+        mc.getItemRenderer().blitOffset = 300.0F;
         drawTooltipBackground(xStart, yStart, tooltipWidth, tooltipHeight);
 
         MatrixStack matrixstack = new MatrixStack();
-        IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-        matrixstack.translate(0.0D, 0.0D, (double)mc.getItemRenderer().zLevel);
-        Matrix4f matrix4f = matrixstack.getLast().getMatrix();
+        IRenderTypeBuffer.Impl irendertypebuffer$impl = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+        matrixstack.translate(0.0D, 0.0D, (double)mc.getItemRenderer().blitOffset);
+        Matrix4f matrix4f = matrixstack.last().pose();
 
         for(int stringIndex = 0; stringIndex < lines.size(); ++stringIndex) {
             ITextComponent line = lines.get(stringIndex);
@@ -262,7 +262,7 @@ public class GuiHelpers {
                 line = new StringTextComponent("\u00a77").append(line);
             }
 
-            mc.fontRenderer.func_238416_a_(line.func_241878_f(), xStart, yStart, -1, true, matrix4f,
+            mc.font.drawInBatch(line.getVisualOrderText(), xStart, yStart, -1, true, matrix4f,
                     irendertypebuffer$impl, false, 0, 15728880);
 
             if(stringIndex == 0) {
@@ -272,12 +272,12 @@ public class GuiHelpers {
             yStart += 10;
         }
 
-        irendertypebuffer$impl.finish();
+        irendertypebuffer$impl.endBatch();
 
-        GlStateManager.popMatrix();
+        GlStateManager._popMatrix();
         GL11.glEnable(GL11.GL_DEPTH_TEST);
 
-        mc.getItemRenderer().zLevel = 0.0F;
+        mc.getItemRenderer().blitOffset = 0.0F;
     }
 
     /**
@@ -325,23 +325,23 @@ public class GuiHelpers {
         float f5 = (float)(endColor >> 16 & 255) / 255.0F;
         float f6 = (float)(endColor >> 8 & 255) / 255.0F;
         float f7 = (float)(endColor & 255) / 255.0F;
-        GlStateManager.disableTexture();
-        GlStateManager.enableBlend();
-        GlStateManager.disableAlphaTest();
+        GlStateManager._disableTexture();
+        GlStateManager._enableBlend();
+        GlStateManager._disableAlphaTest();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.shadeModel(7425);
+        GlStateManager._shadeModel(7425);
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.pos((double)right, (double)top, (double)zLevel).color(f1, f2, f3, f).endVertex();
-        bufferbuilder.pos((double)left, (double)top, (double)zLevel).color(f1, f2, f3, f).endVertex();
-        bufferbuilder.pos((double)left, (double)bottom, (double)zLevel).color(f5, f6, f7, f4).endVertex();
-        bufferbuilder.pos((double)right, (double)bottom, (double)zLevel).color(f5, f6, f7, f4).endVertex();
-        tessellator.draw();
-        GlStateManager.shadeModel(7424);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.enableTexture();
+        bufferbuilder.vertex((double)right, (double)top, (double)zLevel).color(f1, f2, f3, f).endVertex();
+        bufferbuilder.vertex((double)left, (double)top, (double)zLevel).color(f1, f2, f3, f).endVertex();
+        bufferbuilder.vertex((double)left, (double)bottom, (double)zLevel).color(f5, f6, f7, f4).endVertex();
+        bufferbuilder.vertex((double)right, (double)bottom, (double)zLevel).color(f5, f6, f7, f4).endVertex();
+        tessellator.end();
+        GlStateManager._shadeModel(7424);
+        GlStateManager._disableBlend();
+        GlStateManager._enableAlphaTest();
+        GlStateManager._enableTexture();
     }
 
     /**

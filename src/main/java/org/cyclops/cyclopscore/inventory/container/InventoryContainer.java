@@ -19,9 +19,9 @@ public abstract class InventoryContainer extends ContainerExtended {
 		super(type, id, playerInventory);
 		this.inventory = inventory;
 		if (isAssertInventorySize()) {
-			assertInventorySize(inventory, getSizeInventory());
+			checkContainerSize(inventory, getSizeInventory());
 		}
-		this.inventory.openInventory(playerInventory.player);
+		this.inventory.startOpen(playerInventory.player);
 	}
 
 	protected boolean isAssertInventorySize() {
@@ -34,17 +34,17 @@ public abstract class InventoryContainer extends ContainerExtended {
 
 	@Override
 	protected int getSizeInventory() {
-		return inventory.getSizeInventory();
+		return inventory.getContainerSize();
 	}
 
 	@Override
-	public boolean canInteractWith(PlayerEntity player) {
-		return this.inventory.isUsableByPlayer(player);
+	public boolean stillValid(PlayerEntity player) {
+		return this.inventory.stillValid(player);
 	}
 
 	@Override
-	public void onContainerClosed(PlayerEntity player) {
-		super.onContainerClosed(player);
-		this.inventory.closeInventory(player);
+	public void removed(PlayerEntity player) {
+		super.removed(player);
+		this.inventory.stopOpen(player);
 	}
 }

@@ -40,7 +40,7 @@ public abstract class RenderModel<T extends Entity, M extends Model> extends Ent
     protected abstract M constructModel();
 
     @Override
-    public ResourceLocation getEntityTexture(Entity entity) {
+    public ResourceLocation getTextureLocation(Entity entity) {
         return texture;
     }
     

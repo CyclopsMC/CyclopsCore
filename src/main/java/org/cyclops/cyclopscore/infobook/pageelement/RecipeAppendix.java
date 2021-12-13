@@ -102,22 +102,22 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
         if (!itemStack.isEmpty()) {
             ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
-            GlStateManager.pushMatrix();
-            GlStateManager.enableBlend();
-            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
+            GlStateManager._pushMatrix();
+            GlStateManager._enableBlend();
+            GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            RenderHelper.turnBackOn();
+            GlStateManager._enableRescaleNormal();
             GL11.glEnable(GL11.GL_DEPTH_TEST);
-            renderItem.renderItemAndEffectIntoGUI(itemStack, x, y);
+            renderItem.renderAndDecorateItem(itemStack, x, y);
             if (renderOverlays)
-                renderItem.renderItemOverlays(Minecraft.getInstance().fontRenderer, itemStack, x, y);
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.popMatrix();
+                renderItem.renderGuiItemDecorations(Minecraft.getInstance().font, itemStack, x, y);
+            RenderHelper.turnOff();
+            GlStateManager._popMatrix();
             GL11.glDisable(GL11.GL_DEPTH_TEST);
 
             if (chance != 1.0F) {
                 String chanceString = chance * 100F + "%";
-                gui.drawScaledCenteredString(matrixStack, chanceString, x - 4, y + 3, gui.getFontRenderer().getStringWidth(chanceString), 1f, 18, Helpers.RGBToInt(255, 255, 255), true);
+                gui.drawScaledCenteredString(matrixStack, chanceString, x - 4, y + 3, gui.getFontRenderer().width(chanceString), 1f, 18, Helpers.RGBToInt(255, 255, 255), true);
             }
 
             if (button != null && renderOverlays) button.update(x, y, itemStack, gui);
@@ -147,40 +147,40 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
     @OnlyIn(Dist.CLIENT)
     public static void renderItemTooltip(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, ItemStack itemStack, int mx, int my) {
-        GlStateManager.pushMatrix();
+        GlStateManager._pushMatrix();
         if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && !itemStack.isEmpty() ) {
             gui.renderTooltip(matrixStack, itemStack, mx, my);
         }
-        GlStateManager.popMatrix();
+        GlStateManager._popMatrix();
 
-        GlStateManager.disableLighting();
+        GlStateManager._disableLighting();
 
-        GlStateManager.enableBlend();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager._enableBlend();
+        GlStateManager._enableAlphaTest();
+        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     @OnlyIn(Dist.CLIENT)
     public static void renderFluidTooltip(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, FluidStack fluidStack, int mx, int my) {
-        GlStateManager.pushMatrix();
+        GlStateManager._pushMatrix();
         if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && !fluidStack.isEmpty() ) {
             List<IReorderingProcessor> lines = Lists.newArrayList();
-            lines.add(IReorderingProcessor.fromString(
+            lines.add(IReorderingProcessor.forward(
                     L10NHelpers.localize(fluidStack.getTranslationKey()),
-                    Style.EMPTY.setColor(Color.fromTextFormatting(fluidStack.getFluid().getAttributes().getRarity(fluidStack).color)))
+                    Style.EMPTY.withColor(Color.fromLegacyFormat(fluidStack.getFluid().getAttributes().getRarity(fluidStack).color)))
             );
-            lines.add(IReorderingProcessor.fromString(
+            lines.add(IReorderingProcessor.forward(
                     fluidStack.getAmount() + " mB",
-                    Style.EMPTY.setColor(Color.fromTextFormatting(TextFormatting.GRAY)))
+                    Style.EMPTY.withColor(Color.fromLegacyFormat(TextFormatting.GRAY)))
             );
             gui.renderTooltip(matrixStack, lines, mx, my);
         }
-        GlStateManager.popMatrix();
+        GlStateManager._popMatrix();
 
-        GlStateManager.disableLighting();
+        GlStateManager._disableLighting();
 
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager._enableBlend();
+        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     @Override
@@ -305,7 +305,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
         @Override
         protected String getTranslationKey(ItemStack element) {
-            return element.getTranslationKey();
+            return element.getDescriptionId();
         }
     }
 

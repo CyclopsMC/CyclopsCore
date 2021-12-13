@@ -54,8 +54,8 @@ public abstract class PlayerPositionPacket extends PacketCodec {
      * @param range The range around the player.
      */
     public PlayerPositionPacket(PlayerEntity player, int range) {
-        this.uuid = player.getUniqueID().toString();
-        this.position = player.getPositionVec();
+        this.uuid = player.getUUID().toString();
+        this.position = player.position();
         this.range = range;
     }
 
@@ -74,8 +74,8 @@ public abstract class PlayerPositionPacket extends PacketCodec {
 
         try {
             UUID uuid = UUID.fromString(this.uuid);
-            if (player != null && !player.getUniqueID().equals(uuid)) {
-                player = world.getPlayerByUuid(uuid);
+            if (player != null && !player.getUUID().equals(uuid)) {
+                player = world.getPlayerByUUID(uuid);
             }
 
             if (player == null) {

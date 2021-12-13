@@ -43,9 +43,9 @@ public abstract class ItemGui extends Item {
 	public boolean onDroppedByPlayer(ItemStack itemstack, PlayerEntity player) {
 		if(!itemstack.isEmpty()
 				&& player instanceof ServerPlayerEntity
-				&& player.openContainer != null
-				&& player.openContainer.getClass() == getContainerClass(player.world, player, itemstack)) {
-			player.closeScreen();
+				&& player.containerMenu != null
+				&& player.containerMenu.getClass() == getContainerClass(player.level, player, itemstack)) {
+			player.closeContainer();
 		}
 		return super.onDroppedByPlayer(itemstack, player);
 	}
@@ -58,13 +58,13 @@ public abstract class ItemGui extends Item {
 	 * @param hand The hand the player is using.
      */
     public void openGuiForItemIndex(World world, ServerPlayerEntity player, int itemIndex, Hand hand) {
-    	if (!world.isRemote()) {
-			INamedContainerProvider containerProvider = this.getContainer(world, player, itemIndex, hand, player.getHeldItem(hand));
+    	if (!world.isClientSide()) {
+			INamedContainerProvider containerProvider = this.getContainer(world, player, itemIndex, hand, player.getItemInHand(hand));
 			if (containerProvider != null) {
 				NetworkHooks.openGui(player, containerProvider, packetBuffer -> this.writeExtraGuiData(packetBuffer, world, player, itemIndex, hand));
 				Stat<ResourceLocation> openStat = this.getOpenStat();
 				if (openStat != null) {
-					player.addStat(openStat);
+					player.awardStat(openStat);
 				}
 			}
     	}
@@ -93,13 +93,13 @@ public abstract class ItemGui extends Item {
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-		ItemStack itemStack = player.getHeldItem(hand);
+	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+		ItemStack itemStack = player.getItemInHand(hand);
 		if (player instanceof FakePlayer) {
 			return new ActionResult<>(ActionResultType.FAIL, itemStack);
 		}
 		if (player instanceof ServerPlayerEntity) {
-			openGuiForItemIndex(world, (ServerPlayerEntity) player, player.inventory.currentItem, hand);
+			openGuiForItemIndex(world, (ServerPlayerEntity) player, player.inventory.selected, hand);
 		}
 		return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
 	}

@@ -59,7 +59,7 @@ public class MinecraftHelpers {
     public static void setDay(ServerWorld world, boolean toDay) {
         int currentTime = (int) world.getGameTime();
         int newTime = currentTime - (currentTime % (MINECRAFT_DAY / 2)) + MINECRAFT_DAY / 2;
-        ((IServerWorldInfo) world.getWorldInfo()).setGameTime(newTime);
+        ((IServerWorldInfo) world.getLevelData()).setGameTime(newTime);
     }
 
 	/**
@@ -68,7 +68,7 @@ public class MinecraftHelpers {
 	 * @return If the player does not have a free spot in it's inventory.
 	 */
 	public static boolean isPlayerInventoryFull(PlayerEntity player) {
-	    return player.inventory.getFirstEmptyStack() == -1;
+	    return player.inventory.getFreeSlot() == -1;
 	}
 
     /**
@@ -154,8 +154,8 @@ public class MinecraftHelpers {
      * @return If we are physically running on a client and are running in the client thread.
      */
     public static boolean isClientSideThread() {
-        return isClientSide() && Minecraft.getInstance().world != null
-                && Thread.currentThread() == Minecraft.getInstance().world.mainThread;
+        return isClientSide() && Minecraft.getInstance().level != null
+                && Thread.currentThread() == Minecraft.getInstance().level.thread;
     }
 
 }

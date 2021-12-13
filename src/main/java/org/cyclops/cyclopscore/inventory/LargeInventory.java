@@ -36,7 +36,7 @@ public class LargeInventory extends SimpleInventory {
     public void readFromNBT(CompoundNBT data, String tag) {
         ListNBT nbttaglist = data.getList(tag, Constants.NBT.TAG_COMPOUND);
 
-        for (int j = 0; j < getSizeInventory(); ++j)
+        for (int j = 0; j < getContainerSize(); ++j)
             contents[j] = ItemStack.EMPTY;
 
         for (int j = 0; j < nbttaglist.size(); ++j) {
@@ -47,8 +47,8 @@ public class LargeInventory extends SimpleInventory {
             } else {
                 index = slot.getInt("Slot");
             }
-            if (index >= 0 && index < getSizeInventory()) {
-                contents[index] = ItemStack.read(slot);
+            if (index >= 0 && index < getContainerSize()) {
+                contents[index] = ItemStack.of(slot);
             }
         }
     }
@@ -60,13 +60,13 @@ public class LargeInventory extends SimpleInventory {
      */
     public void writeToNBT(CompoundNBT data, String tag) {
         ListNBT slots = new ListNBT();
-        for (int index = 0; index < getSizeInventory(); ++index) {
-            ItemStack itemStack = getStackInSlot(index);
+        for (int index = 0; index < getContainerSize(); ++index) {
+            ItemStack itemStack = getItem(index);
             if (!itemStack.isEmpty() && itemStack.getCount() > 0) {
                 CompoundNBT slot = new CompoundNBT();
                 slots.add(slot);
                 slot.putInt("Slot", index);
-                itemStack.write(slot);
+                itemStack.save(slot);
             }
         }
         data.put(tag, slots);

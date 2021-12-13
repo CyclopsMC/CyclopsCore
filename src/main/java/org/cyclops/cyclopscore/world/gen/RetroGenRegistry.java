@@ -51,7 +51,7 @@ public class RetroGenRegistry implements IRetroGenRegistry {
 			
 			boolean atLeastOneModified = false;
 			for(IRetroGen retroGen : retroGeneratables) {
-				if(retroGen.shouldRetroGen(tag, event.getWorld().getDimensionType())) {
+				if(retroGen.shouldRetroGen(tag, event.getWorld().dimensionType())) {
 					retroGen.retroGenerateChunk(tag, event.getChunk(), random);
 					getMod().log(Level.INFO, "Retrogenerating chunk at "
                             + event.getChunk().getPos().x + ":" + event.getChunk().getPos().z);
@@ -60,7 +60,7 @@ public class RetroGenRegistry implements IRetroGenRegistry {
 			}
 			
 			if(atLeastOneModified) {
-				event.getChunk().setModified(true);
+				event.getChunk().setUnsaved(true);
 			}
 		}
 	}

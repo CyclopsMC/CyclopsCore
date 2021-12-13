@@ -40,8 +40,8 @@ public class ButtonClickPacket extends PacketCodec {
 
 	@Override
 	public void actionServer(World world, ServerPlayerEntity player) {
-		if(player.openContainer instanceof IContainerButtonClickAcceptorServer) {
-			((IContainerButtonClickAcceptorServer) player.openContainer).onButtonClick(buttonId);
+		if(player.containerMenu instanceof IContainerButtonClickAcceptorServer) {
+			((IContainerButtonClickAcceptorServer) player.containerMenu).onButtonClick(buttonId);
 		}
 	}
 	

@@ -41,7 +41,7 @@ public interface INbtPathExpression {
         return this.match(nbts.limit(1))
                 .getMatches()
                 .findAny()
-                .filter(tag -> tag.getId() != Constants.NBT.TAG_BYTE || ((ByteNBT) tag).getByte() == (byte) 1) // Filter truthy values
+                .filter(tag -> tag.getId() != Constants.NBT.TAG_BYTE || ((ByteNBT) tag).getAsByte() == (byte) 1) // Filter truthy values
                 .isPresent();
     }
 

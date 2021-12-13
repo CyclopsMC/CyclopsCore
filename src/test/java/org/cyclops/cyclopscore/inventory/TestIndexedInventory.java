@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThat;
 public class TestIndexedInventory {
 
     static {
-        Bootstrap.register();
+        Bootstrap.bootStrap();
     }
 
     private static final Item ITEM1 = new ItemDummy();
@@ -40,7 +40,7 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory();
         inv.createIndex();
 
-        assertThat("Size is not 0", inv.getSizeInventory(), is(0));
+        assertThat("Size is not 0", inv.getContainerSize(), is(0));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -55,7 +55,7 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -70,7 +70,7 @@ public class TestIndexedInventory {
 
         inv.createIndex();
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -83,9 +83,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -105,11 +105,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
         inv.createIndex();
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -125,11 +125,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, STACK2);
+        inv.setItem(0, STACK2);
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -145,13 +145,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, STACK2);
+        inv.setItem(0, STACK2);
 
         inv.createIndex();
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -167,11 +167,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -184,13 +184,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -203,13 +203,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, STACK2);
+        inv.setItem(0, STACK2);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -222,15 +222,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, STACK2);
+        inv.setItem(0, STACK2);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -243,9 +243,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -258,11 +258,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -275,11 +275,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -295,13 +295,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
         inv.createIndex();
 
-        assertThat("Size is not 1", inv.getSizeInventory(), is(1));
+        assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -319,7 +319,7 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -334,7 +334,7 @@ public class TestIndexedInventory {
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -347,9 +347,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -365,11 +365,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -385,11 +385,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, STACK2);
+        inv.setItem(0, STACK2);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -405,13 +405,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, STACK2);
+        inv.setItem(0, STACK2);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -427,11 +427,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -444,13 +444,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -463,13 +463,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, STACK2);
+        inv.setItem(0, STACK2);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -482,15 +482,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, STACK2);
+        inv.setItem(0, STACK2);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -503,9 +503,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -518,11 +518,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -535,11 +535,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -555,13 +555,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -577,11 +577,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1)));
@@ -600,13 +600,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1)));
@@ -625,13 +625,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -647,15 +647,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -671,15 +671,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -692,17 +692,17 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -715,13 +715,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(1)));
@@ -737,15 +737,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(1)));
@@ -761,15 +761,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -782,17 +782,17 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -805,13 +805,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK3);
+        inv.setItem(2, STACK3);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
@@ -833,15 +833,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK3);
+        inv.setItem(2, STACK3);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
@@ -863,15 +863,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK3);
+        inv.setItem(2, STACK3);
 
-        inv.setInventorySlotContents(2, ItemStack.EMPTY);
+        inv.setItem(2, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1)));
@@ -890,17 +890,17 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK3);
+        inv.setItem(2, STACK3);
 
-        inv.setInventorySlotContents(2, ItemStack.EMPTY);
+        inv.setItem(2, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1)));
@@ -919,15 +919,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK3);
+        inv.setItem(2, STACK3);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 2)));
@@ -946,17 +946,17 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK3);
+        inv.setItem(2, STACK3);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 2)));
@@ -975,17 +975,17 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK3);
+        inv.setItem(2, STACK3);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(2)));
@@ -1001,19 +1001,19 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK3);
+        inv.setItem(2, STACK3);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(2)));
@@ -1029,19 +1029,19 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK3);
+        inv.setItem(2, STACK3);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(2, ItemStack.EMPTY);
+        inv.setItem(2, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -1054,21 +1054,21 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK3);
+        inv.setItem(2, STACK3);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(2, ItemStack.EMPTY);
+        inv.setItem(2, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -1081,17 +1081,17 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK3);
+        inv.setItem(2, STACK3);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(2, ItemStack.EMPTY);
+        inv.setItem(2, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -1107,19 +1107,19 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1);
+        inv.setItem(0, STACK1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK3);
+        inv.setItem(2, STACK3);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(2, ItemStack.EMPTY);
+        inv.setItem(2, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1, 2)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
@@ -1135,13 +1135,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1_1);
+        inv.setItem(0, STACK1_1);
 
-        inv.setInventorySlotContents(1, STACK1_2);
+        inv.setItem(1, STACK1_2);
 
-        inv.setInventorySlotContents(2, STACK1_3);
+        inv.setItem(2, STACK1_3);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
@@ -1159,15 +1159,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1_1);
+        inv.setItem(0, STACK1_1);
 
-        inv.setInventorySlotContents(1, STACK1_2);
+        inv.setItem(1, STACK1_2);
 
-        inv.setInventorySlotContents(2, STACK1_3);
+        inv.setItem(2, STACK1_3);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
@@ -1185,15 +1185,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1_1);
+        inv.setItem(0, STACK1_1);
 
-        inv.setInventorySlotContents(1, STACK1_2);
+        inv.setItem(1, STACK1_2);
 
-        inv.setInventorySlotContents(2, STACK1_3);
+        inv.setItem(2, STACK1_3);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 2)));
@@ -1210,17 +1210,17 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1_1);
+        inv.setItem(0, STACK1_1);
 
-        inv.setInventorySlotContents(1, STACK1_2);
+        inv.setItem(1, STACK1_2);
 
-        inv.setInventorySlotContents(2, STACK1_3);
+        inv.setItem(2, STACK1_3);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(1)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 2)));
@@ -1237,17 +1237,17 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1_1);
+        inv.setItem(0, STACK1_1);
 
-        inv.setInventorySlotContents(1, STACK1_2);
+        inv.setItem(1, STACK1_2);
 
-        inv.setInventorySlotContents(2, STACK1_3);
+        inv.setItem(2, STACK1_3);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(2)));
@@ -1263,19 +1263,19 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1_1);
+        inv.setItem(0, STACK1_1);
 
-        inv.setInventorySlotContents(1, STACK1_2);
+        inv.setItem(1, STACK1_2);
 
-        inv.setInventorySlotContents(2, STACK1_3);
+        inv.setItem(2, STACK1_3);
 
-        inv.setInventorySlotContents(1, ItemStack.EMPTY);
+        inv.setItem(1, ItemStack.EMPTY);
 
-        inv.setInventorySlotContents(0, ItemStack.EMPTY);
+        inv.setItem(0, ItemStack.EMPTY);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray(0, 1)));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(2)));
@@ -1291,13 +1291,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1_1);
+        inv.setItem(0, STACK1_1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK1_3);
+        inv.setItem(2, STACK1_3);
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
@@ -1317,15 +1317,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setInventorySlotContents(0, STACK1_1);
+        inv.setItem(0, STACK1_1);
 
-        inv.setInventorySlotContents(1, STACK2);
+        inv.setItem(1, STACK2);
 
-        inv.setInventorySlotContents(2, STACK1_3);
+        inv.setItem(2, STACK1_3);
 
         inv.createIndex();
 
-        assertThat("Size is not 3", inv.getSizeInventory(), is(3));
+        assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));

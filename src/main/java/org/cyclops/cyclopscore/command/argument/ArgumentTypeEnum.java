@@ -63,21 +63,21 @@ public class ArgumentTypeEnum<T extends Enum<T>> implements ArgumentType<T> {
     public static class Serializer implements IArgumentSerializer<ArgumentTypeEnum<?>> {
 
         @Override
-        public void write(ArgumentTypeEnum argumentTypeEnum, PacketBuffer packetBuffer) {
-            packetBuffer.writeString(argumentTypeEnum.enumClass.getName());
+        public void serializeToNetwork(ArgumentTypeEnum argumentTypeEnum, PacketBuffer packetBuffer) {
+            packetBuffer.writeUtf(argumentTypeEnum.enumClass.getName());
         }
 
         @Override
-        public ArgumentTypeEnum read(PacketBuffer packetBuffer) {
+        public ArgumentTypeEnum deserializeFromNetwork(PacketBuffer packetBuffer) {
             try {
-                return new ArgumentTypeEnum(Class.forName(packetBuffer.readString(PacketCodec.READ_STRING_MAX_LENGTH)));
+                return new ArgumentTypeEnum(Class.forName(packetBuffer.readUtf(PacketCodec.READ_STRING_MAX_LENGTH)));
             } catch (ClassNotFoundException e) {
                 return null;
             }
         }
 
         @Override
-        public void write(ArgumentTypeEnum argumentTypeEnum, JsonObject jsonObject) {
+        public void serializeToJson(ArgumentTypeEnum argumentTypeEnum, JsonObject jsonObject) {
             jsonObject.addProperty("class", argumentTypeEnum.enumClass.getName());
         }
     }

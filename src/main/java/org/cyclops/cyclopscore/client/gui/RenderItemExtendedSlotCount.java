@@ -37,7 +37,7 @@ public class RenderItemExtendedSlotCount extends ItemRenderer {
     private final ItemRenderer renderItemInner;
 
     protected RenderItemExtendedSlotCount(Minecraft mc) {
-        this(mc.getTextureManager(), mc.getItemRenderer().getItemModelMesher().getModelManager(), mc.getItemColors(), mc.getItemRenderer());
+        this(mc.getTextureManager(), mc.getItemRenderer().getItemModelShaper().getModelManager(), mc.getItemColors(), mc.getItemRenderer());
     }
 
     protected RenderItemExtendedSlotCount(TextureManager textureManager, ModelManager modelManager,
@@ -57,18 +57,18 @@ public class RenderItemExtendedSlotCount extends ItemRenderer {
     }
 
     public void drawSlotText(FontRenderer fontRenderer, MatrixStack matrixstack, String string, int x, int y) {
-        matrixstack.translate(0.0D, 0.0D, (double)(this.zLevel + 200.0F));
+        matrixstack.translate(0.0D, 0.0D, (double)(this.blitOffset + 200.0F));
         float scale = 0.5f;
         matrixstack.scale(scale, scale, 1.0f);
-        IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-        int width = fontRenderer.getStringWidth(string);
-        fontRenderer.renderString(string, (x + 16) / scale - width, (y + 12) / scale, 16777215, true,
-                matrixstack.getLast().getMatrix(), renderTypeBuffer, false, 0, 15728880);
-        renderTypeBuffer.finish();
+        IRenderTypeBuffer.Impl renderTypeBuffer = IRenderTypeBuffer.immediate(Tessellator.getInstance().getBuilder());
+        int width = fontRenderer.width(string);
+        fontRenderer.drawInBatch(string, (x + 16) / scale - width, (y + 12) / scale, 16777215, true,
+                matrixstack.last().pose(), renderTypeBuffer, false, 0, 15728880);
+        renderTypeBuffer.endBatch();
     }
 
     @Override
-    public void renderItemOverlayIntoGUI(FontRenderer fr, ItemStack stack, int xPosition, int yPosition, @Nullable String text) {
+    public void renderGuiItemDecorations(FontRenderer fr, ItemStack stack, int xPosition, int yPosition, @Nullable String text) {
         // ----- Copied and adjusted from super -----
         if (!stack.isEmpty()) {
             MatrixStack matrixstack = new MatrixStack();
@@ -82,12 +82,12 @@ public class RenderItemExtendedSlotCount extends ItemRenderer {
                 RenderSystem.disableAlphaTest();
                 RenderSystem.disableBlend();
                 Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder bufferbuilder = tessellator.getBuffer();
+                BufferBuilder bufferbuilder = tessellator.getBuilder();
                 double health = stack.getItem().getDurabilityForDisplay(stack);
                 int i = Math.round(13.0F - (float)health * 13.0F);
                 int j = stack.getItem().getRGBDurabilityForDisplay(stack);
-                this.draw(bufferbuilder, xPosition + 2, yPosition + 13, 13, 2, 0, 0, 0, 255);
-                this.draw(bufferbuilder, xPosition + 2, yPosition + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
+                this.fillRect(bufferbuilder, xPosition + 2, yPosition + 13, 13, 2, 0, 0, 0, 255);
+                this.fillRect(bufferbuilder, xPosition + 2, yPosition + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
                 RenderSystem.enableBlend();
                 RenderSystem.enableAlphaTest();
                 RenderSystem.enableTexture();
@@ -95,15 +95,15 @@ public class RenderItemExtendedSlotCount extends ItemRenderer {
             }
 
             ClientPlayerEntity clientplayerentity = Minecraft.getInstance().player;
-            float f3 = clientplayerentity == null ? 0.0F : clientplayerentity.getCooldownTracker().getCooldown(stack.getItem(), Minecraft.getInstance().getRenderPartialTicks());
+            float f3 = clientplayerentity == null ? 0.0F : clientplayerentity.getCooldowns().getCooldownPercent(stack.getItem(), Minecraft.getInstance().getFrameTime());
             if (f3 > 0.0F) {
                 RenderSystem.disableDepthTest();
                 RenderSystem.disableTexture();
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
                 Tessellator tessellator1 = Tessellator.getInstance();
-                BufferBuilder bufferbuilder1 = tessellator1.getBuffer();
-                this.draw(bufferbuilder1, xPosition, yPosition + MathHelper.floor(16.0F * (1.0F - f3)), 16, MathHelper.ceil(16.0F * f3), 255, 255, 255, 127);
+                BufferBuilder bufferbuilder1 = tessellator1.getBuilder();
+                this.fillRect(bufferbuilder1, xPosition, yPosition + MathHelper.floor(16.0F * (1.0F - f3)), 16, MathHelper.ceil(16.0F * f3), 255, 255, 255, 127);
                 RenderSystem.enableTexture();
                 RenderSystem.enableDepthTest();
             }
@@ -114,12 +114,12 @@ public class RenderItemExtendedSlotCount extends ItemRenderer {
     // Hacks to refer to correct RenderItem's itemModelMesher instance
 
     @Override
-    public ItemModelMesher getItemModelMesher() {
-        return renderItemInner.getItemModelMesher();
+    public ItemModelMesher getItemModelShaper() {
+        return renderItemInner.getItemModelShaper();
     }
 
     @Override
-    public IBakedModel getItemModelWithOverrides(ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entitylivingbaseIn) {
-        return renderItemInner.getItemModelWithOverrides(stack, worldIn, entitylivingbaseIn);
+    public IBakedModel getModel(ItemStack stack, @Nullable World worldIn, @Nullable LivingEntity entitylivingbaseIn) {
+        return renderItemInner.getModel(stack, worldIn, entitylivingbaseIn);
     }
 }

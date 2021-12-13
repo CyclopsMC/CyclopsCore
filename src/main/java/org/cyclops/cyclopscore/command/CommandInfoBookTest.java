@@ -26,7 +26,7 @@ public class CommandInfoBookTest implements Command<CommandSource> {
 
     @Override
     public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        NetworkHooks.openGui(context.getSource().asPlayer(), new INamedContainerProvider() {
+        NetworkHooks.openGui(context.getSource().getPlayerOrException(), new INamedContainerProvider() {
             @Override
             public ITextComponent getDisplayName() {
                 return new TranslationTextComponent("gui.cyclopscore.infobook");
@@ -44,7 +44,7 @@ public class CommandInfoBookTest implements Command<CommandSource> {
 
     public static LiteralArgumentBuilder<CommandSource> make() {
         return Commands.literal("infobooktest")
-                .requires((commandSource) -> commandSource.hasPermissionLevel(2))
+                .requires((commandSource) -> commandSource.hasPermission(2))
                 .executes(new CommandInfoBookTest());
     }
 

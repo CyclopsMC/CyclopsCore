@@ -11,6 +11,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.Helpers;
 
+import net.minecraft.client.gui.widget.button.Button.IPressable;
+
 /**
  * An advanced button type.
  * @author rubensworks
@@ -65,7 +67,7 @@ public class AdvancedButton extends Button {
     public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(isVisible() && isHover(mouseX, mouseY)) {
             // MCP: drawString
-            Minecraft.getInstance().fontRenderer.func_243248_b(matrixStack, ((IFormattableTextComponent) getMessage()).mergeStyle(TextFormatting.UNDERLINE), x, y,
+            Minecraft.getInstance().font.draw(matrixStack, ((IFormattableTextComponent) getMessage()).withStyle(TextFormatting.UNDERLINE), x, y,
                     Helpers.RGBToInt(100, 100, 150));
         }
     }

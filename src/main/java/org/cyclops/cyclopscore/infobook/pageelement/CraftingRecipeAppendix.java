@@ -68,10 +68,10 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe<CraftingInven
         // Prepare items
         int tick = getTick(gui);
         ItemStack[] grid = new ItemStack[9];
-        ItemStack result = prepareItemStack(recipe.getRecipeOutput(), tick);
+        ItemStack result = prepareItemStack(recipe.getResultItem(), tick);
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
-                grid[i + j * 3] = prepareItemStacks(Lists.newArrayList(getItemStacks(i + j * 3).getMatchingStacks()), tick);
+                grid[i + j * 3] = prepareItemStacks(Lists.newArrayList(getItemStacks(i + j * 3).getItems()), tick);
             }
         }
 

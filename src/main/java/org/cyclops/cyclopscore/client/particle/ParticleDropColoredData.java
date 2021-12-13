@@ -12,6 +12,8 @@ import org.cyclops.cyclopscore.RegistryEntries;
 
 import java.util.Locale;
 
+import net.minecraft.particles.IParticleData.IDeserializer;
+
 /**
  * Data for {@link ParticleDropColored}.
  * @author rubensworks
@@ -20,7 +22,7 @@ public class ParticleDropColoredData implements IParticleData {
 
     public static final ParticleDropColoredData INSTANCE = new ParticleDropColoredData(0, 0, 0);
     public static final IDeserializer<ParticleDropColoredData> DESERIALIZER = new IDeserializer<ParticleDropColoredData>() {
-        public ParticleDropColoredData deserialize(ParticleType<ParticleDropColoredData> particleType, StringReader reader) throws CommandSyntaxException {
+        public ParticleDropColoredData fromCommand(ParticleType<ParticleDropColoredData> particleType, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             float red = (float) reader.readDouble();
             reader.expect(' ');
@@ -30,7 +32,7 @@ public class ParticleDropColoredData implements IParticleData {
             return new ParticleDropColoredData(red, green, blue);
         }
 
-        public ParticleDropColoredData read(ParticleType<ParticleDropColoredData> particleTypeIn, PacketBuffer buffer) {
+        public ParticleDropColoredData fromNetwork(ParticleType<ParticleDropColoredData> particleTypeIn, PacketBuffer buffer) {
             return new ParticleDropColoredData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
     };
@@ -56,14 +58,14 @@ public class ParticleDropColoredData implements IParticleData {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void writeToNetwork(PacketBuffer buffer) {
         buffer.writeFloat(this.red);
         buffer.writeFloat(this.green);
         buffer.writeFloat(this.blue);
     }
 
     @Override
-    public String getParameters() {
+    public String writeToString() {
         return String.format(Locale.ROOT, "%s %.2f %.2f %.2f",
                 ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()),
                 this.red, this.green, this.blue);

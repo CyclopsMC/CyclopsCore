@@ -27,14 +27,14 @@ public class RegistryExportableCraftingRecipe extends RegistryExportableRecipeAb
         JsonArray arrayInputs = new JsonArray();
         for (Ingredient input : inputs) {
             JsonArray arrayInputAlternatives = new JsonArray();
-            for (ItemStack inputAlternative : input.getMatchingStacks()) {
+            for (ItemStack inputAlternative : input.getItems()) {
                 arrayInputAlternatives.add(IRegistryExportable.serializeItemStack(inputAlternative));
             }
             arrayInputs.add(arrayInputAlternatives);
         }
         object.addProperty("id", recipe.getId().toString());
         object.add("input", arrayInputs);
-        object.add("output", IRegistryExportable.serializeItemStack(recipe.getRecipeOutput()));
+        object.add("output", IRegistryExportable.serializeItemStack(recipe.getResultItem()));
 
         if(recipe instanceof IShapedRecipe) {
             object.addProperty("width", ((IShapedRecipe) recipe).getRecipeWidth());

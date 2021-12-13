@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack;
  */
 public class SlotSingleItem extends SlotExtended {
     
-	@Getter private Item item;
+	@Getter private Item itemAllowed;
 	
     /**
      * Make a new instance.
@@ -24,12 +24,12 @@ public class SlotSingleItem extends SlotExtended {
      */
     public SlotSingleItem(IInventory inventory, int index, int x, int y, Item item) {
         super(inventory, index, x, y);
-        this.item = item;
+        this.itemAllowed = item;
     }
     
     @Override
-    public boolean isItemValid(ItemStack itemStack) {
-        return super.isItemValid(itemStack) && itemStack.getItem() == getItem();
+    public boolean mayPlace(ItemStack itemStack) {
+        return super.mayPlace(itemStack) && itemStack.getItem() == getItemAllowed();
     }
     
 }

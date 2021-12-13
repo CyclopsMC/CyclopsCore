@@ -6,6 +6,8 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.*;
 
+import java.util.Map.Entry;
+
 /**
  * Provides a composite read-only view on a collection of maps.
  * @author rubensworks

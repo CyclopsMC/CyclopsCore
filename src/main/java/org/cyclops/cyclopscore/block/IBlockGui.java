@@ -45,14 +45,14 @@ public interface IBlockGui {
             return ActionResultType.PASS;
         }
 
-        if (!world.isRemote()) {
+        if (!world.isClientSide()) {
             INamedContainerProvider containerProvider = blockContainerProvider.get(blockState, world, blockPos);
             if (containerProvider != null) {
                 NetworkHooks.openGui((ServerPlayerEntity) player, containerProvider,
                         packetBuffer -> block.writeExtraGuiData(packetBuffer, world, player, blockPos, hand, rayTraceResult));
                 Stat<ResourceLocation> openStat = block.getOpenStat();
                 if (openStat != null) {
-                    player.addStat(openStat);
+                    player.awardStat(openStat);
                 }
             }
         }

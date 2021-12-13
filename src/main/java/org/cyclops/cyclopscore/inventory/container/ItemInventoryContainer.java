@@ -72,7 +72,7 @@ public abstract class ItemInventoryContainer<I extends Item> extends ContainerEx
 	}
 
 	@Override
-	public boolean canInteractWith(PlayerEntity player) {
+	public boolean stillValid(PlayerEntity player) {
 		ItemStack item = getItemStack(player);
 		return item != null && item.getItem() == getItem();
 	}
@@ -86,19 +86,19 @@ public abstract class ItemInventoryContainer<I extends Item> extends ContainerEx
     	return new Slot(inventory, index, x, y) {
     		
     		@Override
-    		public boolean canTakeStack(PlayerEntity player) {
-    			return this.getStack() != InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
+    		public boolean mayPickup(PlayerEntity player) {
+    			return this.getItem() != InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
     	    }
     		
     	};
     }
 
 	@Override
-	public ItemStack slotClick(int slotId, int arg, ClickType clickType, PlayerEntity player) {
+	public ItemStack clicked(int slotId, int arg, ClickType clickType, PlayerEntity player) {
 		if (clickType == ClickType.SWAP && arg == itemIndex) {
 			// Don't allow swapping with the slot of the active item.
 			return ItemStack.EMPTY;
 		}
-		return super.slotClick(slotId, arg, clickType, player);
+		return super.clicked(slotId, arg, clickType, player);
 	}
 }

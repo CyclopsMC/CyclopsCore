@@ -19,8 +19,8 @@ public class InventorySlotMasked implements IInventory {
     }
 
     protected void validateSlot(int slot) {
-        if (slot < 0 || slot >= getSizeInventory()) {
-            throw new IndexOutOfBoundsException(String.format("Tried to get slot %s from %s slots.", slot, getSizeInventory()));
+        if (slot < 0 || slot >= getContainerSize()) {
+            throw new IndexOutOfBoundsException(String.format("Tried to get slot %s from %s slots.", slot, getContainerSize()));
         }
     }
 
@@ -30,14 +30,14 @@ public class InventorySlotMasked implements IInventory {
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return this.slots.length;
     }
 
     @Override
     public boolean isEmpty() {
-        for (int i = 0; i < getSizeInventory(); i++) {
-            if (!getStackInSlot(i).isEmpty()) {
+        for (int i = 0; i < getContainerSize(); i++) {
+            if (!getItem(i).isEmpty()) {
                 return false;
             }
         }
@@ -45,59 +45,59 @@ public class InventorySlotMasked implements IInventory {
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
-        return inventory.getStackInSlot(externalToInternalSlot(index));
+    public ItemStack getItem(int index) {
+        return inventory.getItem(externalToInternalSlot(index));
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-        return inventory.decrStackSize(externalToInternalSlot(index), count);
+    public ItemStack removeItem(int index, int count) {
+        return inventory.removeItem(externalToInternalSlot(index), count);
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return inventory.removeStackFromSlot(externalToInternalSlot(index));
+    public ItemStack removeItemNoUpdate(int index) {
+        return inventory.removeItemNoUpdate(externalToInternalSlot(index));
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
-        inventory.setInventorySlotContents(externalToInternalSlot(index), stack);
+    public void setItem(int index, ItemStack stack) {
+        inventory.setItem(externalToInternalSlot(index), stack);
     }
 
     @Override
-    public int getInventoryStackLimit() {
-        return inventory.getInventoryStackLimit();
+    public int getMaxStackSize() {
+        return inventory.getMaxStackSize();
     }
 
     @Override
-    public void markDirty() {
-        inventory.markDirty();;
+    public void setChanged() {
+        inventory.setChanged();;
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
-        return inventory.isUsableByPlayer(player);
+    public boolean stillValid(PlayerEntity player) {
+        return inventory.stillValid(player);
     }
 
     @Override
-    public void openInventory(PlayerEntity player) {
-        inventory.openInventory(player);
+    public void startOpen(PlayerEntity player) {
+        inventory.startOpen(player);
     }
 
     @Override
-    public void closeInventory(PlayerEntity player) {
-        inventory.closeInventory(player);
+    public void stopOpen(PlayerEntity player) {
+        inventory.stopOpen(player);
     }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack) {
-        return inventory.isItemValidForSlot(externalToInternalSlot(index), stack);
+    public boolean canPlaceItem(int index, ItemStack stack) {
+        return inventory.canPlaceItem(externalToInternalSlot(index), stack);
     }
 
     @Override
-    public void clear() {
-        for (int i = 0; i < getSizeInventory(); i++) {
-            removeStackFromSlot(i);
+    public void clearContent() {
+        for (int i = 0; i < getContainerSize(); i++) {
+            removeItemNoUpdate(i);
         }
     }
 }

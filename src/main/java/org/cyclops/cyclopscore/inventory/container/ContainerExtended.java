@@ -76,9 +76,9 @@ public abstract class ContainerExtended extends Container implements IContainerB
     }
 
     @Override
-    public void detectAndSendChanges() {
-        super.detectAndSendChanges();
-        if (!player.world.isRemote()) {
+    public void broadcastChanges() {
+        super.broadcastChanges();
+        if (!player.level.isClientSide()) {
             for (SyncedGuiVariable<?> syncedGuiVariable : this.syncedGuiVariables) {
                 syncedGuiVariable.detectAndSendChanges();
             }
@@ -94,9 +94,9 @@ public abstract class ContainerExtended extends Container implements IContainerB
     }
 
     @Override
-    public void addListener(IContainerListener listener) {
-        super.addListener(listener);
-        if(!player.getEntityWorld().isRemote()) {
+    public void addSlotListener(IContainerListener listener) {
+        super.addSlotListener(listener);
+        if(!player.getCommandSenderWorld().isClientSide()) {
             initializeValues();
         }
     }
@@ -126,17 +126,17 @@ public abstract class ContainerExtended extends Container implements IContainerB
     }
 
     public static void setSlotPosX(Slot slot, int newValue) {
-        setSlotPos(slot, "field_75223_e", newValue);
+        setSlotPos(slot, "x", newValue);
     }
 
     public static void setSlotPosY(Slot slot, int newValue) {
-        setSlotPos(slot, "field_75221_f", newValue);
+        setSlotPos(slot, "y", newValue);
     }
 
     @Override
     protected Slot addSlot(Slot slot) {
-        setSlotPosX(slot, slot.xPos + offsetX);
-        setSlotPosY(slot, slot.yPos + offsetY);
+        setSlotPosX(slot, slot.x + offsetX);
+        setSlotPosY(slot, slot.y + offsetY);
         return super.addSlot(slot);
     }
     
@@ -190,27 +190,27 @@ public abstract class ContainerExtended extends Container implements IContainerB
     }
     
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int slotID) {
+    public ItemStack quickMoveStack(PlayerEntity player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
-        Slot slot = inventorySlots.get(slotID);
+        Slot slot = slots.get(slotID);
         int slots = getSizeInventory();
         
-        if(slot != null && slot.getHasStack()) {
-            ItemStack stackInSlot = slot.getStack().copy();
+        if(slot != null && slot.hasItem()) {
+            ItemStack stackInSlot = slot.getItem().copy();
             stack = stackInSlot.copy();
 
             if(slotID < slots) { // Click in tile -> player inventory
-                if(!mergeItemStack(stackInSlot, getSlotStart(slotID, slots, true), getSlotRange(slotID, inventorySlots.size(), true), true)) {
+                if(!moveItemStackTo(stackInSlot, getSlotStart(slotID, slots, true), getSlotRange(slotID, this.slots.size(), true), true)) {
                     return ItemStack.EMPTY;
                 }
-            } else if(!mergeItemStack(stackInSlot, getSlotStart(slotID, 0, false), getSlotRange(slotID, slots, false), false)) { // Click in player inventory -> tile
+            } else if(!moveItemStackTo(stackInSlot, getSlotStart(slotID, 0, false), getSlotRange(slotID, slots, false), false)) { // Click in player inventory -> tile
                 return ItemStack.EMPTY;
             }
             
             if(stackInSlot.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.putStack(stackInSlot);
+                slot.set(stackInSlot);
             }
 
             if(stackInSlot.getCount() == stack.getCount()) {
@@ -224,7 +224,7 @@ public abstract class ContainerExtended extends Container implements IContainerB
     }
     
     @Override
-    protected boolean mergeItemStack(ItemStack stack, int slotStart, int slotRange, boolean reverse) {
+    protected boolean moveItemStackTo(ItemStack stack, int slotStart, int slotRange, boolean reverse) {
         boolean successful = false;
         int slotIndex = slotStart;
         int maxStack = stack.getMaxStackSize();
@@ -238,21 +238,21 @@ public abstract class ContainerExtended extends Container implements IContainerB
 
         if (stack.isStackable()) {
             while (stack.getCount() > 0 && (!reverse && slotIndex < slotRange || reverse && slotIndex >= slotStart)) {
-                slot = this.inventorySlots.get(slotIndex);
-                int maxSlotSize = Math.min(slot.getSlotStackLimit(), maxStack);
-                existingStack = slot.getStack().copy();
+                slot = this.slots.get(slotIndex);
+                int maxSlotSize = Math.min(slot.getMaxStackSize(), maxStack);
+                existingStack = slot.getItem().copy();
 
-                if (slot.isItemValid(stack) && !existingStack.isEmpty() && existingStack.getItem() == stack.getItem() && ItemStack.areItemStackTagsEqual(stack, existingStack)) {
+                if (slot.mayPlace(stack) && !existingStack.isEmpty() && existingStack.getItem() == stack.getItem() && ItemStack.tagMatches(stack, existingStack)) {
                     int existingSize = existingStack.getCount() + stack.getCount();
                     if (existingSize <= maxSlotSize) {
                         stack.setCount(0);
                         existingStack.setCount(existingSize);
-                        slot.putStack(existingStack);
+                        slot.set(existingStack);
                         successful = true;
                     } else if (existingStack.getCount() < maxSlotSize) {
                         stack.shrink(maxSlotSize - existingStack.getCount());
                         existingStack.setCount(maxSlotSize);
-                        slot.putStack(existingStack);
+                        slot.set(existingStack);
                         successful = true;
                     }
                 }
@@ -273,14 +273,14 @@ public abstract class ContainerExtended extends Container implements IContainerB
             }
 
             while (stack.getCount() > 0 && (!reverse && slotIndex < slotRange || reverse && slotIndex >= slotStart)) {
-                slot = this.inventorySlots.get(slotIndex);
-                existingStack = slot.getStack().copy();
+                slot = this.slots.get(slotIndex);
+                existingStack = slot.getItem().copy();
 
-                if (slot.isItemValid(stack) && existingStack.isEmpty()) {
-                    int placedAmount = Math.min(stack.getCount(), slot.getSlotStackLimit());
+                if (slot.mayPlace(stack) && existingStack.isEmpty()) {
+                    int placedAmount = Math.min(stack.getCount(), slot.getMaxStackSize());
                     ItemStack toPut = stack.copy();
                     toPut.setCount(placedAmount);
-                    slot.putStack(toPut);
+                    slot.set(toPut);
                     stack.shrink(placedAmount);
                     successful = true;
                 }
@@ -305,55 +305,55 @@ public abstract class ContainerExtended extends Container implements IContainerB
     }
 
     @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickType, PlayerEntity player) {
-        Slot slot = slotId < 0 ? null : this.inventorySlots.get(slotId);
+    public ItemStack clicked(int slotId, int dragType, ClickType clickType, PlayerEntity player) {
+        Slot slot = slotId < 0 ? null : this.slots.get(slotId);
         PlayerInventory inventoryplayer = player.inventory;
         if (clickType == ClickType.QUICK_CRAFT) {
             // Copied and adjusted from net.minecraft.inventory.Container
             int j1 = this.dragEvent;
-            this.dragEvent = getDragEvent(dragType);
+            this.dragEvent = getQuickcraftHeader(dragType);
 
             if ((j1 != 1 || this.dragEvent != 2) && j1 != this.dragEvent) {
-                this.resetDrag();
-            } else if (inventoryplayer.getItemStack().isEmpty()) {
-                this.resetDrag();
+                this.resetQuickCraft();
+            } else if (inventoryplayer.getCarried().isEmpty()) {
+                this.resetQuickCraft();
             } else if (this.dragEvent == 0) {
-                this.dragMode = extractDragMode(dragType);
+                this.dragMode = getQuickcraftType(dragType);
 
-                if (isValidDragMode(this.dragMode, player)) {
+                if (isValidQuickcraftType(this.dragMode, player)) {
                     this.dragEvent = 1;
                     this.dragSlots.clear();
                 } else {
-                    this.resetDrag();
+                    this.resetQuickCraft();
                 }
             } else if (this.dragEvent == 1) {
-                Slot slot7 = this.inventorySlots.get(slotId);
-                ItemStack itemstack12 = inventoryplayer.getItemStack();
+                Slot slot7 = this.slots.get(slotId);
+                ItemStack itemstack12 = inventoryplayer.getCarried();
 
-                if (slot7 != null && canAddItemToSlot(slot7, itemstack12, true) && slot7.isItemValid(itemstack12) && (this.dragMode == 2 || itemstack12.getCount() > this.dragSlots.size()) && this.canDragIntoSlot(slot7)) {
+                if (slot7 != null && canItemQuickReplace(slot7, itemstack12, true) && slot7.mayPlace(itemstack12) && (this.dragMode == 2 || itemstack12.getCount() > this.dragSlots.size()) && this.canDragTo(slot7)) {
                     this.dragSlots.add(slot7);
                 }
             } else if (this.dragEvent == 2) {
                 if (!this.dragSlots.isEmpty()) {
-                    ItemStack itemstack9 = inventoryplayer.getItemStack().copy();
-                    int k1 = inventoryplayer.getItemStack().getCount();
+                    ItemStack itemstack9 = inventoryplayer.getCarried().copy();
+                    int k1 = inventoryplayer.getCarried().getCount();
                     int phantomCount = 0; // Added
 
                     for (Slot slot8 : this.dragSlots) {
-                        ItemStack itemstack13 = inventoryplayer.getItemStack();
+                        ItemStack itemstack13 = inventoryplayer.getCarried();
 
-                        if (slot8 != null && canAddItemToSlot(slot8, itemstack13, true) && slot8.isItemValid(itemstack13) && (this.dragMode == 2 || itemstack13.getCount() >= this.dragSlots.size()) && this.canDragIntoSlot(slot8)) {
+                        if (slot8 != null && canItemQuickReplace(slot8, itemstack13, true) && slot8.mayPlace(itemstack13) && (this.dragMode == 2 || itemstack13.getCount() >= this.dragSlots.size()) && this.canDragTo(slot8)) {
                             ItemStack itemstack14 = itemstack9.copy();
-                            int j3 = slot8.getHasStack() ? slot8.getStack().getCount() : 0;
-                            computeStackSize(this.dragSlots, this.dragMode, itemstack14, j3);
-                            int k3 = Math.min(itemstack14.getMaxStackSize(), slot8.getItemStackLimit(itemstack14));
+                            int j3 = slot8.hasItem() ? slot8.getItem().getCount() : 0;
+                            getQuickCraftSlotCount(this.dragSlots, this.dragMode, itemstack14, j3);
+                            int k3 = Math.min(itemstack14.getMaxStackSize(), slot8.getMaxStackSize(itemstack14));
 
                             if (itemstack14.getCount() > k3) {
                                 itemstack14.setCount(k3);
                             }
 
                             k1 -= itemstack14.getCount() - j3;
-                            slot8.putStack(itemstack14);
+                            slot8.set(itemstack14);
 
                             // --- Added ---
                             if (slot8 instanceof SlotExtended && ((SlotExtended) slot8).isPhantom()) {
@@ -363,27 +363,27 @@ public abstract class ContainerExtended extends Container implements IContainerB
                     }
 
                     itemstack9.setCount(k1 + phantomCount); // Changed
-                    inventoryplayer.setItemStack(itemstack9);
+                    inventoryplayer.setCarried(itemstack9);
                 }
 
-                this.resetDrag();
+                this.resetQuickCraft();
             } else {
-                this.resetDrag();
+                this.resetQuickCraft();
             }
             return ItemStack.EMPTY;
         } else if (this.dragEvent != 0) {
-            this.resetDrag();
+            this.resetQuickCraft();
             return ItemStack.EMPTY;
         } else if (slot instanceof SlotExtended && ((SlotExtended) slot).isPhantom()) { // Phantom slot code based on Buildcraft
             return slotClickPhantom(slot, dragType, clickType, player);
         } else {
-            return super.slotClick(slotId, dragType, clickType, player);
+            return super.clicked(slotId, dragType, clickType, player);
         }
     }
 
     @Override
-    protected void resetDrag() {
-        super.resetDrag();
+    protected void resetQuickCraft() {
+        super.resetQuickCraft();
         this.dragEvent = 0;
         this.dragSlots.clear();
     }
@@ -393,26 +393,26 @@ public abstract class ContainerExtended extends Container implements IContainerB
 
         if (mouseButton == 2) {
             if (((SlotExtended) slot).isAdjustable()) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
         } else if (mouseButton == 0 || mouseButton == 1) {
             PlayerInventory playerInv = player.inventory;
-            slot.onSlotChanged();
-            ItemStack stackSlot = slot.getStack();
-            ItemStack stackHeld = playerInv.getItemStack();
+            slot.setChanged();
+            ItemStack stackSlot = slot.getItem();
+            ItemStack stackHeld = playerInv.getCarried();
 
             if (!stackSlot.isEmpty()) {
                 stack = stackSlot.copy();
             }
 
             if (stackSlot.isEmpty()) {
-                if (!stackHeld.isEmpty() && slot.isItemValid(stackHeld)) {
+                if (!stackHeld.isEmpty() && slot.mayPlace(stackHeld)) {
                     fillPhantomSlot(slot, stackHeld, mouseButton, clickType);
                 }
             } else if (stackHeld.isEmpty()) {
                 adjustPhantomSlot(slot, mouseButton, clickType);
-                slot.onTake(player, playerInv.getItemStack());
-            } else if (slot.isItemValid(stackHeld)) {
+                slot.onTake(player, playerInv.getCarried());
+            } else if (slot.mayPlace(stackHeld)) {
                 if (ItemMatch.areItemStacksEqual(stackSlot, stackHeld, ItemMatch.ITEM | ItemMatch.NBT)) {
                     adjustPhantomSlot(slot, mouseButton, clickType);
                 } else {
@@ -427,7 +427,7 @@ public abstract class ContainerExtended extends Container implements IContainerB
         if (!((SlotExtended) slot).isAdjustable()) {
             return;
         }
-        ItemStack stackSlot = slot.getStack();
+        ItemStack stackSlot = slot.getItem();
         int stackSize;
         if (clickType == ClickType.QUICK_MOVE) {
             stackSize = mouseButton == 0 ? (stackSlot.getCount() + 1) / 2 : stackSlot.getCount() * 2;
@@ -435,14 +435,14 @@ public abstract class ContainerExtended extends Container implements IContainerB
             stackSize = mouseButton == 0 ? stackSlot.getCount() - 1 : stackSlot.getCount() + 1;
         }
 
-        if (stackSize > slot.getSlotStackLimit()) {
-            stackSize = slot.getSlotStackLimit();
+        if (stackSize > slot.getMaxStackSize()) {
+            stackSize = slot.getMaxStackSize();
         }
 
         stackSlot.setCount(stackSize);
 
         if (stackSlot.getCount() <= 0) {
-            slot.putStack(ItemStack.EMPTY);
+            slot.set(ItemStack.EMPTY);
         }
     }
 
@@ -451,13 +451,13 @@ public abstract class ContainerExtended extends Container implements IContainerB
             return;
         }
         int stackSize = mouseButton == 0 ? stackHeld.getCount() : 1;
-        if (stackSize > slot.getSlotStackLimit()) {
-            stackSize = slot.getSlotStackLimit();
+        if (stackSize > slot.getMaxStackSize()) {
+            stackSize = slot.getMaxStackSize();
         }
         ItemStack phantomStack = stackHeld.copy();
         phantomStack.setCount(stackSize);
 
-        slot.putStack(phantomStack);
+        slot.set(phantomStack);
     }
 
     @Override
@@ -485,7 +485,7 @@ public abstract class ContainerExtended extends Container implements IContainerB
     @Override
     public void setValue(int valueId, CompoundNBT value) {
         if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
-            if (!player.getEntityWorld().isRemote()) { // server -> client
+            if (!player.level.isClientSide()) { // server -> client
                 CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getType(), valueId, value), (ServerPlayerEntity) player);
             } else { // client -> server
                 CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getType(), valueId, value));

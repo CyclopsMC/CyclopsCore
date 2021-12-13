@@ -5,22 +5,19 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1+', changing: true
-        //classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 
 plugins {
-    // For people who want stable
-    //id "net.minecraftforge.gradle.forge" version "2.0.2"
     id 'com.matthewprenger.cursegradle' version '1.4.0'
     id 'com.github.kt3k.coveralls' version '2.10.2'
 }
 
-// For those who want the bleeding edge
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'jacoco'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
 // TODO: re-enable jar signing
 //import net.minecraftforge.gradle.common.task.SignJar
@@ -33,6 +30,8 @@ archivesBaseName = "CyclopsCore"
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+
+compileJava.options.compilerArgs << "-Xmaxerrs" << "9999"
 
 def loadProperties() {
     // Config file with custom properties
@@ -117,7 +116,7 @@ dependencies {
 }
 
 minecraft {
-    mappings channel: "${config.mcp_mappings_channel}", version: "${config.mcp_mappings_version}"
+    mappings channel: "official", version: "${config.minecraft_version}"
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 

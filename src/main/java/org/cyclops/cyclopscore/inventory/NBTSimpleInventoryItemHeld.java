@@ -51,7 +51,7 @@ public class NBTSimpleInventoryItemHeld extends SimpleInventory {
 	}
 	
 	@Override
-	public void markDirty() {
+	public void setChanged() {
 		ItemStack itemStack = InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
 		CompoundNBT tag = itemStack.getOrCreateTag();
 		writeToNBT(tag, this.tagName);

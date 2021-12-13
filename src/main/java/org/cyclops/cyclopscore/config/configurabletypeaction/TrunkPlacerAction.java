@@ -15,6 +15,6 @@ public class TrunkPlacerAction<T extends AbstractTrunkPlacer> extends Configurab
     @Override
     public void onRegisterSetup(TrunkPlacerConfig<T> eConfig) {
         super.onRegisterSetup(eConfig);
-        Registry.register(Registry.TRUNK_REPLACER, eConfig.getMod().getModId() + ":" + eConfig.getNamedId(), eConfig.getInstance());
+        Registry.register(Registry.TRUNK_PLACER_TYPES, eConfig.getMod().getModId() + ":" + eConfig.getNamedId(), eConfig.getInstance());
     }
 }

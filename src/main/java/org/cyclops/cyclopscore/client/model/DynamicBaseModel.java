@@ -85,8 +85,8 @@ public abstract class DynamicBaseModel implements IBakedModel {
                 Float.floatToRawIntBits(y),
                 Float.floatToRawIntBits(z),
                 color,
-                Float.floatToRawIntBits(texture.getInterpolatedU(u)),
-                Float.floatToRawIntBits(texture.getInterpolatedV(v)),
+                Float.floatToRawIntBits(texture.getU(u)),
+                Float.floatToRawIntBits(texture.getV(v)),
                 0,
                 0
         };
@@ -239,12 +239,12 @@ public abstract class DynamicBaseModel implements IBakedModel {
     }
 
     @Override
-    public boolean isAmbientOcclusion() {
+    public boolean useAmbientOcclusion() {
         return true;
     }
 
     @Override
-    public boolean isBuiltInRenderer() {
+    public boolean isCustomRenderer() {
         return false;
     }
 

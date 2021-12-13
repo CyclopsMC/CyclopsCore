@@ -22,8 +22,6 @@ import java.util.function.Function;
  * @author rubensworks
  *
  */
-@EqualsAndHashCode(callSuper = false)
-@Data
 public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> extends TileEntityRenderer<T> {
 
     protected final M model;
@@ -41,6 +39,10 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
         this.material = material;
     }
 
+    public M getModel() {
+        return model;
+    }
+
     /**
      * Get the material.
      * @return The material.
@@ -50,24 +52,24 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
 	}
 
 	public Function<ResourceLocation, RenderType> getRenderTypeGetter() {
-	    return RenderType::getEntityCutout;
+	    return RenderType::entityCutout;
     }
 
     protected void preRotate(T tile) {
-        GlStateManager.translatef(0.5F, 0.5F, 0.5F);
+        GlStateManager._translatef(0.5F, 0.5F, 0.5F);
     }
 
     protected void postRotate(T tile) {
-        GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
+        GlStateManager._translatef(-0.5F, -0.5F, -0.5F);
     }
 
     @Override
     public void render(T tile, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
         Direction direction = tile.getRotation();
 
-        IVertexBuilder vertexBuilder = material.getBuffer(buffer, getRenderTypeGetter());
+        IVertexBuilder vertexBuilder = material.buffer(buffer, getRenderTypeGetter());
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0, 1.0F, 1.0F);
         matrixStack.scale(1.0F, -1.0F, -1.0F);
         preRotate(tile);
@@ -86,11 +88,11 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
             rotation = -90;
         }
 
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(rotation));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
         postRotate(tile);
 
         renderModel(tile, getModel(), partialTick, matrixStack, vertexBuilder, buffer, combinedLight, combinedOverlay);
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     /**

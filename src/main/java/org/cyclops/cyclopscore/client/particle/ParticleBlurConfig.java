@@ -22,7 +22,7 @@ public class ParticleBlurConfig extends ParticleConfig<ParticleBlurData> {
 
     public ParticleBlurConfig() {
         super(CyclopsCore._instance, "blur", eConfig -> new ParticleType<ParticleBlurData>(false, ParticleBlurData.DESERIALIZER) {
-            public Codec<ParticleBlurData> func_230522_e_() {
+            public Codec<ParticleBlurData> codec() {
                 return ParticleBlurData.CODEC;
             }
         });
@@ -42,10 +42,10 @@ public class ParticleBlurConfig extends ParticleConfig<ParticleBlurData> {
         return sprite -> new IParticleFactory<ParticleBlurData>() {
             @Nullable
             @Override
-            public Particle makeParticle(ParticleBlurData particleBlurData, ClientWorld world, double x, double y, double z,
+            public Particle createParticle(ParticleBlurData particleBlurData, ClientWorld world, double x, double y, double z,
                                          double motionX, double motionY, double motionZ) {
                 ParticleBlur particle = new ParticleBlur(particleBlurData, world, x, y, z, motionX, motionY, motionZ);
-                particle.selectSpriteRandomly(sprite);
+                particle.pickSprite(sprite);
                 return particle;
             }
         };

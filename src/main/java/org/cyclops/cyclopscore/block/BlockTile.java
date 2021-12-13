@@ -17,6 +17,8 @@ import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
+import net.minecraft.block.AbstractBlock.Properties;
+
 /**
  * Base block with a tile entity.
  *
@@ -39,12 +41,12 @@ public class BlockTile extends ContainerBlock {
 
     @Nullable
     @Override
-    public TileEntity createNewTileEntity(IBlockReader world) {
+    public TileEntity newBlockEntity(IBlockReader world) {
         return tileEntitySupplier.get();
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state) {
+    public BlockRenderType getRenderShape(BlockState state) {
         return BlockRenderType.MODEL;
     }
 
@@ -57,7 +59,7 @@ public class BlockTile extends ContainerBlock {
             TileHelpers.getSafeTile(world, blockPos, CyclopsTileEntity.class).ifPresent(tile -> {
                 CompoundNBT compoundnbt = getDroppedItemStackNbt(state, target, world, blockPos, player, itemStack, tile);
                 if (!compoundnbt.isEmpty()) {
-                    itemStack.setTagInfo("BlockEntityTag", compoundnbt);
+                    itemStack.addTagElement("BlockEntityTag", compoundnbt);
                 }
             });
         }
@@ -65,8 +67,8 @@ public class BlockTile extends ContainerBlock {
     }
 
     @Override
-    public void onBlockHarvested(World world, BlockPos blockPos, BlockState blockState, PlayerEntity player) {
-        super.onBlockHarvested(world, blockPos, blockState, player);
+    public void playerWillDestroy(World world, BlockPos blockPos, BlockState blockState, PlayerEntity player) {
+        super.playerWillDestroy(world, blockPos, blockState, player);
     }
 
     /**

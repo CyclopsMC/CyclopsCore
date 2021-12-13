@@ -35,14 +35,14 @@ public class DimPos implements Comparable<DimPos> {
             .build(new CacheLoader<String, RegistryKey<World>>() {
                 @Override
                 public RegistryKey<World> load(String key) {
-                    return RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(key));
+                    return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(key));
                 }
             });
 
     private DimPos(String dimension, BlockPos blockPos, World world) {
         this.world = dimension;
         this.blockPos = blockPos;
-        this.worldReference = world != null && world.isRemote() ? new WeakReference<>(world) : null;
+        this.worldReference = world != null && world.isClientSide() ? new WeakReference<>(world) : null;
     }
 
     private DimPos(String world, BlockPos blockPos) {
@@ -58,19 +58,19 @@ public class DimPos implements Comparable<DimPos> {
     public World getWorld(boolean forceLoad) {
         if (worldReference == null) {
             if (MinecraftHelpers.isClientSideThread()) {
-                ClientWorld world = Minecraft.getInstance().world;
-                if (world != null && world.getDimensionKey().getLocation().toString().equals(this.getWorld())) {
+                ClientWorld world = Minecraft.getInstance().level;
+                if (world != null && world.dimension().location().toString().equals(this.getWorld())) {
                     this.worldReference = new WeakReference<>(world);
                     return this.worldReference.get();
                 }
                 return null;
             }
-            return ServerLifecycleHooks.getCurrentServer().getWorld(getWorldKey());
+            return ServerLifecycleHooks.getCurrentServer().getLevel(getWorldKey());
         }
 
         World world = worldReference.get();
         if (world == null) {
-            world = ServerLifecycleHooks.getCurrentServer().getWorld(getWorldKey());
+            world = ServerLifecycleHooks.getCurrentServer().getLevel(getWorldKey());
             worldReference = new WeakReference<>(world);
         }
         return world;
@@ -78,7 +78,7 @@ public class DimPos implements Comparable<DimPos> {
 
     public boolean isLoaded() {
         World world = getWorld(false);
-        return world != null && world.isBlockLoaded(getBlockPos());
+        return world != null && world.hasChunkAt(getBlockPos());
     }
 
     @Override
@@ -101,11 +101,11 @@ public class DimPos implements Comparable<DimPos> {
     }
 
     public static DimPos of(World world, BlockPos blockPos) {
-        return of(world.getDimensionKey(), blockPos);
+        return of(world.dimension(), blockPos);
     }
 
     public static DimPos of(RegistryKey<World> world, BlockPos blockPos) {
-        return new DimPos(world.getLocation().toString(), blockPos);
+        return new DimPos(world.location().toString(), blockPos);
     }
 
 }

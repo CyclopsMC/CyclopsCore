@@ -44,7 +44,7 @@ public final class ModelHelpers {
             new Vector3f(0, 255, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(0.4f, 0.4f, 0.4f));
-    public static final ItemTransformVec3f HEAD = ItemTransformVec3f.DEFAULT;
+    public static final ItemTransformVec3f HEAD = ItemTransformVec3f.NO_TRANSFORM;
     public static final ItemTransformVec3f GROUND = new ItemTransformVec3f(
             new Vector3f(0, 0, 0),
             new Vector3f(0, 0, 0),
@@ -84,7 +84,7 @@ public final class ModelHelpers {
             new Vector3f(0, -90, 25),
             new Vector3f(0, 0, 0),
             new Vector3f(0.68F, 0.68F, 0.68F));
-    public static final ItemTransformVec3f HEAD_ITEM = ItemTransformVec3f.DEFAULT;
+    public static final ItemTransformVec3f HEAD_ITEM = ItemTransformVec3f.NO_TRANSFORM;
     public static final ItemTransformVec3f GROUND_ITEM = new ItemTransformVec3f(
             new Vector3f(0, 0, 0),
             new Vector3f(0, 0, 0),
@@ -127,7 +127,7 @@ public final class ModelHelpers {
         IResource resource = Minecraft.getInstance().getResourceManager().getResource(
                 new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath() + ".json"));
         Reader reader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
-        return BlockModel.deserialize(reader);
+        return BlockModel.fromStream(reader);
     }
 
     /**

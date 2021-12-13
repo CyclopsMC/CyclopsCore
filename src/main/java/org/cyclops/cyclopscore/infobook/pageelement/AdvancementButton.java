@@ -35,21 +35,21 @@ public class AdvancementButton extends AdvancedButton {
     @Override
     public void renderTooltip(MatrixStack matrixStack, int mx, int my) {
         super.renderTooltip(matrixStack, mx, my);
-        GlStateManager.pushMatrix();
+        GlStateManager._pushMatrix();
         if(mx >= x && my >= y && mx <= x + AdvancementRewardsAppendix.SLOT_SIZE && my <= y + AdvancementRewardsAppendix.SLOT_SIZE) {
             List<IReorderingProcessor> lines = Lists.newArrayList();
             Advancement advancement = AdvancementHelpers.getAdvancement(Dist.CLIENT, advancementId);
             if (advancement != null) {
-                lines.add(advancement.getDisplay().getTitle().func_241878_f());
-                lines.add(advancement.getDisplay().getDescription().func_241878_f());
+                lines.add(advancement.getDisplay().getTitle().getVisualOrderText());
+                lines.add(advancement.getDisplay().getDescription().getVisualOrderText());
             }
             gui.renderTooltip(matrixStack, lines, mx, my);
         }
-        GlStateManager.popMatrix();
+        GlStateManager._popMatrix();
 
-        GlStateManager.disableLighting();
+        GlStateManager._disableLighting();
 
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager._enableBlend();
+        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 }

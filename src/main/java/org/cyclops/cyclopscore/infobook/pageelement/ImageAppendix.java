@@ -46,7 +46,7 @@ public class ImageAppendix extends SectionAppendix {
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void drawElement(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
-        Minecraft.getInstance().getTextureManager().bindTexture(resource);
+        Minecraft.getInstance().getTextureManager().bind(resource);
         gui.blit(matrixStack, x, y, 0, 0, getWidth(), getHeight());
         gui.drawOuterBorder(matrixStack, x, y, getWidth(), getHeight(), 0.5F, 0.5F, 0.5F, 0.4f);
     }

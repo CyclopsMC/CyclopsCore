@@ -32,13 +32,13 @@ public class WidgetTextFieldExtended extends TextFieldWidget {
         this.listener = listener;
     }
 
-    public int getAdjustedWidth() {
+    public int getInnerWidth() {
         return this.width - 7;
     }
 
     protected void drawBackground(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         RenderHelpers.bindTexture(Images.WIDGETS);
-        GlStateManager.color4f(1, 1, 1, 1);
+        GlStateManager._color4f(1, 1, 1, 1);
 
         x--;
         y--;
@@ -51,8 +51,8 @@ public class WidgetTextFieldExtended extends TextFieldWidget {
     }
 
     @Override
-    public void setText(String value) {
-        super.setText(value);
+    public void setValue(String value) {
+        super.setValue(value);
         if(listener != null) listener.onChanged();
     }
 
@@ -62,7 +62,7 @@ public class WidgetTextFieldExtended extends TextFieldWidget {
             drawBackground(matrixStack, mouseX, mouseY, partialTicks);
         }
         super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
-        GlStateManager.color4f(1, 1, 1, 1);
+        GlStateManager._color4f(1, 1, 1, 1);
     }
 
     @Override
@@ -71,8 +71,8 @@ public class WidgetTextFieldExtended extends TextFieldWidget {
                 && mouseY >= this.y && mouseY < this.y + this.height) {
             // Select everything
             this.setFocused(true);
-            this.setCursorPosition(0);
-            this.setSelectionPos(Integer.MAX_VALUE);
+            this.moveCursorTo(0);
+            this.setHighlightPos(Integer.MAX_VALUE);
             return true;
         }
         return super.mouseClicked(mouseX, mouseY, mouseButton);

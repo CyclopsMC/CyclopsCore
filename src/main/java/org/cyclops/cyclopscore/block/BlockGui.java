@@ -26,12 +26,12 @@ public abstract class BlockGui extends Block implements IBlockGui {
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
-        ActionResultType superActivated = super.onBlockActivated(blockState, world, blockPos, player, hand, rayTraceResult);
-        if (superActivated.isSuccessOrConsume()) {
+    public ActionResultType use(BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+        ActionResultType superActivated = super.use(blockState, world, blockPos, player, hand, rayTraceResult);
+        if (superActivated.consumesAction()) {
             return superActivated;
         }
-        return IBlockGui.onBlockActivatedHook(this, this::getContainer, blockState, world, blockPos, player, hand, rayTraceResult);
+        return IBlockGui.onBlockActivatedHook(this, this::getMenuProvider, blockState, world, blockPos, player, hand, rayTraceResult);
     }
 
 }

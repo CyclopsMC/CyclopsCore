@@ -23,7 +23,7 @@ public class ParticleBlurData implements IParticleData {
 
     public static final ParticleBlurData INSTANCE = new ParticleBlurData(0, 0, 0, 1, 1);
     public static final IParticleData.IDeserializer<ParticleBlurData> DESERIALIZER = new IParticleData.IDeserializer<ParticleBlurData>() {
-        public ParticleBlurData deserialize(ParticleType<ParticleBlurData> particleType, StringReader reader) throws CommandSyntaxException {
+        public ParticleBlurData fromCommand(ParticleType<ParticleBlurData> particleType, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             float red = (float) reader.readDouble();
             reader.expect(' ');
@@ -37,7 +37,7 @@ public class ParticleBlurData implements IParticleData {
             return new ParticleBlurData(red, green, blue, scale, ageMultiplier);
         }
 
-        public ParticleBlurData read(ParticleType<ParticleBlurData> particleTypeIn, PacketBuffer buffer) {
+        public ParticleBlurData fromNetwork(ParticleType<ParticleBlurData> particleTypeIn, PacketBuffer buffer) {
             return new ParticleBlurData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(),
                     buffer.readFloat(), buffer.readFloat());
         }
@@ -71,7 +71,7 @@ public class ParticleBlurData implements IParticleData {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void writeToNetwork(PacketBuffer buffer) {
         buffer.writeFloat(this.red);
         buffer.writeFloat(this.green);
         buffer.writeFloat(this.blue);
@@ -80,7 +80,7 @@ public class ParticleBlurData implements IParticleData {
     }
 
     @Override
-    public String getParameters() {
+    public String writeToString() {
         return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f",
                 ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()),
                 this.red, this.green, this.blue,

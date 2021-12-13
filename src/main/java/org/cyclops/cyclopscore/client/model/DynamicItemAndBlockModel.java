@@ -84,7 +84,7 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
     public class ItemOverrides extends ItemOverrideList {
         @Nullable
         @Override
-        public IBakedModel getOverrideModel(IBakedModel model, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity) {
+        public IBakedModel resolve(IBakedModel model, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity) {
             return DynamicItemAndBlockModel.this.handleItemState(stack, world, entity);
         }
     }

@@ -21,7 +21,7 @@ public class ParticleDropColoredConfig extends ParticleConfig<ParticleDropColore
 
     public ParticleDropColoredConfig() {
         super(CyclopsCore._instance, "drop_colored", eConfig -> new ParticleType<ParticleDropColoredData>(false, ParticleDropColoredData.DESERIALIZER){
-            public Codec<ParticleDropColoredData> func_230522_e_() {
+            public Codec<ParticleDropColoredData> codec() {
                 return ParticleDropColoredData.CODEC;
             }
         });
@@ -41,10 +41,10 @@ public class ParticleDropColoredConfig extends ParticleConfig<ParticleDropColore
         return sprite -> new IParticleFactory<ParticleDropColoredData>() {
             @Nullable
             @Override
-            public Particle makeParticle(ParticleDropColoredData particleDropColoredData, ClientWorld world, double x, double y, double z,
+            public Particle createParticle(ParticleDropColoredData particleDropColoredData, ClientWorld world, double x, double y, double z,
                                          double motionX, double motionY, double motionZ) {
                 ParticleDropColored particle = new ParticleDropColored(particleDropColoredData, world, x, y, z);
-                particle.selectSpriteRandomly(sprite);
+                particle.pickSprite(sprite);
                 return particle;
             }
         };

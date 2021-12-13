@@ -57,8 +57,8 @@ public class DirectionHelpers {
      * @return The {@link Direction} the entity is facing.
      */
     public static Direction getEntityFacingDirection(LivingEntity entity) {
-        int facingDirection = MathHelper.floor((entity.rotationYaw * 4F) / 360F + 0.5D) & 3;
-        return Direction.byHorizontalIndex(facingDirection);
+        int facingDirection = MathHelper.floor((entity.yRot * 4F) / 360F + 0.5D) & 3;
+        return Direction.from2DDataValue(facingDirection);
     }
 
     /**

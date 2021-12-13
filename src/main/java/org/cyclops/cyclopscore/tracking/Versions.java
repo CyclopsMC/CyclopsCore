@@ -149,39 +149,39 @@ public class Versions {
                     IFormattableTextComponent chat = new StringTextComponent("");
 
                     Style modNameStyle = Style.EMPTY;
-                    modNameStyle.setColor(Color.fromTextFormatting(TextFormatting.AQUA));
+                    modNameStyle.withColor(Color.fromLegacyFormat(TextFormatting.AQUA));
 
                     Style versionStyle = Style.EMPTY;
-                    versionStyle.setColor(Color.fromTextFormatting(TextFormatting.AQUA));
+                    versionStyle.withColor(Color.fromLegacyFormat(TextFormatting.AQUA));
 
                     Style downloadStyle = Style.EMPTY;
-                    downloadStyle.setColor(Color.fromTextFormatting(TextFormatting.BLUE));
+                    downloadStyle.withColor(Color.fromLegacyFormat(TextFormatting.BLUE));
 
                     String currentVersion = MinecraftHelpers.getMinecraftVersion() + "-" + triple.getLeft().getContainer().getModInfo().getVersion().toString();
                     String newVersion = MinecraftHelpers.getMinecraftVersion() + "-" + triple.getMiddle().getVersion();
                     ITextComponent versionTransition = new StringTextComponent(String.format("%s -> %s", currentVersion, newVersion)).setStyle(versionStyle);
-                    modNameStyle.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, versionTransition));
+                    modNameStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, versionTransition));
                     ITextComponent modNameComponent = new StringTextComponent(String.format("[%s]", triple.getLeft().getModName())).setStyle(modNameStyle);
 
                     ITextComponent downloadComponent = new TranslationTextComponent(L10NHelpers.localize("general.cyclopscore.version.download")).setStyle(downloadStyle);
-                    downloadStyle.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("general.cyclopscore.version.clickToDownload")));
-                    downloadStyle.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, triple.getMiddle().getUpdateUrl()));
+                    downloadStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("general.cyclopscore.version.clickToDownload")));
+                    downloadStyle.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, triple.getMiddle().getUpdateUrl()));
 
                     chat.append(modNameComponent);
-                    chat.appendString(" ");
+                    chat.append(" ");
                     chat.append(new TranslationTextComponent("general.cyclopscore.version.updateAvailable")
-                            .setStyle(Style.EMPTY.setColor(Color.fromTextFormatting(TextFormatting.WHITE))));
-                    chat.appendString(String.format(": %s ", triple.getMiddle().getVersion()));
+                            .setStyle(Style.EMPTY.withColor(Color.fromLegacyFormat(TextFormatting.WHITE))));
+                    chat.append(String.format(": %s ", triple.getMiddle().getVersion()));
                     chat.append(downloadComponent);
 
                     try {
-                    player.sendMessage(chat, Util.DUMMY_UUID);
+                    player.sendMessage(chat, Util.NIL_UUID);
 
                     chat = new StringTextComponent("");
                     chat.append(modNameComponent);
-                    chat.appendString(TextFormatting.WHITE + " ");
-                    chat.appendString(triple.getMiddle().getInfo());
-                    player.sendMessage(chat, Util.DUMMY_UUID);
+                    chat.append(TextFormatting.WHITE + " ");
+                    chat.append(triple.getMiddle().getInfo());
+                    player.sendMessage(chat, Util.NIL_UUID);
                     } catch (NullPointerException e) {
                         // The player SMP connection can rarely be null at this point,
                         // let's retry in the next tick.

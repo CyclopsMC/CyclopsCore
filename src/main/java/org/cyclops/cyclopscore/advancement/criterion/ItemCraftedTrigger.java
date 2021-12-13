@@ -30,14 +30,14 @@ public class ItemCraftedTrigger extends AbstractCriterionTrigger<ItemCraftedTrig
     }
 
     @Override
-    public Instance deserializeTrigger(JsonObject json, EntityPredicate.AndPredicate entityPredicate, ConditionArrayParser conditionsParser) {
-        return new Instance(getId(), entityPredicate, ItemPredicate.deserializeArray(json.get("items")));
+    public Instance createInstance(JsonObject json, EntityPredicate.AndPredicate entityPredicate, ConditionArrayParser conditionsParser) {
+        return new Instance(getId(), entityPredicate, ItemPredicate.fromJsonArray(json.get("items")));
     }
 
     @SubscribeEvent
     public void onCrafted(PlayerEvent.ItemCraftedEvent event) {
         if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayerEntity) {
-            this.triggerListeners((ServerPlayerEntity) event.getPlayer(),
+            this.trigger((ServerPlayerEntity) event.getPlayer(),
                     (i) -> i.test((ServerPlayerEntity) event.getPlayer(), event));
         }
     }
@@ -53,7 +53,7 @@ public class ItemCraftedTrigger extends AbstractCriterionTrigger<ItemCraftedTrig
         @Override
         public boolean test(ServerPlayerEntity player, PlayerEvent.ItemCraftedEvent criterionData) {
             for (ItemPredicate itemPredicate : this.itemPredicates) {
-                if (itemPredicate.test(criterionData.getCrafting())) {
+                if (itemPredicate.matches(criterionData.getCrafting())) {
                     return true;
                 }
             }

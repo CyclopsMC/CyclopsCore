@@ -7,6 +7,8 @@ import net.minecraft.util.text.ITextComponent;
 import org.cyclops.cyclopscore.client.gui.image.Image;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 
+import net.minecraft.client.gui.widget.button.Button.IPressable;
+
 /**
  * Inspired by {@link CheckboxButton}, but more flexible.
  * @author rubensworks

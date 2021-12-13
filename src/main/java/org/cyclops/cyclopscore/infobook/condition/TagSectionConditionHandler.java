@@ -20,8 +20,8 @@ public class TagSectionConditionHandler<T> implements ISectionConditionHandler {
 
 	@Override
 	public boolean isSatisfied(ModBase<?> mod, String param) {
-		ITag<T> collection = this.tagCollection.get(new ResourceLocation(param));
-		return collection != null && collection.getAllElements().size() > 0;
+		ITag<T> collection = this.tagCollection.getTag(new ResourceLocation(param));
+		return collection != null && collection.getValues().size() > 0;
 	}
 
 }

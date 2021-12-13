@@ -30,12 +30,12 @@ public class SlotExtended extends Slot {
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
-        return isEnabled() && inventory.isItemValidForSlot(getSlotIndex(), stack);
+    public boolean mayPlace(ItemStack stack) {
+        return isActive() && container.canPlaceItem(getSlotIndex(), stack);
     }
 
     @Override
-    public boolean canTakeStack(PlayerEntity playerIn) {
-        return super.canTakeStack(playerIn) && !isPhantom();
+    public boolean mayPickup(PlayerEntity playerIn) {
+        return super.mayPickup(playerIn) && !isPhantom();
     }
 }

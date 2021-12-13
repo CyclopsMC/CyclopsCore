@@ -52,7 +52,7 @@ public class LootHelpers {
 
     public static void injectLootTableDirect(LootTable target, ResourceLocation source) {
         target.addPool(new LootPool.Builder()
-                .addEntry(TableLootEntry.builder(source))
+                .add(TableLootEntry.lootTableReference(source))
                 .name(source.toString())
                 .build());
     }
