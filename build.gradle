@@ -1,14 +1,10 @@
 buildscript {
     repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
-        jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1+', changing: true
         //classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
@@ -24,17 +20,19 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'jacoco'
 apply plugin: 'idea'
-apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
-import net.minecraftforge.gradle.common.task.SignJar
+// TODO: re-enable jar signing
+//import net.minecraftforge.gradle.common.task.SignJar
 
 loadProperties()
 
 version = config.mod_version
 group = "org.cyclops.cyclopscore"
 archivesBaseName = "CyclopsCore"
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 def loadProperties() {
     // Config file with custom properties
@@ -59,7 +57,9 @@ def loadProperties() {
 }
 
 sourceSets {
-    api
+    api {
+        resources.srcDirs = []
+    }
     main {
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
@@ -75,7 +75,8 @@ sourceSets {
 }
 
 configurations {
-    apiCompile.extendsFrom(compile)
+    apiImplementation.extendsFrom(implementation)
+    apiRuntimeOnly.extendsFrom(runtimeOnly)
     javadoc.classpath += sourceSets.api.output
 }
 
@@ -83,11 +84,11 @@ repositories {
     mavenCentral()
     maven {
         name "Blamejared Maven Repo"
-        url "http://blamejared.com/maven"
+        url "https://blamejared.com/maven"
     }
     maven {
         name 'DVS1 Maven FS'
-        url 'http://dvs1.progwml6.com/files/maven'
+        url 'https://dvs1.progwml6.com/files/maven'
     }
     maven {
         name "Baubles maven repo"
@@ -101,13 +102,18 @@ dependencies {
     //deobf("CraftTweaker2:CraftTweaker2-API:${config.crafttweakerapi_version}") { // http://blamejared.com/maven/CraftTweaker2/CraftTweaker2-API/maven-metadata.xml
     //    exclude group: 'org.ow2.asm', module: 'asm-debug-all'
     //}
-    compileOnly fg.deobf("mezz.jei:jei-${config.jei_version}:api") // https://dvs1.progwml6.com/jenkins/
-    compileOnly fg.deobf("com.github.lazyMods:Baubles:${config.baubles_version}:api") // https://github.com/lazyMods/Baubles/releases
+    // TODO: enable deps
+    //compileOnly fg.deobf("mezz.jei:jei-${config.jei_version}:api") // https://dvs1.progwml6.com/jenkins/
+    //compileOnly fg.deobf("com.github.lazyMods:Baubles:${config.baubles_version}:api") // https://github.com/lazyMods/Baubles/releases
 
     // Project lombok
-    compileOnly "org.projectlombok:lombok:1.16.4"
-    testCompile "junit:junit:4.12"
-    testCompile "org.mockito:mockito-core:1.+"
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    testCompileOnly 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.mockito:mockito-core:1.+"
 }
 
 minecraft {
@@ -118,36 +124,29 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-            //property 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             mods {
-                cyclopscore {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
+                cyclopscore.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
             }
         }
 
         server {
             workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             mods {
-                cyclopscore {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
+                cyclopscore.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
             }
         }
 
         data {
             workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
             args '--mod', 'cyclopscore', '--all', '--output', file('src/generated/resources/')
             mods {
-                cyclopscore {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
+                cyclopscore.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
             }
         }
     }
@@ -173,7 +172,8 @@ jar {
     }
 }
 
-task signJar(type: SignJar, dependsOn: jar) {
+// TODO: re-enable jar signing
+/*task signJar(type: SignJar, dependsOn: jar) {
     onlyIf {
         System.getenv().SIGN_KEYSTORE
     }
@@ -185,7 +185,7 @@ task signJar(type: SignJar, dependsOn: jar) {
     inputFile = jar.archivePath
     outputFile = jar.archivePath
 }
-build.dependsOn signJar
+build.dependsOn signJar*/
 
 task deobfJar(type: Jar) {
     from sourceSets.main.output
@@ -232,6 +232,7 @@ curseforge {
     project {
         id = "232758" // my project url is http://minecraft.curseforge.com/mc-mods/232758/
         releaseType = project.config.release_type
+		addGameVersion config.minecraft_version
         mainArtifact(jar) {
 
         }
@@ -255,10 +256,26 @@ dependencies {
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
 }
 
-uploadArchives {
-    repositories {
-        add getProject().repositories.mavenLocal()
+/*publishing {
+    maven {
+        url "file://" + System.getenv("local_maven")
     }
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.archivesBaseName
+            version project.version
+            from components.java
+
+            artifact sourcesJar {
+                classifier 'sources'
+            }
+        }
+    }
+}*/
+
+// TODO: restore maven publishing
+/*uploadArchives {
     repositories.mavenDeployer {
         configuration = configurations.deployerJars
 
@@ -309,7 +326,7 @@ uploadArchives {
         }
     }
 }
-uploadArchives.dependsOn build
+uploadArchives.dependsOn build*/
 
 idea {
     module {

@@ -23,7 +23,7 @@ public interface IIngredientList<T, M> extends IIngredientCollection<T, M> {
      * @param index An index.
      * @return The instance at the given index.
      * @throws IndexOutOfBoundsException if the index is out of range
-     *         (<tt>index &lt; 0 || index &gt;= size()</tt>)
+     *         (<code>index &lt; 0 || index &gt;= size()</code>)
      */
     @Nullable
     T get(int index);
@@ -34,7 +34,7 @@ public interface IIngredientList<T, M> extends IIngredientCollection<T, M> {
      * @param instance The instance to set.
      * @return The previous instance at the given position.
      * @throws IndexOutOfBoundsException if the index is out of range
-     *         (<tt>index &lt; 0 || index &gt;= size()</tt>)
+     *         (<code>index &lt; 0 || index &gt;= size()</code>)
      */
     @Nullable
     T set(int index, T instance);
@@ -45,7 +45,7 @@ public interface IIngredientList<T, M> extends IIngredientCollection<T, M> {
      * @param index An index.
      * @param instance The instances to add.
      * @throws IndexOutOfBoundsException if the index is out of range
-     *         (<tt>index &lt; 0 || index &gt; size()</tt>)
+     *         (<code>index &lt; 0 || index &gt; size()</code>)
      */
     void add(int index, T instance);
 
@@ -55,7 +55,7 @@ public interface IIngredientList<T, M> extends IIngredientCollection<T, M> {
      * @param index An index.
      * @return The removed index if one existed.
      * @throws IndexOutOfBoundsException if the index is out of range
-     *         (<tt>index &lt; 0 || index &gt;= size()</tt>)
+     *         (<code>index &lt; 0 || index &gt;= size()</code>)
      */
     @Nullable
     T remove(int index);
@@ -84,8 +84,8 @@ public interface IIngredientList<T, M> extends IIngredientCollection<T, M> {
      * @param offset An index to start iterating from.
      * @return A list iterator that is offsetted by `offset` instances.
      * @throws IndexOutOfBoundsException for an illegal endpoint index value
-     *         (<tt>fromIndex &lt; 0 || toIndex &gt; size ||
-     *         fromIndex &gt; toIndex</tt>)
+     *         (<code>fromIndex &lt; 0 || toIndex &gt; size ||
+     *         fromIndex &gt; toIndex</code>)
      */
     ListIterator<T> listIterator(int offset);
 
@@ -96,7 +96,7 @@ public interface IIngredientList<T, M> extends IIngredientCollection<T, M> {
      * @param toIndex The ending index (exclusive).
      * @return The sublist view.
      * @throws IndexOutOfBoundsException for an illegal endpoint index value
-     *         (<tt>fromIndex &lt; 0 || toIndex &gt; size</tt>)
+     *         (<code>fromIndex &lt; 0 || toIndex &gt; size</code>)
      * @throws IllegalArgumentException if fromIndex &gt; toIndex
      */
     IIngredientList<T, M> subList(int fromIndex, int toIndex);
