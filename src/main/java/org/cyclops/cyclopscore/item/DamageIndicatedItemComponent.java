@@ -25,19 +25,19 @@ import java.util.Locale;
 
 /**
  * A component that has to be added for classes that want to implement the DamageIndicator behaviour.
- * 
+ *
  * Items can add this component (Composite design-pattern) to any item that needs to have a damage
  * indicator based on a custom value. Like for example the amount of energy left in an IC2 electrical
  * wrench, or the amount of MJ's left in a redstone energy cell from Thermal Expansion.
- * 
+ *
  * See {@link DamageIndicatedItemFluidContainer} for an example.
  * This could be for example an Item or an ItemFluidContainer.
- * 
+ *
  * @author rubensworks
  *
  */
 public class DamageIndicatedItemComponent {
-    
+
     /**
      * The item class on which the behaviour will be added.
      */
@@ -45,14 +45,14 @@ public class DamageIndicatedItemComponent {
 
     /**
      * Create a new DamageIndicatedItemComponent
-     * 
+     *
      * @param item
      *          The item class on which the behaviour will be added.
      */
     public DamageIndicatedItemComponent(ItemFluidContainer item) {
         this.item = item;
     }
-    
+
     /**
      * Add the creative tab items.
      * @param itemGroup The item group.
@@ -67,12 +67,12 @@ public class DamageIndicatedItemComponent {
             fluidHanderFull.fill(new FluidStack(fluid, fluidHanderFull.getCapacity()), IFluidHandler.FluidAction.EXECUTE);
         }
         items.add(itemStackFull);
-        
+
         // Add the 'empty' container.
         ItemStack itemStackEmpty = new ItemStack(item);
         items.add(itemStackEmpty);
     }
-    
+
     /**
      * Get hovering info for the given {@link ItemStack}.
      * @param itemStack The item stack to add the info for.
@@ -86,7 +86,7 @@ public class DamageIndicatedItemComponent {
             amount = fluidStack.getAmount();
         return getInfo(fluidStack, amount, fluidHander == null ? 0 : fluidHander.getCapacity());
     }
-    
+
     /**
      * Get hovering info for the given amount and capacity.
      * @param fluidStack The fluid stack for this container, can be null.
@@ -106,7 +106,7 @@ public class DamageIndicatedItemComponent {
                 .append(String.format(Locale.ROOT, "%,d", capacity))
                 .append(" mB");
     }
-    
+
     /**
      * Add information to the given list for the given item.
      * @param itemStack The {@link ItemStack} to add info for.
@@ -118,7 +118,7 @@ public class DamageIndicatedItemComponent {
         list.add(((IInformationProvider) itemStack.getItem()).getInfo(itemStack)
                 .setStyle(Style.EMPTY.withColor(IInformationProvider.ITEM_PREFIX)));
     }
-    
+
     /**
      * Get the displayed durability value for the given {@link ItemStack}.
      * @param itemStack The {@link ItemStack} to get the displayed damage for.
@@ -131,5 +131,5 @@ public class DamageIndicatedItemComponent {
         double amount = FluidHelpers.getAmount(fluidStack);
         return (int) ((capacity - amount) / capacity);
     }
-    
+
 }

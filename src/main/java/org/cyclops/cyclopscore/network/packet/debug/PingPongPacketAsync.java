@@ -82,5 +82,5 @@ public class PingPongPacketAsync extends PacketCodec {
 		}
 		return sb.toString();
 	}
-	
+
 }

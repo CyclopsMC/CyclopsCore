@@ -29,9 +29,9 @@ import java.util.function.Supplier;
  * This extension on {@link ItemFluidContainer} with a fluid capability will show a damage indicator depending on how full
  * the container is. This can be used to hold certain amounts of Fluids in an Item.
  * When this item is available in a CreativeTab, it will add itself as a full and an empty container.
- * 
+ *
  * This container ONLY allows the fluid from the given type.
- * 
+ *
  * @author rubensworks
  *
  */
@@ -39,7 +39,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
 
     protected DamageIndicatedItemComponent component;
     protected Supplier<Fluid> fluid;
-    
+
     /**
      * Create a new DamageIndicatedItemFluidContainer.
      *
@@ -52,7 +52,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
         this.fluid = fluid;
         init();
     }
-    
+
     private void init() {
         component = new DamageIndicatedItemComponent(this);
     }
@@ -69,13 +69,13 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     public MutableComponent getInfo(ItemStack itemStack) {
         return component.getInfo(itemStack);
     }
-    
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public void provideInformation(ItemStack itemStack, Level world, List<Component> list, TooltipFlag flag) {
-        
+
     }
-    
+
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag flag) {
@@ -85,12 +85,12 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
         }
         super.appendHoverText(itemStack, world, list, flag);
     }
-    
+
     @Override
     public boolean isBarVisible(ItemStack stack) {
     	return true;
     }
-    
+
     @Override
     public int getBarWidth(ItemStack itemStack) {
     	return component.getDurability(itemStack);
@@ -100,7 +100,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     public int getBarColor(ItemStack stack) {
         return Mth.hsvToRgb(Math.max(0.0F, 1 - (float) component.getDurability(stack)) / 3.0F, 1.0F, 1.0F);
     }
-    
+
     /**
      * Get the fluid.
      * @return The fluid.
@@ -108,7 +108,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     public Fluid getFluid() {
         return this.fluid.get();
     }
-    
+
     /**
      * If the given amount can be drained. (Will drain in simulation mode)
      * @param amount The amount to try to drain.

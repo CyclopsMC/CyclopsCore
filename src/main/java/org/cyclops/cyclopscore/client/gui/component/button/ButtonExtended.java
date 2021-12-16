@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.component.button;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
@@ -40,7 +39,7 @@ public abstract class ButtonExtended extends Button {
 		blit(matrixStack, x, y + height / 2, 0, 46 + hoverState * 20 + 20 - height / 2, width / 2, height / 2); // bottom left
 		blit(matrixStack, x + width / 2, y + height / 2, 200 - width / 2, 46 + hoverState * 20 + 20 - height / 2, width / 2, height / 2); // bottom right
 	}
-	
+
 	@Override
 	public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(visible) {

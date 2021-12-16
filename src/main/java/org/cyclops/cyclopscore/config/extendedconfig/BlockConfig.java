@@ -88,7 +88,7 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
     public String getFullTranslationKey() {
         return getTranslationKey();
     }
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.BLOCK;

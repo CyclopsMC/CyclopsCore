@@ -29,7 +29,7 @@ public class TrunkPlacerConfig<T extends TrunkPlacer> extends ExtendedConfig<Tru
     public String getFullTranslationKey() {
         return getTranslationKey();
     }
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.TRUNK_PLACER;

@@ -35,7 +35,7 @@ import javax.annotation.Nullable;
  * @author rubensworks
  */
 public abstract class ItemInventoryContainer<I extends Item> extends ContainerExtended {
-	
+
 	protected I item;
 	protected int itemIndex;
 	protected InteractionHand hand;
@@ -80,16 +80,16 @@ public abstract class ItemInventoryContainer<I extends Item> extends ContainerEx
 	public ItemStack getItemStack(Player player) {
 		return InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
 	}
-	
+
 	@Override
 	protected Slot createNewSlot(Container inventory, int index, int x, int y) {
     	return new Slot(inventory, index, x, y) {
-    		
+
     		@Override
     		public boolean mayPickup(Player player) {
     			return this.getItem() != InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
     	    }
-    		
+
     	};
     }
 

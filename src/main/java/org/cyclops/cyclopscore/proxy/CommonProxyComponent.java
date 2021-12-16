@@ -40,7 +40,7 @@ public abstract class CommonProxyComponent implements ICommonProxy {
 
     @Override
     public void registerTickHandlers() {
-        
+
     }
 
     @Override

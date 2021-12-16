@@ -68,7 +68,7 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, ForgeFlowi
 	public String getTranslationKey() {
 		return "block." + getMod().getModId() + ".block_" + getNamedId();
 	}
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.FLUID;

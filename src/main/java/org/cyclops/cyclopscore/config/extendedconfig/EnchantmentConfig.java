@@ -14,7 +14,7 @@ import java.util.function.Function;
  * @see ExtendedConfig
  */
 public abstract class EnchantmentConfig extends ExtendedConfigForge<EnchantmentConfig, Enchantment> {
-	
+
     /**
      * Make a new instance.
      * @param mod     The mod instance.
@@ -29,7 +29,7 @@ public abstract class EnchantmentConfig extends ExtendedConfigForge<EnchantmentC
 	public String getTranslationKey() {
 		return "enchantments." + getNamedId();
 	}
-    
+
     @Override
     public String getFullTranslationKey() {
         return "enchantment." + getMod().getModId() + "." + getNamedId();

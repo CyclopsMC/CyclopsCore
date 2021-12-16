@@ -53,7 +53,7 @@ public class RenderHelpers {
 
     private static final Random rand = new Random();
     public static final int SLOT_SIZE = 16;
-    
+
     /**
      * Bind a texture to the rendering engine.
      * @param texture The texture to bind.

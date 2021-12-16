@@ -20,11 +20,11 @@ public class CommonProxy extends CommonProxyComponent {
     public ModBase getMod() {
         return CyclopsCore._instance;
     }
- 
+
     @Override
     public void registerPacketHandlers(PacketHandler packetHandler) {
         super.registerPacketHandlers(packetHandler);
-    	
+
     	// Register packets.
         packetHandler.register(RingOfFirePacket.class);
         packetHandler.register(ButtonClickPacket.class);

@@ -51,5 +51,5 @@ public class SendPlayerAdvancementUnlockedPacket extends PacketCodec {
 	public void actionServer(Level level, ServerPlayer player) {
 
 	}
-	
+
 }

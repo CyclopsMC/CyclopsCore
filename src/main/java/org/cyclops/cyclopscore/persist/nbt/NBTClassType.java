@@ -42,7 +42,7 @@ import java.util.Set;
  * @see NBTPersist
  */
 public abstract class NBTClassType<T> {
-    
+
     /**
      * A map of all the types to their persist actions.
      */
@@ -66,7 +66,7 @@ public abstract class NBTClassType<T> {
             }
         });
         NBTYPES.put(int.class, NBTYPES.get(Integer.class));
-        
+
         NBTYPES.put(Float.class, new NBTClassType<Float>() {
 
             @Override
@@ -85,7 +85,7 @@ public abstract class NBTClassType<T> {
             }
         });
         NBTYPES.put(float.class, NBTYPES.get(Float.class));
-        
+
         NBTYPES.put(Boolean.class, new NBTClassType<Boolean>() {
 
             @Override
@@ -104,7 +104,7 @@ public abstract class NBTClassType<T> {
             }
         });
         NBTYPES.put(boolean.class, NBTYPES.get(Boolean.class));
-        
+
         NBTYPES.put(String.class, new NBTClassType<String>() {
 
             @Override
@@ -180,7 +180,7 @@ public abstract class NBTClassType<T> {
                 return null;
             }
         });
-        
+
         NBTYPES.put(Tag.class, new NBTClassType<Tag>() {
 
             @Override
@@ -559,7 +559,7 @@ public abstract class NBTClassType<T> {
         }
         return serializationClass.readPersistedField(name, tag);
     }
-    
+
     private static boolean isImplementsInterface(Class<?> clazz, Class<?> interfaceClazz) {
         return interfaceClazz.isAssignableFrom(clazz);
     }
@@ -597,7 +597,7 @@ public abstract class NBTClassType<T> {
             return action;
         }
     }
-    
+
     /**
      * Perform a field persist action.
      * @param provider The provider that has the field.
@@ -608,7 +608,7 @@ public abstract class NBTClassType<T> {
     public static void performActionForField(INBTProvider provider, Field field, CompoundTag tag, boolean write) {
         Class<?> type = field.getType();
         String fieldName = field.getName();
-        
+
         // Make editable if it was not editable before.
         boolean wasAccessible = field.isAccessible();
         if (!wasAccessible) {
@@ -624,7 +624,7 @@ public abstract class NBTClassType<T> {
             throw new RuntimeException("Could not access field " + fieldName + " in " + provider.getClass() + " " + e.getMessage());
         }
     }
-    
+
     /**
      * Called to read or write a field.
      * @param provider The provider that has the field.
@@ -674,7 +674,7 @@ public abstract class NBTClassType<T> {
 
         }
     }
-    
+
     public abstract void writePersistedField(String name, T object, CompoundTag tag);
     public abstract T readPersistedField(String name, CompoundTag tag);
     public abstract T getDefaultValue();
@@ -732,5 +732,5 @@ public abstract class NBTClassType<T> {
             return collection;
         }
     }
-    
+
 }

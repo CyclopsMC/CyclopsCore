@@ -24,12 +24,12 @@ public abstract class VillagerConfig extends ExtendedConfigForge<VillagerConfig,
     public VillagerConfig(ModBase mod, String namedId, Function<VillagerConfig, ? extends VillagerProfession> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
-    
+
     @Override
 	public String getTranslationKey() {
 		return "entity.villager." + getNamedId();
 	}
-    
+
     @Override
     public String getFullTranslationKey() {
         return "entity.Villager." + getNamedId();

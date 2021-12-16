@@ -66,5 +66,5 @@ public class ValueNotifyPacket extends PacketCodec {
 			}
 		}
 	}
-	
+
 }

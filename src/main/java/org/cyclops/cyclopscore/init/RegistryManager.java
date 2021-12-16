@@ -12,7 +12,7 @@ import java.util.Map;
 public class RegistryManager {
 
 	private RegistryManager _instance = null;
-	
+
 	private Map<Class<? extends IRegistry>, IRegistry> registries;
 
     /**
@@ -22,11 +22,11 @@ public class RegistryManager {
 	public RegistryManager() {
 		registries = Maps.newIdentityHashMap();
 	}
-	
+
 	public <R extends IRegistry> void addRegistry(Class<R> clazz, R registry) {
 		registries.put(clazz, registry);
 	}
-	
+
 	/**
 	 * Get the unique registry of the given class.
 	 * @param clazz The class of the registry.
@@ -37,5 +37,5 @@ public class RegistryManager {
 	public <T extends IRegistry> T getRegistry(Class<T> clazz) {
 		return (T) registries.get(clazz);
 	}
-	
+
 }

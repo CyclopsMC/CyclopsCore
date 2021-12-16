@@ -26,5 +26,5 @@ public class PingPongPacketSync extends PingPongPacketAsync {
 	public boolean isAsync() {
 		return true;
 	}
-	
+
 }

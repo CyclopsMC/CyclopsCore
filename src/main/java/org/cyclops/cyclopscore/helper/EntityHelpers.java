@@ -79,7 +79,7 @@ public class EntityHelpers {
 			return entity;
 		});
 	}
-	
+
 	/**
 	 * Spawn the entity in the world.
 	 * @param world The world.

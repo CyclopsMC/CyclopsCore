@@ -17,9 +17,9 @@ import java.util.Map;
  *
  */
 public class Helpers {
-    
+
     private static Map<Pair<ModBase, IDType>, Integer> ID_COUNTER = new HashMap<Pair<ModBase, IDType>, Integer>();
-    
+
     /**
      * Safe parsing of a string to it's real object type.
      * The real object type is determined by checking the class of the oldValue.
@@ -42,7 +42,7 @@ public class Helpers {
         } catch (Exception e) {}
         return newValueParsed;
     }
-    
+
     /**
      * Get a new ID for the given type.
      * @param type Type for something.
@@ -55,7 +55,7 @@ public class Helpers {
     	ID_COUNTER.put(Pair.of(mod, type), ID + 1);
     	return ID;
     }
-    
+
     /**
      * Type of ID's to use in {@link Helpers#getNewId(ModBase, IDType)}
      * @author rubensworks

@@ -55,7 +55,7 @@ public class InventoryHelpers {
 	public static void tryReAddToStack(Player player, ItemStack originalStack, ItemStack newStackPart) {
 		tryReAddToStack(player, originalStack, newStackPart, InteractionHand.MAIN_HAND);
 	}
-	
+
 	/**
 	 * Try adding a new item stack originating from the given original stack to the same original stack.
 	 * The original item stack should not have it's stack-size decreased yet, this method does this.
@@ -79,7 +79,7 @@ public class InventoryHelpers {
         	}
         }
 	}
-	
+
 	/**
 	 * Validate the NBT storage of the given inventory in the given item.
 	 * Should be called in constructors of inventories.
@@ -94,7 +94,7 @@ public class InventoryHelpers {
 		}
 		readFromNBT(inventory, tag, tagName);
 	}
-	
+
 	/**
 	 * Read an inventory from NBT.
 	 * @param inventory The inventory.
@@ -103,7 +103,7 @@ public class InventoryHelpers {
 	 */
 	public static void readFromNBT(Container inventory, CompoundTag data, String tagName) {
         ListTag nbttaglist = data.getList(tagName, Tag.TAG_COMPOUND);
-        
+
         for(int j = 0; j < inventory.getContainerSize(); j++) {
         	inventory.setItem(j, ItemStack.EMPTY);
         }
@@ -121,7 +121,7 @@ public class InventoryHelpers {
             }
         }
     }
-	
+
 	/**
 	 * Write the given inventory to NBT.
 	 * @param inventory The inventory.
@@ -151,7 +151,7 @@ public class InventoryHelpers {
 	public static ItemStack getItemFromIndex(Player player, int itemIndex) {
 		return getItemFromIndex(player, itemIndex, InteractionHand.MAIN_HAND);
 	}
-	
+
 	/**
 	 * Get the item stack from the given index in the player inventory.
 	 * @param player The player.
@@ -232,7 +232,7 @@ public class InventoryHelpers {
 			return remainder;
 		}
 	}
-	
+
 	/**
      * Try to add the given item to the given slot.
      * @param inventory The inventory.

@@ -18,12 +18,12 @@ public abstract class BiomeConfig extends ExtendedConfigForge<BiomeConfig, Biome
     public BiomeConfig(ModBase mod, String namedId, Function<BiomeConfig, ? extends Biome> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
-    
+
     @Override
 	public String getTranslationKey() {
 		return "biomes." + getMod().getModId() + "." + getNamedId();
 	}
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.BIOME;

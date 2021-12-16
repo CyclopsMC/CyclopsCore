@@ -11,10 +11,10 @@ import java.util.List;
  *
  */
 public class AllowedBlock {
-	
+
 	private Block block;
 	private final List<IBlockCountValidator> countValidators = Lists.newLinkedList();
-	
+
 	/**
 	 * Make a new instance.
 	 * @param block The allowed block.
@@ -22,7 +22,7 @@ public class AllowedBlock {
 	public AllowedBlock(Block block) {
 		this.block = block;
 	}
-	
+
 	/**
 	 * Add a count validator
 	 * @param countValidator The count validator.
@@ -46,12 +46,12 @@ public class AllowedBlock {
 	public Block getBlock() {
 		return block;
 	}
-	
+
 	@Override
 	public boolean equals(Object object) {
 		return object instanceof AllowedBlock && getBlock().equals(((AllowedBlock)object).getBlock());
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return 37 + getBlock().hashCode();

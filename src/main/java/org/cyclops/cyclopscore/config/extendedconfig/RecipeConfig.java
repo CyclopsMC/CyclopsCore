@@ -37,7 +37,7 @@ public abstract class RecipeConfig<T extends Recipe<?>> extends ExtendedConfigFo
     public String getFullTranslationKey() {
         return getTranslationKey();
     }
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.RECIPE;

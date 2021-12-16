@@ -19,10 +19,10 @@ public enum Dimension {
 	 * Z dimension.
 	 */
 	Z;
-	
+
 	/**
 	 * The different dimensions in a 3D world.
 	 */
 	public static final Dimension[] DIMENSIONS = new Dimension[]{Dimension.X, Dimension.Y, Dimension.Z};
-	
+
 }

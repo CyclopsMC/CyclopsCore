@@ -63,12 +63,12 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
             return itemConfig;
         };
     }
-    
+
     @Override
 	public String getTranslationKey() {
 		return "entity." + getNamedId();
 	}
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.ENTITY;

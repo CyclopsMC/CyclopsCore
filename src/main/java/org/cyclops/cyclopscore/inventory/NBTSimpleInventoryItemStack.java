@@ -28,19 +28,19 @@ public class NBTSimpleInventoryItemStack extends SimpleInventory {
 		this.tagName = tagName;
 		InventoryHelpers.validateNBTStorage(this, itemStack, this.tagName);
 	}
-	
+
 	@Override
 	public void setChanged() {
 		CompoundTag tag = itemStack.getOrCreateTag();
 		writeToNBT(tag, this.tagName);
 		itemStack.setTag(tag);
 	}
-	
+
 	@Override
 	public void readFromNBT(CompoundTag data, String tagName) {
         InventoryHelpers.readFromNBT(this, data, tagName);
     }
-	
+
 	@Override
 	public void writeToNBT(CompoundTag data, String tagName) {
         InventoryHelpers.writeToNBT(this, data, tagName);

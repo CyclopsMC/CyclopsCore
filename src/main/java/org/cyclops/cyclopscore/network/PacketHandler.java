@@ -33,7 +33,7 @@ public final class PacketHandler {
     private final ModBase mod;
 
     private SimpleChannel networkChannel = null;
-	
+
     public PacketHandler(ModBase mod) {
         this.mod = mod;
     }
@@ -45,7 +45,7 @@ public final class PacketHandler {
                     Predicates.alwaysTrue(), Predicates.alwaysTrue());
         }
     }
-    
+
     /**
      * Register a new packet.
      * @param packetType The class of the packet.
@@ -98,7 +98,7 @@ public final class PacketHandler {
     public void handlePacketServer(NetworkEvent.Context context, PacketBase packet) {
         packet.actionServer(context.getSender().getLevel(), context.getSender());
     }
-    
+
     /**
      * Send a packet to the server.
      * @param packet The packet.
@@ -106,7 +106,7 @@ public final class PacketHandler {
     public void sendToServer(PacketBase packet) {
         networkChannel.sendToServer(packet);
     }
-    
+
     /**
      * Send a packet to the player.
      * @param packet The packet.
@@ -135,7 +135,7 @@ public final class PacketHandler {
         PacketDistributor.PacketTarget target = PacketDistributor.DIMENSION.with(() -> dimension);
         target.send(networkChannel.toVanillaPacket(packet, target.getDirection()));
     }
-    
+
     /**
      * Send a packet to everything.
      * @param packet The packet.
@@ -144,5 +144,5 @@ public final class PacketHandler {
         PacketDistributor.PacketTarget target = PacketDistributor.ALL.with(() -> null);
         target.send(networkChannel.toVanillaPacket(packet, target.getDirection()));
     }
-    
+
 }

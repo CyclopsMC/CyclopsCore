@@ -10,7 +10,7 @@ import java.util.List;
  *
  */
 public final class StringHelpers {
-	
+
 	private static final String SPACE = " ";
 	private static final String NEWLINE_PATTERN = "\\\\n";
 
@@ -42,8 +42,8 @@ public final class StringHelpers {
 				list.add(prefix + buffer.toString());
 			}
 		}
-		
+
 		return list;
 	}
-	
+
 }

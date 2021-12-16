@@ -36,7 +36,7 @@ public class AdvancementRewardsObtainPacket extends PacketCodec {
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void actionClient(Level level, Player player) {
-		
+
 	}
 
 	@Override
@@ -48,5 +48,5 @@ public class AdvancementRewardsObtainPacket extends PacketCodec {
 			CyclopsCore.clog(org.apache.logging.log4j.Level.WARN, String.format("Received an invalid advancement reward id '%s' from %s.", advancementRewardsId, player.getDisplayName().getString()));
 		}
 	}
-	
+
 }

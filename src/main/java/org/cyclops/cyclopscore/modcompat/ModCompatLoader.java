@@ -52,7 +52,7 @@ public class ModCompatLoader {
     public boolean shouldLoadExternalCompat(IExternalCompat compat) {
         return (compat instanceof IModCompat && shouldLoadModCompat((IModCompat) compat));
     }
-    
+
     /**
      * If the given mod compat should be loaded.
      * @param modCompat The mod compat.
@@ -61,7 +61,7 @@ public class ModCompatLoader {
     public boolean shouldLoadModCompat(IModCompat modCompat) {
     	return isModLoaded(modCompat) && isNotCrashed(modCompat.getModId());
     }
-    
+
     private boolean isModLoaded(IModCompat modCompat) {
         return Reference.MOD_VANILLA.equals(modCompat.getModId()) || ModList.get().isLoaded(modCompat.getModId());
     }

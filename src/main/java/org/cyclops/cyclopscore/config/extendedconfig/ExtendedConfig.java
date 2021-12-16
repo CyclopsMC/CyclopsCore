@@ -36,7 +36,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
     private final Function<C, ? extends I> elementConstructor;
 
     private I instance;
-    
+
     /**
      * A list of {@link ConfigurablePropertyData} that can contain additional settings for this configurable.
      */
@@ -88,7 +88,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
             }
         }
     }
-    
+
     /**
      * @param annotation The annotation to define the prefix for.
      * @return The prefix that will be used inside the config file for {@link ConfigurableProperty}'s.
@@ -115,13 +115,13 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
             this.initializeInstance();
         }
     }
-    
+
     /**
      * Return the configurable type for which this config holds data
      * @return the type of the configurable to where the config belongs
      */
     public abstract ConfigurableType getConfigurableType();
-    
+
     /**
      * Get the unlocalized name (must be unique!) for this configurable.
      * @return The unlocalized name.
@@ -148,7 +148,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
         }
         return this.instance;
     }
-    
+
     /**
      * Will return the unique name of the object this config refers to
      * @return unique name of sub object
@@ -156,7 +156,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
     public String getSubUniqueName() {
         return getNamedId();
     }
-    
+
     /**
      * Overridable method that is called after the element of this config is fully registered,
      * after the {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent}.
@@ -171,12 +171,12 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
     public void onForgeRegistered() {
 
     }
-    
+
     @Override
     public int compareTo(ExtendedConfig<C, I> o) {
         return getNamedId().compareTo(o.getNamedId());
     }
-    
+
     /**
      * Call this method in the initInstance method of Configurables if the instance was already set.
      */
@@ -185,7 +185,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
         mod.log(Level.FATAL, message);
         throw new CyclopsCoreConfigException(message);
     }
-    
+
     /**
      * Get the lowest castable config.
      * @return The downcasted config.

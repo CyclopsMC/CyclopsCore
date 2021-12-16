@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
  * @author rubensworks
  *
  */
-@Retention(RetentionPolicy.RUNTIME)  
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface NBTPersist {
 	/**

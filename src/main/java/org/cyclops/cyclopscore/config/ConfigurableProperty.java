@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * @author rubensworks
  *
  */
-@Retention(RetentionPolicy.RUNTIME)  
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ConfigurableProperty {
     /**
@@ -37,28 +37,28 @@ public @interface ConfigurableProperty {
      * @return If it is commandable.
      */
     boolean isCommandable() default false;
-    
+
     /**
      * @return If this configurable requires worlds to regenerate.
      */
     boolean requiresWorldRestart() default false;
-    
+
     /**
      * @return If this configurable requires minecraft to restart.
      */
     boolean requiresMcRestart() default false;
-    
+
     /**
      * @return If this configurable will be shown in the gui.
      */
     boolean showInGui() default true;
-    
+
     /**
      * The minimal value of the field, as a integer.
      * @return The minimal value.
      */
     int minimalValue() default Integer.MIN_VALUE;
-    
+
     /**
      * The maximal value of the field, as a integer.
      * @return The maximal value.

@@ -22,7 +22,7 @@ public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHand
     public Tank(int capacity) {
         super(capacity);
     }
-    
+
     /**
      * Check if this tank is empty.
      * @return If the tank is empty; no fluid is inside of it.

@@ -19,5 +19,5 @@ public class CyclopsCoreConfigException extends RuntimeException {
     public CyclopsCoreConfigException(String message) {
         super(message);
     }
-    
+
 }

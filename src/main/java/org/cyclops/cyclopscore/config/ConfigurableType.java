@@ -9,7 +9,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.*;
  *
  */
 public class ConfigurableType {
-    
+
     /**
      * Item type.
      */
@@ -82,14 +82,14 @@ public class ConfigurableType {
      * Dummy type, only used for configs that refer to nothing.
      */
     public static final ConfigurableType DUMMY = new ConfigurableType(false, DummyConfig.class, new DummyAction(), "general");
-    
+
     private final boolean uniqueInstance;
     @SuppressWarnings("rawtypes")
     private final Class<? extends ExtendedConfig> configClass;
     @SuppressWarnings("rawtypes")
     private final ConfigurableTypeAction action;
     private final String category;
-    
+
     /**
      * Make a new instance.
      * @param uniqueInstance If this type has a unique instance for each config.
@@ -105,7 +105,7 @@ public class ConfigurableType {
         this.action = action;
         this.category = category;
     }
-    
+
     /**
      * If this type should refer to a configurable with a unique instance.
      * If this is true, the configurable should have a public static void
@@ -116,7 +116,7 @@ public class ConfigurableType {
     public boolean hasUniqueInstance() {
         return uniqueInstance;
     }
-    
+
     /**
      * Get the class that extends {@link ExtendedConfig} this type can hold.
      * @return The class that extends {@link ExtendedConfig} this type can hold.
@@ -125,7 +125,7 @@ public class ConfigurableType {
     public Class<? extends ExtendedConfig> getConfigClass() {
         return configClass;
     }
-    
+
     /**
      * The action for this type after the the configurable has configured so it can be registered.
      * @return The action for this type.
@@ -134,7 +134,7 @@ public class ConfigurableType {
     public ConfigurableTypeAction getConfigurableTypeAction() {
         return action;
     }
-    
+
     /**
      * The category of this type.
      * @return The category.

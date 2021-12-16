@@ -46,7 +46,7 @@ public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements
     public String getModelName(ItemStack itemStack) {
         return getNamedId();
     }
-    
+
     @Override
 	public String getTranslationKey() {
 		return "item." + getMod().getModId() + "." + getNamedId();
@@ -56,7 +56,7 @@ public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements
     public String getFullTranslationKey() {
         return getTranslationKey();
     }
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.ITEM;

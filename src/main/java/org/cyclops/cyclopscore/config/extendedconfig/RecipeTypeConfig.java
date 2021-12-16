@@ -5,7 +5,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
-import java.util.function.Function;
 
 /**
  * Config for recipe types.
@@ -34,7 +33,7 @@ public abstract class RecipeTypeConfig<T extends Recipe<?>> extends ExtendedConf
     public String getFullTranslationKey() {
         return getTranslationKey();
     }
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.RECIPE_TYPE;

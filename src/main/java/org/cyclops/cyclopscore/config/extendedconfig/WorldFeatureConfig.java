@@ -18,12 +18,12 @@ public abstract class WorldFeatureConfig extends ExtendedConfigForge<WorldFeatur
     public WorldFeatureConfig(ModBase mod, String namedId, Function<WorldFeatureConfig, ? extends Feature<?>> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
-    
+
     @Override
 	public String getTranslationKey() {
 		return "features." + getMod().getModId() + "." + getNamedId();
 	}
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.WORLD_FEATURE;

@@ -19,7 +19,7 @@ public class DummyConfig extends ExtendedConfig<DummyConfig, Void>{
 	public DummyConfig(ModBase mod, String namedId) {
 		super(mod, namedId, (c) -> null);
     }
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.DUMMY;

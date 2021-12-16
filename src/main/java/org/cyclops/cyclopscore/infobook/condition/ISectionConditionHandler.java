@@ -16,5 +16,5 @@ public interface ISectionConditionHandler {
 	 * @return If this condition is satisfied.
 	 */
 	public boolean isSatisfied(ModBase<?> mod, String param);
-	
+
 }

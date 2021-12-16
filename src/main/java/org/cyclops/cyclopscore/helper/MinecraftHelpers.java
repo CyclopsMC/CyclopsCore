@@ -50,7 +50,7 @@ public class MinecraftHelpers {
      * Stop the blockState from re-rendering.
      */
     public static final int BLOCK_NOTIFY_NO_RERENDER = 4;
-    
+
     /**
      * Set the world time to day or night.
      * @param world the world to manipulate time in.

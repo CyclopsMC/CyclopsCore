@@ -37,14 +37,14 @@ public class GeneralConfig extends DummyConfig {
 
     @ConfigurableProperty(category = "general", comment = "If a button should be added to the main menu to open a dev world (shift-click creates a new world).", configLocation = ModConfig.Type.CLIENT)
     public static boolean devWorldButton = MinecraftHelpers.isDevEnvironment();
-    
+
     /**
      * Create a new instance.
      */
     public GeneralConfig() {
         super(CyclopsCore._instance, "general");
     }
-    
+
     @Override
     public void onRegistered() {
         getMod().putGenericReference(ModBase.REFKEY_CRASH_ON_INVALID_RECIPE, GeneralConfig.crashOnInvalidRecipe);

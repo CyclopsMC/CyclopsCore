@@ -23,7 +23,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
  *
  */
 public class SingleUseTank extends Tank {
-    
+
     /**
      * The NBT name for the fluid tank.
      */
@@ -77,7 +77,7 @@ public class SingleUseTank extends Tank {
         }
         return filled;
     }
-    
+
     @Override
     public FluidStack drain(int maxDrain, FluidAction action) {
         FluidStack drained = super.drain(maxDrain, action);
@@ -146,5 +146,5 @@ public class SingleUseTank extends Tank {
         super.readTankFromNBT(nbt);
         setAcceptedFluid(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(nbt.getString(NBT_ACCEPTED_FLUID))));
     }
-    
+
 }

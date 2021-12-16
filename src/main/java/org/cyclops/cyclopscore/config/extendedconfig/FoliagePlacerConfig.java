@@ -35,7 +35,7 @@ public class FoliagePlacerConfig<T extends FoliagePlacer> extends ExtendedConfig
     public String getFullTranslationKey() {
         return getTranslationKey();
     }
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.FOLIAGE_PLACER;

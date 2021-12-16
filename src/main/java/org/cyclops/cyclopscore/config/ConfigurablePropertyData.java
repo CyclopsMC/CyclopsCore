@@ -32,7 +32,7 @@ public final class ConfigurablePropertyData<T> {
     private final int maxValue;
 
     private ForgeConfigSpec.ConfigValue<T> configProperty;
-    
+
     /**
      * Define a new configurable property.
      * @param mod The owner mod.

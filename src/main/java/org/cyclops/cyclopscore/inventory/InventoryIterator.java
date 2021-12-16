@@ -29,7 +29,7 @@ public class InventoryIterator implements Iterator<ItemStack> {
     public ItemStack next() {
         return inventory.getStackInSlot(i++);
     }
-    
+
     /**
      * Get the next item indexed.
      * @return The indexed item.

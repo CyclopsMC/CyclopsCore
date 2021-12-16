@@ -11,5 +11,5 @@ public class ObfuscationData {
      * Field from {@link net.minecraft.world.entity.Entity}.
      */
     public static final String ENTITY_CAPABILITIES = "capabilities";
-	
+
 }

@@ -18,12 +18,12 @@ public abstract class WorldStructureConfig extends ExtendedConfigForge<WorldStru
     public WorldStructureConfig(ModBase mod, String namedId, Function<WorldStructureConfig, ? extends StructureFeature<?>> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
-    
+
     @Override
 	public String getTranslationKey() {
 		return "features." + getMod().getModId() + "." + getNamedId();
 	}
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.WORLD_STRUCTURE;

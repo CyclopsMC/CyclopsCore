@@ -37,7 +37,7 @@ public abstract class BlockEntityConfig<T extends BlockEntity> extends ExtendedC
     public String getFullTranslationKey() {
         return getTranslationKey();
     }
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.BLOCK_ENTITY;

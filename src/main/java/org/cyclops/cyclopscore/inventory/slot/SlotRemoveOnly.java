@@ -20,7 +20,7 @@ public class SlotRemoveOnly extends SlotExtended {
     public SlotRemoveOnly(Container inventory, int index, int x, int y) {
         super(inventory, index, x, y);
     }
-    
+
     @Override
     public boolean mayPlace(ItemStack itemStack) {
         return false;

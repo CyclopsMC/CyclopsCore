@@ -33,30 +33,30 @@ public class ParticleBlur extends TextureSheetParticle {
 		this.xd = motionX;
 		this.yd = motionY;
 		this.zd = motionZ;
-		
+
 		this.rCol = data.getRed();
 		this.gCol = data.getGreen();
 		this.bCol = data.getBlue();
 		this.alpha = 0.9F;
 		this.gravity = 0;
-		
+
 		this.originalScale = (this.random.nextFloat() * 0.5F + 0.5F) * 2.0F * data.getScale();
 		this.lifetime = (int) ((random.nextFloat() * 0.33F + 0.66F) * data.getAgeMultiplier());
 		this.setSize(0.01F, 0.01F);
-		
+
 		this.xo = x;
 		this.yo = y;
 		this.zo = z;
-		
+
 		this.scaleLife = (float) (lifetime / 2.5);
-		
+
 		validateDistance();
 	}
 
 	private void validateDistance() {
 		LivingEntity renderentity = Minecraft.getInstance().player;
 		int visibleDistance = MAX_VIEW_DISTANCE;
-		
+
 		if(Minecraft.getInstance().options.graphicsMode.getId() == 0) {
 			visibleDistance = visibleDistance / 2;
 		}

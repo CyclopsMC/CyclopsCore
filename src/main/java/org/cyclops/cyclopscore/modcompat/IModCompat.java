@@ -15,5 +15,5 @@ public interface IModCompat extends IExternalCompat {
     public default String getModId() {
         return this.getId();
     }
-    
+
 }

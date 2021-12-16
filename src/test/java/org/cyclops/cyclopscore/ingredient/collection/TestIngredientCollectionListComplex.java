@@ -10,7 +10,6 @@ import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.ListIterator;
 
 import static org.hamcrest.CoreMatchers.is;

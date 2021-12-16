@@ -42,7 +42,7 @@ public abstract class GuiConfig<T extends AbstractContainerMenu> extends Extende
     public String getFullTranslationKey() {
         return getTranslationKey();
     }
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.GUI;

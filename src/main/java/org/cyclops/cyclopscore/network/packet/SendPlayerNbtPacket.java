@@ -43,5 +43,5 @@ public class SendPlayerNbtPacket extends PacketCodec {
 	public void actionServer(Level level, ServerPlayer player) {
 
 	}
-	
+
 }

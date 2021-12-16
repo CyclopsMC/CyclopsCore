@@ -37,7 +37,7 @@ public class TestIndexedInventory {
     private static final ItemStack STACK1_3 = new ItemStack(ITEM1);
 
     /* ----- ----- ----- SIZE 0 ----- ----- -----  */
-    
+
     @Test
     public void testSize0Empty() {
         IndexedInventory inv = new IndexedInventory();
@@ -50,7 +50,7 @@ public class TestIndexedInventory {
 
         assertThat("Index is not empty", inv.getIndex().size(), is(0));
     }
-    
+
     /* ----- ----- ----- SIZE 1 ----- ----- -----  */
 
     @Test
@@ -314,7 +314,7 @@ public class TestIndexedInventory {
         assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
         assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
     }
-    
+
     /* ----- ----- ----- SIZE 3 ----- ----- -----  */
 
     @Test

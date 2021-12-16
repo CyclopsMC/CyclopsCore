@@ -38,7 +38,7 @@ public abstract class ItemGui extends Item {
 	public abstract MenuProvider getContainer(Level world, Player player, int itemIndex, InteractionHand hand, ItemStack itemStack);
 
 	public abstract Class<? extends AbstractContainerMenu> getContainerClass(Level world, Player player, ItemStack itemStack);
-    
+
     @Override
 	public boolean onDroppedByPlayer(ItemStack itemstack, Player player) {
 		if(!itemstack.isEmpty()
@@ -49,7 +49,7 @@ public abstract class ItemGui extends Item {
 		}
 		return super.onDroppedByPlayer(itemstack, player);
 	}
-    
+
     /**
      * Open the gui for a certain item index in the player inventory.
      * @param world The world.

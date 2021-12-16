@@ -52,5 +52,5 @@ public class RequestPlayerAdvancementUnlockedPacket extends PacketCodec {
 				new SendPlayerAdvancementUnlockedPacket(advancementId, AdvancementHelpers
 						.hasAdvancementUnlocked(player, advancement)), player);
 	}
-	
+
 }

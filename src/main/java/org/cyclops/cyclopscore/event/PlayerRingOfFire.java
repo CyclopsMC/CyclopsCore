@@ -36,7 +36,7 @@ public class PlayerRingOfFire {
     public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
 		spawnRing(event.getPlayer());
     }
-	
+
 	/**
      * When a player respawn event is received.
      * @param event The received event.
@@ -45,7 +45,7 @@ public class PlayerRingOfFire {
     public void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
         spawnRing(event.getPlayer());
     }
-    
+
     private void spawnRing(Player player) {
         if(!player.level.isClientSide() && player.getGameProfile() != null
     			&& ALLOW_RING.contains(player.getGameProfile().getId())) {
@@ -53,5 +53,5 @@ public class PlayerRingOfFire {
                     LocationHelpers.createTargetPointFromLocation(player.level, player.blockPosition(), 50));
     	}
     }
-    
+
 }

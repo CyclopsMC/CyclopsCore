@@ -24,9 +24,9 @@ import java.util.Map;
  *
  */
 public class CubeDetector {
-	
+
 	private static Vec3i NULL_SIZE = Vec3i.ZERO;
-	
+
 	private Collection<AllowedBlock> allowedBlocks = Sets.newHashSet();
 	private Map<Block, AllowedBlock> blockInfo = Maps.newHashMap();
 	private List<? extends IDetectionListener> listeners;
@@ -37,13 +37,13 @@ public class CubeDetector {
 	/**
 	 * Make a new instance.
 	 * @param allowedBlocks The blocks that are allowed in this cube.
-	 * @param listeners Listeners for detections. 
+	 * @param listeners Listeners for detections.
 	 */
 	public CubeDetector(AllowedBlock[] allowedBlocks, List<? extends IDetectionListener> listeners) {
 		addAllowedBlocks(allowedBlocks);
 		this.listeners = listeners;
 	}
-	
+
 	/**
 	 * @return the allowed blocks
 	 */
@@ -60,7 +60,7 @@ public class CubeDetector {
 			this.allowedBlocks.add(block);
 		}
 	}
-	
+
 	/**
 	 * @return the size validators
 	 */
@@ -77,7 +77,7 @@ public class CubeDetector {
 		this.sizeValidators.add(sizeValidator);
 		return this;
 	}
-	
+
 	/**
 	 * @return the listeners
 	 */
@@ -90,7 +90,7 @@ public class CubeDetector {
 			listener.onDetect(world, location, size, valid, originCorner);
 		}
 	}
-	
+
 	protected Component isValidLocation(LevelReader world, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
 		BlockState blockState = world.getBlockState(location);
 		Block block = blockState.getBlock();
@@ -106,11 +106,11 @@ public class CubeDetector {
     protected Component isValidLocation(LevelReader world, BlockPos location, BlockPos excludeLocation) {
         return isValidLocation(world, location, null, excludeLocation);
     }
-	
+
 	protected boolean isAir(LevelReader world, BlockPos location) {
 		return world.isEmptyBlock(location);
 	}
-	
+
 	/**
 	 * Find the border of valid/non-valid locations in one given dimension for just one direction.
 	 * @param world The world to look in.
@@ -122,18 +122,18 @@ public class CubeDetector {
 	 */
 	protected BlockPos navigateToBorder(LevelReader world, BlockPos startLocation, int dimension, int direction, BlockPos excludeLocation) {
 		BlockPos loopLocation = LocationHelpers.copyLocation(startLocation);
-		
+
 		// Loop until we find a non-valid location.
 		while(isValidLocation(world, loopLocation, excludeLocation) == null) {
 			loopLocation = LocationHelpers.addToDimension(loopLocation, dimension, direction);
 		}
-		
+
 		// Because we went one increment too far.
 		loopLocation = LocationHelpers.addToDimension(loopLocation, dimension, -direction);
-		
+
 		return loopLocation;
 	}
-	
+
 	/**
 	 * Find the border of valid/non-valid locations in one given dimension (both directions).
 	 * @param world The world to look in.
@@ -147,7 +147,7 @@ public class CubeDetector {
 	protected BlockPos navigateToBorder(LevelReader world, BlockPos startLocation, int dimension, boolean max, BlockPos excludeLocation) {
 		return navigateToBorder(world, startLocation, dimension, max ? 1 : -1, excludeLocation);
 	}
-	
+
 	/**
 	 * Navigate to a corner from a given startlocation for the given dimensions.
 	 * If you would want to navigate to a corner in a 3D world, you would only need 2 dimensions.
@@ -165,7 +165,7 @@ public class CubeDetector {
 		}
 		return navigateLocation;
 	}
-	
+
 	protected boolean isEdge(LevelReader world, int[][] dimensionEgdes, BlockPos location) {
         int[] c = LocationHelpers.toArray(location);
 		for (int i = 0; i < dimensionEgdes.length; i++) {
@@ -177,7 +177,7 @@ public class CubeDetector {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Check if a given location is valid, taking into account the edges of the structure, so that
 	 * we know which locations should be borders, and which ones should be air.
@@ -192,7 +192,7 @@ public class CubeDetector {
                                                   IValidationAction action, BlockPos excludeLocation) {
 		return isValidLocation(world, location, action, excludeLocation);
 	}
-	
+
 	/**
 	 * Run the {@link BlockPosAction} for all the possible locations within this structure.
 	 * @param world The world.
@@ -203,7 +203,7 @@ public class CubeDetector {
 	protected boolean coordinateRecursion(LevelReader world, int[][] dimensionEgdes, BlockPosAction locationAction) {
 		return coordinateRecursion(world, dimensionEgdes, new int[]{}, locationAction);
 	}
-	
+
 	/**
 	 * Run the {@link BlockPosAction} for all the possible locations within this structure.
 	 * When the accumulatedCoordinates size equals the desired amount of dimensions,
@@ -234,7 +234,7 @@ public class CubeDetector {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Validate if the blockState at the given location conforms with the {@link AllowedBlock}
 	 * conditions.
@@ -255,12 +255,12 @@ public class CubeDetector {
 					return error;
 				}
 			}
-			
+
 			blockOccurences.put(block, occurences + 1);
 		}
 		return null;
 	}
-	
+
 	/**
 	 * This will validate if the given structure has full borders and is hollow at the middle.
 	 * To initiate the recursion, call this with an empty accumulatedCoordinates array, it will
@@ -281,7 +281,7 @@ public class CubeDetector {
 		for(AllowedBlock block : allowedBlocks) {
 			blockOccurences.put(block.getBlock(), 0);
 		}
-		
+
 		// Loop over all dimensions
 		final List<Component> errors = Lists.newLinkedList();
 		boolean minimumValid = coordinateRecursion(world, dimensionEgdes, new BlockPosAction() {
@@ -298,7 +298,7 @@ public class CubeDetector {
 				if(allowedLocation != null) errors.add(allowedLocation);
 				return allowedBlocks == null && allowedLocation == null;
 			}
-			
+
 		});
 
 		if(minimumValid) {
@@ -324,7 +324,7 @@ public class CubeDetector {
 				notifyListeners(world, location, size, valid, originCorner);
 				return true;
 			}
-			
+
 		});
 	}
 
@@ -342,7 +342,7 @@ public class CubeDetector {
     public DetectionResult detect(LevelReader world, BlockPos startLocation, BlockPos excludeLocation, boolean changeState) {
         return detect(world, startLocation, excludeLocation, null, changeState);
     }
-	
+
 	/**
 	 * Detect a structure at the given start location.
 	 * @param world The world to look in.
@@ -420,14 +420,14 @@ public class CubeDetector {
         }
 		return new DetectionResult(size);
 	}
-	
+
 	/**
 	 * Listener for detections.
 	 * @author rubensworks
 	 *
 	 */
 	public interface IDetectionListener {
-		
+
 		/**
 		 * Called when a new structure has been detected.
 		 * @param world The world.
@@ -437,11 +437,11 @@ public class CubeDetector {
 		 * @param originCorner The origin corner block of the structure.
 		 */
 		public void onDetect(LevelReader world, BlockPos location, Vec3i size, boolean valid, BlockPos originCorner);
-		
+
 	}
-	
+
 	protected interface BlockPosAction {
-		
+
 		/**
 		 * An action for {@link CubeDetector#coordinateRecursion(IWorldReader, int[][], BlockPosAction)}.
 		 * @param world The world.
@@ -450,7 +450,7 @@ public class CubeDetector {
 		 * {@link CubeDetector#coordinateRecursion(IWorldReader, int[][], BlockPosAction)} will return false.
 		 */
 		public boolean run(LevelReader world, BlockPos location);
-		
+
 	}
 
     public static interface IValidationAction {

@@ -34,5 +34,5 @@ public class RequestPlayerNbtPacket extends PacketCodec {
 	public void actionServer(Level level, ServerPlayer player) {
 		CyclopsCore._instance.getPacketHandler().sendToPlayer(new SendPlayerNbtPacket(player), player);
 	}
-	
+
 }

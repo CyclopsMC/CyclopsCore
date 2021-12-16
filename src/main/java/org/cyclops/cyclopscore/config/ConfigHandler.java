@@ -128,7 +128,7 @@ public class ConfigHandler {
             configDictionary.put(e.getNamedId(), e);
         }
     }
-    
+
     /**
      * Iterate over the given ExtendedConfigs to read/write the config and register the given elements
      * This also sets the config of this instance.
@@ -179,7 +179,7 @@ public class ConfigHandler {
     public void addCategory(String category) {
         categories.add(category);
     }
-    
+
     /**
      * Sync the config values that were already loaded.
      * This will update the values in-game and in the config file.
@@ -198,7 +198,7 @@ public class ConfigHandler {
             }
     	}
     }
-	
+
 	/**
 	 * Get the map of config nameid to config.
 	 * @return The dictionary.

@@ -13,7 +13,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * Enum that contains all custom hotkeys that
  * are added. Every key also has a
  * {@link KeyMapping} for that specific key.
- * 
+ *
  * @author immortaleeb
  *
  */
@@ -54,5 +54,5 @@ public class KeyRegistry implements IKeyRegistry {
 	public void addKeyHandler(KeyMapping kb, IKeyHandler handler) {
         keyHandlerMap.put(kb, handler);
 	}
-	
+
 }

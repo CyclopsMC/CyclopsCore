@@ -112,7 +112,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
     protected void initializeValues() {
 
     }
-    
+
     protected Slot createNewSlot(Container inventory, int index, int x, int y) {
     	return new Slot(inventory, index, x, y);
     }
@@ -141,7 +141,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
         setSlotPosY(slot, slot.y + offsetY);
         return super.addSlot(slot);
     }
-    
+
     protected void addInventory(Container inventory, int indexOffset, int offsetX, int offsetY, int rows, int cols) {
     	for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
@@ -150,7 +150,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
             }
         }
     }
-    
+
     /**
      * Add player inventory and hotbar to the GUI.
      * @param inventory Inventory of the player
@@ -180,23 +180,23 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
             addSlot(new SlotArmor(inventory, 4 * 9 + (3 - k), offsetX, offsetY + k * ITEMBOX, inventory.player, equipmentSlot));
         }
     }
-    
+
     protected abstract int getSizeInventory();
-    
+
     protected int getSlotStart(int originSlot, int slotStart, boolean reverse) {
     	return slotStart;
     }
-    
+
     protected int getSlotRange(int originSlot, int slotRange, boolean reverse) {
     	return slotRange;
     }
-    
+
     @Override
     public ItemStack quickMoveStack(Player player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = slots.get(slotID);
         int slots = getSizeInventory();
-        
+
         if(slot != null && slot.hasItem()) {
             ItemStack stackInSlot = slot.getItem().copy();
             stack = stackInSlot.copy();
@@ -208,7 +208,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
             } else if(!moveItemStackTo(stackInSlot, getSlotStart(slotID, 0, false), getSlotRange(slotID, slots, false), false)) { // Click in player inventory -> tile
                 return ItemStack.EMPTY;
             }
-            
+
             if(stackInSlot.getCount() == 0) {
                 slot.set(ItemStack.EMPTY);
             } else {
@@ -221,10 +221,10 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
 
             slot.onTake(player, stackInSlot);
         }
-        
+
         return stack;
     }
-    
+
     @Override
     protected boolean moveItemStackTo(ItemStack stack, int slotStart, int slotRange, boolean reverse) {
         boolean successful = false;
@@ -512,10 +512,10 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                 }
             }
         }
-        
-        
-        
-        
+
+
+
+
         /*Slot slot = slotId < 0 ? null : this.slots.get(slotId);
         Inventory inventoryplayer = player.getInventory();
         if (clickType == ClickType.QUICK_CRAFT) {

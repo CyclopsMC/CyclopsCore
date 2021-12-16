@@ -42,5 +42,5 @@ public class ReloadResourcesPacket extends PacketCodec {
 	public void actionServer(Level level, ServerPlayer player) {
 
 	}
-	
+
 }

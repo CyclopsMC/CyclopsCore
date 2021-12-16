@@ -18,9 +18,9 @@ import java.util.function.Function;
 
 /**
  * Base proxy for the client side.
- * 
+ *
  * @author rubensworks
- * 
+ *
  */
 @EqualsAndHashCode(callSuper = false)
 @Data
@@ -78,5 +78,5 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
         getMod().getLoggerHelper().log(Level.TRACE, "Registered event hooks");
         MinecraftForge.EVENT_BUS.register(getMod().getKeyRegistry());
     }
-    
+
 }

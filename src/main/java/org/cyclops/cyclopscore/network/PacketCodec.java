@@ -35,7 +35,7 @@ import java.util.Set;
 public abstract class PacketCodec extends PacketBase {
 
 	public static final int READ_STRING_MAX_LENGTH = 32767;
-	
+
 	private static Map<Class<?>, ICodecAction> codecActions = Maps.newHashMap();
 	static {
 		codecActions.put(String.class, new ICodecAction() {
@@ -50,7 +50,7 @@ public abstract class PacketCodec extends PacketBase {
 				return input.readUtf(32767); // The arg-less version is client-side only, so we copy its implementation.
 			}
 		});
-		
+
 		codecActions.put(double.class, new ICodecAction() {
 
 			@Override
@@ -63,7 +63,7 @@ public abstract class PacketCodec extends PacketBase {
 				return input.readDouble();
 			}
 		});
-		
+
 		codecActions.put(int.class, new ICodecAction() {
 
 			@Override
@@ -102,7 +102,7 @@ public abstract class PacketCodec extends PacketBase {
 				return input.readShort();
 			}
 		});
-		
+
 		codecActions.put(boolean.class, new ICodecAction() {
 
 			@Override
@@ -115,7 +115,7 @@ public abstract class PacketCodec extends PacketBase {
 				return input.readBoolean();
 			}
 		});
-		
+
 		codecActions.put(float.class, new ICodecAction() {
 
 			@Override
@@ -146,9 +146,9 @@ public abstract class PacketCodec extends PacketBase {
 				return new Vector3d(x, y, z);
 			}
 		});
-		
+
 		codecActions.put(Map.class, new ICodecAction() {
-			
+
 			// Packet structure:
 			// Map length (int)
 			// --- end if length == 0
@@ -495,7 +495,7 @@ public abstract class PacketCodec extends PacketBase {
 		}
 		return action;
 	}
-	
+
 	private void loopCodecFields(ICodecRunnable runnable) {
 		try {
 			for (Field field : fieldCache.get(null)) {
@@ -561,9 +561,9 @@ public abstract class PacketCodec extends PacketBase {
 		ICodecAction action = Objects.requireNonNull(getActionSuper(clazz));
 		return (T) action.decode(packetBuffer);
 	}
-	
+
 	public static interface ICodecAction {
-		
+
 		/**
 		 * Encode the given object.
 		 * @param object The object to encode into the output.
@@ -577,18 +577,18 @@ public abstract class PacketCodec extends PacketBase {
 		 * @return The object to return after reading it from the input.
 		 */
 	    public Object decode(FriendlyByteBuf input);
-	    
+
 	}
 
 	public static interface ICodecRunnable {
-		
+
 		/**
 		 * Run a type of codec.
 		 * @param field The field annotated with {@link CodecField}.
 		 * @param action The action that must be applied to the field.
 		 */
 		public void run(Field field, ICodecAction action);
-		
+
 	}
-	
+
 }

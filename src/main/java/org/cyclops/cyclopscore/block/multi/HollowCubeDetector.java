@@ -15,16 +15,16 @@ import java.util.List;
  *
  */
 public class HollowCubeDetector extends CubeDetector {
-	
+
 	/**
 	 * Make a new instance.
 	 * @param allowedBlocks The blocks that are allowed in this cube.
-	 * @param listeners Listeners for detections. 
+	 * @param listeners Listeners for detections.
 	 */
 	public HollowCubeDetector(AllowedBlock[] allowedBlocks, List<? extends IDetectionListener> listeners) {
 		super(allowedBlocks, listeners);
 	}
-	
+
 	@Override
 	protected void postValidate(LevelReader world, final Vec3i size, final int[][] dimensionEgdes, final boolean valid, final BlockPos originCorner, final BlockPos excludeLocation) {
 		coordinateRecursion(world, dimensionEgdes, new BlockPosAction() {
@@ -36,10 +36,10 @@ public class HollowCubeDetector extends CubeDetector {
 				}
 				return true;
 			}
-			
+
 		});
 	}
-	
+
 	@Override
 	protected Component validateLocationInStructure(LevelReader world, int[][] dimensionEgdes, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
 		// Validate edge or air.

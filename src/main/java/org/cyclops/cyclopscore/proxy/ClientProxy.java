@@ -8,9 +8,9 @@ import org.cyclops.cyclopscore.tracking.Versions;
 
 /**
  * Proxy for the client side.
- * 
+ *
  * @author rubensworks
- * 
+ *
  */
 public class ClientProxy extends ClientProxyComponent {
 
@@ -35,5 +35,5 @@ public class ClientProxy extends ClientProxyComponent {
 		super.registerEventHooks();
 		MinecraftForge.EVENT_BUS.register(new Versions());
 	}
-    
+
 }

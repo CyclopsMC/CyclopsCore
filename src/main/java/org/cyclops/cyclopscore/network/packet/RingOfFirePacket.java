@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 
 /**
  * Packet for sending and showing the ring of fire.
- * 
+ *
  * @author rubensworks
  *
  */
@@ -26,7 +26,7 @@ public class RingOfFirePacket extends PlayerPositionPacket {
     public RingOfFirePacket(Player player) {
         super(player);
     }
-    
+
 	@OnlyIn(Dist.CLIENT)
     private static void showFireRing(Level world, Vec3 pos) {
         double area = RING_AREA;

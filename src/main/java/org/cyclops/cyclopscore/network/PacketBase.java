@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.network;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,7 +20,7 @@ public abstract class PacketBase {
      *         If this is asynchronous, the player parameter inside the action is not guaranteed to be defined.
      */
 	public abstract boolean isAsync();
-	
+
 	/**
 	 * Encode this packet.
 	 * @param output The byte array to encode to.

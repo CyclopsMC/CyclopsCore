@@ -12,12 +12,12 @@ import javax.annotation.Nullable;
  *
  */
 public class WorldHelpers {
-   
+
 	/**
 	 * The maximum chunk size for X and Z axis.
 	 */
     public static final int CHUNK_SIZE = 16;
-    
+
     private static final double TICK_LAG_REDUCTION_MODULUS_MODIFIER = 1.0D;
 
 	/**
@@ -95,5 +95,5 @@ public class WorldHelpers {
         public T apply(@Nullable F from, W world, BlockPos pos);
 
     }
-    
+
 }

@@ -11,9 +11,9 @@ import net.minecraft.world.item.ItemStack;
  *
  */
 public class SlotSingleItem extends SlotExtended {
-    
+
 	@Getter private Item itemAllowed;
-	
+
     /**
      * Make a new instance.
      * @param inventory The inventory this slot will be in.
@@ -26,10 +26,10 @@ public class SlotSingleItem extends SlotExtended {
         super(inventory, index, x, y);
         this.itemAllowed = item;
     }
-    
+
     @Override
     public boolean mayPlace(ItemStack itemStack) {
         return super.mayPlace(itemStack) && itemStack.getItem() == getItemAllowed();
     }
-    
+
 }

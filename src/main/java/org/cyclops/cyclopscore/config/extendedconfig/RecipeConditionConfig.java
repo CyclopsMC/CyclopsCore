@@ -26,7 +26,7 @@ public abstract class RecipeConditionConfig<T extends ICondition> extends Extend
     public String getFullTranslationKey() {
         return getTranslationKey();
     }
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.RECIPE_CONDITION;

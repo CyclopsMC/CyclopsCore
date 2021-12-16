@@ -47,7 +47,7 @@ public abstract class ParticleConfig<T extends ParticleOptions> extends Extended
     public String getFullTranslationKey() {
         return getTranslationKey();
     }
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.PARTICLE;

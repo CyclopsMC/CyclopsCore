@@ -1,8 +1,5 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -25,7 +22,7 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
         super(mod, namedId, null);
         this.type = type;
     }
-    
+
     @Override
     public String getTranslationKey() {
         return "capability." + getMod().getModId() + "." + getNamedId();
@@ -36,7 +33,7 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
     public String getFullTranslationKey() {
         return getTranslationKey();
     }
-    
+
     @Override
 	public ConfigurableType getConfigurableType() {
 		return ConfigurableType.CAPABILITY;

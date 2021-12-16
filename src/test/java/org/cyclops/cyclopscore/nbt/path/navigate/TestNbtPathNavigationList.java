@@ -51,7 +51,7 @@ public class TestNbtPathNavigationList {
         assertThat(navigationA.getNext("b"), nullValue());
         assertThat(navigationA.getNext("c"), nullValue());
         assertThat(navigationA.getNext("d"), nullValue());
-        
+
         INbtPathNavigation navigationC = navigation1.getNext("c");
 
         assertThat(navigationC.isLeafKey("a"), is(false));

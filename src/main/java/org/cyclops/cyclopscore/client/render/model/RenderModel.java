@@ -17,11 +17,11 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @param <M> The model that will be rendered.
  */
 public abstract class RenderModel<T extends Entity, M extends Model> extends EntityRenderer<T> {
-    
+
     private ResourceLocation texture;
 
     protected M model;
-    
+
     /**
      * Make a new instance.
      * @param renderContext The render context
@@ -36,12 +36,12 @@ public abstract class RenderModel<T extends Entity, M extends Model> extends Ent
     protected ResourceLocation createResourceLocation(ExtendedConfig<?, ?> config) {
         return new ResourceLocation(config.getMod().getModId(), config.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_MODELS) + config.getNamedId() + ".png");
     }
-    
+
     protected abstract M constructModel();
 
     @Override
     public ResourceLocation getTextureLocation(Entity entity) {
         return texture;
     }
-    
+
 }

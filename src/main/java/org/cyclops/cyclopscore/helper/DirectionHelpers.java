@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * This class contains helper methods involving directions.
- * 
+ *
  * @author immortaleeb
  *
  */

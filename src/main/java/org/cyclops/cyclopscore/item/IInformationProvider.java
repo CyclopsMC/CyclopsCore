@@ -19,7 +19,7 @@ import java.util.List;
  *
  */
 public interface IInformationProvider {
-    
+
     /**
      * A prefix for blockState information.
      */
@@ -39,7 +39,7 @@ public interface IInformationProvider {
             ChatFormatting.DARK_PURPLE,
             ChatFormatting.ITALIC
     };
-    
+
     /**
      * Get info for a given itemStack.
      * @param itemStack The itemStack that must be given information.

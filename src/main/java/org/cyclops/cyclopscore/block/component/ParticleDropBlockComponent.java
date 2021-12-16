@@ -17,14 +17,14 @@ import java.util.Random;
  *
  */
 public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock {
-    
+
     protected float particleRed;
     protected float particleGreen;
     protected float particleBlue;
-    
+
     protected int offset = 1;
     protected int chance = 10;
-    
+
     /**
      * Make a new instance.
      * @param particleRed Red color.
@@ -36,7 +36,7 @@ public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock {
         this.particleGreen = particleGreen;
         this.particleBlue = particleBlue;
     }
-    
+
     /**
      * Set the offset to a lower Y where the drops should appear.
      * @param offset Amount of blocks to a lower Y.
@@ -44,7 +44,7 @@ public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock {
     public void setOffset(int offset) {
         this.offset = offset;
     }
-    
+
     /**
      * Sets the chance for drop particles.
      * @param chance Every tick there will be a 1/chance chance.
@@ -67,5 +67,5 @@ public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock {
                     px, py, pz, 0, 0, 0);
         }
     }
-    
+
 }

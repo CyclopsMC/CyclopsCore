@@ -67,7 +67,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
         sourceSlotlessInnerStorage.add(CA01B);
         destinationSlotlessInnerStorage.add(CA01_);
         destinationSlotlessInnerStorage.add(CA91B);
-        
+
         /* Slotted */
         sourceSlottedInnerStorage = new IngredientArrayList<>(IngredientComponentStubs.COMPLEX);
         sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 10);
@@ -700,7 +700,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
-            
+
         }
 
     }
@@ -2822,9 +2822,9 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA02_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
-            
+
         }
-        
+
     }
 
 }

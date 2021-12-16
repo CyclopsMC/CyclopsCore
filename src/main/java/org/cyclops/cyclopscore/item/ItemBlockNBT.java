@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  *
  */
 public class ItemBlockNBT extends BlockItem {
-    
+
     /**
      * Make a new instance.
      * @param block The blockState instance.
@@ -48,7 +48,7 @@ public class ItemBlockNBT extends BlockItem {
 
         return false;
     }
-    
+
     /**
      * Read additional info about the item into the tile.
      * @param tile The tile that is being created.

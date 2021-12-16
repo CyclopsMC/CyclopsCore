@@ -17,10 +17,10 @@ import java.util.List;
  *
  */
 public class InformationProviderComponent {
-    
+
     private boolean hasInfo = false;
     private Block block = null;
-    
+
     /**
      * Make a new instance.
      * @param block The blockState for which the component is used.
@@ -28,7 +28,7 @@ public class InformationProviderComponent {
     public InformationProviderComponent(Block block) {
         setBlock(block);
     }
-    
+
     /**
      * Add information to the given list for the given item.
      * @param itemStack The {@link ItemStack} to add info for.
@@ -72,5 +72,5 @@ public class InformationProviderComponent {
         if(block instanceof IInformationProvider)
             this.hasInfo = true;
     }
-    
+
 }

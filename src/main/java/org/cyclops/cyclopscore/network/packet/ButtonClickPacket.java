@@ -44,5 +44,5 @@ public class ButtonClickPacket extends PacketCodec {
 			((IContainerButtonClickAcceptorServer) player.containerMenu).onButtonClick(buttonId);
 		}
 	}
-	
+
 }

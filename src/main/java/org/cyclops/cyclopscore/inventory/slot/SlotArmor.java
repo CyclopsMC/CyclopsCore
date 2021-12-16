@@ -45,5 +45,5 @@ public class SlotArmor extends Slot {
         return itemStack.getEquipmentSlot() == armorType
                 || (itemStack.getItem() instanceof ArmorItem && ((ArmorItem) itemStack.getItem()).getSlot() == armorType);
     }
-    
+
 }
