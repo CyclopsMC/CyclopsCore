@@ -58,7 +58,6 @@ public class InfoSectionTagIndex extends InfoSection {
             }
 
             if(softLinks.containsKey(tag)) {
-                // TODO: add support for multiple tag occurences?
                 throw new IllegalArgumentException("The tag " + tag + " occurs multiple times.");
             }
 

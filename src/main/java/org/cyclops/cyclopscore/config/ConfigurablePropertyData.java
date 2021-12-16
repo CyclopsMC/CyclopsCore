@@ -74,7 +74,6 @@ public final class ConfigurablePropertyData<T> {
         if (this.requiresWorldRestart) {
             configBuilder.worldRestart();
         }
-        // TODO: generalize .define with specific subtypes (like number ranges and predicates)
         ForgeConfigSpec.ConfigValue<T> configProperty = configBuilder
                 .comment(this.comment)
                 .translation(getLanguageKey())

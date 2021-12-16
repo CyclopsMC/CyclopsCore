@@ -41,7 +41,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     private static final int UPDATE_BACKOFF_TICKS = 1;
 
     @Delegate
-    private INBTProvider nbtProviderComponent = new NBTProviderComponent(this); // TODO: rewrite NBT serialization
+    private INBTProvider nbtProviderComponent = new NBTProviderComponent(this);
 
     private boolean shouldSendUpdate = false;
     private int sendUpdateBackoff = 0;
@@ -163,7 +163,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     protected int getUpdateBackoffTicks() {
         return UPDATE_BACKOFF_TICKS;
     }
-
+    
     /**
      * If this entity is interactable with a player.
      * @param entityPlayer The player that is checked.
@@ -172,7 +172,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     public boolean canInteractWith(Player entityPlayer) {
         return true;
     }
-
+    
     @Override
     public void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
@@ -188,7 +188,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     public CompoundTag writeToItemStack(CompoundTag tag) {
         return this.save(tag);
     }
-
+    
     @Override
     public final void load(CompoundTag tag) {
         super.load(tag);
@@ -208,7 +208,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
             capabilities = ImmutableMap.copyOf(capabilities);
         }
     }
-
+    
     /**
      * Get the NBT tag for this tile entity.
      * @return The NBT tag that is created with the
@@ -266,7 +266,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
      * @param value The capability.
      * @param <T> The capability type.
      */
-    public <T> void addCapabilityInternal(Capability<T> capability, LazyOptional<T> value) { // TODO: make something to auto-serialize caps
+    public <T> void addCapabilityInternal(Capability<T> capability, LazyOptional<T> value) {
         capabilities.put(Pair.<Capability<?>, Direction>of(capability, null), value);
     }
 

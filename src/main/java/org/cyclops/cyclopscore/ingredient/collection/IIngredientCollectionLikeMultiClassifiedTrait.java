@@ -27,7 +27,6 @@ public interface IIngredientCollectionLikeMultiClassifiedTrait<T, M, I, L extend
      */
     @Nullable
     public default IngredientComponentCategoryType<T, M, ?> getFirstMatchingCategory(M matchCondition) {
-        // TODO: efficiently cache this if needed
         if (matchCondition.equals(getComponent().getMatcher().getAnyMatchCondition())) {
             return null;
         }
