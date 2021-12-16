@@ -1,11 +1,10 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
-import  net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.client.gui.image.Images;
@@ -158,10 +157,8 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
             float g = hovering ? 1.0F : (((float) (gui.getTick() % 20)) / 20) * 0.4F + 0.6F;
             float r = hovering ? 0.2F : 0.7F;
             float b = hovering ? 0.2F : 0.7F;
-            // TODO: either show a different figure, or write a custom color-based blit util
-            //RenderSystem.color3f(r, g, b);
-            Images.ARROW_DOWN.draw(gui, matrixStack, x, y + offsetY - 11);
-            Images.ARROW_DOWN.draw(gui, matrixStack, x + 60, y + offsetY - 11);
+            Images.ARROW_DOWN.drawWithColor(gui, matrixStack, x, y + offsetY - 11, r, g, b, 1);
+            Images.ARROW_DOWN.drawWithColor(gui, matrixStack, x + 60, y + offsetY - 11, r, g, b, 1);
 
         }
         offsetY += 10;

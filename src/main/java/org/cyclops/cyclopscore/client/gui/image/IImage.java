@@ -21,6 +21,19 @@ public interface IImage {
     public void draw(GuiComponent gui, PoseStack matrixStack, int x, int y);
 
     /**
+     * Draw this image.
+     * @param gui The gui helper object.
+     * @param matrixStack The matrix stack.
+     * @param x The x position.
+     * @param y The y position.
+     * @param r Red
+     * @param g Green
+     * @param b Blue
+     * @param a Alpha
+     */
+    public void drawWithColor(GuiComponent gui, PoseStack matrixStack, int x, int y, float r, float g, float b, float a);
+
+    /**
      * Draw the image in the world.
      * @param textureManager The texture manager.
      * @param matrixStack The matrix stack

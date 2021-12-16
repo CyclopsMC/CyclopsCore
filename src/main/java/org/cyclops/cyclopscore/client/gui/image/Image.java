@@ -36,6 +36,12 @@ public class Image implements IImage {
     }
 
     @Override
+    public void drawWithColor(GuiComponent gui, PoseStack matrixStack, int x, int y, float r, float g, float b, float a) {
+        RenderHelpers.bindTexture(resourceLocation);
+        RenderHelpers.blitColored(matrixStack, x, y, gui.getBlitOffset(), sheetX, sheetY, sheetWidth, sheetHeight, r, g, b, a);
+    }
+
+    @Override
     public void drawWorldWithAlpha(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
                                    int combinedLight, int combinedOverlay, float x1, float x2, float y1, float y2, float z, float alpha) {
         matrixStack.pushPose();
