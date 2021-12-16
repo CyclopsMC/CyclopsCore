@@ -10,6 +10,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+import org.cyclops.cyclopscore.Capabilities;
 
 import javax.annotation.Nullable;
 
@@ -67,7 +68,7 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
     @Nullable
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
-        return capability == FluidHandlerItemCapacityConfig._instance.getCapability() ? LazyOptional.of(() -> this).cast() : super.getCapability(capability, facing);
+        return capability == Capabilities.FLUID_HANDLER_ITEM_CAPACITY ? LazyOptional.of(() -> this).cast() : super.getCapability(capability, facing);
     }
 
     @Override

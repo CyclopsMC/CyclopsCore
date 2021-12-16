@@ -13,6 +13,7 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -106,9 +107,15 @@ public class ConfigHandler {
     }
 
     @SubscribeEvent
-    public void onLoad(ModConfig configEvent) {
+    public void onLoad(ModConfigEvent.Loading configEvent) {
         this.mod.log(Level.TRACE, "Load config");
-        syncProcessedConfigs(configEvent, false);
+        syncProcessedConfigs(configEvent.getConfig(), false);
+    }
+
+    @SubscribeEvent
+    public void onReload(ModConfigEvent.Reloading configEvent) {
+        this.mod.log(Level.TRACE, "Reload config");
+        syncProcessedConfigs(configEvent.getConfig(), true);
     }
 
     public boolean addConfigurable(ExtendedConfig<?, ?> e) {

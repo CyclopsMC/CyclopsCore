@@ -13,6 +13,7 @@ import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.cyclops.cyclopscore.Capabilities;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
 import org.cyclops.cyclopscore.datastructure.Wrapper;
@@ -96,7 +97,7 @@ public final class FluidHelpers {
      * @return The item capacity fluid handler.
      */
     public static LazyOptional<IFluidHandlerItemCapacity> getFluidHandlerItemCapacity(ItemStack itemStack) {
-        return itemStack.getCapability(FluidHandlerItemCapacityConfig._instance.getCapability());
+        return itemStack.getCapability(Capabilities.FLUID_HANDLER_ITEM_CAPACITY);
     }
 
     /**

@@ -14,7 +14,6 @@ import org.cyclops.cyclopscore.init.ModBase;
 public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfig<T>, T> {
 
     private final Class<T> type;
-    private final Capability<T> capability = CapabilityManager.get(new CapabilityToken<>(){});
 
     /**
      * Make a new instance.
@@ -45,9 +44,5 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
 
     public Class<T> getType() {
         return type;
-    }
-
-    public Capability<T> getCapability() {
-        return capability;
     }
 }
