@@ -72,7 +72,7 @@ jobs:
           MAVEN_URL: ${{ secrets.MAVEN_URL }}
           MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
           MAVEN_KEY: ${{ secrets.MAVEN_KEY }}
-        run: ./gradlew uploadArchives -S
+        run: ./gradlew publish -S
       - name: 'Deploy JavaDoc to GitHub Pages'
         if: startsWith(github.ref, 'refs/heads/master')
         uses: JamesIves/github-pages-deploy-action@3.6.2

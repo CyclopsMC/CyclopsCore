@@ -255,77 +255,37 @@ dependencies {
     deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
 }
 
-/*publishing {
-    maven {
-        url "file://" + System.getenv("local_maven")
-    }
-    publications {
-        mavenJava(MavenPublication) {
-            groupId project.group
-            artifactId project.archivesBaseName
-            version project.version
-            from components.java
-
-            artifact sourcesJar {
-                classifier 'sources'
-            }
-        }
-    }
-}*/
-
-// TODO: restore maven publishing
-/*uploadArchives {
-    repositories.mavenDeployer {
-        configuration = configurations.deployerJars
-
+publishing {
+    repositories {
         if (project.hasProperty("filesmaven_url")) {
             logger.info('Publishing to files server')
-            repository(url: project.filesmaven_url) {
-                authentication(userName: project.filesmaven_username, password: project.filesmaven_key)
-            }
-        } else if (System.getenv().MAVEN_URL) {
-            logger.info('Publishing to files server')
-            repository(url: System.getenv().MAVEN_URL) {
-                authentication(userName: System.getenv().MAVEN_USERNAME, password: System.getenv().MAVEN_KEY)
-            }
-        } else {
-            logger.info('Publishing to repo folder')
-            repository(url: 'file://localhost/' + project.file('~/.m2/repository').getAbsolutePath())
-        }
-
-        pom {
-            groupId = project.group
-            version = project.version
-            artifactId = project.archivesBaseName.toLowerCase()
-        }
-        pom.project {
-            name project.archivesBaseName
-            packaging 'jar'
-            description 'Minecraft coremod for EvilCraft, Integrated Dynamics and others.'
-            url 'https://github.com/CyclopsMC/CyclopsCore'
-
-            scm {
-                url 'https://github.com/CyclopsMC/CyclopsCore'
-                connection 'scm:git:git://github.com/CyclopsMC/CyclopsCore.git'
-                developerConnection 'scm:git:git@github.com:CyclopsMC/CyclopsCore.git'
-            }
-
-            issueManagement {
-                system 'github'
-                url 'https://github.com/CyclopsMC/CyclopsCore/issues'
-            }
-
-            developers {
-                developer {
-                    id 'rubensworks'
-                    name 'rubensworks'
-                    roles { role 'developer' }
+            maven {
+                url System.getenv("MAVEN_URL")
+                credentials {
+                    username = project.filesmaven_username
+                    password = project.filesmaven_key
                 }
             }
+        } else if (System.getenv("MAVEN_URL")) {
+            logger.info('Publishing to files server')
+            maven {
+                url System.getenv("MAVEN_URL")
+                credentials {
+                    username = System.getenv("MAVEN_USERNAME")
+                    password = System.getenv("MAVEN_KEY")
+                }
+            }
+        } else {
+            throw new Exception('No maven repo was set!')
+        }
+    }
+
+    publications { PublicationContainer publicationContainer ->
+        publicationContainer.register("maven", MavenPublication) { MavenPublication publication ->
+            publication.artifacts = [jar, javadocJar, deobfJar, sourcesJar]
         }
     }
 }
-uploadArchives.dependsOn build*/
 
 idea {
     module {
