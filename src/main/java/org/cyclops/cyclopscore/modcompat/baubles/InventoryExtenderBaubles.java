@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.modcompat.baubles;
 
-
+import lazy.baubles.api.BaublesAPI;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
@@ -15,7 +15,6 @@ public class InventoryExtenderBaubles implements PlayerExtendedInventoryIterator
     @Override
     @Nullable
     public IItemHandlerModifiable getInventory(Player player) {
-        return null; // TODO
-        //return BaublesAPI.getBaublesHandler(player).orElse(null);
+        return BaublesAPI.getBaublesHandler(player).orElse(null);
     }
 }
