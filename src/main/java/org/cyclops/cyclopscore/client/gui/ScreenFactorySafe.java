@@ -10,8 +10,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * A type-safe implementation of {@link MenuScreens.IScreenFactory}.
- * This enables more convenient syntax via lambdas than the default {@link MenuScreens.IScreenFactory}.
+ * A type-safe implementation of {@link MenuScreens.ScreenConstructor}.
+ * This enables more convenient syntax via lambdas than the default {@link MenuScreens.ScreenConstructor}.
  *
  * For example: `new ScreenFactorySafe(ContainerScreenAbilityContainer::new)`.
  *

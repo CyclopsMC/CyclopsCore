@@ -20,11 +20,11 @@ public interface IKeyRegistry extends IRegistry {
 
     /**
      * Binds a {@link IKeyHandler} to key presses of the
-     * specified {@link KeyBinding}. Whenever the {@link KeyBinding}
-     * is pressed, {@link IKeyHandler#onKeyPressed(KeyBinding)} is called.
+     * specified {@link KeyMapping}. Whenever the {@link KeyMapping}
+     * is pressed, {@link IKeyHandler#onKeyPressed(KeyMapping)}} is called.
      *
-     * @param kb {@link KeyBinding} to which we bind the {@link IKeyHandler}.
-     * @param handler {@link IKeyHandler} that will be linked to presses of the given {@link KeyBinding}.
+     * @param kb {@link KeyMapping} to which we bind the {@link IKeyHandler}.
+     * @param handler {@link IKeyHandler} that will be linked to presses of the given {@link KeyMapping}.
      */
     public void addKeyHandler(KeyMapping kb, IKeyHandler handler);
 

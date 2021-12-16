@@ -14,8 +14,8 @@ import java.lang.annotation.Target;
  * Fields that are a subtype of {@link INBTSerializable} must not be null, they should
  * have a dummy value that will then be populated with the actual values.
  * It will automatically be added to
- * {@link CyclopsBlockEntity#write(CompoundTag)}}
- * and {@link CyclopsBlockEntity#write(CompoundTag)}.
+ * {@link CyclopsBlockEntity#save(CompoundTag)}
+ * and {@link CyclopsBlockEntity#load(CompoundTag)}.
  * @author rubensworks
  *
  */

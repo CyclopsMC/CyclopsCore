@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import java.util.function.Supplier;
 
 /**
- * An abstract recipe exporter for {@link IRecipe} recipes.
+ * An abstract recipe exporter for {@link Recipe} recipes.
  */
 public abstract class RegistryExportableRecipeAbstract<T extends RecipeType<? extends R>, R extends Recipe<C>, C extends Container> implements IRegistryExportable {
 

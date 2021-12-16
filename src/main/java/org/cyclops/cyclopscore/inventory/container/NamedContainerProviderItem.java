@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import javax.annotation.Nullable;
 
 /**
- * A {@link INamedContainerProvider} for held items.
+ * A {@link MenuProvider} for held items.
  * @author rubensworks
  */
 public class NamedContainerProviderItem implements MenuProvider {

@@ -175,6 +175,12 @@ jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
 
+javadoc {
+    source = [sourceSets.main.allJava, sourceSets.api.allJava]
+    // prevent java 8's strict doclint for javadocs from failing builds
+    options.addStringOption('Xdoclint:accessibility,html,reference,syntax', '-quiet')
+}
+
 task signJar(type: SignJar, dependsOn: jar) {
     onlyIf {
         System.getenv().SIGN_KEYSTORE

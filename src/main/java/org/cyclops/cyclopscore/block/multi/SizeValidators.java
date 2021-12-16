@@ -10,7 +10,7 @@ import org.cyclops.cyclopscore.helper.LocationHelpers;
 public class SizeValidators {
 
     /**
-     * Comparator for {@link Vector3i}.
+     * Comparator for {@link Vec3i}.
      * @param vec1 First vector.
      * @param vec2 Second vector.
      * @return The comparison result.

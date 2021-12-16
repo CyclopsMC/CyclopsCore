@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 /**
  * Block with a gui.
  *
- * Implement {@link #getContainer(BlockState, World, BlockPos)} to specify the gui.
+ * Implement {@link IBlockContainerProvider#get(BlockState, Level, BlockPos)} to specify the gui.
  *
  * Optionally implement {@link #getOpenStat()} to specify a stat on gui opening.
  *

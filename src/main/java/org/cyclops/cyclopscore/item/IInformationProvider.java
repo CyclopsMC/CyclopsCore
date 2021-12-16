@@ -12,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.List;
 
 /**
- * Interface that can be applied to {@link net.minecraft.block.Block} or {@link net.minecraft.item.Item} so that they can provide information
+ * Interface that can be applied to {@link net.minecraft.world.level.block.Block} or {@link net.minecraft.world.item.Item} so that they can provide information
  * when the player hovers over the item in their inventory.
  * @see InformationProviderComponent
  * @author rubensworks

@@ -1,21 +1,21 @@
 package org.cyclops.cyclopscore.item;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.cyclops.cyclopscore.block.BlockWithEntity;
 
 import javax.annotation.Nullable;
 
 /**
  * An extended {@link BlockItem} that will add the NBT data that is stored inside
- * the item to the placed {@link TileEntity} for the blockState.
+ * the item to the placed {@link BlockEntity} for the blockState.
  * Subinstances of {@link BlockWithEntity} will perform the inverse operation, being
  * that broken blocks will save the NBT data inside the dropped {@link BlockItem}.
  * @author rubensworks
