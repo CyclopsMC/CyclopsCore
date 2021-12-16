@@ -34,7 +34,7 @@ You can add CyclopsCore to your development environment by adding the following 
     }
     ...
     dependencies {
-        compile "org.cyclops.cyclopscore:cyclopscore:${config.minecraft_version}-${config.cyclopscore_version}:deobf"
+        compile "org.cyclops.cyclopscore:cyclopscore:${project.minecraft_version}-${project.cyclopscore_version}:deobf"
     }
 
 Obviously, you should fill in the required Minecraft and CyclopsCore version yourself.
@@ -44,7 +44,7 @@ Obviously, you should fill in the required Minecraft and CyclopsCore version you
 
 If you do local changes to your CyclopsCore instance and want to test this locally for your mod, you can place your modified build to your local Maven repository by executing the following command:
 
-    ./gradlew uploadArchives
+    ./gradlew publishToMavenLocal
 
 Then you need to add the following to your Gradle build file to be able to use this custom build:
 
@@ -53,7 +53,7 @@ Then you need to add the following to your Gradle build file to be able to use t
     }
     ...
     dependencies {
-        compile "org.cyclops.cyclopscore:cyclopscore:${config.minecraft_version}-${project.cyclopscore_version_local}:deobf"
+        compile "org.cyclops.cyclopscore:cyclopscore:${project.minecraft_version}-${secrets.cyclopscore_version}:deobf"
     }
 
 While again making sure that you fill in the required Minecraft and CyclopsCore version.

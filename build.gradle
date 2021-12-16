@@ -20,38 +20,37 @@ apply plugin: 'maven-publish'
 
 import net.minecraftforge.gradle.common.tasks.SignJar
 
-loadProperties()
+// Determine build number
+String build_number = "DEV" // this will be referenced as simply build_number from now on.
+if (System.getenv().BUILD_NUMBER)
+    build_number = System.getenv().BUILD_NUMBER
+if (System.getenv().TRAVIS_BUILD_NUMBER)
+    build_number = System.getenv().TRAVIS_BUILD_NUMBER
+if (System.getenv().GITHUB_RUN_ID)
+    build_number = System.getenv().GITHUB_RUN_NUMBER
+if (System.getenv().RELEASE || System.getenv().TRAVIS_TAG)
+    build_number = "RELEASE"
+logger.lifecycle "BUILDING VERSION: " + build_number
 
-version = config.mod_version
+// Set mod details
+version = project.mod_version
 group = "org.cyclops.cyclopscore"
 archivesBaseName = "CyclopsCore"
 
+// Set Java details
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+compileJava.options.compilerArgs << "-Xmaxerrs" << "9999"
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
-compileJava.options.compilerArgs << "-Xmaxerrs" << "9999"
-
-def loadProperties() {
-    // Config file with custom properties
-    ext.configFile = file "build.properties"
-    configFile.withReader {
-        def prop = new Properties()
-        prop.load(it)
-        ext.config = new ConfigSlurper().parse prop
+// Load secrets
+def getSecrets() {
+    Properties props = new Properties()
+    if (file('../secrets.properties').exists()) {
+        props.load(new FileInputStream(file('../secrets.properties')))
     }
-    
-    // grab buildNumber
-    ext.buildnumber = "DEV" // this will be referenced as simply project.buildnumber from now on.
-    if (System.getenv().BUILD_NUMBER)
-        project.buildnumber = System.getenv().BUILD_NUMBER
-    if (System.getenv().TRAVIS_BUILD_NUMBER)
-        project.buildnumber = System.getenv().TRAVIS_BUILD_NUMBER
-    if (System.getenv().GITHUB_RUN_ID)
-        project.buildnumber = System.getenv().GITHUB_RUN_NUMBER
-    if (System.getenv().RELEASE || System.getenv().TRAVIS_TAG)
-        project.buildnumber = "RELEASE"
-    logger.lifecycle "BUILDING VERSION: " + project.buildnumber
+    return props
 }
+Properties secrets = getSecrets();
 
 sourceSets {
     api {
@@ -60,10 +59,6 @@ sourceSets {
     main {
         compileClasspath += sourceSets.api.output
         runtimeClasspath += sourceSets.api.output
-        java {
-            // TODO: temporarily disable some mod compats
-            exclude '**/modcompat/crafttweaker/**'
-        }
     }
     test {
         compileClasspath += sourceSets.api.output
@@ -86,9 +81,9 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${config.minecraft_version}-${config.forge_version}"
+    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
-    compileOnly "com.github.lazyMods:Baubles:${config.baubles_version}:api" // https://github.com/lazyMods/Baubles/releases
+    compileOnly "com.github.lazyMods:Baubles:${project.baubles_version}:api" // https://github.com/lazyMods/Baubles/releases
 
     // Project lombok
     compileOnly 'org.projectlombok:lombok:1.18.22'
@@ -101,7 +96,7 @@ dependencies {
 }
 
 minecraft {
-    mappings channel: "official", version: "${config.minecraft_version}"
+    mappings channel: "official", version: "${project.minecraft_version}"
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -136,10 +131,10 @@ minecraft {
     }
 }
 
-if (project.buildnumber.equals("RELEASE"))
-    version = "${config.minecraft_version}-${config.mod_version}"
+if (build_number.equals("RELEASE"))
+    version = "${project.minecraft_version}-${project.mod_version}"
 else
-    version = "${config.minecraft_version}-${config.mod_version}-${buildnumber}"
+    version = "${project.minecraft_version}-${project.mod_version}-${build_number}"
 
 jar {
     manifest {
@@ -147,20 +142,15 @@ jar {
                 "FMLAT": "accesstransformer.cfg",
                 "Specification-Title": "${project.name}",
                 "Specification-Vendor": "rubensworks",
-                "Specification-Version": "${config.mod_version}",
+                "Specification-Version": "${project.mod_version}",
                 "Implementation-Title": "${project.name}",
-                "Implementation-Version": "${config.mod_version}",
+                "Implementation-Version": "${project.mod_version}",
                 "Implementation-Vendor" :"rubensworks",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
-
-// Example configuration to allow publishing using the maven-publish plugin
-// This is the preferred method to reobfuscate your jar file
 jar.finalizedBy('reobfJar')
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-// publish.dependsOn('reobfJar')
 
 javadoc {
     source = [sourceSets.main.allJava, sourceSets.api.allJava]
@@ -192,9 +182,9 @@ task deobfJar(type: Jar) {
                 "FMLAT": "accesstransformer.cfg",
                 "Specification-Title": "${project.name}",
                 "Specification-Vendor": "rubensworks",
-                "Specification-Version": "${config.mod_version}",
+                "Specification-Version": "${project.mod_version}",
                 "Implementation-Title": "${project.name}",
-                "Implementation-Version": "${config.mod_version}",
+                "Implementation-Version": "${project.mod_version}",
                 "Implementation-Vendor" :"rubensworks",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
@@ -220,9 +210,9 @@ artifacts {
 }
 
 curseforge {
-    if(project.hasProperty("curseforge_key") && project.hasProperty("changelog")) {
-        apiKey = project.curseforge_key
-    } else if((System.getenv().TRAVIS || System.getenv().GITHUB_ACTIONS) && System.getenv().CURSEFORGE_KEY_SECRET) {
+    if(secrets.hasProperty("curseforge_key") && secrets.hasProperty("changelog")) {
+        apiKey = secrets.curseforge_key
+    } else if(System.getenv().GITHUB_ACTIONS && System.getenv().CURSEFORGE_KEY_SECRET) {
         apiKey = System.getenv().CURSEFORGE_KEY_SECRET
     } else {
         apiKey = "DUMMY"
@@ -230,8 +220,8 @@ curseforge {
 
     project {
         id = "232758" // my project url is http://minecraft.curseforge.com/mc-mods/232758/
-        releaseType = project.config.release_type
-		addGameVersion config.minecraft_version
+        releaseType = project.release_type
+		addGameVersion project.minecraft_version
         mainArtifact(jar) {
 
         }
@@ -249,10 +239,6 @@ curseforge {
 
 configurations {
     deployerJars
-}
-
-dependencies {
-    deployerJars "org.apache.maven.wagon:wagon-ftp:2.2"
 }
 
 publishing {
