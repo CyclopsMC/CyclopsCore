@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.nbt.CompoundTag;
 
 /**
  * Used for receiving values from servers to clients in guis.
@@ -13,13 +13,13 @@ public interface IValueNotifiable {
     /**
      * @return The container type.
      */
-    public ContainerType<?> getValueNotifiableType();
+    public MenuType<?> getValueNotifiableType();
 
     /**
      * Called by the server if the value has changed.
      * @param valueId The value id.
      * @param value The new value.
      */
-    void onUpdate(int valueId, CompoundNBT value);
+    void onUpdate(int valueId, CompoundTag value);
 
 }

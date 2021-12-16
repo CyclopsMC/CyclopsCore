@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -13,9 +13,9 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class WorldStructureConfig extends ExtendedConfigForge<WorldStructureConfig, Structure<?>>{
+public abstract class WorldStructureConfig extends ExtendedConfigForge<WorldStructureConfig, StructureFeature<?>>{
 
-    public WorldStructureConfig(ModBase mod, String namedId, Function<WorldStructureConfig, ? extends Structure<?>> elementConstructor) {
+    public WorldStructureConfig(ModBase mod, String namedId, Function<WorldStructureConfig, ? extends StructureFeature<?>> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
     
@@ -30,7 +30,7 @@ public abstract class WorldStructureConfig extends ExtendedConfigForge<WorldStru
 	}
 
     @Override
-    public IForgeRegistry<Structure<?>> getRegistry() {
+    public IForgeRegistry<StructureFeature<?>> getRegistry() {
         return ForgeRegistries.STRUCTURE_FEATURES;
     }
 

@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Random;
 
@@ -38,7 +38,7 @@ public class LocationHelpers {
 	 * @param range The range of the {@link PacketDistributor.TargetPoint}.
 	 * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
 	 */
-	public static PacketDistributor.TargetPoint createTargetPointFromLocation(World world, BlockPos location, int range) {
+	public static PacketDistributor.TargetPoint createTargetPointFromLocation(Level world, BlockPos location, int range) {
 		return new PacketDistributor.TargetPoint(location.getX(), location.getY(), location.getZ(), range, world.dimension());
 	}
 	
@@ -65,8 +65,8 @@ public class LocationHelpers {
         return new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
 
-    public static Vector3i copyLocation(Vector3i blockPos) {
-        return new Vector3i(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    public static Vec3i copyLocation(Vec3i blockPos) {
+        return new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
 
     public static BlockPos addToDimension(BlockPos blockPos, int dimension, int value) {
@@ -80,16 +80,16 @@ public class LocationHelpers {
         return new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
     }
 
-    public static int[] toArray(Vector3i blockPos) {
+    public static int[] toArray(Vec3i blockPos) {
         return new int[]{blockPos.getX(), blockPos.getY(), blockPos.getZ()};
     }
 
-    public static BlockPos subtract(BlockPos blockPos, Vector3i vec) {
+    public static BlockPos subtract(BlockPos blockPos, Vec3i vec) {
         return new BlockPos(blockPos.getX() - vec.getX(), blockPos.getY() - vec.getY(), blockPos.getZ() - vec.getZ());
     }
 
-    public static Vector3i subtract(Vector3i vec1, Vector3i vec2) {
-        return new Vector3i(vec1.getX() - vec2.getX(), vec1.getY() - vec2.getY(), vec1.getZ() - vec2.getZ());
+    public static Vec3i subtract(Vec3i vec1, Vec3i vec2) {
+        return new Vec3i(vec1.getX() - vec2.getX(), vec1.getY() - vec2.getY(), vec1.getZ() - vec2.getZ());
     }
 
     /**
@@ -132,7 +132,7 @@ public class LocationHelpers {
      * @param vec The vector.
      * @return The string.
      */
-    public static String toCompactString(Vector3i vec) {
+    public static String toCompactString(Vec3i vec) {
         return String.format("%sx%sx%s", vec.getX(), vec.getY(), vec.getZ());
     }
 

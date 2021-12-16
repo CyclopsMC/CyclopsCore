@@ -1,12 +1,11 @@
 package org.cyclops.cyclopscore.client.particle;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.world.World;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -31,18 +30,18 @@ public class ParticleBlurConfig extends ParticleConfig<ParticleBlurData> {
     @OnlyIn(Dist.CLIENT)
     @Nullable
     @Override
-    public IParticleFactory<ParticleBlurData> getParticleFactory() {
+    public ParticleProvider<ParticleBlurData> getParticleFactory() {
         return null;
     }
 
     @OnlyIn(Dist.CLIENT)
     @Nullable
     @Override
-    public ParticleManager.IParticleMetaFactory<ParticleBlurData> getParticleMetaFactory() {
-        return sprite -> new IParticleFactory<ParticleBlurData>() {
+    public ParticleEngine.SpriteParticleRegistration<ParticleBlurData> getParticleMetaFactory() {
+        return sprite -> new ParticleProvider<ParticleBlurData>() {
             @Nullable
             @Override
-            public Particle createParticle(ParticleBlurData particleBlurData, ClientWorld world, double x, double y, double z,
+            public Particle createParticle(ParticleBlurData particleBlurData, ClientLevel world, double x, double y, double z,
                                          double motionX, double motionY, double motionZ) {
                 ParticleBlur particle = new ParticleBlur(particleBlurData, world, x, y, z, motionX, motionY, motionZ);
                 particle.pickSprite(sprite);

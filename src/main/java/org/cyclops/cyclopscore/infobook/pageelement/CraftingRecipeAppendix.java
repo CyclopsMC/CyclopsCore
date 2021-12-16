@@ -1,15 +1,14 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.Blocks;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.item.crafting.ShapelessRecipe;
-import net.minecraft.util.NonNullList;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
@@ -22,7 +21,7 @@ import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
  * Shaped recipes.
  * @author rubensworks
  */
-public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe<CraftingInventory>> {
+public class CraftingRecipeAppendix extends RecipeAppendix<Recipe<CraftingContainer>> {
 
     private static final int SLOT_OFFSET_X = 5;
     private static final int SLOT_OFFSET_Y = 5;
@@ -34,7 +33,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe<CraftingInven
     }
     private static final AdvancedButtonEnum RESULT = AdvancedButtonEnum.create();
 
-    public CraftingRecipeAppendix(IInfoBook infoBook, IRecipe<CraftingInventory> recipe) {
+    public CraftingRecipeAppendix(IInfoBook infoBook, Recipe<CraftingContainer> recipe) {
         super(infoBook, recipe);
     }
 
@@ -62,7 +61,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<IRecipe<CraftingInven
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    protected void drawElementInner(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
+    protected void drawElementInner(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
         gui.drawArrowRight(matrixStack, x + (SLOT_SIZE + SLOT_OFFSET_X) * 3 - 3, y + SLOT_OFFSET_Y + SLOT_SIZE + 2);
 
         // Prepare items

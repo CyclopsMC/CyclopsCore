@@ -1,12 +1,12 @@
 package org.cyclops.cyclopscore.inventory.slot;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Slot that is used to hold armor.
@@ -15,8 +15,8 @@ import net.minecraft.item.ItemStack;
  */
 public class SlotArmor extends Slot {
 
-    private final EquipmentSlotType armorType;
-    private final PlayerEntity player;
+    private final EquipmentSlot armorType;
+    private final Player player;
 
     /**
      * Make a new instance.
@@ -27,12 +27,12 @@ public class SlotArmor extends Slot {
      * @param player The player entity.
      * @param armorType The armor type.
      */
-    public SlotArmor(IInventory inventory, int index, int x,
-                     int y, PlayerEntity player, EquipmentSlotType armorType) {
+    public SlotArmor(Container inventory, int index, int x,
+                     int y, Player player, EquipmentSlot armorType) {
         super(inventory, index, x, y);
         this.armorType = armorType;
         this.player = player;
-        setBackground(PlayerContainer.BLOCK_ATLAS, PlayerContainer.TEXTURE_EMPTY_SLOTS[armorType.getIndex()]);
+        setBackground(InventoryMenu.BLOCK_ATLAS, InventoryMenu.TEXTURE_EMPTY_SLOTS[armorType.getIndex()]);
     }
 
     @Override

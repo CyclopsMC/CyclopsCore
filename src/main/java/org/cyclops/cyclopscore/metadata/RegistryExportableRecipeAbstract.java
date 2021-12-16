@@ -2,10 +2,10 @@ package org.cyclops.cyclopscore.metadata;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.core.Registry;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 
 import java.util.function.Supplier;
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 /**
  * An abstract recipe exporter for {@link IRecipe} recipes.
  */
-public abstract class RegistryExportableRecipeAbstract<T extends IRecipeType<? extends R>, R extends IRecipe<C>, C extends IInventory> implements IRegistryExportable {
+public abstract class RegistryExportableRecipeAbstract<T extends RecipeType<? extends R>, R extends Recipe<C>, C extends Container> implements IRegistryExportable {
 
     private final Supplier<T> recipeType;
 

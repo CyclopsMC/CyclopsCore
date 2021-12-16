@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.block.component;
 
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import org.cyclops.cyclopscore.client.particle.ParticleDropColoredData;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
 
@@ -54,7 +54,7 @@ public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock {
     }
 
     @Override
-    public void randomDisplayTick(BlockState blockState, World world, BlockPos blockPos, Random rand) {
+    public void randomDisplayTick(BlockState blockState, Level world, BlockPos blockPos, Random rand) {
         if (rand.nextInt(chance) == 0 &&
                 (offset == 0 || BlockHelpers.doesBlockHaveSolidTopSurface(world, blockPos.offset(0, -offset, 0))) &&
                 !world.getBlockState(blockPos.offset(0, - offset - 1, 0)).getMaterial().blocksMotion()) {

@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import org.cyclops.cyclopscore.helper.InventoryHelpers;
 
 /**
@@ -31,18 +31,18 @@ public class NBTSimpleInventoryItemStack extends SimpleInventory {
 	
 	@Override
 	public void setChanged() {
-		CompoundNBT tag = itemStack.getOrCreateTag();
+		CompoundTag tag = itemStack.getOrCreateTag();
 		writeToNBT(tag, this.tagName);
 		itemStack.setTag(tag);
 	}
 	
 	@Override
-	public void readFromNBT(CompoundNBT data, String tagName) {
+	public void readFromNBT(CompoundTag data, String tagName) {
         InventoryHelpers.readFromNBT(this, data, tagName);
     }
 	
 	@Override
-	public void writeToNBT(CompoundNBT data, String tagName) {
+	public void writeToNBT(CompoundTag data, String tagName) {
         InventoryHelpers.writeToNBT(this, data, tagName);
     }
 

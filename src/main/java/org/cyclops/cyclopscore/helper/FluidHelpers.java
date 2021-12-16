@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
@@ -96,7 +96,7 @@ public final class FluidHelpers {
      * @return The item capacity fluid handler.
      */
     public static LazyOptional<IFluidHandlerItemCapacity> getFluidHandlerItemCapacity(ItemStack itemStack) {
-        return itemStack.getCapability(FluidHandlerItemCapacityConfig.CAPABILITY);
+        return itemStack.getCapability(FluidHandlerItemCapacityConfig._instance.getCapability());
     }
 
     /**
@@ -109,7 +109,7 @@ public final class FluidHelpers {
      * @return The extracted fluidstack.
      */
     public static FluidStack extractFromInventory(int amount, @Nullable ItemStack blacklistedStack,
-                                                  @Nullable Fluid fluidWhitelist, PlayerEntity player,
+                                                  @Nullable Fluid fluidWhitelist, Player player,
                                                   IFluidHandler.FluidAction action) {
         PlayerExtendedInventoryIterator it = new PlayerExtendedInventoryIterator(player);
         Wrapper<FluidStack> drained = new Wrapper<>(FluidStack.EMPTY);
@@ -148,7 +148,7 @@ public final class FluidHelpers {
      * @return The extracted fluidstack.
      */
     public static FluidStack extractFromItemOrInventory(int amount, ItemStack itemStack,
-                                                        @Nullable PlayerEntity player,
+                                                        @Nullable Player player,
                                                         IFluidHandler.FluidAction action) {
         if (action.execute() && player != null && player.isCreative() && !player.level.isClientSide()) {
             action = IFluidHandler.FluidAction.SIMULATE;
@@ -170,14 +170,14 @@ public final class FluidHelpers {
 
     /**
      * Try placing or picking up fluids from the held item.
-     * This can be called in {@link Item#onItemRightClick}.
+     * This can be called in {@link Item#use}.
      * @param player The active player.
      * @param hand The active hand.
      * @param world The world.
      * @param blockPos The target position.
      * @param side The target side.
      */
-    public static void placeOrPickUpFluid(PlayerEntity player, Hand hand, World world, BlockPos blockPos, Direction side) {
+    public static void placeOrPickUpFluid(Player player, InteractionHand hand, Level world, BlockPos blockPos, Direction side) {
         ItemStack itemStack = player.getItemInHand(hand);
         ItemStack itemStackResult = FluidHelpers.getFluidHandlerItemCapacity(itemStack).map(fluidHandler -> {
             FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(FluidStack.EMPTY);

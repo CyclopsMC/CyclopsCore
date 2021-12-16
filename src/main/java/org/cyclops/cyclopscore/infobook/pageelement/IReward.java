@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
@@ -18,14 +18,14 @@ public interface IReward {
      * @param player The player.
      * @return If it can obtain this.
      */
-    public boolean canObtain(PlayerEntity player);
+    public boolean canObtain(Player player);
 
     /**
      * The logic for obtaining this reward.
      * Will only be called server-side.
      * @param player The player.
      */
-    public void obtain(PlayerEntity player);
+    public void obtain(Player player);
 
     /**
      * @return The gui width/
@@ -58,5 +58,5 @@ public interface IReward {
      * @param button The button of this reward.
      */
     @OnlyIn(Dist.CLIENT)
-    public void drawElementInner(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button);
+    public void drawElementInner(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button);
 }

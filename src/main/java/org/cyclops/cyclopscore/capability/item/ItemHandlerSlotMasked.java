@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.capability.item;
 
-import net.minecraft.inventory.IInventory;
+import net.minecraft.world.Container;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import org.cyclops.cyclopscore.inventory.InventorySlotMasked;
 
@@ -10,7 +10,7 @@ import org.cyclops.cyclopscore.inventory.InventorySlotMasked;
  */
 public class ItemHandlerSlotMasked extends InvWrapper {
 
-    public ItemHandlerSlotMasked(IInventory inventory, int... slots) {
+    public ItemHandlerSlotMasked(Container inventory, int... slots) {
         super(new InventorySlotMasked(inventory, slots));
     }
 

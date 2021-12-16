@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.persist.nbt;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -32,23 +32,23 @@ public class NBTProviderComponent implements INBTProvider {
         }
     }
 
-    private void writePersistedField(Field field, CompoundNBT tag) {
+    private void writePersistedField(Field field, CompoundTag tag) {
         NBTClassType.performActionForField(provider, field, tag, true);
     }
 
-    private void readPersistedField(Field field, CompoundNBT tag) {
+    private void readPersistedField(Field field, CompoundTag tag) {
         NBTClassType.performActionForField(provider, field, tag, false);
     }
 
     @Override
-    public void writeGeneratedFieldsToNBT(CompoundNBT tag) {
+    public void writeGeneratedFieldsToNBT(CompoundTag tag) {
         for(Field field : nbtPersistedFields) {
             writePersistedField(field, tag);
         }
     }
 
     @Override
-    public void readGeneratedFieldsFromNBT(CompoundNBT tag) {
+    public void readGeneratedFieldsFromNBT(CompoundTag tag) {
         for(Field field : nbtPersistedFields) {
             readPersistedField(field, tag);
         }

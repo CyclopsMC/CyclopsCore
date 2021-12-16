@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.inventory.container;
 
 import com.google.common.collect.Lists;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.MenuType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.gui.component.WidgetScrollBar;
 
@@ -33,8 +33,8 @@ public abstract class ScrollingInventoryContainer<E> extends InventoryContainer 
     private int firstElement = 0;
 
     @SuppressWarnings("unchecked")
-    public ScrollingInventoryContainer(@Nullable ContainerType<?> type, int id, PlayerInventory playerInventory,
-                                       IInventory inventory, List<E> items, IItemPredicate<E> filterer) {
+    public ScrollingInventoryContainer(@Nullable MenuType<?> type, int id, Inventory playerInventory,
+                                       Container inventory, List<E> items, IItemPredicate<E> filterer) {
         super(type, id, playerInventory, inventory);
         this.unfilteredItems = Lists.newArrayList(items);
         this.filteredItems = Lists.newLinkedList();

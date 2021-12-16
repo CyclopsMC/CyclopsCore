@@ -1,16 +1,17 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.Item;
-import net.minecraft.item.SpawnEggItem;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -46,18 +47,18 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
         }
     }
 
-    public static <T extends Entity> BiFunction<EntityConfig<T>, EntityType<T>, ItemConfig> getDefaultSpawnEggItemConfigConstructor(ModBase mod, String itemName, int primaryColorIn, int secondaryColorIn) {
+    public static <T extends Mob> BiFunction<EntityConfig<T>, EntityType<T>, ItemConfig> getDefaultSpawnEggItemConfigConstructor(ModBase mod, String itemName, int primaryColorIn, int secondaryColorIn) {
         return getDefaultSpawnEggItemConfigConstructor(mod, itemName, primaryColorIn, secondaryColorIn, null);
     }
 
-    public static <T extends Entity> BiFunction<EntityConfig<T>, EntityType<T>, ItemConfig> getDefaultSpawnEggItemConfigConstructor(ModBase mod, String itemName, int primaryColorIn, int secondaryColorIn, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
+    public static <T extends Mob> BiFunction<EntityConfig<T>, EntityType<T>, ItemConfig> getDefaultSpawnEggItemConfigConstructor(ModBase mod, String itemName, int primaryColorIn, int secondaryColorIn, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
         return (entityConfig, entityType) -> {
             Item.Properties itemProperties = new Item.Properties().tab(mod.getDefaultItemGroup());
             if (itemPropertiesModifier != null) {
                 itemProperties = itemPropertiesModifier.apply(itemProperties);
             }
             Item.Properties finalItemProperties = itemProperties;
-            ItemConfig itemConfig = new ItemConfig(mod, itemName, (itemConfigSub) -> new SpawnEggItem(entityType, primaryColorIn, secondaryColorIn, finalItemProperties));
+            ItemConfig itemConfig = new ItemConfig(mod, itemName, (itemConfigSub) -> new ForgeSpawnEggItem(() -> entityType, primaryColorIn, secondaryColorIn, finalItemProperties));
             entityConfig.setSpawnEggItemConfig(itemConfig);
             return itemConfig;
         };
@@ -77,19 +78,19 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
     @OnlyIn(Dist.CLIENT)
     public void onRegistered() {
         super.onRegistered();
-        RenderingRegistry.registerEntityRenderingHandler(getInstance(),
+        EntityRenderers.register(getInstance(),
                 manager -> EntityConfig.this.getRender(manager, Minecraft.getInstance().getItemRenderer()));
 
     }
 
     /**
      * Get the render for this configurable.
-     * @param renderManager The render manager.
+     * @param renderContext The render context.
      * @param renderItem The render item instance.
      * @return Get the render.
      */
     @OnlyIn(Dist.CLIENT)
-    public abstract EntityRenderer<? super T> getRender(EntityRendererManager renderManager, ItemRenderer renderItem);
+    public abstract EntityRenderer<? super T> getRender(EntityRendererProvider.Context renderContext, ItemRenderer renderItem);
 
     @Override
     public IForgeRegistry<EntityType<?>> getRegistry() {

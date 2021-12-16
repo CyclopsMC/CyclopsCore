@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 /**
  * A dummy item implementation.

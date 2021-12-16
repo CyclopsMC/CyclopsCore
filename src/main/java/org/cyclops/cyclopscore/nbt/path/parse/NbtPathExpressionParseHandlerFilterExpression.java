@@ -1,9 +1,8 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtParseException;
 import org.cyclops.cyclopscore.nbt.path.NbtPath;
@@ -59,17 +58,17 @@ public class NbtPathExpressionParseHandlerFilterExpression implements INbtPathEx
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
             return new NbtPathExpressionMatches(executionContexts
                     .map(executionContext -> {
-                        INBT nbt = executionContext.getCurrentTag();
-                        if (nbt.getId() == Constants.NBT.TAG_LIST) {
-                            ListNBT tag = (ListNBT) nbt;
-                            ListNBT newTagList = new ListNBT();
+                        Tag nbt = executionContext.getCurrentTag();
+                        if (nbt.getId() == Tag.TAG_LIST) {
+                            ListTag tag = (ListTag) nbt;
+                            ListTag newTagList = new ListTag();
                             StreamSupport.stream(tag.spliterator(), false)
                                     .filter(subTag -> getExpression().test(subTag))
                                     .forEach(newTagList::add);
                             return new NbtPathExpressionExecutionContext(newTagList, executionContext);
-                        } else if (nbt.getId() == Constants.NBT.TAG_COMPOUND) {
-                            CompoundNBT tag = (CompoundNBT) nbt;
-                            ListNBT newTagList = new ListNBT();
+                        } else if (nbt.getId() == Tag.TAG_COMPOUND) {
+                            CompoundTag tag = (CompoundTag) nbt;
+                            ListTag newTagList = new ListTag();
                             tag.getAllKeys().stream()
                                     .map(tag::get)
                                     .filter(subTag -> getExpression().test(subTag))

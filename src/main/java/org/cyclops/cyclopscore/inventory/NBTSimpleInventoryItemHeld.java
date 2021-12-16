@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
 import org.cyclops.cyclopscore.helper.InventoryHelpers;
 
 /**
@@ -13,9 +13,9 @@ import org.cyclops.cyclopscore.helper.InventoryHelpers;
  */
 public class NBTSimpleInventoryItemHeld extends SimpleInventory {
 	
-	protected final PlayerEntity player;
+	protected final Player player;
 	protected final int itemIndex;
-	protected final Hand hand;
+	protected final InteractionHand hand;
 	protected final String tagName;
 
 	/**
@@ -27,8 +27,8 @@ public class NBTSimpleInventoryItemHeld extends SimpleInventory {
 	 * @param tagName The NBT tag name to store this inventory in.
 	 *                This should be the same tag name that is used to call the NBT read/write methods.
 	 */
-	public NBTSimpleInventoryItemHeld(PlayerEntity player, int itemIndex, int size, int stackLimit, String tagName) {
-		this(player, itemIndex, Hand.MAIN_HAND, size, stackLimit, tagName);
+	public NBTSimpleInventoryItemHeld(Player player, int itemIndex, int size, int stackLimit, String tagName) {
+		this(player, itemIndex, InteractionHand.MAIN_HAND, size, stackLimit, tagName);
 	}
 	
 	/**
@@ -41,7 +41,7 @@ public class NBTSimpleInventoryItemHeld extends SimpleInventory {
 	 * @param tagName The NBT tag name to store this inventory in.
 	 *                This should be the same tag name that is used to call the NBT read/write methods.
 	 */
-	public NBTSimpleInventoryItemHeld(PlayerEntity player, int itemIndex, Hand hand, int size, int stackLimit, String tagName) {
+	public NBTSimpleInventoryItemHeld(Player player, int itemIndex, InteractionHand hand, int size, int stackLimit, String tagName) {
 		super(size, stackLimit);
 		this.player = player;
 		this.itemIndex = itemIndex;
@@ -53,18 +53,18 @@ public class NBTSimpleInventoryItemHeld extends SimpleInventory {
 	@Override
 	public void setChanged() {
 		ItemStack itemStack = InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
-		CompoundNBT tag = itemStack.getOrCreateTag();
+		CompoundTag tag = itemStack.getOrCreateTag();
 		writeToNBT(tag, this.tagName);
 		InventoryHelpers.getItemFromIndex(player, itemIndex, hand).setTag(tag);
 	}
 	
 	@Override
-	public void readFromNBT(CompoundNBT data, String tagName) {
+	public void readFromNBT(CompoundTag data, String tagName) {
         InventoryHelpers.readFromNBT(this, data, tagName);
     }
 	
 	@Override
-	public void writeToNBT(CompoundNBT data, String tagName) {
+	public void writeToNBT(CompoundTag data, String tagName) {
         InventoryHelpers.writeToNBT(this, data, tagName);
     }
 

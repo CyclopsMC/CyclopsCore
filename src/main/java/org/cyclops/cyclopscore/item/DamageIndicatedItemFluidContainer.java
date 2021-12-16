@@ -1,16 +1,16 @@
 package org.cyclops.cyclopscore.item;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.NonNullList;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -58,7 +58,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     }
 
     @Override
-    public void fillItemCategory(ItemGroup itemGroup, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab itemGroup, NonNullList<ItemStack> items) {
         if (!ItemStackHelpers.isValidCreativeTab(this, itemGroup)) return;
         if (this.allowdedIn(category)) {
             component.fillItemGroup(itemGroup, items, fluid.get());
@@ -66,19 +66,19 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     }
 
     @Override
-    public IFormattableTextComponent getInfo(ItemStack itemStack) {
+    public MutableComponent getInfo(ItemStack itemStack) {
         return component.getInfo(itemStack);
     }
     
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void provideInformation(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
+    public void provideInformation(ItemStack itemStack, Level world, List<Component> list, TooltipFlag flag) {
         
     }
     
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack itemStack, World world, List<ITextComponent> list, ITooltipFlag flag) {
+    public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag flag) {
         // Can be null during startup
         if (CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY != null) {
             component.addInformation(itemStack, world, list, flag);
@@ -87,18 +87,18 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     }
     
     @Override
-    public boolean showDurabilityBar(ItemStack stack) {
+    public boolean isBarVisible(ItemStack stack) {
     	return true;
     }
     
     @Override
-    public double getDurabilityForDisplay(ItemStack itemStack) {
+    public int getBarWidth(ItemStack itemStack) {
     	return component.getDurability(itemStack);
     }
 
     @Override
-    public int getRGBDurabilityForDisplay(ItemStack stack) {
-        return MathHelper.hsvToRgb(Math.max(0.0F, 1 - (float) component.getDurability(stack)) / 3.0F, 1.0F, 1.0F);
+    public int getBarColor(ItemStack stack) {
+        return Mth.hsvToRgb(Math.max(0.0F, 1 - (float) component.getDurability(stack)) / 3.0F, 1.0F, 1.0F);
     }
     
     /**
@@ -123,7 +123,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     }
 
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt) {
+    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
         return new FluidHandlerItemCapacity(stack, capacity, getFluid());
     }
 }

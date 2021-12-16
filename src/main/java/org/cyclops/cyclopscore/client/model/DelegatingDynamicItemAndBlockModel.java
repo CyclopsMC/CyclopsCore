@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 
@@ -25,7 +25,7 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
     protected final IModelData modelData;
 
     protected final ItemStack itemStack;
-    protected final World world;
+    protected final Level world;
     protected final LivingEntity entity;
 
     public DelegatingDynamicItemAndBlockModel() {
@@ -52,7 +52,7 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.entity = null;
     }
 
-    public DelegatingDynamicItemAndBlockModel(ItemStack itemStack, World world, LivingEntity entity) {
+    public DelegatingDynamicItemAndBlockModel(ItemStack itemStack, Level world, LivingEntity entity) {
         super(false, true);
         this.blockState = null;
         this.facing = null;

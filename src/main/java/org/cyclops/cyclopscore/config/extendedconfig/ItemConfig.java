@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -91,7 +91,7 @@ public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements
      * Get the creative tab for this item.
      * @return The creative tab, by default the value in {@link org.cyclops.cyclopscore.init.ModBase#getDefaultItemGroup()}.
      */
-    public ItemGroup getTargetTab() {
+    public CreativeModeTab getTargetTab() {
         return getMod().getDefaultItemGroup();
     }
 
@@ -105,7 +105,7 @@ public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements
      */
     @Nullable
     @OnlyIn(Dist.CLIENT)
-    public IItemColor getItemColorHandler() {
+    public ItemColor getItemColorHandler() {
         return null;
     }
 

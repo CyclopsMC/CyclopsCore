@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.fluid;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerCapacity;
@@ -52,7 +52,7 @@ public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHand
     }
 
     @Override
-    public CompoundNBT writeToNBT(CompoundNBT nbt) {
+    public CompoundTag writeToNBT(CompoundTag nbt) {
         if(replaceInnerFluid()) {
             super.writeToNBT(nbt);
         }
@@ -60,15 +60,15 @@ public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHand
         return nbt;
     }
 
-    public CompoundNBT writeToNBT(CompoundNBT nbt, String tag) {
-        CompoundNBT subTag = new CompoundNBT();
+    public CompoundTag writeToNBT(CompoundTag nbt, String tag) {
+        CompoundTag subTag = new CompoundTag();
         writeToNBT(subTag);
         nbt.put(tag, subTag);
         return nbt;
     }
 
     @Override
-    public FluidTank readFromNBT(CompoundNBT nbt) {
+    public FluidTank readFromNBT(CompoundTag nbt) {
         if(replaceInnerFluid()) {
             if (nbt.contains("Empty")) {
                 setFluid(null);
@@ -79,8 +79,8 @@ public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHand
         return this;
     }
 
-    public FluidTank readFromNBT(CompoundNBT data, String tag) {
-        CompoundNBT subTag = data.getCompound(tag);
+    public FluidTank readFromNBT(CompoundTag data, String tag) {
+        CompoundTag subTag = data.getCompound(tag);
         return readFromNBT(subTag);
     }
 
@@ -88,7 +88,7 @@ public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHand
      * Write the tank contents to NBT.
      * @param nbt The NBT tag to write to.
      */
-    public void writeTankToNBT(CompoundNBT nbt) {
+    public void writeTankToNBT(CompoundTag nbt) {
     	nbt.putInt("capacity", getCapacity());
     }
 
@@ -96,7 +96,7 @@ public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHand
      * Read the tank contents from NBT.
      * @param nbt The NBT tag to write from.
      */
-    public void readTankFromNBT(CompoundNBT nbt) {
+    public void readTankFromNBT(CompoundTag nbt) {
     	if(nbt.contains("capacity")) { // Backwards compatibility.
     		setCapacity(nbt.getInt("capacity"));
     	}

@@ -1,16 +1,17 @@
 package org.cyclops.cyclopscore;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.arguments.ArgumentSerializer;
-import net.minecraft.command.arguments.ArgumentTypes;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.synchronization.ArgumentSerializer;
+import net.minecraft.commands.synchronization.ArgumentTypes;
+import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
@@ -43,7 +44,6 @@ import org.cyclops.cyclopscore.proxy.IClientProxy;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 import org.cyclops.cyclopscore.tracking.Analytics;
 import org.cyclops.cyclopscore.tracking.ImportantUsers;
-import org.cyclops.cyclopscore.tracking.Versions;
 
 /**
  * The main mod class of CyclopsCore.
@@ -91,8 +91,8 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
     }
 
     @Override
-    protected LiteralArgumentBuilder<CommandSource> constructBaseCommand() {
-        LiteralArgumentBuilder<CommandSource> root = super.constructBaseCommand();
+    protected LiteralArgumentBuilder<CommandSourceStack> constructBaseCommand() {
+        LiteralArgumentBuilder<CommandSourceStack> root = super.constructBaseCommand();
 
         root.then(CommandIgnite.make());
         root.then(CommandDebug.make());
@@ -120,7 +120,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
                         ArgumentTypeConfigProperty::getMod));
         ArgumentTypes.register(Reference.MOD_ID + ":" + "debug_packet",
                 ArgumentTypeDebugPacket.class,
-                new ArgumentSerializer<>(() -> ArgumentTypeDebugPacket.INSTANCE));
+                new EmptyArgumentSerializer<>(() -> ArgumentTypeDebugPacket.INSTANCE));
 
         getRegistryManager().getRegistry(IInfoBookRegistry.class).registerInfoBook(
                 InfoBookTest.getInstance(), "/data/" + Reference.MOD_ID + "/info/test.xml");
@@ -130,7 +130,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
     }
 
     @Override
-    protected void onServerStarting(FMLServerStartingEvent event) {
+    protected void onServerStarting(ServerStartingEvent event) {
         super.onServerStarting(event);
 
         // Handle metadata
@@ -139,7 +139,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
     }
 
     @Override
-    public ItemGroup constructDefaultItemGroup() {
+    public CreativeModeTab constructDefaultCreativeModeTab() {
         return null; // We don't need a creative tab for this core mod.
     }
 

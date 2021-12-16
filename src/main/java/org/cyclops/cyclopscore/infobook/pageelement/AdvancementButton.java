@@ -1,12 +1,11 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
@@ -33,11 +32,11 @@ public class AdvancementButton extends AdvancedButton {
     }
 
     @Override
-    public void renderTooltip(MatrixStack matrixStack, int mx, int my) {
+    public void renderTooltip(PoseStack matrixStack, int mx, int my) {
         super.renderTooltip(matrixStack, mx, my);
-        GlStateManager._pushMatrix();
+        matrixStack.pushPose();
         if(mx >= x && my >= y && mx <= x + AdvancementRewardsAppendix.SLOT_SIZE && my <= y + AdvancementRewardsAppendix.SLOT_SIZE) {
-            List<IReorderingProcessor> lines = Lists.newArrayList();
+            List<FormattedCharSequence> lines = Lists.newArrayList();
             Advancement advancement = AdvancementHelpers.getAdvancement(Dist.CLIENT, advancementId);
             if (advancement != null) {
                 lines.add(advancement.getDisplay().getTitle().getVisualOrderText());
@@ -45,9 +44,7 @@ public class AdvancementButton extends AdvancedButton {
             }
             gui.renderTooltip(matrixStack, lines, mx, my);
         }
-        GlStateManager._popMatrix();
-
-        GlStateManager._disableLighting();
+        matrixStack.popPose();
 
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

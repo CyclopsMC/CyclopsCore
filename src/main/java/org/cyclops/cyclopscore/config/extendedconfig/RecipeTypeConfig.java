@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -12,7 +12,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class RecipeTypeConfig<T extends IRecipe<?>> extends ExtendedConfig<RecipeTypeConfig<T>, IRecipeType<T>> {
+public abstract class RecipeTypeConfig<T extends Recipe<?>> extends ExtendedConfig<RecipeTypeConfig<T>, RecipeType<T>> {
 
     /**
      * Create a new config
@@ -21,7 +21,7 @@ public abstract class RecipeTypeConfig<T extends IRecipe<?>> extends ExtendedCon
      * @param namedId            A unique name id
      */
     public RecipeTypeConfig(ModBase mod, String namedId) {
-        super(mod, namedId, (eConfig) -> IRecipeType.register(mod.getModId() + ":" + namedId));
+        super(mod, namedId, (eConfig) -> RecipeType.register(mod.getModId() + ":" + namedId));
     }
 
     @Override

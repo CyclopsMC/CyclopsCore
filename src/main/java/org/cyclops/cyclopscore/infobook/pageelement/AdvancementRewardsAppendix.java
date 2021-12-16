@@ -1,12 +1,11 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
+import  net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.client.gui.image.Images;
@@ -112,7 +111,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    protected void drawElement(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
+    protected void drawElement(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
         requestAdvancementInfo();
 
         int offsetX = 0;
@@ -134,7 +133,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
             if (advancement == null) {
                 allAchievementsValid = false;
                 Images.LOCKED.draw(gui, matrixStack, x + offsetX + 2, y + offsetY + 1);
-                renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, new StringTextComponent(""), null, gui);
+                renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, new net.minecraft.network.chat.TextComponent(""), null, gui);
             } else {
                 RecipeAppendix.renderItemForButton(gui, matrixStack, x + offsetX, y + offsetY, advancement.getDisplay().getIcon(), mx, my, true, null);
                 if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getInstance().player, advancementId)) {
@@ -142,7 +141,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
                 } else {
                     allAchievementsValid = false;
                 }
-                renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, new StringTextComponent(""), null, gui);
+                renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, new net.minecraft.network.chat.TextComponent(""), null, gui);
                 offsetX += SLOT_SIZE + SLOT_PADDING * 2;
             }
         }
@@ -154,12 +153,13 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         gui.drawTextBanner(matrixStack, x + width / 2, y - 2 + offsetY);
         boolean hovering = mx > x && mx < x + getWidth() && my > y + offsetY - 10 && my < y + offsetY + 5;
         gui.drawScaledCenteredString(matrixStack, L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards"), x, y - 2 + offsetY, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
-        renderButtonHolders.get(COLLECT).update(x, y - 8 + offsetY, new StringTextComponent(""), null, gui);
+        renderButtonHolders.get(COLLECT).update(x, y - 8 + offsetY, new net.minecraft.network.chat.TextComponent(""), null, gui);
         if (allAchievementsValid && !taken) {
             float g = hovering ? 1.0F : (((float) (gui.getTick() % 20)) / 20) * 0.4F + 0.6F;
             float r = hovering ? 0.2F : 0.7F;
             float b = hovering ? 0.2F : 0.7F;
-            RenderSystem.color3f(r, g, b);
+            // TODO: either show a different figure, or write a custom color-based blit util
+            //RenderSystem.color3f(r, g, b);
             Images.ARROW_DOWN.draw(gui, matrixStack, x, y + offsetY - 11);
             Images.ARROW_DOWN.draw(gui, matrixStack, x + 60, y + offsetY - 11);
 
@@ -179,12 +179,12 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    protected void postDrawElement(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
+    protected void postDrawElement(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
         renderToolTips(gui, matrixStack, mx, my);
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected void renderToolTips(ScreenInfoBook gui, MatrixStack matrixStack, int mx, int my) {
+    protected void renderToolTips(ScreenInfoBook gui, PoseStack matrixStack, int mx, int my) {
         for(AdvancedButton button : renderButtonHolders.values()) {
             button.renderTooltip(matrixStack, mx, my);
         }

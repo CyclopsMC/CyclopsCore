@@ -1,17 +1,18 @@
-package org.cyclops.cyclopscore.tileentity;
+package org.cyclops.cyclopscore.blockentity;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import lombok.experimental.Delegate;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.block.entity.TickingBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
@@ -25,17 +26,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A base class for all the tile entities.
+ * A base class for all the block entities.
  *
- * If you want this tile to update, just implement {@link ITickingTile}.
- * This class has an anti-lag mechanism to send updates with {@link CyclopsTileEntity#sendUpdate()}.
+ * If you want this tile to update, just implement {@link ITickingBlockEntity}.
+ * This class has an anti-lag mechanism to send updates with {@link CyclopsBlockEntity#sendUpdate()}.
  * Every instance has a continuously looping counter that counts from getUpdateBackoffTicks() to zero.
  * and every time the counter reaches zero, the backoff will be reset and an update packet will be sent
  * if one has been queued.
  * @author rubensworks
  *
  */
-public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirtyMarkListener {
+public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDirtyMarkListener {
 
     private static final int UPDATE_BACKOFF_TICKS = 1;
 
@@ -47,10 +48,10 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
     private final boolean ticking;
     private Map<Pair<Capability<?>, Direction>, LazyOptional<?>> capabilities = Maps.newHashMap();
 
-    public CyclopsTileEntity(TileEntityType<?> type) {
-        super(type);
+    public CyclopsBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
+        super(type, blockPos, blockState);
         sendUpdateBackoff = (int) Math.round(Math.random() * getUpdateBackoffTicks()); // Random backoff so not all TE's will be updated at once.
-        ticking = this instanceof ITickingTile;
+        ticking = this instanceof ITickingBlockEntity;
     }
 
     protected boolean isTicking() {
@@ -71,7 +72,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
 
     /**
      * Send an immediate world update for the coordinates of this tile entity.
-     * This does the same as {@link CyclopsTileEntity#sendUpdate()} but will
+     * This does the same as {@link CyclopsBlockEntity#sendUpdate()} but will
      * ignore the update backoff.
      */
     public final void sendImmediateUpdate() {
@@ -89,7 +90,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
     }
 
     /**
-     * Override this method instead of {@link CyclopsTileEntity#updateTicking()}.
+     * Override this method instead of {@link CyclopsBlockEntity#updateTicking()}.
      * This method is called each tick.
      */
     protected void updateTileEntity() {
@@ -134,14 +135,14 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
     }
 
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(getBlockPos(), 1, getNBTTagCompound());
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
         super.onDataPacket(net, packet);
-        CompoundNBT tag = packet.getTag();
+        CompoundTag tag = packet.getTag();
         read(tag);
         onUpdateReceived();
     }
@@ -168,34 +169,33 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
      * @param entityPlayer The player that is checked.
      * @return If the given player can interact.
      */
-    public boolean canInteractWith(PlayerEntity entityPlayer) {
+    public boolean canInteractWith(Player entityPlayer) {
         return true;
     }
     
     @Override
-    public CompoundNBT save(CompoundNBT tag) {
-        tag = super.save(tag);
+    public void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         writeGeneratedFieldsToNBT(tag);
-        return tag;
     }
 
     /**
      * Write this tile to the given NBT tag that will be attached to an item.
-     * By default, {@link #write(CompoundNBT)} will be called.
+     * By default, {@link #save(CompoundTag)}} will be called.
      * @param tag The tag to write to.
      * @return The written tag.
      */
-    public CompoundNBT writeToItemStack(CompoundNBT tag) {
+    public CompoundTag writeToItemStack(CompoundTag tag) {
         return this.save(tag);
     }
     
     @Override
-    public final void load(BlockState state, CompoundNBT tag) {
-        super.load(state, tag);
+    public final void load(CompoundTag tag) {
+        super.load(tag);
         read(tag);
     }
 
-    public void read(CompoundNBT tag) {
+    public void read(CompoundTag tag) {
         readGeneratedFieldsFromNBT(tag);
         onLoad();
     }
@@ -212,16 +212,16 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
     /**
      * Get the NBT tag for this tile entity.
      * @return The NBT tag that is created with the
-     * {@link CyclopsTileEntity#write(CompoundNBT)} method.
+     * {@link CyclopsBlockEntity#save(CompoundTag)} method.
      */
-    public CompoundNBT getNBTTagCompound() {
-        CompoundNBT tag = new CompoundNBT();
+    public CompoundTag getNBTTagCompound() {
+        CompoundTag tag = new CompoundTag();
         tag = save(tag);
         return tag;
     }
 
     @Override
-    public CompoundNBT getUpdateTag() {
+    public CompoundTag getUpdateTag() {
         return getNBTTagCompound();
     }
 
@@ -255,7 +255,7 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
     }
 
     @Override
-    protected void invalidateCaps() {
+    public void invalidateCaps() {
         super.invalidateCaps();
     }
 
@@ -294,24 +294,39 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
     /**
      * Apply this interface on any tile classes that should tick.
      */
-    public static interface ITickingTile extends ITickableTileEntity {
+    public static interface ITickingBlockEntity extends TickingBlockEntity {
 
     }
 
     /**
      * Component to be used together with the {@link Delegate} annotation to enable tile ticking.
      */
-    public static class TickingTileComponent implements ITickingTile {
+    public static class TickingTileComponent implements ITickingBlockEntity {
 
-        private final CyclopsTileEntity tile;
+        private final CyclopsBlockEntity tile;
 
-        public TickingTileComponent(CyclopsTileEntity tile) {
+        public TickingTileComponent(CyclopsBlockEntity tile) {
             this.tile = tile;
         }
 
         @Override
         public void tick() {
             tile.updateTicking();
+        }
+
+        @Override
+        public boolean isRemoved() {
+            return tile.isRemoved();
+        }
+
+        @Override
+        public BlockPos getPos() {
+            return tile.getBlockPos();
+        }
+
+        @Override
+        public String getType() {
+            return tile.getType().toString();
         }
 
     }

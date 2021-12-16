@@ -1,28 +1,28 @@
 package org.cyclops.cyclopscore.item;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
 /**
  * Configurable item that can show a GUI on right clicking.
  *
- * Implement {@link #getContainer(World, PlayerEntity, int, Hand, ItemStack)}
- * and {@link #getContainerClass(World, PlayerEntity, ItemStack)} to specify the gui.
+ * Implement {@link #getContainer(Level, Player, int, InteractionHand, ItemStack)}
+ * and {@link #getContainerClass(Level, Player, ItemStack)} to specify the gui.
  *
  * Optionally implement {@link #getOpenStat()} to specify a stat on gui opening.
  *
@@ -35,14 +35,14 @@ public abstract class ItemGui extends Item {
 	}
 
 	@Nullable
-	public abstract INamedContainerProvider getContainer(World world, PlayerEntity player, int itemIndex, Hand hand, ItemStack itemStack);
+	public abstract MenuProvider getContainer(Level world, Player player, int itemIndex, InteractionHand hand, ItemStack itemStack);
 
-	public abstract Class<? extends Container> getContainerClass(World world, PlayerEntity player, ItemStack itemStack);
+	public abstract Class<? extends AbstractContainerMenu> getContainerClass(Level world, Player player, ItemStack itemStack);
     
     @Override
-	public boolean onDroppedByPlayer(ItemStack itemstack, PlayerEntity player) {
+	public boolean onDroppedByPlayer(ItemStack itemstack, Player player) {
 		if(!itemstack.isEmpty()
-				&& player instanceof ServerPlayerEntity
+				&& player instanceof ServerPlayer
 				&& player.containerMenu != null
 				&& player.containerMenu.getClass() == getContainerClass(player.level, player, itemstack)) {
 			player.closeContainer();
@@ -57,9 +57,9 @@ public abstract class ItemGui extends Item {
      * @param itemIndex The item index in the player inventory.
 	 * @param hand The hand the player is using.
      */
-    public void openGuiForItemIndex(World world, ServerPlayerEntity player, int itemIndex, Hand hand) {
+    public void openGuiForItemIndex(Level world, ServerPlayer player, int itemIndex, InteractionHand hand) {
     	if (!world.isClientSide()) {
-			INamedContainerProvider containerProvider = this.getContainer(world, player, itemIndex, hand, player.getItemInHand(hand));
+			MenuProvider containerProvider = this.getContainer(world, player, itemIndex, hand, player.getItemInHand(hand));
 			if (containerProvider != null) {
 				NetworkHooks.openGui(player, containerProvider, packetBuffer -> this.writeExtraGuiData(packetBuffer, world, player, itemIndex, hand));
 				Stat<ResourceLocation> openStat = this.getOpenStat();
@@ -78,10 +78,10 @@ public abstract class ItemGui extends Item {
 	 * @param itemIndex The item index in the player inventory.
 	 * @param hand The hand the player is using.
 	 */
-    public void writeExtraGuiData(PacketBuffer packetBuffer, World world, ServerPlayerEntity player,
-								  int itemIndex, Hand hand) {
+    public void writeExtraGuiData(FriendlyByteBuf packetBuffer, Level world, ServerPlayer player,
+								  int itemIndex, InteractionHand hand) {
     	packetBuffer.writeInt(itemIndex);
-    	packetBuffer.writeBoolean(hand == Hand.MAIN_HAND);
+    	packetBuffer.writeBoolean(hand == InteractionHand.MAIN_HAND);
 	}
 
 	/**
@@ -93,15 +93,15 @@ public abstract class ItemGui extends Item {
 	}
 
 	@Override
-	public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
 		ItemStack itemStack = player.getItemInHand(hand);
 		if (player instanceof FakePlayer) {
-			return new ActionResult<>(ActionResultType.FAIL, itemStack);
+			return new InteractionResultHolder<>(InteractionResult.FAIL, itemStack);
 		}
-		if (player instanceof ServerPlayerEntity) {
-			openGuiForItemIndex(world, (ServerPlayerEntity) player, player.inventory.selected, hand);
+		if (player instanceof ServerPlayer) {
+			openGuiForItemIndex(world, (ServerPlayer) player, player.getInventory().selected, hand);
 		}
-		return new ActionResult<>(ActionResultType.SUCCESS, itemStack);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStack);
 	}
 
 }

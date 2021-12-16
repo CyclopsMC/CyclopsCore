@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.cyclops.cyclopscore.config.extendedconfig.RecipeTypeConfig;
 
 /**
@@ -9,6 +9,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.RecipeTypeConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class RecipeTypeAction<T extends IRecipe<?>> extends ConfigurableTypeAction<RecipeTypeConfig<T>, IRecipeType<T>> {
+public class RecipeTypeAction<T extends Recipe<?>> extends ConfigurableTypeAction<RecipeTypeConfig<T>, RecipeType<T>> {
 
 }

@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Iterators;
-import net.minecraft.util.registry.Bootstrap;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.server.Bootstrap;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import org.junit.Test;
 
 import static org.cyclops.cyclopscore.helper.CyclopsMatchers.isIterator;

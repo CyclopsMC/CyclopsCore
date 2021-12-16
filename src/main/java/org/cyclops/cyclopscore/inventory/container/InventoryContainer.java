@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.inventory.container;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.MenuType;
 
 import javax.annotation.Nullable;
 
@@ -13,9 +13,9 @@ import javax.annotation.Nullable;
  */
 public abstract class InventoryContainer extends ContainerExtended {
 
-	protected final IInventory inventory;
+	protected final Container inventory;
 
-	public InventoryContainer(@Nullable ContainerType<?> type, int id, PlayerInventory playerInventory, IInventory inventory) {
+	public InventoryContainer(@Nullable MenuType<?> type, int id, Inventory playerInventory, Container inventory) {
 		super(type, id, playerInventory);
 		this.inventory = inventory;
 		if (isAssertInventorySize()) {
@@ -28,7 +28,7 @@ public abstract class InventoryContainer extends ContainerExtended {
 		return true;
 	}
 
-	public IInventory getContainerInventory() {
+	public Container getContainerInventory() {
 		return inventory;
 	}
 
@@ -38,12 +38,12 @@ public abstract class InventoryContainer extends ContainerExtended {
 	}
 
 	@Override
-	public boolean stillValid(PlayerEntity player) {
+	public boolean stillValid(Player player) {
 		return this.inventory.stillValid(player);
 	}
 
 	@Override
-	public void removed(PlayerEntity player) {
+	public void removed(Player player) {
 		super.removed(player);
 		this.inventory.stopOpen(player);
 	}

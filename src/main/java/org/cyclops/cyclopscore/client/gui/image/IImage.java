@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.client.gui.image;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureManager;
 
 /**
@@ -18,7 +18,7 @@ public interface IImage {
      * @param x The x position.
      * @param y The y position.
      */
-    public void draw(AbstractGui gui, MatrixStack matrixStack, int x, int y);
+    public void draw(GuiComponent gui, PoseStack matrixStack, int x, int y);
 
     /**
      * Draw the image in the world.
@@ -33,7 +33,7 @@ public interface IImage {
      * @param y2 End Y
      * @param z Z
      */
-    public default void drawWorld(TextureManager textureManager, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer,
+    public default void drawWorld(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
                                   int combinedLight, int combinedOverlay, float x1, float x2, float y1, float y2, float z) {
         drawWorldWithAlpha(textureManager, matrixStack, renderTypeBuffer, combinedLight, combinedOverlay, x1, x2, y1, y2, z, 1);
     }
@@ -50,7 +50,7 @@ public interface IImage {
      * @param y1 Start Y
      * @param y2 End Y
      */
-    public default void drawWorld(TextureManager textureManager, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer,
+    public default void drawWorld(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
                                   int combinedLight, int combinedOverlay, float x1, float x2, float y1, float y2) {
         drawWorldWithAlpha(textureManager, matrixStack, renderTypeBuffer, combinedLight, combinedOverlay, x1, x2, y1, y2, 1);
     }
@@ -65,7 +65,7 @@ public interface IImage {
      * @param x2 End X
      * @param y2 End Y
      */
-    public default void drawWorld(TextureManager textureManager, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer,
+    public default void drawWorld(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
                                   int combinedLight, int combinedOverlay, float x2, float y2) {
         drawWorldWithAlpha(textureManager, matrixStack, renderTypeBuffer, combinedLight, combinedOverlay, x2, y2, 1);
     }
@@ -83,7 +83,7 @@ public interface IImage {
      * @param y2 End Y
      * @param alpha The alpha to render with
      */
-    public default void drawWorldWithAlpha(TextureManager textureManager, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer,
+    public default void drawWorldWithAlpha(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
                                            int combinedLight, int combinedOverlay, float x1, float x2, float y1, float y2, float alpha) {
         this.drawWorldWithAlpha(textureManager, matrixStack, renderTypeBuffer, combinedLight, combinedOverlay, x1, x2, y1, y2, 0, alpha);
     }
@@ -99,7 +99,7 @@ public interface IImage {
      * @param y2 End Y
      * @param alpha The alpha to render with
      */
-    public default void drawWorldWithAlpha(TextureManager textureManager, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer,
+    public default void drawWorldWithAlpha(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
                                            int combinedLight, int combinedOverlay, float x2, float y2, float alpha) {
         this.drawWorldWithAlpha(textureManager, matrixStack, renderTypeBuffer, combinedLight, combinedOverlay, 0, x2, 0, y2, alpha);
     }
@@ -117,7 +117,7 @@ public interface IImage {
      * @param z Z
      * @param alpha The alpha to render with
      */
-    public void drawWorldWithAlpha(TextureManager textureManager, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer,
+    public void drawWorldWithAlpha(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
                                    int combinedLight, int combinedOverlay, float x1, float x2, float y1, float y2, float z, float alpha);
 
     /**

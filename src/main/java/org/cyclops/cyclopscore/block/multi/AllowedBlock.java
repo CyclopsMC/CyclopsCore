@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.block.multi;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 

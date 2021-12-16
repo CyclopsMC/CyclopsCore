@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraft.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantment;
 import org.cyclops.cyclopscore.config.extendedconfig.EnchantmentConfig;
 
 /**

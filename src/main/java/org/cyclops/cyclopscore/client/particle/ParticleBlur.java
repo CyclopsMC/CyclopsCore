@@ -1,17 +1,17 @@
 package org.cyclops.cyclopscore.client.particle;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.LivingEntity;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL11;
  * @author rubensworks
  *
  */
-public class ParticleBlur extends SpriteTexturedParticle {
+public class ParticleBlur extends TextureSheetParticle {
 
 	private static final int MAX_VIEW_DISTANCE = 30;
 	private static final RenderType RENDER_TYPE = new RenderType();
@@ -27,7 +27,7 @@ public class ParticleBlur extends SpriteTexturedParticle {
 	protected float originalScale;
 	protected float scaleLife;
 
-	public ParticleBlur(ParticleBlurData data, ClientWorld world, double x, double y, double z,
+	public ParticleBlur(ParticleBlurData data, ClientLevel world, double x, double y, double z,
 						double motionX, double motionY, double motionZ) {
 		super(world, x, y, z, motionX, motionY, motionZ);
 		this.xd = motionX;
@@ -68,7 +68,7 @@ public class ParticleBlur extends SpriteTexturedParticle {
 	}
 
 	@Override
-	public IParticleRenderType getRenderType() {
+	public ParticleRenderType getRenderType() {
 		return RENDER_TYPE;
 	}
 
@@ -114,27 +114,29 @@ public class ParticleBlur extends SpriteTexturedParticle {
 		return quadSize;
 	}
 
-	public static class RenderType implements IParticleRenderType {
+	public static class RenderType implements ParticleRenderType {
 
 		@Override
 		public void begin(BufferBuilder bufferBuilder, TextureManager textureManager) {
 			RenderSystem.depthMask(false);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-			RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
-			RenderSystem.disableLighting();
+			// TODO: restore blur rendering
+			//RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
+			//RenderSystem.disableLighting();
 
-			textureManager.bind(AtlasTexture.LOCATION_PARTICLES);
-			textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES).setBlurMipmap(true, false);
+			//textureManager.bind(TextureAtlas.LOCATION_PARTICLES);
+			textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES).setBlurMipmap(true, false);
 
-			bufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE);
+			bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
 		}
 
 		@Override
-		public void end(Tessellator tessellator) {
+		public void end(Tesselator tessellator) {
 			tessellator.end();
-			Minecraft.getInstance().textureManager.getTexture(AtlasTexture.LOCATION_PARTICLES).restoreLastBlurMipmap();
-			RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+			Minecraft.getInstance().textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES).restoreLastBlurMipmap();
+			// TODO: restore blur rendering
+			//RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 			RenderSystem.disableBlend();
 			RenderSystem.depthMask(true);
 		}

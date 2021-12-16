@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.datastructure;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 import java.util.EnumMap;
 import java.util.Map;

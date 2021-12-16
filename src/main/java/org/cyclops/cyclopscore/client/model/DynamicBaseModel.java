@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.client.model;
 
 import com.google.common.primitives.Ints;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.cyclops.cyclopscore.helper.Helpers;
 
@@ -21,7 +21,7 @@ import java.util.Random;
  * A model that can be used as a basis for flexible baked models.
  * @author rubensworks
  */
-public abstract class DynamicBaseModel implements IBakedModel {
+public abstract class DynamicBaseModel implements BakedModel {
 
     // Rotation UV coordinates
     protected static final float[][] ROTATION_UV = {{1, 0}, {1, 1}, {0, 1}, {0, 0}};
@@ -36,14 +36,14 @@ public abstract class DynamicBaseModel implements IBakedModel {
      * @param side The side to rotate by.
      * @return The rotated vector.
      */
-    protected static Vector3d rotate(Vector3d vec, Direction side) {
+    protected static Vec3 rotate(Vec3 vec, Direction side) {
         switch(side) {
-            case DOWN:  return new Vector3d( vec.x, -vec.y, -vec.z);
-            case UP:    return new Vector3d( vec.x,  vec.y,  vec.z);
-            case NORTH: return new Vector3d( vec.x,  vec.z, -vec.y);
-            case SOUTH: return new Vector3d( vec.x, -vec.z,  vec.y);
-            case WEST:  return new Vector3d(-vec.y,  vec.x,  vec.z);
-            case EAST:  return new Vector3d( vec.y, -vec.x,  vec.z);
+            case DOWN:  return new Vec3( vec.x, -vec.y, -vec.z);
+            case UP:    return new Vec3( vec.x,  vec.y,  vec.z);
+            case NORTH: return new Vec3( vec.x,  vec.z, -vec.y);
+            case SOUTH: return new Vec3( vec.x, -vec.z,  vec.y);
+            case WEST:  return new Vec3(-vec.y,  vec.x,  vec.z);
+            case EAST:  return new Vec3( vec.y, -vec.x,  vec.z);
         }
         return vec;
     }
@@ -54,14 +54,14 @@ public abstract class DynamicBaseModel implements IBakedModel {
      * @param side The side to rotate by.
      * @return The inversely rotated vector.
      */
-    protected static Vector3d revRotate(Vector3d vec, Direction side) {
+    protected static Vec3 revRotate(Vec3 vec, Direction side) {
         switch(side) {
-            case DOWN:  return new Vector3d( vec.x, -vec.y, -vec.z);
-            case UP:    return new Vector3d( vec.x,  vec.y,  vec.z);
-            case NORTH: return new Vector3d( vec.x, -vec.z,  vec.y);
-            case SOUTH: return new Vector3d( vec.x,  vec.z, -vec.y);
-            case WEST:  return new Vector3d( vec.y, -vec.x,  vec.z);
-            case EAST:  return new Vector3d(-vec.y,  vec.x,  vec.z);
+            case DOWN:  return new Vec3( vec.x, -vec.y, -vec.z);
+            case UP:    return new Vec3( vec.x,  vec.y,  vec.z);
+            case NORTH: return new Vec3( vec.x, -vec.z,  vec.y);
+            case SOUTH: return new Vec3( vec.x,  vec.z, -vec.y);
+            case WEST:  return new Vec3( vec.y, -vec.x,  vec.z);
+            case EAST:  return new Vec3(-vec.y,  vec.x,  vec.z);
         }
         return vec;
     }
@@ -214,10 +214,10 @@ public abstract class DynamicBaseModel implements IBakedModel {
     protected static void addBakedQuadRotated(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
                                               TextureAtlasSprite texture, Direction side, int rotation,
                                               boolean isColored, int shadeColor, float[][] uvs) {
-        Vector3d v1 = rotate(new Vector3d(x1 - .5, y - .5, z1 - .5), side).add(.5, .5, .5);
-        Vector3d v2 = rotate(new Vector3d(x1 - .5, y - .5, z2 - .5), side).add(.5, .5, .5);
-        Vector3d v3 = rotate(new Vector3d(x2 - .5, y - .5, z2 - .5), side).add(.5, .5, .5);
-        Vector3d v4 = rotate(new Vector3d(x2 - .5, y - .5, z1 - .5), side).add(.5, .5, .5);
+        Vec3 v1 = rotate(new Vec3(x1 - .5, y - .5, z1 - .5), side).add(.5, .5, .5);
+        Vec3 v2 = rotate(new Vec3(x1 - .5, y - .5, z2 - .5), side).add(.5, .5, .5);
+        Vec3 v3 = rotate(new Vec3(x2 - .5, y - .5, z2 - .5), side).add(.5, .5, .5);
+        Vec3 v4 = rotate(new Vec3(x2 - .5, y - .5, z1 - .5), side).add(.5, .5, .5);
         int[] data =  Ints.concat(
                 vertexToInts((float) v1.x, (float) v1.y, (float) v1.z, shadeColor, texture, uvs[(0 + rotation) % 4][0] * 16, uvs[(0 + rotation) % 4][1] * 16),
                 vertexToInts((float) v2.x, (float) v2.y, (float) v2.z, shadeColor, texture, uvs[(1 + rotation) % 4][0] * 16, uvs[(1 + rotation) % 4][1] * 16),
@@ -249,7 +249,7 @@ public abstract class DynamicBaseModel implements IBakedModel {
     }
 
     @Override
-    public ItemOverrideList getOverrides() {
-        return ItemOverrideList.EMPTY;
+    public ItemOverrides getOverrides() {
+        return ItemOverrides.EMPTY;
     }
 }

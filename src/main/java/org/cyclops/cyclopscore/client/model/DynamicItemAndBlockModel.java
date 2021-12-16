@@ -1,14 +1,14 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -33,7 +33,7 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
     public DynamicItemAndBlockModel(boolean factory, boolean item) {
         this.factory = factory;
         this.item = item;
-        this.itemOverrides = new ItemOverrides();
+        this.itemOverrides = new ItemOverridesInner();
     }
 
     protected boolean isItemStack() {
@@ -50,7 +50,7 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
                                     @Nonnull Random rand, @Nonnull IModelData extraData) {
         this.renderingSide = side;
         if(factory) {
-            IBakedModel bakedModel;
+            BakedModel bakedModel;
             if(isItemStack()) {
                 bakedModel = handleItemState(null, null, null);
             } else {
@@ -67,13 +67,13 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
         return Collections.emptyList();
     }
 
-    public abstract IBakedModel handleBlockState(@Nullable BlockState state, @Nullable Direction side,
+    public abstract BakedModel handleBlockState(@Nullable BlockState state, @Nullable Direction side,
                                                  @Nonnull Random rand, @Nonnull IModelData extraData);
-    public abstract IBakedModel handleItemState(@Nullable ItemStack stack, @Nullable World world,
+    public abstract BakedModel handleItemState(@Nullable ItemStack stack, @Nullable Level world,
                                                 @Nullable LivingEntity entity);
 
     @Override
-    public ItemOverrideList getOverrides() {
+    public ItemOverrides getOverrides() {
         return itemOverrides;
     }
 
@@ -81,10 +81,10 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
         return renderingSide;
     }
 
-    public class ItemOverrides extends ItemOverrideList {
+    public class ItemOverridesInner extends ItemOverrides {
         @Nullable
         @Override
-        public IBakedModel resolve(IBakedModel model, ItemStack stack, @Nullable ClientWorld world, @Nullable LivingEntity entity) {
+        public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int entityId) {
             return DynamicItemAndBlockModel.this.handleItemState(stack, world, entity);
         }
     }

@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.StringTag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtParseException;
 import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationLeafWildcard;
@@ -73,23 +73,23 @@ public class TestNbtPathExpressionHandlerRoot {
     @Test
     public void testExpressionStreamSingle() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerRoot.Expression.INSTANCE;
-        assertThat(expression.match(Stream.of(StringNBT.valueOf("a"))).getMatches().collect(Collectors.toList()),
-                is(Lists.newArrayList(StringNBT.valueOf("a"))));
+        assertThat(expression.match(Stream.of(StringTag.valueOf("a"))).getMatches().collect(Collectors.toList()),
+                is(Lists.newArrayList(StringTag.valueOf("a"))));
     }
 
     @Test
     public void testExpressionStreamMultiple() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerRoot.Expression.INSTANCE;
-        Stream<INBT> stream = Stream.of(
-                StringNBT.valueOf("a"),
-                StringNBT.valueOf("b"),
-                StringNBT.valueOf("c")
+        Stream<Tag> stream = Stream.of(
+                StringTag.valueOf("a"),
+                StringTag.valueOf("b"),
+                StringTag.valueOf("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        StringNBT.valueOf("a"),
-                        StringNBT.valueOf("b"),
-                        StringNBT.valueOf("c")
+                        StringTag.valueOf("a"),
+                        StringTag.valueOf("b"),
+                        StringTag.valueOf("c")
                 )));
     }
 
@@ -97,13 +97,13 @@ public class TestNbtPathExpressionHandlerRoot {
     public void testExpressionNotStartFromRoot() {
         INbtPathExpression expression = NbtPathExpressionParseHandlerRoot.Expression.INSTANCE;
         Stream<NbtPathExpressionExecutionContext> stream = Stream.of(
-                new NbtPathExpressionExecutionContext(StringNBT.valueOf("a"), new NbtPathExpressionExecutionContext(
-                        StringNBT.valueOf("b"), new NbtPathExpressionExecutionContext(StringNBT.valueOf("c"))
+                new NbtPathExpressionExecutionContext(StringTag.valueOf("a"), new NbtPathExpressionExecutionContext(
+                        StringTag.valueOf("b"), new NbtPathExpressionExecutionContext(StringTag.valueOf("c"))
                 ))
         );
         assertThat(expression.matchContexts(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        StringNBT.valueOf("c")
+                        StringTag.valueOf("c")
                 )));
     }
 

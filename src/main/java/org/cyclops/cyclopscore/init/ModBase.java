@@ -4,14 +4,18 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import lombok.Data;
-import net.minecraft.block.Block;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -19,13 +23,7 @@ import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
@@ -34,7 +32,6 @@ import org.cyclops.cyclopscore.command.CommandConfig;
 import org.cyclops.cyclopscore.command.CommandVersion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.modcompat.IMCHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.capabilities.CapabilityConstructorRegistry;
@@ -79,7 +76,7 @@ public abstract class ModBase<T extends ModBase> {
     private ICommonProxy proxy;
     private ModContainer container;
 
-    private ItemGroup defaultCreativeTab = null;
+    private CreativeModeTab defaultCreativeTab = null;
 
     public ModBase(String modId, Consumer<T> instanceSetter) {
         instanceSetter.accept((T) this);
@@ -158,8 +155,8 @@ public abstract class ModBase<T extends ModBase> {
         return new IMCHandler(this);
     }
 
-    protected LiteralArgumentBuilder<CommandSource> constructBaseCommand() {
-        LiteralArgumentBuilder<CommandSource> root = Commands.literal(this.getModId());
+    protected LiteralArgumentBuilder<CommandSourceStack> constructBaseCommand() {
+        LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(this.getModId());
 
         root.then(CommandConfig.make(this));
         root.then(CommandVersion.make(this));
@@ -291,7 +288,7 @@ public abstract class ModBase<T extends ModBase> {
      * @param event The Forge server starting event.
      */
     @SubscribeEvent
-    protected void onServerStarting(FMLServerStartingEvent event) {
+    protected void onServerStarting(ServerStartingEvent event) {
         event.getServer().getCommands().getDispatcher().register(constructBaseCommand());
     }
 
@@ -300,7 +297,7 @@ public abstract class ModBase<T extends ModBase> {
      * @param event The Forge server about to start event.
      */
     @SubscribeEvent
-    protected void onServerAboutToStart(FMLServerAboutToStartEvent event) {
+    protected void onServerAboutToStart(ServerAboutToStartEvent event) {
         for(WorldStorage worldStorage : worldStorages) {
             worldStorage.onAboutToStartEvent(event);
         }
@@ -311,7 +308,7 @@ public abstract class ModBase<T extends ModBase> {
      * @param event The Forge server started event.
      */
     @SubscribeEvent
-    protected void onServerStarted(FMLServerStartedEvent event) {
+    protected void onServerStarted(ServerStartedEvent event) {
         for(WorldStorage worldStorage : worldStorages) {
             worldStorage.onStartedEvent(event);
         }
@@ -322,7 +319,7 @@ public abstract class ModBase<T extends ModBase> {
      * @param event The Forge server stopping event.
      */
     @SubscribeEvent
-    protected void onServerStopping(FMLServerStoppingEvent event) {
+    protected void onServerStopping(ServerStoppingEvent event) {
         for(WorldStorage worldStorage : worldStorages) {
             worldStorage.onStoppingEvent(event);
         }
@@ -331,7 +328,7 @@ public abstract class ModBase<T extends ModBase> {
     /**
      * Register a new world storage type.
      * Make sure to call this at least before the event
-     * {@link net.minecraftforge.fml.event.server.FMLServerStartedEvent} is called.
+     * {@link net.minecraftforge.event.server.ServerStartedEvent} is called.
      * @param worldStorage The world storage to register.
      */
     public void registerWorldStorage(WorldStorage worldStorage) {
@@ -348,7 +345,7 @@ public abstract class ModBase<T extends ModBase> {
      * Construct an item group, will only be called once during the init event.
      * @return The default item group for items and blocks.
      */
-    protected abstract ItemGroup constructDefaultItemGroup();
+    protected abstract CreativeModeTab constructDefaultCreativeModeTab();
 
     /**
      * Called when the configs should be registered.
@@ -361,9 +358,9 @@ public abstract class ModBase<T extends ModBase> {
     /**
      * @return The default item group for items and blocks.
      */
-    public final ItemGroup getDefaultItemGroup() {
+    public final CreativeModeTab getDefaultItemGroup() {
         if(defaultCreativeTab == null) {
-            defaultCreativeTab = constructDefaultItemGroup();
+            defaultCreativeTab = constructDefaultCreativeModeTab();
         }
         return defaultCreativeTab;
     }

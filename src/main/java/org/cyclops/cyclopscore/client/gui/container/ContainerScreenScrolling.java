@@ -1,15 +1,14 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import org.cyclops.cyclopscore.client.gui.component.WidgetScrollBar;
 import org.cyclops.cyclopscore.client.gui.component.input.WidgetTextFieldExtended;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.inventory.container.ScrollingInventoryContainer;
 import org.lwjgl.glfw.GLFW;
 
@@ -27,7 +26,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     private WidgetTextFieldExtended searchField = null;
     private WidgetScrollBar scrollbar = null;
 
-    public ContainerScreenScrolling(T container, PlayerInventory playerInventory, ITextComponent title) {
+    public ContainerScreenScrolling(T container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
     }
 
@@ -41,7 +40,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
             int searchX = getSearchX();
             int searchY = getSearchY();
             if(this.searchField == null) {
-                this.searchField = new WidgetTextFieldExtended(this.font, this.leftPos + searchX, this.topPos + searchY, searchWidth, this.font.lineHeight, new TranslationTextComponent("gui.cyclopscore.search"));
+                this.searchField = new WidgetTextFieldExtended(this.font, this.leftPos + searchX, this.topPos + searchY, searchWidth, this.font.lineHeight, new TranslatableComponent("gui.cyclopscore.search"));
                 this.searchField.setMaxLength(64);
                 this.searchField.setMaxLength(15);
                 this.searchField.setBordered(false);
@@ -56,19 +55,19 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
                 this.searchField.x = this.leftPos + (searchX + searchWidth) - this.searchField.getWidth();
                 this.searchField.y = this.topPos + searchY;
             }
-            this.children.add(this.searchField);
+            this.addWidget(this.searchField);
         }
 
         // Initial element load.
         if (scrollbar == null) {
             getMenu().updateFilter("");
             this.scrollbar = new WidgetScrollBar(this.leftPos + getScrollX(), this.topPos + getScrollY(), getScrollHeight(),
-                    new TranslationTextComponent("gui.cyclopscore.scrollbar"), getMenu(),
+                    new TranslatableComponent("gui.cyclopscore.scrollbar"), getMenu(),
                     getMenu().getPageSize(), getScrollRegion());
             this.scrollbar.setTotalRows(getMenu().getFilteredItemCount() / getMenu().getColumns());
         }
 
-        this.children.add(this.scrollbar);
+        this.addWidget(this.scrollbar);
         getScrollbar().scrollTo(this.scrollbar.getCurrentScroll());
     }
 
@@ -86,8 +85,8 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
-    public void tick() {
-        super.tick();
+    public void containerTick() {
+        super.containerTick();
         if (this.searchField != null) {
             this.searchField.tick();
         }
@@ -118,7 +117,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
-    protected void drawCurrentScreen(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    protected void drawCurrentScreen(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if (isSubsetRenderSlots()) {
             // Temporarily swap slot list, to avoid rendering all slots (which would include the hidden ones)
             List<Slot> oldSlots = Lists.newArrayList(this.container.slots);
@@ -145,7 +144,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
         if(isSearchEnabled()) this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
         this.scrollbar.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
@@ -166,7 +165,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
         this.scrollbar.scrollTo(0);
     }
 
-    public TextFieldWidget getSearchField() {
+    public EditBox getSearchField() {
         return searchField;
     }
 

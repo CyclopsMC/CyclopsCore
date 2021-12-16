@@ -1,25 +1,26 @@
 package org.cyclops.cyclopscore.infobook;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import lombok.Getter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
@@ -38,7 +39,7 @@ import java.util.List;
  * Base gui for {@link IInfoBook}.
  * @author rubensworks
  */
-public abstract class ScreenInfoBook<T extends ContainerExtended> extends ContainerScreen<T> {
+public abstract class ScreenInfoBook<T extends ContainerExtended> extends AbstractContainerScreen<T> {
 
     private static final int HR_WIDTH = 88;
     private static final int HR_HEIGHT = 10;
@@ -67,7 +68,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
 
     private int left, top;
 
-    public ScreenInfoBook(T container, PlayerInventory playerInventory, ITextComponent title, IInfoBook infoBook) {
+    public ScreenInfoBook(T container, Inventory playerInventory, Component title, IInfoBook infoBook) {
         super(container, playerInventory, title);
         this.infoBook = infoBook;
         this.texture = constructGuiTexture();
@@ -124,13 +125,12 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     public void init() {
         super.init();
 
-        this.buttons.clear();
-        this.children.clear();
+        this.clearWidgets();
 
         left = (width - getGuiWidth()) / 2;
         top = (height - getGuiHeight()) / 2;
 
-        this.addButton(this.buttonNextPage = new NextPageButton(left + getPageWidth() + 100 + getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 180, 18, 10, (button) -> {
+        this.addRenderableWidget(this.buttonNextPage = new NextPageButton(left + getPageWidth() + 100 + getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 180, 18, 10, (button) -> {
             InfoSection.Location location = infoBook.getCurrentSection().getNext(infoBook.getCurrentPage() + getPages() - 1, MinecraftHelpers.isShifted());
             goToLastPage = false;
             nextSection = location.getInfoSection();
@@ -138,7 +138,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
             applyNavigation();
         }, this));
-        this.addButton(this.buttonPreviousPage = new NextPageButton(left + 23 - getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 193, 18, 10, (button) -> {
+        this.addRenderableWidget(this.buttonPreviousPage = new NextPageButton(left + 23 - getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 193, 18, 10, (button) -> {
             InfoSection.Location location = infoBook.getCurrentSection().getPrevious(infoBook.getCurrentPage(), MinecraftHelpers.isShifted());
             nextSection = location.getInfoSection();
             nextPage = location.getPage();
@@ -147,7 +147,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
             applyNavigation();
         }, this));
-        this.addButton(this.buttonParent = new NextPageButton(left + 2, top + 2, 36, 180, 8, 8, (button) -> {
+        this.addRenderableWidget(this.buttonParent = new NextPageButton(left + 2, top + 2, 36, 180, 8, 8, (button) -> {
             goToLastPage = false;
             if(MinecraftHelpers.isShifted()) {
                 nextSection = infoBook.getCurrentSection().getParent();
@@ -161,14 +161,14 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
             applyNavigation();
         }, this));
-        this.addButton(this.buttonBack = new NextPageButton(left + getPageWidth() + 127, top + 2, 0, 223, 13, 18, (button) -> {
+        this.addRenderableWidget(this.buttonBack = new NextPageButton(left + getPageWidth() + 127, top + 2, 0, 223, 13, 18, (button) -> {
             InfoSection.Location location = infoBook.getHistory().pop();
             goToLastPage = false;
             nextSection = location.getInfoSection();
             nextPage = location.getPage();
             applyNavigation();
         }, this));
-        this.addButton(this.buttonExternal = new NextPageButton(left + 130, top, 26, 203, 11, 11, (button) -> {
+        this.addRenderableWidget(this.buttonExternal = new NextPageButton(left + 130, top, 26, 203, 11, 11, (button) -> {
             Helpers.openUrl(infoBook.getBaseUrl() + infoBook.getCurrentSection().getRelativeWebPath());
         }, this));
         this.updateGui();
@@ -186,8 +186,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
                     CyclopsCore.clog(Level.WARN, "Could not find hyperlink localization for " + link.getTranslationKey());
                 }
                 int xOffset = getOffsetXForPageWithWidths(innerPage % getPages());
-                this.addButton(new TextOverlayButton(link, left + xOffset + link.getX(), top + getPageYOffset() / 2 + link.getY(),
-                        InfoSection.getFontHeight(getFontRenderer()), getPageWidth() - getOffsetXTotal() - link.getX(), (button) -> {
+                this.addRenderableWidget(new TextOverlayButton(link, left + xOffset + link.getX(), top + getPageYOffset() / 2 + link.getY(),
+                        InfoSection.getFontHeight(getFont()), getPageWidth() - getOffsetXTotal() - link.getX(), (button) -> {
                     goToLastPage = false;
                     nextSection = ((TextOverlayButton) button).getLink().getTarget();
                     nextPage = 0;
@@ -203,7 +203,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
                     if(nextSection != infoBook.getCurrentSection()) infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
                     applyNavigation();
                 });
-                this.addButton(advancedButton);
+                this.addRenderableWidget(advancedButton);
             }
         }
     }
@@ -223,7 +223,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         RenderHelpers.bindTexture(texture);
 
         blit(matrixStack, left, top, 0, 0, getPageWidth(), getGuiHeight());
@@ -238,38 +238,36 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         }
 
         if (this.buttonNextPage.visible && RenderHelpers.isPointInButton(this.buttonNextPage, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, new TranslationTextComponent("infobook.cyclopscore.next_page"));
+            drawTooltip(matrixStack, mouseX, mouseY, new TranslatableComponent("infobook.cyclopscore.next_page"));
         }
         if (this.buttonPreviousPage.visible && RenderHelpers.isPointInButton(this.buttonPreviousPage, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, new TranslationTextComponent("infobook.cyclopscore.previous_page"));
+            drawTooltip(matrixStack, mouseX, mouseY, new TranslatableComponent("infobook.cyclopscore.previous_page"));
         }
         if (this.buttonBack.visible && RenderHelpers.isPointInButton(this.buttonBack, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, new TranslationTextComponent("infobook.cyclopscore.last_page"));
+            drawTooltip(matrixStack, mouseX, mouseY, new TranslatableComponent("infobook.cyclopscore.last_page"));
         }
         if (this.buttonParent.visible && RenderHelpers.isPointInButton(this.buttonParent, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, new TranslationTextComponent("infobook.cyclopscore.parent_section"));
+            drawTooltip(matrixStack, mouseX, mouseY, new TranslatableComponent("infobook.cyclopscore.parent_section"));
         }
         if (this.buttonExternal.visible && RenderHelpers.isPointInButton(this.buttonExternal, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, new TranslationTextComponent("infobook.cyclopscore.external"));
+            drawTooltip(matrixStack, mouseX, mouseY, new TranslatableComponent("infobook.cyclopscore.external"));
         }
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         // Do nothing
     }
 
     @Override
-    protected void renderLabels(MatrixStack matrixStack, int x, int y) {
+    protected void renderLabels(PoseStack matrixStack, int x, int y) {
         // Do nothing
     }
 
-    public void drawTooltip(MatrixStack matrixStack, int mx, int my, ITextComponent lines) {
-        GlStateManager._pushMatrix();
+    public void drawTooltip(PoseStack matrixStack, int mx, int my, Component lines) {
+        matrixStack.pushPose();
         renderTooltip(matrixStack, lines, mx, my);
-        GlStateManager._popMatrix();
-
-        GlStateManager._disableLighting();
+        matrixStack.popPose();
 
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -278,9 +276,9 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
     public void blitMirrored(int x, int y, int u, int v, int width, int height) {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
-        Tessellator tessellator = Tessellator.getInstance();
+        Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder worldRenderer = tessellator.getBuilder();
-        worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        worldRenderer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         worldRenderer.vertex(x + 0, y + height, this.getBlitOffset()).uv(((float) (u + width) * f), ((float) (v + height) * f1)).endVertex();
         worldRenderer.vertex(x + width, y + height, this.getBlitOffset()).uv(((float) (u + 0) * f), ((float) (v + height) * f1)).endVertex();
         worldRenderer.vertex(x + width, y + 0, this.getBlitOffset()).uv(((float) (u + 0) * f), ((float) (v + 0) * f1)).endVertex();
@@ -293,7 +291,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         return false;
     }
 
-    public FontRenderer getFontRenderer() {
+    public Font getFont() {
         return this.font;
     }
 
@@ -303,7 +301,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
 
     private void updateGui() {
         int width = getPageWidth() - getOffsetXTotal();
-        int lineHeight = InfoSection.getFontHeight(getFontRenderer());
+        int lineHeight = InfoSection.getFontHeight(getFont());
         int maxLines = (getGuiHeight() - 2 * getPageYOffset() - 5) / lineHeight;
 
         // Bake current and all reachable sections.
@@ -312,7 +310,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         getPreviousSections(infoSectionsToBake);
         getNextSections(infoSectionsToBake);
         for(InfoSection infoSection : infoSectionsToBake) {
-            if(infoSection != null) infoSection.bakeSection(getFontRenderer(), width, maxLines, lineHeight, getPageYOffset());
+            if(infoSection != null) infoSection.bakeSection(getFont(), width, maxLines, lineHeight, getPageYOffset());
         }
 
         updateButtons();
@@ -351,23 +349,23 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         }
     }
 
-    public void drawScaledCenteredString(MatrixStack matrixStack, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
+    public void drawScaledCenteredString(PoseStack matrixStack, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
         drawScaledCenteredString(matrixStack, string, x, y, width, originalScale, maxWidth, color, false);
     }
 
-    public void drawScaledCenteredString(MatrixStack matrixStack, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow) {
-        float originalWidth = getFontRenderer().width(string) * originalScale;
+    public void drawScaledCenteredString(PoseStack matrixStack, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow) {
+        float originalWidth = getFont().width(string) * originalScale;
         float scale = Math.min(originalScale, maxWidth / originalWidth * originalScale);
         drawScaledCenteredString(matrixStack, string, x, y, width, scale, color, shadow);
     }
 
-    public void drawScaledCenteredString(MatrixStack matrixStack, String string, int x, int y, int width, float scale, int color) {
+    public void drawScaledCenteredString(PoseStack matrixStack, String string, int x, int y, int width, float scale, int color) {
         drawScaledCenteredString(matrixStack, string, x, y, width, scale, color, false);
     }
 
-    public void drawScaledCenteredString(MatrixStack matrixStack, String string, int x, int y, int width, float scale, int color, boolean shadow) {
-        GlStateManager._pushMatrix();
-        GlStateManager._scalef(scale, scale, 1.0f);
+    public void drawScaledCenteredString(PoseStack matrixStack, String string, int x, int y, int width, float scale, int color, boolean shadow) {
+        matrixStack.pushPose();
+        matrixStack.scale(scale, scale, 1.0f);
         int titleLength = font.width(string);
         int titleHeight = font.lineHeight;
         if (shadow) {
@@ -375,51 +373,49 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         } else {
             font.draw(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
         }
-        GlStateManager._popMatrix();
+        matrixStack.popPose();
     }
 
-    public void drawHorizontalRule(MatrixStack matrixStack, int x, int y) {
+    public void drawHorizontalRule(PoseStack matrixStack, int x, int y) {
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelpers.bindTexture(texture);
         this.blit(matrixStack, x - HR_WIDTH / 2, y - HR_HEIGHT / 2, 52, 180, HR_WIDTH, HR_HEIGHT);
         GlStateManager._disableBlend();
     }
 
-    public void drawTextBanner(MatrixStack matrixStack, int x, int y) {
+    public void drawTextBanner(PoseStack matrixStack, int x, int y) {
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelpers.bindTexture(texture);
         this.blit(matrixStack, x - BANNER_WIDTH / 2, y - BANNER_HEIGHT / 2, 52, 191, BANNER_WIDTH, BANNER_HEIGHT);
         GlStateManager._disableBlend();
     }
 
-    public void drawArrowRight(MatrixStack matrixStack, int x, int y) {
+    public void drawArrowRight(PoseStack matrixStack, int x, int y) {
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderHelpers.bindTexture(texture);
         this.blit(matrixStack, x, y, 0, 210, ARROW_WIDTH, ARROW_HEIGHT);
         GlStateManager._disableBlend();
     }
 
-    public void drawOuterBorder(MatrixStack matrixStack, int x, int y, int width, int height) {
+    public void drawOuterBorder(PoseStack matrixStack, int x, int y, int width, int height) {
         drawOuterBorder(matrixStack, x, y, width, height, 1, 1, 1, 1);
     }
 
-    public void drawOuterBorder(MatrixStack matrixStack, int x, int y, int width, int height, float r, float g, float b, float alpha) {
+    public void drawOuterBorder(PoseStack matrixStack, int x, int y, int width, int height, float r, float g, float b, float alpha) {
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager._color4f(r, g, b, alpha);
         RenderHelpers.bindTexture(texture);
+        int z = this.getBlitOffset();
 
         // Corners
-        this.blit(matrixStack, x - BORDER_WIDTH, y - BORDER_WIDTH, BORDER_X, BORDER_Y, BORDER_CORNER, BORDER_CORNER);
-        this.blit(matrixStack, x + width - BORDER_WIDTH, y - BORDER_WIDTH, BORDER_X + BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER);
-        this.blit(matrixStack, x - BORDER_WIDTH, y + height - BORDER_WIDTH, BORDER_X + 3 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER);
-        this.blit(matrixStack, x + width - BORDER_WIDTH, y + height - BORDER_WIDTH, BORDER_X + 2 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER);
+        RenderHelpers.blitColored(matrixStack, x - BORDER_WIDTH, y - BORDER_WIDTH, z, BORDER_X, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
+        RenderHelpers.blitColored(matrixStack, x - BORDER_WIDTH, y - BORDER_WIDTH, z, BORDER_X, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
+        RenderHelpers.blitColored(matrixStack, x + width - BORDER_WIDTH, y - BORDER_WIDTH, z, BORDER_X + BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
+        RenderHelpers.blitColored(matrixStack, x - BORDER_WIDTH, y + height - BORDER_WIDTH, z, BORDER_X + 3 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
+        RenderHelpers.blitColored(matrixStack, x + width - BORDER_WIDTH, y + height - BORDER_WIDTH, z, BORDER_X + 2 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
 
         // Sides
         for(int i = BORDER_WIDTH; i < width - BORDER_WIDTH; i+=BORDER_WIDTH) {
@@ -427,8 +423,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
             if(i + BORDER_WIDTH >= width - BORDER_CORNER) {
                 drawWidth -= i - (width - BORDER_CORNER);
             }
-            this.blit(matrixStack, x + i, y - BORDER_WIDTH, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH);
-            this.blit(matrixStack, x + i, y + height, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH);
+            RenderHelpers.blitColored(matrixStack, x + i, y - BORDER_WIDTH, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH, r, g, b, alpha);
+            RenderHelpers.blitColored(matrixStack, x + i, y + height, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH, r, g, b, alpha);
         }
         for(int i = BORDER_WIDTH; i < height - BORDER_WIDTH; i+=BORDER_WIDTH) {
             int drawHeight = BORDER_WIDTH;
@@ -436,15 +432,13 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
                 drawHeight -= i - (height - BORDER_CORNER);
             }
             if(drawHeight > 0) {
-                this.blit(matrixStack, x - BORDER_WIDTH, y + i, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight);
-                this.blit(matrixStack, x + width, y + i, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight);
+                RenderHelpers.blitColored(matrixStack, x - BORDER_WIDTH, y + i, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight, r, g, b, alpha);
+                RenderHelpers.blitColored(matrixStack, x + width, y + i, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight, r, g, b, alpha);
             }
         }
-
-        GlStateManager._color4f(1, 1, 1, 1);
     }
 
-    public void renderTooltip(MatrixStack matrixStack, ItemStack itemStack, int x, int y) {
+    public void renderTooltip(PoseStack matrixStack, ItemStack itemStack, int x, int y) {
         super.renderTooltip(matrixStack, itemStack, x, y);
     }
 
@@ -454,15 +448,15 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
 
 
     @Override
-    public void tick() {
-        super.tick();
+    public void containerTick() {
+        super.containerTick();
         if(!this.minecraft.player.isAlive()) {
             this.minecraft.player.closeContainer();
         }
     }
 
-    public abstract void playPageFlipSound(SoundHandler soundHandler);
-    public abstract void playPagesFlipSound(SoundHandler soundHandler);
+    public abstract void playPageFlipSound(SoundManager soundHandler);
+    public abstract void playPagesFlipSound(SoundManager soundHandler);
 
     @OnlyIn(Dist.CLIENT)
     static class NextPageButton extends Button {
@@ -471,19 +465,18 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         private int textureX, textureY;
 
         public NextPageButton(int x, int y, int textureX, int textureY, int width, int height,
-                              Button.IPressable onPress, ScreenInfoBook guiInfoBook) {
-            super(x, y, width, height, new StringTextComponent(""), onPress);
+                              Button.OnPress onPress, ScreenInfoBook guiInfoBook) {
+            super(x, y, width, height, new TextComponent(""), onPress);
             this.textureX = textureX;
             this.textureY = textureY;
             this.guiInfoBook = guiInfoBook;
         }
 
         @Override
-        public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.x && mouseY >= this.y &&
                                mouseX < this.x + this.width && mouseY < this.y + this.height;
-                GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 RenderHelpers.bindTexture(guiInfoBook.texture);
                 int k = textureX;
                 int l = textureY;
@@ -500,7 +493,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         }
 
         @Override
-        public void playDownSound(SoundHandler soundHandler) {
+        public void playDownSound(SoundManager soundHandler) {
             guiInfoBook.playPageFlipSound(soundHandler);
         }
 
@@ -512,12 +505,12 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         private final ScreenInfoBook guiInfoBook;
         @Getter private HyperLink link;
 
-        public TextOverlayButton(HyperLink link, int x, int y, int height, int maxWidth, Button.IPressable onPress,
+        public TextOverlayButton(HyperLink link, int x, int y, int height, int maxWidth, Button.OnPress onPress,
                                  ScreenInfoBook guiInfoBook) {
-            super(x, y, 0, height, new StringTextComponent(InfoSection.formatString(L10NHelpers.localize(link.getTranslationKey()))), onPress);
+            super(x, y, 0, height, new TextComponent(InfoSection.formatString(L10NHelpers.localize(link.getTranslationKey()))), onPress);
             this.guiInfoBook = guiInfoBook;
             this.link = link;
-            FontRenderer fontRenderer = Minecraft.getInstance().font;
+            Font fontRenderer = Minecraft.getInstance().font;
 
             // MCP: getStringWidth
             this.width = fontRenderer.width(getMessage().getVisualOrderText());
@@ -526,20 +519,20 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
                 String originalMessage = getMessage().getString();
                 originalMessage = originalMessage.substring(0, (int) (((float) maxWidth) / this.width * originalMessage.length()) - 1);
                 originalMessage = originalMessage + "…";
-                setMessage(new StringTextComponent(originalMessage));
+                setMessage(new TextComponent(originalMessage));
                 this.width = maxWidth;
             }
         }
 
         @Override
-        public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.x && mouseY >= this.y &&
                         mouseX < this.x + this.width && mouseY < this.y + this.height;
                 Minecraft minecraft = Minecraft.getInstance();
-                IFormattableTextComponent msg = ((IFormattableTextComponent) getMessage());
+                MutableComponent msg = ((MutableComponent) getMessage());
                 if (isHover) {
-                    msg = msg.withStyle(TextFormatting.UNDERLINE);
+                    msg = msg.withStyle(ChatFormatting.UNDERLINE);
                 }
                 // MCP: drawString
                 minecraft.font.draw(matrixStack, msg, x, y,
@@ -548,7 +541,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Contai
         }
 
         @Override
-        public void playDownSound(SoundHandler soundHandler) {
+        public void playDownSound(SoundManager soundHandler) {
             guiInfoBook.playPagesFlipSound(soundHandler);
         }
 

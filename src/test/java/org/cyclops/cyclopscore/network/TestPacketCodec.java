@@ -2,13 +2,13 @@ package org.cyclops.cyclopscore.network;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.math.Vector3d;
 import io.netty.buffer.Unpooled;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 import org.junit.Test;
 
 import java.util.List;
@@ -142,7 +142,7 @@ public class TestPacketCodec {
     @Test
     public void testNBTEmpty() {
         NBTPacketCodec packet1 = new NBTPacketCodec();
-        packet1.value = new CompoundNBT();
+        packet1.value = new CompoundTag();
         NBTPacketCodec packet2 = new NBTPacketCodec();
         encodeDecode(packet1, packet2);
         assertThat("Input equals output", packet1.value, equalTo(packet2.value));
@@ -151,10 +151,10 @@ public class TestPacketCodec {
     @Test
     public void testNBTNonEmpty() {
         NBTPacketCodec packet1 = new NBTPacketCodec();
-        packet1.value = new CompoundNBT();
+        packet1.value = new CompoundTag();
         packet1.value.putBoolean("b", true);
         packet1.value.putInt("c", 45678);
-        CompoundNBT subTag = new CompoundNBT();
+        CompoundTag subTag = new CompoundTag();
         subTag.putFloat("f", 790.5F);
         packet1.value.put("(", subTag);
         NBTPacketCodec packet2 = new NBTPacketCodec();
@@ -235,7 +235,7 @@ public class TestPacketCodec {
     }
 
     protected static <T extends PacketCodec> void encodeDecode(T packetIn, T packetOut) {
-        PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
         packetIn.encode(buffer);
         packetOut.decode(buffer);
     }
@@ -287,7 +287,7 @@ public class TestPacketCodec {
 
     public static class NBTPacketCodec extends SimplePacketCodec {
         @CodecField
-        public CompoundNBT value;
+        public CompoundTag value;
     }
 
     public static class ItemStackPacketCodec extends SimplePacketCodec {

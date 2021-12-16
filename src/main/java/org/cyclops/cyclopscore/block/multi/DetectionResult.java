@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.block.multi;
 
 import lombok.Data;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 /**
@@ -14,21 +14,21 @@ import org.cyclops.cyclopscore.helper.LocationHelpers;
 @Data
 public class DetectionResult {
 
-    private final Vector3i size;
-    private final ITextComponent error;
+    private final Vec3i size;
+    private final Component error;
 
-    public DetectionResult(Vector3i size) {
+    public DetectionResult(Vec3i size) {
         this.size = size;
         this.error = null;
     }
 
-    public DetectionResult(ITextComponent error) {
-        this.size = LocationHelpers.copyLocation(Vector3i.ZERO);
+    public DetectionResult(Component error) {
+        this.size = LocationHelpers.copyLocation(Vec3i.ZERO);
         this.error = error;
     }
 
     public DetectionResult(String error) {
-        this(new StringTextComponent(error));
+        this(new TextComponent(error));
     }
 
 }

@@ -1,12 +1,12 @@
 package org.cyclops.cyclopscore.nbt.path;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.ByteNBT;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.StringTag;
 import org.junit.Test;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class TestNbtPath {
     public void testParseSelf() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
+        StringTag tag1 = StringTag.valueOf("a");
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
                 tag1
         )));
@@ -53,7 +53,7 @@ public class TestNbtPath {
     public void testParseRoot() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
+        StringTag tag1 = StringTag.valueOf("a");
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
                 tag1
         )));
@@ -68,10 +68,10 @@ public class TestNbtPath {
     public void testParseChild() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a.b");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
-        CompoundNBT tag3 = new CompoundNBT();
-        StringNBT tag4 = StringNBT.valueOf("x");
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
+        CompoundTag tag3 = new CompoundTag();
+        StringTag tag4 = StringTag.valueOf("x");
         tag2.put("a", tag3);
         tag3.put("b", tag4);
 
@@ -94,10 +94,10 @@ public class TestNbtPath {
     public void testParseChildBrackets() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$[\"a*\"].b");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
-        CompoundNBT tag3 = new CompoundNBT();
-        StringNBT tag4 = StringNBT.valueOf("x");
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
+        CompoundTag tag3 = new CompoundTag();
+        StringTag tag4 = StringTag.valueOf("x");
         tag2.put("a*", tag3);
         tag3.put("b", tag4);
 
@@ -120,10 +120,10 @@ public class TestNbtPath {
     public void testParseRootAfterChild() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a.b$");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
-        CompoundNBT tag3 = new CompoundNBT();
-        StringNBT tag4 = StringNBT.valueOf("x");
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
+        CompoundTag tag3 = new CompoundTag();
+        StringTag tag4 = StringTag.valueOf("x");
         tag2.put("a", tag3);
         tag3.put("b", tag4);
 
@@ -146,10 +146,10 @@ public class TestNbtPath {
     public void testParseRootAfterChildEmpty() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a.c$");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
-        CompoundNBT tag3 = new CompoundNBT();
-        StringNBT tag4 = StringNBT.valueOf("x");
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
+        CompoundTag tag3 = new CompoundTag();
+        StringTag tag4 = StringTag.valueOf("x");
         tag2.put("a", tag3);
         tag3.put("b", tag4);
 
@@ -168,10 +168,10 @@ public class TestNbtPath {
     public void testParseParentAfterChild() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a.b..");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
-        CompoundNBT tag3 = new CompoundNBT();
-        StringNBT tag4 = StringNBT.valueOf("x");
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
+        CompoundTag tag3 = new CompoundTag();
+        StringTag tag4 = StringTag.valueOf("x");
         tag2.put("a", tag3);
         tag3.put("b", tag4);
 
@@ -194,11 +194,11 @@ public class TestNbtPath {
     public void testParseAllChildren() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a*");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
-        CompoundNBT tag3 = new CompoundNBT();
-        StringNBT tag4 = StringNBT.valueOf("x");
-        StringNBT tag5 = StringNBT.valueOf("y");
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
+        CompoundTag tag3 = new CompoundTag();
+        StringTag tag4 = StringTag.valueOf("x");
+        StringTag tag5 = StringTag.valueOf("y");
         tag2.put("a", tag3);
         tag3.put("b", tag4);
         tag3.put("c", tag5);
@@ -224,16 +224,16 @@ public class TestNbtPath {
     public void testParseListElement() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a[1]");
 
-        CompoundNBT tagFail1 = new CompoundNBT();
-        ListNBT tagFail2 = new ListNBT();
-        tagFail2.add(StringNBT.valueOf("f0"));
+        CompoundTag tagFail1 = new CompoundTag();
+        ListTag tagFail2 = new ListTag();
+        tagFail2.add(StringTag.valueOf("f0"));
         tagFail1.put("a", tagFail2);
 
-        CompoundNBT tag1 = new CompoundNBT();
-        ListNBT tag2 = new ListNBT();
-        tag2.add(StringNBT.valueOf("a0"));
-        tag2.add(StringNBT.valueOf("a1"));
-        tag2.add(StringNBT.valueOf("a2"));
+        CompoundTag tag1 = new CompoundTag();
+        ListTag tag2 = new ListTag();
+        tag2.add(StringTag.valueOf("a0"));
+        tag2.add(StringTag.valueOf("a1"));
+        tag2.add(StringTag.valueOf("a2"));
         tag1.put("a", tag2);
 
         assertThat(expression.match(Stream.of(tagFail1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
@@ -242,10 +242,10 @@ public class TestNbtPath {
         assertThat(expression.test(tagFail1), is(false));
 
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                StringNBT.valueOf("a1")
+                StringTag.valueOf("a1")
         )));
         assertThat(expression.match(tag1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                StringNBT.valueOf("a1")
+                StringTag.valueOf("a1")
         )));
         assertThat(expression.test(Stream.of(tag1)), is(true));
         assertThat(expression.test(tag1), is(true));
@@ -255,16 +255,16 @@ public class TestNbtPath {
     public void testParseUnion() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a[0,2]");
 
-        CompoundNBT tagFail1 = new CompoundNBT();
-        CompoundNBT tagFail2 = new CompoundNBT();
-        tagFail2.put("a", StringNBT.valueOf("f0"));
+        CompoundTag tagFail1 = new CompoundTag();
+        CompoundTag tagFail2 = new CompoundTag();
+        tagFail2.put("a", StringTag.valueOf("f0"));
         tagFail1.put("a", tagFail2);
 
-        CompoundNBT tag1 = new CompoundNBT();
-        ListNBT tag2 = new ListNBT();
-        tag2.add(StringNBT.valueOf("a0"));
-        tag2.add(StringNBT.valueOf("a1"));
-        tag2.add(StringNBT.valueOf("a2"));
+        CompoundTag tag1 = new CompoundTag();
+        ListTag tag2 = new ListTag();
+        tag2.add(StringTag.valueOf("a0"));
+        tag2.add(StringTag.valueOf("a1"));
+        tag2.add(StringTag.valueOf("a2"));
         tag1.put("a", tag2);
 
         assertThat(expression.match(Stream.of(tagFail1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
@@ -273,12 +273,12 @@ public class TestNbtPath {
         assertThat(expression.test(tagFail1), is(false));
 
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                StringNBT.valueOf("a0"),
-                StringNBT.valueOf("a2")
+                StringTag.valueOf("a0"),
+                StringTag.valueOf("a2")
         )));
         assertThat(expression.match(tag1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                StringNBT.valueOf("a0"),
-                StringNBT.valueOf("a2")
+                StringTag.valueOf("a0"),
+                StringTag.valueOf("a2")
         )));
         assertThat(expression.test(Stream.of(tag1)), is(true));
         assertThat(expression.test(tag1), is(true));
@@ -288,17 +288,17 @@ public class TestNbtPath {
     public void testParseSlice() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a[1:3:2]");
 
-        CompoundNBT tagFail1 = new CompoundNBT();
-        CompoundNBT tagFail2 = new CompoundNBT();
-        tagFail2.put("a", StringNBT.valueOf("f0"));
+        CompoundTag tagFail1 = new CompoundTag();
+        CompoundTag tagFail2 = new CompoundTag();
+        tagFail2.put("a", StringTag.valueOf("f0"));
         tagFail1.put("a", tagFail2);
 
-        CompoundNBT tag1 = new CompoundNBT();
-        ListNBT tag2 = new ListNBT();
-        tag2.add(StringNBT.valueOf("a0"));
-        tag2.add(StringNBT.valueOf("a1"));
-        tag2.add(StringNBT.valueOf("a2"));
-        tag2.add(StringNBT.valueOf("a3"));
+        CompoundTag tag1 = new CompoundTag();
+        ListTag tag2 = new ListTag();
+        tag2.add(StringTag.valueOf("a0"));
+        tag2.add(StringTag.valueOf("a1"));
+        tag2.add(StringTag.valueOf("a2"));
+        tag2.add(StringTag.valueOf("a3"));
         tag1.put("a", tag2);
 
         assertThat(expression.match(Stream.of(tagFail1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
@@ -307,12 +307,12 @@ public class TestNbtPath {
         assertThat(expression.test(tagFail1), is(false));
 
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                StringNBT.valueOf("a1"),
-                StringNBT.valueOf("a3")
+                StringTag.valueOf("a1"),
+                StringTag.valueOf("a3")
         )));
         assertThat(expression.match(tag1).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                StringNBT.valueOf("a1"),
-                StringNBT.valueOf("a3")
+                StringTag.valueOf("a1"),
+                StringTag.valueOf("a3")
         )));
         assertThat(expression.test(Stream.of(tag1)), is(true));
         assertThat(expression.test(tag1), is(true));
@@ -322,11 +322,11 @@ public class TestNbtPath {
     public void testParseLength() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a.length");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
-        CompoundNBT tag3 = new CompoundNBT();
-        StringNBT tag4 = StringNBT.valueOf("x");
-        StringNBT tag5 = StringNBT.valueOf("y");
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
+        CompoundTag tag3 = new CompoundTag();
+        StringTag tag4 = StringTag.valueOf("x");
+        StringTag tag5 = StringTag.valueOf("y");
         tag2.put("a", tag3);
         tag3.put("b", tag4);
         tag3.put("c", tag5);
@@ -337,10 +337,10 @@ public class TestNbtPath {
         assertThat(expression.test(tag1), is(false));
 
         assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                IntNBT.valueOf(2)
+                IntTag.valueOf(2)
         )));
         assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                IntNBT.valueOf(2)
+                IntTag.valueOf(2)
         )));
         assertThat(expression.test(Stream.of(tag2)), is(true));
         assertThat(expression.test(tag2), is(true));
@@ -350,18 +350,18 @@ public class TestNbtPath {
     public void testParseFilterExpression() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a[?(@.b)]");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
-        ListNBT tag3 = new ListNBT();
-        CompoundNBT tag4 = new CompoundNBT();
-        CompoundNBT tag5 = new CompoundNBT();
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
+        ListTag tag3 = new ListTag();
+        CompoundTag tag4 = new CompoundTag();
+        CompoundTag tag5 = new CompoundTag();
         tag2.put("a", tag3);
         tag3.add(tag4);
         tag3.add(tag5);
         tag4.putString("b", "B");
         tag4.putString("a", "A");
 
-        ListNBT tag3Filtered = new ListNBT();
+        ListTag tag3Filtered = new ListTag();
         tag3Filtered.add(tag4);
 
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
@@ -369,7 +369,7 @@ public class TestNbtPath {
         assertThat(expression.test(Stream.of(tag1)), is(false));
         assertThat(expression.test(tag1), is(false));
 
-        List<INBT> expected = Lists.newArrayList();
+        List<Tag> expected = Lists.newArrayList();
         expected.add(tag3Filtered);
         assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(expected));
         assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(expected));
@@ -381,8 +381,8 @@ public class TestNbtPath {
     public void testParseRelationalLessThan() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a < 2");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
         tag2.putInt("a", 1);
 
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
@@ -391,10 +391,10 @@ public class TestNbtPath {
         assertThat(expression.test(tag1), is(false));
 
         assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                ByteNBT.valueOf((byte) 1)
+                ByteTag.valueOf((byte) 1)
         )));
         assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                ByteNBT.valueOf((byte) 1)
+                ByteTag.valueOf((byte) 1)
         )));
         assertThat(expression.test(Stream.of(tag2)), is(true));
         assertThat(expression.test(tag2), is(true));
@@ -404,8 +404,8 @@ public class TestNbtPath {
     public void testParseRelationalLessThanOrEqual() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a <= 2");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
         tag2.putInt("a", 1);
 
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
@@ -414,10 +414,10 @@ public class TestNbtPath {
         assertThat(expression.test(tag1), is(false));
 
         assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                ByteNBT.valueOf((byte) 1)
+                ByteTag.valueOf((byte) 1)
         )));
         assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                ByteNBT.valueOf((byte) 1)
+                ByteTag.valueOf((byte) 1)
         )));
         assertThat(expression.test(Stream.of(tag2)), is(true));
         assertThat(expression.test(tag2), is(true));
@@ -427,8 +427,8 @@ public class TestNbtPath {
     public void testParseRelationalGreaterThan() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a > 2");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
         tag2.putInt("a", 1);
 
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
@@ -437,10 +437,10 @@ public class TestNbtPath {
         assertThat(expression.test(tag1), is(false));
 
         assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                ByteNBT.valueOf((byte) 0)
+                ByteTag.valueOf((byte) 0)
         )));
         assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                ByteNBT.valueOf((byte) 0)
+                ByteTag.valueOf((byte) 0)
         )));
         assertThat(expression.test(Stream.of(tag2)), is(false));
         assertThat(expression.test(tag2), is(false));
@@ -450,8 +450,8 @@ public class TestNbtPath {
     public void testParseRelationalGreaterThanOrEqual() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a >= 2");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
         tag2.putInt("a", 1);
 
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
@@ -460,10 +460,10 @@ public class TestNbtPath {
         assertThat(expression.test(tag1), is(false));
 
         assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                ByteNBT.valueOf((byte) 0)
+                ByteTag.valueOf((byte) 0)
         )));
         assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                ByteNBT.valueOf((byte) 0)
+                ByteTag.valueOf((byte) 0)
         )));
         assertThat(expression.test(Stream.of(tag2)), is(false));
         assertThat(expression.test(tag2), is(false));
@@ -473,8 +473,8 @@ public class TestNbtPath {
     public void testParseRelationalEqual() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a == 2");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
         tag2.putInt("a", 1);
 
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
@@ -483,10 +483,10 @@ public class TestNbtPath {
         assertThat(expression.test(tag1), is(false));
 
         assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                ByteNBT.valueOf((byte) 0)
+                ByteTag.valueOf((byte) 0)
         )));
         assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                ByteNBT.valueOf((byte) 0)
+                ByteTag.valueOf((byte) 0)
         )));
         assertThat(expression.test(Stream.of(tag2)), is(false));
         assertThat(expression.test(tag2), is(false));
@@ -496,8 +496,8 @@ public class TestNbtPath {
     public void testParseStringEqual() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a == \"b\"");
 
-        StringNBT tag1 = StringNBT.valueOf("a");
-        CompoundNBT tag2 = new CompoundNBT();
+        StringTag tag1 = StringTag.valueOf("a");
+        CompoundTag tag2 = new CompoundTag();
         tag2.putString("a", "b");
 
         assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList()));
@@ -506,10 +506,10 @@ public class TestNbtPath {
         assertThat(expression.test(tag1), is(false));
 
         assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                ByteNBT.valueOf((byte) 1)
+                ByteTag.valueOf((byte) 1)
         )));
         assertThat(expression.match(tag2).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
-                ByteNBT.valueOf((byte) 1)
+                ByteTag.valueOf((byte) 1)
         )));
         assertThat(expression.test(Stream.of(tag2)), is(true));
         assertThat(expression.test(tag2), is(true));
@@ -519,11 +519,11 @@ public class TestNbtPath {
     public void testParseFilterExpressionComplex() throws NbtParseException {
         INbtPathExpression expression = NbtPath.parse("$.a[?(@.c == \"B\")]");
 
-        CompoundNBT tag1 = new CompoundNBT();
-        ListNBT tag1_1 = new ListNBT();
-        CompoundNBT tag1_1_1 = new CompoundNBT();
-        CompoundNBT tag1_1_2 = new CompoundNBT();
-        CompoundNBT tag1_1_3 = new CompoundNBT();
+        CompoundTag tag1 = new CompoundTag();
+        ListTag tag1_1 = new ListTag();
+        CompoundTag tag1_1_1 = new CompoundTag();
+        CompoundTag tag1_1_2 = new CompoundTag();
+        CompoundTag tag1_1_3 = new CompoundTag();
         tag1.put("a", tag1_1);
         tag1_1.add(tag1_1_1);
         tag1_1_1.putString("notC", "b");
@@ -532,10 +532,10 @@ public class TestNbtPath {
         tag1_1.add(tag1_1_3);
         tag1_1_3.putString("c", "C");
 
-        ListNBT tag1_1Filtered = new ListNBT();
+        ListTag tag1_1Filtered = new ListTag();
         tag1_1Filtered.add(tag1_1_2);
 
-        List<INBT> expected = Lists.newArrayList();
+        List<Tag> expected = Lists.newArrayList();
         expected.add(tag1_1Filtered);
         assertThat(expression.match(Stream.of(
                 tag1

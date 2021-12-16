@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.init;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.function.Supplier;
 
@@ -11,7 +11,7 @@ import java.util.function.Supplier;
  * A creative tab which displays a simple item or block with the modname as label.
  * @author rubensworks
  */
-public class ItemGroupMod extends ItemGroup {
+public class ItemGroupMod extends CreativeModeTab {
 
     private final Supplier<Item> item;
 

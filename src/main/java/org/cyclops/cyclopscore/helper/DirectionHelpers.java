@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -57,7 +57,7 @@ public class DirectionHelpers {
      * @return The {@link Direction} the entity is facing.
      */
     public static Direction getEntityFacingDirection(LivingEntity entity) {
-        int facingDirection = MathHelper.floor((entity.yRot * 4F) / 360F + 0.5D) & 3;
+        int facingDirection = Mth.floor((entity.getYRot() * 4F) / 360F + 0.5D) & 3;
         return Direction.from2DDataValue(facingDirection);
     }
 

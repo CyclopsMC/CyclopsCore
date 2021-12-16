@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.client.gui.component.button;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.image.Image;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 
@@ -26,7 +26,7 @@ public class ButtonArrow extends ButtonExtended {
      * @param pressCallback A callback for when this button was pressed.
      * @param direction The direction of the arrow to draw.
 	 */
-	public ButtonArrow(int x, int y, ITextComponent narrationMessage, Button.IPressable pressCallback, ButtonArrow.Direction direction) {
+	public ButtonArrow(int x, int y, Component narrationMessage, Button.OnPress pressCallback, ButtonArrow.Direction direction) {
 		super(x, y, direction.width, direction.height, narrationMessage, pressCallback, true);
         this.direction = direction;
         this.directionImages = getDirectionImage(direction);
@@ -46,12 +46,12 @@ public class ButtonArrow extends ButtonExtended {
     }
 
     @Override
-    protected void drawBackground(MatrixStack matrixStack) {
-        directionImages[getYImage(isHovered())].draw(this, matrixStack, x, y);
+    protected void drawBackground(PoseStack matrixStack) {
+        directionImages[getYImage(isHoveredOrFocused())].draw(this, matrixStack, x, y);
     }
 
     @Override
-    protected void drawButtonInner(MatrixStack matrixStack, int mouseX, int mouseY) {
+    protected void drawButtonInner(PoseStack matrixStack, int mouseX, int mouseY) {
 
     }
 

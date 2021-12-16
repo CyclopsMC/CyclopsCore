@@ -2,25 +2,25 @@ package org.cyclops.cyclopscore.metadata;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.core.NonNullList;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 
 /**
  * Crafting recipe exporter.
  */
-public class RegistryExportableCraftingRecipe extends RegistryExportableRecipeAbstract<IRecipeType<ICraftingRecipe>, ICraftingRecipe, CraftingInventory> {
+public class RegistryExportableCraftingRecipe extends RegistryExportableRecipeAbstract<RecipeType<CraftingRecipe>, CraftingRecipe, CraftingContainer> {
 
     protected RegistryExportableCraftingRecipe() {
-        super(() -> IRecipeType.CRAFTING);
+        super(() -> RecipeType.CRAFTING);
     }
 
     @Override
-    public JsonObject serializeRecipe(ICraftingRecipe recipe) {
+    public JsonObject serializeRecipe(CraftingRecipe recipe) {
         JsonObject object = new JsonObject();
 
         NonNullList<Ingredient> inputs = recipe.getIngredients();

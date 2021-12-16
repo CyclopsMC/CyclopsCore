@@ -2,15 +2,15 @@ package org.cyclops.cyclopscore.network;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -41,12 +41,12 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(String.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				output.writeUtf((String) object);
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				return input.readUtf(32767); // The arg-less version is client-side only, so we copy its implementation.
 			}
 		});
@@ -54,12 +54,12 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(double.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				output.writeDouble((Double) object);
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				return input.readDouble();
 			}
 		});
@@ -67,12 +67,12 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(int.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				output.writeInt((int) object);
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				return input.readInt();
 			}
 		});
@@ -80,12 +80,12 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(long.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				output.writeLong((long) object);
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				return input.readLong();
 			}
 		});
@@ -93,12 +93,12 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(short.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				output.writeShort((Short) object);
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				return input.readShort();
 			}
 		});
@@ -106,12 +106,12 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(boolean.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				output.writeBoolean((Boolean) object);
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				return input.readBoolean();
 			}
 		});
@@ -119,31 +119,31 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(float.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				output.writeFloat((Float) object);
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				return input.readFloat();
 			}
 		});
 
-		codecActions.put(Vector3d.class, new ICodecAction() {
+		codecActions.put(Vec3.class, new ICodecAction() {
 			@Override
-			public void encode(Object object, PacketBuffer output) {
-				Vector3d v = (Vector3d)object;
+			public void encode(Object object, FriendlyByteBuf output) {
+				Vec3 v = (Vec3)object;
 				output.writeDouble(v.x);
 				output.writeDouble(v.y);
 				output.writeDouble(v.z);
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				double x = input.readDouble();
 				double y = input.readDouble();
 				double z = input.readDouble();
-				return new Vector3d(x, y, z);
+				return new Vec3(x, y, z);
 			}
 		});
 		
@@ -160,7 +160,7 @@ public abstract class PacketCodec extends PacketBase {
 
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				Map map = (Map) object;
 				output.writeInt(map.size());
 				Set<Map.Entry> entries = map.entrySet();
@@ -182,7 +182,7 @@ public abstract class PacketCodec extends PacketBase {
 
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				Map map = Maps.newHashMap();
 				int size = input.readInt();
 				if(size == 0) {
@@ -203,31 +203,31 @@ public abstract class PacketCodec extends PacketBase {
 			}
 		});
 
-		codecActions.put(CompoundNBT.class, new ICodecAction() {
+		codecActions.put(CompoundTag.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
-				output.writeNbt((CompoundNBT) object);
+			public void encode(Object object, FriendlyByteBuf output) {
+				output.writeNbt((CompoundTag) object);
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				return input.readNbt();
 			}
 		});
 
-		codecActions.put(INBT.class, new ICodecAction() {
+		codecActions.put(Tag.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
-				CompoundNBT tag = new CompoundNBT();
-				tag.put("v", (INBT) object);
+			public void encode(Object object, FriendlyByteBuf output) {
+				CompoundTag tag = new CompoundTag();
+				tag.put("v", (Tag) object);
 				output.writeNbt(tag);
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
-				CompoundNBT tag = input.readNbt();
+			public Object decode(FriendlyByteBuf input) {
+				CompoundTag tag = input.readNbt();
 				return tag.get("v");
 			}
 		});
@@ -235,12 +235,12 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(ItemStack.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				output.writeItem((ItemStack) object);
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				return input.readItem();
 			}
 		});
@@ -248,12 +248,12 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(FluidStack.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
-				output.writeNbt(((FluidStack) object).writeToNBT(new CompoundNBT()));
+			public void encode(Object object, FriendlyByteBuf output) {
+				output.writeNbt(((FluidStack) object).writeToNBT(new CompoundTag()));
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				return FluidStack.loadFluidStackFromNBT(input.readNbt());
 			}
 		});
@@ -261,12 +261,12 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(Direction.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				output.writeInt(((Direction) object).ordinal());
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				return Direction.values()[input.readInt()];
 			}
 		});
@@ -274,28 +274,28 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(BlockPos.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				output.writeBlockPos((BlockPos) object);
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				return input.readBlockPos();
 			}
 		});
 
-		codecActions.put(RegistryKey.class, new ICodecAction() {
+		codecActions.put(ResourceKey.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
-				output.writeUtf(((RegistryKey) object).getRegistryName().toString());
-				output.writeUtf(((RegistryKey) object).location().toString());
+			public void encode(Object object, FriendlyByteBuf output) {
+				output.writeUtf(((ResourceKey) object).getRegistryName().toString());
+				output.writeUtf(((ResourceKey) object).location().toString());
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
-				return RegistryKey.create(
-						RegistryKey.createRegistryKey(new ResourceLocation(input.readUtf(READ_STRING_MAX_LENGTH))),
+			public Object decode(FriendlyByteBuf input) {
+				return ResourceKey.create(
+						ResourceKey.createRegistryKey(new ResourceLocation(input.readUtf(READ_STRING_MAX_LENGTH))),
 						new ResourceLocation(input.readUtf(READ_STRING_MAX_LENGTH)));
 			}
 		});
@@ -303,14 +303,14 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(DimPos.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
-				write(output, ((DimPos) object).getWorldKey());
+			public void encode(Object object, FriendlyByteBuf output) {
+				write(output, ((DimPos) object).getLevelKey());
 				write(output, ((DimPos) object).getBlockPos());
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
-				RegistryKey dimensionType = read(input, RegistryKey.class);
+			public Object decode(FriendlyByteBuf input) {
+				ResourceKey dimensionType = read(input, ResourceKey.class);
 				BlockPos blockPos = read(input, BlockPos.class);
 				return DimPos.of(dimensionType, blockPos);
 			}
@@ -326,7 +326,7 @@ public abstract class PacketCodec extends PacketBase {
 			// -1
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				List<?> list = (List<?>) object;
 				output.writeInt(list.size());
 				if(list.size() == 0) return;
@@ -351,7 +351,7 @@ public abstract class PacketCodec extends PacketBase {
 
 			@SuppressWarnings({ "rawtypes", "unchecked" })
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				List list;
 				int size = input.readInt();
 				if(size == 0) {
@@ -392,7 +392,7 @@ public abstract class PacketCodec extends PacketBase {
 		codecActions.put(Pair.class, new ICodecAction() {
 
 			@Override
-			public void encode(Object object, PacketBuffer output) {
+			public void encode(Object object, FriendlyByteBuf output) {
 				output.writeUtf(((Pair) object).getLeft().getClass().getName());
 				output.writeUtf(((Pair) object).getRight().getClass().getName());
 				write(output, ((Pair) object).getLeft());
@@ -400,7 +400,7 @@ public abstract class PacketCodec extends PacketBase {
 			}
 
 			@Override
-			public Object decode(PacketBuffer input) {
+			public Object decode(FriendlyByteBuf input) {
 				try {
 					ICodecAction keyAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
 					ICodecAction valueAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
@@ -515,7 +515,7 @@ public abstract class PacketCodec extends PacketBase {
 	}
 
 	@Override
-	public void encode(final PacketBuffer output) {
+	public void encode(final FriendlyByteBuf output) {
 		loopCodecFields((field, action) -> {
             Object object = null;
             try {
@@ -528,7 +528,7 @@ public abstract class PacketCodec extends PacketBase {
 	}
 
 	@Override
-    public void decode(final PacketBuffer input) {
+    public void decode(final FriendlyByteBuf input) {
 		loopCodecFields((field, action) -> {
             Object object = action.decode(input);
             try {
@@ -544,7 +544,7 @@ public abstract class PacketCodec extends PacketBase {
 	 * @param packetBuffer A packet buffer.
 	 * @param object An object.
 	 */
-	public static void write(PacketBuffer packetBuffer, Object object) {
+	public static void write(FriendlyByteBuf packetBuffer, Object object) {
 		ICodecAction action = Objects.requireNonNull(getActionSuper(object.getClass()),
 				"No codec action was registered for " + object.getClass().getName());
 		action.encode(object, packetBuffer);
@@ -557,7 +557,7 @@ public abstract class PacketCodec extends PacketBase {
 	 * @param <T> The type of object.
 	 * @return The read object.
 	 */
-	public static <T> T read(PacketBuffer packetBuffer, Class<T> clazz) {
+	public static <T> T read(FriendlyByteBuf packetBuffer, Class<T> clazz) {
 		ICodecAction action = Objects.requireNonNull(getActionSuper(clazz));
 		return (T) action.decode(packetBuffer);
 	}
@@ -569,14 +569,14 @@ public abstract class PacketCodec extends PacketBase {
 		 * @param object The object to encode into the output.
 		 * @param output The byte array to encode to.
 		 */
-		public void encode(Object object, PacketBuffer output);
+		public void encode(Object object, FriendlyByteBuf output);
 
 		/**
 		 * Decode from the input.
 		 * @param input The byte array to decode from.
 		 * @return The object to return after reading it from the input.
 		 */
-	    public Object decode(PacketBuffer input);
+	    public Object decode(FriendlyByteBuf input);
 	    
 	}
 

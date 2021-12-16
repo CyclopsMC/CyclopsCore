@@ -3,18 +3,18 @@ package org.cyclops.cyclopscore.infobook;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Level;
@@ -86,8 +86,8 @@ public class InfoBookParser {
             }
 
         });
-        InfoBookParser.registerAppendixRecipeFactories(IRecipeType.CRAFTING, CraftingRecipeAppendix::new);
-        InfoBookParser.registerAppendixRecipeFactories(IRecipeType.SMELTING, FurnaceRecipeAppendix::new);
+        InfoBookParser.registerAppendixRecipeFactories(RecipeType.CRAFTING, CraftingRecipeAppendix::new);
+        InfoBookParser.registerAppendixRecipeFactories(RecipeType.SMELTING, FurnaceRecipeAppendix::new);
         registerAppendixFactory("advancement_rewards", new InfoBookParser.IAppendixFactory() {
 
             @Override
@@ -148,16 +148,16 @@ public class InfoBookParser {
                 List<SectionAppendix> appendixList = Lists.newArrayList();
 
                 String type = node.getAttribute("type");
-                Optional<IRecipeType<?>> recipeTypeOptional = Registry.RECIPE_TYPE.getOptional(new ResourceLocation(type));
+                Optional<RecipeType<?>> recipeTypeOptional = Registry.RECIPE_TYPE.getOptional(new ResourceLocation(type));
                 if (!recipeTypeOptional.isPresent()) {
                     throw new InvalidAppendixException("Could not find a recipe type: " + type);
                 }
-                IRecipeType recipeType = recipeTypeOptional.get();
-                Map<ResourceLocation, IRecipe<?>> recipes = CraftingHelpers.getRecipeManager().byType(recipeType);
+                RecipeType recipeType = recipeTypeOptional.get();
+                Map<ResourceLocation, Recipe<?>> recipes = CraftingHelpers.getRecipeManager().byType(recipeType);
 
                 String idRegexString = node.getTextContent().trim();
 
-                for (IRecipe<?> recipe : recipes.values()) {
+                for (Recipe<?> recipe : recipes.values()) {
                     try {
                         if (idRegexString.isEmpty() || recipe.getId().toString().matches(idRegexString)) {
                             appendixList.add(createAppendix(infoBook, type, recipe));
@@ -242,7 +242,7 @@ public class InfoBookParser {
      * @param <C> The recipe inventory type
      * @param <R> The recipe type
      */
-    public static <C extends IInventory, R extends IRecipe<C>> void registerAppendixRecipeFactories(IRecipeType<R> recipeType, IAppendixItemFactory<C, R> factory) {
+    public static <C extends Container, R extends Recipe<C>> void registerAppendixRecipeFactories(RecipeType<R> recipeType, IAppendixItemFactory<C, R> factory) {
         String name = Registry.RECIPE_TYPE.getKey(recipeType).toString();
         registerAppendixFactory(name, (infoBook, node) -> {
             ResourceLocation recipeId = getNodeResourceLocation(node);
@@ -675,7 +675,7 @@ public class InfoBookParser {
         return factory.create(infoBook, node);
     }
 
-    protected static SectionAppendix createAppendix(IInfoBook infoBook, String type, IRecipe<?> recipe) throws InvalidAppendixException {
+    protected static SectionAppendix createAppendix(IInfoBook infoBook, String type, Recipe<?> recipe) throws InvalidAppendixException {
         if(type == null) type = "";
         IAppendixItemFactory factory = APPENDIX_RECIPELIST_FACTORIES.get(type);
         if(factory == null) {
@@ -722,7 +722,7 @@ public class InfoBookParser {
 
     }
 
-    public static interface IAppendixItemFactory<C extends IInventory, R extends IRecipe<C>> {
+    public static interface IAppendixItemFactory<C extends Container, R extends Recipe<C>> {
 
         public SectionAppendix create(IInfoBook infoBook, R recipe) throws InvalidAppendixException;
 

@@ -1,14 +1,13 @@
 package org.cyclops.cyclopscore.client.particle;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.SpriteTexturedParticle;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -17,14 +16,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Particle that appears underneath blocks for simulating drops.
  */
 @OnlyIn(Dist.CLIENT)
-public class ParticleDropColored extends SpriteTexturedParticle {
+public class ParticleDropColored extends TextureSheetParticle {
 
     /**
      * The height of the current bob
      */
     private int bobTimer;
 
-    public ParticleDropColored(ParticleDropColoredData data, ClientWorld world, double x, double y, double z) {
+    public ParticleDropColored(ParticleDropColoredData data, ClientLevel world, double x, double y, double z) {
         super(world, x, y, z);
         this.xd = this.yd = this.zd= 0.0D;
 
@@ -40,8 +39,8 @@ public class ParticleDropColored extends SpriteTexturedParticle {
     }
 
     @Override
-    public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -72,7 +71,7 @@ public class ParticleDropColored extends SpriteTexturedParticle {
             this.zd *= 0.699999988079071D;
         }
 
-        BlockPos blockPos = new BlockPos(MathHelper.floor(this.x), MathHelper.floor(this.y), MathHelper.floor(this.z));
+        BlockPos blockPos = new BlockPos(Mth.floor(this.x), Mth.floor(this.y), Mth.floor(this.z));
         BlockState blockState = this.level.getBlockState(blockPos);
         Material material = blockState.getMaterial();
 
@@ -82,7 +81,7 @@ public class ParticleDropColored extends SpriteTexturedParticle {
             if(!fluidState.isEmpty()) {
                 h = ((float) fluidState.getAmount()) / 8;
             }
-            double d0 = (double) ((float) (MathHelper.floor(this.y) + 1) - h);
+            double d0 = (double) ((float) (Mth.floor(this.y) + 1) - h);
 
             if (this.y < d0) {
                 this.remove();

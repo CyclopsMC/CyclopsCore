@@ -3,19 +3,17 @@ package org.cyclops.cyclopscore.network;
 import com.google.common.base.Predicates;
 import io.netty.channel.ChannelHandler.Sharable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.DimensionType;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkDirection;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.PacketDistributor;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
-import org.apache.logging.log4j.Level;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.simple.SimpleChannel;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.Helpers.IDType;
@@ -88,7 +86,7 @@ public final class PacketHandler {
                     });
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
-            CyclopsCore.clog(Level.ERROR, "Could not find a default constructor for packet " + packetType.getName());
+            CyclopsCore.clog(org.apache.logging.log4j.Level.ERROR, "Could not find a default constructor for packet " + packetType.getName());
         }
     }
 
@@ -114,7 +112,7 @@ public final class PacketHandler {
      * @param packet The packet.
      * @param player The player.
      */
-    public void sendToPlayer(PacketBase packet, ServerPlayerEntity player) {
+    public void sendToPlayer(PacketBase packet, ServerPlayer player) {
         networkChannel.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
     }
 
@@ -133,7 +131,7 @@ public final class PacketHandler {
      * @param packet The packet.
      * @param dimension The dimension to send to.
      */
-    public void sendToDimension(PacketBase packet, RegistryKey<World> dimension) {
+    public void sendToDimension(PacketBase packet, ResourceKey<Level> dimension) {
         PacketDistributor.PacketTarget target = PacketDistributor.DIMENSION.with(() -> dimension);
         target.send(networkChannel.toVanillaPacket(packet, target.getDirection()));
     }

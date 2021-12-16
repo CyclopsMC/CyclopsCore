@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.block.multi;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.LevelReader;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 import java.util.List;
@@ -26,11 +26,11 @@ public class HollowCubeDetector extends CubeDetector {
 	}
 	
 	@Override
-	protected void postValidate(IWorldReader world, final Vector3i size, final int[][] dimensionEgdes, final boolean valid, final BlockPos originCorner, final BlockPos excludeLocation) {
+	protected void postValidate(LevelReader world, final Vec3i size, final int[][] dimensionEgdes, final boolean valid, final BlockPos originCorner, final BlockPos excludeLocation) {
 		coordinateRecursion(world, dimensionEgdes, new BlockPosAction() {
 
 			@Override
-			public boolean run(IWorldReader world, BlockPos location) {
+			public boolean run(LevelReader world, BlockPos location) {
 				if(isEdge(world, dimensionEgdes, location) && isValidLocation(world, location, excludeLocation) == null) {
 					notifyListeners(world, location, size, valid, originCorner);
 				}
@@ -41,9 +41,9 @@ public class HollowCubeDetector extends CubeDetector {
 	}
 	
 	@Override
-	protected ITextComponent validateLocationInStructure(IWorldReader world, int[][] dimensionEgdes, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
+	protected Component validateLocationInStructure(LevelReader world, int[][] dimensionEgdes, BlockPos location, IValidationAction action, BlockPos excludeLocation) {
 		// Validate edge or air.
-		ITextComponent error;
+		Component error;
 		if (isEdge(world, dimensionEgdes, location)) {
 			if ((error = isValidLocation(world, location, action, excludeLocation)) != null) {
 				//System.out.println("No edge at " + location);
@@ -52,7 +52,7 @@ public class HollowCubeDetector extends CubeDetector {
 		} else {
 			if (!isAir(world, location)) {
 				//System.out.println("No air at " + location);
-				return new TranslationTextComponent("multiblock.cyclopscore.error.hollow.air",
+				return new TranslatableComponent("multiblock.cyclopscore.error.hollow.air",
 						LocationHelpers.toCompactString(location));
 			}
 		}

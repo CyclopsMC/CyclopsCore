@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
@@ -25,13 +25,13 @@ public class ValueNotifyPacket extends PacketCodec {
 	@CodecField
 	private int valueId;
 	@CodecField
-	private CompoundNBT value;
+	private CompoundTag value;
 
     public ValueNotifyPacket() {
 
     }
 
-    public ValueNotifyPacket(ContainerType<?> containerType, int valueId, CompoundNBT value) {
+    public ValueNotifyPacket(MenuType<?> containerType, int valueId, CompoundTag value) {
     	this.containerType = containerType.getRegistryName().toString();
 		this.valueId = valueId;
 		this.value = value;
@@ -48,7 +48,7 @@ public class ValueNotifyPacket extends PacketCodec {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void actionClient(World world, PlayerEntity player) {
+	public void actionClient(Level level, Player player) {
 		if(player.containerMenu instanceof IValueNotifiable) {
 			IValueNotifiable container = ((IValueNotifiable) player.containerMenu);
 			if (isContainerValid(container)) {
@@ -58,7 +58,7 @@ public class ValueNotifyPacket extends PacketCodec {
 	}
 
 	@Override
-	public void actionServer(World world, ServerPlayerEntity player) {
+	public void actionServer(Level level, ServerPlayer player) {
 		if(player.containerMenu instanceof IValueNotifiable) {
 			IValueNotifiable container = ((IValueNotifiable) player.containerMenu);
 			if (isContainerValid(container)) {

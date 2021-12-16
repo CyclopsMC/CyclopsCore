@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.item;
 
 import com.google.common.collect.Lists;
 import lombok.Data;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.List;

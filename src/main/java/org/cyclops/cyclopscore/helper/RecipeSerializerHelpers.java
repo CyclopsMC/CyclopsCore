@@ -8,16 +8,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.fluid.EmptyFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.material.EmptyFluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -44,11 +44,11 @@ public class RecipeSerializerHelpers {
                 return Ingredient.EMPTY;
             }
         } else if (element.isJsonObject()) {
-            return Ingredient.fromJson(JSONUtils.getAsJsonObject(json, key));
+            return Ingredient.fromJson(GsonHelper.getAsJsonObject(json, key));
         } else if (element.isJsonArray()) {
-            return Ingredient.fromJson(JSONUtils.getAsJsonArray(json, key));
+            return Ingredient.fromJson(GsonHelper.getAsJsonArray(json, key));
         } else {
-            String itemName = JSONUtils.getAsString(json, key);
+            String itemName = GsonHelper.getAsString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(itemName);
             return Ingredient.of(new ItemStack(Registry.ITEM.getOptional(resourcelocation)
                     .orElseThrow(() -> new JsonSyntaxException("Item: " + itemName + " does not exist"))));
@@ -76,9 +76,9 @@ public class RecipeSerializerHelpers {
                 return ItemStack.EMPTY;
             }
         } else if (element.isJsonObject()) {
-            return ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, key));
+            return ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, key));
         } else {
-            String itemName = JSONUtils.getAsString(json, key);
+            String itemName = GsonHelper.getAsString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(itemName);
             return new ItemStack(Registry.ITEM.getOptional(resourcelocation)
                     .orElseThrow(() -> new JsonSyntaxException("Item: " + itemName + " does not exist")));
@@ -125,7 +125,7 @@ public class RecipeSerializerHelpers {
         }
 
         // Read Fluid
-        String fluidName = JSONUtils.getAsString(json, "fluid");
+        String fluidName = GsonHelper.getAsString(json, "fluid");
         ResourceLocation resourcelocation = new ResourceLocation(fluidName);
         Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourcelocation);
         if (fluid instanceof EmptyFluid) {
@@ -133,14 +133,14 @@ public class RecipeSerializerHelpers {
         }
 
         // Read NBT
-        CompoundNBT tag = null;
+        CompoundTag tag = null;
         if (readNbt && json.has("nbt")) {
             try {
                 JsonElement element = json.get("nbt");
                 if (element.isJsonObject()) {
-                    tag = JsonToNBT.parseTag(GSON.toJson(element));
+                    tag = TagParser.parseTag(GSON.toJson(element));
                 } else {
-                    tag = JsonToNBT.parseTag(JSONUtils.convertToString(element, "nbt"));
+                    tag = TagParser.parseTag(GsonHelper.convertToString(element, "nbt"));
                 }
             } catch (CommandSyntaxException e) {
                 throw new JsonSyntaxException("Invalid NBT Entry: " + e.toString());
@@ -150,7 +150,7 @@ public class RecipeSerializerHelpers {
         // Read amount
         int amount = FluidHelpers.BUCKET_VOLUME;
         if (json.has("amount")) {
-            amount = JSONUtils.getAsInt(json, "amount");
+            amount = GsonHelper.getAsInt(json, "amount");
         }
 
         return new FluidStack(fluid, amount, tag);
@@ -165,9 +165,9 @@ public class RecipeSerializerHelpers {
                 return FluidStack.EMPTY;
             }
         } else if (element.isJsonObject()) {
-            return deserializeFluidStack(JSONUtils.getAsJsonObject(json, key), true);
+            return deserializeFluidStack(GsonHelper.getAsJsonObject(json, key), true);
         } else {
-            String fluidName = JSONUtils.getAsString(json, key);
+            String fluidName = GsonHelper.getAsString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(fluidName);
             Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourcelocation);
             if (fluid instanceof EmptyFluid) {

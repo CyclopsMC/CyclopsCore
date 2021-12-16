@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.potion.Effect;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -13,7 +13,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class EffectConfig extends ExtendedConfigForge<EffectConfig, Effect> {
+public abstract class EffectConfig extends ExtendedConfigForge<EffectConfig, MobEffect> {
 
     /**
      * Make a new instance.
@@ -21,7 +21,7 @@ public abstract class EffectConfig extends ExtendedConfigForge<EffectConfig, Eff
      * @param namedId The unique name ID for the configurable.
      * @param elementConstructor The element constructor.
      */
-    public EffectConfig(ModBase mod, String namedId, Function<EffectConfig, ? extends Effect> elementConstructor) {
+    public EffectConfig(ModBase mod, String namedId, Function<EffectConfig, ? extends MobEffect> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 
@@ -36,8 +36,8 @@ public abstract class EffectConfig extends ExtendedConfigForge<EffectConfig, Eff
     }
 
     @Override
-    public IForgeRegistry<Effect> getRegistry() {
-        return ForgeRegistries.POTIONS;
+    public IForgeRegistry<MobEffect> getRegistry() {
+        return ForgeRegistries.MOB_EFFECTS;
     }
 
 }

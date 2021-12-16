@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.block.multi;
 
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 /**
@@ -11,11 +11,11 @@ import org.cyclops.cyclopscore.helper.LocationHelpers;
  */
 public class CubeSizeValidator implements ISizeValidator {
     @Override
-    public ITextComponent isSizeValid(Vector3i size) {
+    public Component isSizeValid(Vec3i size) {
         if(size.getX() == size.getY() && size.getY() == size.getZ()) {
             return null;
         }
-        return new TranslationTextComponent("multiblock.cyclopscore.error.size.cube",
+        return new TranslatableComponent("multiblock.cyclopscore.error.size.cube",
                 LocationHelpers.toCompactString(size));
     }
 }

@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.infobook.test;
 
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.network.FriendlyByteBuf;
 import org.cyclops.cyclopscore.RegistryEntries;
 import org.cyclops.cyclopscore.inventory.container.InventoryContainer;
 
@@ -12,12 +12,12 @@ import org.cyclops.cyclopscore.inventory.container.InventoryContainer;
  */
 public class ContainerInfoBookTest extends InventoryContainer {
 
-    public ContainerInfoBookTest(int id, PlayerInventory inventory, PacketBuffer packetBuffer) {
+    public ContainerInfoBookTest(int id, Inventory inventory, FriendlyByteBuf packetBuffer) {
         this(id, inventory);
     }
 
-    public ContainerInfoBookTest(int id, PlayerInventory playerInventory) {
-        super(RegistryEntries.CONTAINER_INFOBOOK_TEST, id, playerInventory, new Inventory(0));
+    public ContainerInfoBookTest(int id, Inventory playerInventory) {
+        super(RegistryEntries.CONTAINER_INFOBOOK_TEST, id, playerInventory, new SimpleContainer(0));
     }
 
     @Override

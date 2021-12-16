@@ -1,14 +1,13 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 
@@ -29,7 +28,7 @@ public final class ItemStackHelpers {
      * @param pos The position
      * @param itemStack the item stack
      */
-    public static void spawnItemStack(World world, BlockPos pos, ItemStack itemStack) {
+    public static void spawnItemStack(Level world, BlockPos pos, ItemStack itemStack) {
         spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), itemStack);
     }
 
@@ -41,7 +40,7 @@ public final class ItemStackHelpers {
      * @param z Z
      * @param itemStack the item stack
      */
-    public static void spawnItemStack(World world, double x, double y, double z, ItemStack itemStack) {
+    public static void spawnItemStack(Level world, double x, double y, double z, ItemStack itemStack) {
         float offsetX = RANDOM.nextFloat() * 0.8F + 0.1F;
         float offsetY = RANDOM.nextFloat() * 0.8F + 0.1F;
         float offsetZ = RANDOM.nextFloat() * 0.8F + 0.1F;
@@ -75,7 +74,7 @@ public final class ItemStackHelpers {
      * @param stack The stack to spawn
      * @param player The player to direct the motion to
      */
-    public static void spawnItemStackToPlayer(World world, BlockPos pos, ItemStack stack, PlayerEntity player) {
+    public static void spawnItemStackToPlayer(Level world, BlockPos pos, ItemStack stack, Player player) {
         if (!world.isClientSide()) {
             float f = 0.5F;
 
@@ -103,7 +102,7 @@ public final class ItemStackHelpers {
      * @param item The item to search in the inventory.
      * @return If the player has the item.
      */
-    public static boolean hasPlayerItem(PlayerEntity player, Item item) {
+    public static boolean hasPlayerItem(Player player, Item item) {
         for(PlayerExtendedInventoryIterator it = new PlayerExtendedInventoryIterator(player); it.hasNext();) {
             ItemStack itemStack = it.next();
             if (itemStack != null && itemStack.getItem() == item) {
@@ -141,7 +140,7 @@ public final class ItemStackHelpers {
 
     /**
      * Get a hash code would satisfy the requirements of {@link Object#hashCode}
-     * if {@link ItemStack#areItemStacksEqual} stood in for {@link Object#equals}.
+     * if {@link ItemStack#isSame(ItemStack, ItemStack)} stood in for {@link Object#equals}.
      * @param stack The itemstack.
      * @return The hash code.
      */
@@ -151,7 +150,7 @@ public final class ItemStackHelpers {
         result = 37 * result + stack.getCount();
         result = 37 * result + stack.getItem().hashCode();
         // Tags can be very large, and expensive to calculate, which is not needed for hashCodes.
-        // CompoundNBT tagCompound = stack.getTag();
+        // CompoundTag tagCompound = stack.getTag();
         // result = 37 * result + (tagCompound != null ? tagCompound.hashCode() : 0);
         // Not factoring in capability compatibility. Doing so would require either reflection (slow)
         // or an access transformer, it's highly unlikely that it'd be the only difference between
@@ -165,14 +164,14 @@ public final class ItemStackHelpers {
      * @param itemGroup The creative tab.
      * @return If it can be displayed.
      */
-    public static boolean isValidCreativeTab(Item item, @Nullable ItemGroup itemGroup) {
-        for (ItemGroup itemTab : item.getCreativeTabs()) {
+    public static boolean isValidCreativeTab(Item item, @Nullable CreativeModeTab itemGroup) {
+        for (CreativeModeTab itemTab : item.getCreativeTabs()) {
             if (itemTab == itemGroup) {
                 return true;
             }
         }
         return itemGroup == null
-                || itemGroup == ItemGroup.TAB_SEARCH;
+                || itemGroup == CreativeModeTab.TAB_SEARCH;
     }
 
 }

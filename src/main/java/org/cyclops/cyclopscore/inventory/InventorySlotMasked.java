@@ -1,19 +1,19 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * An inventory that only exposes a given number of slots.
  * @author rubensworks
  */
-public class InventorySlotMasked implements IInventory {
+public class InventorySlotMasked implements Container {
 
-    private final IInventory inventory;
+    private final Container inventory;
     private final int[] slots;
 
-    public InventorySlotMasked(IInventory inventory, int... slots) {
+    public InventorySlotMasked(Container inventory, int... slots) {
         this.inventory = inventory;
         this.slots = slots;
     }
@@ -75,17 +75,17 @@ public class InventorySlotMasked implements IInventory {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return inventory.stillValid(player);
     }
 
     @Override
-    public void startOpen(PlayerEntity player) {
+    public void startOpen(Player player) {
         inventory.startOpen(player);
     }
 
     @Override
-    public void stopOpen(PlayerEntity player) {
+    public void stopOpen(Player player) {
         inventory.stopOpen(player);
     }
 

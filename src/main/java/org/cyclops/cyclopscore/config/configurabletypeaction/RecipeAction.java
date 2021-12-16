@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.cyclops.cyclopscore.config.extendedconfig.RecipeConfig;
 
 /**
@@ -9,6 +9,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.RecipeConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class RecipeAction<T extends IRecipe<?>> extends ConfigurableTypeActionForge<RecipeConfig<T>, IRecipeSerializer<T>> {
+public class RecipeAction<T extends Recipe<?>> extends ConfigurableTypeActionForge<RecipeConfig<T>, RecipeSerializer<T>> {
 
 }

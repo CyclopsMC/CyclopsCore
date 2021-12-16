@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.ingredient.recipe;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.world.World;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.IPrototypedIngredientAlternatives;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.IRecipeDefinition;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.IRecipeHandler;
@@ -22,17 +22,17 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * A recipe handler that handles {@link IRecipeType}.
+ * A recipe handler that handles {@link RecipeType}.
  * @author rubensworks
  */
-public abstract class RecipeHandlerRecipeType<C extends IInventory, R extends IRecipe<C>> implements IRecipeHandler {
+public abstract class RecipeHandlerRecipeType<C extends Container, R extends Recipe<C>> implements IRecipeHandler {
 
-    private final Supplier<World> worldSupplier;
-    private final IRecipeType<R> recipeType;
+    private final Supplier<Level> worldSupplier;
+    private final RecipeType<R> recipeType;
     private final Set<IngredientComponent<?, ?>> inputComponents;
     private final Set<IngredientComponent<?, ?>> outputComponents;
 
-    public RecipeHandlerRecipeType(Supplier<World> worldSupplier, IRecipeType<R> recipeType,
+    public RecipeHandlerRecipeType(Supplier<Level> worldSupplier, RecipeType<R> recipeType,
                                    Set<IngredientComponent<?, ?>> inputComponents,
                                    Set<IngredientComponent<?, ?>> outputComponents) {
         this.worldSupplier = worldSupplier;

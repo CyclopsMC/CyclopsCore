@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.client.gui.component.input;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.cyclops.cyclopscore.client.gui.component.button.ButtonArrow;
 
 import java.util.List;
@@ -22,14 +22,14 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
     private int activeElement;
     private IInputListener listener;
 
-    public WidgetArrowedListField(FontRenderer fontrenderer, int x, int y, int width, int height, boolean arrows,
-                                  ITextComponent narrationMessage, boolean background, List<E> elements) {
+    public WidgetArrowedListField(Font fontrenderer, int x, int y, int width, int height, boolean arrows,
+                                  Component narrationMessage, boolean background, List<E> elements) {
         super(fontrenderer, x, y, width, height, narrationMessage, background);
         this.arrows = arrows;
 
         if(this.arrows) {
-            arrowLeft  = new ButtonArrow(x, y - 1, new TranslationTextComponent("gui.cyclopscore.left"), (button) -> this.decrease(), ButtonArrow.Direction.WEST);
-            arrowRight = new ButtonArrow(x + width, y - 1, new TranslationTextComponent("gui.cyclopscore.right"), (button) -> this.increase(), ButtonArrow.Direction.EAST);
+            arrowLeft  = new ButtonArrow(x, y - 1, new TranslatableComponent("gui.cyclopscore.left"), (button) -> this.decrease(), ButtonArrow.Direction.WEST);
+            arrowRight = new ButtonArrow(x + width, y - 1, new TranslatableComponent("gui.cyclopscore.right"), (button) -> this.increase(), ButtonArrow.Direction.EAST);
             arrowRight.x -= arrowRight.getWidth();
         }
         setBordered(true);
@@ -78,7 +78,7 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         int offsetX = 0;
         if(arrows) {
             arrowLeft.renderButton(matrixStack, mouseX, mouseY, partialTicks);

@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore;
 
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.registries.ObjectHolder;
 import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTest;
 
@@ -17,6 +17,6 @@ public class RegistryEntries {
     public static final ParticleType<?> PARTICLE_DROP_COLORED = null;
 
     @ObjectHolder("cyclopscore:test_infobook")
-    public static final ContainerType<ContainerInfoBookTest> CONTAINER_INFOBOOK_TEST = null;
+    public static final MenuType<ContainerInfoBookTest> CONTAINER_INFOBOOK_TEST = null;
 
 }

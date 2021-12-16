@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.client.icon;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -35,7 +35,7 @@ public class IconProvider {
         toRegister.add(Pair.of(Pair.of(object, field), location));
     }
 
-    protected TextureAtlasSprite registerIcon(AtlasTexture textureMap, String location) {
+    protected TextureAtlasSprite registerIcon(TextureAtlas textureMap, String location) {
         return textureMap.getSprite(new ResourceLocation(clientProxy.getMod().getModId(), location));
     }
 
@@ -44,7 +44,7 @@ public class IconProvider {
     }
 
     public void onPreTextureStitch(TextureStitchEvent.Pre event) {
-        if (event.getMap().location().equals(PlayerContainer.BLOCK_ATLAS)) {
+        if (event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {
             for (Pair<Pair<Object, Field>, String> entry : toRegister) {
                 event.addSprite(getIconId(entry.getValue()));
             }
@@ -52,9 +52,9 @@ public class IconProvider {
     }
 
     public void onPostTextureStitch(TextureStitchEvent.Post event) {
-        if (event.getMap().location().equals(PlayerContainer.BLOCK_ATLAS)) {
+        if (event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS)) {
             for (Pair<Pair<Object, Field>, String> entry : toRegister) {
-                TextureAtlasSprite icon = event.getMap().getSprite(getIconId(entry.getValue()));
+                TextureAtlasSprite icon = event.getAtlas().getSprite(getIconId(entry.getValue()));
                 Object object = entry.getLeft().getLeft();
                 Field field = entry.getLeft().getRight();
                 try {

@@ -1,18 +1,18 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FireBlock;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.state.Property;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FireBlock;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -52,8 +52,8 @@ public final class BlockHelpers {
      * @param blockState The blockstate to serialize.
      * @return The blockstate as NBT.
      */
-    public static CompoundNBT serializeBlockState(BlockState blockState) {
-        return NBTUtil.writeBlockState(blockState);
+    public static CompoundTag serializeBlockState(BlockState blockState) {
+        return NbtUtils.writeBlockState(blockState);
     }
 
     /**
@@ -61,8 +61,8 @@ public final class BlockHelpers {
      * @param serializedBlockState The blockstate as NBT.
      * @return The resulting blockstate.
      */
-    public static BlockState deserializeBlockState(CompoundNBT serializedBlockState) {
-        return NBTUtil.readBlockState(serializedBlockState);
+    public static BlockState deserializeBlockState(CompoundTag serializedBlockState) {
+        return NbtUtils.readBlockState(serializedBlockState);
     }
 
     /**
@@ -89,7 +89,7 @@ public final class BlockHelpers {
      * @param world The world.
      * @param pos The pos.
      */
-    public static void markForUpdate(World world, BlockPos pos) {
+    public static void markForUpdate(Level world, BlockPos pos) {
         BlockState blockState = world.getBlockState(pos);
         world.sendBlockUpdated(pos, blockState, blockState, MinecraftHelpers.BLOCK_NOTIFY | MinecraftHelpers.BLOCK_NOTIFY_CLIENT);
     }
@@ -101,9 +101,9 @@ public final class BlockHelpers {
      * @param collisions The list fo add the box to.
      * @param addingBox The box to add to the lost, relative coordinates.
      */
-    public static void addCollisionBoxToList(BlockPos pos, AxisAlignedBB collidingBox, List<AxisAlignedBB> collisions, AxisAlignedBB addingBox) {
+    public static void addCollisionBoxToList(BlockPos pos, AABB collidingBox, List<AABB> collisions, AABB addingBox) {
         if (addingBox != null) {
-            AxisAlignedBB axisalignedbb = addingBox.move(pos);
+            AABB axisalignedbb = addingBox.move(pos);
             if (collidingBox.intersects(axisalignedbb)) {
                 collisions.add(axisalignedbb);
             }
@@ -116,7 +116,7 @@ public final class BlockHelpers {
      * @param blockPos The block to check the top of.
      * @return If it has a solid top surface.
      */
-    public static boolean doesBlockHaveSolidTopSurface(IWorldReader world, BlockPos blockPos) {
+    public static boolean doesBlockHaveSolidTopSurface(LevelReader world, BlockPos blockPos) {
         return world.getBlockState(blockPos.offset(0, -1, 0)).isSolidRender(world, blockPos);
     }
 

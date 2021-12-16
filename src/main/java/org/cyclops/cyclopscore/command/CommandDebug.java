@@ -5,10 +5,11 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.Util;
+import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.TextComponent;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacket;
 import org.cyclops.cyclopscore.network.PacketCodec;
@@ -24,7 +25,7 @@ import java.util.Map;
  * @author rubensworks
  *
  */
-public class CommandDebug implements Command<CommandSource> {
+public class CommandDebug implements Command<CommandSourceStack> {
 
     private static final int AMOUNT = 3;
     public static final Map<String, PacketCodec> PACKETS = Maps.newHashMap();
@@ -36,14 +37,14 @@ public class CommandDebug implements Command<CommandSource> {
     }
 
     @Override
-    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
+    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         PacketCodec packet = context.getArgument("packet", PacketCodec.class);
-        context.getSource().getPlayerOrException().sendMessage(new StringTextComponent(String.format("Sending %s from client to server...", packet.getClass())), Util.NIL_UUID);
+        context.getSource().getPlayerOrException().sendMessage(new TextComponent(String.format("Sending %s from client to server...", packet.getClass())), Util.NIL_UUID);
         CyclopsCore._instance.getPacketHandler().sendToPlayer(packet, context.getSource().getPlayerOrException());
         return 0;
     }
 
-    public static LiteralArgumentBuilder<CommandSource> make() {
+    public static LiteralArgumentBuilder<CommandSourceStack> make() {
         return Commands.literal("debug")
                 .requires((commandSource) -> commandSource.hasPermission(2))
                 .then(Commands.argument("packet", ArgumentTypeDebugPacket.INSTANCE)

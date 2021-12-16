@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.ingredient.recipe;
 
 import com.google.common.collect.Lists;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.crafting.NBTIngredient;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.IPrototypedIngredientAlternatives;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 /**
  * Helpers for the conversion between {@link org.cyclops.commoncapabilities.api.capability.recipehandler.IRecipeDefinition}
- * and {@link IRecipe}.
+ * and {@link Recipe}.
  */
 public class IngredientRecipeHelpers {
 

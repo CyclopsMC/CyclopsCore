@@ -2,10 +2,10 @@ package org.cyclops.cyclopscore.inventory.slot;
 
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * A slot with some fancy and fun extra features.
@@ -25,7 +25,7 @@ public class SlotExtended extends Slot {
     @Setter
     private boolean adjustable = true;
 
-    public SlotExtended(IInventory inventoryIn, int index, int x, int y) {
+    public SlotExtended(Container inventoryIn, int index, int x, int y) {
         super(inventoryIn, index, x, y);
     }
 
@@ -35,7 +35,7 @@ public class SlotExtended extends Slot {
     }
 
     @Override
-    public boolean mayPickup(PlayerEntity playerIn) {
+    public boolean mayPickup(Player playerIn) {
         return super.mayPickup(playerIn) && !isPhantom();
     }
 }

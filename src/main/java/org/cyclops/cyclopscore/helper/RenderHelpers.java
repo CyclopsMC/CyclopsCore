@@ -1,34 +1,39 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.base.Function;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.particle.DiggingParticle;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.renderer.BlockModelShapes;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.TerrainParticle;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -54,7 +59,7 @@ public class RenderHelpers {
      * @param texture The texture to bind.
      */
     public static void bindTexture(ResourceLocation texture) {
-    	Minecraft.getInstance().getTextureManager().bind(texture);
+    	Minecraft.getInstance().getTextureManager().bindForSetup(texture);
     }
 
     /**
@@ -75,12 +80,12 @@ public class RenderHelpers {
      * @param scale The scale to render the string by.
      * @param color The color to draw
      */
-    public static void drawScaledString(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, float scale, int color) {
-        GlStateManager._pushMatrix();
-        GlStateManager._translatef(x, y, 0);
-        GlStateManager._scalef(scale, scale, 1.0f);
+    public static void drawScaledString(PoseStack matrixStack, Font fontRenderer, String string, int x, int y, float scale, int color) {
+        matrixStack.pushPose();
+        matrixStack.translate(x, y, 0);
+        matrixStack.scale(scale, scale, 1.0f);
         fontRenderer.draw(matrixStack, string, 0, 0, color);
-        GlStateManager._popMatrix();
+        matrixStack.popPose();
     }
 
     /**
@@ -93,7 +98,7 @@ public class RenderHelpers {
      * @param scale The scale to render the string by.
      * @param color The color to draw
      */
-    public static void drawScaledStringWithShadow(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, float scale, int color) {
+    public static void drawScaledStringWithShadow(PoseStack matrixStack, Font fontRenderer, String string, int x, int y, float scale, int color) {
         matrixStack.pushPose();
         matrixStack.translate(x, y, 0);
         matrixStack.scale(scale, scale, 1.0f);
@@ -111,7 +116,7 @@ public class RenderHelpers {
      * @param maxWidth The maximum width to scale to
      * @param color The color to draw
      */
-    public static void drawScaledCenteredString(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, int maxWidth, int color) {
+    public static void drawScaledCenteredString(PoseStack matrixStack, Font fontRenderer, String string, int x, int y, int maxWidth, int color) {
         drawScaledCenteredString(matrixStack, fontRenderer, string, x, y, maxWidth, 1.0F, maxWidth, color);
     }
 
@@ -128,7 +133,7 @@ public class RenderHelpers {
      * @param maxWidth The maximum width to scale to
      * @param color The color to draw
      */
-    public static void drawScaledCenteredString(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
+    public static void drawScaledCenteredString(PoseStack matrixStack, Font fontRenderer, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
         float originalWidth = fontRenderer.width(string) * originalScale;
         float scale = Math.min(originalScale, maxWidth / originalWidth * originalScale);
         drawScaledCenteredString(matrixStack, fontRenderer, string, x, y, width, scale, color);
@@ -145,7 +150,7 @@ public class RenderHelpers {
      * @param scale The desired scale
      * @param color The color to draw
      */
-    public static void drawScaledCenteredString(MatrixStack matrixStack, FontRenderer fontRenderer, String string, int x, int y, int width, float scale, int color) {
+    public static void drawScaledCenteredString(PoseStack matrixStack, Font fontRenderer, String string, int x, int y, int width, float scale, int color) {
         matrixStack.pushPose();
         matrixStack.scale(scale, scale, 1.0f);
         int titleLength = fontRenderer.width(string);
@@ -159,10 +164,10 @@ public class RenderHelpers {
      * @param blockState The block state.
      * @return The corresponding baked model.
      */
-    public static IBakedModel getBakedModel(BlockState blockState) {
+    public static BakedModel getBakedModel(BlockState blockState) {
         Minecraft mc = Minecraft.getInstance();
-        BlockRendererDispatcher blockRendererDispatcher = mc.getBlockRenderer();
-        BlockModelShapes blockModelShapes = blockRendererDispatcher.getBlockModelShaper();
+        BlockRenderDispatcher blockRendererDispatcher = mc.getBlockRenderer();
+        BlockModelShaper blockModelShapes = blockRendererDispatcher.getBlockModelShaper();
         return blockModelShapes.getBlockModel(blockState);
     }
 
@@ -174,7 +179,7 @@ public class RenderHelpers {
      * @return The baked model.
      */
 
-    public static IBakedModel getDynamicBakedModel(World world, BlockPos pos) {
+    public static BakedModel getDynamicBakedModel(Level world, BlockPos pos) {
         return getBakedModel(world.getBlockState(pos));
     }
 
@@ -186,13 +191,13 @@ public class RenderHelpers {
      * @param pos The position.
      * @param side The hit side.
      */
-    public static void addBlockHitEffects(ParticleManager particleManager, ClientWorld world, BlockState blockState, BlockPos pos, Direction side)  {
-        if (blockState.getRenderShape() != BlockRenderType.INVISIBLE) {
+    public static void addBlockHitEffects(ParticleEngine particleManager, ClientLevel world, BlockState blockState, BlockPos pos, Direction side)  {
+        if (blockState.getRenderShape() != RenderShape.INVISIBLE) {
             int i = pos.getX();
             int j = pos.getY();
             int k = pos.getZ();
             float f = 0.1F;
-            AxisAlignedBB bb = blockState.getShape(world, pos).bounds();
+            AABB bb = blockState.getShape(world, pos).bounds();
             double d0 = (double)i + rand.nextDouble() * (bb.maxX - bb.minX - (double)(f * 2.0F)) + (double)f + bb.minX;
             double d1 = (double)j + rand.nextDouble() * (bb.maxY - bb.minY - (double)(f * 2.0F)) + (double)f + bb.minY;
             double d2 = (double)k + rand.nextDouble() * (bb.maxZ - bb.minZ - (double)(f * 2.0F)) + (double)f + bb.minZ;
@@ -204,13 +209,13 @@ public class RenderHelpers {
             if (side == Direction.WEST)  d0 = (double)i + bb.minX - (double)f;
             if (side == Direction.EAST)  d0 = (double)i + bb.maxX + (double)f;
 
-            Particle fx = new DiggingParticle.Factory().createParticle(new BlockParticleData(ParticleTypes.BLOCK, blockState), world, d0, d1, d2, 0.0D, 0.0D, 0.0D);
+            Particle fx = new TerrainParticle.Provider().createParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockState), world, d0, d1, d2, 0.0D, 0.0D, 0.0D);
             particleManager.add(fx);
         }
     }
 
     public static final Function<ResourceLocation, TextureAtlasSprite> TEXTURE_GETTER =
-            location -> Minecraft.getInstance().getTextureAtlas(PlayerContainer.BLOCK_ATLAS).apply(location);
+            location -> Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(location);
 
     /**
      * Get the default icon from a block.
@@ -254,7 +259,7 @@ public class RenderHelpers {
      * @param matrixStack The matrix stack.
      * @param render The actual fluid renderer.
      */
-    public static void renderFluidContext(FluidStack fluid, MatrixStack matrixStack, IFluidContextRender render) {
+    public static void renderFluidContext(FluidStack fluid, PoseStack matrixStack, IFluidContextRender render) {
         if(fluid != null && fluid.getAmount() > 0) {
             matrixStack.pushPose();
 
@@ -263,13 +268,11 @@ public class RenderHelpers {
             RenderSystem.disableCull();
 
             // Correct color & lighting
-            RenderSystem.color4f(1, 1, 1, 1);
-            RenderSystem.disableLighting();
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
             // Set blockState textures
-            Minecraft.getInstance().getTextureManager().bind(AtlasTexture.LOCATION_BLOCKS);
+            Minecraft.getInstance().getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
 
             render.render();
 
@@ -279,7 +282,7 @@ public class RenderHelpers {
     }
 
     /**
-     * Get the fluid color to use in {@link net.minecraft.client.renderer.BufferBuilder} rendering.
+     * Get the fluid color to use in buffer rendering.
      * @param fluidStack The fluid stack.
      * @return The RGB colors.
      */
@@ -289,7 +292,7 @@ public class RenderHelpers {
     }
 
     /**
-     * Get the fluid color to use in {@link BakedQuad}.
+     * Get the fluid color to use in a baked quad.
      * @param fluidStack The fluid stack.
      * @return The BGR colors.
      */
@@ -338,8 +341,37 @@ public class RenderHelpers {
         return isPointInRegion(button.x, button.y, button.getWidth(), button.getHeight(), pointX, pointY);
     }
 
+    public static void blitColored(PoseStack poseStack, int x, int y, int z, int width, int height, TextureAtlasSprite sprite, float r, float g, float b, float a) {
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        Matrix4f matrix4f = poseStack.last().pose();
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
+        bufferbuilder.vertex(matrix4f, x, y, z).color(r, g, b, a).uv(sprite.getU0(), sprite.getV1()).endVertex();
+        bufferbuilder.vertex(matrix4f, x + width, y, z).color(r, g, b, a).uv(sprite.getU1(), sprite.getV1()).endVertex();
+        bufferbuilder.vertex(matrix4f, x + width, y + height, z).color(r, g, b, a).uv(sprite.getU1(), sprite.getV0()).endVertex();
+        bufferbuilder.vertex(matrix4f, x, y + height, z).color(r, g, b, a).uv(sprite.getU0(), sprite.getV0()).endVertex();
+        bufferbuilder.end();
+    }
+
+    public static void blitColored(PoseStack poseStack, int x, int y, int z, float u, float v, int width, int height, float r, float g, float b, float a) {
+        blitColored(poseStack, x, y, z, width, height, u, u + width, v, v + height, r, g, b, a);
+    }
+
+    public static void blitColored(PoseStack poseStack, int x, int y, int z, int width, int height, float u0, float u1, float v0, float v1, float r, float g, float b, float a) {
+        Matrix4f matrix4f = poseStack.last().pose();
+        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
+        bufferbuilder.vertex(matrix4f, (float)x, (float)y + height, (float)z).color(r, g, b, a).uv(u0, v1).endVertex();
+        bufferbuilder.vertex(matrix4f, (float)x + width, (float)y + height, (float)z).color(r, g, b, a).uv(u1, v1).endVertex();
+        bufferbuilder.vertex(matrix4f, (float)x + width, (float)y, (float)z).color(r, g, b, a).uv(u1, v0).endVertex();
+        bufferbuilder.vertex(matrix4f, (float)x, (float)y, (float)z).color(r, g, b, a).uv(u0, v0).endVertex();
+        bufferbuilder.end();
+        BufferUploader.end(bufferbuilder);
+    }
+
     /**
-     * Runnable for {@link RenderHelpers#renderFluidContext(FluidStack, MatrixStack, IFluidContextRender)}}}.
+     * Runnable for {@link RenderHelpers#renderFluidContext(FluidStack, PoseStack, IFluidContextRender)}}}.
      * @author rubensworks
      */
     public static interface IFluidContextRender {

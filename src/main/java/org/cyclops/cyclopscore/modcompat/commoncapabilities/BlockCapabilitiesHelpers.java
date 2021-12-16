@@ -1,14 +1,14 @@
 package org.cyclops.cyclopscore.modcompat.commoncapabilities;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.cyclops.commoncapabilities.api.capability.block.BlockCapabilities;
 import org.cyclops.cyclopscore.datastructure.DimPos;
-import org.cyclops.cyclopscore.helper.TileHelpers;
+import org.cyclops.cyclopscore.helper.BlockEntityHelpers;
 
 /**
  * Several helpers for combining block and tile capabilities.
@@ -27,9 +27,9 @@ public class BlockCapabilitiesHelpers {
      * @param <C> The capability instance.
      * @return The lazy optional capability.
      */
-    public static <C> LazyOptional<C> getTileOrBlockCapability(IBlockReader world, BlockPos pos, Direction side,
+    public static <C> LazyOptional<C> getTileOrBlockCapability(BlockGetter world, BlockPos pos, Direction side,
                                                         Capability<C> capability) {
-        LazyOptional<C> instance = TileHelpers.getCapability(world, pos, side, capability);
+        LazyOptional<C> instance = BlockEntityHelpers.getCapability(world, pos, side, capability);
         if (!instance.isPresent()) {
             BlockState blockState = world.getBlockState(pos);
             return BlockCapabilities.getInstance().getCapability(blockState, capability, world, pos, side);
@@ -48,7 +48,7 @@ public class BlockCapabilitiesHelpers {
      * @return The lazy optional capability.
      */
     public static <C> LazyOptional<C> getTileOrBlockCapability(DimPos dimPos, Direction side, Capability<C> capability) {
-        return getTileOrBlockCapability(dimPos.getWorld(true), dimPos.getBlockPos(), side, capability);
+        return getTileOrBlockCapability(dimPos.getLevel(true), dimPos.getBlockPos(), side, capability);
     }
 
 }

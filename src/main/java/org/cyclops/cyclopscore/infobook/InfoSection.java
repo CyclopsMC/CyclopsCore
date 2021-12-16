@@ -2,15 +2,15 @@ package org.cyclops.cyclopscore.infobook;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.LanguageMap;
-import net.minecraft.util.text.Style;
+import net.minecraft.client.gui.Font;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
@@ -49,7 +49,7 @@ public class InfoSection {
     protected List<String> paragraphs;
     private ArrayList<String> tagList;
     private int pages;
-    private List<List<IReorderingProcessor>> localizedPages;
+    private List<List<FormattedCharSequence>> localizedPages;
     private Map<Integer, List<AdvancedButton>> advancedButtons = Maps.newHashMap();
 
     public InfoSection(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
@@ -122,7 +122,7 @@ public class InfoSection {
      * @param lineHeight The line height.
      * @param yOffset The y gui offset.
      */
-    public void bakeSection(FontRenderer fontRenderer, int width, int maxLines, int lineHeight, int yOffset) {
+    public void bakeSection(Font fontRenderer, int width, int maxLines, int lineHeight, int yOffset) {
         if(paragraphs.size() == 0 && shouldAddIndex()) {
             // linkedmap to make sure the contents are sorted by insertion order.
             Map<String, Pair<InfoSection, Integer>> softLinks = Maps.newLinkedHashMap();
@@ -138,16 +138,16 @@ public class InfoSection {
         }
 
         // Wrap the text into pages.
-        List<IReorderingProcessor> allLines = trimStringToWidth(fontRenderer, ITextProperties.of(contents), width);
+        List<FormattedCharSequence> allLines = trimStringToWidth(fontRenderer, FormattedText.of(contents), width);
         localizedPages = Lists.newLinkedList();
         int linesOnPage = 0;
-        List<IReorderingProcessor> currentPage = Lists.newArrayList();
+        List<FormattedCharSequence> currentPage = Lists.newArrayList();
         if(isTitlePage(0)) {
-            for(int i = 1; i < TITLE_LINES; i++) currentPage.add(IReorderingProcessor.forward("", Style.EMPTY)); // Make a blank space for the section title.
+            for(int i = 1; i < TITLE_LINES; i++) currentPage.add(FormattedCharSequence.forward("", Style.EMPTY)); // Make a blank space for the section title.
             linesOnPage += TITLE_LINES;
         }
         pages = 1;
-        for(IReorderingProcessor line : allLines) {
+        for(FormattedCharSequence line : allLines) {
             if(linesOnPage >= maxLines) {
                 linesOnPage = 0;
                 pages++;
@@ -216,34 +216,34 @@ public class InfoSection {
         }
     }
 
-    // Adapted from FontRenderer#trimStringToWidth
+    // Adapted from Font#trimStringToWidth
     // The problem with the vanilla implementation is that it doesn't handle formatting well across multiple lines, see https://github.com/CyclopsMC/IntegratedDynamics/issues/1078
     // What we do here, is clear the forced Style's on each line, and instead apply the raw string-based formatting codes directly.
-    protected static List<IReorderingProcessor> trimStringToWidth(FontRenderer fontRenderer, ITextProperties text, int width) {
-        List<ITextProperties> textLines = fontRenderer.getSplitter().splitLines(text, width, Style.EMPTY);
-        List<IReorderingProcessor> formattedLines = Lists.newArrayList();
+    protected static List<FormattedCharSequence> trimStringToWidth(Font fontRenderer, FormattedText text, int width) {
+        List<FormattedText> textLines = fontRenderer.getSplitter().splitLines(text, width, Style.EMPTY);
+        List<FormattedCharSequence> formattedLines = Lists.newArrayList();
 
         // Keep a memory of active formatting flags, which persists across lines
         Map<Character, Boolean> activeFlags = Maps.newHashMap();
         Character activeColor = null;
-        for (ITextProperties textLine : textLines) {
+        for (FormattedText textLine : textLines) {
             String textLineRaw = textLine.getString();
 
             // Clear the Style formatting, and instead prepend the currently active raw string-based formatting codes.
             Character finalActiveColor = activeColor;
-            Optional<ITextProperties> textLineUnformatted = textLine.visit((style, string) -> {
+            Optional<FormattedText> textLineUnformatted = textLine.visit((style, string) -> {
                 if (!activeFlags.isEmpty()) {
                     string = activeFlags.keySet().stream().map(character -> "§" + character).collect(Collectors.joining()) + string;
                 }
                 if (finalActiveColor != null) {
                     string = "§" + finalActiveColor + string;
                 }
-                return Optional.of(ITextProperties.of(string, Style.EMPTY));
+                return Optional.of(FormattedText.of(string, Style.EMPTY));
             }, Style.EMPTY);
             if (textLineUnformatted.isPresent()) {
                 textLine = textLineUnformatted.get();
             }
-            formattedLines.add(LanguageMap.getInstance().getVisualOrder(textLine));
+            formattedLines.add(Language.getInstance().getVisualOrder(textLine));
 
             // Loop over each character of the current line, and save the active formatting flags in memory, so that they can be re-applied on the next line.
             for (int charPos = 0; charPos < textLineRaw.length(); charPos++) {
@@ -268,11 +268,11 @@ public class InfoSection {
         return formattedLines;
     }
 
-    protected static int getAppendixLineHeight(SectionAppendix appendix, FontRenderer fontRenderer) {
+    protected static int getAppendixLineHeight(SectionAppendix appendix, Font fontRenderer) {
         return (int) Math.ceil((double) appendix.getFullHeight() / (double) getFontHeight(fontRenderer));
     }
 
-    public static int getFontHeight(FontRenderer fontRenderer) {
+    public static int getFontHeight(Font fontRenderer) {
         return fontRenderer.lineHeight;
     }
 
@@ -301,7 +301,7 @@ public class InfoSection {
         return (string + "&r").replaceAll("&N", "\n").replaceAll("&", "§");
     }
 
-    protected List<IReorderingProcessor> getLocalizedPageLines(int page) {
+    protected List<FormattedCharSequence> getLocalizedPageLines(int page) {
         if(page >= localizedPages.size() || page < 0) return null;
         return localizedPages.get(page);
     }
@@ -351,15 +351,15 @@ public class InfoSection {
      * @param footnoteOffsetY Footnote offset y
      */
     @OnlyIn(Dist.CLIENT)
-    public void drawScreen(ScreenInfoBook gui, MatrixStack matrixStack, int mouseX, int mouseY, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
+    public void drawScreen(ScreenInfoBook gui, PoseStack matrixStack, int mouseX, int mouseY, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
         if(page < getPages()) {
-            FontRenderer fontRenderer = gui.getFontRenderer();
+            Font fontRenderer = gui.getFont();
 
             // Draw text content
-            List<IReorderingProcessor> lines = getLocalizedPageLines(page);
+            List<FormattedCharSequence> lines = getLocalizedPageLines(page);
             int l = 0;
             if (lines != null) {
-                for (IReorderingProcessor line : lines) {
+                for (FormattedCharSequence line : lines) {
                     fontRenderer.draw(matrixStack, line, mouseX, mouseY + yOffset + l * 9, 0);
                     l++;
                 }
@@ -398,9 +398,9 @@ public class InfoSection {
      * @param my Mouse Y.
      */
     @OnlyIn(Dist.CLIENT)
-    public void postDrawScreen(ScreenInfoBook gui, MatrixStack matrixStack, int mouseX, int mouseY, int width, int height, int page, int mx, int my) {
+    public void postDrawScreen(ScreenInfoBook gui, PoseStack matrixStack, int mouseX, int mouseY, int width, int height, int page, int mx, int my) {
         if(page < getPages()) {
-            FontRenderer fontRenderer = gui.getFontRenderer();
+            Font fontRenderer = gui.getFont();
             // Post draw appendixes
             for (SectionAppendix appendix : appendixes) {
                 if (appendix.getPage() == page) {
@@ -455,7 +455,7 @@ public class InfoSection {
         return new InfoSection.Location(page, this);
     }
 
-    protected static int getAppendixOffsetLine(FontRenderer fontRenderer, SectionAppendix appendix) {
+    protected static int getAppendixOffsetLine(Font fontRenderer, SectionAppendix appendix) {
         return getFontHeight(fontRenderer) * appendix.getLineStart();
     }
 

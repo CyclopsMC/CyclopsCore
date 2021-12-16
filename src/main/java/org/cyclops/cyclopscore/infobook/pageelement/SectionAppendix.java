@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import lombok.Data;
 import net.minecraftforge.api.distmarker.Dist;
@@ -49,12 +49,11 @@ import org.lwjgl.opengl.GL11;
      * @param pre If the normal drawing should occur, otherwise post-drawing: things like tooltips.
      */
     @OnlyIn(Dist.CLIENT)
-    public void drawScreen(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
+    public void drawScreen(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
         int xc = x + width / 2 - getWidth() / 2;
         int yc = y + getOffsetY();
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager._color4f(1F, 1F, 1F, 1F);
         if(pre) {
             drawElement(gui, matrixStack, xc, yc, getWidth(), getHeight(), page, mx, my);
         } else {
@@ -64,9 +63,9 @@ import org.lwjgl.opengl.GL11;
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected abstract void drawElement(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my);
+    protected abstract void drawElement(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my);
     @OnlyIn(Dist.CLIENT)
-    protected abstract void postDrawElement(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my);
+    protected abstract void postDrawElement(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my);
 
     public abstract void preBakeElement(InfoSection infoSection);
     /**

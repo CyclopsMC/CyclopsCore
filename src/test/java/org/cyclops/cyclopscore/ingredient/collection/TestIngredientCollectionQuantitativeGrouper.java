@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.ingredient.collection;
 
 import com.google.common.collect.Lists;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponentCategoryType;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;

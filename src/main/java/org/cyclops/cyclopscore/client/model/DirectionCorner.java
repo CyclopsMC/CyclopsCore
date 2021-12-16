@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 /**
  * An equivalent to {@link Direction} for being able to also refer to

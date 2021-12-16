@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
 /**
@@ -11,7 +11,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 public class PlayerInventoryIterator extends InventoryIterator {
 
 
-    public PlayerInventoryIterator(PlayerEntity player) {
-        super(new InvWrapper(player.inventory));
+    public PlayerInventoryIterator(Player player) {
+        super(new InvWrapper(player.getInventory()));
     }
 }

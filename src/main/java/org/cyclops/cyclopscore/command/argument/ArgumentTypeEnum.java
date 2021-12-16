@@ -8,12 +8,11 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.command.arguments.IArgumentSerializer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.commands.synchronization.ArgumentSerializer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TextComponent;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
 import java.util.Arrays;
@@ -39,7 +38,7 @@ public class ArgumentTypeEnum<T extends Enum<T>> implements ArgumentType<T> {
         try {
             return Enum.valueOf(this.enumClass, reader.readString().toUpperCase(Locale.ENGLISH));
         } catch (IllegalArgumentException e) {
-            throw new SimpleCommandExceptionType(new StringTextComponent("Unknown value")).create();
+            throw new SimpleCommandExceptionType(new TextComponent("Unknown value")).create();
         }
     }
 
@@ -53,22 +52,22 @@ public class ArgumentTypeEnum<T extends Enum<T>> implements ArgumentType<T> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return ISuggestionProvider.suggest(getExamples(), builder);
+        return SharedSuggestionProvider.suggest(getExamples(), builder);
     }
 
-    public static <T extends Enum<T>> T getValue(CommandContext<CommandSource> context, String name, Class<T> enumClass) {
+    public static <T extends Enum<T>> T getValue(CommandContext<CommandSourceStack> context, String name, Class<T> enumClass) {
         return context.getArgument(name, enumClass);
     }
 
-    public static class Serializer implements IArgumentSerializer<ArgumentTypeEnum<?>> {
+    public static class Serializer implements ArgumentSerializer<ArgumentTypeEnum<?>> {
 
         @Override
-        public void serializeToNetwork(ArgumentTypeEnum argumentTypeEnum, PacketBuffer packetBuffer) {
+        public void serializeToNetwork(ArgumentTypeEnum argumentTypeEnum, FriendlyByteBuf packetBuffer) {
             packetBuffer.writeUtf(argumentTypeEnum.enumClass.getName());
         }
 
         @Override
-        public ArgumentTypeEnum deserializeFromNetwork(PacketBuffer packetBuffer) {
+        public ArgumentTypeEnum deserializeFromNetwork(FriendlyByteBuf packetBuffer) {
             try {
                 return new ArgumentTypeEnum(Class.forName(packetBuffer.readUtf(PacketCodec.READ_STRING_MAX_LENGTH)));
             } catch (ClassNotFoundException e) {

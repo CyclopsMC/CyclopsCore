@@ -1,25 +1,25 @@
 package org.cyclops.cyclopscore.block;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
 /**
  * Block gui component.
  *
- * Pass {@link IBlockContainerProvider#get(BlockState, World, BlockPos)} ass a lambda to specify the gui.
+ * Pass {@link IBlockContainerProvider#get(BlockState, Level, BlockPos)} ass a lambda to specify the gui.
  *
  * Optionally implement {@link #getOpenStat()} to specify a stat on gui opening.
  *
@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
  */
 public interface IBlockGui {
 
-    public default void writeExtraGuiData(PacketBuffer packetBuffer, World world, PlayerEntity player, BlockPos blockPos, Hand hand, BlockRayTraceResult rayTraceResult) {
+    public default void writeExtraGuiData(FriendlyByteBuf packetBuffer, Level world, Player player, BlockPos blockPos, InteractionHand hand, BlockHitResult rayTraceResult) {
 
     }
 
@@ -39,16 +39,16 @@ public interface IBlockGui {
         return null;
     }
 
-    public static ActionResultType onBlockActivatedHook(IBlockGui block, IBlockContainerProvider blockContainerProvider, BlockState blockState, World world, BlockPos blockPos, PlayerEntity player, Hand hand, BlockRayTraceResult rayTraceResult) {
+    public static InteractionResult onBlockActivatedHook(IBlockGui block, IBlockContainerProvider blockContainerProvider, BlockState blockState, Level world, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
         // Drop through if the player is sneaking
         if (player.isCrouching()) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         if (!world.isClientSide()) {
-            INamedContainerProvider containerProvider = blockContainerProvider.get(blockState, world, blockPos);
+            MenuProvider containerProvider = blockContainerProvider.get(blockState, world, blockPos);
             if (containerProvider != null) {
-                NetworkHooks.openGui((ServerPlayerEntity) player, containerProvider,
+                NetworkHooks.openGui((ServerPlayer) player, containerProvider,
                         packetBuffer -> block.writeExtraGuiData(packetBuffer, world, player, blockPos, hand, rayTraceResult));
                 Stat<ResourceLocation> openStat = block.getOpenStat();
                 if (openStat != null) {
@@ -57,12 +57,12 @@ public interface IBlockGui {
             }
         }
 
-        return ActionResultType.SUCCESS;
+        return InteractionResult.SUCCESS;
     }
 
     public static interface IBlockContainerProvider {
         @Nullable
-        public INamedContainerProvider get(BlockState blockState, World world, BlockPos blockPos);
+        public MenuProvider get(BlockState blockState, Level world, BlockPos blockPos);
     }
 
 }

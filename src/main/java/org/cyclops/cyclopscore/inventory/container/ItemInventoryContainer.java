@@ -1,15 +1,15 @@
 package org.cyclops.cyclopscore.inventory.container;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
 import org.cyclops.cyclopscore.helper.InventoryHelpers;
 
 import javax.annotation.Nullable;
@@ -21,7 +21,7 @@ import javax.annotation.Nullable;
  * which will look something like this:
  * <pre>
  *     // Called by the client-side screen factory
- *     public MyContainer(int id, PlayerInventory inventory, PacketBuffer packetBuffer) {
+ *     public MyContainer(int id, PlayerInventory inventory, FriendlyByteBuf packetBuffer) {
  *         this(id, inventory, readItemIndex(packetBuffer), readHand(packetBuffer));
  *     }
  *
@@ -38,7 +38,7 @@ public abstract class ItemInventoryContainer<I extends Item> extends ContainerEx
 	
 	protected I item;
 	protected int itemIndex;
-	protected Hand hand;
+	protected InteractionHand hand;
 
 	/**
 	 * Make a new instance.
@@ -48,19 +48,19 @@ public abstract class ItemInventoryContainer<I extends Item> extends ContainerEx
 	 * @param itemIndex The index of the item in use inside the player inventory.
 	 * @param hand The hand the player is using.
 	 */
-	public ItemInventoryContainer(@Nullable ContainerType<?> type, int id, PlayerInventory inventory, int itemIndex, Hand hand) {
+	public ItemInventoryContainer(@Nullable MenuType<?> type, int id, Inventory inventory, int itemIndex, InteractionHand hand) {
 		super(type, id, inventory);
 		this.item = (I) InventoryHelpers.getItemFromIndex(inventory.player, itemIndex, hand).getItem();
 		this.itemIndex = itemIndex;
 		this.hand = hand;
 	}
 
-	public static int readItemIndex(PacketBuffer packetBuffer) {
+	public static int readItemIndex(FriendlyByteBuf packetBuffer) {
 		return packetBuffer.readInt();
 	}
 
-	public static Hand readHand(PacketBuffer packetBuffer) {
-		return packetBuffer.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
+	public static InteractionHand readHand(FriendlyByteBuf packetBuffer) {
+		return packetBuffer.readBoolean() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
 	}
 
 	/**
@@ -72,21 +72,21 @@ public abstract class ItemInventoryContainer<I extends Item> extends ContainerEx
 	}
 
 	@Override
-	public boolean stillValid(PlayerEntity player) {
+	public boolean stillValid(Player player) {
 		ItemStack item = getItemStack(player);
 		return item != null && item.getItem() == getItem();
 	}
 
-	public ItemStack getItemStack(PlayerEntity player) {
+	public ItemStack getItemStack(Player player) {
 		return InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
 	}
 	
 	@Override
-	protected Slot createNewSlot(IInventory inventory, int index, int x, int y) {
+	protected Slot createNewSlot(Container inventory, int index, int x, int y) {
     	return new Slot(inventory, index, x, y) {
     		
     		@Override
-    		public boolean mayPickup(PlayerEntity player) {
+    		public boolean mayPickup(Player player) {
     			return this.getItem() != InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
     	    }
     		
@@ -94,11 +94,11 @@ public abstract class ItemInventoryContainer<I extends Item> extends ContainerEx
     }
 
 	@Override
-	public ItemStack clicked(int slotId, int arg, ClickType clickType, PlayerEntity player) {
+	public void clicked(int slotId, int arg, ClickType clickType, Player player) {
 		if (clickType == ClickType.SWAP && arg == itemIndex) {
 			// Don't allow swapping with the slot of the active item.
-			return ItemStack.EMPTY;
+			return;
 		}
-		return super.clicked(slotId, arg, clickType, player);
+		super.clicked(slotId, arg, clickType, player);
 	}
 }

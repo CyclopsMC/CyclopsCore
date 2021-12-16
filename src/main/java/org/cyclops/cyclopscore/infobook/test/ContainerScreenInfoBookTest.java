@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.infobook.test;
 
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
@@ -13,7 +13,7 @@ import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
  */
 public class ContainerScreenInfoBookTest extends ScreenInfoBook<ContainerInfoBookTest> {
 
-    public ContainerScreenInfoBookTest(ContainerInfoBookTest container, PlayerInventory playerInventory, ITextComponent title) {
+    public ContainerScreenInfoBookTest(ContainerInfoBookTest container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title, InfoBookTest.getInstance());
     }
 
@@ -68,12 +68,12 @@ public class ContainerScreenInfoBookTest extends ScreenInfoBook<ContainerInfoBoo
     }
 
     @Override
-    public void playPageFlipSound(SoundHandler soundHandler) {
+    public void playPageFlipSound(SoundManager soundHandler) {
         // Do nothing
     }
 
     @Override
-    public void playPagesFlipSound(SoundHandler soundHandler) {
+    public void playPagesFlipSound(SoundManager soundHandler) {
         // Do nothing
     }
 

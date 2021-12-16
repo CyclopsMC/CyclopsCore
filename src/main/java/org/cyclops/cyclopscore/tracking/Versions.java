@@ -2,17 +2,17 @@ package org.cyclops.cyclopscore.tracking;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -145,41 +145,41 @@ public class Versions {
             for (Triple<ModBase, IModVersion, String> triple : versionMods) {
                 if (triple.getMiddle().needsUpdate()) {
                     // Chat formatting inspired by CoFH
-                    PlayerEntity player = event.player;
-                    IFormattableTextComponent chat = new StringTextComponent("");
+                    Player player = event.player;
+                    MutableComponent chat = new TextComponent("");
 
                     Style modNameStyle = Style.EMPTY;
-                    modNameStyle.withColor(Color.fromLegacyFormat(TextFormatting.AQUA));
+                    modNameStyle.withColor(TextColor.fromLegacyFormat(ChatFormatting.AQUA));
 
                     Style versionStyle = Style.EMPTY;
-                    versionStyle.withColor(Color.fromLegacyFormat(TextFormatting.AQUA));
+                    versionStyle.withColor(TextColor.fromLegacyFormat(ChatFormatting.AQUA));
 
                     Style downloadStyle = Style.EMPTY;
-                    downloadStyle.withColor(Color.fromLegacyFormat(TextFormatting.BLUE));
+                    downloadStyle.withColor(TextColor.fromLegacyFormat(ChatFormatting.BLUE));
 
                     String currentVersion = MinecraftHelpers.getMinecraftVersion() + "-" + triple.getLeft().getContainer().getModInfo().getVersion().toString();
                     String newVersion = MinecraftHelpers.getMinecraftVersion() + "-" + triple.getMiddle().getVersion();
-                    ITextComponent versionTransition = new StringTextComponent(String.format("%s -> %s", currentVersion, newVersion)).setStyle(versionStyle);
+                    Component versionTransition = new TextComponent(String.format("%s -> %s", currentVersion, newVersion)).setStyle(versionStyle);
                     modNameStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, versionTransition));
-                    ITextComponent modNameComponent = new StringTextComponent(String.format("[%s]", triple.getLeft().getModName())).setStyle(modNameStyle);
+                    Component modNameComponent = new TextComponent(String.format("[%s]", triple.getLeft().getModName())).setStyle(modNameStyle);
 
-                    ITextComponent downloadComponent = new TranslationTextComponent(L10NHelpers.localize("general.cyclopscore.version.download")).setStyle(downloadStyle);
-                    downloadStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslationTextComponent("general.cyclopscore.version.clickToDownload")));
+                    Component downloadComponent = new TranslatableComponent(L10NHelpers.localize("general.cyclopscore.version.download")).setStyle(downloadStyle);
+                    downloadStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("general.cyclopscore.version.clickToDownload")));
                     downloadStyle.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, triple.getMiddle().getUpdateUrl()));
 
                     chat.append(modNameComponent);
                     chat.append(" ");
-                    chat.append(new TranslationTextComponent("general.cyclopscore.version.updateAvailable")
-                            .setStyle(Style.EMPTY.withColor(Color.fromLegacyFormat(TextFormatting.WHITE))));
+                    chat.append(new TranslatableComponent("general.cyclopscore.version.updateAvailable")
+                            .setStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.WHITE))));
                     chat.append(String.format(": %s ", triple.getMiddle().getVersion()));
                     chat.append(downloadComponent);
 
                     try {
                     player.sendMessage(chat, Util.NIL_UUID);
 
-                    chat = new StringTextComponent("");
+                    chat = new TextComponent("");
                     chat.append(modNameComponent);
-                    chat.append(TextFormatting.WHITE + " ");
+                    chat.append(ChatFormatting.WHITE + " ");
                     chat.append(triple.getMiddle().getInfo());
                     player.sendMessage(chat, Util.NIL_UUID);
                     } catch (NullPointerException e) {

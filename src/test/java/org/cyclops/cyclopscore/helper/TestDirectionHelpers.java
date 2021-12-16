@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 import org.junit.Test;
 
 import static org.cyclops.cyclopscore.helper.DirectionHelpers.transformFacingForRotation;

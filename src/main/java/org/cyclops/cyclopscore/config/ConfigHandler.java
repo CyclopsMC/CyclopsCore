@@ -7,7 +7,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import lombok.Data;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -106,15 +106,9 @@ public class ConfigHandler {
     }
 
     @SubscribeEvent
-    public void onLoad(ModConfig.Loading configEvent) {
+    public void onLoad(ModConfig configEvent) {
         this.mod.log(Level.TRACE, "Load config");
-        syncProcessedConfigs(configEvent.getConfig(), false);
-    }
-
-    @SubscribeEvent
-    public void onReload(ModConfig.Reloading configEvent) {
-        this.mod.log(Level.TRACE, "Reload config");
-        syncProcessedConfigs(configEvent.getConfig(), true);
+        syncProcessedConfigs(configEvent, false);
     }
 
     public boolean addConfigurable(ExtendedConfig<?, ?> e) {

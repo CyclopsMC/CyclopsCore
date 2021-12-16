@@ -3,19 +3,21 @@ package org.cyclops.cyclopscore.inventory.container;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.IContainerListener;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
@@ -28,9 +30,9 @@ import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -38,30 +40,30 @@ import java.util.function.Supplier;
  * A container with inventory.
  * @author rubensworks
  */
-public abstract class ContainerExtended extends Container implements IContainerButtonClickAcceptorServer<ContainerExtended>,
+public abstract class ContainerExtended extends AbstractContainerMenu implements IContainerButtonClickAcceptorServer<ContainerExtended>,
         IValueNotifier, IValueNotifiable {
 
-    private static final EquipmentSlotType[] EQUIPMENT_SLOTS = new EquipmentSlotType[] {
-            EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET};
+    private static final EquipmentSlot[] EQUIPMENT_SLOTS = new EquipmentSlot[] {
+            EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     protected static final int ITEMBOX = 18;
 
     private final Map<String, IContainerButtonAction<ContainerExtended>> buttonActions = Maps.newHashMap();
-    private final Map<Integer, CompoundNBT> values = Maps.newHashMap();
+    private final Map<Integer, CompoundTag> values = Maps.newHashMap();
     private final List<SyncedGuiVariable<?>> syncedGuiVariables = Lists.newArrayList();
     private int nextValueId = 0;
     private IValueNotifiable guiValueListener = null;
 
-    private IInventory playerIInventory;
-    protected final PlayerEntity player;
+    private Container playerIInventory;
+    protected final Player player;
     protected int offsetX = 0;
     protected int offsetY = 0;
 
     /* The current drag mode (0 : evenly split, 1 : one item by slot, 2 : not used ?) */
-    private int dragMode = -1;
+    private int quickcraftType = -1;
     /** The current drag event (0 : start, 1 : add slot : 2 : end) */
-    private int dragEvent;
+    private int quickcraftStatus;
     /** The list of slots where the itemstack holds will be distributed */
-    private final Set<Slot> dragSlots = Sets.<Slot>newHashSet();
+    private final Set<Slot> quickcraftSlots = Sets.<Slot>newHashSet();
 
     /**
      * Make a new ContainerExtended.
@@ -69,7 +71,7 @@ public abstract class ContainerExtended extends Container implements IContainerB
      * @param id The container id.
      * @param inventory The player inventory.
      */
-    public ContainerExtended(@Nullable ContainerType<?> type, int id, PlayerInventory inventory) {
+    public ContainerExtended(@Nullable MenuType<?> type, int id, Inventory inventory) {
         super(type, id);
         this.playerIInventory = inventory;
         this.player = inventory.player;
@@ -94,7 +96,7 @@ public abstract class ContainerExtended extends Container implements IContainerB
     }
 
     @Override
-    public void addSlotListener(IContainerListener listener) {
+    public void addSlotListener(ContainerListener listener) {
         super.addSlotListener(listener);
         if(!player.getCommandSenderWorld().isClientSide()) {
             initializeValues();
@@ -111,7 +113,7 @@ public abstract class ContainerExtended extends Container implements IContainerB
 
     }
     
-    protected Slot createNewSlot(IInventory inventory, int index, int x, int y) {
+    protected Slot createNewSlot(Container inventory, int index, int x, int y) {
     	return new Slot(inventory, index, x, y);
     }
 
@@ -140,7 +142,7 @@ public abstract class ContainerExtended extends Container implements IContainerB
         return super.addSlot(slot);
     }
     
-    protected void addInventory(IInventory inventory, int indexOffset, int offsetX, int offsetY, int rows, int cols) {
+    protected void addInventory(Container inventory, int indexOffset, int offsetX, int offsetY, int rows, int cols) {
     	for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 // Slot params: id, x-coord, y-coord (coords are relative to gui box)
@@ -155,7 +157,7 @@ public abstract class ContainerExtended extends Container implements IContainerB
      * @param offsetX Offset to X
      * @param offsetY Offset to Y
      */
-    protected void addPlayerInventory(PlayerInventory inventory, int offsetX, int offsetY) {
+    protected void addPlayerInventory(Inventory inventory, int offsetX, int offsetY) {
         int rows = 3;
         int cols = 9;
 
@@ -172,9 +174,9 @@ public abstract class ContainerExtended extends Container implements IContainerB
      * @param offsetX Offset to X
      * @param offsetY Offset to Y
      */
-    protected void addPlayerArmorInventory(PlayerInventory inventory, int offsetX, int offsetY) {
+    protected void addPlayerArmorInventory(Inventory inventory, int offsetX, int offsetY) {
         for (int k = 0; k < 4; ++k) {
-            EquipmentSlotType equipmentSlot = EQUIPMENT_SLOTS[k];
+            EquipmentSlot equipmentSlot = EQUIPMENT_SLOTS[k];
             addSlot(new SlotArmor(inventory, 4 * 9 + (3 - k), offsetX, offsetY + k * ITEMBOX, inventory.player, equipmentSlot));
         }
     }
@@ -190,7 +192,7 @@ public abstract class ContainerExtended extends Container implements IContainerB
     }
     
     @Override
-    public ItemStack quickMoveStack(PlayerEntity player, int slotID) {
+    public ItemStack quickMoveStack(Player player, int slotID) {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = slots.get(slotID);
         int slots = getSizeInventory();
@@ -300,16 +302,223 @@ public abstract class ContainerExtended extends Container implements IContainerB
      * Get the inventory of the player for which this container is instantiated.
      * @return The player inventory.
      */
-    public IInventory getPlayerIInventory() {
+    public Container getPlayerIInventory() {
         return playerIInventory;
     }
 
     @Override
-    public ItemStack clicked(int slotId, int dragType, ClickType clickType, PlayerEntity player) {
-        Slot slot = slotId < 0 ? null : this.slots.get(slotId);
-        PlayerInventory inventoryplayer = player.inventory;
+    public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
+        // Copied and adjusted from net.minecraft.world.inventory.AbstractContainerMenu
+        Inventory inventory = player.getInventory();
         if (clickType == ClickType.QUICK_CRAFT) {
-            // Copied and adjusted from net.minecraft.inventory.Container
+            int i = this.quickcraftStatus;
+            this.quickcraftStatus = getQuickcraftHeader(dragType);
+            if ((i != 1 || this.quickcraftStatus != 2) && i != this.quickcraftStatus) {
+                this.resetQuickCraft();
+            } else if (this.getCarried().isEmpty()) {
+                this.resetQuickCraft();
+            } else if (this.quickcraftStatus == 0) {
+                this.quickcraftType = getQuickcraftType(dragType);
+                if (isValidQuickcraftType(this.quickcraftType, player)) {
+                    this.quickcraftStatus = 1;
+                    this.quickcraftSlots.clear();
+                } else {
+                    this.resetQuickCraft();
+                }
+            } else if (this.quickcraftStatus == 1) {
+                Slot slot = this.slots.get(slotId);
+                ItemStack itemstack = this.getCarried();
+                if (canItemQuickReplace(slot, itemstack, true) && slot.mayPlace(itemstack) && (this.quickcraftType == 2 || itemstack.getCount() > this.quickcraftSlots.size()) && this.canDragTo(slot)) {
+                    this.quickcraftSlots.add(slot);
+                }
+            } else if (this.quickcraftStatus == 2) {
+                if (!this.quickcraftSlots.isEmpty()) {
+                    int phantomCount = 0; // Added
+
+                    if (this.quickcraftSlots.size() == 1) {
+                        int l = (this.quickcraftSlots.iterator().next()).index;
+                        this.resetQuickCraft();
+                        this.clicked(l, this.quickcraftType, ClickType.PICKUP, player); // changed from doClick to clicked
+                        return;
+                    }
+
+                    ItemStack itemstack3 = this.getCarried().copy();
+                    int j1 = this.getCarried().getCount();
+
+                    for(Slot slot1 : this.quickcraftSlots) {
+                        ItemStack itemstack1 = this.getCarried();
+                        if (slot1 != null && canItemQuickReplace(slot1, itemstack1, true) && slot1.mayPlace(itemstack1) && (this.quickcraftType == 2 || itemstack1.getCount() >= this.quickcraftSlots.size()) && this.canDragTo(slot1)) {
+                            ItemStack itemstack2 = itemstack3.copy();
+                            int j = slot1.hasItem() ? slot1.getItem().getCount() : 0;
+                            getQuickCraftSlotCount(this.quickcraftSlots, this.quickcraftType, itemstack2, j);
+                            int k = Math.min(itemstack2.getMaxStackSize(), slot1.getMaxStackSize(itemstack2));
+                            if (itemstack2.getCount() > k) {
+                                itemstack2.setCount(k);
+                            }
+
+                            j1 -= itemstack2.getCount() - j;
+                            slot1.set(itemstack2);
+
+                            // --- Added ---
+                            if (slot1 instanceof SlotExtended && ((SlotExtended) slot1).isPhantom()) {
+                                phantomCount += itemstack2.getCount() - j;
+                            }
+                        }
+                    }
+
+                    itemstack3.setCount(j1 + phantomCount); // Changed
+                    this.setCarried(itemstack3);
+                }
+
+                this.resetQuickCraft();
+            } else {
+                this.resetQuickCraft();
+            }
+        } else if (this.quickcraftStatus != 0) {
+            this.resetQuickCraft();
+        } else if ((clickType == ClickType.PICKUP || clickType == ClickType.QUICK_MOVE) && (dragType == 0 || dragType == 1)) {
+            ClickAction clickaction = dragType == 0 ? ClickAction.PRIMARY : ClickAction.SECONDARY;
+            if (slotId == -999) {
+                if (!this.getCarried().isEmpty()) {
+                    if (clickaction == ClickAction.PRIMARY) {
+                        player.drop(this.getCarried(), true);
+                        this.setCarried(ItemStack.EMPTY);
+                    } else {
+                        player.drop(this.getCarried().split(1), true);
+                    }
+                }
+            } else if (clickType == ClickType.QUICK_MOVE) {
+                if (slotId < 0) {
+                    return;
+                }
+
+                Slot slot6 = this.slots.get(slotId);
+                if (!slot6.mayPickup(player)) {
+                    return;
+                }
+
+                for(ItemStack itemstack9 = this.quickMoveStack(player, slotId); !itemstack9.isEmpty() && ItemStack.isSame(slot6.getItem(), itemstack9); itemstack9 = this.quickMoveStack(player, slotId)) {
+                }
+            } else {
+                if (slotId < 0) {
+                    return;
+                }
+
+                Slot slot7 = this.slots.get(slotId);
+                ItemStack itemstack10 = slot7.getItem();
+                ItemStack itemstack11 = this.getCarried();
+                player.updateTutorialInventoryAction(itemstack11, slot7.getItem(), clickaction);
+                if (!itemstack11.overrideStackedOnOther(slot7, clickaction, player) && !itemstack10.overrideOtherStackedOnMe(itemstack11, slot7, clickaction, player, this.createCarriedSlotAccess())) {
+                    if (itemstack10.isEmpty()) {
+                        if (!itemstack11.isEmpty()) {
+                            int l2 = clickaction == ClickAction.PRIMARY ? itemstack11.getCount() : 1;
+                            this.setCarried(slot7.safeInsert(itemstack11, l2));
+                        }
+                    } else if (slot7.mayPickup(player)) {
+                        if (itemstack11.isEmpty()) {
+                            int i3 = clickaction == ClickAction.PRIMARY ? itemstack10.getCount() : (itemstack10.getCount() + 1) / 2;
+                            Optional<ItemStack> optional1 = slot7.tryRemove(i3, Integer.MAX_VALUE, player);
+                            optional1.ifPresent((p_150421_) -> {
+                                this.setCarried(p_150421_);
+                                slot7.onTake(player, p_150421_);
+                            });
+                        } else if (slot7.mayPlace(itemstack11)) {
+                            if (ItemStack.isSameItemSameTags(itemstack10, itemstack11)) {
+                                int j3 = clickaction == ClickAction.PRIMARY ? itemstack11.getCount() : 1;
+                                this.setCarried(slot7.safeInsert(itemstack11, j3));
+                            } else if (itemstack11.getCount() <= slot7.getMaxStackSize(itemstack11)) {
+                                slot7.set(itemstack11);
+                                this.setCarried(itemstack10);
+                            }
+                        } else if (ItemStack.isSameItemSameTags(itemstack10, itemstack11)) {
+                            Optional<ItemStack> optional = slot7.tryRemove(itemstack10.getCount(), itemstack11.getMaxStackSize() - itemstack11.getCount(), player);
+                            optional.ifPresent((p_150428_) -> {
+                                itemstack11.grow(p_150428_.getCount());
+                                slot7.onTake(player, p_150428_);
+                            });
+                        }
+                    }
+                }
+
+                slot7.setChanged();
+            }
+        } else if (clickType == ClickType.SWAP) {
+            Slot slot2 = this.slots.get(slotId);
+            ItemStack itemstack4 = inventory.getItem(dragType);
+            ItemStack itemstack7 = slot2.getItem();
+            if (!itemstack4.isEmpty() || !itemstack7.isEmpty()) {
+                if (itemstack4.isEmpty()) {
+                    if (slot2.mayPickup(player)) {
+                        inventory.setItem(dragType, itemstack7);
+                        slot2.onSwapCraft(itemstack7.getCount());
+                        slot2.set(ItemStack.EMPTY);
+                        slot2.onTake(player, itemstack7);
+                    }
+                } else if (itemstack7.isEmpty()) {
+                    if (slot2.mayPlace(itemstack4)) {
+                        int l1 = slot2.getMaxStackSize(itemstack4);
+                        if (itemstack4.getCount() > l1) {
+                            slot2.set(itemstack4.split(l1));
+                        } else {
+                            inventory.setItem(dragType, ItemStack.EMPTY);
+                            slot2.set(itemstack4);
+                        }
+                    }
+                } else if (slot2.mayPickup(player) && slot2.mayPlace(itemstack4)) {
+                    int i2 = slot2.getMaxStackSize(itemstack4);
+                    if (itemstack4.getCount() > i2) {
+                        slot2.set(itemstack4.split(i2));
+                        slot2.onTake(player, itemstack7);
+                        if (!inventory.add(itemstack7)) {
+                            player.drop(itemstack7, true);
+                        }
+                    } else {
+                        inventory.setItem(dragType, itemstack7);
+                        slot2.set(itemstack4);
+                        slot2.onTake(player, itemstack7);
+                    }
+                }
+            }
+        } else if (clickType == ClickType.CLONE && player.getAbilities().instabuild && this.getCarried().isEmpty() && slotId >= 0) {
+            Slot slot5 = this.slots.get(slotId);
+            if (slot5.hasItem()) {
+                ItemStack itemstack6 = slot5.getItem().copy();
+                itemstack6.setCount(itemstack6.getMaxStackSize());
+                this.setCarried(itemstack6);
+            }
+        } else if (clickType == ClickType.THROW && this.getCarried().isEmpty() && slotId >= 0) {
+            Slot slot4 = this.slots.get(slotId);
+            int i1 = dragType == 0 ? 1 : slot4.getItem().getCount();
+            ItemStack itemstack8 = slot4.safeTake(i1, Integer.MAX_VALUE, player);
+            player.drop(itemstack8, true);
+        } else if (clickType == ClickType.PICKUP_ALL && slotId >= 0) {
+            Slot slot3 = this.slots.get(slotId);
+            ItemStack itemstack5 = this.getCarried();
+            if (!itemstack5.isEmpty() && (!slot3.hasItem() || !slot3.mayPickup(player))) {
+                int k1 = dragType == 0 ? 0 : this.slots.size() - 1;
+                int j2 = dragType == 0 ? 1 : -1;
+
+                for(int k2 = 0; k2 < 2; ++k2) {
+                    for(int k3 = k1; k3 >= 0 && k3 < this.slots.size() && itemstack5.getCount() < itemstack5.getMaxStackSize(); k3 += j2) {
+                        Slot slot8 = this.slots.get(k3);
+                        if (slot8.hasItem() && canItemQuickReplace(slot8, itemstack5, true) && slot8.mayPickup(player) && this.canTakeItemForPickAll(itemstack5, slot8)) {
+                            ItemStack itemstack12 = slot8.getItem();
+                            if (k2 != 0 || itemstack12.getCount() != itemstack12.getMaxStackSize()) {
+                                ItemStack itemstack13 = slot8.safeTake(itemstack12.getCount(), itemstack5.getMaxStackSize() - itemstack5.getCount(), player);
+                                itemstack5.grow(itemstack13.getCount());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        
+        
+        
+        /*Slot slot = slotId < 0 ? null : this.slots.get(slotId);
+        Inventory inventoryplayer = player.getInventory();
+        if (clickType == ClickType.QUICK_CRAFT) {
             int j1 = this.dragEvent;
             this.dragEvent = getQuickcraftHeader(dragType);
 
@@ -378,17 +587,17 @@ public abstract class ContainerExtended extends Container implements IContainerB
             return slotClickPhantom(slot, dragType, clickType, player);
         } else {
             return super.clicked(slotId, dragType, clickType, player);
-        }
+        }*/
     }
 
     @Override
     protected void resetQuickCraft() {
         super.resetQuickCraft();
-        this.dragEvent = 0;
-        this.dragSlots.clear();
+        this.quickcraftStatus = 0;
+        this.quickcraftSlots.clear();
     }
 
-    private ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickType, PlayerEntity player) {
+    private ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickType, Player player) {
         ItemStack stack = ItemStack.EMPTY;
 
         if (mouseButton == 2) {
@@ -396,7 +605,7 @@ public abstract class ContainerExtended extends Container implements IContainerB
                 slot.set(ItemStack.EMPTY);
             }
         } else if (mouseButton == 0 || mouseButton == 1) {
-            PlayerInventory playerInv = player.inventory;
+            InventoryMenu playerInv = player.inventoryMenu;
             slot.setChanged();
             ItemStack stackSlot = slot.getItem();
             ItemStack stackHeld = playerInv.getCarried();
@@ -483,10 +692,10 @@ public abstract class ContainerExtended extends Container implements IContainerB
     }
 
     @Override
-    public void setValue(int valueId, CompoundNBT value) {
+    public void setValue(int valueId, CompoundTag value) {
         if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
             if (!player.level.isClientSide()) { // server -> client
-                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getType(), valueId, value), (ServerPlayerEntity) player);
+                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getType(), valueId, value), (ServerPlayer) player);
             } else { // client -> server
                 CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getType(), valueId, value));
             }
@@ -495,7 +704,7 @@ public abstract class ContainerExtended extends Container implements IContainerB
     }
 
     @Override
-    public CompoundNBT getValue(int valueId) {
+    public CompoundTag getValue(int valueId) {
         return values.get(valueId);
     }
 
@@ -505,12 +714,12 @@ public abstract class ContainerExtended extends Container implements IContainerB
     }
 
     @Override
-    public ContainerType<?> getValueNotifiableType() {
+    public MenuType<?> getValueNotifiableType() {
         return getType();
     }
 
     @Override
-    public void onUpdate(int valueId, CompoundNBT value) {
+    public void onUpdate(int valueId, CompoundTag value) {
         values.put(valueId, value);
         if(guiValueListener != null) {
             guiValueListener.onUpdate(valueId, value);

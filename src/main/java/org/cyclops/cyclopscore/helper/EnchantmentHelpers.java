@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
@@ -22,7 +22,7 @@ public class EnchantmentHelpers {
 	 * @return The id of the enchantment in the enchantmentlist or -1 if it does not apply.
 	 */
 	public static int doesEnchantApply(ItemStack itemStack, Enchantment enchantment) {
-		ListNBT enchantmentList = itemStack.getEnchantmentTags();
+		ListTag enchantmentList = itemStack.getEnchantmentTags();
 		for(int i = 0; i < enchantmentList.size(); i++) {
 			if (enchantment.getRegistryName().equals(new ResourceLocation(enchantmentList.getCompound(i).getString("id")))) {
 				return i;
@@ -40,7 +40,7 @@ public class EnchantmentHelpers {
 	 * @return The level of the enchantment on the given item
 	 */
 	public static int getEnchantmentLevel(ItemStack itemStack, int enchantmentListID) {
-	    ListNBT enchlist = itemStack.getEnchantmentTags();
+	    ListTag enchlist = itemStack.getEnchantmentTags();
 	    return enchlist.getCompound(enchantmentListID).getShort("lvl");
 	}
 
@@ -53,7 +53,7 @@ public class EnchantmentHelpers {
 	 * @return The enchantment on the given item
 	 */
 	public static Enchantment getEnchantment(ItemStack itemStack, int enchantmentListID) {
-	    ListNBT enchlist = itemStack.getEnchantmentTags();
+	    ListTag enchlist = itemStack.getEnchantmentTags();
 	    return ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(
 	    		enchlist.getCompound(enchantmentListID).getString("id")));
 	}
@@ -68,17 +68,17 @@ public class EnchantmentHelpers {
 	 * @param level The new level of the enchantment on the given item
 	 */
 	public static void setEnchantmentLevel(ItemStack itemStack, int enchantmentListID, int level) {
-	    ListNBT enchlist = itemStack.getEnchantmentTags();
+	    ListTag enchlist = itemStack.getEnchantmentTags();
 	    if(level <= 0) {
 	        enchlist.remove(enchantmentListID);
 	        if(enchlist.size() == 0) {
 	            itemStack.getTag().remove("Enchantments");
 	        }
 	    } else {
-	    	CompoundNBT compound = enchlist.getCompound(enchantmentListID);
+	    	CompoundTag compound = enchlist.getCompound(enchantmentListID);
 	        compound.putShort("lvl", (short) level);
 	    }
-		CompoundNBT tag = itemStack.getOrCreateTag();
+		CompoundTag tag = itemStack.getOrCreateTag();
 		tag.put("Enchantments", enchlist);
 	}
 

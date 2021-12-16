@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.key;
 
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.KeyMapping;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.cyclops.cyclopscore.init.IRegistry;
@@ -26,6 +26,6 @@ public interface IKeyRegistry extends IRegistry {
      * @param kb {@link KeyBinding} to which we bind the {@link IKeyHandler}.
      * @param handler {@link IKeyHandler} that will be linked to presses of the given {@link KeyBinding}.
      */
-    public void addKeyHandler(KeyBinding kb, IKeyHandler handler);
+    public void addKeyHandler(KeyMapping kb, IKeyHandler handler);
 
 }

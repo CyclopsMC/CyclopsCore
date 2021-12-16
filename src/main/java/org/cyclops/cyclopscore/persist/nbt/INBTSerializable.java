@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.persist.nbt;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
 
@@ -24,14 +24,14 @@ public interface INBTSerializable {
 	 * Convert the data to an NBT tag.
 	 * @return The NBT tag.
 	 */
-	public CompoundNBT toNBT();
+	public CompoundTag toNBT();
 	/**
 	 * Read the data from an NBT tag and place it in this object.
      * The given tag will never be null, so make sure that all fields have a correct default value in case
      * the received tag would be null anyways.
 	 * @param tag The tag to read from.
 	 */
-	public void fromNBT(CompoundNBT tag);
+	public void fromNBT(CompoundTag tag);
 
     @EqualsAndHashCode(callSuper = false)
     @Data
@@ -40,10 +40,10 @@ public interface INBTSerializable {
         private final Class<?> fieldType;
 
         @Override
-        public void writePersistedField(String name, INBTSerializable object, CompoundNBT tag) {
+        public void writePersistedField(String name, INBTSerializable object, CompoundTag tag) {
             try {
                 Method method = fieldType.getMethod("toNBT");
-                tag.put(name, (INBT) method.invoke(object));
+                tag.put(name, (Tag) method.invoke(object));
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException("No method toNBT for field " + name + " of class " + fieldType + " was found.");
             } catch (InvocationTargetException e) {
@@ -56,14 +56,14 @@ public interface INBTSerializable {
         }
 
         @Override
-        public INBTSerializable readPersistedField(String name, CompoundNBT tag) {
+        public INBTSerializable readPersistedField(String name, CompoundTag tag) {
             try {
                 Constructor<?> constructor = fieldType.getConstructor();
                 if(constructor == null) {
                     throw new RuntimeException("The NBT serializable " + name + " of class " + fieldType + " must " +
                             "have a constructor without parameters.");
                 }
-                Method method = fieldType.getMethod("fromNBT", CompoundNBT.class);
+                Method method = fieldType.getMethod("fromNBT", CompoundTag.class);
                 INBTSerializable obj = (INBTSerializable) constructor.newInstance();
                 if(tag.contains(name)) {
                     method.invoke(obj, tag.get(name));

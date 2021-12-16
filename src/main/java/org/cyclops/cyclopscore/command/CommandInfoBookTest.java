@@ -4,15 +4,15 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraftforge.network.NetworkHooks;
 import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTest;
 
 import javax.annotation.Nullable;
@@ -22,19 +22,19 @@ import javax.annotation.Nullable;
  * @author rubensworks
  *
  */
-public class CommandInfoBookTest implements Command<CommandSource> {
+public class CommandInfoBookTest implements Command<CommandSourceStack> {
 
     @Override
-    public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        NetworkHooks.openGui(context.getSource().getPlayerOrException(), new INamedContainerProvider() {
+    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        NetworkHooks.openGui(context.getSource().getPlayerOrException(), new MenuProvider() {
             @Override
-            public ITextComponent getDisplayName() {
-                return new TranslationTextComponent("gui.cyclopscore.infobook");
+            public Component getDisplayName() {
+                return new TranslatableComponent("gui.cyclopscore.infobook");
             }
 
             @Nullable
             @Override
-            public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+            public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
                 return new ContainerInfoBookTest(id, playerInventory);
             }
         }, (packetBuffer) -> {});
@@ -42,7 +42,7 @@ public class CommandInfoBookTest implements Command<CommandSource> {
         return 0;
     }
 
-    public static LiteralArgumentBuilder<CommandSource> make() {
+    public static LiteralArgumentBuilder<CommandSourceStack> make() {
         return Commands.literal("infobooktest")
                 .requires((commandSource) -> commandSource.hasPermission(2))
                 .executes(new CommandInfoBookTest());

@@ -1,17 +1,17 @@
 package org.cyclops.cyclopscore.infobook;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.ChatFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.Helpers;
 
-import net.minecraft.client.gui.widget.button.Button.IPressable;
+import net.minecraft.client.gui.components.Button.OnPress;
 
 /**
  * An advanced button type.
@@ -23,17 +23,17 @@ public class AdvancedButton extends Button {
     private InfoSection target;
     protected ScreenInfoBook gui;
 
-    private Button.IPressable onPress;
+    private Button.OnPress onPress;
 
     public AdvancedButton() {
-        super(0, 0, 0, 0, new StringTextComponent(""), null);
+        super(0, 0, 0, 0, new TextComponent(""), null);
     }
 
-    public void setOnPress(IPressable onPress) {
+    public void setOnPress(OnPress onPress) {
         this.onPress = onPress;
     }
 
-    public IPressable getOnPress() {
+    public OnPress getOnPress() {
         return this.onPress;
     }
 
@@ -52,7 +52,7 @@ public class AdvancedButton extends Button {
      * @param target The target section.
      * @param gui The gui.
      */
-    public void update(int x, int y, ITextComponent displayName, InfoSection target, ScreenInfoBook gui) {
+    public void update(int x, int y, Component displayName, InfoSection target, ScreenInfoBook gui) {
         this.x = x;
         this.y = y;
         this.setMessage(displayName);
@@ -64,10 +64,10 @@ public class AdvancedButton extends Button {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(isVisible() && isHover(mouseX, mouseY)) {
             // MCP: drawString
-            Minecraft.getInstance().font.draw(matrixStack, ((IFormattableTextComponent) getMessage()).withStyle(TextFormatting.UNDERLINE), x, y,
+            Minecraft.getInstance().font.draw(matrixStack, ((MutableComponent) getMessage()).withStyle(ChatFormatting.UNDERLINE), x, y,
                     Helpers.RGBToInt(100, 100, 150));
         }
     }
@@ -78,7 +78,7 @@ public class AdvancedButton extends Button {
      * @param mx Mouse x.
      * @param my Mouse Y.
      */
-    public void renderTooltip(MatrixStack matrixStack, int mx, int my) {
+    public void renderTooltip(PoseStack matrixStack, int mx, int my) {
 
     }
 

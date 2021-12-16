@@ -5,9 +5,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntAVLTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.Map;
 import java.util.PrimitiveIterator;
@@ -63,7 +63,7 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
     }
 
     @Override
-    public void readFromNBT(CompoundNBT data, String tag) {
+    public void readFromNBT(CompoundTag data, String tag) {
         super.readFromNBT(data, tag);
         createIndex();
     }

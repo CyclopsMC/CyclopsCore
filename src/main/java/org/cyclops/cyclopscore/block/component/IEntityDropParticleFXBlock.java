@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.block.component;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import java.util.Random;
 
@@ -19,5 +19,5 @@ public interface IEntityDropParticleFXBlock {
      * @param blockPos The position.
      * @param rand Random object.
      */
-    public void randomDisplayTick(BlockState blockState, World world, BlockPos blockPos, Random rand);
+    public void randomDisplayTick(BlockState blockState, Level world, BlockPos blockPos, Random rand);
 }

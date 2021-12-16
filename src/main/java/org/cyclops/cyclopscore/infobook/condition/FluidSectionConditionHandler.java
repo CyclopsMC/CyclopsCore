@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.infobook.condition;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.init.ModBase;
 

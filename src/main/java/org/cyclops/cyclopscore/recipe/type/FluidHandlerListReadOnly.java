@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.recipe.type;
 
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 

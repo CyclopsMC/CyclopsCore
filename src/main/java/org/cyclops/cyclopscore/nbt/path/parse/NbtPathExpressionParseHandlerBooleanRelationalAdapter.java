@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import net.minecraft.nbt.ByteNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.NumberNBT;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NumericTag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
 
@@ -57,14 +57,14 @@ public abstract class NbtPathExpressionParseHandlerBooleanRelationalAdapter impl
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
             return new NbtPathExpressionMatches(executionContexts
                     .map(executionContext -> {
-                        INBT nbt = executionContext.getCurrentTag();
-                        if (nbt instanceof NumberNBT) {
-                            NumberNBT tag = (NumberNBT) nbt;
+                        Tag nbt = executionContext.getCurrentTag();
+                        if (nbt instanceof NumericTag) {
+                            NumericTag tag = (NumericTag) nbt;
                             return new NbtPathExpressionExecutionContext(
-                                    ByteNBT.valueOf(this.handler.getRelationalValue(tag.getAsDouble(), getTargetDouble())
+                                    ByteTag.valueOf(this.handler.getRelationalValue(tag.getAsDouble(), getTargetDouble())
                                             ? (byte) 1 : (byte) 0), executionContext);
                         }
-                        return new NbtPathExpressionExecutionContext(ByteNBT.valueOf((byte) 0), executionContext);
+                        return new NbtPathExpressionExecutionContext(ByteTag.valueOf((byte) 0), executionContext);
                     })
             );
         }

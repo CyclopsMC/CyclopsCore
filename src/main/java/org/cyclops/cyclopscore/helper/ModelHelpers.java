@@ -3,14 +3,14 @@ package org.cyclops.cyclopscore.helper;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.BlockModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemTransformVec3f;
-import net.minecraft.resources.IResource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransform;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
@@ -28,36 +28,36 @@ import java.util.Map;
  */
 public final class ModelHelpers {
 
-    public static final ItemTransformVec3f THIRD_PERSON_RIGHT_HAND = new ItemTransformVec3f(
+    public static final ItemTransform THIRD_PERSON_RIGHT_HAND = new ItemTransform(
             new Vector3f(70, 45, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(0.375f, 0.375f, 0.375f));
-    public static final ItemTransformVec3f THIRD_PERSON_LEFT_HAND = new ItemTransformVec3f(
+    public static final ItemTransform THIRD_PERSON_LEFT_HAND = new ItemTransform(
             new Vector3f(70, 45, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(0.375f, 0.375f, 0.375f));
-    public static final ItemTransformVec3f FIRST_PERSON_RIGHT_HAND = new ItemTransformVec3f(
+    public static final ItemTransform FIRST_PERSON_RIGHT_HAND = new ItemTransform(
             new Vector3f(0, 45, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(0.4f, 0.4f, 0.4f));
-    public static final ItemTransformVec3f FIRST_PERSON_LEFT_HAND = new ItemTransformVec3f(
+    public static final ItemTransform FIRST_PERSON_LEFT_HAND = new ItemTransform(
             new Vector3f(0, 255, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(0.4f, 0.4f, 0.4f));
-    public static final ItemTransformVec3f HEAD = ItemTransformVec3f.NO_TRANSFORM;
-    public static final ItemTransformVec3f GROUND = new ItemTransformVec3f(
+    public static final ItemTransform HEAD = ItemTransform.NO_TRANSFORM;
+    public static final ItemTransform GROUND = new ItemTransform(
             new Vector3f(0, 0, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(0.375f, 0.375f, 0.375f));
-    public static final ItemTransformVec3f FIXED = new ItemTransformVec3f(
+    public static final ItemTransform FIXED = new ItemTransform(
             new Vector3f(0, 0, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(0.5f, 0.5f, 0.5f));
-    public static final ItemTransformVec3f GUI = new ItemTransformVec3f(
+    public static final ItemTransform GUI = new ItemTransform(
             new Vector3f(30, 225, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(0.625f, 0.625f, 0.625f));
-    public static final ItemCameraTransforms DEFAULT_CAMERA_TRANSFORMS = new ItemCameraTransforms(
+    public static final ItemTransforms DEFAULT_CAMERA_TRANSFORMS = new ItemTransforms(
             THIRD_PERSON_RIGHT_HAND,
             THIRD_PERSON_LEFT_HAND,
             FIRST_PERSON_RIGHT_HAND,
@@ -68,36 +68,36 @@ public final class ModelHelpers {
             FIXED
     );
 
-    public static final ItemTransformVec3f THIRD_PERSON_RIGHT_HAND_ITEM = new ItemTransformVec3f(
+    public static final ItemTransform THIRD_PERSON_RIGHT_HAND_ITEM = new ItemTransform(
             new Vector3f(0, 0, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(0.55f, 0.55f, 0.55f));
-    public static final ItemTransformVec3f THIRD_PERSON_LEFT_HAND_ITEM = new ItemTransformVec3f(
+    public static final ItemTransform THIRD_PERSON_LEFT_HAND_ITEM = new ItemTransform(
             new Vector3f(0, 0, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(0.55f, 0.55f, 0.55f));
-    public static final ItemTransformVec3f FIRST_PERSON_RIGHT_HAND_ITEM = new ItemTransformVec3f(
+    public static final ItemTransform FIRST_PERSON_RIGHT_HAND_ITEM = new ItemTransform(
             new Vector3f(0, -90, 25),
             new Vector3f(0, 0, 0),
             new Vector3f(0.68F, 0.68F, 0.68F));
-    public static final ItemTransformVec3f FIRST_PERSON_LEFT_HAND_ITEM = new ItemTransformVec3f(
+    public static final ItemTransform FIRST_PERSON_LEFT_HAND_ITEM = new ItemTransform(
             new Vector3f(0, -90, 25),
             new Vector3f(0, 0, 0),
             new Vector3f(0.68F, 0.68F, 0.68F));
-    public static final ItemTransformVec3f HEAD_ITEM = ItemTransformVec3f.NO_TRANSFORM;
-    public static final ItemTransformVec3f GROUND_ITEM = new ItemTransformVec3f(
+    public static final ItemTransform HEAD_ITEM = ItemTransform.NO_TRANSFORM;
+    public static final ItemTransform GROUND_ITEM = new ItemTransform(
             new Vector3f(0, 0, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(0.5f, 0.5f, 0.5f));
-    public static final ItemTransformVec3f FIXED_ITEM = new ItemTransformVec3f(
+    public static final ItemTransform FIXED_ITEM = new ItemTransform(
             new Vector3f(0, 0, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(1f, 1f, 1f));
-    public static final ItemTransformVec3f GUI_ITEM = new ItemTransformVec3f(
+    public static final ItemTransform GUI_ITEM = new ItemTransform(
             new Vector3f(0, 0, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(1f, 1f, 1f));
-    public static final ItemCameraTransforms DEFAULT_CAMERA_TRANSFORMS_ITEM = new ItemCameraTransforms(
+    public static final ItemTransforms DEFAULT_CAMERA_TRANSFORMS_ITEM = new ItemTransforms(
             THIRD_PERSON_RIGHT_HAND_ITEM,
             THIRD_PERSON_LEFT_HAND_ITEM,
             FIRST_PERSON_RIGHT_HAND_ITEM,
@@ -124,7 +124,7 @@ public final class ModelHelpers {
      * @throws IOException If the model file was invalid.
      */
     public static BlockModel loadModelBlock(ResourceLocation modelLocation) throws IOException {
-        IResource resource = Minecraft.getInstance().getResourceManager().getResource(
+        Resource resource = Minecraft.getInstance().getResourceManager().getResource(
                 new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath() + ".json"));
         Reader reader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
         return BlockModel.fromStream(reader);
@@ -159,16 +159,16 @@ public final class ModelHelpers {
      * @param overrides The transformations to override.
      * @return The resulting transformation map.
      */
-    public static ItemCameraTransforms modifyDefaultTransforms(Map<ItemCameraTransforms.TransformType, ItemTransformVec3f> overrides) {
-        return new ItemCameraTransforms(
-                overrides.getOrDefault(ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, THIRD_PERSON_RIGHT_HAND),
-                overrides.getOrDefault(ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, THIRD_PERSON_LEFT_HAND),
-                overrides.getOrDefault(ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, FIRST_PERSON_RIGHT_HAND),
-                overrides.getOrDefault(ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, FIRST_PERSON_LEFT_HAND),
-                overrides.getOrDefault(ItemCameraTransforms.TransformType.HEAD, HEAD),
-                overrides.getOrDefault(ItemCameraTransforms.TransformType.GUI, GUI),
-                overrides.getOrDefault(ItemCameraTransforms.TransformType.GROUND, GROUND),
-                overrides.getOrDefault(ItemCameraTransforms.TransformType.FIXED, FIXED)
+    public static ItemTransforms modifyDefaultTransforms(Map<ItemTransforms.TransformType, ItemTransform> overrides) {
+        return new ItemTransforms(
+                overrides.getOrDefault(ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, THIRD_PERSON_RIGHT_HAND),
+                overrides.getOrDefault(ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND, THIRD_PERSON_LEFT_HAND),
+                overrides.getOrDefault(ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, FIRST_PERSON_RIGHT_HAND),
+                overrides.getOrDefault(ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND, FIRST_PERSON_LEFT_HAND),
+                overrides.getOrDefault(ItemTransforms.TransformType.HEAD, HEAD),
+                overrides.getOrDefault(ItemTransforms.TransformType.GUI, GUI),
+                overrides.getOrDefault(ItemTransforms.TransformType.GROUND, GROUND),
+                overrides.getOrDefault(ItemTransforms.TransformType.FIXED, FIXED)
         );
 
     }

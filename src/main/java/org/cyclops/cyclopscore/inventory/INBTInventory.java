@@ -1,26 +1,26 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.Container;
+import net.minecraft.nbt.CompoundTag;
 import org.cyclops.cyclopscore.persist.nbt.INBTSerializable;
 
 /**
- * An {@link IInventory} that support NBT persistence.
+ * An {@link Container} that support NBT persistence.
  * @author rubensworks
  */
-public interface INBTInventory extends IInventory, INBTSerializable {
+public interface INBTInventory extends Container, INBTSerializable {
 
     /**
      * Read inventory data from the given NBT.
      * @param data The NBT data containing inventory data.
      */
-    public void read(CompoundNBT data);
+    public void read(CompoundTag data);
 
     /**
      * Write inventory data to the given NBT.
      * @param data The NBT tag that will receive inventory data.
      */
-    public void write(CompoundNBT data);
+    public void write(CompoundTag data);
 
     /**
      * @return If all slots are empty.

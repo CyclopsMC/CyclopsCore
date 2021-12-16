@@ -8,7 +8,7 @@ package org.cyclops.cyclopscore.helper.obfuscation;
 public class ObfuscationData {
 
     /**
-     * Field from {@link net.minecraft.entity.Entity}.
+     * Field from {@link net.minecraft.world.entity.Entity}.
      */
     public static final String ENTITY_CAPABILITIES = "capabilities";
 	

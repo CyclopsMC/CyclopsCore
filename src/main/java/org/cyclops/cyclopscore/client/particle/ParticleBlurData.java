@@ -4,12 +4,9 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.BlockState;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.particles.RedstoneParticleData;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.RegistryEntries;
 
@@ -19,10 +16,10 @@ import java.util.Locale;
  * Data for {@link ParticleBlur}.
  * @author rubensworks
  */
-public class ParticleBlurData implements IParticleData {
+public class ParticleBlurData implements ParticleOptions {
 
     public static final ParticleBlurData INSTANCE = new ParticleBlurData(0, 0, 0, 1, 1);
-    public static final IParticleData.IDeserializer<ParticleBlurData> DESERIALIZER = new IParticleData.IDeserializer<ParticleBlurData>() {
+    public static final ParticleOptions.Deserializer<ParticleBlurData> DESERIALIZER = new ParticleOptions.Deserializer<ParticleBlurData>() {
         public ParticleBlurData fromCommand(ParticleType<ParticleBlurData> particleType, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             float red = (float) reader.readDouble();
@@ -37,7 +34,7 @@ public class ParticleBlurData implements IParticleData {
             return new ParticleBlurData(red, green, blue, scale, ageMultiplier);
         }
 
-        public ParticleBlurData fromNetwork(ParticleType<ParticleBlurData> particleTypeIn, PacketBuffer buffer) {
+        public ParticleBlurData fromNetwork(ParticleType<ParticleBlurData> particleTypeIn, FriendlyByteBuf buffer) {
             return new ParticleBlurData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(),
                     buffer.readFloat(), buffer.readFloat());
         }
@@ -71,7 +68,7 @@ public class ParticleBlurData implements IParticleData {
     }
 
     @Override
-    public void writeToNetwork(PacketBuffer buffer) {
+    public void writeToNetwork(FriendlyByteBuf buffer) {
         buffer.writeFloat(this.red);
         buffer.writeFloat(this.green);
         buffer.writeFloat(this.blue);

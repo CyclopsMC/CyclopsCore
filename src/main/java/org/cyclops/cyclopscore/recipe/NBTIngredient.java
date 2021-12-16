@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.recipe;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * @author rubensworks

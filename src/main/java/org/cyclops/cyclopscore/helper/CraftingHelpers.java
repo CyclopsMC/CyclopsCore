@@ -4,26 +4,26 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.Registry;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.Collection;
@@ -49,44 +49,44 @@ public class CraftingHelpers {
         CLIENT_RECIPE_MANAGER = event.getRecipeManager();
     }
 
-    public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findRecipes(World world, IRecipeType<? extends T> recipeType) {
-        return world.isClientSide() ? getClientRecipes(recipeType) : findServerRecipes((ServerWorld) world, recipeType);
+    public static <C extends Container, T extends Recipe<C>> Collection<T> findRecipes(Level world, RecipeType<? extends T> recipeType) {
+        return world.isClientSide() ? getClientRecipes(recipeType) : findServerRecipes((ServerLevel) world, recipeType);
     }
 
     public static RecipeManager getRecipeManager() {
         return MinecraftHelpers.isClientSide()
                 ? (CLIENT_RECIPE_MANAGER != null ? CLIENT_RECIPE_MANAGER : Minecraft.getInstance().getConnection().getRecipeManager())
-                : Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD), "Server is still loading").getRecipeManager();
+                : Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getLevel(Level.OVERWORLD), "Server is still loading").getRecipeManager();
     }
 
-    public static <C extends IInventory, T extends IRecipe<C>> Optional<T> getServerRecipe(IRecipeType<? extends T> recipeType, ResourceLocation recipeName) {
+    public static <C extends Container, T extends Recipe<C>> Optional<T> getServerRecipe(RecipeType<? extends T> recipeType, ResourceLocation recipeName) {
         return (Optional<T>) Optional.ofNullable(getRecipeManager().byType(recipeType).get(recipeName));
     }
 
-    public static <C extends IInventory, T extends IRecipe<C>> Optional<T> findServerRecipe(IRecipeType<T> recipeType, C container, World world) {
+    public static <C extends Container, T extends Recipe<C>> Optional<T> findServerRecipe(RecipeType<T> recipeType, C container, Level world) {
         return world.getRecipeManager().getRecipeFor(recipeType, container, world);
     }
 
-    public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findServerRecipes(IRecipeType<? extends T> recipeType) {
-        return findServerRecipes(Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getLevel(World.OVERWORLD)), recipeType);
+    public static <C extends Container, T extends Recipe<C>> Collection<T> findServerRecipes(RecipeType<? extends T> recipeType) {
+        return findServerRecipes(Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getLevel(Level.OVERWORLD)), recipeType);
     }
 
-    public static <C extends IInventory, T extends IRecipe<C>> Collection<T> findServerRecipes(ServerWorld world, IRecipeType<? extends T> recipeType) {
+    public static <C extends Container, T extends Recipe<C>> Collection<T> findServerRecipes(ServerLevel world, RecipeType<? extends T> recipeType) {
         return (Collection<T>) world.getRecipeManager().byType(recipeType).values();
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <C extends IInventory, T extends IRecipe<C>> Optional<T> getClientRecipe(IRecipeType<? extends T> recipeType, ResourceLocation recipeName) {
+    public static <C extends Container, T extends Recipe<C>> Optional<T> getClientRecipe(RecipeType<? extends T> recipeType, ResourceLocation recipeName) {
         return (Optional<T>) Optional.ofNullable(getRecipeManager().byType(recipeType).get(recipeName));
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <C extends IInventory, T extends IRecipe<C>> Collection<T> getClientRecipes(IRecipeType<? extends T> recipeType) {
+    public static <C extends Container, T extends Recipe<C>> Collection<T> getClientRecipes(RecipeType<? extends T> recipeType) {
         return (Collection<T>) getRecipeManager().byType(recipeType).values();
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <C extends IInventory, T extends IRecipe<C>> T findClientRecipe(ItemStack itemStack, IRecipeType<T> recipeType, int index) throws IllegalArgumentException {
+    public static <C extends Container, T extends Recipe<C>> T findClientRecipe(ItemStack itemStack, RecipeType<T> recipeType, int index) throws IllegalArgumentException {
         int indexAttempt = index;
         for(T recipe : getClientRecipes(recipeType)) {
             if(ItemStack.isSame(recipe.getResultItem(), itemStack) && indexAttempt-- == 0) {
@@ -97,18 +97,18 @@ public class CraftingHelpers {
                 + itemStack.getTag() + " with index " + index);
     }
 
-    private static final LoadingCache<Triple<IRecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<IRecipe>> CACHE_RECIPES = CacheBuilder.newBuilder()
+    private static final LoadingCache<Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<Recipe>> CACHE_RECIPES = CacheBuilder.newBuilder()
             .expireAfterWrite(1, TimeUnit.MINUTES)
-            .build(new CacheLoader<Triple<IRecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<IRecipe>>() {
+            .build(new CacheLoader<Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<Recipe>>() {
                 @Override
-                public Optional<IRecipe> load(Triple<IRecipeType<?>, CacheableCraftingInventory, ResourceLocation> key) throws Exception {
-                    ServerWorld world = ServerLifecycleHooks.getCurrentServer().getLevel(RegistryKey.create(Registry.DIMENSION_REGISTRY, key.getRight()));
-                    return world.getRecipeManager().getRecipeFor((IRecipeType) key.getLeft(), key.getMiddle().getInventoryCrafting(), world);
+                public Optional<Recipe> load(Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation> key) throws Exception {
+                    ServerLevel world = ServerLifecycleHooks.getCurrentServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, key.getRight()));
+                    return world.getRecipeManager().getRecipeFor((RecipeType) key.getLeft(), key.getMiddle().getInventoryCrafting(), world);
                 }
             });
 
     /**
-     * A cache-based variant of {@link net.minecraft.item.crafting.RecipeManager#getRecipeFor(IRecipeType, IInventory, World)}.
+     * A cache-based variant of {@link net.minecraft.world.item.crafting.RecipeManager#getRecipeFor(RecipeType, Container, Level)}.
      * @param recipeType The recipe type.
      * @param inventoryCrafting The crafting inventory.
      * @param world The world.
@@ -118,23 +118,23 @@ public class CraftingHelpers {
      * @param <C> The inventory type.
      * @param <T> The recipe type.
      */
-    public static <C extends IInventory, T extends IRecipe<C>> Optional<T> findRecipeCached(IRecipeType<T> recipeType,
+    public static <C extends Container, T extends Recipe<C>> Optional<T> findRecipeCached(RecipeType<T> recipeType,
                                                                                             C inventoryCrafting,
-                                                                                            World world, boolean uniqueInventory) {
+                                                                                            Level world, boolean uniqueInventory) {
         return (Optional) CACHE_RECIPES.getUnchecked(Triple.of(recipeType,
                 new CacheableCraftingInventory(inventoryCrafting, !uniqueInventory), world.dimension().getRegistryName()));
     }
 
     public static class CacheableCraftingInventory {
 
-        private final IInventory inventoryCrafting;
+        private final Container inventoryCrafting;
 
-        public CacheableCraftingInventory(IInventory inventoryCrafting, boolean copyInventory) {
+        public CacheableCraftingInventory(Container inventoryCrafting, boolean copyInventory) {
             if (copyInventory) {
                 // Deep-copy of the inventory to enable caching
-                this.inventoryCrafting = new CraftingInventory(new Container(null, 0) {
+                this.inventoryCrafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
                     @Override
-                    public boolean stillValid(PlayerEntity playerIn) {
+                    public boolean stillValid(Player playerIn) {
                         return false;
                     }
                 }, inventoryCrafting.getContainerSize(), 1);
@@ -146,7 +146,7 @@ public class CraftingHelpers {
             }
         }
 
-        public IInventory getInventoryCrafting() {
+        public Container getInventoryCrafting() {
             return inventoryCrafting;
         }
 

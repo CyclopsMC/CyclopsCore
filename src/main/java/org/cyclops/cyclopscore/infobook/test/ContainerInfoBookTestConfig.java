@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.infobook.test;
 
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -24,7 +24,7 @@ public class ContainerInfoBookTestConfig extends GuiConfig<ContainerInfoBookTest
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public <U extends Screen & IHasContainer<ContainerInfoBookTest>> ScreenManager.IScreenFactory<ContainerInfoBookTest, U> getScreenFactory() {
+    public <U extends Screen & MenuAccess<ContainerInfoBookTest>> MenuScreens.ScreenConstructor<ContainerInfoBookTest, U> getScreenFactory() {
         return new ScreenFactorySafe<>(ContainerScreenInfoBookTest::new);
     }
 

@@ -1,19 +1,19 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
- * Contains helper methods involving {@link net.minecraft.inventory.IInventory}S.
+ * Contains helper methods involving {@link Container}S.
  * @author immortaleeb
  *
  */
@@ -25,7 +25,7 @@ public class InventoryHelpers {
 	 * @param inventory inventory with ItemStacks
 	 * @param blockPos The position.
 	 */
-	public static void dropItems(World world, IInventory inventory, BlockPos blockPos) {
+	public static void dropItems(Level world, Container inventory, BlockPos blockPos) {
 		for (int i = 0; i < inventory.getContainerSize(); i++) {
 			ItemStack itemStack = inventory.getItem(i);
 			if (!itemStack.isEmpty() && itemStack.getCount() > 0)
@@ -37,7 +37,7 @@ public class InventoryHelpers {
 	 * Erase a complete inventory
 	 * @param inventory inventory to clear
 	 */
-	public static void clearInventory(IInventory inventory) {
+	public static void clearInventory(Container inventory) {
 	    for (int i = 0; i < inventory.getContainerSize(); i++) {
 	        inventory.setItem(i, ItemStack.EMPTY);
 	    }
@@ -52,8 +52,8 @@ public class InventoryHelpers {
 	 * @param newStackPart The new item stack.
 	 */
 	@Deprecated
-	public static void tryReAddToStack(PlayerEntity player, ItemStack originalStack, ItemStack newStackPart) {
-		tryReAddToStack(player, originalStack, newStackPart, Hand.MAIN_HAND);
+	public static void tryReAddToStack(Player player, ItemStack originalStack, ItemStack newStackPart) {
+		tryReAddToStack(player, originalStack, newStackPart, InteractionHand.MAIN_HAND);
 	}
 	
 	/**
@@ -65,15 +65,15 @@ public class InventoryHelpers {
 	 * @param newStackPart The new item stack.
 	 * @param hand The hand for which the stack should be re-added
 	 */
-	public static void tryReAddToStack(PlayerEntity player, ItemStack originalStack, ItemStack newStackPart, Hand hand) {
+	public static void tryReAddToStack(Player player, ItemStack originalStack, ItemStack newStackPart, InteractionHand hand) {
 		if (!player.isCreative()) {
         	if(!originalStack.isEmpty() && originalStack.getCount() == 1) {
-        		player.inventory.setItem(hand == Hand.MAIN_HAND ? player.inventory.selected : 40, newStackPart);
+        		player.getInventory().setItem(hand == InteractionHand.MAIN_HAND ? player.getInventory().selected : 40, newStackPart);
         	} else {
                 if(!originalStack.isEmpty()) {
 					originalStack.shrink(1);
 				}
-        		if(!player.inventory.add(newStackPart)) {
+        		if(!player.getInventory().add(newStackPart)) {
         			player.drop(newStackPart, false);
         		}
         	}
@@ -87,10 +87,10 @@ public class InventoryHelpers {
 	 * @param itemStack The item stack to read/write.
 	 * @param tagName The tag name to read from.
 	 */
-	public static void validateNBTStorage(IInventory inventory, ItemStack itemStack, String tagName) {
-		CompoundNBT tag = itemStack.getOrCreateTag();
+	public static void validateNBTStorage(Container inventory, ItemStack itemStack, String tagName) {
+		CompoundTag tag = itemStack.getOrCreateTag();
 		if(!tag.contains(tagName)) {
-			tag.put(tagName, new ListNBT());
+			tag.put(tagName, new ListTag());
 		}
 		readFromNBT(inventory, tag, tagName);
 	}
@@ -101,15 +101,15 @@ public class InventoryHelpers {
 	 * @param data The tag to read from.
 	 * @param tagName The tag name to read from.
 	 */
-	public static void readFromNBT(IInventory inventory, CompoundNBT data, String tagName) {
-        ListNBT nbttaglist = data.getList(tagName, Constants.NBT.TAG_COMPOUND);
+	public static void readFromNBT(Container inventory, CompoundTag data, String tagName) {
+        ListTag nbttaglist = data.getList(tagName, Tag.TAG_COMPOUND);
         
         for(int j = 0; j < inventory.getContainerSize(); j++) {
         	inventory.setItem(j, ItemStack.EMPTY);
         }
 
         for(int j = 0; j < nbttaglist.size(); j++) {
-            CompoundNBT slot = nbttaglist.getCompound(j);
+            CompoundTag slot = nbttaglist.getCompound(j);
             int index;
             if(slot.contains("index")) {
                 index = slot.getInt("index");
@@ -128,12 +128,12 @@ public class InventoryHelpers {
 	 * @param data The tag to write to.
 	 * @param tagName The tag name to write into.
 	 */
-	public static void writeToNBT(IInventory inventory, CompoundNBT data, String tagName) {
-        ListNBT slots = new ListNBT();
+	public static void writeToNBT(Container inventory, CompoundTag data, String tagName) {
+        ListTag slots = new ListTag();
         for(byte index = 0; index < inventory.getContainerSize(); ++index) {
         	ItemStack itemStack = inventory.getItem(index);
             if(!itemStack.isEmpty() && itemStack.getCount() > 0) {
-                CompoundNBT slot = new CompoundNBT();
+                CompoundTag slot = new CompoundTag();
                 slot.putInt("index", index);
                 slots.add(slot);
                 itemStack.save(slot);
@@ -148,8 +148,8 @@ public class InventoryHelpers {
 	 * @param itemIndex The index of the item in the inventory.
 	 * @return The item stack.
 	 */
-	public static ItemStack getItemFromIndex(PlayerEntity player, int itemIndex) {
-		return getItemFromIndex(player, itemIndex, Hand.MAIN_HAND);
+	public static ItemStack getItemFromIndex(Player player, int itemIndex) {
+		return getItemFromIndex(player, itemIndex, InteractionHand.MAIN_HAND);
 	}
 	
 	/**
@@ -159,9 +159,9 @@ public class InventoryHelpers {
 	 * @param hand The hand the item is in.
 	 * @return The item stack.
 	 */
-	public static ItemStack getItemFromIndex(PlayerEntity player, int itemIndex, Hand hand) {
-		return Hand.MAIN_HAND.equals(hand)
-				? player.inventory.items.get(itemIndex) : player.getOffhandItem();
+	public static ItemStack getItemFromIndex(Player player, int itemIndex, InteractionHand hand) {
+		return InteractionHand.MAIN_HAND.equals(hand)
+				? player.getInventory().items.get(itemIndex) : player.getOffhandItem();
 	}
 
 	/**
@@ -171,9 +171,9 @@ public class InventoryHelpers {
 	 * @param hand The hand the item is in.
 	 * @param itemStack The new item stack.
 	 */
-	public static void setItemAtIndex(PlayerEntity player, int itemIndex, Hand hand, ItemStack itemStack) {
-		if (Hand.MAIN_HAND.equals(hand)) {
-			player.inventory.setItem(itemIndex, itemStack);
+	public static void setItemAtIndex(Player player, int itemIndex, InteractionHand hand, ItemStack itemStack) {
+		if (InteractionHand.MAIN_HAND.equals(hand)) {
+			player.getInventory().setItem(itemIndex, itemStack);
 		} else {
 			player.setItemInHand(hand, itemStack);
 		}
@@ -186,7 +186,7 @@ public class InventoryHelpers {
 	 * @param itemStack The item to try to put in the production slot.
 	 * @return If the item could be added or joined in the production slot.
 	 */
-	public static boolean addToSlot(IInventory inventory, int slot, ItemStack itemStack) {
+	public static boolean addToSlot(Container inventory, int slot, ItemStack itemStack) {
 		return addToSlot(inventory, slot, itemStack, false);
 	}
 
@@ -216,7 +216,7 @@ public class InventoryHelpers {
 	 * @param simulate If the operation should be simulated.
 	 * @return The remaining itemstack that could not be added anymore.
 	 */
-	public static ItemStack fillSlot(IInventory inventory, int slot, ItemStack itemStack, boolean simulate) {
+	public static ItemStack fillSlot(Container inventory, int slot, ItemStack itemStack, boolean simulate) {
 		ItemStack produceStack = inventory.getItem(slot);
 		if(produceStack.isEmpty()) {
 			if (!simulate) {
@@ -241,7 +241,7 @@ public class InventoryHelpers {
 	 * @param simulate If the operation should be simulated.
      * @return If the item could be added or joined in the production slot.
      */
-    public static boolean addToSlot(IInventory inventory, int slot, ItemStack itemStack, boolean simulate) {
+    public static boolean addToSlot(Container inventory, int slot, ItemStack itemStack, boolean simulate) {
         return fillSlot(inventory, slot, itemStack, simulate).isEmpty();
     }
 
@@ -253,7 +253,7 @@ public class InventoryHelpers {
 	 * @param simulate If the operation should be simulated.
 	 * @return The remaining itemstack that could not be added anymore.
 	 */
-	public static NonNullList<ItemStack> addToInventory(IInventory inventory, int[] slots, NonNullList<ItemStack> itemStacks, boolean simulate) {
+	public static NonNullList<ItemStack> addToInventory(Container inventory, int[] slots, NonNullList<ItemStack> itemStacks, boolean simulate) {
 		NonNullList<ItemStack> remaining = NonNullList.create();
 		for (ItemStack itemStack : itemStacks) {
 			for (int i = 0; i < slots.length; i++) {

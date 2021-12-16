@@ -1,15 +1,14 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -24,7 +23,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class ParticleConfig<T extends IParticleData> extends ExtendedConfigForge<ParticleConfig<T>, ParticleType<T>> {
+public abstract class ParticleConfig<T extends ParticleOptions> extends ExtendedConfigForge<ParticleConfig<T>, ParticleType<T>> {
 
     /**
      * Create a new config
@@ -61,20 +60,20 @@ public abstract class ParticleConfig<T extends IParticleData> extends ExtendedCo
 
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    public abstract IParticleFactory<T> getParticleFactory();
+    public abstract ParticleProvider<T> getParticleFactory();
 
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    public abstract ParticleManager.IParticleMetaFactory<T> getParticleMetaFactory();
+    public abstract ParticleEngine.SpriteParticleRegistration<T> getParticleMetaFactory();
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onParticleFactoryRegister(ParticleFactoryRegisterEvent event) {
-        IParticleFactory<T> factory = getParticleFactory();
+        ParticleProvider<T> factory = getParticleFactory();
         if (factory != null) {
             Minecraft.getInstance().particleEngine.register(getInstance(), factory);
         }
-        ParticleManager.IParticleMetaFactory<T> metaFactory = getParticleMetaFactory();
+        ParticleEngine.SpriteParticleRegistration<T> metaFactory = getParticleMetaFactory();
         if (metaFactory != null) {
             Minecraft.getInstance().particleEngine.register(getInstance(), metaFactory);
         }

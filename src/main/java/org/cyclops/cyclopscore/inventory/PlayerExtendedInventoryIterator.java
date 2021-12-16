@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
@@ -25,7 +25,7 @@ public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
      * Create a new HotbarIterator.
      * @param player The player to iterate the hotbar from.
      */
-    public PlayerExtendedInventoryIterator(PlayerEntity player) {
+    public PlayerExtendedInventoryIterator(Player player) {
         this.iterators = Queues.newArrayDeque();
         iterators.add(new PlayerInventoryIterator(player));
         for (IInventoryExtender inventoryExtender : PlayerExtendedInventoryIterator.INVENTORY_EXTENDERS) {
@@ -72,7 +72,7 @@ public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
     public static interface IInventoryExtender {
 
         @Nullable
-        public IItemHandlerModifiable getInventory(PlayerEntity player);
+        public IItemHandlerModifiable getInventory(Player player);
 
     }
 

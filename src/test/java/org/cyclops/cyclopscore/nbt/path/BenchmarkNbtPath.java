@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 
 public class BenchmarkNbtPath {
 
@@ -22,12 +22,12 @@ public class BenchmarkNbtPath {
     }
 
     private static void runExecute(int replication) throws NbtParseException {
-        CompoundNBT tag1 = new CompoundNBT();
-        CompoundNBT tag2 = new CompoundNBT();
-        ListNBT tag3 = new ListNBT();
-        CompoundNBT tag4 = new CompoundNBT();
-        CompoundNBT tag5 = new CompoundNBT();
-        CompoundNBT tag6 = new CompoundNBT();
+        CompoundTag tag1 = new CompoundTag();
+        CompoundTag tag2 = new CompoundTag();
+        ListTag tag3 = new ListTag();
+        CompoundTag tag4 = new CompoundTag();
+        CompoundTag tag5 = new CompoundTag();
+        CompoundTag tag6 = new CompoundTag();
         tag1.put("a", tag2);
         tag2.put("b", tag3);
         tag3.add(tag4);

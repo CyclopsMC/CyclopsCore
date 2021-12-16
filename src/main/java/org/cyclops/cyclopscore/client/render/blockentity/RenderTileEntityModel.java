@@ -1,40 +1,34 @@
-package org.cyclops.cyclopscore.client.render.tileentity;
+package org.cyclops.cyclopscore.client.render.blockentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.client.renderer.model.RenderMaterial;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import org.cyclops.cyclopscore.tileentity.CyclopsTileEntity;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
 
 import java.util.function.Function;
 
 /**
- * General renderer for {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity} with models.
+ * General renderer for {@link CyclopsBlockEntity} with models.
  * @author rubensworks
  *
  */
-public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> extends TileEntityRenderer<T> {
+public abstract class RenderTileEntityModel<T extends CyclopsBlockEntity, M> implements BlockEntityRenderer<T> {
 
     protected final M model;
-	private final RenderMaterial material;
+	private final Material material;
 
     /**
      * Make a new instance.
-     * @param renderDispatcher The render dispatcher
      * @param model The model to render.
      * @param material The material to render the model with.
      */
-    public RenderTileEntityModel(TileEntityRendererDispatcher renderDispatcher, M model, RenderMaterial material) {
-        super(renderDispatcher);
+    public RenderTileEntityModel(M model, Material material) {
         this.model = model;
         this.material = material;
     }
@@ -47,7 +41,7 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
      * Get the material.
      * @return The material.
      */
-	public RenderMaterial getMaterial() {
+	public Material getMaterial() {
 		return material;
 	}
 
@@ -55,24 +49,24 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
 	    return RenderType::entityCutout;
     }
 
-    protected void preRotate(T tile) {
-        GlStateManager._translatef(0.5F, 0.5F, 0.5F);
+    protected void preRotate(T tile, PoseStack matrixStack) {
+        matrixStack.translate(0.5F, 0.5F, 0.5F);
     }
 
-    protected void postRotate(T tile) {
-        GlStateManager._translatef(-0.5F, -0.5F, -0.5F);
+    protected void postRotate(T tile, PoseStack matrixStack) {
+        matrixStack.translate(-0.5F, -0.5F, -0.5F);
     }
 
     @Override
-    public void render(T tile, float partialTick, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay) {
+    public void render(T tile, float partialTick, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
         Direction direction = tile.getRotation();
 
-        IVertexBuilder vertexBuilder = material.buffer(buffer, getRenderTypeGetter());
+        VertexConsumer vertexBuilder = material.buffer(buffer, getRenderTypeGetter());
 
         matrixStack.pushPose();
         matrixStack.translate(0, 1.0F, 1.0F);
         matrixStack.scale(1.0F, -1.0F, -1.0F);
-        preRotate(tile);
+        preRotate(tile, matrixStack);
         short rotation = 0;
 
         if (direction == Direction.SOUTH) {
@@ -89,7 +83,7 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
         }
 
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
-        postRotate(tile);
+        postRotate(tile, matrixStack);
 
         renderModel(tile, getModel(), partialTick, matrixStack, vertexBuilder, buffer, combinedLight, combinedOverlay);
         matrixStack.popPose();
@@ -106,7 +100,7 @@ public abstract class RenderTileEntityModel<T extends CyclopsTileEntity, M> exte
      * @param combinedLight The combined light value.
      * @param combinedOverlay The combined overlay value.
      */
-    protected abstract void renderModel(T tile, M model, float partialTick, MatrixStack matrixStack,
-                                        IVertexBuilder vertexBuilder, IRenderTypeBuffer buffer,
+    protected abstract void renderModel(T tile, M model, float partialTick, PoseStack matrixStack,
+                                        VertexConsumer vertexBuilder, MultiBufferSource buffer,
                                         int combinedLight, int combinedOverlay);
 }

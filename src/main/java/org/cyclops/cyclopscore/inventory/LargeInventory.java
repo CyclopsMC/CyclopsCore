@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * A large inventory implementation.
@@ -33,14 +33,14 @@ public class LargeInventory extends SimpleInventory {
      * @param data The NBT data containing inventory data.
      * @param tag The NBT tag name where the info is located.
      */
-    public void readFromNBT(CompoundNBT data, String tag) {
-        ListNBT nbttaglist = data.getList(tag, Constants.NBT.TAG_COMPOUND);
+    public void readFromNBT(CompoundTag data, String tag) {
+        ListTag nbttaglist = data.getList(tag, Tag.TAG_COMPOUND);
 
         for (int j = 0; j < getContainerSize(); ++j)
             contents[j] = ItemStack.EMPTY;
 
         for (int j = 0; j < nbttaglist.size(); ++j) {
-            CompoundNBT slot = nbttaglist.getCompound(j);
+            CompoundTag slot = nbttaglist.getCompound(j);
             int index;
             if (slot.contains("index")) {
                 index = slot.getInt("index");
@@ -58,12 +58,12 @@ public class LargeInventory extends SimpleInventory {
      * @param data The NBT tag that will receive inventory data.
      * @param tag The NBT tag name where the info must be located.
      */
-    public void writeToNBT(CompoundNBT data, String tag) {
-        ListNBT slots = new ListNBT();
+    public void writeToNBT(CompoundTag data, String tag) {
+        ListTag slots = new ListTag();
         for (int index = 0; index < getContainerSize(); ++index) {
             ItemStack itemStack = getItem(index);
             if (!itemStack.isEmpty() && itemStack.getCount() > 0) {
-                CompoundNBT slot = new CompoundNBT();
+                CompoundTag slot = new CompoundTag();
                 slots.add(slot);
                 slot.putInt("Slot", index);
                 itemStack.save(slot);

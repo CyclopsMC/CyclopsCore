@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.item.Item;
+import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -64,7 +64,7 @@ public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
 
     protected void polish(ItemConfig config) {
         if (MinecraftHelpers.isClientSide()) {
-            IItemColor itemColorHandler = config.getItemColorHandler();
+            ItemColor itemColorHandler = config.getItemColorHandler();
             if (itemColorHandler != null) {
                 Minecraft.getInstance().getItemColors().register(itemColorHandler, config.getInstance());
             }

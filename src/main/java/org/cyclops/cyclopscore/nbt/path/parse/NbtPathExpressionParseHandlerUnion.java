@@ -1,10 +1,9 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
 import org.cyclops.cyclopscore.nbt.path.navigate.INbtPathNavigation;
@@ -79,16 +78,16 @@ public class NbtPathExpressionParseHandlerUnion implements INbtPathExpressionPar
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
             return new NbtPathExpressionMatches(executionContexts
                     .flatMap(executionContext -> {
-                        INBT nbt = executionContext.getCurrentTag();
-                        if (!getChildIndexes().isEmpty() && nbt.getId() == Constants.NBT.TAG_LIST) {
-                            ListNBT tag = (ListNBT) nbt;
+                        Tag nbt = executionContext.getCurrentTag();
+                        if (!getChildIndexes().isEmpty() && nbt.getId() == Tag.TAG_LIST) {
+                            ListTag tag = (ListTag) nbt;
                             return getChildIndexes()
                                     .stream()
                                     .map(tag::get)
                                     .filter((subTag) -> subTag.getId() != 0)
                                     .map((subTag) -> new NbtPathExpressionExecutionContext(subTag, executionContext));
-                        } else if (!getChildNames().isEmpty() && nbt.getId() == Constants.NBT.TAG_COMPOUND) {
-                            CompoundNBT tag = (CompoundNBT) nbt;
+                        } else if (!getChildNames().isEmpty() && nbt.getId() == Tag.TAG_COMPOUND) {
+                            CompoundTag tag = (CompoundTag) nbt;
                             return getChildNames()
                                     .stream()
                                     .map(tag::get)

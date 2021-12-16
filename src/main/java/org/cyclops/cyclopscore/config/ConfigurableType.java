@@ -45,7 +45,7 @@ public class ConfigurableType {
     /**
      * Capability type.
      */
-    public static final ConfigurableType CAPABILITY = new ConfigurableType(false, CapabilityConfig.class, new CapabilityAction(), "capability");
+    public static final ConfigurableType CAPABILITY = new ConfigurableType(false, CapabilityConfig.class, new CapabilityAction<>(), "capability");
     /**
      * Gui type.
      */
@@ -67,18 +67,14 @@ public class ConfigurableType {
      */
     public static final ConfigurableType PARTICLE = new ConfigurableType(true, ParticleConfig.class, new ParticleAction(), "particle");
     /**
-     * Tile entity type.
+     * Block entity type.
      */
-    public static final ConfigurableType TILE_ENTITY = new ConfigurableType(true, TileEntityConfig.class, new TileEntityAction(), "tile_entity");
+    public static final ConfigurableType BLOCK_ENTITY = new ConfigurableType(true, BlockEntityConfig.class, new BlockEntityAction(), "block_entity");
     /**
      * World feature type.
      */
     public static final ConfigurableType WORLD_FEATURE = new ConfigurableType(true, WorldFeatureConfig.class, new WorldFeatureAction(), "world_feature");
     public static final ConfigurableType WORLD_STRUCTURE = new ConfigurableType(true, WorldStructureConfig.class, new WorldStructureAction(), "world_structure");
-    /**
-     * World decorator type.
-     */
-    public static final ConfigurableType WORLD_DECORATOR = new ConfigurableType(true, WorldDecoratorConfig.class, new WorldDecoratorAction(), "world_decorator");
     public static final ConfigurableType FOLIAGE_PLACER = new ConfigurableType(true, FoliagePlacerConfig.class, new FoliagePlacerAction(), "foliage_placer");
     public static final ConfigurableType TRUNK_PLACER = new ConfigurableType(true, TrunkPlacerConfig.class, new TrunkPlacerAction(), "trunk_placer");
 

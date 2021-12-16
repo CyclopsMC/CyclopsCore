@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.ItemStackHelpers;
@@ -25,13 +25,13 @@ public class RewardItem implements IReward {
     }
 
     @Override
-    public boolean canObtain(PlayerEntity player) {
+    public boolean canObtain(Player player) {
         return true;
     }
 
     @Override
-    public void obtain(PlayerEntity player) {
-        if (!player.inventory.add(itemStack.copy())) {
+    public void obtain(Player player) {
+        if (!player.getInventory().add(itemStack.copy())) {
             ItemStackHelpers.spawnItemStack(player.getCommandSenderWorld(), player.blockPosition(), itemStack.copy());
         }
     }
@@ -54,7 +54,7 @@ public class RewardItem implements IReward {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void drawElementInner(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button) {
+    public void drawElementInner(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button) {
         RecipeAppendix.renderItemForButton(gui, matrixStack, x, y, itemStack, mx, my, true, (RecipeAppendix.ItemButton) button);
     }
 

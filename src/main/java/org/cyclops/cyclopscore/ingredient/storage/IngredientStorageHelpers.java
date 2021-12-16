@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
@@ -854,8 +854,8 @@ public final class IngredientStorageHelpers {
      * @param <M> The matching condition parameter.
      * @return An NBT tag.
      */
-    public static <T, M> CompoundNBT serialize(IIngredientComponentStorage<T, M> storage) {
-        CompoundNBT tag = IngredientCollections.serialize(new IngredientArrayList<>(storage.getComponent(), storage.iterator()));
+    public static <T, M> CompoundTag serialize(IIngredientComponentStorage<T, M> storage) {
+        CompoundTag tag = IngredientCollections.serialize(new IngredientArrayList<>(storage.getComponent(), storage.iterator()));
         tag.putLong("maxQuantity", storage.getMaxQuantity());
         tag.putBoolean("slotted", storage instanceof IIngredientComponentStorageSlotted);
         return tag;
@@ -871,11 +871,11 @@ public final class IngredientStorageHelpers {
      * @return The deserialized storage.
      * @throws IllegalArgumentException If the tag was invalid.
      */
-    public static IIngredientComponentStorage<?, ?> deserialize(CompoundNBT tag, long rateLimit) {
-        if (!tag.contains("maxQuantity", Constants.NBT.TAG_LONG)) {
+    public static IIngredientComponentStorage<?, ?> deserialize(CompoundTag tag, long rateLimit) {
+        if (!tag.contains("maxQuantity", Tag.TAG_LONG)) {
             throw new IllegalArgumentException("No maxQuantity was found in the given tag");
         }
-        if (!tag.contains("slotted", Constants.NBT.TAG_BYTE)) {
+        if (!tag.contains("slotted", Tag.TAG_BYTE)) {
             throw new IllegalArgumentException("No slotted was found in the given tag");
         }
         long maxQuantity = tag.getLong("maxQuantity");

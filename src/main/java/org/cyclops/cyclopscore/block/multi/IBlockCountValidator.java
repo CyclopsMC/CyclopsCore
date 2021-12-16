@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.block.multi;
 
-import net.minecraft.block.Block;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.network.chat.Component;
 
 /**
  * Count validator for blocks.
@@ -17,6 +17,6 @@ public interface IBlockCountValidator {
      * @param block The block to check, used as reference for the error.
      * @return Null if the location is valid, otherwise the error message.
      */
-    public ITextComponent isValid(int count, boolean structureComplete, Block block);
+    public Component isValid(int count, boolean structureComplete, Block block);
 
 }

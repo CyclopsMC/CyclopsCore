@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.client.gui.component.button;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 
 /**
  * An button with text.
@@ -12,7 +12,7 @@ import net.minecraft.util.text.ITextComponent;
  */
 public class ButtonText extends ButtonExtended {
 
-	private final ITextComponent text;
+	private final Component text;
 
     /**
      * Make a new instance.
@@ -22,7 +22,7 @@ public class ButtonText extends ButtonExtended {
 	 * @param text The text to print.
 	 * @param pressCallback A callback for when this button was pressed.
      */
-    public ButtonText(int x, int y, ITextComponent narrationMessage, ITextComponent text, Button.IPressable pressCallback) {
+    public ButtonText(int x, int y, Component narrationMessage, Component text, Button.OnPress pressCallback) {
     	// MCP: getStringWidth
         this(x, y, Minecraft.getInstance().font.width(text.getVisualOrderText()) + 6, 16, narrationMessage, text, pressCallback, true);
     }
@@ -38,22 +38,22 @@ public class ButtonText extends ButtonExtended {
      * @param pressCallback A callback for when this button was pressed.
 	 * @param background If the button background should be rendered.
 	 */
-	public ButtonText(int x, int y, int width, int height, ITextComponent narrationMessage, ITextComponent text,
-					  Button.IPressable pressCallback, boolean background) {
+	public ButtonText(int x, int y, int width, int height, Component narrationMessage, Component text,
+					  Button.OnPress pressCallback, boolean background) {
 		super(x, y, width, height, narrationMessage, pressCallback, background);
 		this.text = text;
 	}
 
-	public ITextComponent getText() {
+	public Component getText() {
 		return text;
 	}
 
 	@Override
-	protected void drawButtonInner(MatrixStack matrixStack, int mouseX, int mouseY) {
+	protected void drawButtonInner(PoseStack matrixStack, int mouseX, int mouseY) {
         int color = 0xe0e0e0;
         if (!active) {
             color = 0xffa0a0a0;
-        } else if (isHovered()) {
+        } else if (isHoveredOrFocused()) {
             color = 0xffffa0;
         }
 

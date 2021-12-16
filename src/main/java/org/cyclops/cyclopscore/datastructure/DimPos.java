@@ -6,13 +6,13 @@ import com.google.common.cache.LoadingCache;
 import lombok.Data;
 import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import javax.annotation.Nullable;
@@ -26,21 +26,21 @@ import java.util.concurrent.TimeUnit;
 @Data(staticConstructor = "of")
 public class DimPos implements Comparable<DimPos> {
 
-    private final String world;
+    private final String level;
     private final BlockPos blockPos;
-    private WeakReference<World> worldReference;
+    private WeakReference<Level> worldReference;
 
-    private static final LoadingCache<String, RegistryKey<World>> CACHE_WORLD_KEYS = CacheBuilder.newBuilder()
+    private static final LoadingCache<String, ResourceKey<Level>> CACHE_WORLD_KEYS = CacheBuilder.newBuilder()
             .expireAfterWrite(1, TimeUnit.MINUTES)
-            .build(new CacheLoader<String, RegistryKey<World>>() {
+            .build(new CacheLoader<String, ResourceKey<Level>>() {
                 @Override
-                public RegistryKey<World> load(String key) {
-                    return RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(key));
+                public ResourceKey<Level> load(String key) {
+                    return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(key));
                 }
             });
 
-    private DimPos(String dimension, BlockPos blockPos, World world) {
-        this.world = dimension;
+    private DimPos(String dimension, BlockPos blockPos, Level world) {
+        this.level = dimension;
         this.blockPos = blockPos;
         this.worldReference = world != null && world.isClientSide() ? new WeakReference<>(world) : null;
     }
@@ -50,40 +50,40 @@ public class DimPos implements Comparable<DimPos> {
     }
 
     @SneakyThrows
-    public RegistryKey<World> getWorldKey() {
-        return CACHE_WORLD_KEYS.get(getWorld());
+    public ResourceKey<Level> getLevelKey() {
+        return CACHE_WORLD_KEYS.get(getLevel());
     }
 
     @Nullable
-    public World getWorld(boolean forceLoad) {
+    public Level getLevel(boolean forceLoad) {
         if (worldReference == null) {
             if (MinecraftHelpers.isClientSideThread()) {
-                ClientWorld world = Minecraft.getInstance().level;
-                if (world != null && world.dimension().location().toString().equals(this.getWorld())) {
+                ClientLevel world = Minecraft.getInstance().level;
+                if (world != null && world.dimension().location().toString().equals(this.getLevel())) {
                     this.worldReference = new WeakReference<>(world);
                     return this.worldReference.get();
                 }
                 return null;
             }
-            return ServerLifecycleHooks.getCurrentServer().getLevel(getWorldKey());
+            return ServerLifecycleHooks.getCurrentServer().getLevel(getLevelKey());
         }
 
-        World world = worldReference.get();
+        Level world = worldReference.get();
         if (world == null) {
-            world = ServerLifecycleHooks.getCurrentServer().getLevel(getWorldKey());
+            world = ServerLifecycleHooks.getCurrentServer().getLevel(getLevelKey());
             worldReference = new WeakReference<>(world);
         }
         return world;
     }
 
     public boolean isLoaded() {
-        World world = getWorld(false);
+        Level world = getLevel(false);
         return world != null && world.hasChunkAt(getBlockPos());
     }
 
     @Override
     public int compareTo(DimPos o) {
-        int compareDim = getWorld().compareTo(o.getWorld());
+        int compareDim = getLevel().compareTo(o.getLevel());
         if(compareDim == 0) {
             return MinecraftHelpers.compareBlockPos(getBlockPos(), o.getBlockPos());
         }
@@ -97,14 +97,14 @@ public class DimPos implements Comparable<DimPos> {
 
     @Override
     public int hashCode() {
-        return 31 * getWorld().hashCode() + getBlockPos().hashCode();
+        return 31 * getLevel().hashCode() + getBlockPos().hashCode();
     }
 
-    public static DimPos of(World world, BlockPos blockPos) {
+    public static DimPos of(Level world, BlockPos blockPos) {
         return of(world.dimension(), blockPos);
     }
 
-    public static DimPos of(RegistryKey<World> world, BlockPos blockPos) {
+    public static DimPos of(ResourceKey<Level> world, BlockPos blockPos) {
         return new DimPos(world.location().toString(), blockPos);
     }
 

@@ -2,9 +2,9 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
 import lombok.Data;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.EntityHelpers;
@@ -48,11 +48,11 @@ public class AdvancementRewards {
         return NBT_KEY_OBTAINED_PREFIX + id;
     }
 
-    public boolean isObtained(PlayerEntity player) {
+    public boolean isObtained(Player player) {
         return EntityHelpers.getPersistedPlayerNbt(player).getBoolean(getNbtTagKey());
     }
 
-    public void obtain(PlayerEntity player) {
+    public void obtain(Player player) {
         if (!isObtained(player)) {
             // If client-side, send packet to server, otherwise, obtain the rewards server-side
             if (player.level.isClientSide()) {
@@ -64,11 +64,11 @@ public class AdvancementRewards {
             }
 
             // Set NBT
-            CompoundNBT tag = player.getPersistentData();
-            if (!tag.contains(PlayerEntity.PERSISTED_NBT_TAG)) {
-                tag.put(PlayerEntity.PERSISTED_NBT_TAG, new CompoundNBT());
+            CompoundTag tag = player.getPersistentData();
+            if (!tag.contains(Player.PERSISTED_NBT_TAG)) {
+                tag.put(Player.PERSISTED_NBT_TAG, new CompoundTag());
             }
-            CompoundNBT persistedTag = tag.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
+            CompoundTag persistedTag = tag.getCompound(Player.PERSISTED_NBT_TAG);
             persistedTag.putBoolean(getNbtTagKey(), true);
         }
     }

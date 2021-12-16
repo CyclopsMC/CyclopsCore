@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.inventory.slot;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -22,7 +22,7 @@ public class SlotFluidContainer extends Slot {
     @Nullable
     private final Fluid fluid;
 
-    public SlotFluidContainer(IInventory inventory, int index, int x, int y, @Nullable Fluid fluid) {
+    public SlotFluidContainer(Container inventory, int index, int x, int y, @Nullable Fluid fluid) {
         super(inventory, index, x, y);
         this.fluid = fluid;
     }

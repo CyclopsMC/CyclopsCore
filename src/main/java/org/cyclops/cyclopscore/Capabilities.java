@@ -1,7 +1,8 @@
 package org.cyclops.cyclopscore;
 
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import org.cyclops.commoncapabilities.api.capability.inventorystate.IInventoryState;
 
 /**
@@ -9,6 +10,5 @@ import org.cyclops.commoncapabilities.api.capability.inventorystate.IInventorySt
  * @author rubensworks
  */
 public class Capabilities {
-    @CapabilityInject(IInventoryState.class)
-    public static Capability<IInventoryState> INVENTORY_STATE = null;
+    public static Capability<IInventoryState> INVENTORY_STATE = CapabilityManager.get(new CapabilityToken<>(){});
 }

@@ -1,12 +1,11 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.CodecField;
@@ -28,7 +27,7 @@ public abstract class PlayerPositionPacket extends PacketCodec {
     @CodecField
     protected String uuid;
     @CodecField
-    protected Vector3d position = new Vector3d(0, 0, 0);
+    protected Vec3 position = new Vec3(0, 0, 0);
     @CodecField
     private int range = DEFAULT_RANGE;
 
@@ -42,7 +41,7 @@ public abstract class PlayerPositionPacket extends PacketCodec {
      * Creates a PlayerPositionPacket which contains the player data.
      * @param player The player data.
      */
-    public PlayerPositionPacket(PlayerEntity player) {
+    public PlayerPositionPacket(Player player) {
         this(player, DEFAULT_RANGE);
     }
 
@@ -53,7 +52,7 @@ public abstract class PlayerPositionPacket extends PacketCodec {
      * @param player The player data.
      * @param range The range around the player.
      */
-    public PlayerPositionPacket(PlayerEntity player, int range) {
+    public PlayerPositionPacket(Player player, int range) {
         this.uuid = player.getUUID().toString();
         this.position = player.position();
         this.range = range;
@@ -66,22 +65,22 @@ public abstract class PlayerPositionPacket extends PacketCodec {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void actionClient(World world, PlayerEntity player) {
+    public void actionClient(Level level, Player player) {
         if (uuid == null) {
-            getModInstance().log(Level.WARN, "Got PlayerPositionPacket with empty uuid");
+            getModInstance().log(org.apache.logging.log4j.Level.WARN, "Got PlayerPositionPacket with empty uuid");
             return;
         }
 
         try {
             UUID uuid = UUID.fromString(this.uuid);
             if (player != null && !player.getUUID().equals(uuid)) {
-                player = world.getPlayerByUUID(uuid);
+                player = level.getPlayerByUUID(uuid);
             }
 
             if (player == null) {
-                getModInstance().log(Level.WARN, "Received PlayerPositionPacket for player with uuid '" + uuid + "', but player doesn't exist");
+                getModInstance().log(org.apache.logging.log4j.Level.WARN, "Received PlayerPositionPacket for player with uuid '" + uuid + "', but player doesn't exist");
             } else {
-                performClientAction(world, player);
+                performClientAction(level, player);
             }
         } catch (IllegalArgumentException e) {
             // Ignore invalid packets
@@ -89,14 +88,14 @@ public abstract class PlayerPositionPacket extends PacketCodec {
     }
 
     @Override
-    public void actionServer(World world, ServerPlayerEntity player) {
+    public void actionServer(Level level, ServerPlayer player) {
         getModInstance().getPacketHandler().sendToAllAround(create(player, range),
                 LocationHelpers.createTargetPointFromEntity(player, range));
     }
 
-    protected abstract PlayerPositionPacket create(PlayerEntity player, int range);
+    protected abstract PlayerPositionPacket create(Player player, int range);
 
     protected abstract ModBase getModInstance();
 
-    protected abstract void performClientAction(World world, PlayerEntity player);
+    protected abstract void performClientAction(Level level, Player player);
 }

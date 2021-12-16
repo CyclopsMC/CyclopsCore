@@ -1,16 +1,16 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
@@ -42,18 +42,18 @@ public class AchievementCollectButton extends AdvancedButton {
     }
 
     @Override
-    public void renderTooltip(MatrixStack matrixStack, int mx, int my) {
+    public void renderTooltip(PoseStack matrixStack, int mx, int my) {
         super.renderTooltip(matrixStack, mx, my);
-        GlStateManager._pushMatrix();
+        matrixStack.pushPose();
         if(mx >= x && my >= y && mx <= x + width && my <= y + height) {
-            List<IReorderingProcessor> lines = Lists.newArrayList();
+            List<FormattedCharSequence> lines = Lists.newArrayList();
             if (advancementRewards.isObtained(Minecraft.getInstance().player)) {
-                lines.add(IReorderingProcessor.forward(
+                lines.add(FormattedCharSequence.forward(
                         L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collected"),
                         Style.EMPTY.withItalic(true)
                 ));
             } else {
-                lines.add(IReorderingProcessor.forward(
+                lines.add(FormattedCharSequence.forward(
                         L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collect"),
                         Style.EMPTY.withBold(true)
                 ));
@@ -64,17 +64,15 @@ public class AchievementCollectButton extends AdvancedButton {
                     }
                 }
                 if (!canObtain) {
-                    lines.add(IReorderingProcessor.forward(
+                    lines.add(FormattedCharSequence.forward(
                             L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collectFailure"),
-                            Style.EMPTY.withColor(Color.fromLegacyFormat(TextFormatting.RED))
+                            Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.RED))
                     ));
                 }
             }
             gui.renderTooltip(matrixStack, lines, mx, my);
         }
-        GlStateManager._popMatrix();
-
-        GlStateManager._disableLighting();
+        matrixStack.popPose();
 
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -88,7 +86,7 @@ public class AchievementCollectButton extends AdvancedButton {
     @Override
     public void onPress() {
         super.onPress();
-        PlayerEntity player = Minecraft.getInstance().player;
+        Player player = Minecraft.getInstance().player;
         boolean canObtain = true;
         for (ResourceLocation advancement : advancementRewards.getAdvancements()) {
             if (!AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getInstance().player, advancement)) {
@@ -106,7 +104,7 @@ public class AchievementCollectButton extends AdvancedButton {
     }
 
     @Override
-    public void update(int x, int y, ITextComponent displayName, InfoSection target, ScreenInfoBook gui) {
+    public void update(int x, int y, Component displayName, InfoSection target, ScreenInfoBook gui) {
         super.update(x, y, displayName, target, gui);
         this.width = AdvancementRewardsAppendix.MAX_WIDTH;
     }

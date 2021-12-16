@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Lists;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
@@ -23,7 +23,7 @@ import java.util.stream.IntStream;
  * @author rubensworks
  *
  */
-public class SimpleInventory implements INBTInventory, ISidedInventory {
+public class SimpleInventory implements INBTInventory, WorldlyContainer {
 
     protected final ItemStack[] contents;
     private final int stackLimit;
@@ -117,22 +117,22 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity entityplayer) {
+    public boolean stillValid(Player entityplayer) {
         return true;
     }
 
     @Override
-    public void startOpen(PlayerEntity playerIn) {
+    public void startOpen(Player playerIn) {
 
     }
 
     @Override
-    public void stopOpen(PlayerEntity playerIn) {
+    public void stopOpen(Player playerIn) {
 
     }
 
     @Override
-    public void read(CompoundNBT data) {
+    public void read(CompoundTag data) {
         readFromNBT(data, "items");
     }
 
@@ -141,14 +141,14 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
      * @param data The NBT data containing inventory data.
      * @param tag The NBT tag name where the info is located.
      */
-    public void readFromNBT(CompoundNBT data, String tag) {
-        ListNBT nbttaglist = data.getList(tag, Constants.NBT.TAG_COMPOUND);
+    public void readFromNBT(CompoundTag data, String tag) {
+        ListTag nbttaglist = data.getList(tag, Tag.TAG_COMPOUND);
 
         for (int j = 0; j < getContainerSize(); ++j)
             contents[j] = ItemStack.EMPTY;
 
         for (int j = 0; j < nbttaglist.size(); ++j) {
-            CompoundNBT slot = nbttaglist.getCompound(j);
+            CompoundTag slot = nbttaglist.getCompound(j);
             int index;
             if (slot.contains("index")) {
                 index = slot.getInt("index");
@@ -162,7 +162,7 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
     }
 
     @Override
-    public void write(CompoundNBT data) {
+    public void write(CompoundTag data) {
         writeToNBT(data, "items");
     }
 
@@ -171,12 +171,12 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
      * @param data The NBT tag that will receive inventory data.
      * @param tag The NBT tag name where the info must be located.
      */
-    public void writeToNBT(CompoundNBT data, String tag) {
-        ListNBT slots = new ListNBT();
+    public void writeToNBT(CompoundTag data, String tag) {
+        ListTag slots = new ListTag();
         for (byte index = 0; index < getContainerSize(); ++index) {
             ItemStack itemStack = getItem(index);
             if (!itemStack.isEmpty() && itemStack.getCount() > 0) {
-                CompoundNBT slot = new CompoundNBT();
+                CompoundTag slot = new CompoundTag();
                 slots.add(slot);
                 slot.putByte("Slot", index);
                 itemStack.save(slot);
@@ -197,7 +197,7 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
     }
 
     /**
-     * Get the array of {@link net.minecraft.item.ItemStack} inside this inventory.
+     * Get the array of {@link net.minecraft.world.item.ItemStack} inside this inventory.
      * @return The items in this inventory.
      */
     public ItemStack[] getItemStacks() {
@@ -239,14 +239,14 @@ public class SimpleInventory implements INBTInventory, ISidedInventory {
     }
 
     @Override
-    public CompoundNBT toNBT() {
-        CompoundNBT tag = new CompoundNBT();
+    public CompoundTag toNBT() {
+        CompoundTag tag = new CompoundTag();
         write(tag);
         return tag;
     }
 
     @Override
-    public void fromNBT(CompoundNBT tag) {
+    public void fromNBT(CompoundTag tag) {
         read(tag);
     }
 

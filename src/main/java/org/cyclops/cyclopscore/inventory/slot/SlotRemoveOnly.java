@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.inventory.slot;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * A slot from which the player can only remove an item, not place one inside it.
@@ -17,7 +17,7 @@ public class SlotRemoveOnly extends SlotExtended {
      * @param x The X coordinate for the slot to render at.
      * @param y The Y coordinate for the slot to render at.
      */
-    public SlotRemoveOnly(IInventory inventory, int index, int x, int y) {
+    public SlotRemoveOnly(Container inventory, int index, int x, int y) {
         super(inventory, index, x, y);
     }
     

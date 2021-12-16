@@ -1,18 +1,18 @@
 package org.cyclops.cyclopscore.inventory.container.button;
 
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.inventory.container.Container;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 
 /**
  * A container button click acceptor.
  * Events will be received both server-side and client-side.
  *
  * This will only work if the client-side button's pressable has been generated with
- * {@link org.cyclops.cyclopscore.client.gui.container.ContainerScreenExtended#createServerPressable(String, Button.IPressable)}.
+ * {@link org.cyclops.cyclopscore.client.gui.container.ContainerScreenExtended#createServerPressable(String, Button.OnPress)}}.
  *
  * @author rubensworks
  */
-public interface IContainerButtonClickAcceptorServer<C extends Container> {
+public interface IContainerButtonClickAcceptorServer<C extends AbstractContainerMenu> {
 
     /**
      * Set a button action.

@@ -4,24 +4,24 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.RegistryEntries;
 
 import java.util.Locale;
 
-import net.minecraft.particles.IParticleData.IDeserializer;
+import net.minecraft.core.particles.ParticleOptions.Deserializer;
 
 /**
  * Data for {@link ParticleDropColored}.
  * @author rubensworks
  */
-public class ParticleDropColoredData implements IParticleData {
+public class ParticleDropColoredData implements ParticleOptions {
 
     public static final ParticleDropColoredData INSTANCE = new ParticleDropColoredData(0, 0, 0);
-    public static final IDeserializer<ParticleDropColoredData> DESERIALIZER = new IDeserializer<ParticleDropColoredData>() {
+    public static final Deserializer<ParticleDropColoredData> DESERIALIZER = new Deserializer<ParticleDropColoredData>() {
         public ParticleDropColoredData fromCommand(ParticleType<ParticleDropColoredData> particleType, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
             float red = (float) reader.readDouble();
@@ -32,7 +32,7 @@ public class ParticleDropColoredData implements IParticleData {
             return new ParticleDropColoredData(red, green, blue);
         }
 
-        public ParticleDropColoredData fromNetwork(ParticleType<ParticleDropColoredData> particleTypeIn, PacketBuffer buffer) {
+        public ParticleDropColoredData fromNetwork(ParticleType<ParticleDropColoredData> particleTypeIn, FriendlyByteBuf buffer) {
             return new ParticleDropColoredData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         }
     };
@@ -58,7 +58,7 @@ public class ParticleDropColoredData implements IParticleData {
     }
 
     @Override
-    public void writeToNetwork(PacketBuffer buffer) {
+    public void writeToNetwork(FriendlyByteBuf buffer) {
         buffer.writeFloat(this.red);
         buffer.writeFloat(this.green);
         buffer.writeFloat(this.blue);

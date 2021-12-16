@@ -3,22 +3,20 @@ package org.cyclops.cyclopscore.persist.nbt;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.core.Vec3i;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
@@ -26,10 +24,10 @@ import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.datastructure.DimPos;
 import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
+import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -37,7 +35,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Types of NBT field classes used for persistence of fields in {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity}.
+ * Types of NBT field classes used for persistence of fields in {@link CyclopsBlockEntity}.
  * @author rubensworks
  *
  * @param <T> The field class type.
@@ -53,12 +51,12 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(Integer.class, new NBTClassType<Integer>() {
 
             @Override
-            public void writePersistedField(String name, Integer object, CompoundNBT tag) {
+            public void writePersistedField(String name, Integer object, CompoundTag tag) {
                 tag.putInt(name, object);
             }
 
             @Override
-            public Integer readPersistedField(String name, CompoundNBT tag) {
+            public Integer readPersistedField(String name, CompoundTag tag) {
                 return tag.getInt(name);
             }
 
@@ -72,12 +70,12 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(Float.class, new NBTClassType<Float>() {
 
             @Override
-            public void writePersistedField(String name, Float object, CompoundNBT tag) {
+            public void writePersistedField(String name, Float object, CompoundTag tag) {
                 tag.putFloat(name, object);
             }
 
             @Override
-            public Float readPersistedField(String name, CompoundNBT tag) {
+            public Float readPersistedField(String name, CompoundTag tag) {
                 return tag.getFloat(name);
             }
 
@@ -91,12 +89,12 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(Boolean.class, new NBTClassType<Boolean>() {
 
             @Override
-            public void writePersistedField(String name, Boolean object, CompoundNBT tag) {
+            public void writePersistedField(String name, Boolean object, CompoundTag tag) {
                 tag.putBoolean(name, object);
             }
 
             @Override
-            public Boolean readPersistedField(String name, CompoundNBT tag) {
+            public Boolean readPersistedField(String name, CompoundTag tag) {
                 return tag.getBoolean(name);
             }
 
@@ -110,14 +108,14 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(String.class, new NBTClassType<String>() {
 
             @Override
-            public void writePersistedField(String name, String object, CompoundNBT tag) {
+            public void writePersistedField(String name, String object, CompoundTag tag) {
             	if(object != null && !object.isEmpty()) {
             		tag.putString(name, object);
             	}
             }
 
             @Override
-            public String readPersistedField(String name, CompoundNBT tag) {
+            public String readPersistedField(String name, CompoundTag tag) {
                 return tag.getString(name);
             }
 
@@ -129,12 +127,12 @@ public abstract class NBTClassType<T> {
 
         NBTYPES.put(Direction.class, new NBTClassType<Direction>() {
             @Override
-            public void writePersistedField(String name, Direction object, CompoundNBT tag) {
+            public void writePersistedField(String name, Direction object, CompoundTag tag) {
                 tag.putInt(name, object.ordinal());
             }
 
             @Override
-            public Direction readPersistedField(String name, CompoundNBT tag) {
+            public Direction readPersistedField(String name, CompoundTag tag) {
                 return Direction.values()[tag.getInt(name)];
             }
 
@@ -146,12 +144,12 @@ public abstract class NBTClassType<T> {
 
         NBTYPES.put(Fluid.class, new NBTClassType<Fluid>() {
             @Override
-            public void writePersistedField(String name, Fluid object, CompoundNBT tag) {
+            public void writePersistedField(String name, Fluid object, CompoundTag tag) {
                 tag.putString(name, object.getRegistryName().toString());
             }
 
             @Override
-            public Fluid readPersistedField(String name, CompoundNBT tag) {
+            public Fluid readPersistedField(String name, CompoundTag tag) {
                 String fluidName = tag.getString(name);
                 return ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
             }
@@ -164,16 +162,16 @@ public abstract class NBTClassType<T> {
 
         NBTYPES.put(FluidStack.class, new NBTClassType<FluidStack>() {
             @Override
-            public void writePersistedField(String name, @Nullable FluidStack object, CompoundNBT tag) {
+            public void writePersistedField(String name, @Nullable FluidStack object, CompoundTag tag) {
                 if (object != null) {
-                    CompoundNBT subTag = new CompoundNBT();
+                    CompoundTag subTag = new CompoundTag();
                     object.writeToNBT(subTag);
                     tag.put(name, subTag);
                 }
             }
 
             @Override
-            public FluidStack readPersistedField(String name, CompoundNBT tag) {
+            public FluidStack readPersistedField(String name, CompoundTag tag) {
                 return FluidStack.loadFluidStackFromNBT(tag.getCompound(name));
             }
 
@@ -183,20 +181,20 @@ public abstract class NBTClassType<T> {
             }
         });
         
-        NBTYPES.put(INBT.class, new NBTClassType<INBT>() {
+        NBTYPES.put(Tag.class, new NBTClassType<Tag>() {
 
             @Override
-            public void writePersistedField(String name, INBT object, CompoundNBT tag) {
+            public void writePersistedField(String name, Tag object, CompoundTag tag) {
                 tag.put(name, object);
             }
 
             @Override
-            public INBT readPersistedField(String name, CompoundNBT tag) {
+            public Tag readPersistedField(String name, CompoundTag tag) {
                 return tag.get(name);
             }
 
             @Override
-            public INBT getDefaultValue() {
+            public Tag getDefaultValue() {
                 return null;
             }
         });
@@ -221,13 +219,13 @@ public abstract class NBTClassType<T> {
 
             @SuppressWarnings("unchecked")
             @Override
-            public void writePersistedField(String name, Map object, CompoundNBT tag) {
-                CompoundNBT mapTag = new CompoundNBT();
-                ListNBT list = new ListNBT();
+            public void writePersistedField(String name, Map object, CompoundTag tag) {
+                CompoundTag mapTag = new CompoundTag();
+                ListTag list = new ListTag();
                 boolean setKeyType = false;
                 boolean setValueType = false;
                 for(Map.Entry entry : (Set<Map.Entry>) object.entrySet()) {
-                    CompoundNBT entryTag = new CompoundNBT();
+                    CompoundTag entryTag = new CompoundTag();
                     getType(entry.getKey().getClass(), object).writePersistedField("key", entry.getKey(), entryTag);
                     if(entry.getValue() != null) {
                         getType(entry.getValue().getClass(), object).writePersistedField("value", entry.getValue(), entryTag);
@@ -249,10 +247,10 @@ public abstract class NBTClassType<T> {
 
             @SuppressWarnings("unchecked")
             @Override
-            public Map readPersistedField(String name, CompoundNBT tag) {
-                CompoundNBT mapTag = tag.getCompound(name);
+            public Map readPersistedField(String name, CompoundTag tag) {
+                CompoundTag mapTag = tag.getCompound(name);
                 Map map = Maps.newHashMap();
-                ListNBT list = mapTag.getList("map", Constants.NBT.TAG_COMPOUND);
+                ListTag list = mapTag.getList("map", Tag.TAG_COMPOUND);
                 if(list.size() > 0) {
                     NBTClassType keyNBTClassType;
                     NBTClassType valueNBTClassType = null; // Remains null when all map values are null.
@@ -275,7 +273,7 @@ public abstract class NBTClassType<T> {
                         }
                     }
                     for (int i = 0; i < list.size(); i++) {
-                        CompoundNBT entryTag = list.getCompound(i);
+                        CompoundTag entryTag = list.getCompound(i);
                         Object key = keyNBTClassType.readPersistedField("key", entryTag);
                         Object value = null;
                         // If the class type is null, this means all map values are null, so
@@ -296,30 +294,30 @@ public abstract class NBTClassType<T> {
             }
         });
 
-        NBTYPES.put(Vector3i.class, new NBTClassType<Vector3i>() {
+        NBTYPES.put(Vec3i.class, new NBTClassType<Vec3i>() {
 
             @Override
-            public void writePersistedField(String name, Vector3i object, CompoundNBT tag) {
+            public void writePersistedField(String name, Vec3i object, CompoundTag tag) {
                 tag.putIntArray(name, new int[]{object.getX(), object.getY(), object.getZ()});
             }
 
             @Override
-            public Vector3i readPersistedField(String name, CompoundNBT tag) {
+            public Vec3i readPersistedField(String name, CompoundTag tag) {
                 int[] array = tag.getIntArray(name);
-                return new Vector3i(array[0], array[1], array[2]);
+                return new Vec3i(array[0], array[1], array[2]);
             }
 
             @Override
-            public Vector3i getDefaultValue() {
+            public Vec3i getDefaultValue() {
                 return null;
             }
         });
 
-        NBTYPES.put(Vector3d.class, new NBTClassType<Vector3d>() {
+        NBTYPES.put(Vec3.class, new NBTClassType<Vec3>() {
 
             @Override
-            public void writePersistedField(String name, Vector3d object, CompoundNBT tag) {
-                CompoundNBT vec = new CompoundNBT();
+            public void writePersistedField(String name, Vec3 object, CompoundTag tag) {
+                CompoundTag vec = new CompoundTag();
                 vec.putDouble("x", object.x);
                 vec.putDouble("y", object.y);
                 vec.putDouble("z", object.z);
@@ -327,13 +325,13 @@ public abstract class NBTClassType<T> {
             }
 
             @Override
-            public Vector3d readPersistedField(String name, CompoundNBT tag) {
-                CompoundNBT vec = tag.getCompound(name);
-                return new Vector3d(vec.getDouble("x"), vec.getDouble("y"), vec.getDouble("z"));
+            public Vec3 readPersistedField(String name, CompoundTag tag) {
+                CompoundTag vec = tag.getCompound(name);
+                return new Vec3(vec.getDouble("x"), vec.getDouble("y"), vec.getDouble("z"));
             }
 
             @Override
-            public Vector3d getDefaultValue() {
+            public Vec3 getDefaultValue() {
                 return null;
             }
         });
@@ -341,10 +339,10 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(Pair.class, new NBTClassType<Pair>() {
 
             @Override
-            public void writePersistedField(String name, Pair object, CompoundNBT tag) {
-                CompoundNBT pairTag = new CompoundNBT();
-                CompoundNBT leftTag = new CompoundNBT();
-                CompoundNBT rightTag = new CompoundNBT();
+            public void writePersistedField(String name, Pair object, CompoundTag tag) {
+                CompoundTag pairTag = new CompoundTag();
+                CompoundTag leftTag = new CompoundTag();
+                CompoundTag rightTag = new CompoundTag();
                 getType(object.getLeft().getClass(), object).writePersistedField("element", object.getLeft(), leftTag);
                 getType(object.getRight().getClass(), object).writePersistedField("element", object.getRight(), rightTag);
                 pairTag.putString("leftType", object.getLeft().getClass().getName());
@@ -355,10 +353,10 @@ public abstract class NBTClassType<T> {
             }
 
             @Override
-            public Pair readPersistedField(String name, CompoundNBT tag) {
-                CompoundNBT pairTag = tag.getCompound(name);
-                CompoundNBT leftTag = pairTag.getCompound("left");
-                CompoundNBT rightTag = pairTag.getCompound("right");
+            public Pair readPersistedField(String name, CompoundTag tag) {
+                CompoundTag pairTag = tag.getCompound(name);
+                CompoundTag leftTag = pairTag.getCompound("left");
+                CompoundTag rightTag = pairTag.getCompound("right");
 
                 NBTClassType leftElementNBTClassType;
                 try {
@@ -394,9 +392,9 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(DimPos.class, new NBTClassType<DimPos>() {
 
             @Override
-            public void writePersistedField(String name, DimPos object, CompoundNBT tag) {
-                CompoundNBT dimPos = new CompoundNBT();
-                dimPos.putString("dim", object.getWorld());
+            public void writePersistedField(String name, DimPos object, CompoundTag tag) {
+                CompoundTag dimPos = new CompoundTag();
+                dimPos.putString("dim", object.getLevel());
                 dimPos.putInt("x", object.getBlockPos().getX());
                 dimPos.putInt("y", object.getBlockPos().getY());
                 dimPos.putInt("z", object.getBlockPos().getZ());
@@ -404,10 +402,10 @@ public abstract class NBTClassType<T> {
             }
 
             @Override
-            public DimPos readPersistedField(String name, CompoundNBT tag) {
-                CompoundNBT dimPos = tag.getCompound(name);
+            public DimPos readPersistedField(String name, CompoundTag tag) {
+                CompoundTag dimPos = tag.getCompound(name);
                 String dimensionName = dimPos.getString("dim");
-                RegistryKey<World> dimensionType = RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimensionName));
+                ResourceKey<net.minecraft.world.level.Level> dimensionType = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimensionName));
                 return DimPos.of(dimensionType, new BlockPos(dimPos.getInt("x"), dimPos.getInt("y"), dimPos.getInt("z")));
             }
 
@@ -418,14 +416,14 @@ public abstract class NBTClassType<T> {
         });
         NBTYPES.put(ItemStack.class, new NBTClassType<ItemStack>() {
             @Override
-            public void writePersistedField(String name, ItemStack object, CompoundNBT tag) {
+            public void writePersistedField(String name, ItemStack object, CompoundTag tag) {
                 if (object != null) {
-                    tag.put(name, object.copy().save(new CompoundNBT()));
+                    tag.put(name, object.copy().save(new CompoundTag()));
                 }
             }
 
             @Override
-            public ItemStack readPersistedField(String name, CompoundNBT tag) {
+            public ItemStack readPersistedField(String name, CompoundTag tag) {
                 return ItemStack.of(tag.getCompound(name));
             }
 
@@ -434,21 +432,21 @@ public abstract class NBTClassType<T> {
                 return null;
             }
         });
-        NBTYPES.put(IFormattableTextComponent.class, new NBTClassType<IFormattableTextComponent>() {
+        NBTYPES.put(MutableComponent.class, new NBTClassType<MutableComponent>() {
             @Override
-            public void writePersistedField(String name, IFormattableTextComponent object, CompoundNBT tag) {
+            public void writePersistedField(String name, MutableComponent object, CompoundTag tag) {
                 if (object != null) {
-                    tag.putString(name, IFormattableTextComponent.Serializer.toJson(object));
+                    tag.putString(name, MutableComponent.Serializer.toJson(object));
                 }
             }
 
             @Override
-            public IFormattableTextComponent readPersistedField(String name, CompoundNBT tag) {
-                return ITextComponent.Serializer.fromJson(tag.getString(name));
+            public MutableComponent readPersistedField(String name, CompoundTag tag) {
+                return Component.Serializer.fromJson(tag.getString(name));
             }
 
             @Override
-            public IFormattableTextComponent getDefaultValue() {
+            public MutableComponent getDefaultValue() {
                 return null;
             }
         });
@@ -457,12 +455,12 @@ public abstract class NBTClassType<T> {
 
             @SuppressWarnings("unchecked")
             @Override
-            public void writePersistedField(String name, EnumFacingMap object, CompoundNBT tag) {
-                CompoundNBT mapTag = new CompoundNBT();
-                ListNBT list = new ListNBT();
+            public void writePersistedField(String name, EnumFacingMap object, CompoundTag tag) {
+                CompoundTag mapTag = new CompoundTag();
+                ListTag list = new ListTag();
                 boolean setValueType = false;
                 for(Map.Entry entry : (Set<Map.Entry>) object.entrySet()) {
-                    CompoundNBT entryTag = new CompoundNBT();
+                    CompoundTag entryTag = new CompoundTag();
                     entryTag.putInt("key", ((Direction) entry.getKey()).ordinal());
                     if(entry.getValue() != null) {
                         getType(entry.getValue().getClass(), object).writePersistedField("value", entry.getValue(), entryTag);
@@ -480,10 +478,10 @@ public abstract class NBTClassType<T> {
 
             @SuppressWarnings("unchecked")
             @Override
-            public EnumFacingMap readPersistedField(String name, CompoundNBT tag) {
-                CompoundNBT mapTag = tag.getCompound(name);
+            public EnumFacingMap readPersistedField(String name, CompoundTag tag) {
+                CompoundTag mapTag = tag.getCompound(name);
                 EnumFacingMap map = EnumFacingMap.newMap();
-                ListNBT list = mapTag.getList("map", Constants.NBT.TAG_COMPOUND);
+                ListTag list = mapTag.getList("map", Tag.TAG_COMPOUND);
                 if(list.size() > 0) {
                     NBTClassType valueNBTClassType = null; // Remains null when all map values are null.
                     if(mapTag.contains("valueType")) {
@@ -497,7 +495,7 @@ public abstract class NBTClassType<T> {
                         }
                     }
                     for (int i = 0; i < list.size(); i++) {
-                        CompoundNBT entryTag = list.getCompound(i);
+                        CompoundTag entryTag = list.getCompound(i);
                         Direction key = Direction.values()[entryTag.getInt("key")];
                         Object value = null;
                         // If the class type is null, this means all map values are null, so
@@ -538,7 +536,7 @@ public abstract class NBTClassType<T> {
      * @param <T> The class type.
      * @param <I> The object type.
      */
-    public static <T, I extends T> void writeNbt(Class<T> clazz, String name, I instance, CompoundNBT tag) {
+    public static <T, I extends T> void writeNbt(Class<T> clazz, String name, I instance, CompoundTag tag) {
         NBTClassType<T> serializationClass = getClassType(clazz);
         if (serializationClass == null) {
             throw new RuntimeException("No valid NBT serialization was found for " + instance + " of type " + clazz);
@@ -554,7 +552,7 @@ public abstract class NBTClassType<T> {
      * @param <T> The class type.
      * @return The read object.
      */
-    public static <T> T readNbt(Class<T> clazz, String name, CompoundNBT tag) {
+    public static <T> T readNbt(Class<T> clazz, String name, CompoundTag tag) {
         NBTClassType<T> serializationClass = getClassType(clazz);
         if (serializationClass == null) {
             throw new RuntimeException("No valid NBT serialization was found type " + clazz);
@@ -607,7 +605,7 @@ public abstract class NBTClassType<T> {
      * @param tag The tag compound to read or write to.
      * @param write If there should be written, otherwise there will be read.
      */
-    public static void performActionForField(INBTProvider provider, Field field, CompoundNBT tag, boolean write) {
+    public static void performActionForField(INBTProvider provider, Field field, CompoundTag tag, boolean write) {
         Class<?> type = field.getType();
         String fieldName = field.getName();
         
@@ -637,7 +635,7 @@ public abstract class NBTClassType<T> {
      * @throws IllegalAccessException Access exception;
      */
     @SuppressWarnings("unchecked")
-    public void persistedFieldAction(INBTProvider provider, Field field, CompoundNBT tag, boolean write) throws IllegalAccessException {
+    public void persistedFieldAction(INBTProvider provider, Field field, CompoundTag tag, boolean write) throws IllegalAccessException {
         String name = field.getName();
         NBTPersist annotation = field.getAnnotation(NBTPersist.class);
         boolean useDefaultValue = annotation.useDefaultValue();
@@ -677,8 +675,8 @@ public abstract class NBTClassType<T> {
         }
     }
     
-    public abstract void writePersistedField(String name, T object, CompoundNBT tag);
-    public abstract T readPersistedField(String name, CompoundNBT tag);
+    public abstract void writePersistedField(String name, T object, CompoundTag tag);
+    public abstract T readPersistedField(String name, CompoundTag tag);
     public abstract T getDefaultValue();
 
     private abstract static class CollectionNBTClassType<C extends Collection> extends NBTClassType<C> {
@@ -692,12 +690,12 @@ public abstract class NBTClassType<T> {
 
         @SuppressWarnings("unchecked")
         @Override
-        public void writePersistedField(String name, C object, CompoundNBT tag) {
-            CompoundNBT collectionTag = new CompoundNBT();
-            ListNBT list = new ListNBT();
+        public void writePersistedField(String name, C object, CompoundTag tag) {
+            CompoundTag collectionTag = new CompoundTag();
+            ListTag list = new ListTag();
             boolean setTypes = false;
             for(Object element : object) {
-                CompoundNBT elementTag = new CompoundNBT();
+                CompoundTag elementTag = new CompoundTag();
                 getType(element.getClass(), object).writePersistedField("element", element, elementTag);
                 list.add(elementTag);
 
@@ -711,10 +709,10 @@ public abstract class NBTClassType<T> {
         }
 
         @Override
-        public C readPersistedField(String name, CompoundNBT tag) {
-            CompoundNBT collectionTag = tag.getCompound(name);
+        public C readPersistedField(String name, CompoundTag tag) {
+            CompoundTag collectionTag = tag.getCompound(name);
             C collection = createNewCollection();
-            ListNBT list = collectionTag.getList("collection", Constants.NBT.TAG_COMPOUND);
+            ListTag list = collectionTag.getList("collection", Tag.TAG_COMPOUND);
             if(list.size() > 0) {
                 NBTClassType elementNBTClassType;
                 try {
@@ -726,7 +724,7 @@ public abstract class NBTClassType<T> {
                     return collection;
                 }
                 for (int i = 0; i < list.size(); i++) {
-                    CompoundNBT entryTag = list.getCompound(i);
+                    CompoundTag entryTag = list.getCompound(i);
                     Object element = elementNBTClassType.readPersistedField("element", entryTag);
                     collection.add(element);
                 }

@@ -2,17 +2,16 @@ package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import net.minecraft.loot.ILootSerializer;
-import net.minecraft.loot.LootConditionType;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.loot.functions.ILootFunction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTables;
-import net.minecraft.loot.TableLootEntry;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.level.storage.loot.Serializer;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootTableReference;
+import net.minecraft.core.Registry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -52,7 +51,7 @@ public class LootHelpers {
 
     public static void injectLootTableDirect(LootTable target, ResourceLocation source) {
         target.addPool(new LootPool.Builder()
-                .add(TableLootEntry.lootTableReference(source))
+                .add(LootTableReference.lootTableReference(source))
                 .name(source.toString())
                 .build());
     }
@@ -63,8 +62,8 @@ public class LootHelpers {
      * @param serializer The loot function serializer.
      * @return The created loot function type
      */
-    public static LootFunctionType registerFunction(ResourceLocation id, ILootSerializer<? extends ILootFunction> serializer) {
-        return Registry.register(Registry.LOOT_FUNCTION_TYPE, id, new LootFunctionType(serializer));
+    public static LootItemFunctionType registerFunction(ResourceLocation id, Serializer<? extends LootItemFunction> serializer) {
+        return Registry.register(Registry.LOOT_FUNCTION_TYPE, id, new LootItemFunctionType(serializer));
     }
 
     /**
@@ -73,8 +72,8 @@ public class LootHelpers {
      * @param serializer The loot condition serializer.
      * @return The created loot condition type
      */
-    public static LootConditionType registerCondition(ResourceLocation id, ILootSerializer<? extends ILootCondition> serializer) {
-        return Registry.register(Registry.LOOT_CONDITION_TYPE, id, new LootConditionType(serializer));
+    public static LootItemConditionType registerCondition(ResourceLocation id, Serializer<? extends LootItemCondition> serializer) {
+        return Registry.register(Registry.LOOT_CONDITION_TYPE, id, new LootItemConditionType(serializer));
     }
 
 }

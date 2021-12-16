@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.block.multi;
 
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Vec3i;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 /**
@@ -15,7 +15,7 @@ public class SizeValidators {
      * @param vec2 Second vector.
      * @return The comparison result.
      */
-    public static int compareVec3i(Vector3i vec1, Vector3i vec2) {
+    public static int compareVec3i(Vec3i vec1, Vec3i vec2) {
         int i = 0;
         boolean validBuffer = false;
         int buffer = Integer.MAX_VALUE; // This is used to store the minimum compared value > 0

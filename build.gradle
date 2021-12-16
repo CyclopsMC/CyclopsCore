@@ -17,7 +17,6 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'jacoco'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
-apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
 // TODO: re-enable jar signing
 //import net.minecraftforge.gradle.common.task.SignJar
@@ -171,6 +170,12 @@ jar {
     }
 }
 
+// Example configuration to allow publishing using the maven-publish plugin
+// This is the preferred method to reobfuscate your jar file
+jar.finalizedBy('reobfJar')
+// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
+// publish.dependsOn('reobfJar')
+
 // TODO: re-enable jar signing
 /*task signJar(type: SignJar, dependsOn: jar) {
     onlyIf {
@@ -187,8 +192,10 @@ jar {
 build.dependsOn signJar*/
 
 task deobfJar(type: Jar) {
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    archiveClassifier.set('deobf')
     from sourceSets.main.output
-    classifier = 'deobf'
+
     manifest {
         attributes([
                 "FMLAT": "accesstransformer.cfg",
@@ -203,19 +210,21 @@ task deobfJar(type: Jar) {
     }
 }
 
-task sourceJar(type: Jar) {
-    classifier = "sources"
+task sourcesJar(type: Jar) {
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    archiveClassifier.set('sources')
     from sourceSets.main.allJava
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
+    duplicatesStrategy(DuplicatesStrategy.FAIL)
+    archiveClassifier.set('javadoc')
     from javadoc.destinationDir
-    classifier 'javadoc'
 }
 
 artifacts {
     archives deobfJar
-    archives sourceJar
+    archives sourcesJar
     archives javadocJar
 }
 
@@ -242,7 +251,7 @@ curseforge {
         }
 
         addArtifact deobfJar
-        addArtifact sourceJar
+        addArtifact sourcesJar
         addArtifact javadocJar
     }
 }

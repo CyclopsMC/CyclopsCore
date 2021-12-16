@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.fluid;
 
 import com.google.common.collect.Lists;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
@@ -136,13 +136,13 @@ public class SingleUseTank extends Tank {
     }
 
     @Override
-    public void writeTankToNBT(CompoundNBT nbt) {
+    public void writeTankToNBT(CompoundTag nbt) {
         super.writeTankToNBT(nbt);
         nbt.putString(NBT_ACCEPTED_FLUID, acceptedFluid.getRegistryName().toString());
     }
 
     @Override
-    public void readTankFromNBT(CompoundNBT nbt) {
+    public void readTankFromNBT(CompoundTag nbt) {
         super.readTankFromNBT(nbt);
         setAcceptedFluid(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(nbt.getString(NBT_ACCEPTED_FLUID))));
     }

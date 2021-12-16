@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.potion;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -14,13 +14,13 @@ import org.cyclops.cyclopscore.init.ModBase;
  * A configurable potion effect.
  * @author rubensworks
  */
-public abstract class CyclopsEffect extends Effect {
+public abstract class CyclopsEffect extends MobEffect {
 
     private final ResourceLocation resource;
 
     protected EffectConfig eConfig = null;
 
-    public CyclopsEffect(EffectType type, int liquidColor) {
+    public CyclopsEffect(MobEffectCategory type, int liquidColor) {
         super(type, liquidColor);
         this.resource = new ResourceLocation(eConfig.getMod().getModId(), eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "potions.png");
         MinecraftForge.EVENT_BUS.register(this);
@@ -30,11 +30,11 @@ public abstract class CyclopsEffect extends Effect {
         return isActiveOn(entity, this);
     }
 
-    public boolean isActiveOn(LivingEntity entity, Effect potion) {
+    public boolean isActiveOn(LivingEntity entity, MobEffect potion) {
         return entity.getEffect(potion) != null;
     }
 
-    public int getAmplifier(LivingEntity entity, Effect potion) {
+    public int getAmplifier(LivingEntity entity, MobEffect potion) {
         return entity != null ? entity.getEffect(potion).getAmplifier() : 0;
     }
 

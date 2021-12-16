@@ -1,8 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
 
@@ -79,9 +78,9 @@ public class NbtPathExpressionParseHandlerListSlice implements INbtPathExpressio
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
             return new NbtPathExpressionMatches(executionContexts
                     .flatMap(executionContext -> {
-                        INBT nbt = executionContext.getCurrentTag();
-                        if (nbt.getId() == Constants.NBT.TAG_LIST) {
-                            ListNBT tag = (ListNBT) nbt;
+                        Tag nbt = executionContext.getCurrentTag();
+                        if (nbt.getId() == Tag.TAG_LIST) {
+                            ListTag tag = (ListTag) nbt;
                             int start = getStart();
                             int actualEnd = getEnd() > -1 ? Math.min(tag.size() - 1, getEnd()) : tag.size() - 1;
                             int step = getStep();

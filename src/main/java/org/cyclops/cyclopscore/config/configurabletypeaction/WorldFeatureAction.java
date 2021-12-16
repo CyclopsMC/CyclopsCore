@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraft.world.gen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import org.cyclops.cyclopscore.config.extendedconfig.WorldFeatureConfig;
 
 /**

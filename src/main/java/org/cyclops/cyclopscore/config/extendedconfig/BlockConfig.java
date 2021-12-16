@@ -1,11 +1,11 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -134,7 +134,7 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
      */
     @OnlyIn(Dist.CLIENT)
     @Nullable
-    public IBlockColor getBlockColorHandler() {
+    public BlockColor getBlockColorHandler() {
         return null;
     }
 

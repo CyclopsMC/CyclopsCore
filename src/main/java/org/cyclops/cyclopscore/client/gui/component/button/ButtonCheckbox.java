@@ -1,22 +1,20 @@
 package org.cyclops.cyclopscore.client.gui.component.button;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.gui.widget.button.CheckboxButton;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.image.Image;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 
-import net.minecraft.client.gui.widget.button.Button.IPressable;
-
 /**
- * Inspired by {@link CheckboxButton}, but more flexible.
+ * Inspired by {@link Checkbox}, but more flexible.
  * @author rubensworks
  */
 public class ButtonCheckbox extends Button {
     private boolean checked;
 
-    public ButtonCheckbox(int x, int y, int width, int height, ITextComponent title, IPressable pressedAction) {
+    public ButtonCheckbox(int x, int y, int width, int height, Component title, OnPress pressedAction) {
         super(x, y, width, height, title, pressedAction);
     }
 
@@ -35,7 +33,7 @@ public class ButtonCheckbox extends Button {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(visible) {
             // Determine image
             int i = 0;

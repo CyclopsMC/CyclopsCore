@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.StringNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.StringTag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtParseException;
 import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationAdapter;
@@ -120,17 +120,17 @@ public class TestNbtPathExpressionHandlerChild {
     @Test
     public void testExpressionStreamSingleLeaf() {
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
-        assertThat(expression.match(Stream.of(StringNBT.valueOf("a"))).getMatches().collect(Collectors.toList()),
+        assertThat(expression.match(Stream.of(StringTag.valueOf("a"))).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
     }
 
     @Test
     public void testExpressionStreamMultipleLeaf() {
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
-        Stream<INBT> stream = Stream.of(
-                StringNBT.valueOf("a"),
-                StringNBT.valueOf("b"),
-                StringNBT.valueOf("c")
+        Stream<Tag> stream = Stream.of(
+                StringTag.valueOf("a"),
+                StringTag.valueOf("b"),
+                StringTag.valueOf("c")
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList()));
@@ -138,7 +138,7 @@ public class TestNbtPathExpressionHandlerChild {
 
     @Test
     public void testExpressionStreamSingleTagNoMatch() {
-        CompoundNBT tag = new CompoundNBT();
+        CompoundTag tag = new CompoundTag();
         tag.putString("def", "123");
 
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
@@ -148,15 +148,15 @@ public class TestNbtPathExpressionHandlerChild {
 
     @Test
     public void testExpressionStreamMultipleTagsNoMatch() {
-        CompoundNBT tag1 = new CompoundNBT();
+        CompoundTag tag1 = new CompoundTag();
         tag1.putString("def", "1");
-        CompoundNBT tag2 = new CompoundNBT();
+        CompoundTag tag2 = new CompoundTag();
         tag2.putString("def", "2");
-        CompoundNBT tag3 = new CompoundNBT();
+        CompoundTag tag3 = new CompoundTag();
         tag3.putString("def", "3");
 
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
-        Stream<INBT> stream = Stream.of(
+        Stream<Tag> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3
@@ -167,58 +167,58 @@ public class TestNbtPathExpressionHandlerChild {
 
     @Test
     public void testExpressionStreamSingleTagMatch() {
-        CompoundNBT tag = new CompoundNBT();
+        CompoundTag tag = new CompoundTag();
         tag.putString("abc", "123");
 
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
         assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        StringNBT.valueOf("123")
+                        StringTag.valueOf("123")
                 )));
     }
 
     @Test
     public void testExpressionStreamMultipleTagsMatch() {
-        CompoundNBT tag1 = new CompoundNBT();
+        CompoundTag tag1 = new CompoundTag();
         tag1.putString("abc", "1");
-        CompoundNBT tag2 = new CompoundNBT();
+        CompoundTag tag2 = new CompoundTag();
         tag2.putString("abc", "2");
-        CompoundNBT tag3 = new CompoundNBT();
+        CompoundTag tag3 = new CompoundTag();
         tag3.putString("abc", "3");
 
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
-        Stream<INBT> stream = Stream.of(
+        Stream<Tag> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        StringNBT.valueOf("1"),
-                        StringNBT.valueOf("2"),
-                        StringNBT.valueOf("3")
+                        StringTag.valueOf("1"),
+                        StringTag.valueOf("2"),
+                        StringTag.valueOf("3")
                 )));
     }
 
     @Test
     public void testExpressionStreamMultipleTagsPartialMatch() {
-        CompoundNBT tag1 = new CompoundNBT();
+        CompoundTag tag1 = new CompoundTag();
         tag1.putString("abc", "1");
-        CompoundNBT tag2 = new CompoundNBT();
+        CompoundTag tag2 = new CompoundTag();
         tag2.putString("def", "2");
-        CompoundNBT tag3 = new CompoundNBT();
+        CompoundTag tag3 = new CompoundTag();
         tag3.putString("abc", "3");
 
         INbtPathExpression expression = handler.handlePrefixOf("aa.abc", 2).getPrefixExpression();
-        Stream<INBT> stream = Stream.of(
+        Stream<Tag> stream = Stream.of(
                 tag1,
                 tag2,
                 tag3
         );
         assertThat(expression.match(stream).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(
-                        StringNBT.valueOf("1"),
-                        StringNBT.valueOf("3")
+                        StringTag.valueOf("1"),
+                        StringTag.valueOf("3")
                 )));
     }
 

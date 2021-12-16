@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -10,11 +10,11 @@ import org.cyclops.cyclopscore.init.ModBase;
 import java.util.function.Function;
 
 /**
- * Config for recipe serializers.
+ * Config for block entities.
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class TileEntityConfig<T extends TileEntity> extends ExtendedConfigForge<TileEntityConfig<T>, TileEntityType<T>> {
+public abstract class BlockEntityConfig<T extends BlockEntity> extends ExtendedConfigForge<BlockEntityConfig<T>, BlockEntityType<T>> {
 
     /**
      * Create a new config
@@ -23,13 +23,13 @@ public abstract class TileEntityConfig<T extends TileEntity> extends ExtendedCon
      * @param namedId            A unique name id
      * @param elementConstructor The element constructor.
      */
-    public TileEntityConfig(ModBase mod, String namedId, Function<TileEntityConfig<T>, TileEntityType<T>> elementConstructor) {
+    public BlockEntityConfig(ModBase mod, String namedId, Function<BlockEntityConfig<T>, BlockEntityType<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 
     @Override
     public String getTranslationKey() {
-        return "tileentity." + getMod().getModId() + "." + getNamedId();
+        return "blockentity." + getMod().getModId() + "." + getNamedId();
 	}
 
     // Needed for config gui
@@ -40,12 +40,12 @@ public abstract class TileEntityConfig<T extends TileEntity> extends ExtendedCon
     
     @Override
 	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.TILE_ENTITY;
+		return ConfigurableType.BLOCK_ENTITY;
 	}
 
     @Override
-    public IForgeRegistry<? super TileEntityType<T>> getRegistry() {
-        return ForgeRegistries.TILE_ENTITIES;
+    public IForgeRegistry<? super BlockEntityType<T>> getRegistry() {
+        return ForgeRegistries.BLOCK_ENTITIES;
     }
 
 }

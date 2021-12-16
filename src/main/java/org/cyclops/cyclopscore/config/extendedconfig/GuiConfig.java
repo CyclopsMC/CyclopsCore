@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -19,7 +19,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class GuiConfig<T extends Container> extends ExtendedConfigForge<GuiConfig<T>, ContainerType<T>> {
+public abstract class GuiConfig<T extends AbstractContainerMenu> extends ExtendedConfigForge<GuiConfig<T>, MenuType<T>> {
 
     /**
      * Create a new config
@@ -28,7 +28,7 @@ public abstract class GuiConfig<T extends Container> extends ExtendedConfigForge
      * @param namedId            A unique name id
      * @param elementConstructor The element constructor.
      */
-    public GuiConfig(ModBase mod, String namedId, Function<GuiConfig<T>, ? extends ContainerType<T>> elementConstructor) {
+    public GuiConfig(ModBase mod, String namedId, Function<GuiConfig<T>, ? extends MenuType<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 
@@ -49,17 +49,17 @@ public abstract class GuiConfig<T extends Container> extends ExtendedConfigForge
 	}
 
     @Override
-    public IForgeRegistry<? super ContainerType<T>> getRegistry() {
+    public IForgeRegistry<? super MenuType<T>> getRegistry() {
         return ForgeRegistries.CONTAINERS;
     }
 
     @OnlyIn(Dist.CLIENT)
-	public abstract <U extends Screen & IHasContainer<T>> ScreenManager.IScreenFactory<T, U> getScreenFactory();
+	public abstract <U extends Screen & MenuAccess<T>> MenuScreens.ScreenConstructor<T, U> getScreenFactory();
 
 	@OnlyIn(Dist.CLIENT)
     @Override
     public void onRegistered() {
         super.onRegistered();
-        ScreenManager.register(getInstance(), getScreenFactory());
+        MenuScreens.register(getInstance(), getScreenFactory());
     }
 }

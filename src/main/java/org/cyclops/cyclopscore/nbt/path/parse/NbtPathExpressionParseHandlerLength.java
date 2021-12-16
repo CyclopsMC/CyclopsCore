@@ -1,10 +1,9 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
 
@@ -36,13 +35,13 @@ public class NbtPathExpressionParseHandlerLength implements INbtPathExpressionPa
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
             return new NbtPathExpressionMatches(executionContexts
                     .map(executionContext -> {
-                        INBT nbt = executionContext.getCurrentTag();
-                        if (nbt.getId() == Constants.NBT.TAG_LIST) {
-                            ListNBT tag = (ListNBT) nbt;
-                            return new NbtPathExpressionExecutionContext(IntNBT.valueOf(tag.size()), executionContext);
-                        } else if (nbt.getId() == Constants.NBT.TAG_COMPOUND) {
-                            CompoundNBT tag = (CompoundNBT) nbt;
-                            return new NbtPathExpressionExecutionContext(IntNBT.valueOf(tag.getAllKeys().size()), executionContext);
+                        Tag nbt = executionContext.getCurrentTag();
+                        if (nbt.getId() == Tag.TAG_LIST) {
+                            ListTag tag = (ListTag) nbt;
+                            return new NbtPathExpressionExecutionContext(IntTag.valueOf(tag.size()), executionContext);
+                        } else if (nbt.getId() == Tag.TAG_COMPOUND) {
+                            CompoundTag tag = (CompoundTag) nbt;
+                            return new NbtPathExpressionExecutionContext(IntTag.valueOf(tag.getAllKeys().size()), executionContext);
                         }
                         return null;
                     })

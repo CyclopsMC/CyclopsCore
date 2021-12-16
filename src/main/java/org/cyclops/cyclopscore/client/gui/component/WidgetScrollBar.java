@@ -1,10 +1,11 @@
 package org.cyclops.cyclopscore.client.gui.component;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
 
 import javax.annotation.Nullable;
@@ -15,12 +16,12 @@ import java.awt.*;
  *
  * The using screen must add this as a child
  * and call the following method from its respective method:
- * * {@link #drawGuiContainerBackgroundLayer(MatrixStack, float, int, int)}}
+ * * {@link #drawGuiContainerBackgroundLayer(PoseStack, float, int, int)}}
  * * {@link #mouseDragged(double, double, int, double, double)} (@see ContainerScreenScrolling for an example)
  *
  * @author rubensworks
  */
-public class WidgetScrollBar extends Widget {
+public class WidgetScrollBar extends AbstractWidget {
 
     private static final ResourceLocation SCROLLBUTTON = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
     private static final int SCROLL_BUTTON_HEIGHT = 15;
@@ -40,12 +41,12 @@ public class WidgetScrollBar extends Widget {
     private boolean isScrolling; // if the scrollbar is being dragged
     private boolean wasClicking; // if the left mouse button was held down last time drawScreen was called
 
-    public WidgetScrollBar(int x, int y, int height, ITextComponent narrationMessage,
+    public WidgetScrollBar(int x, int y, int height, Component narrationMessage,
                            @Nullable IScrollCallback scrollCallback, int visibleRows) {
         this(x, y, height, narrationMessage, scrollCallback, visibleRows, null);
     }
 
-    public WidgetScrollBar(int x, int y, int height, ITextComponent narrationMessage,
+    public WidgetScrollBar(int x, int y, int height, Component narrationMessage,
                            @Nullable IScrollCallback scrollCallback, int visibleRows, Rectangle scollRegion) {
         super(x, y, WidgetScrollBar.SCROLL_BUTTON_WIDTH, height, narrationMessage);
         this.x = x;
@@ -110,7 +111,7 @@ public class WidgetScrollBar extends Widget {
 
         if (this.isScrolling) {
             this.currentScroll = ((float)(mouseY - y) - 7.5F) / ((float)(yMax - y) - 15.0F);
-            this.currentScroll = MathHelper.clamp(this.currentScroll, 0.0F, 1.0F);
+            this.currentScroll = Mth.clamp(this.currentScroll, 0.0F, 1.0F);
             scrollTo(this.currentScroll);
             return true;
         }
@@ -118,7 +119,7 @@ public class WidgetScrollBar extends Widget {
         return false;
     }
 
-    public void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    public void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         int scrollX = x;
         int scrollMinY = y;
         int scrollMaxY = scrollMinY + height;
@@ -144,7 +145,7 @@ public class WidgetScrollBar extends Widget {
 
     public void scrollRelative(double step) {
         float scroll = (float)(this.currentScroll - step / getScrollStep());
-        scroll = MathHelper.clamp(scroll, 0.0F, 1.0F);
+        scroll = Mth.clamp(scroll, 0.0F, 1.0F);
         scrollTo(scroll);
     }
 
@@ -170,6 +171,11 @@ public class WidgetScrollBar extends Widget {
 
     public void setVisibleRows(int visibleRows) {
         this.visibleRows = visibleRows;
+    }
+
+    @Override
+    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+
     }
 
     public static interface IScrollCallback {

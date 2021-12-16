@@ -3,9 +3,9 @@ package org.cyclops.cyclopscore.modcompat.jei;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 
 import javax.annotation.Nullable;
@@ -19,14 +19,14 @@ import java.util.Map;
  * @param <R> The type of the recipe instance.
  * @author rubensworks
  */
-public abstract class RecipeRegistryJeiRecipeWrapper<C extends IInventory, R extends IRecipe<C>,
+public abstract class RecipeRegistryJeiRecipeWrapper<C extends Container, R extends Recipe<C>,
         J extends RecipeRegistryJeiRecipeWrapper<C, R, J>> {
 
-    private static final Map<IRecipe<?>, RecipeRegistryJeiRecipeWrapper<?, ?, ?>> RECIPE_WRAPPERS = Maps.newIdentityHashMap();
+    private static final Map<Recipe<?>, RecipeRegistryJeiRecipeWrapper<?, ?, ?>> RECIPE_WRAPPERS = Maps.newIdentityHashMap();
 
     protected final R recipe;
 
-    protected RecipeRegistryJeiRecipeWrapper(IRecipeType<R> recipeType, R recipe) {
+    protected RecipeRegistryJeiRecipeWrapper(RecipeType<R> recipeType, R recipe) {
         this.recipe = recipe;
     }
 
@@ -34,11 +34,11 @@ public abstract class RecipeRegistryJeiRecipeWrapper<C extends IInventory, R ext
         return recipe;
     }
 
-    protected abstract IRecipeType<R> getRecipeType();
+    protected abstract RecipeType<R> getRecipeType();
 
     protected abstract J newInstance(R input);
 
-    public static <T extends IRecipeType<R>, C extends IInventory, R extends IRecipe<C>,
+    public static <T extends RecipeType<R>, C extends Container, R extends Recipe<C>,
             J extends RecipeRegistryJeiRecipeWrapper<C, R, J>> T getJeiRecipeWrapper(R input) {
         return (T) RECIPE_WRAPPERS.get(input);
     }

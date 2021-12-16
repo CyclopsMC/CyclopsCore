@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.client.render.model;
 
+import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -24,11 +24,11 @@ public abstract class RenderModel<T extends Entity, M extends Model> extends Ent
     
     /**
      * Make a new instance.
-     * @param renderManager The render manager
+     * @param renderContext The render context
      * @param config The config.
      */
-    public RenderModel(EntityRendererManager renderManager, ExtendedConfig<?, ?> config) {
-        super(renderManager);
+    public RenderModel(EntityRendererProvider.Context renderContext, ExtendedConfig<?, ?> config) {
+        super(renderContext);
         texture = createResourceLocation(config);
         model = constructModel();
     }

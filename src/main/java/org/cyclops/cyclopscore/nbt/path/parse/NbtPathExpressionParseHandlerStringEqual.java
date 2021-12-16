@@ -1,9 +1,8 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
-import net.minecraft.nbt.ByteNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathStringParser.StringParseResult;
@@ -63,14 +62,14 @@ public class NbtPathExpressionParseHandlerStringEqual implements INbtPathExpress
         public NbtPathExpressionMatches matchContexts(Stream<NbtPathExpressionExecutionContext> executionContexts) {
             return new NbtPathExpressionMatches(executionContexts
                     .map(executionContext -> {
-                        INBT nbt = executionContext.getCurrentTag();
-                        if (nbt.getId() == Constants.NBT.TAG_STRING) {
-                            StringNBT tag = (StringNBT) nbt;
+                        Tag nbt = executionContext.getCurrentTag();
+                        if (nbt.getId() == Tag.TAG_STRING) {
+                            StringTag tag = (StringTag) nbt;
                             return new NbtPathExpressionExecutionContext(
-                                    ByteNBT.valueOf(getTargetString().equals(tag.getAsString())
+                                    ByteTag.valueOf(getTargetString().equals(tag.getAsString())
                                             ? (byte) 1 : (byte) 0), executionContext);
                         }
-                        return new NbtPathExpressionExecutionContext(ByteNBT.valueOf((byte) 0), executionContext);
+                        return new NbtPathExpressionExecutionContext(ByteTag.valueOf((byte) 0), executionContext);
                     })
             );
         }

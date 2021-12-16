@@ -1,13 +1,12 @@
 package org.cyclops.cyclopscore.persist.world;
 
 import lombok.experimental.Delegate;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldSavedData;
-import net.minecraftforge.fml.event.server.FMLServerAboutToStartEvent;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
-import net.minecraftforge.fml.event.server.FMLServerStoppingEvent;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
 import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
@@ -32,7 +31,7 @@ public abstract class WorldStorage implements INBTProvider {
      * Read the counters.
      * @param tag The tag to read from.
      */
-    public void readFromNBT(CompoundNBT tag) {
+    public void readFromNBT(CompoundTag tag) {
         readGeneratedFieldsFromNBT(tag);
     }
 
@@ -40,7 +39,7 @@ public abstract class WorldStorage implements INBTProvider {
      * Write the counters.
      * @param tag The tag to write to.
      */
-    public void writeToNBT(CompoundNBT tag) {
+    public void writeToNBT(CompoundTag tag) {
         writeGeneratedFieldsToNBT(tag);
     }
 
@@ -53,7 +52,7 @@ public abstract class WorldStorage implements INBTProvider {
      * When a server is started.
      * @param event The received event.
      */
-    public void onAboutToStartEvent(FMLServerAboutToStartEvent event) {
+    public void onAboutToStartEvent(ServerAboutToStartEvent event) {
         reset();
     }
 
@@ -61,7 +60,7 @@ public abstract class WorldStorage implements INBTProvider {
      * When a server is started.
      * @param event The received event.
      */
-    public void onStartedEvent(FMLServerStartedEvent event) {
+    public void onStartedEvent(ServerStartedEvent event) {
         reset();
         loadData(event.getServer());
         afterLoad();
@@ -71,7 +70,7 @@ public abstract class WorldStorage implements INBTProvider {
      * When a server is stopping.
      * @param event The received event.
      */
-    public void onStoppingEvent(FMLServerStoppingEvent event) {
+    public void onStoppingEvent(ServerStoppingEvent event) {
         beforeSave();
         saveData(event.getServer());
     }
@@ -79,17 +78,19 @@ public abstract class WorldStorage implements INBTProvider {
     protected abstract String getDataId();
 
     private NBTDataHolder initDataHolder(MinecraftServer server, boolean loading) {
-        String dataId = mod.getModId() + "_" + getDataId();
-        NBTDataHolder data = server.getLevel(World.OVERWORLD).getDataStorage()
-                .computeIfAbsent(() -> new NBTDataHolder(dataId), dataId);
+        // TODO: rewrite world saved data
+        /*String dataId = mod.getModId() + "_" + getDataId();
+        NBTDataHolder data = server.getLevel(Level.OVERWORLD).getDataStorage()
+                .computeIfAbsent(e -> NBTDataHolder.load(e), () -> new NBTDataHolder(), dataId);
         if (loading) {
-            CompoundNBT tempTag = data.getTempTagAndReset();
+            CompoundTag tempTag = data.getTempTagAndReset();
             if (tempTag != null) {
                 readFromNBT(tempTag);
             }
         }
         data.setParentStorage(this);
-        return data;
+        return data;*/
+        return null;
     }
 
     private synchronized void loadData(MinecraftServer server) {
@@ -117,31 +118,23 @@ public abstract class WorldStorage implements INBTProvider {
     /**
      * Data holder for the global counter data.
      */
-    public static class NBTDataHolder extends WorldSavedData {
+    // TODO: rewrite world saved data
+    public static class NBTDataHolder extends SavedData {
 
         private WorldStorage parentStorage = null;
-        private CompoundNBT tempTag = null;
+        private CompoundTag tempTag = null;
 
-        /**
-         * Make a new instance.
-         * @param key The key for the global counter data.
-         */
-        public NBTDataHolder(String key) {
-            super(key);
-        }
-
-        @Override
-        public void load(CompoundNBT tag) {
+        /*public static NBTDataHolder load(CompoundTag tag) {
             if (parentStorage == null) {
                 this.tempTag = tag.getCompound(KEY);
             } else {
                 parentStorage.readFromNBT(tag.getCompound(KEY));
             }
-        }
+        }*/
 
         @Override
-        public CompoundNBT save(CompoundNBT tag) {
-            CompoundNBT dataTag = new CompoundNBT();
+        public CompoundTag save(CompoundTag tag) {
+            CompoundTag dataTag = new CompoundTag();
             parentStorage.writeToNBT(dataTag);
             tag.put(KEY, dataTag);
             return tag;
@@ -157,8 +150,8 @@ public abstract class WorldStorage implements INBTProvider {
             this.parentStorage = parentStorage;
         }
 
-        public CompoundNBT getTempTagAndReset() {
-            CompoundNBT tempTag = this.tempTag;
+        public CompoundTag getTempTagAndReset() {
+            CompoundTag tempTag = this.tempTag;
             this.tempTag = null;
             return tempTag;
         }

@@ -4,13 +4,13 @@ import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.TransformingClassLoader;
 import cpw.mods.modlauncher.api.IEnvironment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.IServerWorldInfo;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.storage.ServerLevelData;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -56,10 +56,10 @@ public class MinecraftHelpers {
      * @param world the world to manipulate time in.
      * @param toDay if true, set to day, otherwise to night.
      */
-    public static void setDay(ServerWorld world, boolean toDay) {
+    public static void setDay(ServerLevel world, boolean toDay) {
         int currentTime = (int) world.getGameTime();
         int newTime = currentTime - (currentTime % (MINECRAFT_DAY / 2)) + MINECRAFT_DAY / 2;
-        ((IServerWorldInfo) world.getLevelData()).setGameTime(newTime);
+        ((ServerLevelData) world.getLevelData()).setGameTime(newTime);
     }
 
 	/**
@@ -67,8 +67,8 @@ public class MinecraftHelpers {
 	 * @param player The player.
 	 * @return If the player does not have a free spot in it's inventory.
 	 */
-	public static boolean isPlayerInventoryFull(PlayerEntity player) {
-	    return player.inventory.getFreeSlot() == -1;
+	public static boolean isPlayerInventoryFull(Player player) {
+	    return player.getInventory().getFreeSlot() == -1;
 	}
 
     /**
@@ -116,7 +116,7 @@ public class MinecraftHelpers {
     }
 
     /**
-     * Comparator for {@link net.minecraft.util.math.BlockPos}.
+     * Comparator for {@link net.minecraft.core.BlockPos}.
      * @param pos1 First pos.
      * @param pos2 Second pos.
      * @return The compared value.
@@ -139,8 +139,8 @@ public class MinecraftHelpers {
      * @param <T> The type.
      * @return The action result.
      */
-    public static <T> ActionResult<T> successAction(T result) {
-        return new ActionResult<>(ActionResultType.SUCCESS, result);
+    public static <T> InteractionResultHolder<T> successAction(T result) {
+        return new InteractionResultHolder<>(InteractionResult.SUCCESS, result);
     }
 
     /**

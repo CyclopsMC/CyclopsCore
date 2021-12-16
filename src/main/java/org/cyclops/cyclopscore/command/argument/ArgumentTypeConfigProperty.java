@@ -8,8 +8,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.TextComponent;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -37,7 +37,7 @@ public class ArgumentTypeConfigProperty implements ArgumentType<ConfigurableProp
     public ConfigurablePropertyData parse(StringReader reader) throws CommandSyntaxException {
         ConfigurablePropertyData property = mod.getConfigHandler().getCommandableProperties().get(reader.readString());
         if (property == null) {
-            throw new SimpleCommandExceptionType(new StringTextComponent("Unknown property")).create();
+            throw new SimpleCommandExceptionType(new TextComponent("Unknown property")).create();
         }
         return property;
     }
@@ -50,6 +50,6 @@ public class ArgumentTypeConfigProperty implements ArgumentType<ConfigurableProp
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return ISuggestionProvider.suggest(mod.getConfigHandler().getCommandableProperties().keySet(), builder);
+        return SharedSuggestionProvider.suggest(mod.getConfigHandler().getCommandableProperties().keySet(), builder);
     }
 }

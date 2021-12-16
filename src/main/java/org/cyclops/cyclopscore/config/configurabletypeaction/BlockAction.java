@@ -1,20 +1,19 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.Item;
+import  net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
@@ -93,7 +92,7 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     public static void onModelBakeEvent(ModelBakeEvent event){
         for (BlockConfig config : MODEL_ENTRIES) {
             IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
-            IBakedModel dynamicModel = dynamicModelElement.createDynamicModel(event);
+            BakedModel dynamicModel = dynamicModelElement.createDynamicModel(event);
             if (config.dynamicBlockVariantLocation != null) {
                 event.getModelRegistry().put(config.dynamicBlockVariantLocation, dynamicModel);
             }
@@ -110,7 +109,7 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     protected void polish(BlockConfig config) {
         Block block = config.getInstance();
         if(MinecraftHelpers.isClientSide()) {
-            IBlockColor blockColorHandler = config.getBlockColorHandler();
+            BlockColor blockColorHandler = config.getBlockColorHandler();
             if (blockColorHandler != null) {
                 Minecraft.getInstance().getBlockColors().register(blockColorHandler, block);
             }

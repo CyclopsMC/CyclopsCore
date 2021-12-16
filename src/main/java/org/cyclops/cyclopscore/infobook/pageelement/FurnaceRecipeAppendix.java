@@ -1,11 +1,11 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.Blocks;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
@@ -17,7 +17,7 @@ import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
  * Blood Infuser recipes.
  * @author rubensworks
  */
-public class FurnaceRecipeAppendix extends RecipeAppendix<IRecipe<IInventory>> {
+public class FurnaceRecipeAppendix extends RecipeAppendix<Recipe<Container>> {
 
     private static final int SLOT_OFFSET_X = 16;
     private static final int SLOT_OFFSET_Y = 3;
@@ -26,7 +26,7 @@ public class FurnaceRecipeAppendix extends RecipeAppendix<IRecipe<IInventory>> {
     private static final AdvancedButtonEnum INPUT = AdvancedButtonEnum.create();
     private static final AdvancedButtonEnum RESULT = AdvancedButtonEnum.create();
 
-    public FurnaceRecipeAppendix(IInfoBook infoBook, IRecipe<IInventory> recipe) {
+    public FurnaceRecipeAppendix(IInfoBook infoBook, Recipe<Container> recipe) {
         super(infoBook, recipe);
     }
 
@@ -54,7 +54,7 @@ public class FurnaceRecipeAppendix extends RecipeAppendix<IRecipe<IInventory>> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void drawElementInner(ScreenInfoBook gui, MatrixStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
+    public void drawElementInner(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
         int middle = (width - SLOT_SIZE) / 2;
         gui.drawArrowRight(matrixStack, x + middle - 3, y + SLOT_OFFSET_Y + 2);
 

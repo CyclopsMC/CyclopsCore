@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.persist.nbt;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,8 +14,8 @@ import java.lang.annotation.Target;
  * Fields that are a subtype of {@link INBTSerializable} must not be null, they should
  * have a dummy value that will then be populated with the actual values.
  * It will automatically be added to
- * {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity#write(CompoundNBT)}}
- * and {@link org.cyclops.cyclopscore.tileentity.CyclopsTileEntity#write(CompoundNBT)}.
+ * {@link CyclopsBlockEntity#write(CompoundTag)}}
+ * and {@link CyclopsBlockEntity#write(CompoundTag)}.
  * @author rubensworks
  *
  */

@@ -5,7 +5,7 @@ import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
 
@@ -62,7 +62,7 @@ public class InfoBookRegistry implements IInfoBookRegistry {
             afterRecipesAndTagsLoaded();
         }
     }
-    public void onServerStarted(FMLServerStartedEvent event) {
+    public void onServerStarted(ServerStartedEvent event) {
         if (event.getServer().isDedicatedServer()) {
             // Only call this on dedicated servers, as the RecipesUpdatedEvent won't be emitted there
             afterRecipesAndTagsLoaded();

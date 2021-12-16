@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.inventory.container;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import org.cyclops.cyclopscore.persist.nbt.NBTClassType;
 
 import java.util.Objects;
@@ -17,7 +17,7 @@ public class SyncedGuiVariable<T> implements Supplier<T> {
     private final NBTClassType<T> nbtClassType;
     private final Supplier<T> serverValueSupplier;
 
-    private CompoundNBT lastTag;
+    private CompoundTag lastTag;
 
     SyncedGuiVariable(ContainerExtended gui, Class<T> clazz, Supplier<T> serverValueSupplier) {
         this.gui = gui;
@@ -30,7 +30,7 @@ public class SyncedGuiVariable<T> implements Supplier<T> {
 
     public void detectAndSendChanges() {
         T value = this.serverValueSupplier.get();
-        CompoundNBT tag = new CompoundNBT();
+        CompoundTag tag = new CompoundTag();
         this.nbtClassType.writePersistedField("v", value, tag);
         if (!Objects.equals(this.lastTag, tag)) {
             this.gui.setValue(this.guiValueId, tag);
@@ -40,7 +40,7 @@ public class SyncedGuiVariable<T> implements Supplier<T> {
 
     @Override
     public T get() {
-        CompoundNBT tag = this.gui.getValue(this.guiValueId);
+        CompoundTag tag = this.gui.getValue(this.guiValueId);
         if (tag == null) {
             return this.nbtClassType.getDefaultValue();
         }

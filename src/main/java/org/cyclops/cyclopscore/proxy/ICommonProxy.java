@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.proxy;
 
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.PacketHandler;
@@ -27,8 +27,8 @@ public interface ICommonProxy {
      * @param rendererFactory The tile entity render factory.
      * @param <T> The tile entity type.
      */
-    public <T extends TileEntity> void registerRenderer(TileEntityType<T> tileEntityType,
-                                                        Function<? super TileEntityRendererDispatcher, ? extends TileEntityRenderer<? super T>> rendererFactory);
+    public <T extends BlockEntity> void registerRenderer(BlockEntityType<T> tileEntityType,
+                                                        Function<? super BlockEntityRenderDispatcher, ? extends BlockEntityRenderer<? super T>> rendererFactory);
 
     /**
      * Register renderers.

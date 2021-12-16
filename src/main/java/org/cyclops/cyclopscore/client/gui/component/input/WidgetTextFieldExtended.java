@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.client.gui.component.input;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
 
@@ -12,19 +12,19 @@ import org.cyclops.cyclopscore.helper.RenderHelpers;
  * An extended text field.
  * @author rubensworks
  */
-public class WidgetTextFieldExtended extends TextFieldWidget {
+public class WidgetTextFieldExtended extends EditBox {
 
     private final boolean background;
     private IInputListener listener;
 
-    public WidgetTextFieldExtended(FontRenderer fontrenderer, int x, int y, int width, int height,
-                                   ITextComponent narrationMessage, boolean background) {
+    public WidgetTextFieldExtended(Font fontrenderer, int x, int y, int width, int height,
+                                   Component narrationMessage, boolean background) {
         super(fontrenderer, x, y, width, height, narrationMessage);
         this.background = background;
     }
 
-    public WidgetTextFieldExtended(FontRenderer fontrenderer, int x, int y, int width, int height,
-                                   ITextComponent narrationMessage) {
+    public WidgetTextFieldExtended(Font fontrenderer, int x, int y, int width, int height,
+                                   Component narrationMessage) {
         this(fontrenderer, x, y, width, height, narrationMessage, false);
     }
 
@@ -36,9 +36,8 @@ public class WidgetTextFieldExtended extends TextFieldWidget {
         return this.width - 7;
     }
 
-    protected void drawBackground(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    protected void drawBackground(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         RenderHelpers.bindTexture(Images.WIDGETS);
-        GlStateManager._color4f(1, 1, 1, 1);
 
         x--;
         y--;
@@ -57,12 +56,11 @@ public class WidgetTextFieldExtended extends TextFieldWidget {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(background) {
             drawBackground(matrixStack, mouseX, mouseY, partialTicks);
         }
         super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
-        GlStateManager._color4f(1, 1, 1, 1);
     }
 
     @Override

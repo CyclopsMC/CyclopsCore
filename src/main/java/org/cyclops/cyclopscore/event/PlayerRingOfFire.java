@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.event;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -46,7 +46,7 @@ public class PlayerRingOfFire {
         spawnRing(event.getPlayer());
     }
     
-    private void spawnRing(PlayerEntity player) {
+    private void spawnRing(Player player) {
         if(!player.level.isClientSide() && player.getGameProfile() != null
     			&& ALLOW_RING.contains(player.getGameProfile().getId())) {
     		CyclopsCore._instance.getPacketHandler().sendToAllAround(new RingOfFirePacket(player),

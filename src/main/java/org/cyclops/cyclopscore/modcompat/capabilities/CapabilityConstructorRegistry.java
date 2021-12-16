@@ -6,11 +6,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -33,7 +33,7 @@ import java.util.function.Supplier;
  * @author rubensworks
  */
 public class CapabilityConstructorRegistry {
-    private final Map<Class<? extends TileEntity>, List<ICapabilityConstructor<?, ? extends TileEntity, ? extends TileEntity>>>
+    private final Map<Class<? extends BlockEntity>, List<ICapabilityConstructor<?, ? extends BlockEntity, ? extends BlockEntity>>>
             capabilityConstructorsTile = Maps.newIdentityHashMap();
     private final Map<Class<? extends Entity>, List<ICapabilityConstructor<?, ? extends Entity, ? extends Entity>>>
             capabilityConstructorsEntity = Maps.newIdentityHashMap();
@@ -76,9 +76,9 @@ public class CapabilityConstructorRegistry {
      * @param constructor The capability constructor.
      * @param <T> The tile type.
      */
-    public <T extends TileEntity> void registerTile(Class<T> clazz, ICapabilityConstructor<?, T, T> constructor) {
+    public <T extends BlockEntity> void registerTile(Class<T> clazz, ICapabilityConstructor<?, T, T> constructor) {
         checkNotBaked();
-        List<ICapabilityConstructor<?, ? extends TileEntity, ? extends TileEntity>> constructors = capabilityConstructorsTile.get(clazz);
+        List<ICapabilityConstructor<?, ? extends BlockEntity, ? extends BlockEntity>> constructors = capabilityConstructorsTile.get(clazz);
         if (constructors == null) {
             constructors = Lists.newArrayList();
             capabilityConstructorsTile.put(clazz, constructors);
@@ -355,8 +355,8 @@ public class CapabilityConstructorRegistry {
 
     public class TileEventListener {
         @SubscribeEvent
-        public void onTileLoad(AttachCapabilitiesEvent<TileEntity> event) {
-            onLoad(capabilityConstructorsTile, capabilityConstructorsTileSuper, null, event.getObject(), event, TileEntity.class);
+        public void onTileLoad(AttachCapabilitiesEvent<BlockEntity> event) {
+            onLoad(capabilityConstructorsTile, capabilityConstructorsTileSuper, null, event.getObject(), event, BlockEntity.class);
         }
     }
 

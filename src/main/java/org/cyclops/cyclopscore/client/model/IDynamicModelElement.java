@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -23,6 +23,6 @@ public interface IDynamicModelElement {
      * @return A dynamic model instance.
      */
     @OnlyIn(Dist.CLIENT)
-    public IBakedModel createDynamicModel(ModelBakeEvent event);
+    public BakedModel createDynamicModel(ModelBakeEvent event);
 
 }

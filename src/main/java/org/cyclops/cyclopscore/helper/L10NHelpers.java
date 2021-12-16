@@ -1,12 +1,12 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.Reference;
@@ -52,12 +52,12 @@ public final class L10NHelpers {
      *                        this should be a formatted string with one parameter.
      */
     @OnlyIn(Dist.CLIENT)
-    public static void addStatusInfo(List<ITextComponent> infoLines, boolean isEnabled, String statusPrefixKey) {
-        ITextComponent autoSupply = new TranslationTextComponent(KEY_DISABLED);
+    public static void addStatusInfo(List<Component> infoLines, boolean isEnabled, String statusPrefixKey) {
+        Component autoSupply = new TranslatableComponent(KEY_DISABLED);
         if (isEnabled) {
-            autoSupply = new TranslationTextComponent(KEY_ENABLED);
+            autoSupply = new TranslatableComponent(KEY_ENABLED);
         }
-        infoLines.add(new TranslationTextComponent(statusPrefixKey, autoSupply));
+        infoLines.add(new TranslatableComponent(statusPrefixKey, autoSupply));
     }
 
     /**
@@ -67,19 +67,19 @@ public final class L10NHelpers {
      * @param prefix The I18N key prefix, being the unlocalized name of blocks or items.
      */
     @OnlyIn(Dist.CLIENT)
-    public static void addOptionalInfo(List<ITextComponent> list, String prefix) {
+    public static void addOptionalInfo(List<Component> list, String prefix) {
         String key = prefix + ".info";
         if (I18n.exists(key)) {
             if (MinecraftHelpers.isShifted()) {
                 String localized = localize(key);
                 list.addAll(StringHelpers.splitLines(localized, MAX_TOOLTIP_LINE_LENGTH, IInformationProvider.INFO_PREFIX)
                         .stream()
-                        .map(StringTextComponent::new)
+                        .map(TextComponent::new)
                         .collect(Collectors.toList()));
             } else {
-                list.add(new TranslationTextComponent("general." + Reference.MOD_ID + ".tooltip.info")
+                list.add(new TranslatableComponent("general." + Reference.MOD_ID + ".tooltip.info")
                         .setStyle(Style.EMPTY
-                                .withColor(Color.fromLegacyFormat(TextFormatting.GRAY))
+                                .withColor(TextColor.fromLegacyFormat(ChatFormatting.GRAY))
                                 .withItalic(true)));
             }
         }

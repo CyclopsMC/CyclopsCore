@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -14,7 +14,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class RecipeConfig<T extends IRecipe<?>> extends ExtendedConfigForge<RecipeConfig<T>, IRecipeSerializer<T>> {
+public abstract class RecipeConfig<T extends Recipe<?>> extends ExtendedConfigForge<RecipeConfig<T>, RecipeSerializer<T>> {
 
     /**
      * Create a new config
@@ -23,7 +23,7 @@ public abstract class RecipeConfig<T extends IRecipe<?>> extends ExtendedConfigF
      * @param namedId            A unique name id
      * @param elementConstructor The element constructor.
      */
-    public RecipeConfig(ModBase mod, String namedId, Function<RecipeConfig<T>, ? extends IRecipeSerializer<T>> elementConstructor) {
+    public RecipeConfig(ModBase mod, String namedId, Function<RecipeConfig<T>, ? extends RecipeSerializer<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 
@@ -44,7 +44,7 @@ public abstract class RecipeConfig<T extends IRecipe<?>> extends ExtendedConfigF
 	}
 
     @Override
-    public IForgeRegistry<? super IRecipeSerializer<T>> getRegistry() {
+    public IForgeRegistry<? super RecipeSerializer<T>> getRegistry() {
         return ForgeRegistries.RECIPE_SERIALIZERS;
     }
 

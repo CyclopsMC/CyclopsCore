@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.command.argument;
 
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.arguments.ArgumentType;
-import net.minecraft.command.arguments.IArgumentSerializer;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.commands.synchronization.ArgumentSerializer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.ModList;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.PacketCodec;
@@ -14,7 +14,7 @@ import java.util.function.Function;
  * A generic argument serializer for argument types with a mod property.
  * @author rubensworks
  */
-public class ArgumentSerializerMod<T extends ArgumentType<?>> implements IArgumentSerializer<T> {
+public class ArgumentSerializerMod<T extends ArgumentType<?>> implements ArgumentSerializer<T> {
 
     private final Function<ModBase, T> argumentConstructor;
     private final Function<T, ModBase> modGetter;
@@ -25,12 +25,12 @@ public class ArgumentSerializerMod<T extends ArgumentType<?>> implements IArgume
     }
 
     @Override
-    public void serializeToNetwork(T t, PacketBuffer packetBuffer) {
+    public void serializeToNetwork(T t, FriendlyByteBuf packetBuffer) {
         packetBuffer.writeUtf(modGetter.apply(t).getModId());
     }
 
     @Override
-    public T deserializeFromNetwork(PacketBuffer packetBuffer) {
+    public T deserializeFromNetwork(FriendlyByteBuf packetBuffer) {
         return argumentConstructor.apply((ModBase) ModList.get().getModObjectById(packetBuffer.readUtf(PacketCodec.READ_STRING_MAX_LENGTH)).get());
     }
 

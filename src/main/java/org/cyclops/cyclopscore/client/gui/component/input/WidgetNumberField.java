@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.client.gui.component.input;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.cyclops.cyclopscore.client.gui.component.button.ButtonArrow;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
@@ -21,14 +21,14 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     private int maxValue = Integer.MAX_VALUE;
     private boolean isEnabled = true;
 
-    public WidgetNumberField(FontRenderer fontrenderer, int x, int y, int width, int height, boolean arrows,
-                             ITextComponent narrationMessage, boolean background) {
+    public WidgetNumberField(Font fontrenderer, int x, int y, int width, int height, boolean arrows,
+                             Component narrationMessage, boolean background) {
         super(fontrenderer, x, y, width, height, narrationMessage, background);
         this.arrows = arrows;
 
         if(this.arrows) {
-            arrowUp = new ButtonArrow(x, y + height / 2, new TranslationTextComponent("gui.cyclopscore.up"), (button) -> this.increase(), ButtonArrow.Direction.NORTH);
-            arrowDown = new ButtonArrow(x, y + height / 2, new TranslationTextComponent("gui.cyclopscore.down"), (button) -> this.decrease(), ButtonArrow.Direction.SOUTH);
+            arrowUp = new ButtonArrow(x, y + height / 2, new TranslatableComponent("gui.cyclopscore.up"), (button) -> this.increase(), ButtonArrow.Direction.NORTH);
+            arrowDown = new ButtonArrow(x, y + height / 2, new TranslatableComponent("gui.cyclopscore.down"), (button) -> this.decrease(), ButtonArrow.Direction.SOUTH);
             arrowUp.y -= arrowUp.getHeight();
         }
         setBordered(true);
@@ -88,9 +88,8 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     }
 
     @Override
-    public void renderButton(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         int offsetX = 0;
-        GlStateManager._color4f(1, 1, 1, 1);
         if(arrows) {
             arrowUp.renderButton(matrixStack, mouseX, mouseY, partialTicks);
             arrowDown.renderButton(matrixStack, mouseX, mouseY, partialTicks);

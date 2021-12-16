@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -28,7 +28,7 @@ public class WorldHelpers {
 	 * @param params Optional parameters to further vary the tick occurences.
 	 * @return If a tick of some operation can occur.
 	 */
-	public static boolean efficientTick(World world, int baseModulus, int... params) {
+	public static boolean efficientTick(Level world, int baseModulus, int... params) {
 		int mod = (int) (baseModulus * TICK_LAG_REDUCTION_MODULUS_MODIFIER);
 		if(mod == 0) mod = 1;
 		int offset = 0;
@@ -44,7 +44,7 @@ public class WorldHelpers {
      * @param blockPos The position to use as param.
      * @return If a tick of some operation can occur.
      */
-    public static boolean efficientTick(World world, int baseModulus, BlockPos blockPos) {
+    public static boolean efficientTick(Level world, int baseModulus, BlockPos blockPos) {
         return efficientTick(world, baseModulus, blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
 
@@ -60,7 +60,7 @@ public class WorldHelpers {
      * @param <W> The world type.
      * @return The resulting value.
      */
-    public static <T, W extends IWorld> T foldArea(W world, int[] areaMin, int[] areaMax, BlockPos blockPos, WorldFoldingFunction<T, T, W> folder, T value) {
+    public static <T, W extends LevelAccessor> T foldArea(W world, int[] areaMin, int[] areaMax, BlockPos blockPos, WorldFoldingFunction<T, T, W> folder, T value) {
         int x = blockPos.getX();
         int y = blockPos.getY();
         int z = blockPos.getZ();
@@ -85,7 +85,7 @@ public class WorldHelpers {
      * @param <W> The world type.
      * @return The resulting value.
      */
-    public static <T, W extends IWorld> T foldArea(W world, int area, BlockPos blockPos, WorldFoldingFunction<T, T, W> folder, T value) {
+    public static <T, W extends LevelAccessor> T foldArea(W world, int area, BlockPos blockPos, WorldFoldingFunction<T, T, W> folder, T value) {
         return foldArea(world, new int[]{area, area, area}, new int[]{area, area, area}, blockPos, folder, value);
     }
 

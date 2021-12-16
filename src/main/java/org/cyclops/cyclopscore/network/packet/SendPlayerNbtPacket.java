@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.EntityHelpers;
@@ -18,13 +18,13 @@ import org.cyclops.cyclopscore.network.PacketCodec;
 public class SendPlayerNbtPacket extends PacketCodec {
 
 	@CodecField
-	private CompoundNBT nbtData;
+	private CompoundTag nbtData;
 
     public SendPlayerNbtPacket() {
 
     }
 
-	public SendPlayerNbtPacket(PlayerEntity player) {
+	public SendPlayerNbtPacket(Player player) {
 		this.nbtData = EntityHelpers.getPersistedPlayerNbt(player);
 	}
 
@@ -35,12 +35,12 @@ public class SendPlayerNbtPacket extends PacketCodec {
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void actionClient(World world, PlayerEntity player) {
-		player.getPersistentData().put(PlayerEntity.PERSISTED_NBT_TAG, nbtData);
+	public void actionClient(Level level, Player player) {
+		player.getPersistentData().put(Player.PERSISTED_NBT_TAG, nbtData);
 	}
 
 	@Override
-	public void actionServer(World world, ServerPlayerEntity player) {
+	public void actionServer(Level level, ServerPlayer player) {
 
 	}
 	

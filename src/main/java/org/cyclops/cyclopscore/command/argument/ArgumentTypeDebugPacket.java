@@ -7,8 +7,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.ISuggestionProvider;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.TextComponent;
 import org.cyclops.cyclopscore.command.CommandDebug;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
@@ -31,7 +31,7 @@ public class ArgumentTypeDebugPacket implements ArgumentType<PacketCodec> {
     public PacketCodec parse(StringReader reader) throws CommandSyntaxException {
         PacketCodec packet = CommandDebug.PACKETS.get(reader.readString());
         if (packet == null) {
-            throw new SimpleCommandExceptionType(new StringTextComponent("Invalid packet type")).create();
+            throw new SimpleCommandExceptionType(new TextComponent("Invalid packet type")).create();
         }
         return packet;
     }
@@ -43,6 +43,6 @@ public class ArgumentTypeDebugPacket implements ArgumentType<PacketCodec> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return ISuggestionProvider.suggest(CommandDebug.PACKETS.keySet(), builder);
+        return SharedSuggestionProvider.suggest(CommandDebug.PACKETS.keySet(), builder);
     }
 }

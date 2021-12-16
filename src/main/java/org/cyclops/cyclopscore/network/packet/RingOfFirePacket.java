@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -23,12 +23,12 @@ public class RingOfFirePacket extends PlayerPositionPacket {
         super();
     }
 
-    public RingOfFirePacket(PlayerEntity player) {
+    public RingOfFirePacket(Player player) {
         super(player);
     }
     
 	@OnlyIn(Dist.CLIENT)
-    private static void showFireRing(World world, Vector3d pos) {
+    private static void showFireRing(Level world, Vec3 pos) {
         double area = RING_AREA;
         int points = 40;
         for(double point = -points; point <= points; point++) {
@@ -59,7 +59,7 @@ public class RingOfFirePacket extends PlayerPositionPacket {
     }
 
     @Override
-    protected PlayerPositionPacket create(PlayerEntity player, int range) {
+    protected PlayerPositionPacket create(Player player, int range) {
         return new RingOfFirePacket(player);
     }
 
@@ -69,7 +69,7 @@ public class RingOfFirePacket extends PlayerPositionPacket {
     }
 
     @Override
-    protected void performClientAction(World world, PlayerEntity player) {
-        showFireRing(world, this.position);
+    protected void performClientAction(Level level, Player player) {
+        showFireRing(level, this.position);
     }
 }

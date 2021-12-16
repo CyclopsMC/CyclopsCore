@@ -1,15 +1,14 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.GuiHelpers;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
@@ -26,7 +25,7 @@ import java.util.List;
  * An extended GUI container.
  * @author rubensworks
  */
-public abstract class ContainerScreenExtended<T extends ContainerExtended> extends ContainerScreen<T>
+public abstract class ContainerScreenExtended<T extends ContainerExtended> extends AbstractContainerScreen<T>
         implements IValueNotifiable {
 
     protected T container;
@@ -34,7 +33,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     protected int offsetX = 0;
     protected int offsetY = 0;
 
-    public ContainerScreenExtended(T container, PlayerInventory playerInventory, ITextComponent title) {
+    public ContainerScreenExtended(T container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         container.setGuiValueListener(this);
         this.container = container;
@@ -59,13 +58,13 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     @Override
-    public final void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public final void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(matrixStack);
         this.drawCurrentScreen(matrixStack, mouseX, mouseY, partialTicks);
         this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
-    protected void drawCurrentScreen(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    protected void drawCurrentScreen(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
@@ -78,8 +77,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float f, int x, int y) {
-        GlStateManager._color4f(1.0F, 1.0F, 1.0F, 1.0F);
+    protected void renderBg(PoseStack matrixStack, float f, int x, int y) {
         RenderHelpers.bindTexture(texture);
         blit(matrixStack, leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY);
     }
@@ -99,8 +97,8 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     	return isHovering(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
     }
 
-    public void drawTooltip(List<ITextComponent> lines, int x, int y) {
-        GuiHelpers.drawTooltip(this, lines, x, y);
+    public void drawTooltip(List<Component> lines, PoseStack poseStack, int x, int y) {
+        GuiHelpers.drawTooltip(this, poseStack, lines, x, y);
     }
 
     /**
@@ -111,7 +109,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
      * @param clientPressable An optional pressable that should be called client-side.
      * @return The created pressable.
      */
-    protected Button.IPressable createServerPressable(String buttonId, @Nullable Button.IPressable clientPressable) {
+    protected Button.OnPress createServerPressable(String buttonId, @Nullable Button.OnPress clientPressable) {
         return (button) -> {
             if (clientPressable != null) {
                 clientPressable.onPress(button);
@@ -123,7 +121,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     @Override
-    public void onUpdate(int valueId, CompoundNBT value) {
+    public void onUpdate(int valueId, CompoundTag value) {
 
     }
 
@@ -151,7 +149,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     @Override
-    public ContainerType<?> getValueNotifiableType() {
+    public MenuType<?> getValueNotifiableType() {
         return getMenu().getType();
     }
 }

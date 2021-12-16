@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook;
 
 import com.google.common.collect.Maps;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Font;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
@@ -35,7 +35,7 @@ public class InfoSectionTagIndex extends InfoSection {
         }));
     }
 
-    public void bakeSection(FontRenderer fontRenderer, int width, int maxLines, int lineHeight, int yOffset) {
+    public void bakeSection(Font fontRenderer, int width, int maxLines, int lineHeight, int yOffset) {
         if(paragraphs.size() == 0) {
             addLinks(maxLines, lineHeight, yOffset, getInfoBook().getConfigLinks());
         }
