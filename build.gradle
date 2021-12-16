@@ -10,7 +10,7 @@ buildscript {
 
 plugins {
     id 'com.matthewprenger.cursegradle' version '1.4.0'
-    id 'com.github.kt3k.coveralls' version '2.10.2'
+    id 'com.github.kt3k.coveralls' version '2.12.0'
 }
 
 apply plugin: 'net.minecraftforge.gradle'
@@ -260,7 +260,7 @@ publishing {
         if (project.hasProperty("filesmaven_url")) {
             logger.info('Publishing to files server')
             maven {
-                url System.getenv("MAVEN_URL")
+                url project.filesmaven_url
                 credentials {
                     username = project.filesmaven_username
                     password = project.filesmaven_key
@@ -276,13 +276,14 @@ publishing {
                 }
             }
         } else {
-            throw new Exception('No maven repo was set!')
+            logger.error('No maven repo was set!')
         }
     }
 
     publications { PublicationContainer publicationContainer ->
         publicationContainer.register("maven", MavenPublication) { MavenPublication publication ->
             publication.artifacts = [jar, javadocJar, deobfJar, sourcesJar]
+            publication.artifactId = project.archivesBaseName.toLowerCase() // GH can't handle uppercase...
         }
     }
 }
