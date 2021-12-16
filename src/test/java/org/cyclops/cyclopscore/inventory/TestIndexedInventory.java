@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Iterators;
+import net.minecraft.DetectedVersion;
+import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +20,7 @@ import static org.junit.Assert.assertThat;
 public class TestIndexedInventory {
 
     static {
+        SharedConstants.setVersion(DetectedVersion.BUILT_IN);
         Bootstrap.bootStrap();
     }
 
