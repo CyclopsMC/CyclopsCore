@@ -18,8 +18,7 @@ apply plugin: 'jacoco'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
-// TODO: re-enable jar signing
-//import net.minecraftforge.gradle.common.task.SignJar
+import net.minecraftforge.gradle.common.tasks.SignJar
 
 loadProperties()
 
@@ -176,8 +175,7 @@ jar.finalizedBy('reobfJar')
 // However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
 // publish.dependsOn('reobfJar')
 
-// TODO: re-enable jar signing
-/*task signJar(type: SignJar, dependsOn: jar) {
+task signJar(type: SignJar, dependsOn: jar) {
     onlyIf {
         System.getenv().SIGN_KEYSTORE
     }
@@ -189,7 +187,7 @@ jar.finalizedBy('reobfJar')
     inputFile = jar.archivePath
     outputFile = jar.archivePath
 }
-build.dependsOn signJar*/
+build.dependsOn signJar
 
 task deobfJar(type: Jar) {
     duplicatesStrategy(DuplicatesStrategy.FAIL)
