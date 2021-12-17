@@ -46,8 +46,8 @@ println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getPro
 // Load secrets
 def getSecrets() {
     Properties props = new Properties()
-    if (file('../secrets.properties').exists()) {
-        props.load(new FileInputStream(file('../secrets.properties')))
+    if (file('./secrets.properties').exists()) {
+        props.load(new FileInputStream(file('./secrets.properties')))
     }
     return props
 }
