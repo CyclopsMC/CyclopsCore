@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.proxy;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
@@ -22,13 +23,12 @@ public interface ICommonProxy {
     public ModBase getMod();
 
     /**
-     * Register a tile entity renderer.
-     * @param tileEntityType The tile entity type.
-     * @param rendererFactory The tile entity render factory.
-     * @param <T> The tile entity type.
+     * Register a block entity renderer.
+     * @param blockEntityType The block entity type.
+     * @param rendererFactory The block entity render factory.
+     * @param <T> The block entity type.
      */
-    public <T extends BlockEntity> void registerRenderer(BlockEntityType<T> tileEntityType,
-                                                        Function<? super BlockEntityRenderDispatcher, ? extends BlockEntityRenderer<? super T>> rendererFactory);
+    public <T extends BlockEntity> void registerRenderer(BlockEntityType<? extends T> blockEntityType, BlockEntityRendererProvider<T> rendererFactory);
 
     /**
      * Register renderers.

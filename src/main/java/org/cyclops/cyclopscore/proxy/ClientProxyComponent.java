@@ -3,8 +3,8 @@ package org.cyclops.cyclopscore.proxy;
 import com.google.common.collect.Maps;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,7 +14,6 @@ import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.network.PacketHandler;
 
 import java.util.Map;
-import java.util.function.Function;
 
 /**
  * Base proxy for the client side.
@@ -28,7 +27,7 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
 
 	private final CommonProxyComponent commonProxyComponent;
 	private final IconProvider iconProvider;
-    protected final Map<BlockEntityType<?>, Function<? super BlockEntityRenderDispatcher, ? extends BlockEntityRenderer<?>>> tileEntityRenderers = Maps.newHashMap();
+    protected final Map<BlockEntityType, BlockEntityRendererProvider> blockEntityRenderers = Maps.newHashMap();
 
     public ClientProxyComponent(CommonProxyComponent commonProxyComponent) {
         this.commonProxyComponent = commonProxyComponent;
@@ -40,19 +39,17 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
     }
 
     @Override
-    public <T extends BlockEntity> void registerRenderer(BlockEntityType<T> tileEntityType,
-                                                        Function<? super BlockEntityRenderDispatcher, ? extends BlockEntityRenderer<? super T>> rendererFactory) {
-        tileEntityRenderers.put(tileEntityType, rendererFactory);
+    public <T extends BlockEntity> void registerRenderer(BlockEntityType<? extends T> blockEntityType, BlockEntityRendererProvider<T> rendererFactory) {
+        blockEntityRenderers.put(blockEntityType, rendererFactory);
     }
 
 	@Override
 	public void registerRenderers() {
-		// Special TileEntity renderers
-        // TODO: do using EntityRenderersEvent.RegisterRenderers.registerBlockEntityRenderer
-		/*for (Entry<BlockEntityType<?>, Function<? super BlockEntityRenderDispatcher, ? extends BlockEntityRenderer<?>>> entry : tileEntityRenderers.entrySet()) {
-			ClientRegistry.bindTileEntityRenderer(entry.getKey(), (Function) entry.getValue());
+		// Special BlockEntity renderers
+		for (Map.Entry<BlockEntityType, BlockEntityRendererProvider> entry : blockEntityRenderers.entrySet()) {
+            BlockEntityRenderers.register(entry.getKey(), entry.getValue());
             getMod().getLoggerHelper().log(Level.TRACE, String.format("Registered %s special renderer %s", entry.getKey(), entry.getValue()));
-		}*/
+		}
 	}
 
 	@Override

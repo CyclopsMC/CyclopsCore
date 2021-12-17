@@ -1,15 +1,12 @@
 package org.cyclops.cyclopscore.proxy;
 
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.MinecraftForge;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.event.PlayerRingOfFire;
 import org.cyclops.cyclopscore.network.PacketHandler;
-
-import java.util.function.Function;
 
 /**
  * Base proxy for server and client side.
@@ -19,8 +16,7 @@ import java.util.function.Function;
 public abstract class CommonProxyComponent implements ICommonProxy {
 
     @Override
-    public <T extends BlockEntity> void registerRenderer(BlockEntityType<T> tileEntityType,
-                                                        Function<? super BlockEntityRenderDispatcher, ? extends BlockEntityRenderer<? super T>> rendererFactory) {
+    public <T extends BlockEntity> void registerRenderer(BlockEntityType<? extends T> blockEntityType, BlockEntityRendererProvider<T> rendererFactory) {
         throw new IllegalArgumentException("Registration of renderers should not be called server side!");
     }
 
