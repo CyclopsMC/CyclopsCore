@@ -4,19 +4,18 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import lombok.experimental.Delegate;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.level.block.entity.TickingBlockEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.helper.BlockHelpers;
 import org.cyclops.cyclopscore.helper.DirectionHelpers;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
@@ -27,111 +26,53 @@ import java.util.Map;
 
 /**
  * A base class for all the block entities.
- *
- * If you want this tile to update, just implement {@link ITickingBlockEntity}.
- * This class has an anti-lag mechanism to send updates with {@link CyclopsBlockEntity#sendUpdate()}.
- * Every instance has a continuously looping counter that counts from getUpdateBackoffTicks() to zero.
- * and every time the counter reaches zero, the backoff will be reset and an update packet will be sent
- * if one has been queued.
  * @author rubensworks
- *
  */
-public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDirtyMarkListener {
+public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDirtyMarkListener, IBlockEntityDelayedTickable {
 
     private static final int UPDATE_BACKOFF_TICKS = 1;
 
     @Delegate
     private INBTProvider nbtProviderComponent = new NBTProviderComponent(this);
-
     private boolean shouldSendUpdate = false;
     private int sendUpdateBackoff = 0;
-    private final boolean ticking;
+
     private Map<Pair<Capability<?>, Direction>, LazyOptional<?>> capabilities = Maps.newHashMap();
 
     public CyclopsBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
         super(type, blockPos, blockState);
-        sendUpdateBackoff = (int) Math.round(Math.random() * getUpdateBackoffTicks()); // Random backoff so not all TE's will be updated at once.
-        ticking = this instanceof ITickingBlockEntity;
+        // Random backoff so not all block entities will be updated at once.
+        sendUpdateBackoff = (int) Math.round(Math.random() * getUpdateBackoffTicks());
     }
 
-    protected boolean isTicking() {
-        return ticking;
+    @Override
+    public int getUpdateBackoffTicks() {
+        return UPDATE_BACKOFF_TICKS;
     }
 
-    /**
-     * Send a world update for the coordinates of this tile entity.
-     * This will always send lag-safe updates, so calling this many times per tick will
-     * not cause multiple packets to be sent, more info in the class javadoc.
-     */
-    public final void sendUpdate() {
-        if(!isTicking()) {
-            throw new RuntimeException("If you want to update, you must implement ITickingTile. This is a mod error.");
-        }
+    @Override
+    public void sendUpdate() {
         shouldSendUpdate = true;
     }
 
-    /**
-     * Send an immediate world update for the coordinates of this tile entity.
-     * This does the same as {@link CyclopsBlockEntity#sendUpdate()} but will
-     * ignore the update backoff.
-     */
-    public final void sendImmediateUpdate() {
-        sendUpdate();
-        sendUpdateBackoff = 0;
+    @Override
+    public boolean shouldSendUpdate() {
+        return this.shouldSendUpdate;
     }
 
-    /**
-     * Do not override this method (you won't even be able to do so).
-     * Use updateTileEntity() instead.
-     */
-    private void updateTicking() {
-        updateTileEntity();
-        trySendActualUpdate();
+    @Override
+    public void unsetSendUpdate() {
+        this.shouldSendUpdate = false;
     }
 
-    /**
-     * Override this method instead of {@link CyclopsBlockEntity#updateTicking()}.
-     * This method is called each tick.
-     */
-    protected void updateTileEntity() {
-
+    @Override
+    public void setUpdateBackoff(int updateBackoff) {
+        this.sendUpdateBackoff = updateBackoff;
     }
 
-    private void trySendActualUpdate() {
-        sendUpdateBackoff--;
-        if(sendUpdateBackoff <= 0) {
-            sendUpdateBackoff = getUpdateBackoffTicks();
-
-            if(shouldSendUpdate) {
-                shouldSendUpdate = false;
-
-                beforeSendUpdate();
-                onSendUpdate();
-                afterSendUpdate();
-            }
-        }
-    }
-
-    /**
-     * Called when an update will is sent.
-     * This contains the logic to send the update, so make sure to call the super!
-     */
-    protected void onSendUpdate() {
-        BlockHelpers.markForUpdate(getLevel(), getBlockPos());
-    }
-
-    /**
-     * Called when before update is sent.
-     */
-    protected void beforeSendUpdate() {
-
-    }
-
-    /**
-     * Called when after update is sent. (Not necessarily received yet!)
-     */
-    protected void afterSendUpdate() {
-
+    @Override
+    public int getUpdateBackoff() {
+        return this.sendUpdateBackoff;
     }
 
     @Override
@@ -148,20 +89,13 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     }
 
     /**
-     * This method is called when the tile entity receives
+     * This method is called when the block entity receives
      * an update (ie a data packet) from the server.
-     * If this tile entity  uses NBT, then the NBT will have
+     * If this block entity uses NBT, then the NBT will have
      * already been updated when this method is called.
      */
     public void onUpdateReceived() {
 
-    }
-
-    /**
-     * @return The minimum amount of ticks between two consecutive sent packets.
-     */
-    protected int getUpdateBackoffTicks() {
-        return UPDATE_BACKOFF_TICKS;
     }
 
     /**
@@ -180,7 +114,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     }
 
     /**
-     * Write this tile to the given NBT tag that will be attached to an item.
+     * Write this block entity to the given NBT tag that will be attached to an item.
      * By default, {@link #save(CompoundTag)}} will be called.
      * @param tag The tag to write to.
      * @return The written tag.
@@ -201,7 +135,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     }
 
     /**
-     * When the tile is loaded or created.
+     * When the block entity is loaded or created.
      */
     public void onLoad() {
         if (capabilities instanceof HashMap) {
@@ -210,7 +144,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     }
 
     /**
-     * Get the NBT tag for this tile entity.
+     * Get the NBT tag for this block entity.
      * @return The NBT tag that is created with the
      * {@link CyclopsBlockEntity#save(CompoundTag)} method.
      */
@@ -261,7 +195,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
 
     /**
      * Add a sideless capability.
-     * This can only be called at tile construction time!
+     * This can only be called at block entity construction time!
      * @param capability The capability type.
      * @param value The capability.
      * @param <T> The capability type.
@@ -272,7 +206,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
 
     /**
      * Add a sided capability.
-     * This can only be called at tile construction time!
+     * This can only be called at block entity construction time!
      * @param capability The capability type.
      * @param facing The side for the capability.
      * @param value The capability.
@@ -289,46 +223,6 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     @Override
     public void onDirty() {
         this.setChanged();
-    }
-
-    /**
-     * Apply this interface on any tile classes that should tick.
-     */
-    public static interface ITickingBlockEntity extends TickingBlockEntity {
-
-    }
-
-    /**
-     * Component to be used together with the {@link Delegate} annotation to enable tile ticking.
-     */
-    public static class TickingTileComponent implements ITickingBlockEntity {
-
-        private final CyclopsBlockEntity tile;
-
-        public TickingTileComponent(CyclopsBlockEntity tile) {
-            this.tile = tile;
-        }
-
-        @Override
-        public void tick() {
-            tile.updateTicking();
-        }
-
-        @Override
-        public boolean isRemoved() {
-            return tile.isRemoved();
-        }
-
-        @Override
-        public BlockPos getPos() {
-            return tile.getBlockPos();
-        }
-
-        @Override
-        public String getType() {
-            return tile.getType().toString();
-        }
-
     }
 
 }
