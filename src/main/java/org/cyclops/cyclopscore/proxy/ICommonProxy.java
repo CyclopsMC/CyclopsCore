@@ -1,7 +1,5 @@
 package org.cyclops.cyclopscore.proxy;
 
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -9,7 +7,6 @@ import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.PacketHandler;
 
-import java.util.function.Function;
 
 /**
  * Interface for common proxies.
