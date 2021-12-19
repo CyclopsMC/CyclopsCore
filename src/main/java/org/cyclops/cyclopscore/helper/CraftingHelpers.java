@@ -122,7 +122,7 @@ public class CraftingHelpers {
                                                                                             C inventoryCrafting,
                                                                                             Level world, boolean uniqueInventory) {
         return (Optional) CACHE_RECIPES.getUnchecked(Triple.of(recipeType,
-                new CacheableCraftingInventory(inventoryCrafting, !uniqueInventory), world.dimension().getRegistryName()));
+                new CacheableCraftingInventory(inventoryCrafting, !uniqueInventory), world.dimension().location()));
     }
 
     public static class CacheableCraftingInventory {
