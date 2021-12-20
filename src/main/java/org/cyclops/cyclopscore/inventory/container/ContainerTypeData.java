@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.inventory.container;
 
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraftforge.network.IContainerFactory;
 
 /**
  * A {@link MenuType} for a {@link MenuType.MenuSupplier},
@@ -13,7 +14,7 @@ import net.minecraft.world.inventory.MenuType;
  * @author rubensworks
  */
 public class ContainerTypeData<T extends AbstractContainerMenu> extends MenuType<T> {
-    public ContainerTypeData(MenuType.MenuSupplier<T> factory) {
+    public ContainerTypeData(IContainerFactory<T> factory) {
         super(factory);
     }
 }
