@@ -12,6 +12,7 @@ import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.world.entity.LivingEntity;
+import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -121,11 +122,10 @@ public class ParticleBlur extends TextureSheetParticle {
 			RenderSystem.depthMask(false);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-			// TODO: restore blur rendering
 			//RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
 			//RenderSystem.disableLighting();
 
-			//textureManager.bind(TextureAtlas.LOCATION_PARTICLES);
+			RenderHelpers.bindTexture(TextureAtlas.LOCATION_PARTICLES);
 			textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES).setBlurMipmap(true, false);
 
 			bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
@@ -135,7 +135,6 @@ public class ParticleBlur extends TextureSheetParticle {
 		public void end(Tesselator tessellator) {
 			tessellator.end();
 			Minecraft.getInstance().textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES).restoreLastBlurMipmap();
-			// TODO: restore blur rendering
 			//RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
 			RenderSystem.disableBlend();
 			RenderSystem.depthMask(true);
