@@ -59,7 +59,7 @@ public class RenderHelpers {
      * @param texture The texture to bind.
      */
     public static void bindTexture(ResourceLocation texture) {
-    	Minecraft.getInstance().getTextureManager().bindForSetup(texture);
+        RenderSystem.setShaderTexture(0, texture);
     }
 
     /**
