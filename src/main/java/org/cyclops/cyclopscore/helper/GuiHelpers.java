@@ -91,9 +91,8 @@ public class GuiHelpers {
                 }
 
                 Lighting.setupForFlatItems();
+                RenderSystem.setShaderColor(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight(), 1);
                 GuiComponent.blit(matrixStack, x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
-                RenderHelpers.blitColored(matrixStack, x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon,
-                        colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight(), 1);
                 Lighting.setupFor3DItems();
 
                 verticalOffset = verticalOffset + 16;
