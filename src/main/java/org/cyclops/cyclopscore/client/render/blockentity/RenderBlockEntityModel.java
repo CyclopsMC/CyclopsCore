@@ -18,7 +18,7 @@ import java.util.function.Function;
  * @author rubensworks
  *
  */
-public abstract class RenderTileEntityModel<T extends CyclopsBlockEntity, M> implements BlockEntityRenderer<T> {
+public abstract class RenderBlockEntityModel<T extends CyclopsBlockEntity, M> implements BlockEntityRenderer<T> {
 
     protected final M model;
 	private final Material material;
@@ -28,7 +28,7 @@ public abstract class RenderTileEntityModel<T extends CyclopsBlockEntity, M> imp
      * @param model The model to render.
      * @param material The material to render the model with.
      */
-    public RenderTileEntityModel(M model, Material material) {
+    public RenderBlockEntityModel(M model, Material material) {
         this.model = model;
         this.material = material;
     }

@@ -12,9 +12,9 @@ import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
  * @author rubensworks
  *
  */
-public class RenderTileEntityModelBase<T extends CyclopsBlockEntity, M extends Model> extends RenderTileEntityModel<T, M> {
+public class RenderBlockEntityModelBase<T extends CyclopsBlockEntity, M extends Model> extends RenderBlockEntityModel<T, M> {
 
-    public RenderTileEntityModelBase(M model, Material material) {
+    public RenderBlockEntityModelBase(M model, Material material) {
         super(model, material);
     }
 
