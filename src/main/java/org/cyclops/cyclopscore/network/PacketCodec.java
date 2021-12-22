@@ -11,6 +11,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -144,6 +145,24 @@ public abstract class PacketCodec extends PacketBase {
 				double y = input.readDouble();
 				double z = input.readDouble();
 				return new Vector3d(x, y, z);
+			}
+		});
+
+		codecActions.put(Vec3.class, new ICodecAction() {
+			@Override
+			public void encode(Object object, FriendlyByteBuf output) {
+				Vec3 v = (Vec3)object;
+				output.writeDouble(v.x);
+				output.writeDouble(v.y);
+				output.writeDouble(v.z);
+			}
+
+			@Override
+			public Object decode(FriendlyByteBuf input) {
+				double x = input.readDouble();
+				double y = input.readDouble();
+				double z = input.readDouble();
+				return new Vec3(x, y, z);
 			}
 		});
 
