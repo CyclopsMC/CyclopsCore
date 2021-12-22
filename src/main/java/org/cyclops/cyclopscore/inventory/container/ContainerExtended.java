@@ -128,11 +128,11 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
     }
 
     public static void setSlotPosX(Slot slot, int newValue) {
-        setSlotPos(slot, "x", newValue);
+        setSlotPos(slot, "f_40220_", newValue);
     }
 
     public static void setSlotPosY(Slot slot, int newValue) {
-        setSlotPos(slot, "y", newValue);
+        setSlotPos(slot, "f_40221_", newValue);
     }
 
     @Override
