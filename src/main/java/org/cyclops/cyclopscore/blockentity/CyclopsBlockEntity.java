@@ -142,20 +142,9 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
         }
     }
 
-    /**
-     * Get the NBT tag for this block entity.
-     * @return The NBT tag that is created with the
-     * {@link CyclopsBlockEntity#save(CompoundTag)} method.
-     */
-    public CompoundTag getNBTTagCompound() {
-        CompoundTag tag = new CompoundTag();
-        tag = save(tag);
-        return tag;
-    }
-
     @Override
     public CompoundTag getUpdateTag() {
-        return getNBTTagCompound();
+        return saveWithoutMetadata();
     }
 
     protected Direction transformFacingForRotation(Direction facing) {
