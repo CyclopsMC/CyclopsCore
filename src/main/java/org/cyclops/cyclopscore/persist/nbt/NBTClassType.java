@@ -25,6 +25,7 @@ import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.datastructure.DimPos;
 import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
 import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
+import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -309,7 +310,7 @@ public abstract class NBTClassType<T> {
 
             @Override
             public Vec3i getDefaultValue() {
-                return null;
+                return LocationHelpers.copyLocation(Vec3i.ZERO);
             }
         });
 
