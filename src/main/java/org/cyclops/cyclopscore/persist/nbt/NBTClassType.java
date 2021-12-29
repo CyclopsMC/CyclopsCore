@@ -110,9 +110,9 @@ public abstract class NBTClassType<T> {
 
             @Override
             public void writePersistedField(String name, String object, CompoundTag tag) {
-            	if(object != null && !object.isEmpty()) {
-            		tag.putString(name, object);
-            	}
+                if(object != null && !object.isEmpty()) {
+                    tag.putString(name, object);
+                }
             }
 
             @Override

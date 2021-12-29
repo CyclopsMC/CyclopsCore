@@ -89,7 +89,7 @@ public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHand
      * @param nbt The NBT tag to write to.
      */
     public void writeTankToNBT(CompoundTag nbt) {
-    	nbt.putInt("capacity", getCapacity());
+        nbt.putInt("capacity", getCapacity());
     }
 
     /**
@@ -97,9 +97,9 @@ public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHand
      * @param nbt The NBT tag to write from.
      */
     public void readTankFromNBT(CompoundTag nbt) {
-    	if(nbt.contains("capacity")) { // Backwards compatibility.
-    		setCapacity(nbt.getInt("capacity"));
-    	}
+        if(nbt.contains("capacity")) { // Backwards compatibility.
+            setCapacity(nbt.getInt("capacity"));
+        }
     }
 
     @Override

@@ -28,7 +28,7 @@ public class FoliagePlacerConfig<T extends FoliagePlacer> extends ExtendedConfig
     @Override
     public String getTranslationKey() {
         return "foliageplacer." + getMod().getModId() + "." + getNamedId();
-	}
+    }
 
     // Needed for config gui
     @Override
@@ -37,9 +37,9 @@ public class FoliagePlacerConfig<T extends FoliagePlacer> extends ExtendedConfig
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.FOLIAGE_PLACER;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.FOLIAGE_PLACER;
+    }
 
     @Override
     public IForgeRegistry<? super FoliagePlacerType<T>> getRegistry() {

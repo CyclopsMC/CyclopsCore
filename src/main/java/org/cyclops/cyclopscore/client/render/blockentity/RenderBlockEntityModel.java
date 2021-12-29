@@ -21,7 +21,7 @@ import java.util.function.Function;
 public abstract class RenderBlockEntityModel<T extends CyclopsBlockEntity, M> implements BlockEntityRenderer<T> {
 
     protected final M model;
-	private final Material material;
+    private final Material material;
 
     /**
      * Make a new instance.
@@ -41,12 +41,12 @@ public abstract class RenderBlockEntityModel<T extends CyclopsBlockEntity, M> im
      * Get the material.
      * @return The material.
      */
-	public Material getMaterial() {
-		return material;
-	}
+    public Material getMaterial() {
+        return material;
+    }
 
-	public Function<ResourceLocation, RenderType> getRenderTypeGetter() {
-	    return RenderType::entityCutout;
+    public Function<ResourceLocation, RenderType> getRenderTypeGetter() {
+        return RenderType::entityCutout;
     }
 
     protected void preRotate(T tile, PoseStack matrixStack) {

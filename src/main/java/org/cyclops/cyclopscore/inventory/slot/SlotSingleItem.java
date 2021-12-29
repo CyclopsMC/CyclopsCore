@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
  */
 public class SlotSingleItem extends SlotExtended {
 
-	@Getter private Item itemAllowed;
+    @Getter private Item itemAllowed;
 
     /**
      * Make a new instance.

@@ -35,7 +35,7 @@ public abstract class GuiConfig<T extends AbstractContainerMenu> extends Extende
     @Override
     public String getTranslationKey() {
         return "gui." + getMod().getModId() + "." + getNamedId();
-	}
+    }
 
     // Needed for config gui
     @Override
@@ -44,9 +44,9 @@ public abstract class GuiConfig<T extends AbstractContainerMenu> extends Extende
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.GUI;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.GUI;
+    }
 
     @Override
     public IForgeRegistry<? super MenuType<T>> getRegistry() {
@@ -54,9 +54,9 @@ public abstract class GuiConfig<T extends AbstractContainerMenu> extends Extende
     }
 
     @OnlyIn(Dist.CLIENT)
-	public abstract <U extends Screen & MenuAccess<T>> MenuScreens.ScreenConstructor<T, U> getScreenFactory();
+    public abstract <U extends Screen & MenuAccess<T>> MenuScreens.ScreenConstructor<T, U> getScreenFactory();
 
-	@OnlyIn(Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onRegistered() {
         super.onRegistered();

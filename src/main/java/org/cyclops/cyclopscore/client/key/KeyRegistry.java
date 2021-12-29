@@ -34,25 +34,25 @@ public class KeyRegistry implements IKeyRegistry {
         return new KeyMapping(id, defaultKey, category);
     }
 
-	@Override
-	@SubscribeEvent(priority = EventPriority.NORMAL)
-	public void onPlayerKeyInput(InputEvent.KeyInputEvent event) {
-		for (KeyMapping kb : keyHandlerMap.keySet()) {
-			if (kb.isDown()) {
+    @Override
+    @SubscribeEvent(priority = EventPriority.NORMAL)
+    public void onPlayerKeyInput(InputEvent.KeyInputEvent event) {
+        for (KeyMapping kb : keyHandlerMap.keySet()) {
+            if (kb.isDown()) {
                 fireKeyPressed(kb);
             }
-		}
-	}
+        }
+    }
 
-	private void fireKeyPressed(KeyMapping kb) {
-		for (IKeyHandler h : keyHandlerMap.get(kb)) {
-			h.onKeyPressed(kb);
-		}
-	}
+    private void fireKeyPressed(KeyMapping kb) {
+        for (IKeyHandler h : keyHandlerMap.get(kb)) {
+            h.onKeyPressed(kb);
+        }
+    }
 
-	@Override
-	public void addKeyHandler(KeyMapping kb, IKeyHandler handler) {
+    @Override
+    public void addKeyHandler(KeyMapping kb, IKeyHandler handler) {
         keyHandlerMap.put(kb, handler);
-	}
+    }
 
 }

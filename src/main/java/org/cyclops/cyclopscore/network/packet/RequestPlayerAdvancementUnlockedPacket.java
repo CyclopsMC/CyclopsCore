@@ -19,38 +19,38 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class RequestPlayerAdvancementUnlockedPacket extends PacketCodec {
 
-	@CodecField
-	private String advancementId;
+    @CodecField
+    private String advancementId;
 
     public RequestPlayerAdvancementUnlockedPacket() {
 
     }
 
-	public RequestPlayerAdvancementUnlockedPacket(String advancementId) {
-		this.advancementId = advancementId;
-	}
+    public RequestPlayerAdvancementUnlockedPacket(String advancementId) {
+        this.advancementId = advancementId;
+    }
 
-	@Override
-	public boolean isAsync() {
-		return false;
-	}
+    @Override
+    public boolean isAsync() {
+        return false;
+    }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void actionClient(Level level, Player player) {
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void actionClient(Level level, Player player) {
 
-	}
+    }
 
-	@Override
-	public void actionServer(Level level, ServerPlayer player) {
-		Advancement advancement = AdvancementHelpers.getAdvancement(Dist.DEDICATED_SERVER, new ResourceLocation(advancementId));
-		if (advancement == null) {
-			CyclopsCore.clog(org.apache.logging.log4j.Level.ERROR, "Received an invalid advancement " + advancementId + " from " + player.getName());
-			return;
-		}
-		CyclopsCore._instance.getPacketHandler().sendToPlayer(
-				new SendPlayerAdvancementUnlockedPacket(advancementId, AdvancementHelpers
-						.hasAdvancementUnlocked(player, advancement)), player);
-	}
+    @Override
+    public void actionServer(Level level, ServerPlayer player) {
+        Advancement advancement = AdvancementHelpers.getAdvancement(Dist.DEDICATED_SERVER, new ResourceLocation(advancementId));
+        if (advancement == null) {
+            CyclopsCore.clog(org.apache.logging.log4j.Level.ERROR, "Received an invalid advancement " + advancementId + " from " + player.getName());
+            return;
+        }
+        CyclopsCore._instance.getPacketHandler().sendToPlayer(
+                new SendPlayerAdvancementUnlockedPacket(advancementId, AdvancementHelpers
+                        .hasAdvancementUnlocked(player, advancement)), player);
+    }
 
 }

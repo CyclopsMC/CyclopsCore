@@ -26,9 +26,9 @@ public abstract class EnchantmentConfig extends ExtendedConfigForge<EnchantmentC
     }
 
     @Override
-	public String getTranslationKey() {
-		return "enchantments." + getNamedId();
-	}
+    public String getTranslationKey() {
+        return "enchantments." + getNamedId();
+    }
 
     @Override
     public String getFullTranslationKey() {
@@ -36,9 +36,9 @@ public abstract class EnchantmentConfig extends ExtendedConfigForge<EnchantmentC
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.ENCHANTMENT;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.ENCHANTMENT;
+    }
 
     @Override
     public IForgeRegistry<Enchantment> getRegistry() {

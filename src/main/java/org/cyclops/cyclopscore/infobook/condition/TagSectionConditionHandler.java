@@ -12,16 +12,16 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public class TagSectionConditionHandler<T> implements ISectionConditionHandler {
 
-	private final TagCollection<T> tagCollection;
+    private final TagCollection<T> tagCollection;
 
-	public TagSectionConditionHandler(TagCollection<T> tagCollection) {
-		this.tagCollection = tagCollection;
-	}
+    public TagSectionConditionHandler(TagCollection<T> tagCollection) {
+        this.tagCollection = tagCollection;
+    }
 
-	@Override
-	public boolean isSatisfied(ModBase<?> mod, String param) {
-		Tag<T> collection = this.tagCollection.getTag(new ResourceLocation(param));
-		return collection != null && collection.getValues().size() > 0;
-	}
+    @Override
+    public boolean isSatisfied(ModBase<?> mod, String param) {
+        Tag<T> collection = this.tagCollection.getTag(new ResourceLocation(param));
+        return collection != null && collection.getValues().size() > 0;
+    }
 
 }

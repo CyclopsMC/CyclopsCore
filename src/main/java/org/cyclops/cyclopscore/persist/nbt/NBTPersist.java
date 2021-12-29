@@ -22,10 +22,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface NBTPersist {
-	/**
-	 * If set to true, NBT tags that don't contain the key for this field will return a default value as set by Cyclops.
-	 * Otherwise, NBT tags that don't contain a key for this field will not be overwritten.
-	 * @return true if non-existing NBT keys are overwritten with a default value, or false otherwise.
-	 */
-	boolean useDefaultValue() default true;
+    /**
+     * If set to true, NBT tags that don't contain the key for this field will return a default value as set by Cyclops.
+     * Otherwise, NBT tags that don't contain a key for this field will not be overwritten.
+     * @return true if non-existing NBT keys are overwritten with a default value, or false otherwise.
+     */
+    boolean useDefaultValue() default true;
 }

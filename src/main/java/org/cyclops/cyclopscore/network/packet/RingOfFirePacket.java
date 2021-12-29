@@ -27,7 +27,7 @@ public class RingOfFirePacket extends PlayerPositionPacket {
         super(player);
     }
 
-	@OnlyIn(Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private static void showFireRing(Level world, Vec3 pos) {
         double area = RING_AREA;
         int points = 40;

@@ -26,7 +26,7 @@ public abstract class RecipeTypeConfig<T extends Recipe<?>> extends ExtendedConf
     @Override
     public String getTranslationKey() {
         return "recipetype." + getMod().getModId() + "." + getNamedId();
-	}
+    }
 
     // Needed for config gui
     @Override
@@ -35,8 +35,8 @@ public abstract class RecipeTypeConfig<T extends Recipe<?>> extends ExtendedConf
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.RECIPE_TYPE;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.RECIPE_TYPE;
+    }
 
 }

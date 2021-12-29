@@ -15,19 +15,19 @@ public class DummyConfig extends ExtendedConfig<DummyConfig, Void>{
      * Make a new instance.
      * @param mod     The mod instance.
      * @param namedId The unique name ID for the configurable.
-	 */
-	public DummyConfig(ModBase mod, String namedId) {
-		super(mod, namedId, (c) -> null);
+     */
+    public DummyConfig(ModBase mod, String namedId) {
+        super(mod, namedId, (c) -> null);
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.DUMMY;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.DUMMY;
+    }
 
-	@Override
-	public String getTranslationKey() {
-		return getNamedId();
-	}
+    @Override
+    public String getTranslationKey() {
+        return getNamedId();
+    }
 
 }

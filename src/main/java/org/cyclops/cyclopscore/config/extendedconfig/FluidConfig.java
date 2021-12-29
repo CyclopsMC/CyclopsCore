@@ -65,14 +65,14 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, ForgeFlowi
     }
 
     @Override
-	public String getTranslationKey() {
-		return "block." + getMod().getModId() + ".block_" + getNamedId();
-	}
+    public String getTranslationKey() {
+        return "block." + getMod().getModId() + ".block_" + getNamedId();
+    }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.FLUID;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.FLUID;
+    }
 
     /**
      * Get the still icon location.

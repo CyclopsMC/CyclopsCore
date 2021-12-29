@@ -88,12 +88,12 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
 
     @Override
     public boolean isBarVisible(ItemStack stack) {
-    	return true;
+        return true;
     }
 
     @Override
     public int getBarWidth(ItemStack itemStack) {
-    	return component.getDurability(itemStack);
+        return component.getDurability(itemStack);
     }
 
     @Override
@@ -118,8 +118,8 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     public boolean canDrain(int amount, ItemStack itemStack) {
         IFluidHandler fluidHandler = FluidUtil.getFluidHandler(itemStack).orElse(null);
         if (fluidHandler == null) return false;
-    	FluidStack simulatedDrain = fluidHandler.drain(amount, IFluidHandler.FluidAction.SIMULATE);
-    	return simulatedDrain != null && simulatedDrain.getAmount() == amount;
+        FluidStack simulatedDrain = fluidHandler.drain(amount, IFluidHandler.FluidAction.SIMULATE);
+        return simulatedDrain != null && simulatedDrain.getAmount() == amount;
     }
 
     @Override

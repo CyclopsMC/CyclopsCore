@@ -26,7 +26,7 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
     @Override
     public String getTranslationKey() {
         return "capability." + getMod().getModId() + "." + getNamedId();
-	}
+    }
 
     //Needed for config gui
     @Override
@@ -35,9 +35,9 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.CAPABILITY;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.CAPABILITY;
+    }
 
     public Class<T> getType() {
         return type;

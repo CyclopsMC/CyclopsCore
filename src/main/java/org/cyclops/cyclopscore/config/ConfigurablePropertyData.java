@@ -111,11 +111,11 @@ public final class ConfigurablePropertyData<T> {
     }
 
     /**
-	 * @return the LanguageKey
-	 */
-	public String getLanguageKey() {
-		return "config." + mod.getModId() + "." + name.replaceAll("\\s", "");
-	}
+     * @return the LanguageKey
+     */
+    public String getLanguageKey() {
+        return "config." + mod.getModId() + "." + name.replaceAll("\\s", "");
+    }
 
     public void saveToField() {
         try {

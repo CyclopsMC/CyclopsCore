@@ -94,7 +94,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     public boolean isPointInRegion(Rectangle region, Point mouse) {
-    	return isHovering(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
+        return isHovering(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
     }
 
     public void drawTooltip(List<Component> lines, PoseStack poseStack, int x, int y) {

@@ -35,7 +35,7 @@ public class InventoryIterator implements Iterator<ItemStack> {
      * @return The indexed item.
      */
     public Pair<Integer, ItemStack> nextIndexed() {
-    	return Pair.of(i, next());
+        return Pair.of(i, next());
     }
 
     @Override

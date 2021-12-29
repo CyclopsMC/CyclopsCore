@@ -51,9 +51,9 @@ public class Helpers {
      */
     public static int getNewId(ModBase mod, IDType type) {
         Integer ID = ID_COUNTER.get(Pair.of(mod, type));
-    	if(ID == null) ID = 0;
-    	ID_COUNTER.put(Pair.of(mod, type), ID + 1);
-    	return ID;
+        if(ID == null) ID = 0;
+        ID_COUNTER.put(Pair.of(mod, type), ID + 1);
+        return ID;
     }
 
     /**
@@ -62,10 +62,10 @@ public class Helpers {
      *
      */
     public enum IDType {
-    	/**
-    	 * Packet ID.
-    	 */
-    	PACKET
+        /**
+         * Packet ID.
+         */
+        PACKET
     }
 
     /**

@@ -80,9 +80,9 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
     }
 
     @Override
-	public String getTranslationKey() {
-		return "block." + getMod().getModId() + "." + getNamedId();
-	}
+    public String getTranslationKey() {
+        return "block." + getMod().getModId() + "." + getNamedId();
+    }
 
     @Override
     public String getFullTranslationKey() {
@@ -90,9 +90,9 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.BLOCK;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.BLOCK;
+    }
 
     /**
      * Register default block and item models for this block.

@@ -17,31 +17,31 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class SendPlayerNbtPacket extends PacketCodec {
 
-	@CodecField
-	private CompoundTag nbtData;
+    @CodecField
+    private CompoundTag nbtData;
 
     public SendPlayerNbtPacket() {
 
     }
 
-	public SendPlayerNbtPacket(Player player) {
-		this.nbtData = EntityHelpers.getPersistedPlayerNbt(player);
-	}
+    public SendPlayerNbtPacket(Player player) {
+        this.nbtData = EntityHelpers.getPersistedPlayerNbt(player);
+    }
 
-	@Override
-	public boolean isAsync() {
-		return false;
-	}
+    @Override
+    public boolean isAsync() {
+        return false;
+    }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void actionClient(Level level, Player player) {
-		player.getPersistentData().put(Player.PERSISTED_NBT_TAG, nbtData);
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void actionClient(Level level, Player player) {
+        player.getPersistentData().put(Player.PERSISTED_NBT_TAG, nbtData);
+    }
 
-	@Override
-	public void actionServer(Level level, ServerPlayer player) {
+    @Override
+    public void actionServer(Level level, ServerPlayer player) {
 
-	}
+    }
 
 }

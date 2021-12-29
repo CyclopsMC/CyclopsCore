@@ -48,9 +48,9 @@ public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements
     }
 
     @Override
-	public String getTranslationKey() {
-		return "item." + getMod().getModId() + "." + getNamedId();
-	}
+    public String getTranslationKey() {
+        return "item." + getMod().getModId() + "." + getNamedId();
+    }
 
     @Override
     public String getFullTranslationKey() {
@@ -58,9 +58,9 @@ public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.ITEM;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.ITEM;
+    }
 
     /**
      * Register default item models for this item.

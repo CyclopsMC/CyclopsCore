@@ -97,9 +97,9 @@ public class DamageIndicatedItemComponent {
     @OnlyIn(Dist.CLIENT)
     public static MutableComponent getInfo(FluidStack fluidStack, int amount, int capacity) {
         MutableComponent prefix = new TextComponent("");
-    	if (!fluidStack.isEmpty()) {
-    		prefix = new TranslatableComponent(fluidStack.getTranslationKey()).append(": ");
-    	}
+        if (!fluidStack.isEmpty()) {
+            prefix = new TranslatableComponent(fluidStack.getTranslationKey()).append(": ");
+        }
         return prefix
                 .append(String.format(Locale.ROOT, "%,d", amount))
                 .append(" / ")

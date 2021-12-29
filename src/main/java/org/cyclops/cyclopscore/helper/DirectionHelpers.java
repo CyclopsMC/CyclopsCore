@@ -15,7 +15,7 @@ import java.util.List;
  *
  */
 public class DirectionHelpers {
-	/**
+    /**
      * A list of all the {@link Direction}.
      */
     public static List<Direction> DIRECTIONS = Arrays.asList(Direction.values());
@@ -67,7 +67,7 @@ public class DirectionHelpers {
      * @return The {@link Direction} for the offset.
      */
     public static Direction getEnumFacingFromXSign(int xSign) {
-    	return xSign > 0 ? Direction.EAST : Direction.WEST;
+        return xSign > 0 ? Direction.EAST : Direction.WEST;
     }
 
     /**
@@ -76,7 +76,7 @@ public class DirectionHelpers {
      * @return The {@link Direction} for the offset.
      */
     public static Direction getEnumFacingFromZSing(int zSign) {
-    	return zSign > 0 ? Direction.SOUTH : Direction.NORTH;
+        return zSign > 0 ? Direction.SOUTH : Direction.NORTH;
     }
 
     /**

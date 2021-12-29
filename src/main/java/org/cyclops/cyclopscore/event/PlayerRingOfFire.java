@@ -34,10 +34,10 @@ public class PlayerRingOfFire {
      */
     @SubscribeEvent
     public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-		spawnRing(event.getPlayer());
+        spawnRing(event.getPlayer());
     }
 
-	/**
+    /**
      * When a player respawn event is received.
      * @param event The received event.
      */
@@ -48,10 +48,10 @@ public class PlayerRingOfFire {
 
     private void spawnRing(Player player) {
         if(!player.level.isClientSide() && player.getGameProfile() != null
-    			&& ALLOW_RING.contains(player.getGameProfile().getId())) {
-    		CyclopsCore._instance.getPacketHandler().sendToAllAround(new RingOfFirePacket(player),
+                && ALLOW_RING.contains(player.getGameProfile().getId())) {
+            CyclopsCore._instance.getPacketHandler().sendToAllAround(new RingOfFirePacket(player),
                     LocationHelpers.createTargetPointFromLocation(player.level, player.blockPosition(), 50));
-    	}
+        }
     }
 
 }

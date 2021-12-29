@@ -217,16 +217,16 @@ public class SimpleInventory implements INBTInventory, WorldlyContainer {
     }
 
     @Override
-	public void setChanged() {
+    public void setChanged() {
         this.hash++;
         List<IDirtyMarkListener> dirtyMarkListeners;
         synchronized (this) {
             dirtyMarkListeners = Lists.newLinkedList(this.dirtyMarkListeners);
         }
-		for(IDirtyMarkListener dirtyMarkListener : dirtyMarkListeners) {
+        for(IDirtyMarkListener dirtyMarkListener : dirtyMarkListeners) {
             dirtyMarkListener.onDirty();
         }
-	}
+    }
 
     @Override
     public boolean isEmpty() {

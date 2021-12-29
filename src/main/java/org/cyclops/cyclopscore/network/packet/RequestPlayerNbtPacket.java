@@ -19,20 +19,20 @@ public class RequestPlayerNbtPacket extends PacketCodec {
 
     }
 
-	@Override
-	public boolean isAsync() {
-		return false;
-	}
+    @Override
+    public boolean isAsync() {
+        return false;
+    }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void actionClient(Level level, Player player) {
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void actionClient(Level level, Player player) {
 
-	}
+    }
 
-	@Override
-	public void actionServer(Level level, ServerPlayer player) {
-		CyclopsCore._instance.getPacketHandler().sendToPlayer(new SendPlayerNbtPacket(player), player);
-	}
+    @Override
+    public void actionServer(Level level, ServerPlayer player) {
+        CyclopsCore._instance.getPacketHandler().sendToPlayer(new SendPlayerNbtPacket(player), player);
+    }
 
 }

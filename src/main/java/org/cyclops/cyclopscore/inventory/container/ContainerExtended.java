@@ -114,7 +114,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
     }
 
     protected Slot createNewSlot(Container inventory, int index, int x, int y) {
-    	return new Slot(inventory, index, x, y);
+        return new Slot(inventory, index, x, y);
     }
 
     static void setSlotPos(Slot slot, String fieldName, int newValue) {
@@ -143,7 +143,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
     }
 
     protected void addInventory(Container inventory, int indexOffset, int offsetX, int offsetY, int rows, int cols) {
-    	for (int y = 0; y < rows; y++) {
+        for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
                 // Slot params: id, x-coord, y-coord (coords are relative to gui box)
                 addSlot(createNewSlot(inventory, x + y * cols + indexOffset, offsetX + x * ITEMBOX, offsetY + y * ITEMBOX));
@@ -184,11 +184,11 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
     protected abstract int getSizeInventory();
 
     protected int getSlotStart(int originSlot, int slotStart, boolean reverse) {
-    	return slotStart;
+        return slotStart;
     }
 
     protected int getSlotRange(int originSlot, int slotRange, boolean reverse) {
-    	return slotRange;
+        return slotRange;
     }
 
     @Override

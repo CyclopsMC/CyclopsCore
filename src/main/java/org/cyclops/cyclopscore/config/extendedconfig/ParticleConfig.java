@@ -40,7 +40,7 @@ public abstract class ParticleConfig<T extends ParticleOptions> extends Extended
     @Override
     public String getTranslationKey() {
         return "gui." + getMod().getModId() + "." + getNamedId();
-	}
+    }
 
     // Needed for config gui
     @Override
@@ -49,9 +49,9 @@ public abstract class ParticleConfig<T extends ParticleOptions> extends Extended
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.PARTICLE;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.PARTICLE;
+    }
 
     @Override
     public IForgeRegistry<? super ParticleType<T>> getRegistry() {

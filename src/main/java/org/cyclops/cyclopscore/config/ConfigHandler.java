@@ -119,8 +119,8 @@ public class ConfigHandler {
     }
 
     public boolean addConfigurable(ExtendedConfig<?, ?> e) {
-    	addToConfigDictionary(e);
-    	return configurables.add(e);
+        addToConfigDictionary(e);
+        return configurables.add(e);
     }
 
     public void addToConfigDictionary(ExtendedConfig<?, ?> e) {
@@ -187,25 +187,25 @@ public class ConfigHandler {
      * @param reload If we are reloading, otherwise this is an initial load.
      */
     @SuppressWarnings("unchecked")
-	public void syncProcessedConfigs(ModConfig config, boolean reload) {
-    	for(ExtendedConfig<?, ?> eConfig : this.configurables) {
-    		// Re-save additional properties
+    public void syncProcessedConfigs(ModConfig config, boolean reload) {
+        for(ExtendedConfig<?, ?> eConfig : this.configurables) {
+            // Re-save additional properties
             for(ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
                 if (configProperty.getConfigLocation() == config.getType()) {
                     configProperty.saveToField();
                     eConfig.onConfigPropertyReload(configProperty, reload);
                 }
             }
-    	}
+        }
     }
 
-	/**
-	 * Get the map of config nameid to config.
-	 * @return The dictionary.
-	 */
-	public Map<String, ExtendedConfig<?, ?>> getDictionary() {
-		return configDictionary;
-	}
+    /**
+     * Get the map of config nameid to config.
+     * @return The dictionary.
+     */
+    public Map<String, ExtendedConfig<?, ?>> getDictionary() {
+        return configDictionary;
+    }
 
     /**
      * Register the given entry to the given registry.

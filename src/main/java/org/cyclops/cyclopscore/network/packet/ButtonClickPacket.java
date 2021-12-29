@@ -16,33 +16,33 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class ButtonClickPacket extends PacketCodec {
 
-	@CodecField
-	private String buttonId;
+    @CodecField
+    private String buttonId;
 
     public ButtonClickPacket() {
 
     }
 
     public ButtonClickPacket(String buttonId) {
-		this.buttonId = buttonId;
+        this.buttonId = buttonId;
     }
 
-	@Override
-	public boolean isAsync() {
-		return false;
-	}
+    @Override
+    public boolean isAsync() {
+        return false;
+    }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void actionClient(Level level, Player player) {
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void actionClient(Level level, Player player) {
 
-	}
+    }
 
-	@Override
-	public void actionServer(Level level, ServerPlayer player) {
-		if(player.containerMenu instanceof IContainerButtonClickAcceptorServer) {
-			((IContainerButtonClickAcceptorServer) player.containerMenu).onButtonClick(buttonId);
-		}
-	}
+    @Override
+    public void actionServer(Level level, ServerPlayer player) {
+        if(player.containerMenu instanceof IContainerButtonClickAcceptorServer) {
+            ((IContainerButtonClickAcceptorServer) player.containerMenu).onButtonClick(buttonId);
+        }
+    }
 
 }

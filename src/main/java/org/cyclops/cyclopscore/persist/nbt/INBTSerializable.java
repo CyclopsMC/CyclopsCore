@@ -20,18 +20,18 @@ import java.lang.reflect.Method;
  */
 public interface INBTSerializable {
 
-	/**
-	 * Convert the data to an NBT tag.
-	 * @return The NBT tag.
-	 */
-	public CompoundTag toNBT();
-	/**
-	 * Read the data from an NBT tag and place it in this object.
+    /**
+     * Convert the data to an NBT tag.
+     * @return The NBT tag.
+     */
+    public CompoundTag toNBT();
+    /**
+     * Read the data from an NBT tag and place it in this object.
      * The given tag will never be null, so make sure that all fields have a correct default value in case
      * the received tag would be null anyways.
-	 * @param tag The tag to read from.
-	 */
-	public void fromNBT(CompoundTag tag);
+     * @param tag The tag to read from.
+     */
+    public void fromNBT(CompoundTag tag);
 
     @EqualsAndHashCode(callSuper = false)
     @Data

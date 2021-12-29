@@ -36,69 +36,69 @@ import javax.annotation.Nullable;
  */
 public abstract class ItemInventoryContainer<I extends Item> extends ContainerExtended {
 
-	protected I item;
-	protected int itemIndex;
-	protected InteractionHand hand;
+    protected I item;
+    protected int itemIndex;
+    protected InteractionHand hand;
 
-	/**
-	 * Make a new instance.
-	 * @param type The container type.
-	 * @param id The container id.
-	 * @param inventory The player inventory.
-	 * @param itemIndex The index of the item in use inside the player inventory.
-	 * @param hand The hand the player is using.
-	 */
-	public ItemInventoryContainer(@Nullable MenuType<?> type, int id, Inventory inventory, int itemIndex, InteractionHand hand) {
-		super(type, id, inventory);
-		this.item = (I) InventoryHelpers.getItemFromIndex(inventory.player, itemIndex, hand).getItem();
-		this.itemIndex = itemIndex;
-		this.hand = hand;
-	}
-
-	public static int readItemIndex(FriendlyByteBuf packetBuffer) {
-		return packetBuffer.readInt();
-	}
-
-	public static InteractionHand readHand(FriendlyByteBuf packetBuffer) {
-		return packetBuffer.readBoolean() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
-	}
-
-	/**
-	 * Get the item instance.
-	 * @return The item.
-	 */
-	public I getItem() {
-		return item;
-	}
-
-	@Override
-	public boolean stillValid(Player player) {
-		ItemStack item = getItemStack(player);
-		return item != null && item.getItem() == getItem();
-	}
-
-	public ItemStack getItemStack(Player player) {
-		return InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
-	}
-
-	@Override
-	protected Slot createNewSlot(Container inventory, int index, int x, int y) {
-    	return new Slot(inventory, index, x, y) {
-
-    		@Override
-    		public boolean mayPickup(Player player) {
-    			return this.getItem() != InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
-    	    }
-
-    	};
+    /**
+     * Make a new instance.
+     * @param type The container type.
+     * @param id The container id.
+     * @param inventory The player inventory.
+     * @param itemIndex The index of the item in use inside the player inventory.
+     * @param hand The hand the player is using.
+     */
+    public ItemInventoryContainer(@Nullable MenuType<?> type, int id, Inventory inventory, int itemIndex, InteractionHand hand) {
+        super(type, id, inventory);
+        this.item = (I) InventoryHelpers.getItemFromIndex(inventory.player, itemIndex, hand).getItem();
+        this.itemIndex = itemIndex;
+        this.hand = hand;
     }
 
-	@Override
-	public void clicked(int slotId, int arg, ClickType clickType, Player player) {
-		if (clickType == ClickType.SWAP && arg == itemIndex) {
-			// Don't allow swapping with the slot of the active item.
-			return;
-		}
-		super.clicked(slotId, arg, clickType, player);
-	}
+    public static int readItemIndex(FriendlyByteBuf packetBuffer) {
+        return packetBuffer.readInt();
+    }
+
+    public static InteractionHand readHand(FriendlyByteBuf packetBuffer) {
+        return packetBuffer.readBoolean() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+    }
+
+    /**
+     * Get the item instance.
+     * @return The item.
+     */
+    public I getItem() {
+        return item;
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        ItemStack item = getItemStack(player);
+        return item != null && item.getItem() == getItem();
+    }
+
+    public ItemStack getItemStack(Player player) {
+        return InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
+    }
+
+    @Override
+    protected Slot createNewSlot(Container inventory, int index, int x, int y) {
+        return new Slot(inventory, index, x, y) {
+
+            @Override
+            public boolean mayPickup(Player player) {
+                return this.getItem() != InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
+            }
+
+        };
+    }
+
+    @Override
+    public void clicked(int slotId, int arg, ClickType clickType, Player player) {
+        if (clickType == ClickType.SWAP && arg == itemIndex) {
+            // Don't allow swapping with the slot of the active item.
+            return;
+        }
+        super.clicked(slotId, arg, clickType, player);
+    }
 }

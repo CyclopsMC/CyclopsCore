@@ -20,14 +20,14 @@ public abstract class WorldStructureConfig extends ExtendedConfigForge<WorldStru
     }
 
     @Override
-	public String getTranslationKey() {
-		return "features." + getMod().getModId() + "." + getNamedId();
-	}
+    public String getTranslationKey() {
+        return "features." + getMod().getModId() + "." + getNamedId();
+    }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.WORLD_STRUCTURE;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.WORLD_STRUCTURE;
+    }
 
     @Override
     public IForgeRegistry<StructureFeature<?>> getRegistry() {

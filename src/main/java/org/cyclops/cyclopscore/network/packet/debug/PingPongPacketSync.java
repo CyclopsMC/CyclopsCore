@@ -11,20 +11,20 @@ public class PingPongPacketSync extends PingPongPacketAsync {
      * Empty packet.
      */
     public PingPongPacketSync() {
-		super();
+        super();
     }
 
-	public PingPongPacketSync(int remaining) {
-		super(remaining);
-	}
+    public PingPongPacketSync(int remaining) {
+        super(remaining);
+    }
 
-	protected PingPongPacketAsync newPacket() {
-		return new PingPongPacketSync(remaining - 1);
-	}
+    protected PingPongPacketAsync newPacket() {
+        return new PingPongPacketSync(remaining - 1);
+    }
 
-	@Override
-	public boolean isAsync() {
-		return true;
-	}
+    @Override
+    public boolean isAsync() {
+        return true;
+    }
 
 }

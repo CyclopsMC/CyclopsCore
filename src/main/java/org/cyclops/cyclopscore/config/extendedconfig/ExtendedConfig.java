@@ -50,8 +50,8 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
      */
     public ExtendedConfig(ModBase mod, String namedId, Function<C, ? extends I> elementConstructor) {
         this.mod = mod;
-    	this.namedId = namedId.toLowerCase(Locale.ROOT);
-    	this.elementConstructor = elementConstructor;
+        this.namedId = namedId.toLowerCase(Locale.ROOT);
+        this.elementConstructor = elementConstructor;
         try {
             generateConfigProperties();
         } catch (IllegalArgumentException | IllegalAccessException e1) {
@@ -59,7 +59,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
         }
     }
 
-	/**
+    /**
      * Generate the list of ConfigProperties by checking all the fields with the ConfigurableProperty
      * annotation.
      *
@@ -69,7 +69,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
     private void generateConfigProperties() throws IllegalArgumentException, IllegalAccessException {
         for(Field field : this.getClass().getDeclaredFields()) {
             if(field.isAnnotationPresent(ConfigurableProperty.class)) {
-            	ConfigurableProperty annotation = field.getAnnotation(ConfigurableProperty.class);
+                ConfigurableProperty annotation = field.getAnnotation(ConfigurableProperty.class);
                 ConfigurablePropertyData<?> configProperty = new ConfigurablePropertyData<>(
                         getMod(),
                         annotation.category(),
@@ -94,10 +94,10 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
      * @return The prefix that will be used inside the config file for {@link ConfigurableProperty}'s.
      */
     protected String getConfigPropertyPrefix(ConfigurableProperty annotation) {
-		return annotation.namedId().isEmpty() ? this.getNamedId() : annotation.namedId();
-	}
+        return annotation.namedId().isEmpty() ? this.getNamedId() : annotation.namedId();
+    }
 
-	protected void initializeInstance() {
+    protected void initializeInstance() {
         I instance = this.getElementConstructor().apply(this.downCast());
         if (this.instance == null) {
             this.instance = instance;
@@ -106,7 +106,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
         }
     }
 
-	/**
+    /**
      * Save this config inside the correct element and inside the implementation if itself.
      */
     protected void save() {

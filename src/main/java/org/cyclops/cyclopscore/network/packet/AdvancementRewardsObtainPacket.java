@@ -25,28 +25,28 @@ public class AdvancementRewardsObtainPacket extends PacketCodec {
     }
 
     public AdvancementRewardsObtainPacket(String advancementRewardsId) {
-		this.advancementRewardsId = advancementRewardsId;
+        this.advancementRewardsId = advancementRewardsId;
     }
 
-	@Override
-	public boolean isAsync() {
-		return false;
-	}
+    @Override
+    public boolean isAsync() {
+        return false;
+    }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void actionClient(Level level, Player player) {
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void actionClient(Level level, Player player) {
 
-	}
+    }
 
-	@Override
-	public void actionServer(Level level, ServerPlayer player) {
-		AdvancementRewards advancementRewards = AdvancementRewards.getAdvancementRewards(advancementRewardsId);
-		if (advancementRewards != null) {
-			advancementRewards.obtain(player);
-		} else {
-			CyclopsCore.clog(org.apache.logging.log4j.Level.WARN, String.format("Received an invalid advancement reward id '%s' from %s.", advancementRewardsId, player.getDisplayName().getString()));
-		}
-	}
+    @Override
+    public void actionServer(Level level, ServerPlayer player) {
+        AdvancementRewards advancementRewards = AdvancementRewards.getAdvancementRewards(advancementRewardsId);
+        if (advancementRewards != null) {
+            advancementRewards.obtain(player);
+        } else {
+            CyclopsCore.clog(org.apache.logging.log4j.Level.WARN, String.format("Received an invalid advancement reward id '%s' from %s.", advancementRewardsId, player.getDisplayName().getString()));
+        }
+    }
 
 }

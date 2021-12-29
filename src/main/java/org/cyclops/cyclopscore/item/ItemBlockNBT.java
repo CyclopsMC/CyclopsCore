@@ -56,7 +56,7 @@ public class ItemBlockNBT extends BlockItem {
      * @return If the tile was changed.
      */
     protected boolean itemStackDataToTile(ItemStack itemStack, BlockEntity tile) {
-    	return false;
+        return false;
     }
 
 }

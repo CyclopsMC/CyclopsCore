@@ -26,9 +26,9 @@ public abstract class VillagerConfig extends ExtendedConfigForge<VillagerConfig,
     }
 
     @Override
-	public String getTranslationKey() {
-		return "entity.villager." + getNamedId();
-	}
+    public String getTranslationKey() {
+        return "entity.villager." + getNamedId();
+    }
 
     @Override
     public String getFullTranslationKey() {
@@ -36,9 +36,9 @@ public abstract class VillagerConfig extends ExtendedConfigForge<VillagerConfig,
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.VILLAGER;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.VILLAGER;
+    }
 
     @Override
     public IForgeRegistry<VillagerProfession> getRegistry() {

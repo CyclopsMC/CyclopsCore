@@ -19,7 +19,7 @@ public abstract class RecipeConditionConfig<T extends ICondition> extends Extend
     @Override
     public String getTranslationKey() {
         return "recipecondition." + getMod().getModId() + "." + getNamedId();
-	}
+    }
 
     // Needed for config gui
     @Override
@@ -28,8 +28,8 @@ public abstract class RecipeConditionConfig<T extends ICondition> extends Extend
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.RECIPE_CONDITION;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.RECIPE_CONDITION;
+    }
 
 }

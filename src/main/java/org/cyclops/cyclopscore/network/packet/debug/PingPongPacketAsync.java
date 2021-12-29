@@ -21,8 +21,8 @@ import java.util.List;
  */
 public class PingPongPacketAsync extends PacketCodec {
 
-	@CodecField
-	protected int remaining;
+    @CodecField
+    protected int remaining;
 
     /**
      * Empty packet.
@@ -31,56 +31,56 @@ public class PingPongPacketAsync extends PacketCodec {
 
     }
 
-	public PingPongPacketAsync(int remaining) {
-		this.remaining = remaining;
-	}
+    public PingPongPacketAsync(int remaining) {
+        this.remaining = remaining;
+    }
 
-	@Override
-	public boolean isAsync() {
-		return true;
-	}
+    @Override
+    public boolean isAsync() {
+        return true;
+    }
 
-	protected void log(Player player, String message) {
-		player.sendMessage(new TextComponent(message), Util.NIL_UUID);
-	}
+    protected void log(Player player, String message) {
+        player.sendMessage(new TextComponent(message), Util.NIL_UUID);
+    }
 
-	protected PingPongPacketAsync newPacket() {
-		return new PingPongPacketSync(remaining - 1);
-	}
+    protected PingPongPacketAsync newPacket() {
+        return new PingPongPacketSync(remaining - 1);
+    }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void actionClient(Level level, Player player) {
-		if(remaining > 0) {
-			CyclopsCore._instance.getPacketHandler().sendToServer(newPacket());
-		}
-		log(player, String.format("[PING %s] Fields: %s", remaining, toString()));
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void actionClient(Level level, Player player) {
+        if(remaining > 0) {
+            CyclopsCore._instance.getPacketHandler().sendToServer(newPacket());
+        }
+        log(player, String.format("[PING %s] Fields: %s", remaining, toString()));
+    }
 
-	@Override
-	public void actionServer(Level level, ServerPlayer player) {
-		if(remaining > 0) {
-			CyclopsCore._instance.getPacketHandler().sendToPlayer(newPacket(), player);
-		}
-		log(player, String.format("[PONG %s] Fields: %s", remaining, toString()));
-	}
+    @Override
+    public void actionServer(Level level, ServerPlayer player) {
+        if(remaining > 0) {
+            CyclopsCore._instance.getPacketHandler().sendToPlayer(newPacket(), player);
+        }
+        log(player, String.format("[PONG %s] Fields: %s", remaining, toString()));
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		List<Field> fields = fieldCache.get(null);
-		for(Field field : fields) {
-			sb.append(" ");
-			sb.append(field);
-			sb.append("=");
-			try {
-				sb.append(field.get(this));
-			} catch (IllegalAccessException e) {
-				e.printStackTrace();
-				sb.append("ERROR(" + e.getMessage() + ")");
-			}
-		}
-		return sb.toString();
-	}
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        List<Field> fields = fieldCache.get(null);
+        for(Field field : fields) {
+            sb.append(" ");
+            sb.append(field);
+            sb.append("=");
+            try {
+                sb.append(field.get(this));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                sb.append("ERROR(" + e.getMessage() + ")");
+            }
+        }
+        return sb.toString();
+    }
 
 }

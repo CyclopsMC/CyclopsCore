@@ -17,39 +17,39 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class SendPlayerAdvancementUnlockedPacket extends PacketCodec {
 
-	@CodecField
-	private String advancementId;
-	@CodecField
-	private boolean unlocked;
+    @CodecField
+    private String advancementId;
+    @CodecField
+    private boolean unlocked;
 
     public SendPlayerAdvancementUnlockedPacket() {
 
     }
 
-	public SendPlayerAdvancementUnlockedPacket(String advancementId, boolean unlocked) {
-		this.advancementId = advancementId;
-		this.unlocked = unlocked;
-	}
+    public SendPlayerAdvancementUnlockedPacket(String advancementId, boolean unlocked) {
+        this.advancementId = advancementId;
+        this.unlocked = unlocked;
+    }
 
-	@Override
-	public boolean isAsync() {
-		return false;
-	}
+    @Override
+    public boolean isAsync() {
+        return false;
+    }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void actionClient(Level level, Player player) {
-		ResourceLocation id = new ResourceLocation(advancementId);
-		if (unlocked) {
-			AdvancementHelpers.ACHIEVED_ADVANCEMENTS.add(id);
-		} else {
-			AdvancementHelpers.ACHIEVED_ADVANCEMENTS.remove(id);
-		}
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void actionClient(Level level, Player player) {
+        ResourceLocation id = new ResourceLocation(advancementId);
+        if (unlocked) {
+            AdvancementHelpers.ACHIEVED_ADVANCEMENTS.add(id);
+        } else {
+            AdvancementHelpers.ACHIEVED_ADVANCEMENTS.remove(id);
+        }
+    }
 
-	@Override
-	public void actionServer(Level level, ServerPlayer player) {
+    @Override
+    public void actionServer(Level level, ServerPlayer player) {
 
-	}
+    }
 
 }

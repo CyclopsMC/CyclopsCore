@@ -15,51 +15,51 @@ import java.util.Random;
  */
 public class LocationHelpers {
 
-	private static final Random random = new Random();
+    private static final Random random = new Random();
 
-	/**
-	 * Creates a {@link PacketDistributor.TargetPoint} for the dimension and position of the given {@link Entity}
-	 * and a given range.
-	 *
-	 * @param entity Entity who's dimension and position will be used to create the {@link PacketDistributor.TargetPoint}.
-	 * @param range The range of the {@link PacketDistributor.TargetPoint}.
-	 * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
-	 */
-	public static PacketDistributor.TargetPoint createTargetPointFromEntity(Entity entity, int range) {
-		return new PacketDistributor.TargetPoint(entity.getX(), entity.getY(), entity.getZ(), range, entity.level.dimension());
-	}
+    /**
+     * Creates a {@link PacketDistributor.TargetPoint} for the dimension and position of the given {@link Entity}
+     * and a given range.
+     *
+     * @param entity Entity who's dimension and position will be used to create the {@link PacketDistributor.TargetPoint}.
+     * @param range The range of the {@link PacketDistributor.TargetPoint}.
+     * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
+     */
+    public static PacketDistributor.TargetPoint createTargetPointFromEntity(Entity entity, int range) {
+        return new PacketDistributor.TargetPoint(entity.getX(), entity.getY(), entity.getZ(), range, entity.level.dimension());
+    }
 
-	/**
-	 * Creates a {@link PacketDistributor.TargetPoint} for the dimension of the given world and the
-	 * given {@link BlockPos}.
-	 *
-	 * @param world The world from which the dimension will be used.
-	 * @param location The location for the target.
-	 * @param range The range of the {@link PacketDistributor.TargetPoint}.
-	 * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
-	 */
-	public static PacketDistributor.TargetPoint createTargetPointFromLocation(Level world, BlockPos location, int range) {
-		return new PacketDistributor.TargetPoint(location.getX(), location.getY(), location.getZ(), range, world.dimension());
-	}
+    /**
+     * Creates a {@link PacketDistributor.TargetPoint} for the dimension of the given world and the
+     * given {@link BlockPos}.
+     *
+     * @param world The world from which the dimension will be used.
+     * @param location The location for the target.
+     * @param range The range of the {@link PacketDistributor.TargetPoint}.
+     * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
+     */
+    public static PacketDistributor.TargetPoint createTargetPointFromLocation(Level world, BlockPos location, int range) {
+        return new PacketDistributor.TargetPoint(location.getX(), location.getY(), location.getZ(), range, world.dimension());
+    }
 
-	/**
-	 * Get a random point inside a sphere in an efficient way.
-	 * @param center The center coordinates of the sphere.
-	 * @param radius The radius of the sphere.
-	 * @return The coordinates of the random point.
-	 */
-	public static BlockPos getRandomPointInSphere(BlockPos center, int radius) {
-		BlockPos randomPoint = null;
-	    while(randomPoint == null) {
+    /**
+     * Get a random point inside a sphere in an efficient way.
+     * @param center The center coordinates of the sphere.
+     * @param radius The radius of the sphere.
+     * @return The coordinates of the random point.
+     */
+    public static BlockPos getRandomPointInSphere(BlockPos center, int radius) {
+        BlockPos randomPoint = null;
+        while(randomPoint == null) {
             BlockPos coordinates = center.offset(- radius + random.nextInt(2 * radius),
                     - radius + random.nextInt(2 * radius), - radius + random.nextInt(2 * radius));
             double totalDistance = center.distSqr(coordinates);
-	    	if((int) Math.sqrt(totalDistance) <= radius) {
-	    		randomPoint = coordinates;
-	    	}
-	    }
-	    return randomPoint;
-	}
+            if((int) Math.sqrt(totalDistance) <= radius) {
+                randomPoint = coordinates;
+            }
+        }
+        return randomPoint;
+    }
 
     public static BlockPos copyLocation(BlockPos blockPos) {
         return new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());

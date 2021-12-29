@@ -24,23 +24,23 @@ public class ReloadResourcesPacket extends PacketCodec {
 
     }
 
-	@Override
-	public boolean isAsync() {
-		return false;
-	}
+    @Override
+    public boolean isAsync() {
+        return false;
+    }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void actionClient(Level level, Player player) {
-		long start = System.currentTimeMillis();
-		Minecraft.getInstance().reloadResourcePacks();
-		long end = System.currentTimeMillis();
-		player.sendMessage(new TextComponent(String.format("Reloaded all resources in %s ms", end - start)), Util.NIL_UUID);
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void actionClient(Level level, Player player) {
+        long start = System.currentTimeMillis();
+        Minecraft.getInstance().reloadResourcePacks();
+        long end = System.currentTimeMillis();
+        player.sendMessage(new TextComponent(String.format("Reloaded all resources in %s ms", end - start)), Util.NIL_UUID);
+    }
 
-	@Override
-	public void actionServer(Level level, ServerPlayer player) {
+    @Override
+    public void actionServer(Level level, ServerPlayer player) {
 
-	}
+    }
 
 }

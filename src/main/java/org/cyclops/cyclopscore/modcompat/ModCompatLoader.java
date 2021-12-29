@@ -59,7 +59,7 @@ public class ModCompatLoader {
      * @return If it should be loaded.
      */
     public boolean shouldLoadModCompat(IModCompat modCompat) {
-    	return isModLoaded(modCompat) && isNotCrashed(modCompat.getModId());
+        return isModLoaded(modCompat) && isNotCrashed(modCompat.getModId());
     }
 
     private boolean isModLoaded(IModCompat modCompat) {

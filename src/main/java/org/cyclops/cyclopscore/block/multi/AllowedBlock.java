@@ -12,48 +12,48 @@ import java.util.List;
  */
 public class AllowedBlock {
 
-	private Block block;
-	private final List<IBlockCountValidator> countValidators = Lists.newLinkedList();
+    private Block block;
+    private final List<IBlockCountValidator> countValidators = Lists.newLinkedList();
 
-	/**
-	 * Make a new instance.
-	 * @param block The allowed block.
-	 */
-	public AllowedBlock(Block block) {
-		this.block = block;
-	}
+    /**
+     * Make a new instance.
+     * @param block The allowed block.
+     */
+    public AllowedBlock(Block block) {
+        this.block = block;
+    }
 
-	/**
-	 * Add a count validator
-	 * @param countValidator The count validator.
-	 * @return This instance.
-	 */
-	public AllowedBlock addCountValidator(IBlockCountValidator countValidator) {
-		this.countValidators.add(countValidator);
-		return this;
-	}
+    /**
+     * Add a count validator
+     * @param countValidator The count validator.
+     * @return This instance.
+     */
+    public AllowedBlock addCountValidator(IBlockCountValidator countValidator) {
+        this.countValidators.add(countValidator);
+        return this;
+    }
 
-	/**
-	 * @return The count validators
-	 */
-	public List<IBlockCountValidator> getCountValidators() {
-		return countValidators;
-	}
+    /**
+     * @return The count validators
+     */
+    public List<IBlockCountValidator> getCountValidators() {
+        return countValidators;
+    }
 
-	/**
-	 * @return the block
-	 */
-	public Block getBlock() {
-		return block;
-	}
+    /**
+     * @return the block
+     */
+    public Block getBlock() {
+        return block;
+    }
 
-	@Override
-	public boolean equals(Object object) {
-		return object instanceof AllowedBlock && getBlock().equals(((AllowedBlock)object).getBlock());
-	}
+    @Override
+    public boolean equals(Object object) {
+        return object instanceof AllowedBlock && getBlock().equals(((AllowedBlock)object).getBlock());
+    }
 
-	@Override
-	public int hashCode() {
-		return 37 + getBlock().hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return 37 + getBlock().hashCode();
+    }
 }

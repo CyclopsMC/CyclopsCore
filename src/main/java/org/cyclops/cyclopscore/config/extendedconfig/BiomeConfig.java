@@ -20,14 +20,14 @@ public abstract class BiomeConfig extends ExtendedConfigForge<BiomeConfig, Biome
     }
 
     @Override
-	public String getTranslationKey() {
-		return "biomes." + getMod().getModId() + "." + getNamedId();
-	}
+    public String getTranslationKey() {
+        return "biomes." + getMod().getModId() + "." + getNamedId();
+    }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.BIOME;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.BIOME;
+    }
 
     @Override
     public IForgeRegistry<Biome> getRegistry() {

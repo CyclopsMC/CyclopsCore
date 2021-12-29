@@ -25,7 +25,7 @@ import java.util.Arrays;
  *
  */
 public class MinecraftHelpers {
-	/**
+    /**
      * The length of one Minecraft day.
      */
     public static final int MINECRAFT_DAY = 24000;
@@ -62,14 +62,14 @@ public class MinecraftHelpers {
         ((ServerLevelData) world.getLevelData()).setGameTime(newTime);
     }
 
-	/**
-	 * Check if the given player inventory is full.
-	 * @param player The player.
-	 * @return If the player does not have a free spot in it's inventory.
-	 */
-	public static boolean isPlayerInventoryFull(Player player) {
-	    return player.getInventory().getFreeSlot() == -1;
-	}
+    /**
+     * Check if the given player inventory is full.
+     * @param player The player.
+     * @return If the player does not have a free spot in it's inventory.
+     */
+    public static boolean isPlayerInventoryFull(Player player) {
+        return player.getInventory().getFreeSlot() == -1;
+    }
 
     /**
      * @return If we are currently running inside a deobfuscated development environment.

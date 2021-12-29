@@ -11,9 +11,9 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public class ItemSectionConditionHandler implements ISectionConditionHandler {
 
-	@Override
-	public boolean isSatisfied(ModBase<?> mod, String param) {
-		return ForgeRegistries.ITEMS.containsKey(new ResourceLocation(param));
-	}
+    @Override
+    public boolean isSatisfied(ModBase<?> mod, String param) {
+        return ForgeRegistries.ITEMS.containsKey(new ResourceLocation(param));
+    }
 
 }

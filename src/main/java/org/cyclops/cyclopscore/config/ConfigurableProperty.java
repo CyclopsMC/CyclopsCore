@@ -26,7 +26,7 @@ public @interface ConfigurableProperty {
      * The category of the field.
      * @return The category.
      */
-	String category();
+    String category();
     /**
      * The comment for the field in the config file.
      * @return The comment.

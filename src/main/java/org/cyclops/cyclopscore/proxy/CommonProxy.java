@@ -25,7 +25,7 @@ public class CommonProxy extends CommonProxyComponent {
     public void registerPacketHandlers(PacketHandler packetHandler) {
         super.registerPacketHandlers(packetHandler);
 
-    	// Register packets.
+        // Register packets.
         packetHandler.register(RingOfFirePacket.class);
         packetHandler.register(ButtonClickPacket.class);
         packetHandler.register(ValueNotifyPacket.class);

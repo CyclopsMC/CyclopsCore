@@ -30,7 +30,7 @@ public abstract class RecipeConfig<T extends Recipe<?>> extends ExtendedConfigFo
     @Override
     public String getTranslationKey() {
         return "recipe." + getMod().getModId() + "." + getNamedId();
-	}
+    }
 
     // Needed for config gui
     @Override
@@ -39,9 +39,9 @@ public abstract class RecipeConfig<T extends Recipe<?>> extends ExtendedConfigFo
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.RECIPE;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.RECIPE;
+    }
 
     @Override
     public IForgeRegistry<? super RecipeSerializer<T>> getRegistry() {

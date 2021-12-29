@@ -20,51 +20,51 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class ValueNotifyPacket extends PacketCodec {
 
-	@CodecField
-	private String containerType;
-	@CodecField
-	private int valueId;
-	@CodecField
-	private CompoundTag value;
+    @CodecField
+    private String containerType;
+    @CodecField
+    private int valueId;
+    @CodecField
+    private CompoundTag value;
 
     public ValueNotifyPacket() {
 
     }
 
     public ValueNotifyPacket(MenuType<?> containerType, int valueId, CompoundTag value) {
-    	this.containerType = containerType.getRegistryName().toString();
-		this.valueId = valueId;
-		this.value = value;
+        this.containerType = containerType.getRegistryName().toString();
+        this.valueId = valueId;
+        this.value = value;
     }
 
-	@Override
-	public boolean isAsync() {
-		return false;
-	}
+    @Override
+    public boolean isAsync() {
+        return false;
+    }
 
-	protected boolean isContainerValid(IValueNotifiable container) {
-    	return container.getValueNotifiableType().getRegistryName().toString().equals(containerType);
-	}
+    protected boolean isContainerValid(IValueNotifiable container) {
+        return container.getValueNotifiableType().getRegistryName().toString().equals(containerType);
+    }
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void actionClient(Level level, Player player) {
-		if(player.containerMenu instanceof IValueNotifiable) {
-			IValueNotifiable container = ((IValueNotifiable) player.containerMenu);
-			if (isContainerValid(container)) {
-				container.onUpdate(valueId, value);
-			}
-		}
-	}
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void actionClient(Level level, Player player) {
+        if(player.containerMenu instanceof IValueNotifiable) {
+            IValueNotifiable container = ((IValueNotifiable) player.containerMenu);
+            if (isContainerValid(container)) {
+                container.onUpdate(valueId, value);
+            }
+        }
+    }
 
-	@Override
-	public void actionServer(Level level, ServerPlayer player) {
-		if(player.containerMenu instanceof IValueNotifiable) {
-			IValueNotifiable container = ((IValueNotifiable) player.containerMenu);
-			if (isContainerValid(container)) {
-				container.onUpdate(valueId, value);
-			}
-		}
-	}
+    @Override
+    public void actionServer(Level level, ServerPlayer player) {
+        if(player.containerMenu instanceof IValueNotifiable) {
+            IValueNotifiable container = ((IValueNotifiable) player.containerMenu);
+            if (isContainerValid(container)) {
+                container.onUpdate(valueId, value);
+            }
+        }
+    }
 
 }

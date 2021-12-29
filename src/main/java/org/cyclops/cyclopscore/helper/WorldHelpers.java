@@ -13,28 +13,28 @@ import javax.annotation.Nullable;
  */
 public class WorldHelpers {
 
-	/**
-	 * The maximum chunk size for X and Z axis.
-	 */
+    /**
+     * The maximum chunk size for X and Z axis.
+     */
     public static final int CHUNK_SIZE = 16;
 
     private static final double TICK_LAG_REDUCTION_MODULUS_MODIFIER = 1.0D;
 
-	/**
-	 * Check if an efficient tick can happen.
-	 * This is useful for opererations that should happen frequently, but not strictly every tick.
-	 * @param world The world to tick in.
-	 * @param baseModulus The amount of ticks that could be skipped.
-	 * @param params Optional parameters to further vary the tick occurences.
-	 * @return If a tick of some operation can occur.
-	 */
-	public static boolean efficientTick(Level world, int baseModulus, int... params) {
-		int mod = (int) (baseModulus * TICK_LAG_REDUCTION_MODULUS_MODIFIER);
-		if(mod == 0) mod = 1;
-		int offset = 0;
-		for(int param : params) offset += param;
-		return world.random.nextInt(mod) == Math.abs(offset) % mod;
-	}
+    /**
+     * Check if an efficient tick can happen.
+     * This is useful for opererations that should happen frequently, but not strictly every tick.
+     * @param world The world to tick in.
+     * @param baseModulus The amount of ticks that could be skipped.
+     * @param params Optional parameters to further vary the tick occurences.
+     * @return If a tick of some operation can occur.
+     */
+    public static boolean efficientTick(Level world, int baseModulus, int... params) {
+        int mod = (int) (baseModulus * TICK_LAG_REDUCTION_MODULUS_MODIFIER);
+        if(mod == 0) mod = 1;
+        int offset = 0;
+        for(int param : params) offset += param;
+        return world.random.nextInt(mod) == Math.abs(offset) % mod;
+    }
 
     /**
      * Check if an efficient tick can happen.

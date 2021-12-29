@@ -14,26 +14,26 @@ import org.cyclops.cyclopscore.tracking.Versions;
  */
 public class ClientProxy extends ClientProxyComponent {
 
-	public ClientProxy() {
-		super(new CommonProxy());
-	}
+    public ClientProxy() {
+        super(new CommonProxy());
+    }
 
-	@Override
-	public ModBase getMod() {
-		return CyclopsCore._instance;
-	}
+    @Override
+    public ModBase getMod() {
+        return CyclopsCore._instance;
+    }
 
-	@Override
-	public void registerRenderers() {
-		super.registerRenderers();
+    @Override
+    public void registerRenderers() {
+        super.registerRenderers();
 
-		RenderItemExtendedSlotCount.initialize();
-	}
+        RenderItemExtendedSlotCount.initialize();
+    }
 
-	@Override
-	public void registerEventHooks() {
-		super.registerEventHooks();
-		MinecraftForge.EVENT_BUS.register(new Versions());
-	}
+    @Override
+    public void registerEventHooks() {
+        super.registerEventHooks();
+        MinecraftForge.EVENT_BUS.register(new Versions());
+    }
 
 }

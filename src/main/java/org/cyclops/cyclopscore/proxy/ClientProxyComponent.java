@@ -25,8 +25,8 @@ import java.util.Map;
 @Data
 public abstract class ClientProxyComponent extends CommonProxyComponent implements ICommonProxy, IClientProxy {
 
-	private final CommonProxyComponent commonProxyComponent;
-	private final IconProvider iconProvider;
+    private final CommonProxyComponent commonProxyComponent;
+    private final IconProvider iconProvider;
     protected final Map<BlockEntityType, BlockEntityRendererProvider> blockEntityRenderers = Maps.newHashMap();
 
     public ClientProxyComponent(CommonProxyComponent commonProxyComponent) {
@@ -43,19 +43,19 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
         blockEntityRenderers.put(blockEntityType, rendererFactory);
     }
 
-	@Override
-	public void registerRenderers() {
-		// Special BlockEntity renderers
-		for (Map.Entry<BlockEntityType, BlockEntityRendererProvider> entry : blockEntityRenderers.entrySet()) {
+    @Override
+    public void registerRenderers() {
+        // Special BlockEntity renderers
+        for (Map.Entry<BlockEntityType, BlockEntityRendererProvider> entry : blockEntityRenderers.entrySet()) {
             BlockEntityRenderers.register(entry.getKey(), entry.getValue());
             getMod().getLoggerHelper().log(Level.TRACE, String.format("Registered %s special renderer %s", entry.getKey(), entry.getValue()));
-		}
-	}
+        }
+    }
 
-	@Override
-	public void registerKeyBindings(IKeyRegistry keyRegistry) {
+    @Override
+    public void registerKeyBindings(IKeyRegistry keyRegistry) {
         getMod().getLoggerHelper().log(Level.TRACE, "Registered key bindings");
-	}
+    }
 
     @Override
     public void registerPacketHandlers(PacketHandler packetHandler) {
@@ -63,14 +63,14 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
         getMod().getLoggerHelper().log(Level.TRACE, "Registered packet handlers");
     }
 
-	@Override
-	public void registerTickHandlers() {
+    @Override
+    public void registerTickHandlers() {
         commonProxyComponent.registerTickHandlers();
         getMod().getLoggerHelper().log(Level.TRACE, "Registered tick handlers");
-	}
+    }
 
-	@Override
-	public void registerEventHooks() {
+    @Override
+    public void registerEventHooks() {
         commonProxyComponent.registerEventHooks();
         getMod().getLoggerHelper().log(Level.TRACE, "Registered event hooks");
         MinecraftForge.EVENT_BUS.register(getMod().getKeyRegistry());

@@ -20,14 +20,14 @@ public abstract class WorldFeatureConfig extends ExtendedConfigForge<WorldFeatur
     }
 
     @Override
-	public String getTranslationKey() {
-		return "features." + getMod().getModId() + "." + getNamedId();
-	}
+    public String getTranslationKey() {
+        return "features." + getMod().getModId() + "." + getNamedId();
+    }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.WORLD_FEATURE;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.WORLD_FEATURE;
+    }
 
     @Override
     public IForgeRegistry<Feature<?>> getRegistry() {

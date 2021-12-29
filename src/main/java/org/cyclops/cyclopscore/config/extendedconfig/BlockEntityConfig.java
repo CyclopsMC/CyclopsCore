@@ -30,7 +30,7 @@ public abstract class BlockEntityConfig<T extends BlockEntity> extends ExtendedC
     @Override
     public String getTranslationKey() {
         return "blockentity." + getMod().getModId() + "." + getNamedId();
-	}
+    }
 
     // Needed for config gui
     @Override
@@ -39,9 +39,9 @@ public abstract class BlockEntityConfig<T extends BlockEntity> extends ExtendedC
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.BLOCK_ENTITY;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.BLOCK_ENTITY;
+    }
 
     @Override
     public IForgeRegistry<? super BlockEntityType<T>> getRegistry() {

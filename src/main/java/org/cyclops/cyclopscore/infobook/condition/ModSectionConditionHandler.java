@@ -10,9 +10,9 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public class ModSectionConditionHandler implements ISectionConditionHandler {
 
-	@Override
-	public boolean isSatisfied(ModBase<?> mod, String param) {
-		return ModList.get().isLoaded(param);
-	}
+    @Override
+    public boolean isSatisfied(ModBase<?> mod, String param) {
+        return ModList.get().isLoaded(param);
+    }
 
 }

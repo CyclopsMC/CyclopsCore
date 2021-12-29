@@ -19,33 +19,33 @@ public abstract class PacketBase {
      * @return If this packet can run on a thread other than the main-thread of Minecraft.
      *         If this is asynchronous, the player parameter inside the action is not guaranteed to be defined.
      */
-	public abstract boolean isAsync();
+    public abstract boolean isAsync();
 
-	/**
-	 * Encode this packet.
-	 * @param output The byte array to encode to.
-	 */
-	public abstract void encode(FriendlyByteBuf output);
+    /**
+     * Encode this packet.
+     * @param output The byte array to encode to.
+     */
+    public abstract void encode(FriendlyByteBuf output);
 
-	/**
-	 * Decode for this packet.
-	 * @param input The byte array to decode from.
-	 */
+    /**
+     * Decode for this packet.
+     * @param input The byte array to decode from.
+     */
     public abstract void decode(FriendlyByteBuf input);
 
-	/**
-	 * Actions for client-side.
-	 * @param level The world.
-	 * @param player The player. Can be null if this packet is asynchronous.
-	 */
-	@OnlyIn(Dist.CLIENT)
+    /**
+     * Actions for client-side.
+     * @param level The world.
+     * @param player The player. Can be null if this packet is asynchronous.
+     */
+    @OnlyIn(Dist.CLIENT)
     public abstract void actionClient(Level level, Player player);
 
-	/**
-	 * Actions for server-side.
-	 * @param level The world.
-	 * @param player The player.
-	 */
+    /**
+     * Actions for server-side.
+     * @param level The world.
+     * @param player The player.
+     */
     public abstract void actionServer(Level level, ServerPlayer player);
 
 }

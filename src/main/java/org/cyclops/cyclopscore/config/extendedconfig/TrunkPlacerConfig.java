@@ -22,7 +22,7 @@ public class TrunkPlacerConfig<T extends TrunkPlacer> extends ExtendedConfig<Tru
     @Override
     public String getTranslationKey() {
         return "trunkplacer." + getMod().getModId() + "." + getNamedId();
-	}
+    }
 
     // Needed for config gui
     @Override
@@ -31,8 +31,8 @@ public class TrunkPlacerConfig<T extends TrunkPlacer> extends ExtendedConfig<Tru
     }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.TRUNK_PLACER;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.TRUNK_PLACER;
+    }
 
 }

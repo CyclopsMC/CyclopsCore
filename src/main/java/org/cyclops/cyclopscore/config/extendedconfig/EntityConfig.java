@@ -65,14 +65,14 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
     }
 
     @Override
-	public String getTranslationKey() {
-		return "entity." + getNamedId();
-	}
+    public String getTranslationKey() {
+        return "entity." + getNamedId();
+    }
 
     @Override
-	public ConfigurableType getConfigurableType() {
-		return ConfigurableType.ENTITY;
-	}
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableType.ENTITY;
+    }
 
     @Override
     @OnlyIn(Dist.CLIENT)
