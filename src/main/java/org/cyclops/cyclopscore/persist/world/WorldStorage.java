@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.persist.world;
 import lombok.experimental.Delegate;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -16,8 +17,6 @@ import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
  * @author rubensworks
  */
 public abstract class WorldStorage implements INBTProvider {
-
-    private static String KEY = "WorldStorageData";
 
     protected final ModBase mod;
     @Delegate
@@ -62,7 +61,7 @@ public abstract class WorldStorage implements INBTProvider {
      */
     public void onStartedEvent(ServerStartedEvent event) {
         reset();
-        loadData(event.getServer());
+        initDataHolder(event.getServer());
         afterLoad();
     }
 
@@ -72,33 +71,16 @@ public abstract class WorldStorage implements INBTProvider {
      */
     public void onStoppingEvent(ServerStoppingEvent event) {
         beforeSave();
-        saveData(event.getServer());
+        initDataHolder(event.getServer());
     }
 
     protected abstract String getDataId();
 
-    private NBTDataHolder initDataHolder(MinecraftServer server, boolean loading) {
-        // TODO: rewrite world saved data
-        /*String dataId = mod.getModId() + "_" + getDataId();
-        NBTDataHolder data = server.getLevel(Level.OVERWORLD).getDataStorage()
-                .computeIfAbsent(e -> NBTDataHolder.load(e), () -> new NBTDataHolder(), dataId);
-        if (loading) {
-            CompoundTag tempTag = data.getTempTagAndReset();
-            if (tempTag != null) {
-                readFromNBT(tempTag);
-            }
-        }
-        data.setParentStorage(this);
-        return data;*/
-        return null;
-    }
-
-    private synchronized void loadData(MinecraftServer server) {
-        initDataHolder(server, true);
-    }
-
-    private synchronized void saveData(MinecraftServer server) {
-        initDataHolder(server, false);
+    private NBTDataHolder initDataHolder(MinecraftServer server) {
+        return server.getLevel(Level.OVERWORLD).getDataStorage().computeIfAbsent(
+                e -> NBTDataHolder.load(e, this),
+                () -> new NBTDataHolder(this),
+                mod.getModId() + "_" + getDataId());
     }
 
     /**
@@ -118,25 +100,23 @@ public abstract class WorldStorage implements INBTProvider {
     /**
      * Data holder for the global counter data.
      */
-    // TODO: rewrite world saved data
     public static class NBTDataHolder extends SavedData {
 
-        private WorldStorage parentStorage = null;
-        private CompoundTag tempTag = null;
+        private final WorldStorage parentStorage;
 
-        /*public static NBTDataHolder load(CompoundTag tag) {
-            if (parentStorage == null) {
-                this.tempTag = tag.getCompound(KEY);
-            } else {
-                parentStorage.readFromNBT(tag.getCompound(KEY));
-            }
-        }*/
+        public NBTDataHolder(WorldStorage parentStorage) {
+            this.parentStorage = parentStorage;
+        }
+
+        public static NBTDataHolder load(CompoundTag tag, WorldStorage parentStorage) {
+            NBTDataHolder dataHolder = new NBTDataHolder(parentStorage);
+            dataHolder.parentStorage.readFromNBT(tag);
+            return dataHolder;
+        }
 
         @Override
         public CompoundTag save(CompoundTag tag) {
-            CompoundTag dataTag = new CompoundTag();
-            parentStorage.writeToNBT(dataTag);
-            tag.put(KEY, dataTag);
+            parentStorage.writeToNBT(tag);
             return tag;
         }
 
@@ -144,16 +124,6 @@ public abstract class WorldStorage implements INBTProvider {
         public boolean isDirty() {
             // If this proves to be too inefficient, add a decent implementation for this.
             return true;
-        }
-
-        public void setParentStorage(WorldStorage parentStorage) {
-            this.parentStorage = parentStorage;
-        }
-
-        public CompoundTag getTempTagAndReset() {
-            CompoundTag tempTag = this.tempTag;
-            this.tempTag = null;
-            return tempTag;
         }
     }
 
