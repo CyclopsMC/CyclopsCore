@@ -341,24 +341,13 @@ public class RenderHelpers {
         return isPointInRegion(button.x, button.y, button.getWidth(), button.getHeight(), pointX, pointY);
     }
 
-    public static void blitColored(PoseStack poseStack, int x, int y, int z, int width, int height, TextureAtlasSprite sprite, float r, float g, float b, float a) {
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        Matrix4f matrix4f = poseStack.last().pose();
-        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
-        bufferbuilder.vertex(matrix4f, x, y, z).color(r, g, b, a).uv(sprite.getU0(), sprite.getV1()).endVertex();
-        bufferbuilder.vertex(matrix4f, x + width, y, z).color(r, g, b, a).uv(sprite.getU1(), sprite.getV1()).endVertex();
-        bufferbuilder.vertex(matrix4f, x + width, y + height, z).color(r, g, b, a).uv(sprite.getU1(), sprite.getV0()).endVertex();
-        bufferbuilder.vertex(matrix4f, x, y + height, z).color(r, g, b, a).uv(sprite.getU0(), sprite.getV0()).endVertex();
-        bufferbuilder.end();
-    }
-
     public static void blitColored(PoseStack poseStack, int x, int y, int z, float u, float v, int width, int height, float r, float g, float b, float a) {
-        blitColored(poseStack, x, y, z, width, height, u, u + width, v, v + height, r, g, b, a);
+        blitColored(poseStack, x, y, z, width, height, u / 256, (u + width) / 256, v / 256, (v + height) / 256, r, g, b, a);
     }
 
     public static void blitColored(PoseStack poseStack, int x, int y, int z, int width, int height, float u0, float u1, float v0, float v1, float r, float g, float b, float a) {
-        Matrix4f matrix4f = poseStack.last().pose();
+        // The following should work, but doesn't, so we just apply a shader color instead.
+        /*Matrix4f matrix4f = poseStack.last().pose();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
@@ -367,7 +356,22 @@ public class RenderHelpers {
         bufferbuilder.vertex(matrix4f, (float)x + width, (float)y, (float)z).color(r, g, b, a).uv(u1, v0).endVertex();
         bufferbuilder.vertex(matrix4f, (float)x, (float)y, (float)z).color(r, g, b, a).uv(u0, v0).endVertex();
         bufferbuilder.end();
+        BufferUploader.end(bufferbuilder);*/
+
+        RenderSystem.setShaderColor(r, g, b, a);
+
+        Matrix4f matrix4f = poseStack.last().pose();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferbuilder.vertex(matrix4f, (float)x, (float)y + height, (float)z).uv(u0, v1).endVertex();
+        bufferbuilder.vertex(matrix4f, (float)x + width, (float)y + height, (float)z).uv(u1, v1).endVertex();
+        bufferbuilder.vertex(matrix4f, (float)x + width, (float)y, (float)z).uv(u1, v0).endVertex();
+        bufferbuilder.vertex(matrix4f, (float)x, (float)y, (float)z).uv(u0, v0).endVertex();
+        bufferbuilder.end();
         BufferUploader.end(bufferbuilder);
+
+        RenderSystem.setShaderColor(1, 1, 1, 1);
     }
 
     /**
