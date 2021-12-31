@@ -540,7 +540,7 @@ public class InfoBookParser {
      */
     public static InfoSection initializeInfoBook(IInfoBook infoBook, String path, @Nullable InfoSection parent) {
         try {
-            InputStream is = InfoBookParser.class.getResourceAsStream(path);
+            InputStream is = infoBook.getMod().getClass().getResourceAsStream(path);
             StreamSource stream = new StreamSource(is);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
