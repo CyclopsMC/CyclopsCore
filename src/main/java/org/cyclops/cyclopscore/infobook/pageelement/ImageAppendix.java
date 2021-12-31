@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
@@ -46,7 +46,7 @@ public class ImageAppendix extends SectionAppendix {
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void drawElement(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
-        Minecraft.getInstance().getTextureManager().bindForSetup(resource);
+        RenderHelpers.bindTexture(resource);
         gui.blit(matrixStack, x, y, 0, 0, getWidth(), getHeight());
         gui.drawOuterBorder(matrixStack, x, y, getWidth(), getHeight(), 0.5F, 0.5F, 0.5F, 0.4f);
     }

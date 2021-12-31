@@ -412,7 +412,6 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
         // Corners
         RenderHelpers.blitColored(matrixStack, x - BORDER_WIDTH, y - BORDER_WIDTH, z, BORDER_X, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
-        RenderHelpers.blitColored(matrixStack, x - BORDER_WIDTH, y - BORDER_WIDTH, z, BORDER_X, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
         RenderHelpers.blitColored(matrixStack, x + width - BORDER_WIDTH, y - BORDER_WIDTH, z, BORDER_X + BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
         RenderHelpers.blitColored(matrixStack, x - BORDER_WIDTH, y + height - BORDER_WIDTH, z, BORDER_X + 3 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
         RenderHelpers.blitColored(matrixStack, x + width - BORDER_WIDTH, y + height - BORDER_WIDTH, z, BORDER_X + 2 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
