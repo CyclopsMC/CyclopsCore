@@ -47,7 +47,7 @@ public class BlockEntityTickerDelayed<T extends BlockEntity & IBlockEntityDelaye
     private void trySendActualUpdate(Level level, BlockPos pos, T blockEntity) {
         blockEntity.reduceUpdateBackoff();
         if(blockEntity.getUpdateBackoff() <= 0) {
-            blockEntity.setUpdateBackoff(blockEntity.getUpdateBackoff());
+            blockEntity.setUpdateBackoff(blockEntity.getUpdateBackoffTicks());
 
             if(blockEntity.shouldSendUpdate()) {
                 blockEntity.unsetSendUpdate();
