@@ -10,10 +10,8 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerListener;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +30,6 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -308,6 +305,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
+        Slot slot = slotId < 0 ? null : this.slots.get(slotId);
         // Copied and adjusted from net.minecraft.world.inventory.AbstractContainerMenu
         Inventory inventory = player.getInventory();
         if (clickType == ClickType.QUICK_CRAFT) {
@@ -326,7 +324,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                     this.resetQuickCraft();
                 }
             } else if (this.quickcraftStatus == 1) {
-                Slot slot = this.slots.get(slotId);
+                // Slot slot = this.slots.get(slotId);
                 ItemStack itemstack = this.getCarried();
                 if (canItemQuickReplace(slot, itemstack, true) && slot.mayPlace(itemstack) && (this.quickcraftType == 2 || itemstack.getCount() > this.quickcraftSlots.size()) && this.canDragTo(slot)) {
                     this.quickcraftSlots.add(slot);
@@ -376,218 +374,12 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
             }
         } else if (this.quickcraftStatus != 0) {
             this.resetQuickCraft();
-        } else if ((clickType == ClickType.PICKUP || clickType == ClickType.QUICK_MOVE) && (dragType == 0 || dragType == 1)) {
-            ClickAction clickaction = dragType == 0 ? ClickAction.PRIMARY : ClickAction.SECONDARY;
-            if (slotId == -999) {
-                if (!this.getCarried().isEmpty()) {
-                    if (clickaction == ClickAction.PRIMARY) {
-                        player.drop(this.getCarried(), true);
-                        this.setCarried(ItemStack.EMPTY);
-                    } else {
-                        player.drop(this.getCarried().split(1), true);
-                    }
-                }
-            } else if (clickType == ClickType.QUICK_MOVE) {
-                if (slotId < 0) {
-                    return;
-                }
-
-                Slot slot6 = this.slots.get(slotId);
-                if (!slot6.mayPickup(player)) {
-                    return;
-                }
-
-                for(ItemStack itemstack9 = this.quickMoveStack(player, slotId); !itemstack9.isEmpty() && ItemStack.isSame(slot6.getItem(), itemstack9); itemstack9 = this.quickMoveStack(player, slotId)) {
-                }
-            } else {
-                if (slotId < 0) {
-                    return;
-                }
-
-                Slot slot7 = this.slots.get(slotId);
-                ItemStack itemstack10 = slot7.getItem();
-                ItemStack itemstack11 = this.getCarried();
-                player.updateTutorialInventoryAction(itemstack11, slot7.getItem(), clickaction);
-                if (!itemstack11.overrideStackedOnOther(slot7, clickaction, player) && !itemstack10.overrideOtherStackedOnMe(itemstack11, slot7, clickaction, player, this.createCarriedSlotAccess())) {
-                    if (itemstack10.isEmpty()) {
-                        if (!itemstack11.isEmpty()) {
-                            int l2 = clickaction == ClickAction.PRIMARY ? itemstack11.getCount() : 1;
-                            this.setCarried(slot7.safeInsert(itemstack11, l2));
-                        }
-                    } else if (slot7.mayPickup(player)) {
-                        if (itemstack11.isEmpty()) {
-                            int i3 = clickaction == ClickAction.PRIMARY ? itemstack10.getCount() : (itemstack10.getCount() + 1) / 2;
-                            Optional<ItemStack> optional1 = slot7.tryRemove(i3, Integer.MAX_VALUE, player);
-                            optional1.ifPresent((p_150421_) -> {
-                                this.setCarried(p_150421_);
-                                slot7.onTake(player, p_150421_);
-                            });
-                        } else if (slot7.mayPlace(itemstack11)) {
-                            if (ItemStack.isSameItemSameTags(itemstack10, itemstack11)) {
-                                int j3 = clickaction == ClickAction.PRIMARY ? itemstack11.getCount() : 1;
-                                this.setCarried(slot7.safeInsert(itemstack11, j3));
-                            } else if (itemstack11.getCount() <= slot7.getMaxStackSize(itemstack11)) {
-                                slot7.set(itemstack11);
-                                this.setCarried(itemstack10);
-                            }
-                        } else if (ItemStack.isSameItemSameTags(itemstack10, itemstack11)) {
-                            Optional<ItemStack> optional = slot7.tryRemove(itemstack10.getCount(), itemstack11.getMaxStackSize() - itemstack11.getCount(), player);
-                            optional.ifPresent((p_150428_) -> {
-                                itemstack11.grow(p_150428_.getCount());
-                                slot7.onTake(player, p_150428_);
-                            });
-                        }
-                    }
-                }
-
-                slot7.setChanged();
-            }
-        } else if (clickType == ClickType.SWAP) {
-            Slot slot2 = this.slots.get(slotId);
-            ItemStack itemstack4 = inventory.getItem(dragType);
-            ItemStack itemstack7 = slot2.getItem();
-            if (!itemstack4.isEmpty() || !itemstack7.isEmpty()) {
-                if (itemstack4.isEmpty()) {
-                    if (slot2.mayPickup(player)) {
-                        inventory.setItem(dragType, itemstack7);
-                        slot2.onSwapCraft(itemstack7.getCount());
-                        slot2.set(ItemStack.EMPTY);
-                        slot2.onTake(player, itemstack7);
-                    }
-                } else if (itemstack7.isEmpty()) {
-                    if (slot2.mayPlace(itemstack4)) {
-                        int l1 = slot2.getMaxStackSize(itemstack4);
-                        if (itemstack4.getCount() > l1) {
-                            slot2.set(itemstack4.split(l1));
-                        } else {
-                            inventory.setItem(dragType, ItemStack.EMPTY);
-                            slot2.set(itemstack4);
-                        }
-                    }
-                } else if (slot2.mayPickup(player) && slot2.mayPlace(itemstack4)) {
-                    int i2 = slot2.getMaxStackSize(itemstack4);
-                    if (itemstack4.getCount() > i2) {
-                        slot2.set(itemstack4.split(i2));
-                        slot2.onTake(player, itemstack7);
-                        if (!inventory.add(itemstack7)) {
-                            player.drop(itemstack7, true);
-                        }
-                    } else {
-                        inventory.setItem(dragType, itemstack7);
-                        slot2.set(itemstack4);
-                        slot2.onTake(player, itemstack7);
-                    }
-                }
-            }
-        } else if (clickType == ClickType.CLONE && player.getAbilities().instabuild && this.getCarried().isEmpty() && slotId >= 0) {
-            Slot slot5 = this.slots.get(slotId);
-            if (slot5.hasItem()) {
-                ItemStack itemstack6 = slot5.getItem().copy();
-                itemstack6.setCount(itemstack6.getMaxStackSize());
-                this.setCarried(itemstack6);
-            }
-        } else if (clickType == ClickType.THROW && this.getCarried().isEmpty() && slotId >= 0) {
-            Slot slot4 = this.slots.get(slotId);
-            int i1 = dragType == 0 ? 1 : slot4.getItem().getCount();
-            ItemStack itemstack8 = slot4.safeTake(i1, Integer.MAX_VALUE, player);
-            player.drop(itemstack8, true);
-        } else if (clickType == ClickType.PICKUP_ALL && slotId >= 0) {
-            Slot slot3 = this.slots.get(slotId);
-            ItemStack itemstack5 = this.getCarried();
-            if (!itemstack5.isEmpty() && (!slot3.hasItem() || !slot3.mayPickup(player))) {
-                int k1 = dragType == 0 ? 0 : this.slots.size() - 1;
-                int j2 = dragType == 0 ? 1 : -1;
-
-                for(int k2 = 0; k2 < 2; ++k2) {
-                    for(int k3 = k1; k3 >= 0 && k3 < this.slots.size() && itemstack5.getCount() < itemstack5.getMaxStackSize(); k3 += j2) {
-                        Slot slot8 = this.slots.get(k3);
-                        if (slot8.hasItem() && canItemQuickReplace(slot8, itemstack5, true) && slot8.mayPickup(player) && this.canTakeItemForPickAll(itemstack5, slot8)) {
-                            ItemStack itemstack12 = slot8.getItem();
-                            if (k2 != 0 || itemstack12.getCount() != itemstack12.getMaxStackSize()) {
-                                ItemStack itemstack13 = slot8.safeTake(itemstack12.getCount(), itemstack5.getMaxStackSize() - itemstack5.getCount(), player);
-                                itemstack5.grow(itemstack13.getCount());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-
-
-
-        /*Slot slot = slotId < 0 ? null : this.slots.get(slotId);
-        Inventory inventoryplayer = player.getInventory();
-        if (clickType == ClickType.QUICK_CRAFT) {
-            int j1 = this.dragEvent;
-            this.dragEvent = getQuickcraftHeader(dragType);
-
-            if ((j1 != 1 || this.dragEvent != 2) && j1 != this.dragEvent) {
-                this.resetQuickCraft();
-            } else if (inventoryplayer.getCarried().isEmpty()) {
-                this.resetQuickCraft();
-            } else if (this.dragEvent == 0) {
-                this.dragMode = getQuickcraftType(dragType);
-
-                if (isValidQuickcraftType(this.dragMode, player)) {
-                    this.dragEvent = 1;
-                    this.dragSlots.clear();
-                } else {
-                    this.resetQuickCraft();
-                }
-            } else if (this.dragEvent == 1) {
-                Slot slot7 = this.slots.get(slotId);
-                ItemStack itemstack12 = inventoryplayer.getCarried();
-
-                if (slot7 != null && canItemQuickReplace(slot7, itemstack12, true) && slot7.mayPlace(itemstack12) && (this.dragMode == 2 || itemstack12.getCount() > this.dragSlots.size()) && this.canDragTo(slot7)) {
-                    this.dragSlots.add(slot7);
-                }
-            } else if (this.dragEvent == 2) {
-                if (!this.dragSlots.isEmpty()) {
-                    ItemStack itemstack9 = inventoryplayer.getCarried().copy();
-                    int k1 = inventoryplayer.getCarried().getCount();
-                    int phantomCount = 0; // Added
-
-                    for (Slot slot8 : this.dragSlots) {
-                        ItemStack itemstack13 = inventoryplayer.getCarried();
-
-                        if (slot8 != null && canItemQuickReplace(slot8, itemstack13, true) && slot8.mayPlace(itemstack13) && (this.dragMode == 2 || itemstack13.getCount() >= this.dragSlots.size()) && this.canDragTo(slot8)) {
-                            ItemStack itemstack14 = itemstack9.copy();
-                            int j3 = slot8.hasItem() ? slot8.getItem().getCount() : 0;
-                            getQuickCraftSlotCount(this.dragSlots, this.dragMode, itemstack14, j3);
-                            int k3 = Math.min(itemstack14.getMaxStackSize(), slot8.getMaxStackSize(itemstack14));
-
-                            if (itemstack14.getCount() > k3) {
-                                itemstack14.setCount(k3);
-                            }
-
-                            k1 -= itemstack14.getCount() - j3;
-                            slot8.set(itemstack14);
-
-                            // --- Added ---
-                            if (slot8 instanceof SlotExtended && ((SlotExtended) slot8).isPhantom()) {
-                                phantomCount += itemstack14.getCount() - j3;
-                            }
-                        }
-                    }
-
-                    itemstack9.setCount(k1 + phantomCount); // Changed
-                    inventoryplayer.setCarried(itemstack9);
-                }
-
-                this.resetQuickCraft();
-            } else {
-                this.resetQuickCraft();
-            }
-            return ItemStack.EMPTY;
-        } else if (this.dragEvent != 0) {
-            this.resetQuickCraft();
-            return ItemStack.EMPTY;
-        } else if (slot instanceof SlotExtended && ((SlotExtended) slot).isPhantom()) { // Phantom slot code based on Buildcraft
-            return slotClickPhantom(slot, dragType, clickType, player);
+        } else if (slot instanceof SlotExtended && ((SlotExtended) slot).isPhantom()) { // Phantom slot logic added
+            slotClickPhantom(slot, dragType, clickType, player);
         } else {
-            return super.clicked(slotId, dragType, clickType, player);
-        }*/
+            // All other cases are delegated to the original code
+            super.clicked(slotId, dragType, clickType, player);
+        }
     }
 
     @Override
@@ -605,10 +397,9 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                 slot.set(ItemStack.EMPTY);
             }
         } else if (mouseButton == 0 || mouseButton == 1) {
-            InventoryMenu playerInv = player.inventoryMenu;
             slot.setChanged();
             ItemStack stackSlot = slot.getItem();
-            ItemStack stackHeld = playerInv.getCarried();
+            ItemStack stackHeld = this.getCarried();
 
             if (!stackSlot.isEmpty()) {
                 stack = stackSlot.copy();
@@ -620,7 +411,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                 }
             } else if (stackHeld.isEmpty()) {
                 adjustPhantomSlot(slot, mouseButton, clickType);
-                slot.onTake(player, playerInv.getCarried());
+                slot.onTake(player, this.getCarried());
             } else if (slot.mayPlace(stackHeld)) {
                 if (ItemMatch.areItemStacksEqual(stackSlot, stackHeld, ItemMatch.ITEM | ItemMatch.NBT)) {
                     adjustPhantomSlot(slot, mouseButton, clickType);
