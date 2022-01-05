@@ -31,7 +31,7 @@ public class IngredientRecipeHelpers {
         List<IPrototypedIngredient<ItemStack, Integer>> items;
         if (ingredient instanceof NBTIngredient) {
             items = Lists.newArrayList(new PrototypedIngredient<>(IngredientComponent.ITEMSTACK,
-                    ingredient.getItems()[0], ItemMatch.ITEM | ItemMatch.NBT));
+                    ingredient.getItems()[0], ItemMatch.ITEM | ItemMatch.TAG));
         } else {
             items = Arrays.stream(ingredient.getItems())
                     .map(itemStack -> new PrototypedIngredient<>(IngredientComponent.ITEMSTACK, itemStack, ItemMatch.ITEM))

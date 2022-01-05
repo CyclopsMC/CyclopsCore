@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.ingredient;
 
+import net.minecraft.network.chat.MutableComponent;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 
 public class IngredientMatcherSimple implements IIngredientMatcher<Integer, Boolean> {
@@ -86,6 +87,16 @@ public class IngredientMatcherSimple implements IIngredientMatcher<Integer, Bool
     @Override
     public String localize(Integer instance) {
         return instance.toString();
+    }
+
+    @Override
+    public MutableComponent getDisplayName(Integer instance) {
+        return null;
+    }
+
+    @Override
+    public String toString(Integer instance) {
+        return null;
     }
 
     @Override

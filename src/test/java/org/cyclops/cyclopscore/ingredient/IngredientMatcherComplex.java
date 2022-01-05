@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.ingredient;
 
+import net.minecraft.network.chat.MutableComponent;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 
 public class IngredientMatcherComplex implements IIngredientMatcher<ComplexStack, Integer> {
@@ -103,6 +104,16 @@ public class IngredientMatcherComplex implements IIngredientMatcher<ComplexStack
     @Override
     public String localize(ComplexStack instance) {
         return instance.toString();
+    }
+
+    @Override
+    public MutableComponent getDisplayName(ComplexStack instance) {
+        return null;
+    }
+
+    @Override
+    public String toString(ComplexStack instance) {
+        return null;
     }
 
     @Override

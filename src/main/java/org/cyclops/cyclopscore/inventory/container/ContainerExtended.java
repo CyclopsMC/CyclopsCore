@@ -413,7 +413,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                 adjustPhantomSlot(slot, mouseButton, clickType);
                 slot.onTake(player, this.getCarried());
             } else if (slot.mayPlace(stackHeld)) {
-                if (ItemMatch.areItemStacksEqual(stackSlot, stackHeld, ItemMatch.ITEM | ItemMatch.NBT)) {
+                if (ItemMatch.areItemStacksEqual(stackSlot, stackHeld, ItemMatch.ITEM | ItemMatch.TAG)) {
                     adjustPhantomSlot(slot, mouseButton, clickType);
                 } else {
                     fillPhantomSlot(slot, stackHeld, mouseButton, clickType);
