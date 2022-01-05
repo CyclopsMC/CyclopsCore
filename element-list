@@ -5,7 +5,6 @@ org.cyclops.commoncapabilities.api.capability.itemhandler
 org.cyclops.commoncapabilities.api.capability.recipehandler
 org.cyclops.commoncapabilities.api.capability.temperature
 org.cyclops.commoncapabilities.api.capability.work
-org.cyclops.commoncapabilities.api.capability.wrench
 org.cyclops.commoncapabilities.api.ingredient
 org.cyclops.commoncapabilities.api.ingredient.capability
 org.cyclops.commoncapabilities.api.ingredient.storage
