@@ -4,10 +4,11 @@ import com.google.common.collect.Maps;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TagsUpdatedEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
+import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.Map;
 import java.util.Objects;
@@ -36,9 +37,9 @@ public class InfoBookRegistry implements IInfoBookRegistry {
     }
 
     @Override
-    public void registerSection(IInfoBook infoBook, String parentSection, String sectionPath) {
+    public void registerSection(ModBase<?> mod, IInfoBook infoBook, String parentSection, String sectionPath) {
         synchronized (sectionInjections) {
-            sectionInjections.add(new SectionInjection(infoBook, parentSection, sectionPath));
+            sectionInjections.add(new SectionInjection(mod, infoBook, parentSection, sectionPath));
         }
     }
 
@@ -77,7 +78,7 @@ public class InfoBookRegistry implements IInfoBookRegistry {
         // Load after recipes are loaded client-side
         for (Map.Entry<IInfoBook, String> entry : bookPaths.entrySet()) {
             entry.getKey().getMod().log(Level.INFO, "Loading infobook " + entry.getValue());
-            bookRoots.put(entry.getKey(), InfoBookParser.initializeInfoBook(entry.getKey(), entry.getValue(), null));
+            bookRoots.put(entry.getKey(), InfoBookParser.initializeInfoBook(entry.getKey().getMod(), entry.getKey(), entry.getValue(), null));
             // Reset the infobook history
             entry.getKey().setCurrentSection(null);
         }
@@ -88,19 +89,25 @@ public class InfoBookRegistry implements IInfoBookRegistry {
             if (section == null) {
                 throw new IllegalArgumentException(String.format("Could not find section '%s' in infobook '%s'.", sectionInjection.getParentSection(), sectionInjection.getInfoBook()));
             }
-            section.registerSection(InfoBookParser.initializeInfoBook(sectionInjection.getInfoBook(), sectionInjection.getSectionPath(), section));
+            section.registerSection(InfoBookParser.initializeInfoBook(sectionInjection.getMod(), sectionInjection.getInfoBook(), sectionInjection.getSectionPath(), section));
         }
     }
 
     private static final class SectionInjection {
+        private final ModBase<?> mod;
         private final IInfoBook infoBook;
         private final String parentSection;
         private final String sectionPath;
 
-        private SectionInjection(IInfoBook infoBook, String parentSection, String sectionPath) {
+        private SectionInjection(ModBase<?> mod, IInfoBook infoBook, String parentSection, String sectionPath) {
+            this.mod = mod;
             this.infoBook = Objects.requireNonNull(infoBook);
             this.parentSection = parentSection;
             this.sectionPath = sectionPath;
+        }
+
+        public ModBase<?> getMod() {
+            return mod;
         }
 
         public IInfoBook getInfoBook() {

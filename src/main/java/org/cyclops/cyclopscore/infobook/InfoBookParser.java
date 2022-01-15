@@ -3,18 +3,18 @@ package org.cyclops.cyclopscore.infobook;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Registry;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Level;
@@ -533,14 +533,15 @@ public class InfoBookParser {
 
     /**
      * Initialize the given infobook from the given xml file.
+     * @param mod The mod owning the section
      * @param infoBook The infobook to register.
      * @param path The path to the xml file of the book.
      * @param parent The parent section.
      * @return The root of the infobook.
      */
-    public static InfoSection initializeInfoBook(IInfoBook infoBook, String path, @Nullable InfoSection parent) {
+    public static InfoSection initializeInfoBook(ModBase<?> mod, IInfoBook infoBook, String path, @Nullable InfoSection parent) {
         try {
-            InputStream is = infoBook.getMod().getClass().getResourceAsStream(path);
+            InputStream is = mod.getClass().getResourceAsStream(path);
             StreamSource stream = new StreamSource(is);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
