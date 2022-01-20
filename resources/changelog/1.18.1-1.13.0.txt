@@ -1,0 +1,17 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Restore WorldStorage
+
+Changes:
+* Allow infobook section injections to specify a mod
+* Update to latest CommonCaps API
+
+Fixes:
+* Fix incorrect delayed ticker reset value
+* Fix broken phantom slot logic
+* Fix render issues in infobook
+* Fix colored blit not working
+* Fix infobook in other mods failing to load
+* Fix FoliagePlacers not working anymore
+
