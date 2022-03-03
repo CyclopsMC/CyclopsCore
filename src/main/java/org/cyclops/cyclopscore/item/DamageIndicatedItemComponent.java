@@ -1,16 +1,16 @@
 package org.cyclops.cyclopscore.item;
 
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -129,7 +129,7 @@ public class DamageIndicatedItemComponent {
         FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(FluidStack.EMPTY);
         double capacity = fluidHander == null ? 0 : fluidHander.getCapacity();
         double amount = FluidHelpers.getAmount(fluidStack);
-        return (int) ((capacity - amount) / capacity);
+        return (int) Math.round(amount * 13 / capacity);
     }
 
 }

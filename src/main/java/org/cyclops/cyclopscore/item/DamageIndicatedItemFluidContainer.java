@@ -1,16 +1,16 @@
 package org.cyclops.cyclopscore.item;
 
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.NonNullList;
-import net.minecraft.util.Mth;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -98,7 +98,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
 
     @Override
     public int getBarColor(ItemStack stack) {
-        return Mth.hsvToRgb(Math.max(0.0F, 1 - (float) component.getDurability(stack)) / 3.0F, 1.0F, 1.0F);
+        return Mth.hsvToRgb(Math.max(0.0F, ((float) getBarWidth(stack) / 13)) / 3.0F, 1.0F, 1.0F);
     }
 
     /**
