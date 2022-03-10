@@ -14,9 +14,33 @@ All stable releases (including deobfuscated builds) can be found on [CurseForge]
 
 ### Using CyclopsCore
 
-There are two ways to use this library inside your mod.
+There are three ways to use this library inside your mod.
 
 #### 1. Using a stable release
+
+We recommend using [Cursemaven](https://www.cursemaven.com/) when pulling in releases from CurseForge.
+
+You can add CyclopsCore to your development environment by adding the following code to your Gradle build file:
+
+```gradle
+repositories {
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
+
+dependencies {
+    implementation fg.deobf("curse.maven:cyclopscore-${cyclopscore_version}")
+}
+```
+
+Obviously, you should fill in the required CyclopsCore version yourself.
+Learn more on https://www.cursemaven.com/ for determining versions.
+
+#### 2. Using a development version
 
 This requires a [GitHub personal access token](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry).
 
@@ -40,7 +64,7 @@ You can add CyclopsCore to your development environment by adding the following 
 Obviously, you should fill in the required Minecraft and CyclopsCore version yourself.
 
 
-#### 2. Using a locally built release
+#### 3. Using a locally built release
 
 If you do local changes to your CyclopsCore instance and want to test this locally for your mod, you can place your modified build to your local Maven repository by executing the following command:
 
