@@ -257,6 +257,11 @@ public class CyclopsTileEntity extends TileEntity implements INBTProvider, IDirt
     @Override
     protected void invalidateCaps() {
         super.invalidateCaps();
+
+        // Invalidate stored capabilities
+        for (LazyOptional<?> lazyOptional : this.capabilities.values()) {
+            lazyOptional.invalidate();
+        }
     }
 
     /**
