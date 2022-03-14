@@ -1,12 +1,13 @@
 package org.cyclops.cyclopscore.recipe.type;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 /**
  * Default implementation of {@link IInventoryFluid}.
@@ -27,7 +28,12 @@ public class InventoryFluid extends CraftingContainer implements IInventoryFluid
         for (ItemStack itemStack : itemStacks) {
             setItem(slot++, itemStack);
         }
-        this.fluidHandler = new FluidHandlerListReadOnly(fluidStacks);
+        if (fluidStacks.size() == 1) {
+            this.fluidHandler = new FluidTank(Integer.MAX_VALUE);
+            this.fluidHandler.fill(fluidStacks.get(0), IFluidHandler.FluidAction.EXECUTE);
+        } else {
+            this.fluidHandler = new FluidHandlerListReadOnly(fluidStacks);
+        }
     }
 
     @Override
