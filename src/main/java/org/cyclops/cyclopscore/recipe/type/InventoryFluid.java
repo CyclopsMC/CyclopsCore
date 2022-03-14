@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 /**
  * Default implementation of {@link IInventoryFluid}.
@@ -27,7 +28,12 @@ public class InventoryFluid extends CraftingInventory implements IInventoryFluid
         for (ItemStack itemStack : itemStacks) {
             setInventorySlotContents(slot++, itemStack);
         }
-        this.fluidHandler = new FluidHandlerListReadOnly(fluidStacks);
+        if (fluidStacks.size() == 1) {
+            this.fluidHandler = new FluidTank(Integer.MAX_VALUE);
+            this.fluidHandler.fill(fluidStacks.get(0), IFluidHandler.FluidAction.EXECUTE);
+        } else {
+            this.fluidHandler = new FluidHandlerListReadOnly(fluidStacks);
+        }
     }
 
     @Override
