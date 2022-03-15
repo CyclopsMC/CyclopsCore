@@ -179,6 +179,11 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
+
+        // Invalidate stored capabilities
+        for (LazyOptional<?> lazyOptional : this.capabilities.values()) {
+            lazyOptional.invalidate();
+        }
     }
 
     /**

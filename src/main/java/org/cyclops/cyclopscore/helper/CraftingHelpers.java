@@ -132,12 +132,18 @@ public class CraftingHelpers {
         public CacheableCraftingInventory(Container inventoryCrafting, boolean copyInventory) {
             if (copyInventory) {
                 // Deep-copy of the inventory to enable caching
+                int width = inventoryCrafting.getContainerSize();
+                int height = 1;
+                if (inventoryCrafting instanceof CraftingContainer) {
+                    width = ((CraftingContainer) inventoryCrafting).getWidth();
+                    height = ((CraftingContainer) inventoryCrafting).getHeight();
+                }
                 this.inventoryCrafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
                     @Override
                     public boolean stillValid(Player playerIn) {
                         return false;
                     }
-                }, inventoryCrafting.getContainerSize(), 1);
+                }, width, height);
                 for (int i = 0; i < inventoryCrafting.getContainerSize(); i++) {
                     this.inventoryCrafting.setItem(i, inventoryCrafting.getItem(i).copy());
                 }
