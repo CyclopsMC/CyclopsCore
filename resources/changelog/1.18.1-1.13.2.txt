@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix crash when simulating drying basin craft in ID
+  Closes CyclopsMC/IntegratedDynamics#1134
+* Fix capabilities not being invalidated on tile removal
+  Closes CyclopsMC/IntegratedDynamics#1144
+* Fix recipe caching not working for crafting recipes
+  Related to CyclopsMC/IntegratedTerminals#78
