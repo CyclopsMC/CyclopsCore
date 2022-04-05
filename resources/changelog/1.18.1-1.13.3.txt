@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix incorrect capability registration check
+  This caused the code to assume capabilities to exist, even if they weren't.
+  Closes CyclopsMC/EvilCraft#907
+
