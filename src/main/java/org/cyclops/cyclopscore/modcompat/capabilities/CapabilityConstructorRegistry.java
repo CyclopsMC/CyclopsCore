@@ -6,11 +6,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -247,7 +247,7 @@ public class CapabilityConstructorRegistry {
         Collection<ICapabilityConstructor<?, ? extends K, ? extends V>> constructors = allConstructors.get(keyObject.getClass());
         if (constructors != null) {
             for (ICapabilityConstructor<?, ? extends K, ? extends V> constructor : constructors) {
-                if (initialized || constructor.getCapability() != null) {
+                if (initialized || constructor.getCapability().isRegistered()) {
                     addLoadedCapabilityProvider(event, keyObject, valueObject, constructor);
                 }
             }
@@ -255,7 +255,7 @@ public class CapabilityConstructorRegistry {
 
         // Inheritable constructors
         for (Pair<Class<?>, ICapabilityConstructor<?, ?, ?>> constructorEntry : allInheritableConstructors) {
-            if ((initialized || constructorEntry.getRight().getCapability() != null)
+            if ((initialized || constructorEntry.getRight().getCapability().isRegistered())
                     && (keyObject == baseClass || constructorEntry.getLeft() == keyObject || constructorEntry.getLeft().isInstance(keyObject))) {
                 addLoadedCapabilityProvider(event, keyObject, valueObject, constructorEntry.getRight());
             }
@@ -266,7 +266,7 @@ public class CapabilityConstructorRegistry {
             Collection<ICapabilityConstructor<?, ? extends K, ? extends V>> instanceConstructors = allInstanceConstructors.get(keyObject);
             if (instanceConstructors != null) {
                 for (ICapabilityConstructor<?, ? extends K, ? extends V> constructor : instanceConstructors) {
-                    if (initialized || constructor.getCapability() != null) {
+                    if (initialized || constructor.getCapability().isRegistered()) {
                         addLoadedCapabilityProvider(event, keyObject, valueObject, constructor);
                     }
                 }
@@ -294,7 +294,7 @@ public class CapabilityConstructorRegistry {
         for (Class<? extends K> key : allConstructors.keySet()) {
             Collection<ICapabilityConstructor<?, ? extends K, ? extends V>> constructors = allConstructors.get(key);
             for (ICapabilityConstructor<?, ? extends K, ? extends V> constructor : constructors) {
-                if (constructor.getCapability() == null) {
+                if (!constructor.getCapability().isRegistered()) {
                     toRemoveMap.put(key, constructor);
                 }
             }
@@ -307,7 +307,7 @@ public class CapabilityConstructorRegistry {
         // Inheritable constructors
         List<Pair<Class<?>, ICapabilityConstructor<?, ?, ?>>> toRemoveInheritableList = Lists.newArrayList();
         for (Pair<Class<?>, ICapabilityConstructor<?, ?, ?>> constructorEntry : allInheritableConstructors) {
-            if (constructorEntry.getRight().getCapability() == null) {
+            if (!constructorEntry.getRight().getCapability().isRegistered()) {
                 toRemoveInheritableList.add(constructorEntry);
             }
         }
@@ -321,7 +321,7 @@ public class CapabilityConstructorRegistry {
             for (K key : allInstanceConstructors.keySet()) {
                 Collection<ICapabilityConstructor<?, ? extends K, ? extends V>> constructors = allInstanceConstructors.get(key);
                 for (ICapabilityConstructor<?, ? extends K, ? extends V> constructor : constructors) {
-                    if (constructor.getCapability() == null) {
+                    if (!constructor.getCapability().isRegistered()) {
                         toRemoveMapInstance.put(key, constructor);
                     }
                 }
