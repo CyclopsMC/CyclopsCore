@@ -43,7 +43,7 @@ public class ItemBlockNBT extends BlockItem {
             if (!world.isRemote() && tile.onlyOpsCanSetNbt() && (player == null || !player.canUseCommandBlock())) {
                 return false;
             }
-            return itemStackDataToTile(itemStack, tile);
+            return itemStackDataToTile(itemStack.copy().split(1), tile);
         }
 
         return false;
