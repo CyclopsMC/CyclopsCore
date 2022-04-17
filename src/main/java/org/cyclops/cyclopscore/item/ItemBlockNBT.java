@@ -43,7 +43,7 @@ public class ItemBlockNBT extends BlockItem {
             if (!world.isClientSide() && tile.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks())) {
                 return false;
             }
-            return itemStackDataToTile(itemStack, tile);
+            return itemStackDataToTile(itemStack.copy().split(1), tile);
         }
 
         return false;
