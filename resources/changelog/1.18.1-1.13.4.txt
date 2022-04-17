@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Ensure placed item blocks only storing data of one item
+  Related to CyclopsMC/IntegratedDynamics#1150
+
