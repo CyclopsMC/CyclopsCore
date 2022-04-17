@@ -9,6 +9,17 @@ Before opening new issues, make sure that the issue does not already exist, so s
 
 If you encounter a performance issue (i.e. server/client lag), make sure to read the following.
 
+#### Spark (after MC 1.12)
+
+You can use the [Spark mod](https://www.curseforge.com/minecraft/mc-mods/spark) for _profiling_ your game.
+
+If you are encountering client lag (FPS issues), run this mod in your client.
+If you are encountering server lag (TPS issues), run this mod on your server.
+
+Learn more about Spark usage here: https://spark.lucko.me/
+
+#### Sampler (until MC 1.12)
+
 You can use the [Sampler mod](https://forum.industrial-craft.net/thread/10820) for _profiling_ your game.
 This mod can create `.nps` files, and can help us to see what parts of the game cause performance issues using software such as [VisualVM](https://visualvm.github.io/).
 When opening a performance issue, make sure to send us this `.nps` file.
