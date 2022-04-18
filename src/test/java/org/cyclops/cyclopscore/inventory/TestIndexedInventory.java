@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.inventory;
 import com.google.common.collect.Iterators;
 import net.minecraft.DetectedVersion;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.Registry;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +23,7 @@ public class TestIndexedInventory {
     static {
         SharedConstants.setVersion(DetectedVersion.BUILT_IN);
         Bootstrap.bootStrap();
+        Registry.ITEM.unfreeze();
     }
 
     private static final Item ITEM1 = new ItemDummy();
