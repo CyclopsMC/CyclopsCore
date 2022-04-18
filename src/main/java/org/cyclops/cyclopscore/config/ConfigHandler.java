@@ -143,7 +143,7 @@ public class ConfigHandler {
 
     /**
      * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeAction#onRegisterForge(ExtendedConfig)}
-     * during the {@link RegistryEvent.NewRegistry} event.
+     * during the {@link net.minecraftforge.registries.NewRegistryEvent} event.
      */
     public void loadForgeRegistries() {
         for (ExtendedConfig<?, ?> eConfig : this.configurables) {
