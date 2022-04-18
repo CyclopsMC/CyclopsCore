@@ -183,8 +183,8 @@ public class InfoBookParser {
 
         RECIPE_CONDITION_HANDLERS.put("config", new ConfigSectionConditionHandler());
         RECIPE_CONDITION_HANDLERS.put("mod", new ModSectionConditionHandler());
-        RECIPE_CONDITION_HANDLERS.put("itemtag", new TagSectionConditionHandler<>(ItemTags.getAllTags()));
-        RECIPE_CONDITION_HANDLERS.put("blocktag", new TagSectionConditionHandler<>(BlockTags.getAllTags()));
+        RECIPE_CONDITION_HANDLERS.put("itemtag", new TagSectionConditionHandler<>(ForgeRegistries.ITEMS.tags(), Registry.ITEM_REGISTRY));
+        RECIPE_CONDITION_HANDLERS.put("blocktag", new TagSectionConditionHandler<>(ForgeRegistries.BLOCKS.tags(), Registry.BLOCK_REGISTRY));
         RECIPE_CONDITION_HANDLERS.put("fluid", new FluidSectionConditionHandler());
         RECIPE_CONDITION_HANDLERS.put("item", new ItemSectionConditionHandler());
     }

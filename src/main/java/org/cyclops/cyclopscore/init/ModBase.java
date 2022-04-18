@@ -24,6 +24,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.NewRegistryEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
@@ -270,7 +271,7 @@ public abstract class ModBase<T extends ModBase> {
      * Load things after Forge registries have been created.
      * @param event The Forge registry creation event.
      */
-    private void afterRegistriesCreated(RegistryEvent.NewRegistry event) {
+    private void afterRegistriesCreated(NewRegistryEvent event) {
         getConfigHandler().loadForgeRegistries();
     }
 

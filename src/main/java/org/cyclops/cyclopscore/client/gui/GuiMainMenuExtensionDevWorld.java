@@ -24,6 +24,7 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
+import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.storage.LevelStorageException;
 import net.minecraft.world.level.storage.LevelSummary;
 import net.minecraftforge.api.distmarker.Dist;
@@ -90,13 +91,14 @@ public class GuiMainMenuExtensionDevWorld {
 
                 // Create generator settings, based on a flat world preset
                 int seed = new Random().nextInt();
-                RegistryAccess.RegistryHolder dynamicRegistries = RegistryAccess.builtin();
+                RegistryAccess.Frozen dynamicRegistries = RegistryAccess.BUILTIN.get();
                 Registry<DimensionType> registryDimensionType = dynamicRegistries.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
                 Registry<Biome> registryBiome = dynamicRegistries.registryOrThrow(Registry.BIOME_REGISTRY);
-                MappedRegistry<LevelStem> simpleregistry = DimensionType.defaultDimensions(dynamicRegistries, seed);
-                FlatLevelGeneratorSettings flatgenerationsettings = PresetFlatWorldScreen.fromString(registryBiome, PRESET_FLAT_WORLD, FlatLevelGeneratorSettings.getDefault(registryBiome));
+                Registry<StructureSet> registryStructureSet = dynamicRegistries.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY);
+                Registry<LevelStem> simpleregistry = DimensionType.defaultDimensions(dynamicRegistries, seed);
+                FlatLevelGeneratorSettings flatgenerationsettings = PresetFlatWorldScreen.fromString(registryBiome, registryStructureSet, PRESET_FLAT_WORLD, FlatLevelGeneratorSettings.getDefault(registryBiome, registryStructureSet));
                 WorldGenSettings generatorSettings = new WorldGenSettings(seed, false, false,
-                        WorldGenSettings.withOverworld(registryDimensionType, simpleregistry, new FlatLevelSource(flatgenerationsettings)));
+                        WorldGenSettings.withOverworld(registryDimensionType, simpleregistry, new FlatLevelSource(registryStructureSet, flatgenerationsettings)));
 
                 // Determine a save name
                 String saveName;

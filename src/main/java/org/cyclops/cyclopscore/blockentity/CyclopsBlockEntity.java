@@ -114,12 +114,13 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
 
     /**
      * Write this block entity to the given NBT tag that will be attached to an item.
-     * By default, {@link #save(CompoundTag)}} will be called.
+     * By default, {@link #saveAdditional(CompoundTag)}} will be called.
      * @param tag The tag to write to.
      * @return The written tag.
      */
     public CompoundTag writeToItemStack(CompoundTag tag) {
-        return this.save(tag);
+        this.saveAdditional(tag);
+        return tag;
     }
 
     @Override
