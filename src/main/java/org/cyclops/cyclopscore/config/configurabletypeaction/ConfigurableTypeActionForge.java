@@ -12,7 +12,7 @@ public class ConfigurableTypeActionForge<C extends ExtendedConfigForge<C, I>, I 
         extends ConfigurableTypeAction<C, I> {
 
     @Override
-    public void onRegisterForge(C eConfig) {
+    public void onRegisterForgeFilled(C eConfig) {
         register(eConfig);
     }
 }
