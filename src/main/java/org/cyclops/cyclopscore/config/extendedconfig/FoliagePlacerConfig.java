@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.core.Registry;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -24,13 +23,6 @@ public class FoliagePlacerConfig<T extends FoliagePlacer> extends ExtendedConfig
             type.setRegistryName(mod.getModId(), namedId);
             return type;
         });
-    }
-
-    @Override
-    public void onForgeRegistered() {
-        super.onForgeRegistered();
-        // The following shouldn't be necessary, but foliage types don't work without it since MC 1.18
-        Registry.register(Registry.FOLIAGE_PLACER_TYPES, getInstance().getRegistryName(), getInstance());
     }
 
     @Override
