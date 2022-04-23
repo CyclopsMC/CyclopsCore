@@ -32,7 +32,7 @@ public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
     }
 
     @Override
-    public void onRegisterForge(ItemConfig eConfig) {
+    public void onRegisterForgeFilled(ItemConfig eConfig) {
         // Register item and set creative tab.
         register(eConfig, () -> {
             this.polish(eConfig);

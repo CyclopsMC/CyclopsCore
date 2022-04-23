@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import com.google.common.collect.Lists;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import  net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -70,7 +70,7 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     }
 
     @Override
-    public void onRegisterForge(BlockConfig eConfig) {
+    public void onRegisterForgeFilled(BlockConfig eConfig) {
         // Register block and set creative tab.
         register(eConfig.getItemConstructor(), eConfig, () -> {
             eConfig.onForgeRegistered(); // Manually call after item has been registered
