@@ -20,6 +20,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 import javax.annotation.Nullable;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Config for entities.
@@ -37,28 +38,28 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
     }
 
     public EntityConfig(ModBase mod, String namedId, Function<EntityConfig<T>, EntityType.Builder<T>> elementConstructor,
-                        @Nullable BiFunction<EntityConfig<T>, EntityType<T>, ItemConfig> spawnEggItemConstructor) {
+                        @Nullable BiFunction<EntityConfig<T>, Supplier<EntityType<T>>, ItemConfig> spawnEggItemConstructor) {
         super(mod, namedId, elementConstructor
                 .andThen(builder -> builder.build(mod.getModId() + ":" + namedId)));
 
         // Register spawn egg if applicable
         if (spawnEggItemConstructor != null) {
-            mod.getConfigHandler().addConfigurable(spawnEggItemConstructor.apply(this, getInstance()));
+            mod.getConfigHandler().addConfigurable(spawnEggItemConstructor.apply(this, this::getInstance));
         }
     }
 
-    public static <T extends Mob> BiFunction<EntityConfig<T>, EntityType<T>, ItemConfig> getDefaultSpawnEggItemConfigConstructor(ModBase mod, String itemName, int primaryColorIn, int secondaryColorIn) {
+    public static <T extends Mob> BiFunction<EntityConfig<T>, Supplier<EntityType<T>>, ItemConfig> getDefaultSpawnEggItemConfigConstructor(ModBase mod, String itemName, int primaryColorIn, int secondaryColorIn) {
         return getDefaultSpawnEggItemConfigConstructor(mod, itemName, primaryColorIn, secondaryColorIn, null);
     }
 
-    public static <T extends Mob> BiFunction<EntityConfig<T>, EntityType<T>, ItemConfig> getDefaultSpawnEggItemConfigConstructor(ModBase mod, String itemName, int primaryColorIn, int secondaryColorIn, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
+    public static <T extends Mob> BiFunction<EntityConfig<T>, Supplier<EntityType<T>>, ItemConfig> getDefaultSpawnEggItemConfigConstructor(ModBase mod, String itemName, int primaryColorIn, int secondaryColorIn, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
         return (entityConfig, entityType) -> {
             Item.Properties itemProperties = new Item.Properties().tab(mod.getDefaultItemGroup());
             if (itemPropertiesModifier != null) {
                 itemProperties = itemPropertiesModifier.apply(itemProperties);
             }
             Item.Properties finalItemProperties = itemProperties;
-            ItemConfig itemConfig = new ItemConfig(mod, itemName, (itemConfigSub) -> new ForgeSpawnEggItem(() -> entityType, primaryColorIn, secondaryColorIn, finalItemProperties));
+            ItemConfig itemConfig = new ItemConfig(mod, itemName, (itemConfigSub) -> new ForgeSpawnEggItem(entityType, primaryColorIn, secondaryColorIn, finalItemProperties));
             entityConfig.setSpawnEggItemConfig(itemConfig);
             return itemConfig;
         };
