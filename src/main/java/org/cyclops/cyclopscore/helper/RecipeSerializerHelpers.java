@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.helper;
 
-import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -8,9 +7,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
@@ -20,12 +21,10 @@ import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.cyclops.cyclopscore.recipe.ItemStackFromIngredient;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Helpers related to recipe serialization.
@@ -56,15 +55,15 @@ public class RecipeSerializerHelpers {
     }
 
     @Deprecated
-    public static ItemStack getJsonItemStackOrTag(JsonObject json, boolean required) {
+    public static Either<ItemStack, ItemStackFromIngredient> getJsonItemStackOrTag(JsonObject json, boolean required) {
         return getJsonItemStackOrTag(json, required, Collections.emptyList());
     }
 
-    public static ItemStack getJsonItemStackOrTag(JsonObject json, boolean required, List<String> modPriorities) {
+    public static Either<ItemStack, ItemStackFromIngredient> getJsonItemStackOrTag(JsonObject json, boolean required, List<String> modPriorities) {
         if (json.has("tag")) {
-            return getJsonItemStackFromTag(json, "tag", modPriorities);
+            return Either.right(getJsonItemStackFromTag(json, "tag", modPriorities));
         }
-        return getJsonItemStack(json, "item", required);
+        return Either.left(getJsonItemStack(json, "item", required));
     }
 
     public static ItemStack getJsonItemStack(JsonObject json, String key, boolean required) {
@@ -86,37 +85,18 @@ public class RecipeSerializerHelpers {
     }
 
     @Deprecated
-    public static ItemStack getJsonItemStackFromTag(JsonObject json, String key) {
+    public static ItemStackFromIngredient getJsonItemStackFromTag(JsonObject json, String key) {
         return getJsonItemStackFromTag(json, key, Collections.emptyList());
     }
 
-    public static ItemStack getJsonItemStackFromTag(JsonObject json, String key, List<String> modPriorities) {
-        // Obtain all stacks for the given tag
-        ItemStack[] matchingStacks = Ingredient.fromJson(json).getItems();
-
-        // Create a mod id to order index map
-        Map<String, Integer> modPriorityIndex = Maps.newHashMap();
-        for (int i = 0; i < modPriorities.size(); i++) {
-            modPriorityIndex.put(modPriorities.get(i), i);
-        }
-
-        // Sort stacks by mod id, and take first
-        ItemStack outputStack = Arrays.stream(matchingStacks)
-                .min(Comparator.comparingInt(e -> modPriorityIndex.getOrDefault(
-                        e.getItem().getRegistryName().getNamespace(),
-                        Integer.MAX_VALUE
-                )))
-                .orElseThrow(() -> new IllegalStateException("No tag value found for " + key + " does not exist"))
-                .copy();
-
+    public static ItemStackFromIngredient getJsonItemStackFromTag(JsonObject json, String key, List<String> modPriorities) {
         // Determine count
         int count = 1;
         if (json.has("count")) {
             count = json.get("count").getAsInt();
         }
-        outputStack.setCount(count);
 
-        return outputStack;
+        return new ItemStackFromIngredient(modPriorities, key, Ingredient.fromJson(json), count);
     }
 
     public static FluidStack deserializeFluidStack(JsonObject json, boolean readNbt) {
@@ -175,6 +155,31 @@ public class RecipeSerializerHelpers {
             }
             return new FluidStack(fluid, FluidHelpers.BUCKET_VOLUME);
         }
+    }
+
+    public static void writeItemStackOrItemStackIngredient(FriendlyByteBuf buffer, Either<ItemStack, ItemStackFromIngredient> itemStackOrItemStackIngredient) {
+        itemStackOrItemStackIngredient.mapBoth(
+                itemStack -> {
+                    buffer.writeBoolean(true);
+                    buffer.writeItem(itemStack);
+                    return null;
+                },
+                ingredient -> {
+                    buffer.writeBoolean(true);
+                    ingredient.writeToPacket(buffer);
+                    return null;
+                }
+        );
+    }
+
+    public static Either<ItemStack, ItemStackFromIngredient> readItemStackOrItemStackIngredient(FriendlyByteBuf buffer) {
+        Either<ItemStack, ItemStackFromIngredient> outputItem;
+        if (buffer.readBoolean()) {
+            outputItem = Either.left(buffer.readItem());
+        } else {
+            outputItem = Either.right(ItemStackFromIngredient.readFromPacket(buffer));
+        }
+        return outputItem;
     }
 
 }
