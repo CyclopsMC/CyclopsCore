@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add ItemStackFromIngredient abstraction
+  Required for CyclopsMC/IntegratedDynamics#1158
+
