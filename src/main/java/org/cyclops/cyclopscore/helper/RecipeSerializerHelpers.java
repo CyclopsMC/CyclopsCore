@@ -165,7 +165,7 @@ public class RecipeSerializerHelpers {
                     return null;
                 },
                 ingredient -> {
-                    buffer.writeBoolean(true);
+                    buffer.writeBoolean(false);
                     ingredient.writeToPacket(buffer);
                     return null;
                 }
