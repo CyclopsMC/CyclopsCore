@@ -21,6 +21,12 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class InfoBookRegistry implements IInfoBookRegistry {
 
+    static {
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onClientTagsLoadedStatic);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onClientRecipesLoadedStatic);
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onServerStartedStatic);
+    }
+
     private final Map<IInfoBook, String> bookPaths = Maps.newIdentityHashMap();
     private final Map<IInfoBook, InfoSection> bookRoots = Maps.newIdentityHashMap();
     private final Queue<SectionInjection> sectionInjections = new LinkedBlockingQueue<>(); // Thread-safe queue
@@ -48,6 +54,36 @@ public class InfoBookRegistry implements IInfoBookRegistry {
         return bookRoots.get(infoBook);
     }
 
+    // Reset achievement rewards to avoid remembering stuff across different servers and client worlds.
+    // We have this in static methods to make sure that this is called only once per server start,
+    // to avoid it being called for every infobook registry.
+    private static volatile boolean infobookStageTagsStatic = false;
+    private static volatile boolean infobookStageRecipesStatic = false;
+    public static void onClientTagsLoadedStatic(TagsUpdatedEvent event) {
+        infobookStageTagsStatic = true;
+        if (infobookStageTagsStatic && infobookStageRecipesStatic) {
+            infobookStageTagsStatic = false;
+            infobookStageRecipesStatic = false;
+            AdvancementRewards.reset();
+        }
+    }
+    public static void onClientRecipesLoadedStatic(RecipesUpdatedEvent event) {
+        infobookStageRecipesStatic = true;
+        if (infobookStageTagsStatic && infobookStageRecipesStatic) {
+            infobookStageTagsStatic = false;
+            infobookStageRecipesStatic = false;
+            AdvancementRewards.reset();
+        }
+    }
+    public static void onServerStartedStatic(ServerStartedEvent event) {
+        if (event.getServer().isDedicatedServer()) {
+            infobookStageTagsStatic = false;
+            infobookStageRecipesStatic = false;
+            // Only call this on dedicated servers, as the RecipesUpdatedEvent won't be emitted there
+            AdvancementRewards.reset();
+        }
+    }
+
     // Reload infobooks if BOTH tags and recipes are initialized (can occur out-of-order in SMP)
     private volatile boolean infobookStageTags = false;
     private volatile boolean infobookStageRecipes = false;
@@ -71,7 +107,6 @@ public class InfoBookRegistry implements IInfoBookRegistry {
     }
 
     public void afterRecipesAndTagsLoaded() {
-        AdvancementRewards.reset();
         this.infobookStageTags = false;
         this.infobookStageRecipes = false;
 

@@ -2,9 +2,9 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
 import lombok.Data;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.EntityHelpers;
