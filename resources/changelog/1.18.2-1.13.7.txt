@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix achievement rewards sometimes being broken, Closes #160
+
