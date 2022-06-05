@@ -161,6 +161,18 @@ public class Helpers {
     }
 
     /**
+     * Take the multiplication of these two values capped at {@link Integer#MAX_VALUE}.
+     * @param a Positive Integer
+     * @param b Positive Integer
+     * @return The safe multiplication.
+     */
+    public static int multiplySafe(int a, int b) {
+        int mul = a * b;
+        if(mul < a || mul < b) return Integer.MAX_VALUE;
+        return mul;
+    }
+
+    /**
      * Cast a long value safely to an int.
      * If the casting would result in an overflow,
      * return the {@link Integer#MAX_VALUE}.
