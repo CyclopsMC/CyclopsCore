@@ -1,14 +1,12 @@
 package org.cyclops.cyclopscore.inventory;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
+import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nullable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Queue;
 
 /**
@@ -17,9 +15,7 @@ import java.util.Queue;
  */
 public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
 
-    public static final List<IInventoryExtender> INVENTORY_EXTENDERS = Lists.newArrayList();
-
-    private final Queue<InventoryIterator> iterators;
+    private final Queue<Pair<IInventoryLocation, InventoryIterator>> iterators;
 
     /**
      * Create a new HotbarIterator.
@@ -27,28 +23,40 @@ public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
      */
     public PlayerExtendedInventoryIterator(Player player) {
         this.iterators = Queues.newArrayDeque();
-        iterators.add(new PlayerInventoryIterator(player));
-        for (IInventoryExtender inventoryExtender : PlayerExtendedInventoryIterator.INVENTORY_EXTENDERS) {
+        for (IInventoryLocation inventoryExtender : InventoryLocations.REGISTRY.values()) {
             IItemHandlerModifiable inv = inventoryExtender.getInventory(player);
             if (inv != null) {
-                iterators.add(new InventoryIterator(inv));
+                iterators.add(Pair.of(inventoryExtender, new InventoryIterator(inv)));
             }
         }
     }
 
     @Override
     public boolean hasNext() {
-        return iterators.size() > 0 && iterators.peek().hasNext();
+        return iterators.size() > 0 && iterators.peek().getRight().hasNext();
     }
 
     @Override
     public ItemStack next() {
-        if (iterators.peek().hasNext()) {
-            ItemStack next = iterators.peek().next();
-            if (!iterators.peek().hasNext()) {
+        if (iterators.peek().getRight().hasNext()) {
+            Pair<IInventoryLocation, InventoryIterator> extendedAndIterator = iterators.peek();
+            Pair<Integer, ItemStack> slotAndStack = extendedAndIterator.getRight().nextIndexed();
+            if (!iterators.peek().getRight().hasNext()) {
                 iterators.poll();
             }
-            return next;
+            return slotAndStack.getRight();
+        }
+        throw new IndexOutOfBoundsException();
+    }
+
+    public ItemLocation nextIndexed() {
+        if (iterators.peek().getRight().hasNext()) {
+            Pair<IInventoryLocation, InventoryIterator> extendedAndIterator = iterators.peek();
+            Pair<Integer, ItemStack> slotAndStack = extendedAndIterator.getRight().nextIndexed();
+            if (!iterators.peek().getRight().hasNext()) {
+                iterators.poll();
+            }
+            return new ItemLocation(extendedAndIterator.getLeft(), slotAndStack.getLeft());
         }
         throw new IndexOutOfBoundsException();
     }
@@ -63,17 +71,7 @@ public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
      * @param itemStack The itemstack to place.
      */
     public void replace(ItemStack itemStack) {
-        iterators.peek().replace(itemStack);
-    }
-
-    /**
-     * A registerable inventory extender for iterating over.
-     */
-    public static interface IInventoryExtender {
-
-        @Nullable
-        public IItemHandlerModifiable getInventory(Player player);
-
+        iterators.peek().getRight().replace(itemStack);
     }
 
 }

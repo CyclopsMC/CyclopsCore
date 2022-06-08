@@ -148,6 +148,7 @@ public class InventoryHelpers {
      * @param itemIndex The index of the item in the inventory.
      * @return The item stack.
      */
+    @Deprecated  // TODO: rm in 1.19
     public static ItemStack getItemFromIndex(Player player, int itemIndex) {
         return getItemFromIndex(player, itemIndex, InteractionHand.MAIN_HAND);
     }
@@ -158,7 +159,9 @@ public class InventoryHelpers {
      * @param itemIndex The index of the item in the inventory.
      * @param hand The hand the item is in.
      * @return The item stack.
+     * @deprecated Use IInventoryLocation
      */
+    @Deprecated // TODO: rm in 1.19
     public static ItemStack getItemFromIndex(Player player, int itemIndex, InteractionHand hand) {
         return InteractionHand.MAIN_HAND.equals(hand)
                 ? player.getInventory().items.get(itemIndex) : player.getOffhandItem();
@@ -170,7 +173,9 @@ public class InventoryHelpers {
      * @param itemIndex The index of the item in the inventory.
      * @param hand The hand the item is in.
      * @param itemStack The new item stack.
+     *  @deprecated Use IInventoryLocation
      */
+    @Deprecated  // TODO: rm in 1.19
     public static void setItemAtIndex(Player player, int itemIndex, InteractionHand hand, ItemStack itemStack) {
         if (InteractionHand.MAIN_HAND.equals(hand)) {
             player.getInventory().setItem(itemIndex, itemStack);

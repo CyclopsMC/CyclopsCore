@@ -80,12 +80,19 @@ repositories {
         name "Baubles maven repo"
         url "https://jitpack.io"
     }
+    maven {
+        name "Curios"
+        url "https://maven.theillusivec4.top/"
+    }
 }
 
 dependencies {
     minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 
     compileOnly "com.github.lazyMods:Baubles:${project.baubles_version}:api" // https://github.com/lazyMods/Baubles/releases
+
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}") // https://maven.theillusivec4.top/top/theillusivec4/curios/curios-forge/
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}:api")
 
     // Project lombok
     compileOnly 'org.projectlombok:lombok:1.18.22'

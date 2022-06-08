@@ -17,6 +17,7 @@ import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.datastructure.DimPos;
 import org.cyclops.cyclopscore.datastructure.SingleCache;
+import org.cyclops.cyclopscore.inventory.ItemLocation;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -430,6 +431,19 @@ public abstract class PacketCodec extends PacketBase {
                     e.printStackTrace();
                 }
                 return Pair.of(null, null);
+            }
+        });
+
+        codecActions.put(ItemLocation.class, new ICodecAction() {
+
+            @Override
+            public void encode(Object object, FriendlyByteBuf output) {
+                ItemLocation.writeToPacketBuffer(output, (ItemLocation) object);
+            }
+
+            @Override
+            public Object decode(FriendlyByteBuf input) {
+                return ItemLocation.readFromPacketBuffer(input);
             }
         });
     }

@@ -17,6 +17,7 @@ public final class Reference {
     // Mod ID's
     public static final String MOD_VANILLA = "minecraft";
     public static final String MOD_BAUBLES = "baubles";
+    public static final String MOD_CURIOS = "curios";
     public static final String MOD_JEI = "jei";
     public static final String MOD_COMMONCAPABILITIES = "commoncapabilities";
 

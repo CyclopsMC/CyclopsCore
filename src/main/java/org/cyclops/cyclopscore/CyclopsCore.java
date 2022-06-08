@@ -32,11 +32,14 @@ import org.cyclops.cyclopscore.infobook.InfoBookRegistry;
 import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTestConfig;
 import org.cyclops.cyclopscore.infobook.test.InfoBookTest;
 import org.cyclops.cyclopscore.init.ModBaseVersionable;
+import org.cyclops.cyclopscore.inventory.IRegistryInventoryLocation;
+import org.cyclops.cyclopscore.inventory.RegistryInventoryLocation;
 import org.cyclops.cyclopscore.metadata.IRegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportables;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.baubles.ModCompatBaubles;
+import org.cyclops.cyclopscore.modcompat.curios.ModCompatCurios;
 import org.cyclops.cyclopscore.proxy.ClientProxy;
 import org.cyclops.cyclopscore.proxy.CommonProxy;
 import org.cyclops.cyclopscore.proxy.IClientProxy;
@@ -66,6 +69,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         // Registries
         getRegistryManager().addRegistry(IRegistryExportableRegistry.class, RegistryExportableRegistry.getInstance());
         getRegistryManager().addRegistry(IInfoBookRegistry.class, new InfoBookRegistry());
+        getRegistryManager().addRegistry(IRegistryInventoryLocation.class, RegistryInventoryLocation.getInstance());
     }
 
     @Override
@@ -85,6 +89,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         ModCompatLoader modCompatLoader = super.constructModCompatLoader();
 
         modCompatLoader.addModCompat(new ModCompatBaubles());
+        modCompatLoader.addModCompat(new ModCompatCurios());
 
         return modCompatLoader;
     }

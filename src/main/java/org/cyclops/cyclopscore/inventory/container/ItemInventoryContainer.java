@@ -1,16 +1,17 @@
 package org.cyclops.cyclopscore.inventory.container;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.world.InteractionHand;
-import org.cyclops.cyclopscore.helper.InventoryHelpers;
+import org.cyclops.cyclopscore.inventory.InventoryLocationPlayer;
+import org.cyclops.cyclopscore.inventory.ItemLocation;
 
 import javax.annotation.Nullable;
 
@@ -37,22 +38,19 @@ import javax.annotation.Nullable;
 public abstract class ItemInventoryContainer<I extends Item> extends ContainerExtended {
 
     protected I item;
-    protected int itemIndex;
-    protected InteractionHand hand;
+    protected ItemLocation itemLocation;
 
     /**
      * Make a new instance.
      * @param type The container type.
      * @param id The container id.
      * @param inventory The player inventory.
-     * @param itemIndex The index of the item in use inside the player inventory.
-     * @param hand The hand the player is using.
+     * @param itemLocation The item location.
      */
-    public ItemInventoryContainer(@Nullable MenuType<?> type, int id, Inventory inventory, int itemIndex, InteractionHand hand) {
+    public ItemInventoryContainer(@Nullable MenuType<?> type, int id, Inventory inventory, ItemLocation itemLocation) {
         super(type, id, inventory);
-        this.item = (I) InventoryHelpers.getItemFromIndex(inventory.player, itemIndex, hand).getItem();
-        this.itemIndex = itemIndex;
-        this.hand = hand;
+        this.item = (I) itemLocation.getItemStack(inventory.player).getItem();
+        this.itemLocation = itemLocation;
     }
 
     public static int readItemIndex(FriendlyByteBuf packetBuffer) {
@@ -78,7 +76,7 @@ public abstract class ItemInventoryContainer<I extends Item> extends ContainerEx
     }
 
     public ItemStack getItemStack(Player player) {
-        return InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
+        return this.itemLocation.getItemStack(player);
     }
 
     @Override
@@ -87,7 +85,7 @@ public abstract class ItemInventoryContainer<I extends Item> extends ContainerEx
 
             @Override
             public boolean mayPickup(Player player) {
-                return this.getItem() != InventoryHelpers.getItemFromIndex(player, itemIndex, hand);
+                return this.getItem() != itemLocation.getItemStack(player);
             }
 
         };
@@ -95,7 +93,7 @@ public abstract class ItemInventoryContainer<I extends Item> extends ContainerEx
 
     @Override
     public void clicked(int slotId, int arg, ClickType clickType, Player player) {
-        if (clickType == ClickType.SWAP && arg == itemIndex) {
+        if (clickType == ClickType.SWAP && itemLocation.inventoryLocation() == InventoryLocationPlayer.getInstance() && arg == itemLocation.slot()) {
             // Don't allow swapping with the slot of the active item.
             return;
         }
