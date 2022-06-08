@@ -58,6 +58,7 @@ org.cyclops.cyclopscore.modcompat
 org.cyclops.cyclopscore.modcompat.baubles
 org.cyclops.cyclopscore.modcompat.capabilities
 org.cyclops.cyclopscore.modcompat.commoncapabilities
+org.cyclops.cyclopscore.modcompat.curios
 org.cyclops.cyclopscore.modcompat.jei
 org.cyclops.cyclopscore.nbt.path
 org.cyclops.cyclopscore.nbt.path.navigate
