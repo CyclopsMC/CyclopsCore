@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Make player extended iterator more extensible
+  This also adds default support for Baubles and Curios iteration.
+  Required for CyclopsMC/IntegratedTerminals#79
