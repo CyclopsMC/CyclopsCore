@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.block.multi;
 import lombok.Data;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 /**
@@ -20,7 +19,7 @@ public class ExactSizeValidator implements ISizeValidator {
         if(SizeValidators.compareVec3i(size, getExactSize()) == 0) {
             return null;
         }
-        return new TranslatableComponent("multiblock.cyclopscore.error.size.exact",
+        return Component.translatable("multiblock.cyclopscore.error.size.exact",
                 LocationHelpers.toCompactString(size), LocationHelpers.toCompactString(getExactSize()));
     }
 }

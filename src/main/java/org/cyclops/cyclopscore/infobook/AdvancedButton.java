@@ -1,17 +1,14 @@
 package org.cyclops.cyclopscore.infobook;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.Helpers;
-
-import net.minecraft.client.gui.components.Button.OnPress;
 
 /**
  * An advanced button type.
@@ -26,7 +23,7 @@ public class AdvancedButton extends Button {
     private Button.OnPress onPress;
 
     public AdvancedButton() {
-        super(0, 0, 0, 0, new TextComponent(""), null);
+        super(0, 0, 0, 0, Component.literal(""), null);
     }
 
     public void setOnPress(OnPress onPress) {

@@ -368,8 +368,7 @@ public class RenderHelpers {
         bufferbuilder.vertex(matrix4f, (float)x + width, (float)y + height, (float)z).uv(u1, v1).endVertex();
         bufferbuilder.vertex(matrix4f, (float)x + width, (float)y, (float)z).uv(u1, v0).endVertex();
         bufferbuilder.vertex(matrix4f, (float)x, (float)y, (float)z).uv(u0, v0).endVertex();
-        bufferbuilder.end();
-        BufferUploader.end(bufferbuilder);
+        BufferUploader.drawWithShader(bufferbuilder.end());
 
         RenderSystem.setShaderColor(1, 1, 1, 1);
     }

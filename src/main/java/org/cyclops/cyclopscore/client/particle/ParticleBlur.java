@@ -58,7 +58,7 @@ public class ParticleBlur extends TextureSheetParticle {
         LivingEntity renderentity = Minecraft.getInstance().player;
         int visibleDistance = MAX_VIEW_DISTANCE;
 
-        if(Minecraft.getInstance().options.graphicsMode.getId() == 0) {
+        if(Minecraft.getInstance().options.graphicsMode().get().getId() == 0) {
             visibleDistance = visibleDistance / 2;
         }
 

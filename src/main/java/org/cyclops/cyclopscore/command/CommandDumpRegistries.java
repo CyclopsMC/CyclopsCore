@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.metadata.RegistryExportables;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class CommandDumpRegistries implements Command<CommandSourceStack> {
             RegistryExportables.REGISTRY.export(context.getSource().getServer()
                     .getServerDirectory().toPath().resolve("cyclops_registries"));
         } catch (IOException e) {
-            context.getSource().sendFailure(new TextComponent(e.getMessage()));
+            context.getSource().sendFailure(Component.literal(e.getMessage()));
             e.printStackTrace();
             return 1;
         }

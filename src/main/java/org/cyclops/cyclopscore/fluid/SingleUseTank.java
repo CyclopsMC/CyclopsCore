@@ -138,7 +138,7 @@ public class SingleUseTank extends Tank {
     @Override
     public void writeTankToNBT(CompoundTag nbt) {
         super.writeTankToNBT(nbt);
-        nbt.putString(NBT_ACCEPTED_FLUID, acceptedFluid.getRegistryName().toString());
+        nbt.putString(NBT_ACCEPTED_FLUID, ForgeRegistries.FLUIDS.getKey(acceptedFluid).toString());
     }
 
     @Override

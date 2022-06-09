@@ -9,7 +9,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -37,7 +37,7 @@ public class ArgumentTypeConfigProperty implements ArgumentType<ConfigurableProp
     public ConfigurablePropertyData parse(StringReader reader) throws CommandSyntaxException {
         ConfigurablePropertyData property = mod.getConfigHandler().getCommandableProperties().get(reader.readString());
         if (property == null) {
-            throw new SimpleCommandExceptionType(new TextComponent("Unknown property")).create();
+            throw new SimpleCommandExceptionType(Component.literal("Unknown property")).create();
         }
         return property;
     }

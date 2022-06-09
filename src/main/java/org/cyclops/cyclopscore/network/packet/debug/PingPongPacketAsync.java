@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.network.packet.debug;
 
-import net.minecraft.Util;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -41,7 +40,7 @@ public class PingPongPacketAsync extends PacketCodec {
     }
 
     protected void log(Player player, String message) {
-        player.sendMessage(new TextComponent(message), Util.NIL_UUID);
+        player.sendSystemMessage(Component.literal(message));
     }
 
     protected PingPongPacketAsync newPacket() {

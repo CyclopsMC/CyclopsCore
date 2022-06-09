@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
@@ -253,9 +252,9 @@ public class GuiHelpers {
             Component line = lines.get(stringIndex);
 
             if(stringIndex == 0) {
-                line = new TextComponent("\u00a7" + Integer.toHexString(15)).append(line);
+                line = Component.literal("\u00a7" + Integer.toHexString(15)).append(line);
             } else {
-                line = new TextComponent("\u00a77").append(line);
+                line = Component.literal("\u00a77").append(line);
             }
 
             mc.font.drawInBatch(line.getVisualOrderText(), xStart, yStart, -1, true, matrix4f,

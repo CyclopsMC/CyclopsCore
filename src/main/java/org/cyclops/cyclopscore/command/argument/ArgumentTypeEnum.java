@@ -8,11 +8,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.commands.synchronization.ArgumentSerializer;
+import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
 import java.util.Arrays;
@@ -38,7 +39,7 @@ public class ArgumentTypeEnum<T extends Enum<T>> implements ArgumentType<T> {
         try {
             return Enum.valueOf(this.enumClass, reader.readString().toUpperCase(Locale.ENGLISH));
         } catch (IllegalArgumentException e) {
-            throw new SimpleCommandExceptionType(new TextComponent("Unknown value")).create();
+            throw new SimpleCommandExceptionType(Component.literal("Unknown value")).create();
         }
     }
 
@@ -59,25 +60,46 @@ public class ArgumentTypeEnum<T extends Enum<T>> implements ArgumentType<T> {
         return context.getArgument(name, enumClass);
     }
 
-    public static class Serializer implements ArgumentSerializer<ArgumentTypeEnum<?>> {
+    public static class Info implements ArgumentTypeInfo<ArgumentTypeEnum<?>, ArgumentTypeEnum.Info.Template<?>> {
 
         @Override
-        public void serializeToNetwork(ArgumentTypeEnum argumentTypeEnum, FriendlyByteBuf packetBuffer) {
+        public void serializeToNetwork(ArgumentTypeEnum.Info.Template<?> argumentTypeEnum, FriendlyByteBuf packetBuffer) {
             packetBuffer.writeUtf(argumentTypeEnum.enumClass.getName());
         }
 
         @Override
-        public ArgumentTypeEnum deserializeFromNetwork(FriendlyByteBuf packetBuffer) {
+        public ArgumentTypeEnum.Info.Template deserializeFromNetwork(FriendlyByteBuf packetBuffer) {
             try {
-                return new ArgumentTypeEnum(Class.forName(packetBuffer.readUtf(PacketCodec.READ_STRING_MAX_LENGTH)));
+                return new ArgumentTypeEnum.Info.Template(Class.forName(packetBuffer.readUtf(PacketCodec.READ_STRING_MAX_LENGTH)));
             } catch (ClassNotFoundException e) {
                 return null;
             }
         }
 
         @Override
-        public void serializeToJson(ArgumentTypeEnum argumentTypeEnum, JsonObject jsonObject) {
+        public void serializeToJson(ArgumentTypeEnum.Info.Template<?> argumentTypeEnum, JsonObject jsonObject) {
             jsonObject.addProperty("class", argumentTypeEnum.enumClass.getName());
+        }
+
+        @Override
+        public Template<?> unpack(ArgumentTypeEnum<?> arg) {
+            return new ArgumentTypeEnum.Info.Template<>(arg.enumClass);
+        }
+
+        public final class Template<T extends Enum<T>> implements ArgumentTypeInfo.Template<ArgumentTypeEnum<?>> {
+            private final Class<T> enumClass;
+
+            Template(Class<T> enumClass) {
+                this.enumClass = enumClass;
+            }
+
+            public ArgumentTypeEnum<?> instantiate(CommandBuildContext p_235533_) {
+                return new ArgumentTypeEnum<>(enumClass);
+            }
+
+            public ArgumentTypeInfo<ArgumentTypeEnum<?>, ?> type() {
+                return Info.this;
+            }
         }
     }
 

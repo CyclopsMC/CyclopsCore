@@ -1,12 +1,13 @@
 package org.cyclops.cyclopscore.client.model;
 
 import com.google.common.primitives.Ints;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -15,7 +16,6 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * A model that can be used as a basis for flexible baked models.
@@ -229,7 +229,7 @@ public abstract class DynamicBaseModel implements BakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand) {
+    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
         return Collections.emptyList();
     }
 

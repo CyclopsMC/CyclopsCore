@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.block.multi;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.LevelReader;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
@@ -52,7 +51,7 @@ public class HollowCubeDetector extends CubeDetector {
         } else {
             if (!isAir(world, location)) {
                 //System.out.println("No air at " + location);
-                return new TranslatableComponent("multiblock.cyclopscore.error.hollow.air",
+                return Component.translatable("multiblock.cyclopscore.error.hollow.air",
                         LocationHelpers.toCompactString(location));
             }
         }

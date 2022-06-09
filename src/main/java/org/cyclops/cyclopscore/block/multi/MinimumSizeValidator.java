@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.block.multi;
 import lombok.Data;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 /**
@@ -20,7 +19,7 @@ public class MinimumSizeValidator implements ISizeValidator {
         if(SizeValidators.compareVec3i(size, getMinimumSize()) >= 0) {
             return null;
         }
-        return new TranslatableComponent("multiblock.cyclopscore.error.size.min",
+        return Component.translatable("multiblock.cyclopscore.error.size.min",
                 LocationHelpers.toCompactString(size), LocationHelpers.toCompactString(getMinimumSize()));
     }
 }

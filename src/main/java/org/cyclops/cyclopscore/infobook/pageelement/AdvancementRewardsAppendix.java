@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -132,7 +133,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
             if (advancement == null) {
                 allAchievementsValid = false;
                 Images.LOCKED.draw(gui, matrixStack, x + offsetX + 2, y + offsetY + 1);
-                renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, new net.minecraft.network.chat.TextComponent(""), null, gui);
+                renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, Component.literal(""), null, gui);
             } else {
                 RecipeAppendix.renderItemForButton(gui, matrixStack, x + offsetX, y + offsetY, advancement.getDisplay().getIcon(), mx, my, true, null);
                 if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getInstance().player, advancementId)) {
@@ -140,7 +141,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
                 } else {
                     allAchievementsValid = false;
                 }
-                renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, new net.minecraft.network.chat.TextComponent(""), null, gui);
+                renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, Component.literal(""), null, gui);
                 offsetX += SLOT_SIZE + SLOT_PADDING * 2;
             }
         }
@@ -152,7 +153,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         gui.drawTextBanner(matrixStack, x + width / 2, y - 2 + offsetY);
         boolean hovering = mx > x && mx < x + getWidth() && my > y + offsetY - 10 && my < y + offsetY + 5;
         gui.drawScaledCenteredString(matrixStack, L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards"), x, y - 2 + offsetY, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
-        renderButtonHolders.get(COLLECT).update(x, y - 8 + offsetY, new net.minecraft.network.chat.TextComponent(""), null, gui);
+        renderButtonHolders.get(COLLECT).update(x, y - 8 + offsetY, Component.literal(""), null, gui);
         if (allAchievementsValid && !taken) {
             float g = hovering ? 1.0F : (((float) (gui.getTick() % 20)) / 20) * 0.4F + 0.6F;
             float r = hovering ? 0.2F : 0.7F;

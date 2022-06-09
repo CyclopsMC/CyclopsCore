@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
@@ -54,12 +53,12 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I>, I> 
     }
 
     /**
-     * Register the {@link IForgeRegistryEntry} inside the given config.
+     * Register the forge registry entry inside the given config.
      * @param config The corresponding config.
      * @param <C> The subclass of ExtendedConfig.
      * @param <I> The instance corresponding to this config.
      */
-    public static <C extends ExtendedConfigForge<C, I>, I extends IForgeRegistryEntry<? super I>> void register(C config) {
+    public static <C extends ExtendedConfigForge<C, I>, I> void register(C config) {
         register(config, () -> {
             config.onForgeRegistered();
             return null;
@@ -67,37 +66,37 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I>, I> 
     }
 
     /**
-     * Register the {@link IForgeRegistryEntry} inside the given config.
+     * Register the forge registry entry inside the given config.
      * @param config The corresponding config.
      * @param callback A callback that will be called when the entry is registered.
      * @param <C> The subclass of ExtendedConfig.
      * @param <I> The instance corresponding to this config.
      */
-    public static <C extends ExtendedConfigForge<C, I>, I extends IForgeRegistryEntry<? super I>> void register(C config, @Nullable Callable<?> callback) {
+    public static <C extends ExtendedConfigForge<C, I>, I> void register(C config, @Nullable Callable<?> callback) {
         register(Objects.requireNonNull(config.getRegistry(),
                 "Tried registering a config for which no registry exists: " + config.getNamedId()), config, callback);
     }
 
     /**
-     * Register the {@link IForgeRegistryEntry} inside the given config.
+     * Register the forge registry entry inside the given config.
      * @param registry The registry.
      * @param config The corresponding config.
      * @param <C> The subclass of ExtendedConfig.
      * @param <I> The instance corresponding to this config.
      */
-    public static <C extends ExtendedConfigForge<C, I>, I extends IForgeRegistryEntry<? super I>> void register(IForgeRegistry<? super I> registry, C config) {
+    public static <C extends ExtendedConfigForge<C, I>, I> void register(IForgeRegistry<? super I> registry, C config) {
         register(registry, config, null);
     }
 
     /**
-     * Register the {@link IForgeRegistryEntry} inside the given config.
+     * Register the forge registry entry inside the given config.
      * @param registry The registry.
      * @param config The config.
      * @param callback A callback that will be called when the entry is registered.
      * @param <C> The subclass of ExtendedConfig.
      * @param <I> The instance corresponding to this config.
      */
-    public static <C extends ExtendedConfigForge<C, I>, I extends IForgeRegistryEntry<? super I>> void register(IForgeRegistry<? super I> registry, C config, @Nullable Callable<?> callback) {
+    public static <C extends ExtendedConfigForge<C, I>, I> void register(IForgeRegistry<? super I> registry, C config, @Nullable Callable<?> callback) {
         config.getMod().getConfigHandler().registerToRegistry(registry, config, callback);
     }
 }

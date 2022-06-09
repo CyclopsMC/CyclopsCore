@@ -20,6 +20,11 @@ public class InventoryFluid extends CraftingContainer implements IInventoryFluid
     public InventoryFluid(NonNullList<ItemStack> itemStacks, NonNullList<FluidStack> fluidStacks) {
         super(new AbstractContainerMenu(null, 0) {
             @Override
+            public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
+                return ItemStack.EMPTY;
+            }
+
+            @Override
             public boolean stillValid(Player playerIn) {
                 return false;
             }

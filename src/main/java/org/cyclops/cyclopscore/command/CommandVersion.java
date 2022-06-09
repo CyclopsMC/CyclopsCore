@@ -6,8 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.Util;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -25,7 +24,7 @@ public class CommandVersion implements Command<CommandSourceStack> {
 
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         context.getSource().getPlayerOrException()
-                .sendMessage(new TextComponent(this.mod.getContainer().getModInfo().getVersion().toString()), Util.NIL_UUID);
+                .sendSystemMessage(Component.literal(this.mod.getContainer().getModInfo().getVersion().toString()));
         return 0;
     }
 

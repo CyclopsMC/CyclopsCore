@@ -8,7 +8,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.command.CommandDebug;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
@@ -31,7 +31,7 @@ public class ArgumentTypeDebugPacket implements ArgumentType<PacketCodec> {
     public PacketCodec parse(StringReader reader) throws CommandSyntaxException {
         PacketCodec packet = CommandDebug.PACKETS.get(reader.readString());
         if (packet == null) {
-            throw new SimpleCommandExceptionType(new TextComponent("Invalid packet type")).create();
+            throw new SimpleCommandExceptionType(Component.literal("Invalid packet type")).create();
         }
         return packet;
     }

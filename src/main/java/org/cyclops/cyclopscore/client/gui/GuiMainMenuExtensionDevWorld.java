@@ -1,29 +1,24 @@
 package org.cyclops.cyclopscore.client.gui;
 
+import net.minecraft.CrashReport;
 import net.minecraft.FileUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ErrorScreen;
-import net.minecraft.client.gui.screens.PresetFlatWorldScreen;
+import net.minecraft.client.gui.screens.GenericDirtMessageScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.DataPackConfig;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
-import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.FlatLevelSource;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
-import net.minecraft.world.level.levelgen.flat.FlatLevelGeneratorSettings;
-import net.minecraft.world.level.levelgen.structure.StructureSet;
+import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.minecraft.world.level.storage.LevelStorageException;
 import net.minecraft.world.level.storage.LevelSummary;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,21 +31,23 @@ import org.cyclops.cyclopscore.GeneralConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class GuiMainMenuExtensionDevWorld {
 
     private static final String WORLD_NAME_PREFIX = "cyclops-dev";
-    private static final String PRESET_FLAT_WORLD = "minecraft:bedrock,3*minecraft:stone,52*minecraft:sandstone;minecraft:desert;";
-    private static final String PRESET_FLAT_WORLD_JSON = "{\"bonus_chest\":false,\"dimensions\":{\"minecraft:overworld\":{\"type\":\"minecraft:overworld\",\"generator\":{\"settings\":{\"lakes\":false,\"features\":false,\"biome\":\"minecraft:desert\",\"structures\":{\"structures\":{}},\"layers\":[{\"height\":1,\"block\":\"minecraft:bedrock\"},{\"height\":3,\"block\":\"minecraft:stone\"},{\"height\":52,\"block\":\"minecraft:sandstone\"}]},\"type\":\"minecraft:flat\"}},\"minecraft:the_nether\":{\"type\":\"minecraft:the_nether\",\"generator\":{\"biome_source\":{\"preset\":\"minecraft:nether\",\"seed\":-7729799262413108572,\"type\":\"minecraft:multi_noise\"},\"seed\":-7729799262413108572,\"settings\":\"minecraft:nether\",\"type\":\"minecraft:noise\"}},\"minecraft:the_end\":{\"type\":\"minecraft:the_end\",\"generator\":{\"biome_source\":{\"seed\":-7729799262413108572,\"type\":\"minecraft:the_end\"},\"seed\":-7729799262413108572,\"settings\":\"minecraft:end\",\"type\":\"minecraft:noise\"}}},\"seed\":-7729799262413108572,\"generate_features\":false}";
 
     @SubscribeEvent
     public static void onMainMenuInit(ScreenEvent.InitScreenEvent event) {
         // Add a button to the main menu if we're in a dev environment
         if (GeneralConfig.devWorldButton && event.getScreen() instanceof TitleScreen) {
             event.addListener(new Button(event.getScreen().width / 2 + 102, event.getScreen().height / 4 + 48,
-                    58, 20, new TranslatableComponent("general.cyclopscore.dev_world"), (button) -> {
+                    58, 20, Component.translatable("general.cyclopscore.dev_world"), (button) -> {
                 Minecraft mc = Minecraft.getInstance();
 
                 // Open the last played dev world
@@ -59,7 +56,13 @@ public class GuiMainMenuExtensionDevWorld {
                     LevelSummary devWorldSummary = null;
                     mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                     try {
-                        for (LevelSummary worldSummary : mc.getLevelSource().getLevelList()) {
+                        List<LevelSummary> levelList = mc.getLevelSource().loadLevelSummaries(mc.getLevelSource().findLevelCandidates())
+                                .exceptionally((p_233202_) -> {
+                                    mc.delayCrash(CrashReport.forThrowable(p_233202_, "Couldn't load level list"));
+                                    return List.of();
+                                })
+                                .get(100, TimeUnit.MILLISECONDS);
+                        for (LevelSummary worldSummary : levelList) {
                             if (worldSummary.getLevelName().equals(WORLD_NAME_PREFIX)) {
                                 if (devWorldSummary == null
                                         || devWorldSummary.getLastPlayed() < worldSummary.getLastPlayed()) {
@@ -68,13 +71,14 @@ public class GuiMainMenuExtensionDevWorld {
                             }
                         }
 
-                    } catch (LevelStorageException e) {
+                    } catch (InterruptedException | ExecutionException | TimeoutException | LevelStorageException e) {
                         CyclopsCore.clog(Level.ERROR, "Couldn't load level list" + e.getMessage());
-                        mc.setScreen(new ErrorScreen(new TranslatableComponent("selectWorld.unable_to_load"), new TextComponent(e.getMessage())));
+                        mc.setScreen(new ErrorScreen(Component.translatable("selectWorld.unable_to_load"), Component.literal(e.getMessage())));
                     }
 
                     if (devWorldSummary != null && mc.getLevelSource().levelExists(devWorldSummary.getLevelId())) {
-                        mc.loadLevel(devWorldSummary.getLevelId());
+                        mc.forceSetScreen(new GenericDirtMessageScreen(Component.translatable("selectWorld.data_read")));
+                        mc.createWorldOpenFlows().loadLevel(event.getScreen(), devWorldSummary.getLevelId());
                         return;
                     }
                 }
@@ -88,16 +92,10 @@ public class GuiMainMenuExtensionDevWorld {
                 LevelSettings worldsettings = new LevelSettings(WORLD_NAME_PREFIX, GameType.CREATIVE,
                         false, Difficulty.PEACEFUL, true, gameRules, DataPackConfig.DEFAULT);
 
-                // Create generator settings, based on a flat world preset
+                // Create generator settings, based on GameTestServer
                 int seed = new Random().nextInt();
                 RegistryAccess.Frozen dynamicRegistries = RegistryAccess.BUILTIN.get();
-                Registry<DimensionType> registryDimensionType = dynamicRegistries.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY);
-                Registry<Biome> registryBiome = dynamicRegistries.registryOrThrow(Registry.BIOME_REGISTRY);
-                Registry<StructureSet> registryStructureSet = dynamicRegistries.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY);
-                Registry<LevelStem> simpleregistry = DimensionType.defaultDimensions(dynamicRegistries, seed);
-                FlatLevelGeneratorSettings flatgenerationsettings = PresetFlatWorldScreen.fromString(registryBiome, registryStructureSet, PRESET_FLAT_WORLD, FlatLevelGeneratorSettings.getDefault(registryBiome, registryStructureSet));
-                WorldGenSettings generatorSettings = new WorldGenSettings(seed, false, false,
-                        WorldGenSettings.withOverworld(registryDimensionType, simpleregistry, new FlatLevelSource(registryStructureSet, flatgenerationsettings)));
+                WorldGenSettings generatorSettings = dynamicRegistries.registryOrThrow(Registry.WORLD_PRESET_REGISTRY).getHolderOrThrow(WorldPresets.FLAT).value().createWorldGenSettings(seed, false, false);
 
                 // Determine a save name
                 String saveName;
@@ -108,7 +106,7 @@ public class GuiMainMenuExtensionDevWorld {
                 }
 
                 // Create the world
-                mc.createLevel(saveName, worldsettings, dynamicRegistries, generatorSettings);
+                mc.createWorldOpenFlows().createFreshLevel(saveName, worldsettings, dynamicRegistries, generatorSettings);
             }));
         }
     }

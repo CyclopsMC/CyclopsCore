@@ -2,8 +2,10 @@ package org.cyclops.cyclopscore;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.synchronization.ArgumentTypes;
-import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
+import net.minecraft.commands.synchronization.ArgumentTypeInfo;
+import net.minecraft.commands.synchronization.ArgumentTypeInfos;
+import net.minecraft.commands.synchronization.SingletonArgumentInfo;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -12,6 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
 import org.cyclops.cyclopscore.client.particle.ParticleBlurConfig;
@@ -21,7 +24,7 @@ import org.cyclops.cyclopscore.command.CommandDumpRegistries;
 import org.cyclops.cyclopscore.command.CommandIgnite;
 import org.cyclops.cyclopscore.command.CommandInfoBookTest;
 import org.cyclops.cyclopscore.command.CommandReloadResources;
-import org.cyclops.cyclopscore.command.argument.ArgumentSerializerMod;
+import org.cyclops.cyclopscore.command.argument.ArgumentInfoMod;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigProperty;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacket;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnum;
@@ -116,15 +119,19 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         RegistryExportables.load();
 
         // Register argument types
-        ArgumentTypes.register(Reference.MOD_ID + ":" + "enum",
+        DeferredRegister<ArgumentTypeInfo<?, ?>> argumentTypeRegistry = DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, getModId());
+        argumentTypeRegistry.register("enum", () -> ArgumentTypeInfos.registerByClass(
                 (Class<ArgumentTypeEnum<?>>) (Class) ArgumentTypeEnum.class,
-                new ArgumentTypeEnum.Serializer());
-        ArgumentTypes.register(Reference.MOD_ID + ":" + "config_property",
-                ArgumentTypeConfigProperty.class, new ArgumentSerializerMod<>(ArgumentTypeConfigProperty::new,
-                        ArgumentTypeConfigProperty::getMod));
-        ArgumentTypes.register(Reference.MOD_ID + ":" + "debug_packet",
+                new ArgumentTypeEnum.Info()
+        ));
+        argumentTypeRegistry.register("config_property", () -> ArgumentTypeInfos.registerByClass(
+                ArgumentTypeConfigProperty.class,
+                new ArgumentInfoMod<>()
+        ));
+        argumentTypeRegistry.register("debug_packet", () -> ArgumentTypeInfos.registerByClass(
                 ArgumentTypeDebugPacket.class,
-                new EmptyArgumentSerializer<>(() -> ArgumentTypeDebugPacket.INSTANCE));
+                SingletonArgumentInfo.contextFree(() -> ArgumentTypeDebugPacket.INSTANCE)
+        ));
 
         getRegistryManager().getRegistry(IInfoBookRegistry.class).registerInfoBook(
                 InfoBookTest.getInstance(), "/data/" + Reference.MOD_ID + "/info/test.xml");

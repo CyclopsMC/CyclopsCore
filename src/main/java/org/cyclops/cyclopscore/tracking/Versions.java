@@ -3,15 +3,12 @@ package org.cyclops.cyclopscore.tracking;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -146,7 +143,7 @@ public class Versions {
                 if (triple.getMiddle().needsUpdate()) {
                     // Chat formatting inspired by CoFH
                     Player player = event.player;
-                    MutableComponent chat = new TextComponent("");
+                    MutableComponent chat = Component.literal("");
 
                     Style modNameStyle = Style.EMPTY;
                     modNameStyle.withColor(TextColor.fromLegacyFormat(ChatFormatting.AQUA));
@@ -159,29 +156,29 @@ public class Versions {
 
                     String currentVersion = MinecraftHelpers.getMinecraftVersion() + "-" + triple.getLeft().getContainer().getModInfo().getVersion().toString();
                     String newVersion = MinecraftHelpers.getMinecraftVersion() + "-" + triple.getMiddle().getVersion();
-                    Component versionTransition = new TextComponent(String.format("%s -> %s", currentVersion, newVersion)).setStyle(versionStyle);
+                    Component versionTransition = Component.literal(String.format("%s -> %s", currentVersion, newVersion)).setStyle(versionStyle);
                     modNameStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, versionTransition));
-                    Component modNameComponent = new TextComponent(String.format("[%s]", triple.getLeft().getModName())).setStyle(modNameStyle);
+                    Component modNameComponent = Component.literal(String.format("[%s]", triple.getLeft().getModName())).setStyle(modNameStyle);
 
-                    Component downloadComponent = new TranslatableComponent(L10NHelpers.localize("general.cyclopscore.version.download")).setStyle(downloadStyle);
-                    downloadStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("general.cyclopscore.version.clickToDownload")));
+                    Component downloadComponent = Component.translatable(L10NHelpers.localize("general.cyclopscore.version.download")).setStyle(downloadStyle);
+                    downloadStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("general.cyclopscore.version.clickToDownload")));
                     downloadStyle.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, triple.getMiddle().getUpdateUrl()));
 
                     chat.append(modNameComponent);
                     chat.append(" ");
-                    chat.append(new TranslatableComponent("general.cyclopscore.version.updateAvailable")
+                    chat.append(Component.translatable("general.cyclopscore.version.updateAvailable")
                             .setStyle(Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.WHITE))));
                     chat.append(String.format(": %s ", triple.getMiddle().getVersion()));
                     chat.append(downloadComponent);
 
                     try {
-                    player.sendMessage(chat, Util.NIL_UUID);
+                    player.sendSystemMessage(chat);
 
-                    chat = new TextComponent("");
+                    chat = Component.literal("");
                     chat.append(modNameComponent);
                     chat.append(ChatFormatting.WHITE + " ");
                     chat.append(triple.getMiddle().getInfo());
-                    player.sendMessage(chat, Util.NIL_UUID);
+                    player.sendSystemMessage(chat);
                     } catch (NullPointerException e) {
                         // The player SMP connection can rarely be null at this point,
                         // let's retry in the next tick.

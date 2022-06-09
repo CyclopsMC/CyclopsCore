@@ -60,7 +60,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     @Override
     public void fillItemCategory(CreativeModeTab itemGroup, NonNullList<ItemStack> items) {
         if (!ItemStackHelpers.isValidCreativeTab(this, itemGroup)) return;
-        if (this.allowdedIn(category)) {
+        if (this.allowedIn(category)) {
             component.fillItemGroup(itemGroup, items, fluid.get());
         }
     }

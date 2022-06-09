@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
 
 /**
@@ -8,7 +7,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class ConfigurableTypeActionForge<C extends ExtendedConfigForge<C, I>, I extends IForgeRegistryEntry<? super I>>
+public class ConfigurableTypeActionForge<C extends ExtendedConfigForge<C, I>, I>
         extends ConfigurableTypeAction<C, I> {
 
     @Override

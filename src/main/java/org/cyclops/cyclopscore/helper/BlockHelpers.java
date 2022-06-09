@@ -1,18 +1,16 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FireBlock;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -118,19 +116,6 @@ public final class BlockHelpers {
      */
     public static boolean doesBlockHaveSolidTopSurface(LevelReader world, BlockPos blockPos) {
         return world.getBlockState(blockPos.offset(0, -1, 0)).isSolidRender(world, blockPos);
-    }
-
-    /**
-     * Set the fire info of the given block.
-     * This is a copy of {@link FireBlock}'s setFireInfo.
-     * @param blockIn The block.
-     * @param encouragement The fire encouragement
-     * @param flammability The flammability
-     */
-    public static void setFireInfo(Block blockIn, int encouragement, int flammability) {
-        if (blockIn == Blocks.AIR) throw new IllegalArgumentException("Tried to set air on fire... This is bad.");
-        ((FireBlock) Blocks.FIRE).flameOdds.put(blockIn, encouragement);
-        ((FireBlock) Blocks.FIRE).burnOdds.put(blockIn, flammability);
     }
 
 }

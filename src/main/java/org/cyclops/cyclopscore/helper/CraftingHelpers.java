@@ -5,18 +5,18 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
@@ -139,6 +139,11 @@ public class CraftingHelpers {
                     height = ((CraftingContainer) inventoryCrafting).getHeight();
                 }
                 this.inventoryCrafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
+                    @Override
+                    public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
+                        return ItemStack.EMPTY;
+                    }
+
                     @Override
                     public boolean stillValid(Player playerIn) {
                         return false;

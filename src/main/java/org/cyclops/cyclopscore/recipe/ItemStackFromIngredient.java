@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.compress.utils.Lists;
 
 import javax.annotation.Nullable;
@@ -60,7 +61,7 @@ public class ItemStackFromIngredient {
         // Sort stacks by mod id, and take first
         ItemStack outputStack = Arrays.stream(matchingStacks)
                 .min(Comparator.comparingInt(e -> modPriorityIndex.getOrDefault(
-                        e.getItem().getRegistryName().getNamespace(),
+                        ForgeRegistries.ITEMS.getKey(e.getItem()).getNamespace(),
                         Integer.MAX_VALUE
                 )))
                 .orElseThrow(() -> new IllegalStateException("No tag value found for " + key))

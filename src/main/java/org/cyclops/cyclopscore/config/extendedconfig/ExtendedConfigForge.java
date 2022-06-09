@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.function.Function;
@@ -13,7 +12,7 @@ import java.util.function.Function;
  * @param <C> Class of the extension of ExtendedConfig
  * @param <I> The instance corresponding to this config.
  */
-public abstract class ExtendedConfigForge<C extends ExtendedConfig<C, I>, I extends IForgeRegistryEntry<? super I>>
+public abstract class ExtendedConfigForge<C extends ExtendedConfig<C, I>, I>
         extends ExtendedConfig<C, I> {
 
     /**

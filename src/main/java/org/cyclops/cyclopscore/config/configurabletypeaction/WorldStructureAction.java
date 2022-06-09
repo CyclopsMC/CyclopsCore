@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import org.cyclops.cyclopscore.config.extendedconfig.WorldStructureConfig;
 
 /**
@@ -8,6 +8,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.WorldStructureConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class WorldStructureAction extends ConfigurableTypeActionForge<WorldStructureConfig, StructureFeature<?>> {
+public class WorldStructureAction extends ConfigurableTypeActionForge<WorldStructureConfig, Structure> {
 
 }

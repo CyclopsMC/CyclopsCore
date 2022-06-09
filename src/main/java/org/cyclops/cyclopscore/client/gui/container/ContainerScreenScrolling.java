@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import org.cyclops.cyclopscore.client.gui.component.WidgetScrollBar;
@@ -40,7 +39,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
             int searchX = getSearchX();
             int searchY = getSearchY();
             if(this.searchField == null) {
-                this.searchField = new WidgetTextFieldExtended(this.font, this.leftPos + searchX, this.topPos + searchY, searchWidth, this.font.lineHeight, new TranslatableComponent("gui.cyclopscore.search"));
+                this.searchField = new WidgetTextFieldExtended(this.font, this.leftPos + searchX, this.topPos + searchY, searchWidth, this.font.lineHeight, Component.translatable("gui.cyclopscore.search"));
                 this.searchField.setMaxLength(64);
                 this.searchField.setMaxLength(15);
                 this.searchField.setBordered(false);
@@ -62,7 +61,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
         if (scrollbar == null) {
             getMenu().updateFilter("");
             this.scrollbar = new WidgetScrollBar(this.leftPos + getScrollX(), this.topPos + getScrollY(), getScrollHeight(),
-                    new TranslatableComponent("gui.cyclopscore.scrollbar"), getMenu(),
+                    Component.translatable("gui.cyclopscore.scrollbar"), getMenu(),
                     getMenu().getPageSize(), getScrollRegion());
             this.scrollbar.setTotalRows(getMenu().getFilteredItemCount() / getMenu().getColumns());
         }

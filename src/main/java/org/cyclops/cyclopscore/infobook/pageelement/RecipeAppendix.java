@@ -8,9 +8,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -262,7 +262,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
                     target = pair.getLeft();
                 }
             }
-            super.update(x, y, new TextComponent("empty"), target, gui);
+            super.update(x, y, Component.literal("empty"), target, gui);
         }
 
         protected abstract String getTranslationKey(E element);

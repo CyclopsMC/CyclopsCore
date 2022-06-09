@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.block.multi;
 
 import lombok.Data;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.block.Block;
 
 /**
@@ -19,7 +18,7 @@ public class MaximumBlockCountValidator implements IBlockCountValidator {
         if(count <= getMaximumCount()) {
             return null;
         }
-        return new TranslatableComponent("multiblock.cyclopscore.error.blockCount.max",
-                getMaximumCount(), new TranslatableComponent(block.getDescriptionId()), count);
+        return Component.translatable("multiblock.cyclopscore.error.blockCount.max",
+                getMaximumCount(), Component.translatable(block.getDescriptionId()), count);
     }
 }

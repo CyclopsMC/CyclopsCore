@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.network.CodecField;
 import org.cyclops.cyclopscore.network.PacketCodec;
@@ -32,7 +33,7 @@ public class ValueNotifyPacket extends PacketCodec {
     }
 
     public ValueNotifyPacket(MenuType<?> containerType, int valueId, CompoundTag value) {
-        this.containerType = containerType.getRegistryName().toString();
+        this.containerType = ForgeRegistries.CONTAINERS.getKey(containerType).toString();
         this.valueId = valueId;
         this.value = value;
     }
@@ -43,7 +44,7 @@ public class ValueNotifyPacket extends PacketCodec {
     }
 
     protected boolean isContainerValid(IValueNotifiable container) {
-        return container.getValueNotifiableType().getRegistryName().toString().equals(containerType);
+        return ForgeRegistries.CONTAINERS.getKey(container.getValueNotifiableType()).toString().equals(containerType);
     }
 
     @Override

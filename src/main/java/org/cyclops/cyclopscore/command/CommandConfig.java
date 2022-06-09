@@ -7,9 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.Util;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigProperty;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -34,17 +32,17 @@ public class CommandConfig implements Command<CommandSourceStack> {
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ConfigurablePropertyData property = context.getArgument("property", ConfigurablePropertyData.class);
         if (!this.valueSet) {
-            context.getSource().getPlayerOrException().sendMessage(new TextComponent(property.getConfigProperty().get().toString()), Util.NIL_UUID);
+            context.getSource().getPlayerOrException().sendSystemMessage(Component.literal(property.getConfigProperty().get().toString()));
         } else {
             String value = context.getArgument("value", String.class);
             Object newValue = Helpers.tryParse(value, property.getConfigProperty().get());
             if(newValue != null) {
                 property.getConfigProperty().set(newValue);
                 property.getConfigProperty().save();
-                context.getSource().getPlayerOrException().sendMessage(new TranslatableComponent("chat.cyclopscore.command.updatedValue",
-                        property.getName(), newValue.toString()), Util.NIL_UUID);
+                context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable("chat.cyclopscore.command.updatedValue",
+                        property.getName(), newValue.toString()));
             } else {
-                context.getSource().getPlayerOrException().sendMessage(new TranslatableComponent("chat.cyclopscore.command.invalidNewValue"), Util.NIL_UUID);
+                context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable("chat.cyclopscore.command.invalidNewValue"));
                 return 1;
             }
         }

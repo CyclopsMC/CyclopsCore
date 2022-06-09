@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.block.multi;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 /**
@@ -15,7 +14,7 @@ public class CubeSizeValidator implements ISizeValidator {
         if(size.getX() == size.getY() && size.getY() == size.getZ()) {
             return null;
         }
-        return new TranslatableComponent("multiblock.cyclopscore.error.size.cube",
+        return Component.translatable("multiblock.cyclopscore.error.size.cube",
                 LocationHelpers.toCompactString(size));
     }
 }

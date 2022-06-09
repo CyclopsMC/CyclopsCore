@@ -18,11 +18,7 @@ import java.util.function.Function;
 public class FoliagePlacerConfig<T extends FoliagePlacer> extends ExtendedConfigForge<FoliagePlacerConfig<T>, FoliagePlacerType<T>> {
 
     public FoliagePlacerConfig(ModBase mod, String namedId, Function<FoliagePlacerConfig<T>, Codec<T>> codec) {
-        super(mod, namedId, (eConfig) -> {
-            FoliagePlacerType<T> type = new FoliagePlacerType<>(codec.apply(eConfig));
-            type.setRegistryName(mod.getModId(), namedId);
-            return type;
-        });
+        super(mod, namedId, (eConfig) ->  new FoliagePlacerType<>(codec.apply(eConfig)));
     }
 
     @Override

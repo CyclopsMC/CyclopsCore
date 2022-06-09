@@ -16,8 +16,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -238,19 +236,19 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
 
         if (this.buttonNextPage.visible && RenderHelpers.isPointInButton(this.buttonNextPage, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, new TranslatableComponent("infobook.cyclopscore.next_page"));
+            drawTooltip(matrixStack, mouseX, mouseY, Component.translatable("infobook.cyclopscore.next_page"));
         }
         if (this.buttonPreviousPage.visible && RenderHelpers.isPointInButton(this.buttonPreviousPage, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, new TranslatableComponent("infobook.cyclopscore.previous_page"));
+            drawTooltip(matrixStack, mouseX, mouseY, Component.translatable("infobook.cyclopscore.previous_page"));
         }
         if (this.buttonBack.visible && RenderHelpers.isPointInButton(this.buttonBack, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, new TranslatableComponent("infobook.cyclopscore.last_page"));
+            drawTooltip(matrixStack, mouseX, mouseY, Component.translatable("infobook.cyclopscore.last_page"));
         }
         if (this.buttonParent.visible && RenderHelpers.isPointInButton(this.buttonParent, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, new TranslatableComponent("infobook.cyclopscore.parent_section"));
+            drawTooltip(matrixStack, mouseX, mouseY, Component.translatable("infobook.cyclopscore.parent_section"));
         }
         if (this.buttonExternal.visible && RenderHelpers.isPointInButton(this.buttonExternal, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, new TranslatableComponent("infobook.cyclopscore.external"));
+            drawTooltip(matrixStack, mouseX, mouseY, Component.translatable("infobook.cyclopscore.external"));
         }
     }
 
@@ -465,7 +463,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
         public NextPageButton(int x, int y, int textureX, int textureY, int width, int height,
                               Button.OnPress onPress, ScreenInfoBook guiInfoBook) {
-            super(x, y, width, height, new TextComponent(""), onPress);
+            super(x, y, width, height, Component.literal(""), onPress);
             this.textureX = textureX;
             this.textureY = textureY;
             this.guiInfoBook = guiInfoBook;
@@ -506,7 +504,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
         public TextOverlayButton(HyperLink link, int x, int y, int height, int maxWidth, Button.OnPress onPress,
                                  ScreenInfoBook guiInfoBook) {
-            super(x, y, 0, height, new TextComponent(InfoSection.formatString(L10NHelpers.localize(link.getTranslationKey()))), onPress);
+            super(x, y, 0, height, Component.literal(InfoSection.formatString(L10NHelpers.localize(link.getTranslationKey()))), onPress);
             this.guiInfoBook = guiInfoBook;
             this.link = link;
             Font fontRenderer = Minecraft.getInstance().font;
@@ -518,7 +516,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
                 String originalMessage = getMessage().getString();
                 originalMessage = originalMessage.substring(0, (int) (((float) maxWidth) / this.width * originalMessage.length()) - 1);
                 originalMessage = originalMessage + "…";
-                setMessage(new TextComponent(originalMessage));
+                setMessage(Component.literal(originalMessage));
                 this.width = maxWidth;
             }
         }

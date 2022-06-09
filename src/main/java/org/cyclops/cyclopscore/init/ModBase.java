@@ -7,11 +7,9 @@ import lombok.Data;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -24,7 +22,9 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.NewRegistryEvent;
+import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
@@ -95,7 +95,7 @@ public abstract class ModBase<T extends ModBase> {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Block.class, EventPriority.HIGHEST, this::beforeRegistriedFilled);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
         MinecraftForge.EVENT_BUS.register(this);
 
         // Register proxies
@@ -279,9 +279,11 @@ public abstract class ModBase<T extends ModBase> {
      * Load things before Forge registries are being filled.
      * @param event The Forge registry filling event.
      */
-    private void beforeRegistriedFilled(RegistryEvent.Register<Block> event) {
-        // We only need to call this once, and the blocks event is emitted first.
-        getConfigHandler().loadForgeRegistriesFilled();
+    private void beforeRegistriedFilled(RegisterEvent event) {
+        if (event.getRegistryKey().equals(ForgeRegistries.BLOCKS.getRegistryKey())) {
+            // We only need to call this once, and the blocks event is emitted first.
+            getConfigHandler().loadForgeRegistriesFilled();
+        }
     }
 
     /**

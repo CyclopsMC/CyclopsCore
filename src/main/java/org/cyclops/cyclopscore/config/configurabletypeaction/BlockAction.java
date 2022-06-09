@@ -12,8 +12,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
@@ -50,20 +51,19 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     public static void register(@Nullable BiFunction<BlockConfig, Block, ? extends Item> itemBlockConstructor, BlockConfig config, @Nullable Callable<?> callback) {
         register(config, itemBlockConstructor == null ? callback : null); // Delay onForgeRegistered callback until item has been registered if one is applicable
         if(itemBlockConstructor != null) {
-            FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(Item.class, (RegistryEvent.Register<Item> event) -> {
-                Item itemBlock = itemBlockConstructor.apply(config, config.getInstance());
-                Objects.requireNonNull(itemBlock, "Received a null item for the item block constructor of " + config.getNamedId());
-                if (itemBlock.getRegistryName() == null) {
-                    itemBlock.setRegistryName(new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
-                }
-                event.getRegistry().register(itemBlock);
-                config.setItemInstance(itemBlock);
-                try {
-                    if (callback != null) {
-                        callback.call();
+            FMLJavaModLoadingContext.get().getModEventBus().addListener((RegisterEvent event) -> {
+                if (event.getRegistryKey().equals(ForgeRegistries.ITEMS.getRegistryKey())) {
+                    Item itemBlock = itemBlockConstructor.apply(config, config.getInstance());
+                    Objects.requireNonNull(itemBlock, "Received a null item for the item block constructor of " + config.getNamedId());
+                    event.getForgeRegistry().register(new ResourceLocation(config.getMod().getModId(), config.getNamedId()), itemBlock);
+                    config.setItemInstance(itemBlock);
+                    try {
+                        if (callback != null) {
+                            callback.call();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             });
         }

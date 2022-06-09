@@ -6,12 +6,11 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.network.NetworkHooks;
 import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTest;
 
@@ -29,7 +28,7 @@ public class CommandInfoBookTest implements Command<CommandSourceStack> {
         NetworkHooks.openGui(context.getSource().getPlayerOrException(), new MenuProvider() {
             @Override
             public Component getDisplayName() {
-                return new TranslatableComponent("gui.cyclopscore.infobook");
+                return Component.translatable("gui.cyclopscore.infobook");
             }
 
             @Nullable

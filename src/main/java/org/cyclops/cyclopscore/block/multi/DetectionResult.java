@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.block.multi;
 import lombok.Data;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
 /**
@@ -28,7 +27,7 @@ public class DetectionResult {
     }
 
     public DetectionResult(String error) {
-        this(new TextComponent(error));
+        this(Component.literal(error));
     }
 
 }

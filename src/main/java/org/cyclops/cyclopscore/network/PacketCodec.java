@@ -308,7 +308,7 @@ public abstract class PacketCodec extends PacketBase {
 
             @Override
             public void encode(Object object, FriendlyByteBuf output) {
-                output.writeUtf(((ResourceKey) object).getRegistryName().toString());
+                output.writeUtf(((ResourceKey) object).registry().toString());
                 output.writeUtf(((ResourceKey) object).location().toString());
             }
 

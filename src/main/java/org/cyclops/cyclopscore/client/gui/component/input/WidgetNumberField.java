@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.client.gui.component.input;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import org.cyclops.cyclopscore.client.gui.component.button.ButtonArrow;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
@@ -26,8 +25,8 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
         this.arrows = arrows;
 
         if(this.arrows) {
-            arrowUp = new ButtonArrow(x, y + height / 2, new TranslatableComponent("gui.cyclopscore.up"), (button) -> this.increase(), ButtonArrow.Direction.NORTH);
-            arrowDown = new ButtonArrow(x, y + height / 2, new TranslatableComponent("gui.cyclopscore.down"), (button) -> this.decrease(), ButtonArrow.Direction.SOUTH);
+            arrowUp = new ButtonArrow(x, y + height / 2, Component.translatable("gui.cyclopscore.up"), (button) -> this.increase(), ButtonArrow.Direction.NORTH);
+            arrowDown = new ButtonArrow(x, y + height / 2, Component.translatable("gui.cyclopscore.down"), (button) -> this.decrease(), ButtonArrow.Direction.SOUTH);
             arrowUp.y -= arrowUp.getHeight();
         }
         setBordered(true);

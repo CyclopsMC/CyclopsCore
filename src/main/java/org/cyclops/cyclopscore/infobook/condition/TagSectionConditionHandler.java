@@ -4,7 +4,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.tags.ITag;
 import net.minecraftforge.registries.tags.ITagManager;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -14,7 +13,7 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  *
  */
-public class TagSectionConditionHandler<T extends IForgeRegistryEntry<T>> implements ISectionConditionHandler {
+public class TagSectionConditionHandler<T> implements ISectionConditionHandler {
 
     private final ResourceKey<? extends Registry<T>> registry;
     private final ITagManager<T> tagCollection;

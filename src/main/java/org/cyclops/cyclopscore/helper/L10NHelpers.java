@@ -1,12 +1,10 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.Reference;
@@ -53,11 +51,11 @@ public final class L10NHelpers {
      */
     @OnlyIn(Dist.CLIENT)
     public static void addStatusInfo(List<Component> infoLines, boolean isEnabled, String statusPrefixKey) {
-        Component autoSupply = new TranslatableComponent(KEY_DISABLED);
+        Component autoSupply = Component.translatable(KEY_DISABLED);
         if (isEnabled) {
-            autoSupply = new TranslatableComponent(KEY_ENABLED);
+            autoSupply = Component.translatable(KEY_ENABLED);
         }
-        infoLines.add(new TranslatableComponent(statusPrefixKey, autoSupply));
+        infoLines.add(Component.translatable(statusPrefixKey, autoSupply));
     }
 
     /**
@@ -74,10 +72,10 @@ public final class L10NHelpers {
                 String localized = localize(key);
                 list.addAll(StringHelpers.splitLines(localized, MAX_TOOLTIP_LINE_LENGTH, IInformationProvider.INFO_PREFIX)
                         .stream()
-                        .map(TextComponent::new)
+                        .map(Component::literal)
                         .collect(Collectors.toList()));
             } else {
-                list.add(new TranslatableComponent("general." + Reference.MOD_ID + ".tooltip.info")
+                list.add(Component.translatable("general." + Reference.MOD_ID + ".tooltip.info")
                         .setStyle(Style.EMPTY
                                 .withColor(TextColor.fromLegacyFormat(ChatFormatting.GRAY))
                                 .withItalic(true)));

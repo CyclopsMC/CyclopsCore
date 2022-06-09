@@ -3,13 +3,12 @@ package org.cyclops.cyclopscore.block.multi;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import org.cyclops.cyclopscore.algorithm.Dimension;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 
@@ -99,8 +98,8 @@ public class CubeDetector {
         if(action != null && blockInfo.containsKey(block) && (error = action.onValidate(location, blockState)) != null) {
             return error;
         }
-        return contains ? null : new TranslatableComponent("multiblock.cyclopscore.error.invalidBlock",
-                LocationHelpers.toCompactString(location), new TranslatableComponent(block.getDescriptionId()));
+        return contains ? null : Component.translatable("multiblock.cyclopscore.error.invalidBlock",
+                LocationHelpers.toCompactString(location), Component.translatable(block.getDescriptionId()));
     }
 
     protected Component isValidLocation(LevelReader world, BlockPos location, BlockPos excludeLocation) {
@@ -443,11 +442,11 @@ public class CubeDetector {
     protected interface BlockPosAction {
 
         /**
-         * An action for {@link CubeDetector#coordinateRecursion(IWorldReader, int[][], BlockPosAction)}.
+         * An action for {@link CubeDetector#coordinateRecursion(LevelReader, int[][], BlockPosAction)}.
          * @param world The world.
          * @param location The location.
          * @return If the recursion should continue. If one is false, the full
-         * {@link CubeDetector#coordinateRecursion(IWorldReader, int[][], BlockPosAction)} will return false.
+         * {@link CubeDetector#coordinateRecursion(LevelReader, int[][], BlockPosAction)} will return false.
          */
         public boolean run(LevelReader world, BlockPos location);
 

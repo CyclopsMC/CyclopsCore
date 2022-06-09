@@ -1,23 +1,20 @@
 package org.cyclops.cyclopscore.helper;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
-import net.minecraft.client.Minecraft;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransform;
-import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -125,9 +122,8 @@ public final class ModelHelpers {
      */
     public static BlockModel loadModelBlock(ResourceLocation modelLocation) throws IOException {
         Resource resource = Minecraft.getInstance().getResourceManager().getResource(
-                new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath() + ".json"));
-        Reader reader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
-        return BlockModel.fromStream(reader);
+                new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath() + ".json")).get();
+        return BlockModel.fromStream(resource.openAsReader());
     }
 
     /**
