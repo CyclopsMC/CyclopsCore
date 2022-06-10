@@ -56,7 +56,7 @@ public class ConfigHandler {
             return Lists.newArrayList();
         }
     });
-    private boolean registryEventPassed = false;
+    private Set<String> registryEventPassed = Sets.newHashSet();
 
     public ConfigHandler(ModBase mod) {
         this.mod = mod;
@@ -217,7 +217,7 @@ public class ConfigHandler {
     public <V> void registerToRegistry(IForgeRegistry<? super V> registry,
                                        ExtendedConfigForge<?, V> config,
                                        @Nullable Callable<?> callback) {
-        if (this.registryEventPassed) {
+        if (this.registryEventPassed.contains(registry.getRegistryKey().toString())) {
             throw new IllegalStateException(String.format("Tried registering %s after its registration event.",
                     config.getNamedId()));
         }
@@ -227,7 +227,7 @@ public class ConfigHandler {
     @SubscribeEvent
     public void onRegistryEvent(RegisterEvent event) {
         if (event.getForgeRegistry() != null) {
-            this.registryEventPassed = true;
+            this.registryEventPassed.add(event.getRegistryKey().toString());
             IForgeRegistry registry = event.getForgeRegistry();
             registryEntriesHolder.get(registry.getRegistryKey().toString()).forEach((pair) -> {
                 ExtendedConfigForge<?, ?> config = pair.getLeft();

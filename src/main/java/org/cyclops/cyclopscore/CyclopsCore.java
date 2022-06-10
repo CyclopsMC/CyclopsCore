@@ -2,10 +2,6 @@ package org.cyclops.cyclopscore;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.synchronization.ArgumentTypeInfo;
-import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraft.commands.synchronization.SingletonArgumentInfo;
-import net.minecraft.core.Registry;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -14,7 +10,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
 import org.cyclops.cyclopscore.client.particle.ParticleBlurConfig;
@@ -24,10 +19,9 @@ import org.cyclops.cyclopscore.command.CommandDumpRegistries;
 import org.cyclops.cyclopscore.command.CommandIgnite;
 import org.cyclops.cyclopscore.command.CommandInfoBookTest;
 import org.cyclops.cyclopscore.command.CommandReloadResources;
-import org.cyclops.cyclopscore.command.argument.ArgumentInfoMod;
-import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigProperty;
-import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacket;
-import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnum;
+import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigPropertyConfig;
+import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacketConfig;
+import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.infobook.IInfoBookRegistry;
@@ -118,21 +112,6 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         Advancements.load();
         RegistryExportables.load();
 
-        // Register argument types
-        DeferredRegister<ArgumentTypeInfo<?, ?>> argumentTypeRegistry = DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, getModId());
-        argumentTypeRegistry.register("enum", () -> ArgumentTypeInfos.registerByClass(
-                (Class<ArgumentTypeEnum<?>>) (Class) ArgumentTypeEnum.class,
-                new ArgumentTypeEnum.Info()
-        ));
-        argumentTypeRegistry.register("config_property", () -> ArgumentTypeInfos.registerByClass(
-                ArgumentTypeConfigProperty.class,
-                new ArgumentInfoMod<>()
-        ));
-        argumentTypeRegistry.register("debug_packet", () -> ArgumentTypeInfos.registerByClass(
-                ArgumentTypeDebugPacket.class,
-                SingletonArgumentInfo.contextFree(() -> ArgumentTypeDebugPacket.INSTANCE)
-        ));
-
         getRegistryManager().getRegistry(IInfoBookRegistry.class).registerInfoBook(
                 InfoBookTest.getInstance(), "/data/" + Reference.MOD_ID + "/info/test.xml");
 
@@ -167,6 +146,11 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
         // Containers
         configHandler.addConfigurable(new ContainerInfoBookTestConfig());
+
+        // Argument types
+        configHandler.addConfigurable(new ArgumentTypeConfigPropertyConfig());
+        configHandler.addConfigurable(new ArgumentTypeDebugPacketConfig());
+        configHandler.addConfigurable(new ArgumentTypeEnumConfig());
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {

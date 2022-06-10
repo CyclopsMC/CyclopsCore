@@ -16,7 +16,7 @@ public class RegistryEntries {
     @ObjectHolder(registryName = "particle_type", value = "cyclopscore:drop_colored")
     public static final ParticleType<?> PARTICLE_DROP_COLORED = null;
 
-    @ObjectHolder(registryName = "particle_type", value = "cyclopscore:test_infobook")
+    @ObjectHolder(registryName = "menu", value = "cyclopscore:test_infobook")
     public static final MenuType<ContainerInfoBookTest> CONTAINER_INFOBOOK_TEST = null;
 
 }
