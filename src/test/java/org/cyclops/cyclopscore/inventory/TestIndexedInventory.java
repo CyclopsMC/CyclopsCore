@@ -3,11 +3,17 @@ package org.cyclops.cyclopscore.inventory;
 import com.google.common.collect.Iterators;
 import net.minecraft.DetectedVersion;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
 import org.junit.Test;
+
+import java.lang.reflect.Field;
+import java.util.Map;
 
 import static org.cyclops.cyclopscore.helper.CyclopsMatchers.isIterator;
 import static org.hamcrest.CoreMatchers.is;
@@ -29,6 +35,21 @@ public class TestIndexedInventory {
     private static final Item ITEM1 = new ItemDummy();
     private static final Item ITEM2 = new ItemDummy();
     private static final Item ITEM3 = new ItemDummy();
+
+    static {
+        try {
+            Field field = ForgeRegistry.class.getDeclaredField("delegatesByValue");
+            field.setAccessible(true);
+            Map<Item, Holder.Reference<Item>> delegates = ((Map<Item, Holder.Reference<Item>>) field
+                    .get(ForgeRegistries.ITEMS));
+
+            delegates.put(ITEM1, Holder.Reference.createIntrusive(Registry.ITEM, ITEM1));
+            delegates.put(ITEM2, Holder.Reference.createIntrusive(Registry.ITEM, ITEM2));
+            delegates.put(ITEM3, Holder.Reference.createIntrusive(Registry.ITEM, ITEM3));
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static final ItemStack STACK1 = new ItemStack(ITEM1);
     private static final ItemStack STACK2 = new ItemStack(ITEM2);
