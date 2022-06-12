@@ -78,6 +78,7 @@ public class ConfigurableType {
     public static final ConfigurableType FOLIAGE_PLACER = new ConfigurableType(true, FoliagePlacerConfig.class, new FoliagePlacerAction(), "foliage_placer");
     public static final ConfigurableType TRUNK_PLACER = new ConfigurableType(true, TrunkPlacerConfig.class, new TrunkPlacerAction(), "trunk_placer");
     public static final ConfigurableType ARGUMENT_TYPE = new ConfigurableType(true, ArgumentTypeConfig.class, new ArgumentTypeAction(), "argument_type");
+    public static final ConfigurableType BIOME_MODIFIER = new ConfigurableType(true, BiomeModifierConfig.class, new BiomeModifierAction(), "biome_modifier");
 
     /**
      * Dummy type, only used for configs that refer to nothing.
