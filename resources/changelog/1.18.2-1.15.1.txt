@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix ID Energy Battery causing overflows
+  Closes CyclopsMC/IntegratedDynamics#1179

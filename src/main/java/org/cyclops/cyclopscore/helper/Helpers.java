@@ -168,7 +168,7 @@ public class Helpers {
      */
     public static int multiplySafe(int a, int b) {
         int mul = a * b;
-        if(mul < a || mul < b) return Integer.MAX_VALUE;
+        if(a > 0 && b > 0 && (mul < a || mul < b)) return Integer.MAX_VALUE;
         return mul;
     }
 
