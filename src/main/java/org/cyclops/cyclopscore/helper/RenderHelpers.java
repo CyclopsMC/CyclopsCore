@@ -36,6 +36,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.opengl.GL11;
@@ -245,9 +247,10 @@ public class RenderHelpers {
     public static TextureAtlasSprite getFluidIcon(FluidStack fluid, Direction side) {
         if(side == null) side = Direction.UP;
 
-        TextureAtlasSprite icon = TEXTURE_GETTER.apply(fluid.getFluid().getAttributes().getFlowingTexture(fluid));
+        IFluidTypeRenderProperties renderProperties = RenderProperties.get(fluid.getFluid().getFluidType());
+        TextureAtlasSprite icon = TEXTURE_GETTER.apply(renderProperties.getFlowingTexture(fluid));
         if(icon == null || (side == Direction.UP || side == Direction.DOWN)) {
-            icon = TEXTURE_GETTER.apply(fluid.getFluid().getAttributes().getStillTexture(fluid));
+            icon = TEXTURE_GETTER.apply(renderProperties.getStillTexture(fluid));
         }
 
         return icon;
@@ -287,7 +290,8 @@ public class RenderHelpers {
      * @return The RGB colors.
      */
     public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidStack fluidStack) {
-        int color = fluidStack.getFluid().getAttributes().getColor(fluidStack);
+        IFluidTypeRenderProperties renderProperties = RenderProperties.get(fluidStack.getFluid().getFluidType());
+        int color = renderProperties.getColorTint(fluidStack);
         return Helpers.intToRGB(color);
     }
 
@@ -297,7 +301,8 @@ public class RenderHelpers {
      * @return The BGR colors.
      */
     public static int getFluidBakedQuadColor(FluidStack fluidStack) {
-        Triple<Float, Float, Float> colorParts = Helpers.intToRGB(fluidStack.getFluid().getAttributes().getColor(fluidStack));
+        IFluidTypeRenderProperties renderProperties = RenderProperties.get(fluidStack.getFluid().getFluidType());
+        Triple<Float, Float, Float> colorParts = Helpers.intToRGB(renderProperties.getColorTint(fluidStack));
         return Helpers.RGBAToInt(
                 (int) (colorParts.getRight() * 255),
                 (int) (colorParts.getMiddle() * 255),

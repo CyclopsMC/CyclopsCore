@@ -2,7 +2,8 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.datastructure.Wrapper;
@@ -10,7 +11,6 @@ import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Config for fluids.
@@ -30,36 +30,49 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, ForgeFlowi
     }
 
     protected static ForgeFlowingFluid.Properties getDefaultFluidProperties(ModBase mod, String texturePrefixPath,
-                                                                            Consumer<FluidAttributes.Builder> fluidAttributesConsumer) {
-        FluidAttributes.Builder fluidAttributes = FluidAttributes.builder(
-                new ResourceLocation(mod.getModId(), texturePrefixPath + "_still"),
-                new ResourceLocation(mod.getModId(), texturePrefixPath + "_flow")
-        );
+                                                                            Consumer<FluidType.Properties> fluidAttributesConsumer) {
+        FluidType.Properties fluidAttributes = FluidType.Properties.create();
+        FluidType fluidType = new FluidType(fluidAttributes) {
+            @Override
+            public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer) {
+                consumer.accept(new IFluidTypeRenderProperties()
+                {
+                    private final ResourceLocation STILL = new ResourceLocation(mod.getModId(), texturePrefixPath + "_still");
+                    private final ResourceLocation FLOW = new ResourceLocation(mod.getModId(), texturePrefixPath + "_flow");
+
+                    @Override
+                    public ResourceLocation getStillTexture()
+                    {
+                        return STILL;
+                    }
+
+                    @Override
+                    public ResourceLocation getFlowingTexture()
+                    {
+                        return FLOW;
+                    }
+                });
+            }
+        };
         fluidAttributesConsumer.accept(fluidAttributes);
 
         Wrapper<ForgeFlowingFluid.Properties> properties = new Wrapper<>();
         final Wrapper<Fluid> source = new Wrapper<>();
         final Wrapper<Fluid> flowing = new Wrapper<>();
         properties.set(new ForgeFlowingFluid.Properties(
-                new Supplier<Fluid>() {
-                    @Override
-                    public Fluid get() {
-                        if (source.get() == null) {
-                            source.set(new ForgeFlowingFluid.Source(properties.get()));
-                        }
-                        return source.get();
+                () -> fluidType,
+                () -> {
+                    if (source.get() == null) {
+                        source.set(new ForgeFlowingFluid.Source(properties.get()));
                     }
+                    return source.get();
                 },
-                new Supplier<Fluid>() {
-                    @Override
-                    public Fluid get() {
-                        if (flowing.get() == null) {
-                            flowing.set(new ForgeFlowingFluid.Flowing(properties.get()));
-                        }
-                        return flowing.get();
+                () -> {
+                    if (flowing.get() == null) {
+                        flowing.set(new ForgeFlowingFluid.Flowing(properties.get()));
                     }
-                },
-                fluidAttributes
+                    return flowing.get();
+                }
         ));
         return properties.get();
     }

@@ -22,6 +22,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
@@ -83,7 +85,8 @@ public class GuiHelpers {
                 RenderHelpers.bindTexture(TextureAtlas.LOCATION_BLOCKS);
 
                 // Fluids can have a custom overlay color, use this to render.
-                Triple<Float, Float, Float> colorParts = Helpers.intToRGB(fluidStack.getFluid().getAttributes().getColor(fluidStack));
+                IFluidTypeRenderProperties renderProperties = RenderProperties.get(fluidStack.getFluid().getFluidType());
+                Triple<Float, Float, Float> colorParts = Helpers.intToRGB(renderProperties.getColorTint(fluidStack));
                 // Override water color, otherwise it's gray, since it depends on world biome.
                 if (fluidStack.getFluid() == Fluids.WATER || fluidStack.getFluid() == Fluids.FLOWING_WATER) {
                     colorParts = Triple.of(0F, 0.335F, 1F);

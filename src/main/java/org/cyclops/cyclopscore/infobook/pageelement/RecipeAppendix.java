@@ -163,7 +163,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
             List<FormattedCharSequence> lines = Lists.newArrayList();
             lines.add(FormattedCharSequence.forward(
                     L10NHelpers.localize(fluidStack.getTranslationKey()),
-                    Style.EMPTY.withColor(TextColor.fromLegacyFormat(fluidStack.getFluid().getAttributes().getRarity(fluidStack).color)))
+                    Style.EMPTY.withColor(TextColor.fromLegacyFormat(fluidStack.getFluid().getFluidType().getRarity(fluidStack).color)))
             );
             lines.add(FormattedCharSequence.forward(
                     fluidStack.getAmount() + " mB",
