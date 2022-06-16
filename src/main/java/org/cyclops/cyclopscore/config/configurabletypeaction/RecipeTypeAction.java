@@ -9,6 +9,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.RecipeTypeConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class RecipeTypeAction<T extends Recipe<?>> extends ConfigurableTypeAction<RecipeTypeConfig<T>, RecipeType<T>> {
+public class RecipeTypeAction<T extends Recipe<?>> extends ConfigurableTypeActionForge<RecipeTypeConfig<T>, RecipeType<T>> {
 
 }

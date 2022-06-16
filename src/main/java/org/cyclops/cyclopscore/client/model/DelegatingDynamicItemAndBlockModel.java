@@ -10,7 +10,6 @@ import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 /**
  * A dynamic model that can be used for items and blocks that delegates its blockstate.
