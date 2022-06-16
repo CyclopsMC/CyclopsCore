@@ -1,10 +1,11 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelDataMap;
 
@@ -21,7 +22,7 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
     protected final BlockState blockState;
     @Nullable
     protected final Direction facing;
-    protected final Random rand;
+    protected final RandomSource rand;
     protected final IModelData modelData;
 
     protected final ItemStack itemStack;
@@ -32,7 +33,7 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         super(true, false);
         this.blockState = null;
         this.facing = null;
-        this.rand = new Random();
+        this.rand = RandomSource.create();
         this.modelData = new ModelDataMap.Builder().build();
 
         this.itemStack = null;
@@ -40,7 +41,7 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.entity = null;
     }
 
-    public DelegatingDynamicItemAndBlockModel(BlockState blockState, Direction facing, Random rand, IModelData modelData) {
+    public DelegatingDynamicItemAndBlockModel(BlockState blockState, Direction facing, RandomSource rand, IModelData modelData) {
         super(false, false);
         this.blockState = blockState;
         this.facing = facing;
@@ -56,7 +57,7 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         super(false, true);
         this.blockState = null;
         this.facing = null;
-        this.rand = new Random();
+        this.rand = RandomSource.create();
         this.modelData = new ModelDataMap.Builder().build();
 
         this.itemStack = itemStack;
