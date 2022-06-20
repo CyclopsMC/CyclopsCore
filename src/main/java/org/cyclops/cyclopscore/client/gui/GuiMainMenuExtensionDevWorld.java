@@ -61,7 +61,7 @@ public class GuiMainMenuExtensionDevWorld {
                                     mc.delayCrash(CrashReport.forThrowable(p_233202_, "Couldn't load level list"));
                                     return List.of();
                                 })
-                                .get(100, TimeUnit.MILLISECONDS);
+                                .get(5000, TimeUnit.MILLISECONDS);
                         for (LevelSummary worldSummary : levelList) {
                             if (worldSummary.getLevelName().equals(WORLD_NAME_PREFIX)) {
                                 if (devWorldSummary == null
