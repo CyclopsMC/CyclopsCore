@@ -146,12 +146,11 @@ public class InfoBookParser {
                 List<SectionAppendix> appendixList = Lists.newArrayList();
 
                 String type = node.getAttribute("type");
-                Optional<RecipeType<?>> recipeTypeOptional = Registry.RECIPE_TYPE.getOptional(new ResourceLocation(type));
-                if (!recipeTypeOptional.isPresent()) {
+                RecipeType<?> recipeType = ForgeRegistries.RECIPE_TYPES.getValue(new ResourceLocation(type));
+                if (recipeType == null) {
                     throw new InvalidAppendixException("Could not find a recipe type: " + type);
                 }
-                RecipeType recipeType = recipeTypeOptional.get();
-                Map<ResourceLocation, Recipe<?>> recipes = CraftingHelpers.getRecipeManager().byType(recipeType);
+                Map<ResourceLocation, Recipe<?>> recipes = CraftingHelpers.getRecipeManager().byType((RecipeType) recipeType);
 
                 String idRegexString = node.getTextContent().trim();
 
@@ -241,7 +240,7 @@ public class InfoBookParser {
      * @param <R> The recipe type
      */
     public static <C extends Container, R extends Recipe<C>> void registerAppendixRecipeFactories(RecipeType<R> recipeType, IAppendixItemFactory<C, R> factory) {
-        String name = Registry.RECIPE_TYPE.getKey(recipeType).toString();
+        String name = ForgeRegistries.RECIPE_TYPES.getKey(recipeType).toString();
         registerAppendixFactory(name, (infoBook, node) -> {
             ResourceLocation recipeId = getNodeResourceLocation(node);
             Optional<R> recipe = MinecraftHelpers.isClientSide()

@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -22,7 +23,7 @@ public abstract class RecipeTypeConfig<T extends Recipe<?>> extends ExtendedConf
      * @param namedId            A unique name id
      */
     public RecipeTypeConfig(ModBase mod, String namedId) {
-        super(mod, namedId, (eConfig) -> RecipeType.register(mod.getModId() + ":" + namedId));
+        super(mod, namedId, (eConfig) -> RecipeType.simple(new ResourceLocation(mod.getModId(), namedId)));
     }
 
     @Override
