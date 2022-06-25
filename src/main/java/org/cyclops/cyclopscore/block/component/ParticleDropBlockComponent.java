@@ -1,13 +1,12 @@
 package org.cyclops.cyclopscore.block.component;
 
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.cyclops.cyclopscore.client.particle.ParticleDropColoredData;
 import org.cyclops.cyclopscore.helper.BlockHelpers;
-
-import java.util.Random;
 
 /**
  * Component that can show drops of a certain color underneath blocks.
@@ -54,7 +53,7 @@ public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock {
     }
 
     @Override
-    public void randomDisplayTick(BlockState blockState, Level world, BlockPos blockPos, Random rand) {
+    public void randomDisplayTick(BlockState blockState, Level world, BlockPos blockPos, RandomSource rand) {
         if (rand.nextInt(chance) == 0 &&
                 (offset == 0 || BlockHelpers.doesBlockHaveSolidTopSurface(world, blockPos.offset(0, -offset, 0))) &&
                 !world.getBlockState(blockPos.offset(0, - offset - 1, 0)).getMaterial().blocksMotion()) {
