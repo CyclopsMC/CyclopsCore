@@ -2,11 +2,11 @@ package org.cyclops.cyclopscore.item;
 
 import com.google.common.collect.Lists;
 import lombok.Data;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -42,7 +42,7 @@ public class WeightedItemStack {
      * @param random A random instance.
      * @return A random item.
      */
-    public static WeightedItemStack getRandomWeightedItemStack(List<WeightedItemStack> list, Random random) {
+    public static WeightedItemStack getRandomWeightedItemStack(List<WeightedItemStack> list, RandomSource random) {
         return list.get(random.nextInt(list.size()));
     }
 
@@ -52,7 +52,7 @@ public class WeightedItemStack {
      * @param random A random instance.
      * @return A new itemstack.
      */
-    public ItemStack getItemStackWithRandomizedSize(Random random) {
+    public ItemStack getItemStackWithRandomizedSize(RandomSource random) {
         if(getItemStack() == null || getItemStack().isEmpty()) {
             return ItemStack.EMPTY;
         }
