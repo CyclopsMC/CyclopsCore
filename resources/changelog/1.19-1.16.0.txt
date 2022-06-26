@@ -1,0 +1,18 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Restore Structure configs
+
+Changes:
+* Use RandomSource in ParticleDropBlockComponent
+* Use RandomSource in WeightedItemStack
+* Update to new FluidTypes
+* Register recipe types to forge registry
+* Use RandomSource in models
+
+Fixes:
+* Increase timeout limit of dev world discovery
+* Fix fluid tanks not resetting color after render
+* Fix recipe type interaction issues
+* Fix ID Energy Battery causing overflows
+  Closes CyclopsMC/IntegratedDynamics#1179
