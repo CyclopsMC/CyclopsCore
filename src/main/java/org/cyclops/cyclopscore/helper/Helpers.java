@@ -155,9 +155,11 @@ public class Helpers {
      * @return The safe sum.
      */
     public static int addSafe(int a, int b) {
-        int sum = a + b;
-        if(sum < a || sum < b) return Integer.MAX_VALUE;
-        return sum;
+        if (a > 0 && b > Integer.MAX_VALUE - a)
+            return Integer.MAX_VALUE;
+        if (a < 0 && b < Integer.MIN_VALUE - a) 
+            return Integer.MIN_VALUE;
+        return a + b;
     }
 
     /**
@@ -168,7 +170,8 @@ public class Helpers {
      */
     public static int multiplySafe(int a, int b) {
         int mul = a * b;
-        if(a > 0 && b > 0 && (mul < a || mul < b)) return Integer.MAX_VALUE;
+        if (a != 0 && mul / a != b) 
+            return ((a > 0 && b > 0) || (a < 0 && b < 0)) ? Integer.MAX_VALUE : Integer.MIN_VALUE;
         return mul;
     }
 
