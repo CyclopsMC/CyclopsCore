@@ -36,7 +36,7 @@ public class KeyRegistry implements IKeyRegistry {
 
     @Override
     @SubscribeEvent(priority = EventPriority.NORMAL)
-    public void onPlayerKeyInput(InputEvent.KeyInputEvent event) {
+    public void onPlayerKeyInput(InputEvent.Key event) {
         for (KeyMapping kb : keyHandlerMap.keySet()) {
             if (kb.isDown()) {
                 fireKeyPressed(kb);

@@ -36,9 +36,9 @@ public class ItemCraftedTrigger extends SimpleCriterionTrigger<ItemCraftedTrigge
 
     @SubscribeEvent
     public void onCrafted(PlayerEvent.ItemCraftedEvent event) {
-        if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayer) {
-            this.trigger((ServerPlayer) event.getPlayer(),
-                    (i) -> i.test((ServerPlayer) event.getPlayer(), event));
+        if (event.getEntity() != null && event.getEntity() instanceof ServerPlayer) {
+            this.trigger((ServerPlayer) event.getEntity(),
+                    (i) -> i.test((ServerPlayer) event.getEntity(), event));
         }
     }
 

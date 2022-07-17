@@ -45,8 +45,8 @@ public abstract class CyclopsEffect extends MobEffect {
     protected abstract void onUpdate(LivingEntity entity);
 
     @SubscribeEvent
-    public void onEntityUpdate(LivingEvent.LivingUpdateEvent event) {
-        LivingEntity entity = event.getEntityLiving();
+    public void onEntityUpdate(LivingEvent.LivingTickEvent event) {
+        LivingEntity entity = event.getEntity();
         if (isActiveOn(entity)) {
             onUpdate(entity);
         }

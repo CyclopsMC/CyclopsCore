@@ -48,7 +48,7 @@ public interface IBlockGui {
         if (!world.isClientSide()) {
             MenuProvider containerProvider = blockContainerProvider.get(blockState, world, blockPos);
             if (containerProvider != null) {
-                NetworkHooks.openGui((ServerPlayer) player, containerProvider,
+                NetworkHooks.openScreen((ServerPlayer) player, containerProvider,
                         packetBuffer -> block.writeExtraGuiData(packetBuffer, world, player, blockPos, hand, rayTraceResult));
                 Stat<ResourceLocation> openStat = block.getOpenStat();
                 if (openStat != null) {

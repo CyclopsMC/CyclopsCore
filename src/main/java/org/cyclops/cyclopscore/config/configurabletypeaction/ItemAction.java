@@ -6,8 +6,7 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
@@ -42,18 +41,18 @@ public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void onModelRegistryLoad(ModelRegistryEvent event) {
+    public static void onModelRegistryLoad(ModelEvent.RegisterAdditional event) {
         for (ItemConfig config : MODEL_ENTRIES) {
             config.dynamicItemVariantLocation  = config.registerDynamicModel();
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void onModelBakeEvent(ModelBakeEvent event){
+    public static void onModelBakeEvent(ModelEvent.BakingCompleted event){
         for (ItemConfig config : MODEL_ENTRIES) {
             IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
             if (config.dynamicItemVariantLocation != null) {
-                event.getModelRegistry().put(config.dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(event));
+                event.getModels().put(config.dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(event));
             }
         }
     }

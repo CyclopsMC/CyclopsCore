@@ -45,7 +45,7 @@ public abstract class BlockEntityConfig<T extends BlockEntity> extends ExtendedC
 
     @Override
     public IForgeRegistry<? super BlockEntityType<T>> getRegistry() {
-        return ForgeRegistries.BLOCK_ENTITIES;
+        return ForgeRegistries.BLOCK_ENTITY_TYPES;
     }
 
 }

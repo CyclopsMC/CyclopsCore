@@ -7,7 +7,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -68,7 +68,7 @@ public abstract class ParticleConfig<T extends ParticleOptions> extends Extended
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public void onParticleFactoryRegister(ParticleFactoryRegisterEvent event) {
+    public void onParticleFactoryRegister(RegisterParticleProvidersEvent event) {
         ParticleProvider<T> factory = getParticleFactory();
         if (factory != null) {
             Minecraft.getInstance().particleEngine.register(getInstance(), factory);

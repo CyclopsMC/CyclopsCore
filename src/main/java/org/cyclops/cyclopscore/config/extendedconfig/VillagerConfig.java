@@ -42,7 +42,7 @@ public abstract class VillagerConfig extends ExtendedConfigForge<VillagerConfig,
 
     @Override
     public IForgeRegistry<VillagerProfession> getRegistry() {
-        return ForgeRegistries.PROFESSIONS;
+        return ForgeRegistries.VILLAGER_PROFESSIONS;
     }
 
 }

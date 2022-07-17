@@ -10,8 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
@@ -80,7 +79,7 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void onModelRegistryLoad(ModelRegistryEvent event) {
+    public static void onModelRegistryLoad(ModelEvent.RegisterAdditional event) {
         for (BlockConfig config : MODEL_ENTRIES) {
             Pair<ModelResourceLocation, ModelResourceLocation> resourceLocations = config.registerDynamicModel();
             config.dynamicBlockVariantLocation = resourceLocations.getLeft();
@@ -89,15 +88,15 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void onModelBakeEvent(ModelBakeEvent event){
+    public static void onModelBakeEvent(ModelEvent.BakingCompleted event){
         for (BlockConfig config : MODEL_ENTRIES) {
             IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
             BakedModel dynamicModel = dynamicModelElement.createDynamicModel(event);
             if (config.dynamicBlockVariantLocation != null) {
-                event.getModelRegistry().put(config.dynamicBlockVariantLocation, dynamicModel);
+                event.getModels().put(config.dynamicBlockVariantLocation, dynamicModel);
             }
             if (config.dynamicItemVariantLocation != null) {
-                event.getModelRegistry().put(config.dynamicItemVariantLocation, dynamicModel);
+                event.getModels().put(config.dynamicItemVariantLocation, dynamicModel);
             }
         }
     }

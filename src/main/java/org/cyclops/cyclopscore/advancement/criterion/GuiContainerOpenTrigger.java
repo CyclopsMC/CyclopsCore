@@ -50,9 +50,9 @@ public class GuiContainerOpenTrigger extends SimpleCriterionTrigger<GuiContainer
 
     @SubscribeEvent
     public void onEvent(PlayerContainerEvent.Open event) {
-        if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayer) {
-            this.trigger((ServerPlayer) event.getPlayer(),
-                    (i) -> i.test((ServerPlayer) event.getPlayer(), event.getContainer()));
+        if (event.getEntity() != null && event.getEntity() instanceof ServerPlayer) {
+            this.trigger((ServerPlayer) event.getEntity(),
+                    (i) -> i.test((ServerPlayer) event.getEntity(), event.getContainer()));
         }
     }
 

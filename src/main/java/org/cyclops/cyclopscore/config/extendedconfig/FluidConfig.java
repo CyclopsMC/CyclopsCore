@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -34,8 +34,8 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, ForgeFlowi
         FluidType.Properties fluidAttributes = FluidType.Properties.create();
         FluidType fluidType = new FluidType(fluidAttributes) {
             @Override
-            public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer) {
-                consumer.accept(new IFluidTypeRenderProperties()
+            public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+                consumer.accept(new IClientFluidTypeExtensions()
                 {
                     private final ResourceLocation STILL = new ResourceLocation(mod.getModId(), texturePrefixPath + "_still");
                     private final ResourceLocation FLOW = new ResourceLocation(mod.getModId(), texturePrefixPath + "_flow");

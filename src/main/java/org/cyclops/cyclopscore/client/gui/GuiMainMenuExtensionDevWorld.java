@@ -43,7 +43,7 @@ public class GuiMainMenuExtensionDevWorld {
     private static final String WORLD_NAME_PREFIX = "cyclops-dev";
 
     @SubscribeEvent
-    public static void onMainMenuInit(ScreenEvent.InitScreenEvent event) {
+    public static void onMainMenuInit(ScreenEvent.Init event) {
         // Add a button to the main menu if we're in a dev environment
         if (GeneralConfig.devWorldButton && event.getScreen() instanceof TitleScreen) {
             event.addListener(new Button(event.getScreen().width / 2 + 102, event.getScreen().height / 4 + 48,

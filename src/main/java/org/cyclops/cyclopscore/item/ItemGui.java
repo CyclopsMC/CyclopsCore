@@ -62,7 +62,7 @@ public abstract class ItemGui extends Item {
         if (!world.isClientSide()) {
             MenuProvider containerProvider = this.getContainer(world, player, itemLocation);
             if (containerProvider != null) {
-                NetworkHooks.openGui(player, containerProvider, packetBuffer -> this.writeExtraGuiData(packetBuffer, world, player, itemLocation));
+                NetworkHooks.openScreen(player, containerProvider, packetBuffer -> this.writeExtraGuiData(packetBuffer, world, player, itemLocation));
                 Stat<ResourceLocation> openStat = this.getOpenStat();
                 if (openStat != null) {
                     player.awardStat(openStat);

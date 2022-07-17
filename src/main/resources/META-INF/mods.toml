@@ -16,7 +16,7 @@ Coremod for Integrated Dynamics, EvilCraft and others.
 [[dependencies.cyclopscore]]
     modId="forge"
     mandatory=true
-    versionRange="[41,)"
+    versionRange="[41.0.99,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cyclopscore]]

@@ -4,7 +4,8 @@ import com.google.common.collect.Lists;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraftforge.common.crafting.NBTIngredient;
+import net.minecraftforge.common.crafting.PartialNBTIngredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.IPrototypedIngredientAlternatives;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.PrototypedIngredientAlternativesList;
@@ -29,9 +30,10 @@ public class IngredientRecipeHelpers {
      */
     public static IPrototypedIngredientAlternatives<ItemStack, Integer> getPrototypesFromIngredient(Ingredient ingredient) {
         List<IPrototypedIngredient<ItemStack, Integer>> items;
-        if (ingredient instanceof NBTIngredient) {
+        if (ingredient instanceof PartialNBTIngredient || ingredient instanceof StrictNBTIngredient) {
             items = Lists.newArrayList(new PrototypedIngredient<>(IngredientComponent.ITEMSTACK,
                     ingredient.getItems()[0], ItemMatch.ITEM | ItemMatch.TAG));
+
         } else {
             items = Arrays.stream(ingredient.getItems())
                     .map(itemStack -> new PrototypedIngredient<>(IngredientComponent.ITEMSTACK, itemStack, ItemMatch.ITEM))

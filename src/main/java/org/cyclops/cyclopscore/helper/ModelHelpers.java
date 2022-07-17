@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import javax.annotation.Nullable;
@@ -134,13 +134,13 @@ public final class ModelHelpers {
      * @param <T> The type of value to fetch.
      * @return The value.
      */
-    public static <T> T getSafeProperty(@Nullable IModelData modelData, ModelProperty<T> property, T fallback) {
+    public static <T> T getSafeProperty(@Nullable ModelData modelData, ModelProperty<T> property, T fallback) {
         if(modelData == null) {
             return fallback;
         }
         T value;
         try {
-            value = modelData.getData(property);
+            value = modelData.get(property);
         } catch (IllegalArgumentException e) {
             return fallback;
         }

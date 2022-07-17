@@ -25,7 +25,7 @@ public class CommandInfoBookTest implements Command<CommandSourceStack> {
 
     @Override
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        NetworkHooks.openGui(context.getSource().getPlayerOrException(), new MenuProvider() {
+        NetworkHooks.openScreen(context.getSource().getPlayerOrException(), new MenuProvider() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("gui.cyclopscore.infobook");

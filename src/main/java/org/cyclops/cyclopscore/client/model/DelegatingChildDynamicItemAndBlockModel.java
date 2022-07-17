@@ -7,7 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 /**
  * A dynamic model with a parent that can be used for items and blocks that delegates its blockstate.
@@ -23,7 +23,7 @@ public abstract class DelegatingChildDynamicItemAndBlockModel extends Delegating
     }
 
     public DelegatingChildDynamicItemAndBlockModel(BakedModel baseModel, BlockState blockState, Direction facing,
-                                                   RandomSource rand, IModelData modelData) {
+                                                   RandomSource rand, ModelData modelData) {
         super(blockState, facing, rand, modelData);
         this.baseModel = baseModel;
     }

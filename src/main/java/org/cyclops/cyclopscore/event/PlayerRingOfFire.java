@@ -34,7 +34,7 @@ public class PlayerRingOfFire {
      */
     @SubscribeEvent
     public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        spawnRing(event.getPlayer());
+        spawnRing(event.getEntity());
     }
 
     /**
@@ -43,7 +43,7 @@ public class PlayerRingOfFire {
      */
     @SubscribeEvent
     public void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        spawnRing(event.getPlayer());
+        spawnRing(event.getEntity());
     }
 
     private void spawnRing(Player player) {

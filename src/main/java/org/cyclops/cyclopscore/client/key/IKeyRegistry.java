@@ -16,7 +16,7 @@ public interface IKeyRegistry extends IRegistry {
      * Make sure to annotate this with {@link SubscribeEvent}
      * @param event The input event.
      */
-    public void onPlayerKeyInput(InputEvent.KeyInputEvent event);
+    public void onPlayerKeyInput(InputEvent.Key event);
 
     /**
      * Binds a {@link IKeyHandler} to key presses of the

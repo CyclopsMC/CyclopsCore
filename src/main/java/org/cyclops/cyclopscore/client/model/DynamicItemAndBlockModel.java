@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.client.model;
 
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
@@ -10,8 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,12 +42,13 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-        return this.getQuads(state, side, rand, EmptyModelData.INSTANCE);
+        return this.getQuads(state, side, rand, ModelData.builder().build(), RenderType.cutout());
     }
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                    @Nonnull RandomSource rand, @Nonnull IModelData extraData) {
+                                    @Nonnull RandomSource rand, @Nonnull ModelData extraData,
+                                    RenderType renderType) {
         this.renderingSide = side;
         if(factory) {
             BakedModel bakedModel;
@@ -68,7 +69,7 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
     }
 
     public abstract BakedModel handleBlockState(@Nullable BlockState state, @Nullable Direction side,
-                                                 @Nonnull RandomSource rand, @Nonnull IModelData extraData);
+                                                 @Nonnull RandomSource rand, @Nonnull ModelData extraData);
     public abstract BakedModel handleItemState(@Nullable ItemStack stack, @Nullable Level world,
                                                 @Nullable LivingEntity entity);
 

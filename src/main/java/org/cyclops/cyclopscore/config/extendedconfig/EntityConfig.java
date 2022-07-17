@@ -95,7 +95,7 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
 
     @Override
     public IForgeRegistry<EntityType<?>> getRegistry() {
-        return ForgeRegistries.ENTITIES;
+        return ForgeRegistries.ENTITY_TYPES;
     }
 
     @Nullable

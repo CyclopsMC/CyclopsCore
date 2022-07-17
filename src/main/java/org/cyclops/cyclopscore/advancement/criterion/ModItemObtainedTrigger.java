@@ -38,25 +38,25 @@ public class ModItemObtainedTrigger extends SimpleCriterionTrigger<ModItemObtain
 
     @SubscribeEvent
     public void onPickup(EntityItemPickupEvent event) {
-        if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayer) {
-            this.trigger((ServerPlayer) event.getPlayer(),
-                    (i) -> i.test((ServerPlayer) event.getPlayer(), event.getItem().getItem()));
+        if (event.getEntity() != null && event.getEntity() instanceof ServerPlayer) {
+            this.trigger((ServerPlayer) event.getEntity(),
+                    (i) -> i.test((ServerPlayer) event.getEntity(), event.getItem().getItem()));
         }
     }
 
     @SubscribeEvent
     public void onCrafted(PlayerEvent.ItemCraftedEvent event) {
-        if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayer) {
-            this.trigger((ServerPlayer) event.getPlayer(),
-                    (i) -> i.test((ServerPlayer) event.getPlayer(), event.getCrafting()));
+        if (event.getEntity() != null && event.getEntity() instanceof ServerPlayer) {
+            this.trigger((ServerPlayer) event.getEntity(),
+                    (i) -> i.test((ServerPlayer) event.getEntity(), event.getCrafting()));
         }
     }
 
     @SubscribeEvent
     public void onSmelted(PlayerEvent.ItemSmeltedEvent event) {
-        if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayer) {
-            this.trigger((ServerPlayer) event.getPlayer(),
-                    (i) -> i.test((ServerPlayer) event.getPlayer(), event.getSmelting()));
+        if (event.getEntity() != null && event.getEntity() instanceof ServerPlayer) {
+            this.trigger((ServerPlayer) event.getEntity(),
+                    (i) -> i.test((ServerPlayer) event.getEntity(), event.getSmelting()));
         }
     }
 

@@ -50,7 +50,7 @@ public abstract class GuiConfig<T extends AbstractContainerMenu> extends Extende
 
     @Override
     public IForgeRegistry<? super MenuType<T>> getRegistry() {
-        return ForgeRegistries.CONTAINERS;
+        return ForgeRegistries.MENU_TYPES;
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -120,6 +120,8 @@ public final class ConfigurablePropertyData<T> {
     public void saveToField() {
         try {
             field.set(null, this.configProperty.get());
+        } catch (IllegalStateException e) {
+            // Ignore illegal state exceptions thrown by Forge if config is being read too early
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }

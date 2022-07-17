@@ -33,7 +33,7 @@ public class ValueNotifyPacket extends PacketCodec {
     }
 
     public ValueNotifyPacket(MenuType<?> containerType, int valueId, CompoundTag value) {
-        this.containerType = ForgeRegistries.CONTAINERS.getKey(containerType).toString();
+        this.containerType = ForgeRegistries.MENU_TYPES.getKey(containerType).toString();
         this.valueId = valueId;
         this.value = value;
     }
@@ -44,7 +44,7 @@ public class ValueNotifyPacket extends PacketCodec {
     }
 
     protected boolean isContainerValid(IValueNotifiable container) {
-        return ForgeRegistries.CONTAINERS.getKey(container.getValueNotifiableType()).toString().equals(containerType);
+        return ForgeRegistries.MENU_TYPES.getKey(container.getValueNotifiableType()).toString().equals(containerType);
     }
 
     @Override

@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.client.model;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.event.ModelEvent;
 
 /**
  * Interface for blocks and items which can have a dynamic model.
@@ -23,6 +23,6 @@ public interface IDynamicModelElement {
      * @return A dynamic model instance.
      */
     @OnlyIn(Dist.CLIENT)
-    public BakedModel createDynamicModel(ModelBakeEvent event);
+    public BakedModel createDynamicModel(ModelEvent.BakingCompleted event);
 
 }
