@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.icon.IconProvider;
@@ -53,7 +54,7 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
     }
 
     @Override
-    public void registerKeyBindings(IKeyRegistry keyRegistry) {
+    public void registerKeyBindings(IKeyRegistry keyRegistry, RegisterKeyMappingsEvent event) {
         getMod().getLoggerHelper().log(Level.TRACE, "Registered key bindings");
     }
 

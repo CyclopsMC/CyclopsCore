@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.client.model;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -23,8 +24,8 @@ public abstract class DelegatingChildDynamicItemAndBlockModel extends Delegating
     }
 
     public DelegatingChildDynamicItemAndBlockModel(BakedModel baseModel, BlockState blockState, Direction facing,
-                                                   RandomSource rand, ModelData modelData) {
-        super(blockState, facing, rand, modelData);
+                                                   RandomSource rand, ModelData modelData, RenderType renderType) {
+        super(blockState, facing, rand, modelData, renderType);
         this.baseModel = baseModel;
     }
 

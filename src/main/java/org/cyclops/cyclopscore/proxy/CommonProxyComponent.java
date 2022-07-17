@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.proxy;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.event.PlayerRingOfFire;
@@ -26,7 +27,7 @@ public abstract class CommonProxyComponent implements ICommonProxy {
     }
 
     @Override
-    public void registerKeyBindings(IKeyRegistry keyRegistry) {
+    public void registerKeyBindings(IKeyRegistry keyRegistry, RegisterKeyMappingsEvent event) {
     }
 
     @Override

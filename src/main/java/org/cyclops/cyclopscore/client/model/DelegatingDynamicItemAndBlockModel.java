@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.client.model;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -22,6 +23,7 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
     protected final Direction facing;
     protected final RandomSource rand;
     protected final ModelData modelData;
+    protected final RenderType renderType;
 
     protected final ItemStack itemStack;
     protected final Level world;
@@ -32,19 +34,21 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.blockState = null;
         this.facing = null;
         this.rand = RandomSource.create();
-        this.modelData = ModelData.builder().build();
+        this.modelData = ModelData.EMPTY;
+        this.renderType = RenderType.cutout();
 
         this.itemStack = null;
         this.world = null;
         this.entity = null;
     }
 
-    public DelegatingDynamicItemAndBlockModel(BlockState blockState, Direction facing, RandomSource rand, ModelData modelData) {
+    public DelegatingDynamicItemAndBlockModel(BlockState blockState, Direction facing, RandomSource rand, ModelData modelData, RenderType renderType) {
         super(false, false);
         this.blockState = blockState;
         this.facing = facing;
         this.rand = rand;
         this.modelData = modelData;
+        this.renderType = renderType;
 
         this.itemStack = null;
         this.world = null;
@@ -56,7 +60,8 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.blockState = null;
         this.facing = null;
         this.rand = RandomSource.create();
-        this.modelData = ModelData.builder().build();
+        this.modelData = ModelData.EMPTY;
+        this.renderType = RenderType.cutout();
 
         this.itemStack = itemStack;
         this.world = world;

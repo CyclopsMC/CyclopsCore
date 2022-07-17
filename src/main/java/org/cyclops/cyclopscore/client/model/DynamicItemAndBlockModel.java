@@ -42,20 +42,20 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-        return this.getQuads(state, side, rand, ModelData.builder().build(), RenderType.cutout());
+        return this.getQuads(state, side, rand, ModelData.EMPTY, RenderType.cutout());
     }
 
     @Override
     public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
                                     @Nonnull RandomSource rand, @Nonnull ModelData extraData,
-                                    RenderType renderType) {
+                                    @Nullable RenderType renderType) {
         this.renderingSide = side;
         if(factory) {
             BakedModel bakedModel;
             if(isItemStack()) {
                 bakedModel = handleItemState(null, null, null);
             } else {
-                bakedModel = handleBlockState(state, side, rand, extraData);
+                bakedModel = handleBlockState(state, side, rand, extraData, renderType);
             }
             if (bakedModel != null) {
                 return bakedModel.getQuads(state, side, rand);
@@ -69,7 +69,8 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
     }
 
     public abstract BakedModel handleBlockState(@Nullable BlockState state, @Nullable Direction side,
-                                                 @Nonnull RandomSource rand, @Nonnull ModelData extraData);
+                                                 @Nonnull RandomSource rand, @Nonnull ModelData extraData,
+                                                @Nullable RenderType renderType);
     public abstract BakedModel handleItemState(@Nullable ItemStack stack, @Nullable Level world,
                                                 @Nullable LivingEntity entity);
 

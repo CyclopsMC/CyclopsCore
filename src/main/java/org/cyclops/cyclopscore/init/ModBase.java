@@ -9,6 +9,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -96,6 +97,7 @@ public abstract class ModBase<T extends ModBase> {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegisterKeyMappings);
         MinecraftForge.EVENT_BUS.register(this);
 
         // Register proxies
@@ -263,7 +265,13 @@ public abstract class ModBase<T extends ModBase> {
         ICommonProxy proxy = getProxy();
         if(proxy != null) {
             proxy.registerRenderers();
-            proxy.registerKeyBindings(getKeyRegistry());
+        }
+    }
+
+    protected void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
+        ICommonProxy proxy = getProxy();
+        if(proxy != null) {
+            proxy.registerKeyBindings(getKeyRegistry(), event);
         }
     }
 
