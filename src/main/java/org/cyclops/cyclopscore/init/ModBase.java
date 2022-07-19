@@ -97,7 +97,7 @@ public abstract class ModBase<T extends ModBase> {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegisterKeyMappings);
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegisterKeyMappings));
         MinecraftForge.EVENT_BUS.register(this);
 
         // Register proxies
