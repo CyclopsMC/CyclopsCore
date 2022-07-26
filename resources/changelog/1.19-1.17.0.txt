@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add transformable shaped and shapeless recipe serializers
+  Required for CyclopsMC/IntegratedDynamics#1189
