@@ -11,7 +11,6 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -20,8 +19,7 @@ import java.util.function.Supplier;
  * Recipe serializer for predefined output items.
  * @author rubensworks
  */
-public class RecipeSerializerCraftingShapelessCustomOutput extends ForgeRegistryEntry<RecipeSerializer<?>>
-        implements RecipeSerializer<RecipeCraftingShapelessCustomOutput> {
+public class RecipeSerializerCraftingShapelessCustomOutput implements RecipeSerializer<RecipeCraftingShapelessCustomOutput> {
 
     private final Supplier<ItemStack> outputProvider;
     @Nullable
@@ -62,7 +60,7 @@ public class RecipeSerializerCraftingShapelessCustomOutput extends ForgeRegistry
 
         for(int i = 0; i < p_44276_.size(); ++i) {
             Ingredient ingredient = Ingredient.fromJson(p_44276_.get(i));
-            if (net.minecraftforge.common.ForgeConfig.SERVER.skipEmptyShapelessCheck.get() || !ingredient.isEmpty()) {
+            if (true || !ingredient.isEmpty()) { // FORGE: Skip checking if an ingredient is empty during shapeless recipe deserialization to prevent complex ingredients from caching tags too early. Can not be done using a config value due to sync issues.
                 nonnulllist.add(ingredient);
             }
         }
