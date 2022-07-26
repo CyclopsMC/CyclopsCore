@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix crash when simulating drying basin craft in ID
+  Closes CyclopsMC/IntegratedDynamics#1134
+  Closes CyclopsMC/IntegratedDynamics#1167
+
