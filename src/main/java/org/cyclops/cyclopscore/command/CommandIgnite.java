@@ -8,7 +8,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 
@@ -33,7 +32,7 @@ public class CommandIgnite implements Command<CommandSourceStack> {
         for (Entity entity : entities) {
             entity.setSecondsOnFire(duration);
             context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable(
-                    "chat.cyclopscore.command.ignitedPlayer", entity.getDisplayName(), duration), ChatType.SYSTEM);
+                    "chat.cyclopscore.command.ignitedPlayer", entity.getDisplayName(), duration));
         }
         return 0;
     }
