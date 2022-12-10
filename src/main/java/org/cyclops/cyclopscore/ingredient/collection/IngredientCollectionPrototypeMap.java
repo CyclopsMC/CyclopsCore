@@ -81,6 +81,32 @@ public class IngredientCollectionPrototypeMap<T, M> extends IngredientCollection
     }
 
     @Override
+    public boolean contains(T instance) {
+        IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
+        T prototype = getPrototype(instance);
+        Long value = ingredients.get(prototype);
+        long existingValue = value == null ? 0 : value;
+        long currentValue = matcher.getQuantity(instance);
+        return currentValue == existingValue;
+    }
+
+    @Override
+    public boolean contains(T instance, M matchCondition) {
+        IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
+        T prototype = getPrototype(instance);
+        Iterator<Map.Entry<T, Long>> it = ingredients.iterator(prototype, matchCondition);
+        while (it.hasNext()) {
+            Long value = it.next().getValue();
+            long existingValue = value == null ? 0 : value;
+            long currentValue = matcher.getQuantity(instance);
+            if (currentValue == existingValue) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void clear() {
         ingredients.clear();
     }
