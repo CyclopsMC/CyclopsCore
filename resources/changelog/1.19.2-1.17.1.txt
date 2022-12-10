@@ -1,0 +1,12 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add pt_br.json
+
+Fixes:
+* Fix fluids having no localized names
+  Closes CyclopsMC/EvilCraft#950
+
+
+
+
