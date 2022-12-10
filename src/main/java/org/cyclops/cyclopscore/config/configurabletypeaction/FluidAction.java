@@ -7,6 +7,7 @@ import com.google.common.collect.Multimaps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -72,6 +73,13 @@ public class FluidAction extends ConfigurableTypeAction<FluidConfig, ForgeFlowin
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            });
+        } else if (event.getRegistryKey() == ForgeRegistries.FLUID_TYPES.get().getRegistryKey()) {
+            registryEntriesHolder.get(ForgeRegistries.FLUIDS.getRegistryKey().toString()).forEach((pair) -> {
+                FluidConfig config = pair.getLeft();
+                ForgeFlowingFluid.Properties instance = config.getInstance();
+                Supplier<? extends FluidType> fluidType = ObfuscationReflectionHelper.getPrivateValue(ForgeFlowingFluid.Properties.class, instance, "fluidType");
+                ((IForgeRegistry<FluidType>) (IForgeRegistry) event.getForgeRegistry()).register(new ResourceLocation(config.getMod().getModId(), config.getNamedId()), fluidType.get());
             });
         }
     }
