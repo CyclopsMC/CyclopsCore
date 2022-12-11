@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Optimize containment checks in IngredientCollectionPrototypeMap
+  This fixes performance issues such as CyclopsMC/IntegratedTerminals#94
+
