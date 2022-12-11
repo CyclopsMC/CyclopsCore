@@ -19,11 +19,15 @@ public class TestIngredientCollectionPrototypeMapComplex {
     private static final ComplexStack CA01_ = new ComplexStack(ComplexStack.Group.A, 0, 1, null);
     private static final ComplexStack CA0M1_ = new ComplexStack(ComplexStack.Group.A, 0, -1, null);
     private static final ComplexStack CA02_ = new ComplexStack(ComplexStack.Group.A, 0, 2, null);
+    private static final ComplexStack CA03_ = new ComplexStack(ComplexStack.Group.A, 0, 3, null);
+    private static final ComplexStack CA04_ = new ComplexStack(ComplexStack.Group.A, 0, 4, null);
     private static final ComplexStack CA05_ = new ComplexStack(ComplexStack.Group.A, 0, 5, null);
     private static final ComplexStack CA0M5_ = new ComplexStack(ComplexStack.Group.A, 0, -5, null);
 
     private static final ComplexStack CB01_ = new ComplexStack(ComplexStack.Group.B, 0, 1, null);
     private static final ComplexStack CB02_ = new ComplexStack(ComplexStack.Group.B, 0, 2, null);
+    private static final ComplexStack CB03_ = new ComplexStack(ComplexStack.Group.B, 0, 3, null);
+    private static final ComplexStack CB04_ = new ComplexStack(ComplexStack.Group.B, 0, 4, null);
     private static final ComplexStack CB05_ = new ComplexStack(ComplexStack.Group.B, 0, 5, null);
 
     private static final ComplexStack CA91B = new ComplexStack(ComplexStack.Group.A, 9, 1, ComplexStack.Tag.B);
@@ -126,6 +130,35 @@ public class TestIngredientCollectionPrototypeMapComplex {
         assertThat(collection.add(CA01_), is(true));
 
         assertThat(collection.isEmpty(), is(true));
+    }
+
+    @Test
+    public void contains() {
+        assertThat(collection.add(CA01_), is(true));
+        assertThat(collection.add(CA01_), is(true));
+        assertThat(collection.add(CA01_), is(true));
+
+        assertThat(collection.contains(CA01_), is(false));
+        assertThat(collection.contains(CA02_), is(false));
+        assertThat(collection.contains(CA03_), is(true));
+        assertThat(collection.contains(CA04_), is(false));
+    }
+
+    @Test
+    public void containsMatch() {
+        assertThat(collection.add(CA01_), is(true));
+        assertThat(collection.add(CA01_), is(true));
+        assertThat(collection.add(CA01_), is(true));
+
+        assertThat(collection.contains(CB01_, ComplexStack.Match.META), is(false));
+        assertThat(collection.contains(CB02_, ComplexStack.Match.META), is(false));
+        assertThat(collection.contains(CB03_, ComplexStack.Match.META), is(true));
+        assertThat(collection.contains(CB04_, ComplexStack.Match.META), is(false));
+
+        assertThat(collection.contains(CB01_, ComplexStack.Match.GROUP), is(false));
+        assertThat(collection.contains(CB02_, ComplexStack.Match.GROUP), is(false));
+        assertThat(collection.contains(CB03_, ComplexStack.Match.GROUP), is(false));
+        assertThat(collection.contains(CB04_, ComplexStack.Match.GROUP), is(false));
     }
 
     @Test
