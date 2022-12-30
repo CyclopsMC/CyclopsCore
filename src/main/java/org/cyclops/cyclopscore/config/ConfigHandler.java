@@ -190,10 +190,8 @@ public class ConfigHandler {
         for(ExtendedConfig<?, ?> eConfig : this.configurables) {
             // Re-save additional properties
             for(ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
-                if (configProperty.getConfigLocation() == config.getType()) {
-                    configProperty.saveToField();
-                    eConfig.onConfigPropertyReload(configProperty, reload);
-                }
+                configProperty.saveToField();
+                eConfig.onConfigPropertyReload(configProperty, reload);
             }
         }
     }
