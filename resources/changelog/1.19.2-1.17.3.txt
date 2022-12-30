@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix config changes not always taking effect, Closes CyclopsMC/EverlastingAbilities#211
+
