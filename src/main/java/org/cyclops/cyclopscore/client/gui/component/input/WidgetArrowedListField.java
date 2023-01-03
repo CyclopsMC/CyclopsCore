@@ -29,7 +29,7 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
         if(this.arrows) {
             arrowLeft  = new ButtonArrow(x, y - 1, Component.translatable("gui.cyclopscore.left"), (button) -> this.decrease(), ButtonArrow.Direction.WEST);
             arrowRight = new ButtonArrow(x + width, y - 1, Component.translatable("gui.cyclopscore.right"), (button) -> this.increase(), ButtonArrow.Direction.EAST);
-            arrowRight.x -= arrowRight.getWidth();
+            arrowRight.setX(arrowRight.getX() - arrowRight.getWidth());
         }
         setBordered(true);
         this.elements = elements;
@@ -83,12 +83,12 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
             arrowLeft.renderButton(matrixStack, mouseX, mouseY, partialTicks);
             arrowRight.renderButton(matrixStack, mouseX, mouseY, partialTicks);
             offsetX = arrowLeft.getWidth();
-            x += offsetX + 1;
+            setX(getX() + offsetX + 1);
             width -= offsetX * 2;
         }
         super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
         if(arrows) {
-            x -= offsetX + 1;
+            setX(getX() - offsetX + 1);
             width += offsetX * 2;
         }
     }

@@ -23,7 +23,7 @@ public class AdvancedButton extends Button {
     private Button.OnPress onPress;
 
     public AdvancedButton() {
-        super(0, 0, 0, 0, Component.literal(""), null);
+        super(0, 0, 0, 0, Component.literal(""), null, Button.DEFAULT_NARRATION);
     }
 
     public void setOnPress(OnPress onPress) {
@@ -50,8 +50,8 @@ public class AdvancedButton extends Button {
      * @param gui The gui.
      */
     public void update(int x, int y, Component displayName, InfoSection target, ScreenInfoBook gui) {
-        this.x = x;
-        this.y = y;
+        setX(x);
+        setY(y);
         this.setMessage(displayName);
         this.target = target;
         this.gui = gui;
@@ -64,7 +64,7 @@ public class AdvancedButton extends Button {
     public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(isVisible() && isHover(mouseX, mouseY)) {
             // MCP: drawString
-            Minecraft.getInstance().font.draw(matrixStack, ((MutableComponent) getMessage()).withStyle(ChatFormatting.UNDERLINE), x, y,
+            Minecraft.getInstance().font.draw(matrixStack, ((MutableComponent) getMessage()).withStyle(ChatFormatting.UNDERLINE), getX(), getY(),
                     Helpers.RGBToInt(100, 100, 150));
         }
     }
@@ -80,8 +80,8 @@ public class AdvancedButton extends Button {
     }
 
     protected boolean isHover(int mouseX, int mouseY) {
-        return mouseX >= this.x && mouseY >= this.y &&
-                mouseX < this.x + this.width && mouseY < this.y + this.height;
+        return mouseX >= this.getX() && mouseY >= this.getY() &&
+                mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
     }
 
     public boolean isVisible() {

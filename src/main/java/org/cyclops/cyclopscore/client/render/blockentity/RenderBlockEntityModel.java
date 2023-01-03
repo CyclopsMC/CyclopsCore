@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.client.render.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -82,7 +82,7 @@ public abstract class RenderBlockEntityModel<T extends CyclopsBlockEntity, M> im
             rotation = -90;
         }
 
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
+        matrixStack.mulPose(Axis.YP.rotation(rotation));
         postRotate(tile, matrixStack);
 
         renderModel(tile, getModel(), partialTick, matrixStack, vertexBuilder, buffer, combinedLight, combinedOverlay);

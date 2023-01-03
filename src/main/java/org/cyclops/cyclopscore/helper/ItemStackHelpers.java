@@ -1,17 +1,15 @@
 package org.cyclops.cyclopscore.helper;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 
-import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
@@ -156,22 +154,6 @@ public final class ItemStackHelpers {
         // or an access transformer, it's highly unlikely that it'd be the only difference between
         // many ItemStacks in practice, and occasional hash code collisions are okay.
         return result;
-    }
-
-    /**
-     * If the given item can be displayed in the given creative tab.
-     * @param item The item.
-     * @param itemGroup The creative tab.
-     * @return If it can be displayed.
-     */
-    public static boolean isValidCreativeTab(Item item, @Nullable CreativeModeTab itemGroup) {
-        for (CreativeModeTab itemTab : item.getCreativeTabs()) {
-            if (itemTab == itemGroup) {
-                return true;
-            }
-        }
-        return itemGroup == null
-                || itemGroup == CreativeModeTab.TAB_SEARCH;
     }
 
 }

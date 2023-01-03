@@ -7,10 +7,10 @@ import lombok.Data;
 import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -35,7 +35,7 @@ public class DimPos implements Comparable<DimPos> {
             .build(new CacheLoader<String, ResourceKey<Level>>() {
                 @Override
                 public ResourceKey<Level> load(String key) {
-                    return ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(key));
+                    return ResourceKey.create(Registries.DIMENSION, new ResourceLocation(key));
                 }
             });
 

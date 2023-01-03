@@ -35,7 +35,7 @@ public class AdvancementButton extends AdvancedButton {
     public void renderTooltip(PoseStack matrixStack, int mx, int my) {
         super.renderTooltip(matrixStack, mx, my);
         matrixStack.pushPose();
-        if(mx >= x && my >= y && mx <= x + AdvancementRewardsAppendix.SLOT_SIZE && my <= y + AdvancementRewardsAppendix.SLOT_SIZE) {
+        if(mx >= getX() && my >= getY() && mx <= getX() + AdvancementRewardsAppendix.SLOT_SIZE && my <= getY() + AdvancementRewardsAppendix.SLOT_SIZE) {
             List<FormattedCharSequence> lines = Lists.newArrayList();
             Advancement advancement = AdvancementHelpers.getAdvancement(Dist.CLIENT, advancementId);
             if (advancement != null) {

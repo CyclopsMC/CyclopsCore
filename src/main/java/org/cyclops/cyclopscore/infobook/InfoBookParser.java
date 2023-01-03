@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
@@ -180,8 +180,8 @@ public class InfoBookParser {
 
         RECIPE_CONDITION_HANDLERS.put("config", new ConfigSectionConditionHandler());
         RECIPE_CONDITION_HANDLERS.put("mod", new ModSectionConditionHandler());
-        RECIPE_CONDITION_HANDLERS.put("itemtag", new TagSectionConditionHandler<>(ForgeRegistries.ITEMS.tags(), Registry.ITEM_REGISTRY));
-        RECIPE_CONDITION_HANDLERS.put("blocktag", new TagSectionConditionHandler<>(ForgeRegistries.BLOCKS.tags(), Registry.BLOCK_REGISTRY));
+        RECIPE_CONDITION_HANDLERS.put("itemtag", new TagSectionConditionHandler<>(ForgeRegistries.ITEMS.tags(), Registries.ITEM));
+        RECIPE_CONDITION_HANDLERS.put("blocktag", new TagSectionConditionHandler<>(ForgeRegistries.BLOCKS.tags(), Registries.BLOCK));
         RECIPE_CONDITION_HANDLERS.put("fluid", new FluidSectionConditionHandler());
         RECIPE_CONDITION_HANDLERS.put("item", new ItemSectionConditionHandler());
     }

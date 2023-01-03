@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -129,8 +128,8 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
     }
 
     @Override
-    public CreativeModeTab constructDefaultCreativeModeTab() {
-        return null; // We don't need a creative tab for this core mod.
+    protected boolean hasDefaultCreativeModeTab() {
+        return false;
     }
 
     @Override

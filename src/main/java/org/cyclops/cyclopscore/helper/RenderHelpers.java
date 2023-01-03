@@ -8,7 +8,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
@@ -39,6 +38,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Triple;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -342,7 +342,7 @@ public class RenderHelpers {
      * @return If the point is inside the button's region.
      */
     public static boolean isPointInButton(Button button, int pointX, int pointY) {
-        return isPointInRegion(button.x, button.y, button.getWidth(), button.getHeight(), pointX, pointY);
+        return isPointInRegion(button.getX(), button.getY(), button.getWidth(), button.getHeight(), pointX, pointY);
     }
 
     public static void blitColored(PoseStack poseStack, int x, int y, int z, float u, float v, int width, int height, float r, float g, float b, float a) {

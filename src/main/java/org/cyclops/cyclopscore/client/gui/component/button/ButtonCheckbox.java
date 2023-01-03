@@ -15,7 +15,7 @@ public class ButtonCheckbox extends Button {
     private boolean checked;
 
     public ButtonCheckbox(int x, int y, int width, int height, Component title, OnPress pressedAction) {
-        super(x, y, width, height, title, pressedAction);
+        super(x, y, width, height, title, pressedAction, DEFAULT_NARRATION);
     }
 
     public void setChecked(boolean checked) {
@@ -47,8 +47,8 @@ public class ButtonCheckbox extends Button {
             // Determine position
             int imageWidth = image.getWidth();
             int imageWHeight = image.getHeight();
-            int x = this.width <= imageWidth ? this.x : this.x + (this.width - imageWidth) / 2;
-            int y = this.height <= imageWHeight ? this.y : this.y + (this.height - imageWHeight) / 2;
+            int x = this.width <= imageWidth ? this.getX() : this.getX() + (this.width - imageWidth) / 2;
+            int y = this.height <= imageWHeight ? this.getY() : this.getY() + (this.height - imageWHeight) / 2;
 
             // Draw image
             image.draw(this, matrixStack, x, y);

@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.network;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mojang.math.Vector3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.datastructure.DimPos;
 import org.cyclops.cyclopscore.datastructure.SingleCache;
 import org.cyclops.cyclopscore.inventory.ItemLocation;
+import org.joml.Vector3d;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;

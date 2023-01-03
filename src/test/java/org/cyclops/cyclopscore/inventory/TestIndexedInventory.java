@@ -4,7 +4,8 @@ import com.google.common.collect.Iterators;
 import net.minecraft.DetectedVersion;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +30,7 @@ public class TestIndexedInventory {
     static {
         SharedConstants.setVersion(DetectedVersion.BUILT_IN);
         Bootstrap.bootStrap();
-        Registry.ITEM.unfreeze();
+        ((MappedRegistry)BuiltInRegistries.ITEM).unfreeze();
     }
 
     private static final Item ITEM1 = new ItemDummy();
@@ -43,9 +44,9 @@ public class TestIndexedInventory {
             Map<Item, Holder.Reference<Item>> delegates = ((Map<Item, Holder.Reference<Item>>) field
                     .get(ForgeRegistries.ITEMS));
 
-            delegates.put(ITEM1, Holder.Reference.createIntrusive(Registry.ITEM, ITEM1));
-            delegates.put(ITEM2, Holder.Reference.createIntrusive(Registry.ITEM, ITEM2));
-            delegates.put(ITEM3, Holder.Reference.createIntrusive(Registry.ITEM, ITEM3));
+            delegates.put(ITEM1, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM.asLookup(), ITEM1));
+            delegates.put(ITEM2, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM.asLookup(), ITEM2));
+            delegates.put(ITEM3, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM.asLookup(), ITEM3));
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
         }

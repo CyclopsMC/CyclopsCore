@@ -45,7 +45,7 @@ public class AchievementCollectButton extends AdvancedButton {
     public void renderTooltip(PoseStack matrixStack, int mx, int my) {
         super.renderTooltip(matrixStack, mx, my);
         matrixStack.pushPose();
-        if(mx >= x && my >= y && mx <= x + width && my <= y + height) {
+        if(mx >= getX() && my >= getY() && mx <= getX() + width && my <= getY() + height) {
             List<FormattedCharSequence> lines = Lists.newArrayList();
             if (advancementRewards.isObtained(Minecraft.getInstance().player)) {
                 lines.add(FormattedCharSequence.forward(

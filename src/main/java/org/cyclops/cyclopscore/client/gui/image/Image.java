@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.client.gui.image;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import lombok.Data;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -10,6 +9,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
+import org.joml.Matrix4f;
 
 /**
  * A wrapper that contains a reference to a {@link  net.minecraft.resources.ResourceLocation} and its sheet position.

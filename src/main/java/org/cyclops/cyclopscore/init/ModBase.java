@@ -6,11 +6,16 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import lombok.Data;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -26,8 +31,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.client.key.KeyRegistry;
 import org.cyclops.cyclopscore.command.CommandConfig;
@@ -39,10 +44,10 @@ import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.capabilities.CapabilityConstructorRegistry;
 import org.cyclops.cyclopscore.network.PacketHandler;
 import org.cyclops.cyclopscore.persist.world.WorldStorage;
-import org.cyclops.cyclopscore.proxy.ClientProxyComponent;
 import org.cyclops.cyclopscore.proxy.IClientProxy;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -78,7 +83,9 @@ public abstract class ModBase<T extends ModBase> {
     private ICommonProxy proxy;
     private ModContainer container;
 
+    @Nullable
     private CreativeModeTab defaultCreativeTab = null;
+    private List<Pair<ItemStack, CreativeModeTab.TabVisibility>> defaultCreativeTabEntries = Lists.newArrayList();
 
     public ModBase(String modId, Consumer<T> instanceSetter) {
         instanceSetter.accept((T) this);
@@ -97,6 +104,8 @@ public abstract class ModBase<T extends ModBase> {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCreativeModeTabRegister);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCreativeModeTabBuildContents);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegisterKeyMappings));
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -165,14 +174,6 @@ public abstract class ModBase<T extends ModBase> {
         root.then(CommandVersion.make(this));
 
         return root;
-    }
-
-    /**
-     * @return The icon provider that was constructed in {@link ClientProxyComponent}.
-     */
-    @OnlyIn(Dist.CLIENT)
-    public IconProvider getIconProvider() {
-        return ((ClientProxyComponent) getProxy()).getIconProvider();
     }
 
     /**
@@ -251,9 +252,6 @@ public abstract class ModBase<T extends ModBase> {
             proxy.registerPacketHandlers(getPacketHandler());
             proxy.registerTickHandlers();
         }
-
-        // Initialize the creative tab
-        getDefaultItemGroup();
     }
 
     /**
@@ -352,11 +350,39 @@ public abstract class ModBase<T extends ModBase> {
     @OnlyIn(Dist.DEDICATED_SERVER)
     protected abstract ICommonProxy constructCommonProxy();
 
+    protected void onCreativeModeTabRegister(CreativeModeTabEvent.Register event) {
+        if (this.hasDefaultCreativeModeTab()) {
+            this.defaultCreativeTab = event.registerCreativeModeTab(new ResourceLocation(getModId(), "default"), this::constructDefaultCreativeModeTab);
+        }
+    }
+
+    protected void onCreativeModeTabBuildContents(CreativeModeTabEvent.BuildContents event) {
+        if (this.hasDefaultCreativeModeTab() && event.getTab() == this.defaultCreativeTab) {
+            for (Pair<ItemStack, CreativeModeTab.TabVisibility> entry : defaultCreativeTabEntries) {
+                event.accept(entry.getLeft(), entry.getRight());
+            }
+            defaultCreativeTabEntries = null;
+        }
+    }
+
+    public void registerDefaultCreativeTabEntry(ItemStack itemStack, CreativeModeTab.TabVisibility visibility) {
+        if (defaultCreativeTabEntries == null) {
+            throw new IllegalStateException("Tried to register default tab entries after the CreativeModeTabEvent.BuildContents event");
+        }
+        defaultCreativeTabEntries.add(Pair.of(itemStack, visibility));
+    }
+
+    protected void constructDefaultCreativeModeTab(CreativeModeTab.Builder builder) {
+        builder
+                .title(Component.translatable("itemGroup." + getModId()))
+                .icon(() -> new ItemStack(Items.BARRIER));
+    }
+
     /**
-     * Construct an item group, will only be called once during the init event.
-     * @return The default item group for items and blocks.
+     * @return If a default creative tab should be constructed.
+     *         If so, make sure to override {@link #constructDefaultCreativeModeTab(CreativeModeTab.Builder)}.
      */
-    protected abstract CreativeModeTab constructDefaultCreativeModeTab();
+    protected abstract boolean hasDefaultCreativeModeTab();
 
     /**
      * Called when the configs should be registered.
@@ -364,16 +390,6 @@ public abstract class ModBase<T extends ModBase> {
      */
     protected void onConfigsRegister(ConfigHandler configHandler) {
 
-    }
-
-    /**
-     * @return The default item group for items and blocks.
-     */
-    public final CreativeModeTab getDefaultItemGroup() {
-        if(defaultCreativeTab == null) {
-            defaultCreativeTab = constructDefaultCreativeModeTab();
-        }
-        return defaultCreativeTab;
     }
 
     /**

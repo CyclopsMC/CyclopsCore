@@ -10,7 +10,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.client.icon.IconProvider;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.network.PacketHandler;
 
@@ -27,16 +26,10 @@ import java.util.Map;
 public abstract class ClientProxyComponent extends CommonProxyComponent implements ICommonProxy, IClientProxy {
 
     private final CommonProxyComponent commonProxyComponent;
-    private final IconProvider iconProvider;
     protected final Map<BlockEntityType, BlockEntityRendererProvider> blockEntityRenderers = Maps.newHashMap();
 
     public ClientProxyComponent(CommonProxyComponent commonProxyComponent) {
         this.commonProxyComponent = commonProxyComponent;
-        this.iconProvider = constructIconProvider();
-    }
-
-    protected IconProvider constructIconProvider() {
-        return new IconProvider(this);
     }
 
     @Override

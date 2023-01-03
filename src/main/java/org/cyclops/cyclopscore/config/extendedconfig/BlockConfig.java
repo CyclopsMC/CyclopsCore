@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.item.BlockItem;
@@ -19,6 +21,8 @@ import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.item.ItemInformationProvider;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -52,7 +56,7 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
 
     protected static BiFunction<BlockConfig, Block, ? extends BlockItem> getDefaultItemConstructor(ModBase mod, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
         return (eConfig, block) -> {
-            Item.Properties itemProperties = new Item.Properties().tab(mod.getDefaultItemGroup());
+            Item.Properties itemProperties = new Item.Properties();
             if (itemPropertiesModifier != null) {
                 itemProperties = itemPropertiesModifier.apply(itemProperties);
             }
@@ -101,10 +105,22 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
      */
     @OnlyIn(Dist.CLIENT)
     public Pair<ModelResourceLocation, ModelResourceLocation> registerDynamicModel() {
-        String blockName = getMod().getModId() + ":" + getNamedId();
+        ResourceLocation blockName = new ResourceLocation(getMod().getModId(), getNamedId());
         ModelResourceLocation blockLocation = new ModelResourceLocation(blockName, "");
         ModelResourceLocation itemLocation = new ModelResourceLocation(blockName, "inventory");
         return Pair.of(blockLocation, itemLocation);
+    }
+
+    @Override
+    public void onRegistered() {
+        super.onRegistered();
+        for (ItemStack itemStack : defaultCreativeTabEntries()) {
+            getMod().registerDefaultCreativeTabEntry(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+        }
+    }
+
+    protected Collection<ItemStack> defaultCreativeTabEntries() {
+        return Collections.singleton(new ItemStack(getInstance()));
     }
 
     @Override

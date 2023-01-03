@@ -38,14 +38,14 @@ public class WidgetTextFieldExtended extends EditBox {
     protected void drawBackground(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         RenderHelpers.bindTexture(Images.WIDGETS);
 
-        x--;
-        y--;
-        blit(matrixStack, x, y, 0, 0, width / 2, height / 2);//top left
-        blit(matrixStack, x + width / 2, y, 200 - width / 2, 0, width / 2, height / 2);//top right
-        blit(matrixStack, x, y + height / 2, 0, 20 - height / 2, width / 2, height / 2);//bottom left
-        blit(matrixStack, x + width / 2, y + height / 2, 200 - width / 2, 20 - height / 2, width / 2, height / 2);//bottom right
-        x++;
-        y++;
+        setX(getX() - 1);
+        setY(getY() - 1);
+        blit(matrixStack, getX(), getY(), 0, 0, width / 2, height / 2);//top left
+        blit(matrixStack, getX() + width / 2, getY(), 200 - width / 2, 0, width / 2, height / 2);//top right
+        blit(matrixStack, getX(), getY() + height / 2, 0, 20 - height / 2, width / 2, height / 2);//bottom left
+        blit(matrixStack, getX() + width / 2, getY() + height / 2, 200 - width / 2, 20 - height / 2, width / 2, height / 2);//bottom right
+        setX(getX() + 1);
+        setY(getY() + 1);
     }
 
     @Override
@@ -64,8 +64,8 @@ public class WidgetTextFieldExtended extends EditBox {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        if (mouseButton == 1 && mouseX >= this.x && mouseX < this.x + this.width
-                && mouseY >= this.y && mouseY < this.y + this.height) {
+        if (mouseButton == 1 && mouseX >= this.getX() && mouseX < this.getX() + this.width
+                && mouseY >= this.getY() && mouseY < this.getY() + this.height) {
             // Select everything
             this.setFocused(true);
             this.moveCursorTo(0);

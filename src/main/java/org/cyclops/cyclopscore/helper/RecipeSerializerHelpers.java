@@ -8,7 +8,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
@@ -49,7 +49,7 @@ public class RecipeSerializerHelpers {
         } else {
             String itemName = GsonHelper.getAsString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(itemName);
-            return Ingredient.of(new ItemStack(Registry.ITEM.getOptional(resourcelocation)
+            return Ingredient.of(new ItemStack(BuiltInRegistries.ITEM.getOptional(resourcelocation)
                     .orElseThrow(() -> new JsonSyntaxException("Item: " + itemName + " does not exist"))));
         }
     }
@@ -79,7 +79,7 @@ public class RecipeSerializerHelpers {
         } else {
             String itemName = GsonHelper.getAsString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(itemName);
-            return new ItemStack(Registry.ITEM.getOptional(resourcelocation)
+            return new ItemStack(BuiltInRegistries.ITEM.getOptional(resourcelocation)
                     .orElseThrow(() -> new JsonSyntaxException("Item: " + itemName + " does not exist")));
         }
     }

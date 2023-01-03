@@ -27,7 +27,7 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
         if(this.arrows) {
             arrowUp = new ButtonArrow(x, y + height / 2, Component.translatable("gui.cyclopscore.up"), (button) -> this.increase(), ButtonArrow.Direction.NORTH);
             arrowDown = new ButtonArrow(x, y + height / 2, Component.translatable("gui.cyclopscore.down"), (button) -> this.decrease(), ButtonArrow.Direction.SOUTH);
-            arrowUp.y -= arrowUp.getHeight();
+            arrowUp.setY(arrowUp.getY() - arrowUp.getHeight());
         }
         setBordered(true);
         setValue("0");
@@ -92,12 +92,12 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
             arrowUp.renderButton(matrixStack, mouseX, mouseY, partialTicks);
             arrowDown.renderButton(matrixStack, mouseX, mouseY, partialTicks);
             offsetX = arrowUp.getWidth();
-            x += offsetX;
+            setX(getX() + offsetX);
             width -= offsetX;
         }
         super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
         if(arrows) {
-            x -= offsetX;
+            setX(getX() - offsetX);
             width += offsetX;
         }
     }

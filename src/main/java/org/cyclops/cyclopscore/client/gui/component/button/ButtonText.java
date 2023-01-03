@@ -57,7 +57,7 @@ public class ButtonText extends ButtonExtended {
             color = 0xffffa0;
         }
 
-        drawCenteredString(matrixStack, Minecraft.getInstance().font, getText(), x + width / 2, y + (height - 8) / 2, color);
+        drawCenteredString(matrixStack, Minecraft.getInstance().font, getText(), getX() + width / 2, getY() + (height - 8) / 2, color);
     }
 
 }

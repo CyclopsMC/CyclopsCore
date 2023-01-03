@@ -8,7 +8,9 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeSpawnEggItem;
@@ -54,12 +56,18 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
 
     public static <T extends Mob> BiFunction<EntityConfig<T>, Supplier<EntityType<T>>, ItemConfig> getDefaultSpawnEggItemConfigConstructor(ModBase mod, String itemName, int primaryColorIn, int secondaryColorIn, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
         return (entityConfig, entityType) -> {
-            Item.Properties itemProperties = new Item.Properties().tab(mod.getDefaultItemGroup());
+            Item.Properties itemProperties = new Item.Properties();
             if (itemPropertiesModifier != null) {
                 itemProperties = itemPropertiesModifier.apply(itemProperties);
             }
             Item.Properties finalItemProperties = itemProperties;
-            ItemConfig itemConfig = new ItemConfig(mod, itemName, (itemConfigSub) -> new ForgeSpawnEggItem(entityType, primaryColorIn, secondaryColorIn, finalItemProperties));
+            ItemConfig itemConfig = new ItemConfig(mod, itemName, (itemConfigSub) -> new ForgeSpawnEggItem(entityType, primaryColorIn, secondaryColorIn, finalItemProperties)) {
+                @Override
+                public void onRegistered() {
+                    super.onRegistered();
+                    getMod().registerDefaultCreativeTabEntry(new ItemStack(getInstance()), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+                }
+            };
             entityConfig.setSpawnEggItemConfig(itemConfig);
             return itemConfig;
         };
@@ -81,7 +89,6 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
         super.onRegistered();
         EntityRenderers.register(getInstance(),
                 manager -> EntityConfig.this.getRender(manager, Minecraft.getInstance().getItemRenderer()));
-
     }
 
     /**
@@ -96,11 +103,6 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
     @Override
     public IForgeRegistry<EntityType<?>> getRegistry() {
         return ForgeRegistries.ENTITY_TYPES;
-    }
-
-    @Nullable
-    public ItemConfig getSpawnEggItemConfig() {
-        return spawnEggItemConfig;
     }
 
     public void setSpawnEggItemConfig(@Nullable ItemConfig spawnEggItemConfig) {

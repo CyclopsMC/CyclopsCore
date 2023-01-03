@@ -463,7 +463,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
         public NextPageButton(int x, int y, int textureX, int textureY, int width, int height,
                               Button.OnPress onPress, ScreenInfoBook guiInfoBook) {
-            super(x, y, width, height, Component.literal(""), onPress);
+            super(x, y, width, height, Component.literal(""), onPress, Button.DEFAULT_NARRATION);
             this.textureX = textureX;
             this.textureY = textureY;
             this.guiInfoBook = guiInfoBook;
@@ -472,8 +472,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         @Override
         public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
-                boolean isHover = mouseX >= this.x && mouseY >= this.y &&
-                               mouseX < this.x + this.width && mouseY < this.y + this.height;
+                boolean isHover = mouseX >= this.getX() && mouseY >= this.getY() &&
+                               mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
                 RenderHelpers.bindTexture(guiInfoBook.texture);
                 int k = textureX;
                 int l = textureY;
@@ -484,7 +484,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
                 GlStateManager._enableBlend();
                 GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                this.blit(matrixStack, this.x, this.y, k, l, width, height);
+                this.blit(matrixStack, this.getX(), this.getY(), k, l, width, height);
                 GlStateManager._disableBlend();
             }
         }
@@ -504,7 +504,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
         public TextOverlayButton(HyperLink link, int x, int y, int height, int maxWidth, Button.OnPress onPress,
                                  ScreenInfoBook guiInfoBook) {
-            super(x, y, 0, height, Component.literal(InfoSection.formatString(L10NHelpers.localize(link.getTranslationKey()))), onPress);
+            super(x, y, 0, height, Component.literal(InfoSection.formatString(L10NHelpers.localize(link.getTranslationKey()))), onPress, Button.DEFAULT_NARRATION);
             this.guiInfoBook = guiInfoBook;
             this.link = link;
             Font fontRenderer = Minecraft.getInstance().font;
@@ -524,15 +524,15 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         @Override
         public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
-                boolean isHover = mouseX >= this.x && mouseY >= this.y &&
-                        mouseX < this.x + this.width && mouseY < this.y + this.height;
+                boolean isHover = mouseX >= this.getX() && mouseY >= this.getY() &&
+                        mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
                 Minecraft minecraft = Minecraft.getInstance();
                 MutableComponent msg = ((MutableComponent) getMessage());
                 if (isHover) {
                     msg = msg.withStyle(ChatFormatting.UNDERLINE);
                 }
                 // MCP: drawString
-                minecraft.font.draw(matrixStack, msg, x, y,
+                minecraft.font.draw(matrixStack, msg, getX(), getY(),
                         Helpers.RGBToInt(isHover ? 100 : 0, isHover ? 100 : 0, isHover ? 150 : 125));
             }
         }

@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -17,6 +18,8 @@ import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.item.ItemInformationProvider;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Function;
 
 /**
@@ -69,8 +72,20 @@ public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements
      */
     @OnlyIn(Dist.CLIENT)
     public ModelResourceLocation registerDynamicModel() {
-        String itemName = getMod().getModId() + ":" + getNamedId();
+        ResourceLocation itemName = new ResourceLocation(getMod().getModId(), getNamedId());
         return new ModelResourceLocation(itemName, "inventory");
+    }
+
+    @Override
+    public void onRegistered() {
+        super.onRegistered();
+        for (ItemStack itemStack : getDefaultCreativeTabEntries()) {
+            getMod().registerDefaultCreativeTabEntry(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+        }
+    }
+
+    protected Collection<ItemStack> getDefaultCreativeTabEntries() {
+        return Collections.singleton(new ItemStack(getInstance()));
     }
 
     @Override
@@ -85,14 +100,6 @@ public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements
                 ((IDynamicModelElement) getInstance()).hasDynamicModel()) {
             ItemAction.handleItemModel(this);
         }
-    }
-
-    /**
-     * Get the creative tab for this item.
-     * @return The creative tab, by default the value in {@link org.cyclops.cyclopscore.init.ModBase#getDefaultItemGroup()}.
-     */
-    public CreativeModeTab getTargetTab() {
-        return getMod().getDefaultItemGroup();
     }
 
     @Override

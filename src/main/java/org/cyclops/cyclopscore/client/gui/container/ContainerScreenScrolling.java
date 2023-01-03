@@ -32,7 +32,6 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     @Override
     public void init() {
         super.init();
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
 
         if(isSearchEnabled()) {
             int searchWidth = getSearchWidth();
@@ -48,11 +47,11 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
                 this.searchField.setCanLoseFocus(true);
                 this.searchField.setValue("");
                 this.searchField.setWidth(searchWidth);
-                this.searchField.x = this.leftPos + (searchX + searchWidth) - this.searchField.getWidth();
+                this.searchField.setX(this.leftPos + (searchX + searchWidth) - this.searchField.getWidth());
             } else {
                 this.searchField.setWidth(searchWidth);
-                this.searchField.x = this.leftPos + (searchX + searchWidth) - this.searchField.getWidth();
-                this.searchField.y = this.topPos + searchY;
+                this.searchField.setX(this.leftPos + (searchX + searchWidth) - this.searchField.getWidth());
+                this.searchField.setY(this.topPos + searchY);
             }
             this.addWidget(this.searchField);
         }
@@ -75,12 +74,6 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
      */
     protected Rectangle getScrollRegion() {
         return null;
-    }
-
-    @Override
-    public void removed() {
-        super.removed();
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override

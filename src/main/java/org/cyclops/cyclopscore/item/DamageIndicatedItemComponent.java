@@ -4,7 +4,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -53,11 +52,10 @@ public class DamageIndicatedItemComponent {
 
     /**
      * Add the creative tab items.
-     * @param itemGroup The item group.
      * @param items The item list to add to.
      * @param fluid The fluid in the container that needs to be added.
      */
-    public void fillItemGroup(CreativeModeTab itemGroup, NonNullList<ItemStack> items, Fluid fluid) {
+    public void fillDefaultCreativeTabEntries(NonNullList<ItemStack> items, Fluid fluid) {
         // Add the 'full' container.
         ItemStack itemStackFull = new ItemStack(this.item);
         IFluidHandlerItemCapacity fluidHanderFull = FluidHelpers.getFluidHandlerItemCapacity(itemStackFull).orElse(null);

@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -44,13 +45,14 @@ public class RecipeSerializerCraftingShapedCustomOutput implements RecipeSeriali
     @Override
     public RecipeCraftingShapedCustomOutput fromJson(ResourceLocation recipeId, JsonObject json) {
         String s = GsonHelper.getAsString(json, "group", "");
+        CraftingBookCategory craftingbookcategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", (String)null), CraftingBookCategory.MISC);
         Map<String, Ingredient> map = ShapedRecipe.keyFromJson(GsonHelper.getAsJsonObject(json, "key"));
         String[] astring = ShapedRecipe.shrink(ShapedRecipe.patternFromJson(GsonHelper.getAsJsonArray(json, "pattern")));
         int i = astring[0].length();
         int j = astring.length;
         NonNullList<Ingredient> nonnulllist = ShapedRecipe.dissolvePattern(astring, map, i, j);
         ItemStack itemstack = this.outputProvider.get(); // This line is different
-        return new RecipeCraftingShapedCustomOutput(this, recipeId, s, i, j, nonnulllist, itemstack);
+        return new RecipeCraftingShapedCustomOutput(this, recipeId, s, craftingbookcategory, i, j, nonnulllist, itemstack);
     }
 
     @Override
@@ -58,6 +60,7 @@ public class RecipeSerializerCraftingShapedCustomOutput implements RecipeSeriali
         int i = buffer.readVarInt();
         int j = buffer.readVarInt();
         String s = buffer.readUtf(32767);
+        CraftingBookCategory craftingbookcategory = buffer.readEnum(CraftingBookCategory.class);
         NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i * j, Ingredient.EMPTY);
 
         for(int k = 0; k < nonnulllist.size(); ++k) {
@@ -65,7 +68,7 @@ public class RecipeSerializerCraftingShapedCustomOutput implements RecipeSeriali
         }
 
         ItemStack itemstack = buffer.readItem();
-        return new RecipeCraftingShapedCustomOutput(this, recipeId, s, i, j, nonnulllist, itemstack);
+        return new RecipeCraftingShapedCustomOutput(this, recipeId, s, craftingbookcategory, i, j, nonnulllist, itemstack);
     }
 
     @Override
@@ -73,6 +76,7 @@ public class RecipeSerializerCraftingShapedCustomOutput implements RecipeSeriali
         buffer.writeVarInt(recipe.getRecipeWidth());
         buffer.writeVarInt(recipe.getRecipeHeight());
         buffer.writeUtf(recipe.getGroup());
+        buffer.writeEnum(recipe.category());
 
         for(Ingredient ingredient : recipe.getIngredients()) {
             ingredient.toNetwork(buffer);

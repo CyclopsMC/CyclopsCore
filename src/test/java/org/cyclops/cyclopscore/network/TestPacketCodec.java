@@ -2,13 +2,13 @@ package org.cyclops.cyclopscore.network;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mojang.math.Vector3d;
 import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import org.joml.Vector3d;
 import org.junit.Test;
 
 import java.util.List;

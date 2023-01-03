@@ -5,8 +5,8 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -406,7 +406,7 @@ public abstract class NBTClassType<T> {
             public DimPos readPersistedField(String name, CompoundTag tag) {
                 CompoundTag dimPos = tag.getCompound(name);
                 String dimensionName = dimPos.getString("dim");
-                ResourceKey<net.minecraft.world.level.Level> dimensionType = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimensionName));
+                ResourceKey<net.minecraft.world.level.Level> dimensionType = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimensionName));
                 return DimPos.of(dimensionType, new BlockPos(dimPos.getInt("x"), dimPos.getInt("y"), dimPos.getInt("z")));
             }
 

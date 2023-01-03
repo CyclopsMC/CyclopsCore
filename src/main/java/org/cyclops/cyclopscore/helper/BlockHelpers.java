@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.item.BlockItem;
@@ -56,11 +57,12 @@ public final class BlockHelpers {
 
     /**
      * Convert the given serialized NBT blockstate to a blockstate instance.
+     * @param holderGetter The block getter.
      * @param serializedBlockState The blockstate as NBT.
      * @return The resulting blockstate.
      */
-    public static BlockState deserializeBlockState(CompoundTag serializedBlockState) {
-        return NbtUtils.readBlockState(serializedBlockState);
+    public static BlockState deserializeBlockState(HolderGetter<Block> holderGetter, CompoundTag serializedBlockState) {
+        return NbtUtils.readBlockState(holderGetter, serializedBlockState);
     }
 
     /**

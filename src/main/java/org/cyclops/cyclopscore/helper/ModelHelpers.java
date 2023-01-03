@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Maps;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -12,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.io.IOException;

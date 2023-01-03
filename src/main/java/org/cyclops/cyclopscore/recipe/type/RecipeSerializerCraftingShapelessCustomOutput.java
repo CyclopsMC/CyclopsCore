@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 
@@ -44,6 +45,7 @@ public class RecipeSerializerCraftingShapelessCustomOutput implements RecipeSeri
     @Override
     public RecipeCraftingShapelessCustomOutput fromJson(ResourceLocation recipeId, JsonObject json) {
         String s = GsonHelper.getAsString(json, "group", "");
+        CraftingBookCategory craftingbookcategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", (String)null), CraftingBookCategory.MISC);
         NonNullList<Ingredient> nonnulllist = itemsFromJson(GsonHelper.getAsJsonArray(json, "ingredients"));
         if (nonnulllist.isEmpty()) {
             throw new JsonParseException("No ingredients for shapeless recipe");
@@ -51,7 +53,7 @@ public class RecipeSerializerCraftingShapelessCustomOutput implements RecipeSeri
             throw new JsonParseException("Too many ingredients for shapeless recipe the max is " + (3 * 3));
         } else {
             ItemStack itemstack = this.outputProvider.get(); // This line is different
-            return new RecipeCraftingShapelessCustomOutput(this, recipeId, s, itemstack, nonnulllist);
+            return new RecipeCraftingShapelessCustomOutput(this, recipeId, s, craftingbookcategory, itemstack, nonnulllist);
         }
     }
 
@@ -71,6 +73,7 @@ public class RecipeSerializerCraftingShapelessCustomOutput implements RecipeSeri
     @Override
     public RecipeCraftingShapelessCustomOutput fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
         String s = buffer.readUtf();
+        CraftingBookCategory craftingbookcategory = buffer.readEnum(CraftingBookCategory.class);
         int i = buffer.readVarInt();
         NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i, Ingredient.EMPTY);
 
@@ -79,12 +82,13 @@ public class RecipeSerializerCraftingShapelessCustomOutput implements RecipeSeri
         }
 
         ItemStack itemstack = buffer.readItem();
-        return new RecipeCraftingShapelessCustomOutput(this, recipeId, s, itemstack, nonnulllist);
+        return new RecipeCraftingShapelessCustomOutput(this, recipeId, s, craftingbookcategory, itemstack, nonnulllist);
     }
 
     @Override
     public void toNetwork(FriendlyByteBuf buffer, RecipeCraftingShapelessCustomOutput recipe) {
         buffer.writeUtf(recipe.getGroup());
+        buffer.writeEnum(recipe.category());
         buffer.writeVarInt(recipe.getIngredients().size());
 
         for(Ingredient ingredient : recipe.getIngredients()) {

@@ -83,7 +83,7 @@ public class ButtonImage extends ButtonExtended {
     @Override
     protected void drawButtonInner(PoseStack matrixStack, int mouseX, int mouseY) {
         for (IImage image : this.images) {
-            image.draw(this, matrixStack, x + offsetX, y + offsetY);
+            image.draw(this, matrixStack, getX() + offsetX, getY() + offsetY);
         }
     }
 

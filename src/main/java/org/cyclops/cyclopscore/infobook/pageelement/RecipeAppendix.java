@@ -270,7 +270,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         @Override
         public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
             if(isVisible() && isHover(mouseX, mouseY)) {
-                gui.drawOuterBorder(matrixStack, x, y, 16, 16, 0.392f, 0.392f, 0.6f, 0.9f);
+                gui.drawOuterBorder(matrixStack, getX(), getY(), 16, 16, 0.392f, 0.392f, 0.6f, 0.9f);
             }
         }
 
@@ -294,7 +294,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
         @Override
         public void renderTooltip(PoseStack matrixStack, int mx, int my) {
-            RecipeAppendix.renderItemTooltip(gui, matrixStack, x, y, getElement(), mx, my);
+            RecipeAppendix.renderItemTooltip(gui, matrixStack, getX(), getY(), getElement(), mx, my);
         }
 
         @Override
@@ -317,7 +317,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
 
         @Override
         public void renderTooltip(PoseStack matrixStack, int mx, int my) {
-            RecipeAppendix.renderFluidTooltip(gui, matrixStack, x, y, getElement(), mx, my);
+            RecipeAppendix.renderFluidTooltip(gui, matrixStack, getX(), getY(), getElement(), mx, my);
         }
     }
 

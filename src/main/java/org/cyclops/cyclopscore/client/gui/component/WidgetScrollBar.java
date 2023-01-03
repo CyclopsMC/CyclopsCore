@@ -174,7 +174,7 @@ public class WidgetScrollBar extends AbstractWidget {
     }
 
     @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
+    protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {
 
     }
 
