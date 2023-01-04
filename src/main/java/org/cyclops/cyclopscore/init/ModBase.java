@@ -372,8 +372,8 @@ public abstract class ModBase<T extends ModBase> {
         defaultCreativeTabEntries.add(Pair.of(itemStack, visibility));
     }
 
-    protected void constructDefaultCreativeModeTab(CreativeModeTab.Builder builder) {
-        builder
+    protected CreativeModeTab.Builder constructDefaultCreativeModeTab(CreativeModeTab.Builder builder) {
+        return builder
                 .title(Component.translatable("itemGroup." + getModId()))
                 .icon(() -> new ItemStack(Items.BARRIER));
     }
@@ -382,7 +382,9 @@ public abstract class ModBase<T extends ModBase> {
      * @return If a default creative tab should be constructed.
      *         If so, make sure to override {@link #constructDefaultCreativeModeTab(CreativeModeTab.Builder)}.
      */
-    protected abstract boolean hasDefaultCreativeModeTab();
+    protected boolean hasDefaultCreativeModeTab() {
+        return true;
+    };
 
     /**
      * Called when the configs should be registered.
