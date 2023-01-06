@@ -1,0 +1,10 @@
+{
+    "sources": [
+        {
+            "type": "cyclopscore:directory_mod",
+            "mod": "cyclopscore",
+            "source": "block",
+            "prefix": "cyclopscore:block/"
+        }
+    ]
+}

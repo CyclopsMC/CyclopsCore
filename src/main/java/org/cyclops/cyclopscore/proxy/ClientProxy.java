@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.proxy;
 import net.minecraftforge.common.MinecraftForge;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.client.gui.RenderItemExtendedSlotCount;
+import org.cyclops.cyclopscore.client.render.spritesource.DirectoryListerMod;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.tracking.Versions;
 
@@ -16,6 +17,9 @@ public class ClientProxy extends ClientProxyComponent {
 
     public ClientProxy() {
         super(new CommonProxy());
+
+        // Force registration of SpriteSources
+        DirectoryListerMod.DIRECTORY_MOD.codec();
     }
 
     @Override
