@@ -23,6 +23,6 @@ public interface IDynamicModelElement {
      * @return A dynamic model instance.
      */
     @OnlyIn(Dist.CLIENT)
-    public BakedModel createDynamicModel(ModelEvent.BakingCompleted event);
+    public BakedModel createDynamicModel(ModelEvent.ModifyBakingResult event);
 
 }

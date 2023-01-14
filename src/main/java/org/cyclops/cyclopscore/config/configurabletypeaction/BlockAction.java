@@ -88,7 +88,7 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void onModelBakeEvent(ModelEvent.BakingCompleted event){
+    public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event){
         for (BlockConfig config : MODEL_ENTRIES) {
             IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
             BakedModel dynamicModel = dynamicModelElement.createDynamicModel(event);

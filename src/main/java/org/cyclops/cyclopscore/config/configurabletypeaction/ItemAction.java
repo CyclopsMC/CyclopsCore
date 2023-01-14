@@ -48,7 +48,7 @@ public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void onModelBakeEvent(ModelEvent.BakingCompleted event){
+    public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event){
         for (ItemConfig config : MODEL_ENTRIES) {
             IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
             if (config.dynamicItemVariantLocation != null) {

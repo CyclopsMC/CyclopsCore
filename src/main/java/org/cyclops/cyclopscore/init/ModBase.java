@@ -369,6 +369,9 @@ public abstract class ModBase<T extends ModBase> {
         if (defaultCreativeTabEntries == null) {
             throw new IllegalStateException("Tried to register default tab entries after the CreativeModeTabEvent.BuildContents event");
         }
+        if (itemStack.getCount() != 1) {
+            throw new IllegalStateException("Tried to register default tab entries with a non-1-count ItemStack");
+        }
         defaultCreativeTabEntries.add(Pair.of(itemStack, visibility));
     }
 

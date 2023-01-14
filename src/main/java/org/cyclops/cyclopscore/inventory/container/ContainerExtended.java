@@ -50,7 +50,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
     private int nextValueId = 0;
     private IValueNotifiable guiValueListener = null;
 
-    private Container playerIInventory;
+    private Inventory playerIInventory;
     protected final Player player;
     protected int offsetX = 0;
     protected int offsetY = 0;
@@ -299,7 +299,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
      * Get the inventory of the player for which this container is instantiated.
      * @return The player inventory.
      */
-    public Container getPlayerIInventory() {
+    public Inventory getPlayerIInventory() {
         return playerIInventory;
     }
 

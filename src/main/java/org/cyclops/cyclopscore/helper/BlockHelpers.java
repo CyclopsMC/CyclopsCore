@@ -1,9 +1,13 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -12,15 +16,29 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Contains helper methods for various block specific things.
  * @author rubensworks
  */
 public final class BlockHelpers {
+
+    public static HolderGetter<Block> HOLDER_GETTER_FORGE = new HolderGetter<Block>() {
+        @Override
+        public Optional<Holder.Reference<Block>> get(ResourceKey<Block> key) {
+            return (Optional<Holder.Reference<Block>>) (Object) ForgeRegistries.BLOCKS.getHolder(key);
+        }
+
+        @Override
+        public Optional<HolderSet.Named<Block>> get(TagKey<Block> p_256283_) {
+            return Optional.empty();
+        }
+    };
 
     /**
      * Safely get a block state property for a nullable state and value that may not have been set yet.
