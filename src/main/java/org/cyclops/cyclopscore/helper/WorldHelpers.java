@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.helper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fml.DistExecutor;
 
 import javax.annotation.Nullable;
 
@@ -87,6 +88,13 @@ public class WorldHelpers {
      */
     public static <T, W extends LevelAccessor> T foldArea(W world, int area, BlockPos blockPos, WorldFoldingFunction<T, T, W> folder, T value) {
         return foldArea(world, new int[]{area, area, area}, new int[]{area, area, area}, blockPos, folder, value);
+    }
+
+    /**
+     * @return The current level client-side, or the overworld server-side.
+     */
+    public static Level getActiveLevel() {
+        return DistExecutor.safeRunForDist(()->WorldHelpersClient::getActiveLevel, ()->WorldHelpersServer::getActiveLevel);
     }
 
     public static interface WorldFoldingFunction<F, T, W> {
