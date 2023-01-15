@@ -88,7 +88,7 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
         }
         super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
         if(arrows) {
-            setX(getX() - offsetX + 1);
+            setX(getX() - (offsetX + 1));
             width += offsetX * 2;
         }
     }
