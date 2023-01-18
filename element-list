@@ -23,7 +23,6 @@ org.cyclops.cyclopscore.client.gui.component.button
 org.cyclops.cyclopscore.client.gui.component.input
 org.cyclops.cyclopscore.client.gui.container
 org.cyclops.cyclopscore.client.gui.image
-org.cyclops.cyclopscore.client.icon
 org.cyclops.cyclopscore.client.key
 org.cyclops.cyclopscore.client.model
 org.cyclops.cyclopscore.client.particle
