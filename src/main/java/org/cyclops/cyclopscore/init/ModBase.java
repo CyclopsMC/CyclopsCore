@@ -85,7 +85,7 @@ public abstract class ModBase<T extends ModBase> {
 
     @Nullable
     private CreativeModeTab defaultCreativeTab = null;
-    private List<Pair<ItemStack, CreativeModeTab.TabVisibility>> defaultCreativeTabEntries = Lists.newArrayList();
+    private final List<Pair<ItemStack, CreativeModeTab.TabVisibility>> defaultCreativeTabEntries = Lists.newArrayList();
 
     public ModBase(String modId, Consumer<T> instanceSetter) {
         instanceSetter.accept((T) this);
@@ -361,7 +361,6 @@ public abstract class ModBase<T extends ModBase> {
             for (Pair<ItemStack, CreativeModeTab.TabVisibility> entry : defaultCreativeTabEntries) {
                 event.accept(entry.getLeft(), entry.getRight());
             }
-            defaultCreativeTabEntries = null;
         }
     }
 
