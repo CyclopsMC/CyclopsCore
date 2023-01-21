@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix incorrect containment check in IngredientCollectionPrototypeMap
+  This is a regression since 61267920638e48331a513b9a446907910122078d
+  Closes CyclopsMC/IntegratedTerminals#98
+
