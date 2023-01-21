@@ -150,8 +150,8 @@ public class TestIngredientCollectionPrototypeMapComplex {
         assertThat(collection.add(CA01_), is(true));
         assertThat(collection.add(CA01_), is(true));
 
-        assertThat(collection.contains(CB01_, ComplexStack.Match.META), is(false));
-        assertThat(collection.contains(CB02_, ComplexStack.Match.META), is(false));
+        assertThat(collection.contains(CB01_, ComplexStack.Match.META), is(true));
+        assertThat(collection.contains(CB02_, ComplexStack.Match.META), is(true));
         assertThat(collection.contains(CB03_, ComplexStack.Match.META), is(true));
         assertThat(collection.contains(CB04_, ComplexStack.Match.META), is(false));
 
@@ -159,6 +159,16 @@ public class TestIngredientCollectionPrototypeMapComplex {
         assertThat(collection.contains(CB02_, ComplexStack.Match.GROUP), is(false));
         assertThat(collection.contains(CB03_, ComplexStack.Match.GROUP), is(false));
         assertThat(collection.contains(CB04_, ComplexStack.Match.GROUP), is(false));
+
+        assertThat(collection.contains(CB01_, ComplexStack.Match.META | ComplexStack.Match.AMOUNT), is(false));
+        assertThat(collection.contains(CB02_, ComplexStack.Match.META | ComplexStack.Match.AMOUNT), is(false));
+        assertThat(collection.contains(CB03_, ComplexStack.Match.META | ComplexStack.Match.AMOUNT), is(true));
+        assertThat(collection.contains(CB04_, ComplexStack.Match.META | ComplexStack.Match.AMOUNT), is(false));
+
+        assertThat(collection.contains(CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.AMOUNT), is(false));
+        assertThat(collection.contains(CB02_, ComplexStack.Match.GROUP | ComplexStack.Match.AMOUNT), is(false));
+        assertThat(collection.contains(CB03_, ComplexStack.Match.GROUP | ComplexStack.Match.AMOUNT), is(false));
+        assertThat(collection.contains(CB04_, ComplexStack.Match.GROUP | ComplexStack.Match.AMOUNT), is(false));
     }
 
     @Test

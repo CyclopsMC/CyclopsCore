@@ -96,10 +96,11 @@ public class IngredientCollectionPrototypeMap<T, M> extends IngredientCollection
         T prototype = getPrototype(instance);
         Iterator<Map.Entry<T, Long>> it = ingredients.iterator(prototype, matchCondition);
         while (it.hasNext()) {
+            boolean exactMatch = getComponent().getPrimaryQuantifier() != null && matcher.hasCondition(matchCondition, getComponent().getPrimaryQuantifier().getMatchCondition());
             Long value = it.next().getValue();
             long existingValue = value == null ? 0 : value;
             long currentValue = matcher.getQuantity(instance);
-            if (currentValue == existingValue) {
+            if (exactMatch ? currentValue == existingValue : currentValue <= existingValue) {
                 return true;
             }
         }
