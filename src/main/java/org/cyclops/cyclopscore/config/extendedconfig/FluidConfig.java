@@ -32,6 +32,7 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, ForgeFlowi
     protected static ForgeFlowingFluid.Properties getDefaultFluidProperties(ModBase mod, String texturePrefixPath,
                                                                             Consumer<FluidType.Properties> fluidAttributesConsumer) {
         FluidType.Properties fluidAttributes = FluidType.Properties.create();
+        fluidAttributesConsumer.accept(fluidAttributes);
         FluidType fluidType = new FluidType(fluidAttributes) {
             @Override
             public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
@@ -54,7 +55,6 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, ForgeFlowi
                 });
             }
         };
-        fluidAttributesConsumer.accept(fluidAttributes);
 
         Wrapper<ForgeFlowingFluid.Properties> properties = new Wrapper<>();
         final Wrapper<Fluid> source = new Wrapper<>();

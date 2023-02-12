@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix fluid properties not being applied
+  Related to CyclopsMC/EvilCraft#967
+
