@@ -19,12 +19,13 @@ import java.util.function.Supplier;
  * @param <T> An instance type.
  * @param <M> The matching condition parameter.
  * @param <C> A classifier type.
+ * @param <L> The inner collection type.
  */
-public class IngredientCollectionSingleClassified<T, M, C> extends IngredientCollectionAdapter<T, M>
-        implements IIngredientCollectionLikeSingleClassifiedTrait<T, M, T, C, IIngredientCollectionMutable<T, M>> {
+public class IngredientCollectionSingleClassified<T, M, C, L extends IIngredientCollectionMutable<T, M>> extends IngredientCollectionAdapter<T, M>
+        implements IIngredientCollectionLikeSingleClassifiedTrait<T, M, T, C, L> {
 
-    private final Map<C, IIngredientCollectionMutable<T, M>> classifiedCollections;
-    private final Supplier<IIngredientCollectionMutable<T, M>> collectionCreator;
+    private final Map<C, L> classifiedCollections;
+    private final Supplier<L> collectionCreator;
     private final IngredientComponentCategoryType<T, M, C> categoryType;
 
     private int size;
@@ -36,7 +37,7 @@ public class IngredientCollectionSingleClassified<T, M, C> extends IngredientCol
      * @param categoryType A category type using which this collection will classify instance.
      */
     public IngredientCollectionSingleClassified(IngredientComponent<T, M> component,
-                                                Supplier<IIngredientCollectionMutable<T, M>> collectionCreator,
+                                                Supplier<L> collectionCreator,
                                                 IngredientComponentCategoryType<T, M, C> categoryType) {
         super(component);
         this.classifiedCollections = categoryType.isReferenceEqual() ? Maps.newIdentityHashMap() : Maps.newHashMap();
@@ -54,7 +55,7 @@ public class IngredientCollectionSingleClassified<T, M, C> extends IngredientCol
     }
 
     @Override
-    public IIngredientCollectionMutable<T, M> createEmptyCollection() {
+    public L createEmptyCollection() {
         return this.collectionCreator.get();
     }
 
@@ -64,7 +65,7 @@ public class IngredientCollectionSingleClassified<T, M, C> extends IngredientCol
     }
 
     @Override
-    public Map<C, IIngredientCollectionMutable<T, M>> getClassifiedCollections() {
+    public Map<C, L> getClassifiedCollections() {
         return this.classifiedCollections;
     }
 
@@ -158,7 +159,7 @@ public class IngredientCollectionSingleClassified<T, M, C> extends IngredientCol
                 }
             }
         }
-        return super.contains(instance, matchCondition);
+        return this.classifiedCollections.values().stream().anyMatch(c -> c.contains(instance, matchCondition));
     }
 
     @Override
@@ -205,7 +206,7 @@ public class IngredientCollectionSingleClassified<T, M, C> extends IngredientCol
         }
         if (appliesToClassifier(matchCondition)) {
             // At most one classifier will be found, so we can simply delegate this call
-            IIngredientCollectionMutable<T, M> collection = this.getClassifiedCollections().get(getClassifier(instance));
+            L collection = this.getClassifiedCollections().get(getClassifier(instance));
             if (collection != null) {
                 return new IIngredientCollectionLikeSingleClassifiedTrait.ClassifiedIteratorDelegated<>(
                         this, collection, instance, matchCondition);

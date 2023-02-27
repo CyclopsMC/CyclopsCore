@@ -46,7 +46,7 @@ public class TestIngredientCollectionSingleClassified {
     }
 
     @Parameterized.Parameter(0)
-    public IngredientCollectionSingleClassified<ComplexStack, Integer, ?> collection;
+    public IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection;
     @Parameterized.Parameter(1)
     public IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType;
 
@@ -80,12 +80,12 @@ public class TestIngredientCollectionSingleClassified {
         assertThat(collection.equals(collection), is(true));
         assertThat(collection.equals(new IngredientCollectionEmpty<>(IngredientComponentStubs.SIMPLE)), is(false));
         assertThat(collection.equals(null), is(false));
-        IngredientCollectionSingleClassified<ComplexStack, Integer, ?> c0 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
+        IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> c0 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), this.categoryType);
-        IngredientCollectionSingleClassified<ComplexStack, Integer, ?> c1 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
+        IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> c1 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), new IngredientComponentCategoryType<>(
                         new ResourceLocation("dummy"), ComplexStack.Group.class, true, ComplexStack::getGroup, ComplexStack.Match.GROUP, false));
-        IngredientCollectionSingleClassified<ComplexStack, Integer, ?> c2 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
+        IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> c2 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), this.categoryType);
         c0.addAll(Lists.newArrayList(CA01_, CB02_, CA91B));
         c2.add(CA01B);
