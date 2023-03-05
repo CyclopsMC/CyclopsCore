@@ -95,7 +95,7 @@ public class IngredientCollectionPrototypeMap<T, M> extends IngredientCollection
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
 
         // If we have an exact match condition, we can avoid iteration.
-        if (matcher.getExactMatchNoQuantityCondition().equals(matchCondition)) {
+        if (matcher.getExactMatchCondition().equals(matchCondition)) {
             return contains(instance);
         }
 
