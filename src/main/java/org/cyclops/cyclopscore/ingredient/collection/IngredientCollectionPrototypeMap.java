@@ -93,10 +93,16 @@ public class IngredientCollectionPrototypeMap<T, M> extends IngredientCollection
     @Override
     public boolean contains(T instance, M matchCondition) {
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
+
+        // If we have an exact match condition, we can avoid iteration.
+        if (matcher.getExactMatchNoQuantityCondition().equals(matchCondition)) {
+            return contains(instance);
+        }
+
         T prototype = getPrototype(instance);
         Iterator<Map.Entry<T, Long>> it = ingredients.iterator(prototype, matchCondition);
+        boolean exactMatch = getComponent().getPrimaryQuantifier() != null && matcher.hasCondition(matchCondition, getComponent().getPrimaryQuantifier().getMatchCondition());
         while (it.hasNext()) {
-            boolean exactMatch = getComponent().getPrimaryQuantifier() != null && matcher.hasCondition(matchCondition, getComponent().getPrimaryQuantifier().getMatchCondition());
             Long value = it.next().getValue();
             long existingValue = value == null ? 0 : value;
             long currentValue = matcher.getQuantity(instance);
@@ -154,11 +160,7 @@ public class IngredientCollectionPrototypeMap<T, M> extends IngredientCollection
         return matcher.withQuantity(instance, 1);
     }
 
-    /**
-     * Set the quantity of the given instance.
-     * @param instance An instance, its quantity will be ignored.
-     * @param quantity The new quantity to set.
-     */
+    @Override
     public void setQuantity(T instance, long quantity) {
         T prototype = getPrototype(instance);
         if (quantity != 0) {
@@ -168,11 +170,7 @@ public class IngredientCollectionPrototypeMap<T, M> extends IngredientCollection
         }
     }
 
-    /**
-     * Get the quantity of the given instance.
-     * @param instance An instance, its quantity will be ignored.
-     * @return The quantity.
-     */
+    @Override
     public long getQuantity(T instance) {
         Long count = ingredients.get(getPrototype(instance));
         return count == null ? 0 : count;

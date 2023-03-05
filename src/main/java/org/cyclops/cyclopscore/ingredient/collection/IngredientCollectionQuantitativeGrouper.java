@@ -217,4 +217,33 @@ public class IngredientCollectionQuantitativeGrouper<T, M, I extends IIngredient
         }
         return removed;
     }
+
+    @Override
+    public long getQuantity(T instance) {
+        Iterator<T> it = iterator(instance, getQuantifierlessMatchCondition());
+        if (!it.hasNext()) {
+            // Fail if there are no matches
+            return 0;
+        }
+        long quantity = 0L;
+        IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
+        while (it.hasNext()) {
+            quantity += matcher.getQuantity(it.next());
+        }
+        return quantity;
+    }
+
+    @Override
+    public void setQuantity(T instance, long quantity) {
+        // First check what the current quantity is
+        long currentQuantity = getQuantity(instance);
+        long modifyQuantity = quantity - currentQuantity;
+        if (modifyQuantity > 0) {
+            // Add a new instance with the given quantity
+            this.add(this.getComponent().getMatcher().withQuantity(instance, modifyQuantity));
+        } else if (modifyQuantity < 0) {
+            // Remove an instance with the given quantity
+            this.remove(this.getComponent().getMatcher().withQuantity(instance, -modifyQuantity));
+        }
+    }
 }

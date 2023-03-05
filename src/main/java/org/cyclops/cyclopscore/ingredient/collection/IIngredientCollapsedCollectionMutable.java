@@ -14,4 +14,19 @@ package org.cyclops.cyclopscore.ingredient.collection;
  */
 public interface IIngredientCollapsedCollectionMutable<T, M> extends IIngredientCollapsedCollection<T, M>,
         IIngredientCollectionMutable<T, M> {
+
+    /**
+     * Get the quantity of the given instance.
+     * @param instance An instance, its quantity will be ignored.
+     * @return The quantity.
+     */
+    public long getQuantity(T instance);
+
+    /**
+     * Set the quantity of the given instance.
+     * @param instance An instance, its quantity will be ignored.
+     * @param quantity The new quantity to set.
+     */
+    public void setQuantity(T instance, long quantity);
+
 }
