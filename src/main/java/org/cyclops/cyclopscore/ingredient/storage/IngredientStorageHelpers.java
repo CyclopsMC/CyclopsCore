@@ -6,9 +6,10 @@ import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorageSlotted;
+import org.cyclops.cyclopscore.ingredient.collection.IIngredientCollapsedCollectionMutable;
 import org.cyclops.cyclopscore.ingredient.collection.IIngredientCollection;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientArrayList;
-import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionPrototypeMap;
+import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionHelpers;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientCollections;
 
 import javax.annotation.Nullable;
@@ -884,7 +885,8 @@ public final class IngredientStorageHelpers {
                     IngredientCollections.deserialize(tag, IngredientArrayList::new), maxQuantity, rateLimit);
         } else {
             return new IngredientComponentStorageCollectionWrapper<>(
-                    IngredientCollections.deserialize(tag, IngredientCollectionPrototypeMap::new), maxQuantity, rateLimit);
+                    IngredientCollections.deserialize(tag, (IngredientCollections.IIngredientCollectionConstructor<IIngredientCollapsedCollectionMutable<?, ?>>) IngredientCollectionHelpers::createCollapsedCollection),
+                    maxQuantity, rateLimit);
         }
     }
 
