@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add single-classified collapsed ingredient collection
+  This allows for more efficient match-based containment checking and
+  iteration for mods such as Integrated Dynamics, Tunnels, and Terminals..
+
