@@ -100,6 +100,10 @@ public class DimPos implements Comparable<DimPos> {
         return 31 * getLevel().hashCode() + getBlockPos().hashCode();
     }
 
+    public DimPos withPosition(BlockPos pos) {
+        return new DimPos(this.level, pos, this.worldReference == null ? null : this.worldReference.get());
+    }
+
     public static DimPos of(Level world, BlockPos blockPos) {
         return of(world.dimension(), blockPos);
     }
