@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.mojang.math.Vector3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -146,6 +147,24 @@ public abstract class PacketCodec extends PacketBase {
                 double y = input.readDouble();
                 double z = input.readDouble();
                 return new Vector3d(x, y, z);
+            }
+        });
+
+        codecActions.put(Vec3i.class, new ICodecAction() {
+            @Override
+            public void encode(Object object, FriendlyByteBuf output) {
+                Vec3i v = (Vec3i)object;
+                output.writeInt(v.getX());
+                output.writeInt(v.getY());
+                output.writeInt(v.getZ());
+            }
+
+            @Override
+            public Object decode(FriendlyByteBuf input) {
+                int x = input.readInt();
+                int y = input.readInt();
+                int z = input.readInt();
+                return new Vec3i(x, y, z);
             }
         });
 
