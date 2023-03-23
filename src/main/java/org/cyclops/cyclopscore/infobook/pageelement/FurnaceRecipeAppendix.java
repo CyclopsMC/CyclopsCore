@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -61,7 +62,7 @@ public class FurnaceRecipeAppendix extends RecipeAppendix<Recipe<Container>> {
         // Prepare items
         int tick = getTick(gui);
         ItemStack input = prepareItemStacks(Lists.newArrayList(recipe.getIngredients().get(0).getItems()), tick);
-        ItemStack result = prepareItemStack(recipe.getResultItem(), tick);
+        ItemStack result = prepareItemStack(recipe.getResultItem(Minecraft.getInstance().player.level.registryAccess()), tick);
 
         // Items
         renderItem(gui, matrixStack, x + SLOT_OFFSET_X, y + SLOT_OFFSET_Y, input, mx, my, INPUT);

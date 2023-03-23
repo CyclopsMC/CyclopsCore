@@ -47,7 +47,7 @@ public class ButtonArrow extends ButtonExtended {
 
     @Override
     protected void drawBackground(PoseStack matrixStack) {
-        directionImages[getYImage(isHoveredOrFocused())].draw(this, matrixStack, getX(), getY());
+        directionImages[getYImage()].draw(this, matrixStack, getX(), getY());
     }
 
     @Override

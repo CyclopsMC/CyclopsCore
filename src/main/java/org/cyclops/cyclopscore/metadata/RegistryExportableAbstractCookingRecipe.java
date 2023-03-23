@@ -5,8 +5,9 @@ import com.google.gson.JsonObject;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.function.Supplier;
 
@@ -29,7 +30,7 @@ public class RegistryExportableAbstractCookingRecipe<T extends RecipeType<? exte
             }
         }
         object.add("input", variants);
-        object.add("output", IRegistryExportable.serializeItemStack(recipe.getResultItem()));
+        object.add("output", IRegistryExportable.serializeItemStack(recipe.getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess())));
         return object;
     }
 

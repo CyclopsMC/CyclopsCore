@@ -277,10 +277,11 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         Tesselator tessellator = Tesselator.getInstance();
         BufferBuilder worldRenderer = tessellator.getBuilder();
         worldRenderer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        worldRenderer.vertex(x + 0, y + height, this.getBlitOffset()).uv(((float) (u + width) * f), ((float) (v + height) * f1)).endVertex();
-        worldRenderer.vertex(x + width, y + height, this.getBlitOffset()).uv(((float) (u + 0) * f), ((float) (v + height) * f1)).endVertex();
-        worldRenderer.vertex(x + width, y + 0, this.getBlitOffset()).uv(((float) (u + 0) * f), ((float) (v + 0) * f1)).endVertex();
-        worldRenderer.vertex(x + 0, y + 0, this.getBlitOffset()).uv(((float) (u + width) * f), ((float) (v + 0) * f1)).endVertex();
+        int z = 0;
+        worldRenderer.vertex(x + 0, y + height, z).uv(((float) (u + width) * f), ((float) (v + height) * f1)).endVertex();
+        worldRenderer.vertex(x + width, y + height, z).uv(((float) (u + 0) * f), ((float) (v + height) * f1)).endVertex();
+        worldRenderer.vertex(x + width, y + 0, z).uv(((float) (u + 0) * f), ((float) (v + 0) * f1)).endVertex();
+        worldRenderer.vertex(x + 0, y + 0, z).uv(((float) (u + width) * f), ((float) (v + 0) * f1)).endVertex();
         tessellator.end();
     }
 
@@ -406,7 +407,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         RenderHelpers.bindTexture(texture);
-        int z = this.getBlitOffset();
+        int z = 0; // Was blitOffset
 
         // Corners
         RenderHelpers.blitColored(matrixStack, x - BORDER_WIDTH, y - BORDER_WIDTH, z, BORDER_X, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
@@ -470,7 +471,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
 
         @Override
-        public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.getX() && mouseY >= this.getY() &&
                                mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
@@ -522,7 +523,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
 
         @Override
-        public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.getX() && mouseY >= this.getY() &&
                         mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;

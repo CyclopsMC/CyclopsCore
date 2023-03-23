@@ -10,6 +10,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -243,12 +244,11 @@ public class GuiHelpers {
             yStart = height - tooltipHeight - guiTop - 6;
         }
 
-        mc.getItemRenderer().blitOffset = 300.0F;
         drawTooltipBackground(poseStack, xStart, yStart, tooltipWidth, tooltipHeight);
 
         PoseStack matrixstack = new PoseStack();
         MultiBufferSource.BufferSource irendertypebuffer$impl = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-        matrixstack.translate(0.0D, 0.0D, (double)mc.getItemRenderer().blitOffset);
+        matrixstack.translate(0.0D, 0.0D, 300F);
         Matrix4f matrix4f = matrixstack.last().pose();
 
         for(int stringIndex = 0; stringIndex < lines.size(); ++stringIndex) {
@@ -261,7 +261,7 @@ public class GuiHelpers {
             }
 
             mc.font.drawInBatch(line.getVisualOrderText(), xStart, yStart, -1, true, matrix4f,
-                    irendertypebuffer$impl, false, 0, 15728880);
+                    irendertypebuffer$impl, Font.DisplayMode.NORMAL, 0, 15728880);
 
             if(stringIndex == 0) {
                 yStart += 2;
@@ -273,8 +273,6 @@ public class GuiHelpers {
         irendertypebuffer$impl.endBatch();
 
         GL11.glEnable(GL11.GL_DEPTH_TEST);
-
-        mc.getItemRenderer().blitOffset = 0.0F;
     }
 
     /**
@@ -316,7 +314,6 @@ public class GuiHelpers {
      * @param zLevel The Z level to render at.
      */
     public static void fillGradient(PoseStack poseStack, int left, int top, int right, int bottom, int startColor, int endColor, float zLevel) {
-        RenderSystem.disableTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
@@ -338,7 +335,6 @@ public class GuiHelpers {
         bufferbuilder.vertex(matrix, (float)right, (float)bottom, zLevel).color(f5, f6, f7, f4).endVertex();
         tesselator.end();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
     }
 
     /**

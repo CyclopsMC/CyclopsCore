@@ -107,9 +107,9 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
             GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             Lighting.setupFor3DItems();
             GL11.glEnable(GL11.GL_DEPTH_TEST);
-            renderItem.renderAndDecorateItem(itemStack, x, y);
+            renderItem.renderAndDecorateItem(matrixStack, itemStack, x, y);
             if (renderOverlays)
-                renderItem.renderGuiItemDecorations(Minecraft.getInstance().font, itemStack, x, y);
+                renderItem.renderGuiItemDecorations(matrixStack, Minecraft.getInstance().font, itemStack, x, y);
             Lighting.setupForFlatItems();
             matrixStack.popPose();
             GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -268,7 +268,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
         protected abstract String getTranslationKey(E element);
 
         @Override
-        public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
             if(isVisible() && isHover(mouseX, mouseY)) {
                 gui.drawOuterBorder(matrixStack, getX(), getY(), 16, 16, 0.392f, 0.392f, 0.6f, 0.9f);
             }

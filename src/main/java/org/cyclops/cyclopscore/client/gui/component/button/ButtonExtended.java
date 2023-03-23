@@ -25,18 +25,40 @@ public abstract class ButtonExtended extends Button {
         this.background = background;
     }
 
+    protected int getYImage() {
+        int i = 1;
+        if (!this.active) {
+            i = 0;
+        } else if (this.isHoveredOrFocused()) {
+            i = 2;
+        }
+
+        return i;
+    }
+
+    protected int getTextureY() { // Copy from AbstractButton
+        int i = 1;
+        if (!this.active) {
+            i = 0;
+        } else if (this.isHoveredOrFocused()) {
+            i = 2;
+        }
+
+        return 46 + i * 20;
+    }
+
     protected void drawBackground(PoseStack matrixStack) {
         RenderHelpers.bindTexture(WIDGETS_LOCATION);
 
-        int hoverState = getYImage(isHoveredOrFocused());
-        blit(matrixStack, getX(), getY(), 0, 46 + hoverState * 20, width / 2, height / 2); // top left
-        blit(matrixStack, getX() + width / 2, getY(), 200 - width / 2, 46 + hoverState * 20, width / 2, height / 2); // top right
-        blit(matrixStack, getX(), getY() + height / 2, 0, 46 + hoverState * 20 + 20 - height / 2, width / 2, height / 2); // bottom left
-        blit(matrixStack, getX() + width / 2, getY() + height / 2, 200 - width / 2, 46 + hoverState * 20 + 20 - height / 2, width / 2, height / 2); // bottom right
+        int textureY = getTextureY();
+        blit(matrixStack, getX(), getY(), 0, textureY, width / 2, height / 2); // top left
+        blit(matrixStack, getX() + width / 2, getY(), 200 - width / 2, textureY, width / 2, height / 2); // top right
+        blit(matrixStack, getX(), getY() + height / 2, 0, textureY + 20 - height / 2, width / 2, height / 2); // bottom left
+        blit(matrixStack, getX() + width / 2, getY() + height / 2, 200 - width / 2, textureY + 20 - height / 2, width / 2, height / 2); // bottom right
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(visible) {
             if(background) {
                 drawBackground(matrixStack);

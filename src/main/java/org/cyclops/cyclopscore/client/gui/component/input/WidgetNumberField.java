@@ -86,16 +86,16 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         int offsetX = 0;
         if(arrows) {
-            arrowUp.renderButton(matrixStack, mouseX, mouseY, partialTicks);
-            arrowDown.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+            arrowUp.render(matrixStack, mouseX, mouseY, partialTicks);
+            arrowDown.render(matrixStack, mouseX, mouseY, partialTicks);
             offsetX = arrowUp.getWidth();
             setX(getX() + offsetX);
             width -= offsetX;
         }
-        super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+        super.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
         if(arrows) {
             setX(getX() - offsetX);
             width += offsetX;

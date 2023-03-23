@@ -77,16 +77,16 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         int offsetX = 0;
         if(arrows) {
-            arrowLeft.renderButton(matrixStack, mouseX, mouseY, partialTicks);
-            arrowRight.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+            arrowLeft.render(matrixStack, mouseX, mouseY, partialTicks);
+            arrowRight.render(matrixStack, mouseX, mouseY, partialTicks);
             offsetX = arrowLeft.getWidth();
             setX(getX() + offsetX + 1);
             width -= offsetX * 2;
         }
-        super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+        super.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
         if(arrows) {
             setX(getX() - (offsetX + 1));
             width += offsetX * 2;

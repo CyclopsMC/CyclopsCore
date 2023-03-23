@@ -61,7 +61,7 @@ public class AdvancedButton extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(isVisible() && isHover(mouseX, mouseY)) {
             // MCP: drawString
             Minecraft.getInstance().font.draw(matrixStack, ((MutableComponent) getMessage()).withStyle(ChatFormatting.UNDERLINE), getX(), getY(),

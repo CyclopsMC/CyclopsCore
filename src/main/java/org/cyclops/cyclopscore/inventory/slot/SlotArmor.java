@@ -43,7 +43,7 @@ public class SlotArmor extends Slot {
     @Override
     public boolean mayPlace(ItemStack itemStack) {
         return itemStack.getEquipmentSlot() == armorType
-                || (itemStack.getItem() instanceof ArmorItem && ((ArmorItem) itemStack.getItem()).getSlot() == armorType);
+                || (itemStack.getItem() instanceof ArmorItem && ((ArmorItem) itemStack.getItem()).getEquipmentSlot() == armorType);
     }
 
 }

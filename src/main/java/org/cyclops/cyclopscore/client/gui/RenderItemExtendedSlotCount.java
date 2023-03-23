@@ -1,12 +1,12 @@
 package org.cyclops.cyclopscore.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.ItemModelShaper;
@@ -38,13 +38,14 @@ public class RenderItemExtendedSlotCount extends ItemRenderer {
     private final ItemRenderer renderItemInner;
 
     protected RenderItemExtendedSlotCount(Minecraft mc) {
-        this(mc.getTextureManager(), mc.getItemRenderer().getItemModelShaper().getModelManager(), mc.getItemColors(), mc.getItemRenderer().getBlockEntityRenderer(), mc.getItemRenderer());
+        this(mc, mc.getTextureManager(), mc.getItemRenderer().getItemModelShaper().getModelManager(), mc.getItemColors(), mc.getItemRenderer().getBlockEntityRenderer(), mc.getItemRenderer());
     }
 
-    protected RenderItemExtendedSlotCount(TextureManager textureManager, ModelManager modelManager,
+    protected RenderItemExtendedSlotCount(Minecraft mc, TextureManager textureManager, ModelManager modelManager,
                                           ItemColors itemColors, BlockEntityWithoutLevelRenderer blockEntityRenderer,
                                           ItemRenderer renderItemInner) {
-        super(Objects.requireNonNull(textureManager),
+        super(mc,
+                Objects.requireNonNull(textureManager),
                 Objects.requireNonNull(modelManager),
                 Objects.requireNonNull(itemColors),
                 Objects.requireNonNull(blockEntityRenderer));
@@ -59,38 +60,30 @@ public class RenderItemExtendedSlotCount extends ItemRenderer {
         instance = new RenderItemExtendedSlotCount(Minecraft.getInstance());
     }
 
-    public void drawSlotText(Font fontRenderer, PoseStack matrixstack, String string, int x, int y) {
-        matrixstack.translate(0.0D, 0.0D, (double)(this.blitOffset + 200.0F));
-        float scale = 0.5f;
-        matrixstack.scale(scale, scale, 1.0f);
-        MultiBufferSource.BufferSource renderTypeBuffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-        int width = fontRenderer.width(string);
-        fontRenderer.drawInBatch(string, (x + 16) / scale - width, (y + 12) / scale, 16777215, true,
-                matrixstack.last().pose(), renderTypeBuffer, false, 0, 15728880);
-        renderTypeBuffer.endBatch();
-    }
-
     @Override
-    public void renderGuiItemDecorations(Font font, ItemStack stack, int x, int y, @Nullable String text) {
+    public void renderGuiItemDecorations(PoseStack poseStack, Font font, ItemStack stack, int x, int y, @Nullable String text) {
         // ----- Copied and adjusted from super -----
         if (!stack.isEmpty()) {
-            PoseStack posestack = new PoseStack();
+            poseStack.pushPose();
             if (stack.getCount() != 1 || text != null) {
-                drawSlotText(font, posestack, text == null ? GuiHelpers.quantityToScaledString(stack.getCount()) : text, x, y);
+                String s = text == null ? GuiHelpers.quantityToScaledString(stack.getCount()) : text; // This part was changed
+                poseStack.translate(0.0F, 0.0F, 200.0F);
+                float scale = 0.5f; // This part was added
+                poseStack.scale(scale, scale, 1.0f); // This part was added
+                MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+                font.drawInBatch(s, (float)((x + 19 - 2) / scale - font.width(s)), (float)(y + 6 + 3) / scale, 16777215,
+                        true, poseStack.last().pose(), multibuffersource$buffersource, Font.DisplayMode.NORMAL, 0, 15728880); // Scale was added here
+                multibuffersource$buffersource.endBatch();
             }
 
             if (stack.isBarVisible()) {
                 RenderSystem.disableDepthTest();
-                RenderSystem.disableTexture();
-                RenderSystem.disableBlend();
-                Tesselator tesselator = Tesselator.getInstance();
-                BufferBuilder bufferbuilder = tesselator.getBuilder();
-                int i = stack.getBarWidth();
-                int j = stack.getBarColor();
-                this.fillRect(bufferbuilder, x + 2, y + 13, 13, 2, 0, 0, 0, 255);
-                this.fillRect(bufferbuilder, x + 2, y + 13, i, 1, j >> 16 & 255, j >> 8 & 255, j & 255, 255);
-                RenderSystem.enableBlend();
-                RenderSystem.enableTexture();
+                int k = stack.getBarWidth();
+                int l = stack.getBarColor();
+                int i = x + 2;
+                int j = y + 13;
+                GuiComponent.fill(poseStack, i, j, i + 13, j + 2, -16777216);
+                GuiComponent.fill(poseStack, i, j, i + k, j + 1, l | -16777216);
                 RenderSystem.enableDepthTest();
             }
 
@@ -98,16 +91,14 @@ public class RenderItemExtendedSlotCount extends ItemRenderer {
             float f = localplayer == null ? 0.0F : localplayer.getCooldowns().getCooldownPercent(stack.getItem(), Minecraft.getInstance().getFrameTime());
             if (f > 0.0F) {
                 RenderSystem.disableDepthTest();
-                RenderSystem.disableTexture();
-                RenderSystem.enableBlend();
-                RenderSystem.defaultBlendFunc();
-                Tesselator tesselator1 = Tesselator.getInstance();
-                BufferBuilder bufferbuilder1 = tesselator1.getBuilder();
-                this.fillRect(bufferbuilder1, x, y + Mth.floor(16.0F * (1.0F - f)), 16, Mth.ceil(16.0F * f), 255, 255, 255, 127);
-                RenderSystem.enableTexture();
+                int i1 = y + Mth.floor(16.0F * (1.0F - f));
+                int j1 = i1 + Mth.ceil(16.0F * f);
+                GuiComponent.fill(poseStack, x, i1, x + 16, j1, Integer.MAX_VALUE);
                 RenderSystem.enableDepthTest();
             }
 
+            poseStack.popPose();
+            net.minecraftforge.client.ItemDecoratorHandler.of(stack).render(font, stack, x, y, 0);
         }
     }
 

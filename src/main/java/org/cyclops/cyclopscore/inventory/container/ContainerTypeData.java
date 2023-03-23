@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.inventory.container;
 
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.network.IContainerFactory;
@@ -14,7 +15,7 @@ import net.minecraftforge.network.IContainerFactory;
  * @author rubensworks
  */
 public class ContainerTypeData<T extends AbstractContainerMenu> extends MenuType<T> {
-    public ContainerTypeData(IContainerFactory<T> factory) {
-        super(factory);
+    public ContainerTypeData(IContainerFactory<T> factory, FeatureFlagSet featureFlagSet) {
+        super(factory, featureFlagSet);
     }
 }

@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.infobook.test;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -19,7 +20,7 @@ public class ContainerInfoBookTestConfig extends GuiConfig<ContainerInfoBookTest
     public ContainerInfoBookTestConfig() {
         super(CyclopsCore._instance,
                 "test_infobook",
-                eConfig -> new ContainerTypeData<>(ContainerInfoBookTest::new));
+                eConfig -> new ContainerTypeData<>(ContainerInfoBookTest::new, FeatureFlags.VANILLA_SET));
     }
 
     @OnlyIn(Dist.CLIENT)

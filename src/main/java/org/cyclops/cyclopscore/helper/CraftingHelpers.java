@@ -4,6 +4,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -86,10 +87,10 @@ public class CraftingHelpers {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <C extends Container, T extends Recipe<C>> T findClientRecipe(ItemStack itemStack, RecipeType<T> recipeType, int index) throws IllegalArgumentException {
+    public static <C extends Container, T extends Recipe<C>> T findClientRecipe(RegistryAccess registryAccess, ItemStack itemStack, RecipeType<T> recipeType, int index) throws IllegalArgumentException {
         int indexAttempt = index;
         for(T recipe : getClientRecipes(recipeType)) {
-            if(ItemStack.isSame(recipe.getResultItem(), itemStack) && indexAttempt-- == 0) {
+            if(ItemStack.isSame(recipe.getResultItem(registryAccess), itemStack) && indexAttempt-- == 0) {
                 return recipe;
             }
         }

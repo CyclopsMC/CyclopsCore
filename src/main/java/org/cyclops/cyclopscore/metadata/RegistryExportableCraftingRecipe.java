@@ -9,6 +9,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.core.NonNullList;
 import net.minecraftforge.common.crafting.IShapedRecipe;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 /**
  * Crafting recipe exporter.
@@ -34,7 +35,7 @@ public class RegistryExportableCraftingRecipe extends RegistryExportableRecipeAb
         }
         object.addProperty("id", recipe.getId().toString());
         object.add("input", arrayInputs);
-        object.add("output", IRegistryExportable.serializeItemStack(recipe.getResultItem()));
+        object.add("output", IRegistryExportable.serializeItemStack(recipe.getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess())));
 
         if(recipe instanceof IShapedRecipe) {
             object.addProperty("width", ((IShapedRecipe) recipe).getRecipeWidth());

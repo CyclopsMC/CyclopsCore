@@ -33,7 +33,7 @@ public class ButtonCheckbox extends Button {
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(visible) {
             // Determine image
             int i = 0;

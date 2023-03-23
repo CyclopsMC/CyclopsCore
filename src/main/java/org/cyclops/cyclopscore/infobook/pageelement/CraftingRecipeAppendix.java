@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -66,7 +67,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<Recipe<CraftingContai
         // Prepare items
         int tick = getTick(gui);
         ItemStack[] grid = new ItemStack[9];
-        ItemStack result = prepareItemStack(recipe.getResultItem(), tick);
+        ItemStack result = prepareItemStack(recipe.getResultItem(Minecraft.getInstance().player.level.registryAccess()), tick);
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
                 grid[i + j * 3] = prepareItemStacks(Lists.newArrayList(getItemStacks(i + j * 3).getItems()), tick);

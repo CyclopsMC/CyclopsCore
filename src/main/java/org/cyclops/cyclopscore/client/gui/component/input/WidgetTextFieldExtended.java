@@ -55,11 +55,11 @@ public class WidgetTextFieldExtended extends EditBox {
     }
 
     @Override
-    public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         if(background) {
             drawBackground(matrixStack, mouseX, mouseY, partialTicks);
         }
-        super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+        super.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override

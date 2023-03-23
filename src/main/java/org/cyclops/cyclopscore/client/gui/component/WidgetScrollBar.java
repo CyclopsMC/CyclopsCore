@@ -16,7 +16,7 @@ import java.awt.*;
  *
  * The using screen must add this as a child
  * and call the following method from its respective method:
- * * {@link #drawGuiContainerBackgroundLayer(PoseStack, float, int, int)}}
+ * * {@link #renderWidget(PoseStack, int, int, float)}
  * * {@link #mouseDragged(double, double, int, double, double)} (@see ContainerScreenScrolling for an example)
  *
  * @author rubensworks
@@ -119,7 +119,8 @@ public class WidgetScrollBar extends AbstractWidget {
         return false;
     }
 
-    public void drawGuiContainerBackgroundLayer(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    @Override
+    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         int scrollX = x;
         int scrollMinY = y;
         int scrollMaxY = scrollMinY + height;

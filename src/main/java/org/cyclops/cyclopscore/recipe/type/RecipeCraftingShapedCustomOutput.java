@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.recipe.type;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -15,10 +16,12 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
 
     private final RecipeSerializerCraftingShapedCustomOutput serializer;
+    private final ItemStack recipeOutput;
 
     public RecipeCraftingShapedCustomOutput(RecipeSerializerCraftingShapedCustomOutput serializer, ResourceLocation idIn, String groupIn, CraftingBookCategory category, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn) {
         super(idIn, groupIn, category, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
         this.serializer = serializer;
+        this.recipeOutput = recipeOutputIn;
     }
 
     @Override
@@ -27,11 +30,20 @@ public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
         RecipeSerializerCraftingShapedCustomOutput.IOutputTransformer outputTransformer = serializer.getOutputTransformer();
         if (outputTransformer != null) {
-            return outputTransformer.transform(inv, super.getResultItem());
+            return outputTransformer.transform(inv, this.getResultItem());
         }
-        return super.getResultItem().copy();
+        return this.getResultItem().copy();
+    }
+
+    @Override
+    public ItemStack getResultItem(RegistryAccess registryAccess) {
+        return getResultItem();
+    }
+
+    public ItemStack getResultItem() {
+        return this.recipeOutput;
     }
 }

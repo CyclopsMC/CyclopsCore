@@ -38,7 +38,7 @@ public class Image implements IImage {
     @Override
     public void drawWithColor(GuiComponent gui, PoseStack matrixStack, int x, int y, float r, float g, float b, float a) {
         RenderHelpers.bindTexture(resourceLocation);
-        RenderHelpers.blitColored(matrixStack, x, y, gui.getBlitOffset(), sheetX, sheetY, sheetWidth, sheetHeight, r, g, b, a);
+        RenderHelpers.blitColored(matrixStack, x, y, 0, sheetX, sheetY, sheetWidth, sheetHeight, r, g, b, a);
     }
 
     @Override

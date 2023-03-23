@@ -91,7 +91,7 @@ dependencies {
 
     compileOnly "com.github.lazyMods:Baubles:${project.baubles_version}:api" // https://github.com/lazyMods/Baubles/releases
 
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}") // https://maven.theillusivec4.top/top/theillusivec4/curios/curios-forge/
+    //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}") // https://maven.theillusivec4.top/top/theillusivec4/curios/curios-forge/
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}:api")
 
     // Project lombok

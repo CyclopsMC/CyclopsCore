@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
 import org.joml.Vector3f;
@@ -155,16 +156,16 @@ public final class ModelHelpers {
      * @param overrides The transformations to override.
      * @return The resulting transformation map.
      */
-    public static ItemTransforms modifyDefaultTransforms(Map<ItemTransforms.TransformType, ItemTransform> overrides) {
+    public static ItemTransforms modifyDefaultTransforms(Map<ItemDisplayContext, ItemTransform> overrides) {
         return new ItemTransforms(
-                overrides.getOrDefault(ItemTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, THIRD_PERSON_RIGHT_HAND),
-                overrides.getOrDefault(ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND, THIRD_PERSON_LEFT_HAND),
-                overrides.getOrDefault(ItemTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, FIRST_PERSON_RIGHT_HAND),
-                overrides.getOrDefault(ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND, FIRST_PERSON_LEFT_HAND),
-                overrides.getOrDefault(ItemTransforms.TransformType.HEAD, HEAD),
-                overrides.getOrDefault(ItemTransforms.TransformType.GUI, GUI),
-                overrides.getOrDefault(ItemTransforms.TransformType.GROUND, GROUND),
-                overrides.getOrDefault(ItemTransforms.TransformType.FIXED, FIXED)
+                overrides.getOrDefault(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, THIRD_PERSON_RIGHT_HAND),
+                overrides.getOrDefault(ItemDisplayContext.THIRD_PERSON_LEFT_HAND, THIRD_PERSON_LEFT_HAND),
+                overrides.getOrDefault(ItemDisplayContext.FIRST_PERSON_RIGHT_HAND, FIRST_PERSON_RIGHT_HAND),
+                overrides.getOrDefault(ItemDisplayContext.FIRST_PERSON_LEFT_HAND, FIRST_PERSON_LEFT_HAND),
+                overrides.getOrDefault(ItemDisplayContext.HEAD, HEAD),
+                overrides.getOrDefault(ItemDisplayContext.GUI, GUI),
+                overrides.getOrDefault(ItemDisplayContext.GROUND, GROUND),
+                overrides.getOrDefault(ItemDisplayContext.FIXED, FIXED)
         );
 
     }

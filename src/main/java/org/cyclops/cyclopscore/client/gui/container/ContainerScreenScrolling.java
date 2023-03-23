@@ -139,7 +139,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
         if(isSearchEnabled()) this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.scrollbar.drawGuiContainerBackgroundLayer(matrixStack, partialTicks, mouseX, mouseY);
+        this.scrollbar.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
