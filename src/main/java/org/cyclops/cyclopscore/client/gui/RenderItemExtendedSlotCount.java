@@ -60,6 +60,16 @@ public class RenderItemExtendedSlotCount extends ItemRenderer {
         instance = new RenderItemExtendedSlotCount(Minecraft.getInstance());
     }
 
+    public void drawSlotText(Font font, PoseStack poseStack, @Nullable String text, int x, int y) { // Abstracted for reuse
+        poseStack.translate(0.0F, 0.0F, 200.0F);
+        float scale = 0.5f; // This part was added
+        poseStack.scale(scale, scale, 1.0f); // This part was added
+        MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        font.drawInBatch(text, (float)((x + 19 - 3) / scale - font.width(text)), (float)(y + 6 + 6) / scale, 16777215,
+                true, poseStack.last().pose(), multibuffersource$buffersource, Font.DisplayMode.NORMAL, 0, 15728880); // Scale was added here
+        multibuffersource$buffersource.endBatch();
+    }
+
     @Override
     public void renderGuiItemDecorations(PoseStack poseStack, Font font, ItemStack stack, int x, int y, @Nullable String text) {
         // ----- Copied and adjusted from super -----
@@ -67,13 +77,7 @@ public class RenderItemExtendedSlotCount extends ItemRenderer {
             poseStack.pushPose();
             if (stack.getCount() != 1 || text != null) {
                 String s = text == null ? GuiHelpers.quantityToScaledString(stack.getCount()) : text; // This part was changed
-                poseStack.translate(0.0F, 0.0F, 200.0F);
-                float scale = 0.5f; // This part was added
-                poseStack.scale(scale, scale, 1.0f); // This part was added
-                MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-                font.drawInBatch(s, (float)((x + 19 - 2) / scale - font.width(s)), (float)(y + 6 + 3) / scale, 16777215,
-                        true, poseStack.last().pose(), multibuffersource$buffersource, Font.DisplayMode.NORMAL, 0, 15728880); // Scale was added here
-                multibuffersource$buffersource.endBatch();
+                drawSlotText(font, poseStack, s, x, y); // New function
             }
 
             if (stack.isBarVisible()) {
