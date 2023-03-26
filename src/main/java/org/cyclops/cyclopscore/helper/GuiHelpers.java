@@ -260,7 +260,7 @@ public class GuiHelpers {
                 line = Component.literal("\u00a77").append(line);
             }
 
-            mc.font.drawInBatch(line.getVisualOrderText(), xStart, yStart, -1, true, matrix4f,
+            mc.font.drawInBatch(line.getVisualOrderText(), xStart + guiLeft, yStart + guiTop, -1, true, matrix4f,
                     irendertypebuffer$impl, Font.DisplayMode.NORMAL, 0, 15728880);
 
             if(stringIndex == 0) {
