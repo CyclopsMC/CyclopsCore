@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.inventory.container;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import io.netty.handler.codec.EncoderException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -16,6 +17,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import org.apache.logging.log4j.Level;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
@@ -485,12 +487,16 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
     @Override
     public void setValue(int valueId, CompoundTag value) {
         if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
-            if (!player.level.isClientSide()) { // server -> client
-                CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getType(), valueId, value), (ServerPlayer) player);
-            } else { // client -> server
-                CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getType(), valueId, value));
+            try {
+                if (!player.level.isClientSide()) { // server -> client
+                    CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getType(), valueId, value), (ServerPlayer) player);
+                } else { // client -> server
+                    CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getType(), valueId, value));
+                }
+                values.put(valueId, value);
+            } catch (EncoderException e) {
+                CyclopsCore.clog(Level.WARN, e.getMessage());
             }
-            values.put(valueId, value);
         }
     }
 
