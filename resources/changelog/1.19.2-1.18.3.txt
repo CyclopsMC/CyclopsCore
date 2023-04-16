@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix disconnect when sending invalid container values
+  Closes CyclopsMC/IntegratedDynamics#1255
+
