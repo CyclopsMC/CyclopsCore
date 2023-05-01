@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Optimize containment check in single-classified ingred collection
+  This improves performance for large Integrated Terminals terminals with JEI.
+  Related to CyclopsMC/IntegratedDynamics#1247
+
