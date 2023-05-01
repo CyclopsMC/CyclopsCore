@@ -158,6 +158,7 @@ public class IngredientCollectionSingleClassified<T, M, C, L extends IIngredient
                     return collection.contains(instance, subMatchCondition);
                 }
             }
+            return false;
         }
         return this.classifiedCollections.values().stream().anyMatch(c -> c.contains(instance, matchCondition));
     }
