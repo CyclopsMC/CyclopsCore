@@ -102,7 +102,7 @@ public class RenderItemExtendedSlotCount extends ItemRenderer {
             }
 
             poseStack.popPose();
-            net.minecraftforge.client.ItemDecoratorHandler.of(stack).render(font, stack, x, y, 0);
+            net.minecraftforge.client.ItemDecoratorHandler.of(stack).render(poseStack, font, stack, x, y);
         }
     }
 

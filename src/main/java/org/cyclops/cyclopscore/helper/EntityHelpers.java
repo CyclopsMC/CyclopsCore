@@ -4,19 +4,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.eventbus.api.Event;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -87,21 +87,11 @@ public class EntityHelpers {
      * @param spawnReason The spawn reason.
      * @return If the entity was spawned.
      */
-    public static boolean spawnEntity(Level world, Mob entityLiving, MobSpawnType spawnReason) {
-        BaseSpawner spawner = new BaseSpawner() {
-            @Override
-            public void broadcastEvent(Level level, BlockPos blockPos, int id) {
-
-            }
-        };
-        Event.Result canSpawn = ForgeEventFactory.canEntitySpawn(entityLiving, world, (float) entityLiving.getX(),
-                (float) entityLiving.getY(), (float) entityLiving.getZ(), spawner, spawnReason);
-        if (canSpawn == Event.Result.ALLOW || (canSpawn == Event.Result.DEFAULT)) { //  && entityliving.getCanSpawnHere()
-            if (!ForgeEventFactory.doSpecialSpawn(entityLiving, world, (float) entityLiving.getX(),
-                    (float) entityLiving.getY(), (float) entityLiving.getZ(), spawner, spawnReason)) {
-                world.addFreshEntity(entityLiving);
-                return true;
-            }
+    public static boolean spawnEntity(ServerLevel world, Mob entityLiving, MobSpawnType spawnReason) {
+        SpawnGroupData spawnData = ForgeEventFactory.onFinalizeSpawn(entityLiving, world, world.getCurrentDifficultyAt(entityLiving.blockPosition()), spawnReason, new SpawnGroupData() {}, null);
+        if (spawnData != null) {
+            world.addFreshEntity(entityLiving);
+            return true;
         }
         return false;
     }
