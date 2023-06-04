@@ -21,6 +21,6 @@ public class MaximumSizeValidator implements ISizeValidator {
             return null;
         }
         return new TranslatableComponent("multiblock.cyclopscore.error.size.max",
-                LocationHelpers.toCompactString(size), LocationHelpers.toCompactString(getMaximumSize()));
+                LocationHelpers.toCompactString(size.offset(1, 1, 1)), LocationHelpers.toCompactString(getMaximumSize().offset(1, 1, 1)));
     }
 }

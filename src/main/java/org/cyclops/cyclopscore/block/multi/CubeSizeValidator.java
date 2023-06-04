@@ -16,6 +16,6 @@ public class CubeSizeValidator implements ISizeValidator {
             return null;
         }
         return new TranslatableComponent("multiblock.cyclopscore.error.size.cube",
-                LocationHelpers.toCompactString(size));
+                LocationHelpers.toCompactString(size.offset(1, 1, 1)));
     }
 }
