@@ -457,6 +457,19 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
     public abstract void playPageFlipSound(SoundManager soundHandler);
     public abstract void playPagesFlipSound(SoundManager soundHandler);
 
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollDelta) {
+        if (scrollDelta < 0) {
+            this.buttonNextPage.onClick(mouseX, mouseY);
+            return true;
+        }
+        if (scrollDelta > 0) {
+            this.buttonPreviousPage.onClick(mouseX, mouseY);
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, scrollDelta);
+    }
+
     @OnlyIn(Dist.CLIENT)
     static class NextPageButton extends Button {
 
