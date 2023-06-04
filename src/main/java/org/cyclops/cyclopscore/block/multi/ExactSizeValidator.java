@@ -20,6 +20,6 @@ public class ExactSizeValidator implements ISizeValidator {
             return null;
         }
         return Component.translatable("multiblock.cyclopscore.error.size.exact",
-                LocationHelpers.toCompactString(size), LocationHelpers.toCompactString(getExactSize()));
+                LocationHelpers.toCompactString(size.offset(1, 1, 1)), LocationHelpers.toCompactString(getExactSize().offset(1, 1, 1)));
     }
 }
