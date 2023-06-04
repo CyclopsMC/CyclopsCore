@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix Colossal Chest errors showing incorrect size
+  Closes CyclopsMC/EvilCraft#986
+
