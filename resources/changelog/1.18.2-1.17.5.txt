@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Allow scrolling through infobooks
+  Closes CyclopsMC/IntegratedDynamics#1076
+
