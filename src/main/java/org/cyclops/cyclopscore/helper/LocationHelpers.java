@@ -26,7 +26,7 @@ public class LocationHelpers {
      * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
      */
     public static PacketDistributor.TargetPoint createTargetPointFromEntity(Entity entity, int range) {
-        return new PacketDistributor.TargetPoint(entity.getX(), entity.getY(), entity.getZ(), range, entity.level.dimension());
+        return new PacketDistributor.TargetPoint(entity.getX(), entity.getY(), entity.getZ(), range, entity.level().dimension());
     }
 
     /**

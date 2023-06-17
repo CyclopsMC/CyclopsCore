@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.component.button;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.image.IImage;
@@ -81,9 +81,9 @@ public class ButtonImage extends ButtonExtended {
     }
 
     @Override
-    protected void drawButtonInner(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void drawButtonInner(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         for (IImage image : this.images) {
-            image.draw(this, matrixStack, getX() + offsetX, getY() + offsetY);
+            image.draw(guiGraphics, getX() + offsetX, getY() + offsetY);
         }
     }
 

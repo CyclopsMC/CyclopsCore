@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import lombok.Data;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
@@ -38,7 +38,7 @@ import org.lwjgl.opengl.GL11;
     /**
      * Draw the appendix.
      * @param gui The gui.
-     * @param matrixStack The matrix stack.
+     * @param guiGraphics The gui graphics object.
      * @param x Start X.
      * @param y Start Y.
      * @param width Max width.
@@ -49,23 +49,23 @@ import org.lwjgl.opengl.GL11;
      * @param pre If the normal drawing should occur, otherwise post-drawing: things like tooltips.
      */
     @OnlyIn(Dist.CLIENT)
-    public void drawScreen(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
+    public void drawScreen(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
         int xc = x + width / 2 - getWidth() / 2;
         int yc = y + getOffsetY();
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         if(pre) {
-            drawElement(gui, matrixStack, xc, yc, getWidth(), getHeight(), page, mx, my);
+            drawElement(gui, guiGraphics, xc, yc, getWidth(), getHeight(), page, mx, my);
         } else {
-            postDrawElement(gui, matrixStack, xc, yc, getWidth(), getHeight(), page, mx, my);
+            postDrawElement(gui, guiGraphics, xc, yc, getWidth(), getHeight(), page, mx, my);
         }
         GlStateManager._disableBlend();
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected abstract void drawElement(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my);
+    protected abstract void drawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my);
     @OnlyIn(Dist.CLIENT)
-    protected abstract void postDrawElement(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my);
+    protected abstract void postDrawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my);
 
     public abstract void preBakeElement(InfoSection infoSection);
     /**

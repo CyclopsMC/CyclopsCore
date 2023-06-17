@@ -2,11 +2,11 @@ package org.cyclops.cyclopscore.infobook;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
@@ -338,7 +338,7 @@ public class InfoSection {
     /**
      * Draw the screen for a given page.
      * @param gui The gui.
-     * @param matrixStack The matrix stack.
+     * @param guiGraphics The gui graphics object
      * @param mouseX X.
      * @param mouseY Y.
      * @param yOffset The y offset.
@@ -351,7 +351,7 @@ public class InfoSection {
      * @param footnoteOffsetY Footnote offset y
      */
     @OnlyIn(Dist.CLIENT)
-    public void drawScreen(ScreenInfoBook gui, PoseStack matrixStack, int mouseX, int mouseY, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
+    public void drawScreen(ScreenInfoBook gui, GuiGraphics guiGraphics, int mouseX, int mouseY, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
         if(page < getPages()) {
             Font fontRenderer = gui.getFont();
 
@@ -360,26 +360,27 @@ public class InfoSection {
             int l = 0;
             if (lines != null) {
                 for (FormattedCharSequence line : lines) {
-                    fontRenderer.draw(matrixStack, line, mouseX, mouseY + yOffset + l * 9, 0);
+                    fontRenderer.drawInBatch(line, mouseX, mouseY + yOffset + l * 9, 0, false,
+                            guiGraphics.pose().last().pose(), guiGraphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
                     l++;
                 }
             }
 
             // Draw title if on first page
             if (isTitlePage(page)) {
-                gui.drawScaledCenteredString(matrixStack, getLocalizedTitle(), mouseX, mouseY + yOffset + 10, width, 1.5f, width, gui.getTitleColor());
-                gui.drawHorizontalRule(matrixStack, mouseX + width / 2, mouseY + yOffset);
-                gui.drawHorizontalRule(matrixStack, mouseX + width / 2, mouseY + yOffset + 21);
+                gui.drawScaledCenteredString(guiGraphics, getLocalizedTitle(), mouseX, mouseY + yOffset + 10, width, 1.5f, width, gui.getTitleColor());
+                gui.drawHorizontalRule(guiGraphics, mouseX + width / 2, mouseY + yOffset);
+                gui.drawHorizontalRule(guiGraphics, mouseX + width / 2, mouseY + yOffset + 21);
             }
 
             // Draw current page/section indication
-            gui.drawScaledCenteredString(matrixStack, getLocalizedTitle() + " - " + (page + 1) +  "/" + getPages(), mouseX + (((page % 2 == 0) ? 1 : -1) * footnoteOffsetX), mouseY + height + footnoteOffsetY, width, 0.6f, (int) (width * 0.75f), Helpers.RGBToInt(190, 190, 190));
+            gui.drawScaledCenteredString(guiGraphics, getLocalizedTitle() + " - " + (page + 1) +  "/" + getPages(), mouseX + (((page % 2 == 0) ? 1 : -1) * footnoteOffsetX), mouseY + height + footnoteOffsetY, width, 0.6f, (int) (width * 0.75f), Helpers.RGBToInt(190, 190, 190));
 
             // Draw appendixes
             for (SectionAppendix appendix : appendixes) {
                 if (appendix.getPage() == page) {
-                    appendix.drawScreen(gui, matrixStack, mouseX, mouseY + yOffset + getAppendixOffsetLine(fontRenderer, appendix), width,
-                            height, page, mx, my, true);
+                    appendix.drawScreen(gui, guiGraphics, mouseX, mouseY + yOffset + getAppendixOffsetLine(fontRenderer, appendix),
+                            width, height, page, mx, my, true);
                 }
             }
         }
@@ -388,7 +389,7 @@ public class InfoSection {
     /**
      * Draw the overlays for the given page, for tooltips and such.
      * @param gui The gui.
-     * @param matrixStack The matrix stack.
+     * @param guiGraphics The gui graphics object.
      * @param mouseX X.
      * @param mouseY Y.
      * @param width The width of the page.
@@ -398,14 +399,14 @@ public class InfoSection {
      * @param my Mouse Y.
      */
     @OnlyIn(Dist.CLIENT)
-    public void postDrawScreen(ScreenInfoBook gui, PoseStack matrixStack, int mouseX, int mouseY, int width, int height, int page, int mx, int my) {
+    public void postDrawScreen(ScreenInfoBook gui, GuiGraphics guiGraphics, int mouseX, int mouseY, int width, int height, int page, int mx, int my) {
         if(page < getPages()) {
             Font fontRenderer = gui.getFont();
             // Post draw appendixes
             for (SectionAppendix appendix : appendixes) {
                 if (appendix.getPage() == page) {
-                    appendix.drawScreen(gui, matrixStack, mouseX, mouseY + getAppendixOffsetLine(fontRenderer, appendix), width,
-                            height, page, mx, my, false);
+                    appendix.drawScreen(gui, guiGraphics, mouseX, mouseY + getAppendixOffsetLine(fontRenderer, appendix),
+                            width, height, page, mx, my, false);
                 }
             }
         }

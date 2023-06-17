@@ -92,11 +92,11 @@ public final class PacketHandler {
 
     @OnlyIn(Dist.CLIENT)
     public void handlePacketClient(NetworkEvent.Context context, PacketBase packet) {
-        packet.actionClient(Minecraft.getInstance().player.level, Minecraft.getInstance().player);
+        packet.actionClient(Minecraft.getInstance().player.level(), Minecraft.getInstance().player);
     }
 
     public void handlePacketServer(NetworkEvent.Context context, PacketBase packet) {
-        packet.actionServer(context.getSender().getLevel(), context.getSender());
+        packet.actionServer(context.getSender().level(), context.getSender());
     }
 
     /**

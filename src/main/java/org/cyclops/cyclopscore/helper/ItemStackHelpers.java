@@ -138,7 +138,7 @@ public final class ItemStackHelpers {
 
     /**
      * Get a hash code would satisfy the requirements of {@link Object#hashCode}
-     * if {@link ItemStack#isSame(ItemStack, ItemStack)} stood in for {@link Object#equals}.
+     * if {@link ItemStack#isSameItem(ItemStack, ItemStack)} stood in for {@link Object#equals}.
      * @param stack The itemstack.
      * @return The hash code.
      */

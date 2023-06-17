@@ -1,11 +1,11 @@
 package org.cyclops.cyclopscore.client.gui.component;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
 
 import javax.annotation.Nullable;
@@ -16,7 +16,7 @@ import java.awt.*;
  *
  * The using screen must add this as a child
  * and call the following method from its respective method:
- * * {@link #renderWidget(PoseStack, int, int, float)}
+ * * {@link #renderWidget(GuiGraphics, int, int, float)}
  * * {@link #mouseDragged(double, double, int, double, double)} (@see ContainerScreenScrolling for an example)
  *
  * @author rubensworks
@@ -120,13 +120,12 @@ public class WidgetScrollBar extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         int scrollX = x;
         int scrollMinY = y;
         int scrollMaxY = scrollMinY + height;
-        RenderHelpers.bindTexture(SCROLLBUTTON);
-        this.blit(
-                matrixStack,
+        guiGraphics.blit(
+                SCROLLBUTTON,
                 scrollX,
                 scrollMinY + (int)((float)(scrollMaxY - scrollMinY - SCROLL_BUTTON_HEIGHT - 2) * this.currentScroll),
                 232 + (this.needsScrollBars() ? 0 : SCROLL_BUTTON_WIDTH),

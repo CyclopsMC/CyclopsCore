@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.advancement.criterion;
 
 import com.google.gson.JsonObject;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.advancements.critereon.DeserializationContext;
@@ -30,7 +30,7 @@ public class ItemCraftedTrigger extends SimpleCriterionTrigger<ItemCraftedTrigge
     }
 
     @Override
-    public Instance createInstance(JsonObject json, EntityPredicate.Composite entityPredicate, DeserializationContext conditionsParser) {
+    public Instance createInstance(JsonObject json, ContextAwarePredicate entityPredicate, DeserializationContext conditionsParser) {
         return new Instance(getId(), entityPredicate, ItemPredicate.fromJsonArray(json.get("items")));
     }
 
@@ -45,7 +45,7 @@ public class ItemCraftedTrigger extends SimpleCriterionTrigger<ItemCraftedTrigge
     public static class Instance extends AbstractCriterionTriggerInstance implements ICriterionInstanceTestable<PlayerEvent.ItemCraftedEvent> {
         private final ItemPredicate[] itemPredicates;
 
-        public Instance(ResourceLocation criterionIn, EntityPredicate.Composite player, ItemPredicate[] itemPredicates) {
+        public Instance(ResourceLocation criterionIn, ContextAwarePredicate player, ItemPredicate[] itemPredicates) {
             super(criterionIn, player);
             this.itemPredicates = itemPredicates;
         }

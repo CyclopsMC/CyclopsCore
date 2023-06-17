@@ -7,7 +7,6 @@ import lombok.Data;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -15,7 +14,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -38,6 +36,7 @@ import org.cyclops.cyclopscore.client.key.KeyRegistry;
 import org.cyclops.cyclopscore.command.CommandConfig;
 import org.cyclops.cyclopscore.command.CommandVersion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
+import org.cyclops.cyclopscore.config.extendedconfig.CreativeModeTabConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.modcompat.IMCHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
@@ -104,8 +103,6 @@ public abstract class ModBase<T extends ModBase> {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCreativeModeTabRegister);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCreativeModeTabBuildContents);
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegisterKeyMappings));
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -121,6 +118,11 @@ public abstract class ModBase<T extends ModBase> {
         this.onConfigsRegister(getConfigHandler());
         getConfigHandler().initialize(Lists.newArrayList());
         getConfigHandler().loadModInit();
+
+        // Register default creative tab
+        if (this.hasDefaultCreativeModeTab()) {
+            this.getConfigHandler().addConfigurable(this.constructDefaultCreativeModeTabConfig());
+        }
 
         loadModCompats(getModCompatLoader());
     }
@@ -350,20 +352,6 @@ public abstract class ModBase<T extends ModBase> {
     @OnlyIn(Dist.DEDICATED_SERVER)
     protected abstract ICommonProxy constructCommonProxy();
 
-    protected void onCreativeModeTabRegister(CreativeModeTabEvent.Register event) {
-        if (this.hasDefaultCreativeModeTab()) {
-            this.defaultCreativeTab = event.registerCreativeModeTab(new ResourceLocation(getModId(), "default"), this::constructDefaultCreativeModeTab);
-        }
-    }
-
-    protected void onCreativeModeTabBuildContents(CreativeModeTabEvent.BuildContents event) {
-        if (this.hasDefaultCreativeModeTab() && event.getTab() == this.defaultCreativeTab) {
-            for (Pair<ItemStack, CreativeModeTab.TabVisibility> entry : defaultCreativeTabEntries) {
-                event.accept(entry.getLeft(), entry.getRight());
-            }
-        }
-    }
-
     public void registerDefaultCreativeTabEntry(ItemStack itemStack, CreativeModeTab.TabVisibility visibility) {
         if (defaultCreativeTabEntries == null) {
             throw new IllegalStateException("Tried to register default tab entries after the CreativeModeTabEvent.BuildContents event");
@@ -374,10 +362,19 @@ public abstract class ModBase<T extends ModBase> {
         defaultCreativeTabEntries.add(Pair.of(itemStack, visibility));
     }
 
+    protected CreativeModeTabConfig constructDefaultCreativeModeTabConfig() {
+        return new CreativeModeTabConfig(this, "default", (config) -> this.constructDefaultCreativeModeTab(CreativeModeTab.builder()).build());
+    }
+
     protected CreativeModeTab.Builder constructDefaultCreativeModeTab(CreativeModeTab.Builder builder) {
         return builder
                 .title(Component.translatable("itemGroup." + getModId()))
-                .icon(() -> new ItemStack(Items.BARRIER));
+                .icon(() -> new ItemStack(Items.BARRIER))
+                .displayItems((parameters, output) -> {
+                    for (Pair<ItemStack, CreativeModeTab.TabVisibility> entry : defaultCreativeTabEntries) {
+                        output.accept(entry.getLeft(), entry.getRight());
+                    }
+                });
     }
 
     /**

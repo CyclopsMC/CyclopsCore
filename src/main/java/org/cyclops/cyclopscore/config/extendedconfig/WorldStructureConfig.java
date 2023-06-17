@@ -21,7 +21,7 @@ public abstract class WorldStructureConfig<S extends Structure> extends Extended
 
     @Override
     public String getTranslationKey() {
-        return "features." + getMod().getModId() + "." + getNamedId();
+        return "structures." + getMod().getModId() + "." + getNamedId();
     }
 
     @Override

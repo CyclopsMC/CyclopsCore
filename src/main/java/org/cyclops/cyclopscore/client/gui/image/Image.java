@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.client.gui.image;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import lombok.Data;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -30,15 +30,14 @@ public class Image implements IImage {
     }
 
     @Override
-    public void draw(GuiComponent gui, PoseStack matrixStack, int x, int y) {
-        RenderHelpers.bindTexture(resourceLocation);
-        gui.blit(matrixStack, x, y, sheetX, sheetY, sheetWidth, sheetHeight);
+    public void draw(GuiGraphics gui, int x, int y) {
+        gui.blit(resourceLocation, x, y, sheetX, sheetY, sheetWidth, sheetHeight);
     }
 
     @Override
-    public void drawWithColor(GuiComponent gui, PoseStack matrixStack, int x, int y, float r, float g, float b, float a) {
+    public void drawWithColor(GuiGraphics gui, int x, int y, float r, float g, float b, float a) {
         RenderHelpers.bindTexture(resourceLocation);
-        RenderHelpers.blitColored(matrixStack, x, y, 0, sheetX, sheetY, sheetWidth, sheetHeight, r, g, b, a);
+        RenderHelpers.blitColored(gui, x, y, 0, sheetX, sheetY, sheetWidth, sheetHeight, r, g, b, a);
     }
 
     @Override

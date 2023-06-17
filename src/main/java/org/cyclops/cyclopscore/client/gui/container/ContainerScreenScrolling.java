@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -109,7 +109,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
-    protected void drawCurrentScreen(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    protected void drawCurrentScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (isSubsetRenderSlots()) {
             // Temporarily swap slot list, to avoid rendering all slots (which would include the hidden ones)
             List<Slot> oldSlots = Lists.newArrayList(this.container.slots);
@@ -120,11 +120,11 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
             newSlots.addAll(oldSlots.subList(getMenu().getUnfilteredItemCount(), oldSlots.size()));
             this.container.slots.clear();
             this.container.slots.addAll(newSlots);
-            super.drawCurrentScreen(matrixStack, mouseX, mouseY, partialTicks);
+            super.drawCurrentScreen(guiGraphics, mouseX, mouseY, partialTicks);
             this.container.slots.clear();
             this.container.slots.addAll(oldSlots);
         } else {
-            super.drawCurrentScreen(matrixStack, mouseX, mouseY, partialTicks);
+            super.drawCurrentScreen(guiGraphics, mouseX, mouseY, partialTicks);
         }
     }
 
@@ -136,10 +136,10 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
-        super.renderBg(matrixStack, partialTicks, mouseX, mouseY);
-        if(isSearchEnabled()) this.searchField.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.scrollbar.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
+    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+        super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
+        if(isSearchEnabled()) this.searchField.render(guiGraphics, mouseX, mouseY, partialTicks);
+        this.scrollbar.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

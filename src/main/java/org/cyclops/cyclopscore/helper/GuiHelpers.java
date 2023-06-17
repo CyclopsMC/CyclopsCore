@@ -11,7 +11,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -52,7 +52,6 @@ public class GuiHelpers {
      * Render a fluid tank in a gui.
      *
      * @param gui The gui to render in.
-     * @param matrixStack The matrix stack.
      * @param fluidStack The fluid to render.
      * @param capacity The tank capacity.
      * @param x The gui x position, including gui left.
@@ -60,10 +59,10 @@ public class GuiHelpers {
      * @param width The tank width.
      * @param height The tank height.
      */
-    public static void renderFluidTank(GuiComponent gui, PoseStack matrixStack, @Nullable FluidStack fluidStack, int capacity,
+    public static void renderFluidTank(GuiGraphics gui, @Nullable FluidStack fluidStack, int capacity,
                                        int x, int y, int width, int height) {
         if (fluidStack != null && !fluidStack.isEmpty() && capacity > 0) {
-            matrixStack.pushPose();
+            gui.pose().pushPose();
             GlStateManager._enableBlend();
             GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             Lighting.setupFor3DItems();
@@ -82,8 +81,6 @@ public class GuiHelpers {
                     level = 0;
                 }
 
-                RenderHelpers.bindTexture(TextureAtlas.LOCATION_BLOCKS);
-
                 // Fluids can have a custom overlay color, use this to render.
                 IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid().getFluidType());
                 Triple<Float, Float, Float> colorParts = Helpers.intToRGB(renderProperties.getTintColor(fluidStack));
@@ -94,7 +91,7 @@ public class GuiHelpers {
 
                 Lighting.setupForFlatItems();
                 RenderSystem.setShaderColor(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight(), 1);
-                GuiComponent.blit(matrixStack, x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
+                gui.blit(x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
                 Lighting.setupFor3DItems();
                 RenderSystem.setShaderColor(1, 1, 1, 1);
 
@@ -106,7 +103,7 @@ public class GuiHelpers {
             textureManager.getTexture(TextureAtlas.LOCATION_BLOCKS).restoreLastBlurMipmap();
 
             Lighting.setupForFlatItems();
-            matrixStack.popPose();
+            gui.pose().popPose();
             GL11.glDisable(GL11.GL_DEPTH_TEST);
         }
     }
@@ -114,14 +111,13 @@ public class GuiHelpers {
     /**
      * Render the given fluid in a standard slot.
      * @param gui The gui to render in.
-     * @param matrixStack The matrix stack.
      * @param fluidStack The fluid to render.
      * @param x The slot X position.
      * @param y The slot Y position.
      */
-    public static void renderFluidSlot(GuiComponent gui, PoseStack matrixStack, @Nullable FluidStack fluidStack, int x, int y) {
+    public static void renderFluidSlot(GuiGraphics gui, @Nullable FluidStack fluidStack, int x, int y) {
         if (fluidStack != null) {
-            GuiHelpers.renderFluidTank(gui, matrixStack, fluidStack, fluidStack.getAmount(), x, y, SLOT_SIZE_INNER, SLOT_SIZE_INNER);
+            GuiHelpers.renderFluidTank(gui, fluidStack, fluidStack.getAmount(), x, y, SLOT_SIZE_INNER, SLOT_SIZE_INNER);
         }
     }
 
@@ -130,7 +126,6 @@ public class GuiHelpers {
      * This assumes that the tank overlay has the provided width and height.
      *
      * @param gui The gui to render in.
-     * @param matrixStack The matrix stack.
      * @param fluidStack The fluid to render.
      * @param capacity The tank capacity.
      * @param x The gui x position, including gui left.
@@ -141,14 +136,13 @@ public class GuiHelpers {
      * @param overlayTextureX The overlay x texture position.
      * @param overlayTextureY The overlay y texture position.
      */
-    public static void renderOverlayedFluidTank(GuiComponent gui, PoseStack matrixStack, @Nullable FluidStack fluidStack, int capacity,
+    public static void renderOverlayedFluidTank(GuiGraphics gui, @Nullable FluidStack fluidStack, int capacity,
                                                 int x, int y, int width, int height,
                                                 ResourceLocation textureOverlay, int overlayTextureX, int overlayTextureY) {
-        renderFluidTank(gui, matrixStack, fluidStack, capacity, x, y, width, height);
+        renderFluidTank(gui, fluidStack, capacity, x, y, width, height);
         if (fluidStack != null && capacity > 0) {
             GlStateManager._enableBlend();
-            RenderHelpers.bindTexture(textureOverlay);
-            gui.blit(matrixStack, x, y, overlayTextureX, overlayTextureY, width, height);
+            gui.blit(textureOverlay, x, y, overlayTextureX, overlayTextureY, width, height);
         }
     }
 
@@ -157,7 +151,7 @@ public class GuiHelpers {
      * The currently bound texture will be used to render the progress bar.
      *
      * @param gui The gui to render in.
-     * @param matrixStack The matrix stack.
+     * @param texture The texture.
      * @param x The gui x position, including gui left.
      * @param y The gui y position, including gui top.
      * @param width The progress bar width.
@@ -168,7 +162,7 @@ public class GuiHelpers {
      * @param progress The current progress.
      * @param progressMax The maximum progress.
      */
-    public static void renderProgressBar(GuiComponent gui, PoseStack matrixStack, int x, int y, int width, int height, int textureX, int textureY,
+    public static void renderProgressBar(GuiGraphics gui, ResourceLocation texture, int x, int y, int width, int height, int textureX, int textureY,
                                          ProgressDirection direction, int progress, int progressMax) {
         if (progressMax > 0 && progress > 0) {
             int scaledWidth = width;
@@ -194,7 +188,7 @@ public class GuiHelpers {
                 textureY += offset;
             }
 
-            gui.blit(matrixStack, x, y, textureX, textureY, scaledWidth, scaledHeight);
+            gui.blit(texture, x, y, textureX, textureY, scaledWidth, scaledHeight);
         }
     }
 
@@ -302,7 +296,7 @@ public class GuiHelpers {
     /**
      * Render a rectangle.
      *
-     * Public variant of GuiComponent#fillGradient.
+     * Public variant of GuiGraphics#fillGradient.
      *
      * @param poseStack The pose stack.
      * @param left Left X.

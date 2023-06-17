@@ -79,7 +79,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
     @Override
     public void broadcastChanges() {
         super.broadcastChanges();
-        if (!player.level.isClientSide()) {
+        if (!player.level().isClientSide()) {
             for (SyncedGuiVariable<?> syncedGuiVariable : this.syncedGuiVariables) {
                 syncedGuiVariable.detectAndSendChanges();
             }
@@ -243,7 +243,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                 int maxSlotSize = Math.min(slot.getMaxStackSize(), maxStack);
                 existingStack = slot.getItem().copy();
 
-                if (slot.mayPlace(stack) && !existingStack.isEmpty() && existingStack.getItem() == stack.getItem() && ItemStack.tagMatches(stack, existingStack)) {
+                if (slot.mayPlace(stack) && !existingStack.isEmpty() && ItemStack.isSameItemSameTags(stack, existingStack)) {
                     int existingSize = existingStack.getCount() + stack.getCount();
                     if (existingSize <= maxSlotSize) {
                         stack.setCount(0);
@@ -342,22 +342,22 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                         return;
                     }
 
-                    ItemStack itemstack3 = this.getCarried().copy();
-                    int j1 = this.getCarried().getCount();
+                    ItemStack itemstack2 = this.getCarried().copy();
+                    if (itemstack2.isEmpty()) {
+                        this.resetQuickCraft();
+                        return;
+                    }
+
+                    int k1 = this.getCarried().getCount();
 
                     for(Slot slot1 : this.quickcraftSlots) {
                         ItemStack itemstack1 = this.getCarried();
                         if (slot1 != null && canItemQuickReplace(slot1, itemstack1, true) && slot1.mayPlace(itemstack1) && (this.quickcraftType == 2 || itemstack1.getCount() >= this.quickcraftSlots.size()) && this.canDragTo(slot1)) {
-                            ItemStack itemstack2 = itemstack3.copy();
                             int j = slot1.hasItem() ? slot1.getItem().getCount() : 0;
-                            getQuickCraftSlotCount(this.quickcraftSlots, this.quickcraftType, itemstack2, j);
                             int k = Math.min(itemstack2.getMaxStackSize(), slot1.getMaxStackSize(itemstack2));
-                            if (itemstack2.getCount() > k) {
-                                itemstack2.setCount(k);
-                            }
-
-                            j1 -= itemstack2.getCount() - j;
-                            slot1.set(itemstack2);
+                            int l = Math.min(getQuickCraftPlaceCount(this.quickcraftSlots, this.quickcraftType, itemstack2) + j, k);
+                            k1 -= l - j;
+                            slot1.setByPlayer(itemstack2.copyWithCount(l));
 
                             // --- Added ---
                             if (slot1 instanceof SlotExtended && ((SlotExtended) slot1).isPhantom()) {
@@ -366,8 +366,8 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                         }
                     }
 
-                    itemstack3.setCount(j1 + phantomCount); // Changed
-                    this.setCarried(itemstack3);
+                    itemstack2.setCount(k1 + phantomCount); // Changed
+                    this.setCarried(itemstack2);
                 }
 
                 this.resetQuickCraft();
@@ -488,7 +488,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
     public void setValue(int valueId, CompoundTag value) {
         if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
             try {
-                if (!player.level.isClientSide()) { // server -> client
+                if (!player.level().isClientSide()) { // server -> client
                     CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getType(), valueId, value), (ServerPlayer) player);
                 } else { // client -> server
                     CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getType(), valueId, value));

@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -111,14 +111,14 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    protected void drawElement(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
+    protected void drawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
         requestAdvancementInfo();
 
         int offsetX = 0;
         int offsetY = 0;
-        gui.drawOuterBorder(matrixStack, x - 1, y - 1, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
-        gui.drawTextBanner(matrixStack, x + width / 2, y - 2);
-        gui.drawScaledCenteredString(matrixStack, L10NHelpers.localize("gui.advancements"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
+        gui.drawOuterBorder(guiGraphics, x - 1, y - 1, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
+        gui.drawTextBanner(guiGraphics, x + width / 2, y - 2);
+        gui.drawScaledCenteredString(guiGraphics, L10NHelpers.localize("gui.advancements"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
 
         // Draw advancements
         offsetY += 10;
@@ -132,12 +132,12 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
             }
             if (advancement == null) {
                 allAchievementsValid = false;
-                Images.LOCKED.draw(gui, matrixStack, x + offsetX + 2, y + offsetY + 1);
+                Images.LOCKED.draw(guiGraphics, x + offsetX + 2, y + offsetY + 1);
                 renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, Component.literal(""), null, gui);
             } else {
-                RecipeAppendix.renderItemForButton(gui, matrixStack, x + offsetX, y + offsetY, advancement.getDisplay().getIcon(), mx, my, true, null);
+                RecipeAppendix.renderItemForButton(gui, guiGraphics, x + offsetX, y + offsetY, advancement.getDisplay().getIcon(), mx, my, true, null);
                 if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getInstance().player, advancementId)) {
-                    Images.OK.draw(gui, matrixStack, x + offsetX + 1, y + offsetY + 2);
+                    Images.OK.draw(guiGraphics, x + offsetX + 1, y + offsetY + 2);
                 } else {
                     allAchievementsValid = false;
                 }
@@ -150,41 +150,41 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
 
         // Draw rewards button with fancy hover effect
         offsetY += SLOT_SIZE + SLOT_PADDING * 2 + 6;
-        gui.drawTextBanner(matrixStack, x + width / 2, y - 2 + offsetY);
+        gui.drawTextBanner(guiGraphics, x + width / 2, y - 2 + offsetY);
         boolean hovering = mx > x && mx < x + getWidth() && my > y + offsetY - 10 && my < y + offsetY + 5;
-        gui.drawScaledCenteredString(matrixStack, L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards"), x, y - 2 + offsetY, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
+        gui.drawScaledCenteredString(guiGraphics, L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards"), x, y - 2 + offsetY, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
         renderButtonHolders.get(COLLECT).update(x, y - 8 + offsetY, Component.literal(""), null, gui);
         if (allAchievementsValid && !taken) {
             float g = hovering ? 1.0F : (((float) (gui.getTick() % 20)) / 20) * 0.4F + 0.6F;
             float r = hovering ? 0.2F : 0.7F;
             float b = hovering ? 0.2F : 0.7F;
-            Images.ARROW_DOWN.drawWithColor(gui, matrixStack, x, y + offsetY - 11, r, g, b, 1);
-            Images.ARROW_DOWN.drawWithColor(gui, matrixStack, x + 60, y + offsetY - 11, r, g, b, 1);
+            Images.ARROW_DOWN.drawWithColor(guiGraphics, x, y + offsetY - 11, r, g, b, 1);
+            Images.ARROW_DOWN.drawWithColor(guiGraphics, x + 60, y + offsetY - 11, r, g, b, 1);
 
         }
         offsetY += 10;
 
         // Draw rewards
         for (int i = 0; i < advancementRewards.getRewards().size(); i++) {
-            advancementRewards.getRewards().get(i).drawElementInner(gui, matrixStack, x + rewardPositions[i].x, y + rewardPositions[i].y + offsetY, width, height, page, mx, my, renderButtonHolders.get(rewards[i]));
+            advancementRewards.getRewards().get(i).drawElementInner(gui, guiGraphics, x + rewardPositions[i].x, y + rewardPositions[i].y + offsetY, width, height, page, mx, my, renderButtonHolders.get(rewards[i]));
             if (taken) {
-                Images.OK.draw(gui, matrixStack, x + rewardPositions[i].x + 1, y + rewardPositions[i].y + offsetY + 2);
+                Images.OK.draw(guiGraphics, x + rewardPositions[i].x + 1, y + rewardPositions[i].y + offsetY + 2);
             } else if (!allAchievementsValid) {
-                Images.ERROR.draw(gui, matrixStack, x + rewardPositions[i].x + 1, y + rewardPositions[i].y + offsetY + 2);
+                Images.ERROR.draw(guiGraphics, x + rewardPositions[i].x + 1, y + rewardPositions[i].y + offsetY + 2);
             }
         }
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    protected void postDrawElement(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
-        renderToolTips(gui, matrixStack, mx, my);
+    protected void postDrawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
+        renderToolTips(gui, guiGraphics, mx, my);
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected void renderToolTips(ScreenInfoBook gui, PoseStack matrixStack, int mx, int my) {
+    protected void renderToolTips(ScreenInfoBook gui, GuiGraphics guiGraphics, int mx, int my) {
         for(AdvancedButton button : renderButtonHolders.values()) {
-            button.renderTooltip(matrixStack, mx, my);
+            button.renderTooltip(guiGraphics, gui.getFont(), mx, my);
         }
     }
 

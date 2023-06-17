@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.client.gui.component.button;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
@@ -49,7 +49,7 @@ public class ButtonText extends ButtonExtended {
     }
 
     @Override
-    protected void drawButtonInner(PoseStack matrixStack, int mouseX, int mouseY) {
+    protected void drawButtonInner(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         int color = 0xe0e0e0;
         if (!active) {
             color = 0xffa0a0a0;
@@ -57,7 +57,7 @@ public class ButtonText extends ButtonExtended {
             color = 0xffffa0;
         }
 
-        drawCenteredString(matrixStack, Minecraft.getInstance().font, getText(), getX() + width / 2, getY() + (height - 8) / 2, color);
+        guiGraphics.drawCenteredString(Minecraft.getInstance().font, getText(), getX() + width / 2, getY() + (height - 8) / 2, color);
     }
 
 }

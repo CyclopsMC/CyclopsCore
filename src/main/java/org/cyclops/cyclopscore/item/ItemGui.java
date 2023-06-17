@@ -46,7 +46,7 @@ public abstract class ItemGui extends Item {
         if(!itemstack.isEmpty()
                 && player instanceof ServerPlayer
                 && player.containerMenu != null
-                && player.containerMenu.getClass() == getContainerClass(player.level, player, itemstack)) {
+                && player.containerMenu.getClass() == getContainerClass(player.level(), player, itemstack)) {
             player.closeContainer();
         }
         return super.onDroppedByPlayer(itemstack, player);

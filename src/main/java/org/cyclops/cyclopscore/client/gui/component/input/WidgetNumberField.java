@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.client.gui.component.input;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.component.button.ButtonArrow;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -86,16 +86,16 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     }
 
     @Override
-    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         int offsetX = 0;
         if(arrows) {
-            arrowUp.render(matrixStack, mouseX, mouseY, partialTicks);
-            arrowDown.render(matrixStack, mouseX, mouseY, partialTicks);
+            arrowUp.render(guiGraphics, mouseX, mouseY, partialTicks);
+            arrowDown.render(guiGraphics, mouseX, mouseY, partialTicks);
             offsetX = arrowUp.getWidth();
             setX(getX() + offsetX);
             width -= offsetX;
         }
-        super.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
         if(arrows) {
             setX(getX() - offsetX);
             width += offsetX;

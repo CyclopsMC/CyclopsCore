@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.nbt.CompoundTag;
@@ -58,14 +59,14 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     @Override
-    public final void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(matrixStack);
-        this.drawCurrentScreen(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
+    public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(guiGraphics);
+        this.drawCurrentScreen(guiGraphics, mouseX, mouseY, partialTicks);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
-    protected void drawCurrentScreen(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    protected void drawCurrentScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     protected int getBaseXSize() {
@@ -77,9 +78,8 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float f, int x, int y) {
-        RenderHelpers.bindTexture(texture);
-        blit(matrixStack, leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY);
+    protected void renderBg(GuiGraphics guiGraphics, float f, int x, int y) {
+        guiGraphics.blit(texture, leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY);
     }
 
     @Override

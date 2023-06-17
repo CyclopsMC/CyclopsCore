@@ -150,7 +150,7 @@ public final class FluidHelpers {
     public static FluidStack extractFromItemOrInventory(int amount, ItemStack itemStack,
                                                         @Nullable Player player,
                                                         IFluidHandler.FluidAction action) {
-        if (action.execute() && player != null && player.isCreative() && !player.level.isClientSide()) {
+        if (action.execute() && player != null && player.isCreative() && !player.level().isClientSide()) {
             action = IFluidHandler.FluidAction.SIMULATE;
         }
         if (amount == 0) return FluidStack.EMPTY;

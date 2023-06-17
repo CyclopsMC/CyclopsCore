@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.client.gui.image;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureManager;
 
@@ -14,16 +14,14 @@ public interface IImage {
     /**
      * Draw this image.
      * @param gui The gui helper object.
-     * @param matrixStack The matrix stack.
      * @param x The x position.
      * @param y The y position.
      */
-    public void draw(GuiComponent gui, PoseStack matrixStack, int x, int y);
+    public void draw(GuiGraphics gui, int x, int y);
 
     /**
      * Draw this image.
      * @param gui The gui helper object.
-     * @param matrixStack The matrix stack.
      * @param x The x position.
      * @param y The y position.
      * @param r Red
@@ -31,7 +29,7 @@ public interface IImage {
      * @param b Blue
      * @param a Alpha
      */
-    public void drawWithColor(GuiComponent gui, PoseStack matrixStack, int x, int y, float r, float g, float b, float a);
+    public void drawWithColor(GuiGraphics gui, int x, int y, float r, float g, float b, float a);
 
     /**
      * Draw the image in the world.

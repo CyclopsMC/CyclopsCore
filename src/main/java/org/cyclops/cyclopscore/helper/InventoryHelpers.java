@@ -202,8 +202,7 @@ public class InventoryHelpers {
      * @return The remainder of the added stack
      */
     public static ItemStack addToStack(ItemStack itemStack, ItemStack toAdd) {
-        if (ItemStack.tagMatches(toAdd, itemStack)
-                && ItemStack.isSame(toAdd, itemStack)
+        if (ItemStack.isSameItemSameTags(toAdd, itemStack)
                 && itemStack.getCount() < itemStack.getMaxStackSize()) {
             toAdd = toAdd.copy();
             int toAddCount = Math.min(itemStack.getMaxStackSize() - itemStack.getCount(), toAdd.getCount());

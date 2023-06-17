@@ -56,7 +56,7 @@ public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock {
     public void randomDisplayTick(BlockState blockState, Level world, BlockPos blockPos, RandomSource rand) {
         if (rand.nextInt(chance) == 0 &&
                 (offset == 0 || BlockHelpers.doesBlockHaveSolidTopSurface(world, blockPos.offset(0, -offset, 0))) &&
-                !world.getBlockState(blockPos.offset(0, - offset - 1, 0)).getMaterial().blocksMotion()) {
+                !world.getBlockState(blockPos.offset(0, - offset - 1, 0)).blocksMotion()) {
             double px = (double) ((float) blockPos.getX() + rand.nextFloat());
             double py = (double) blockPos.getY() - 0.05D - offset;
             double pz = (double) ((float) blockPos.getZ() + rand.nextFloat());

@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.advancement.criterion;
 
 import com.google.gson.JsonObject;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.advancements.critereon.DeserializationContext;
@@ -32,7 +32,7 @@ public class ModItemObtainedTrigger extends SimpleCriterionTrigger<ModItemObtain
     }
 
     @Override
-    public Instance createInstance(JsonObject json, EntityPredicate.Composite entityPredicate, DeserializationContext conditionsParser) {
+    public Instance createInstance(JsonObject json, ContextAwarePredicate entityPredicate, DeserializationContext conditionsParser) {
         return new Instance(getId(), entityPredicate, json.get("mod_id").getAsString());
     }
 
@@ -63,7 +63,7 @@ public class ModItemObtainedTrigger extends SimpleCriterionTrigger<ModItemObtain
     public static class Instance extends AbstractCriterionTriggerInstance implements ICriterionInstanceTestable<ItemStack> {
         private final String modId;
 
-        public Instance(ResourceLocation criterionIn, EntityPredicate.Composite player, String modId) {
+        public Instance(ResourceLocation criterionIn, ContextAwarePredicate player, String modId) {
             super(criterionIn, player);
             this.modId = modId;
         }

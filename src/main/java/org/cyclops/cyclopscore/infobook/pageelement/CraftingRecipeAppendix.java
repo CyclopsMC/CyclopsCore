@@ -1,15 +1,15 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
@@ -61,13 +61,13 @@ public class CraftingRecipeAppendix extends RecipeAppendix<Recipe<CraftingContai
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    protected void drawElementInner(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
-        gui.drawArrowRight(matrixStack, x + (SLOT_SIZE + SLOT_OFFSET_X) * 3 - 3, y + SLOT_OFFSET_Y + SLOT_SIZE + 2);
+    protected void drawElementInner(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
+        gui.drawArrowRight(guiGraphics, x + (SLOT_SIZE + SLOT_OFFSET_X) * 3 - 3, y + SLOT_OFFSET_Y + SLOT_SIZE + 2);
 
         // Prepare items
         int tick = getTick(gui);
         ItemStack[] grid = new ItemStack[9];
-        ItemStack result = prepareItemStack(recipe.getResultItem(Minecraft.getInstance().player.level.registryAccess()), tick);
+        ItemStack result = prepareItemStack(recipe.getResultItem(Minecraft.getInstance().player.level().registryAccess()), tick);
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
                 grid[i + j * 3] = prepareItemStacks(Lists.newArrayList(getItemStacks(i + j * 3).getItems()), tick);
@@ -77,14 +77,14 @@ public class CraftingRecipeAppendix extends RecipeAppendix<Recipe<CraftingContai
         // Items
         for(int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                renderItem(gui, matrixStack, x + (SLOT_SIZE + SLOT_OFFSET_X) * i, y+ (SLOT_SIZE + SLOT_OFFSET_Y) * j,
+                renderItem(gui, guiGraphics, x + (SLOT_SIZE + SLOT_OFFSET_X) * i, y+ (SLOT_SIZE + SLOT_OFFSET_Y) * j,
                         grid[i + j * 3], mx, my, INPUT[i + j * 3]);
             }
         }
-        renderItem(gui, matrixStack, x + START_X_RESULT, y + (SLOT_SIZE + SLOT_OFFSET_Y), result, mx, my, RESULT);
+        renderItem(gui, guiGraphics, x + START_X_RESULT, y + (SLOT_SIZE + SLOT_OFFSET_Y), result, mx, my, RESULT);
 
         // Crafting Table icon
-        renderItem(gui, matrixStack, x + (SLOT_SIZE + SLOT_OFFSET_X) * 3, y + SLOT_OFFSET_Y + SLOT_SIZE,
+        renderItem(gui, guiGraphics, x + (SLOT_SIZE + SLOT_OFFSET_X) * 3, y + SLOT_OFFSET_Y + SLOT_SIZE,
                 new ItemStack(Blocks.CRAFTING_TABLE), mx, my, false, null);
     }
 

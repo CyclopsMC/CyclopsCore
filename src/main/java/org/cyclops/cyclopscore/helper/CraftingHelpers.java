@@ -13,6 +13,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -90,7 +91,7 @@ public class CraftingHelpers {
     public static <C extends Container, T extends Recipe<C>> T findClientRecipe(RegistryAccess registryAccess, ItemStack itemStack, RecipeType<T> recipeType, int index) throws IllegalArgumentException {
         int indexAttempt = index;
         for(T recipe : getClientRecipes(recipeType)) {
-            if(ItemStack.isSame(recipe.getResultItem(registryAccess), itemStack) && indexAttempt-- == 0) {
+            if(ItemStack.isSameItemSameTags(recipe.getResultItem(registryAccess), itemStack) && indexAttempt-- == 0) {
                 return recipe;
             }
         }
@@ -139,7 +140,7 @@ public class CraftingHelpers {
                     width = ((CraftingContainer) inventoryCrafting).getWidth();
                     height = ((CraftingContainer) inventoryCrafting).getHeight();
                 }
-                this.inventoryCrafting = new CraftingContainer(new AbstractContainerMenu(null, 0) {
+                this.inventoryCrafting = new TransientCraftingContainer(new AbstractContainerMenu(null, 0) {
                     @Override
                     public ItemStack quickMoveStack(Player p_38941_, int p_38942_) {
                         return ItemStack.EMPTY;
@@ -168,7 +169,7 @@ public class CraftingHelpers {
                 return false;
             }
             for (int i = 0; i < getInventoryCrafting().getContainerSize(); i++) {
-                if (!ItemStack.isSame(getInventoryCrafting().getItem(i),
+                if (!ItemStack.isSameItemSameTags(getInventoryCrafting().getItem(i),
                         ((CacheableCraftingInventory) obj).getInventoryCrafting().getItem(i))) {
                     return false;
                 }

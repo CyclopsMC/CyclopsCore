@@ -2,9 +2,10 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -42,9 +43,9 @@ public class AchievementCollectButton extends AdvancedButton {
     }
 
     @Override
-    public void renderTooltip(PoseStack matrixStack, int mx, int my) {
-        super.renderTooltip(matrixStack, mx, my);
-        matrixStack.pushPose();
+    public void renderTooltip(GuiGraphics guiGraphics, Font font, int mx, int my) {
+        super.renderTooltip(guiGraphics, font, mx, my);
+        guiGraphics.pose().pushPose();
         if(mx >= getX() && my >= getY() && mx <= getX() + width && my <= getY() + height) {
             List<FormattedCharSequence> lines = Lists.newArrayList();
             if (advancementRewards.isObtained(Minecraft.getInstance().player)) {
@@ -70,9 +71,9 @@ public class AchievementCollectButton extends AdvancedButton {
                     ));
                 }
             }
-            gui.renderTooltip(matrixStack, lines, mx, my);
+            guiGraphics.renderTooltip(font, lines, mx, my);
         }
-        matrixStack.popPose();
+        guiGraphics.pose().popPose();
 
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);

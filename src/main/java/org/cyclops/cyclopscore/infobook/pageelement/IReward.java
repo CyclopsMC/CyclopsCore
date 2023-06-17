@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -47,7 +47,7 @@ public interface IReward {
     /**
      * Draw the reward.
      * @param gui The gui.
-     * @param matrixStack The matrix stack.
+     * @param guiGraphics The gui graphics object.
      * @param x Start X.
      * @param y Start Y.
      * @param width Max width.
@@ -58,5 +58,5 @@ public interface IReward {
      * @param button The button of this reward.
      */
     @OnlyIn(Dist.CLIENT)
-    public void drawElementInner(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button);
+    public void drawElementInner(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button);
 }

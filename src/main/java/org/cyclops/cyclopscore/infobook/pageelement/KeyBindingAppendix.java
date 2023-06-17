@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -52,23 +52,23 @@ public class KeyBindingAppendix extends SectionAppendix {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    protected void drawElement(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
-        gui.drawOuterBorder(matrixStack, x - 1, y - 1, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
-        gui.drawTextBanner(matrixStack, x + width / 2, y - 2);
-        gui.drawScaledCenteredString(matrixStack, L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".keybinding"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
+    protected void drawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
+        gui.drawOuterBorder(guiGraphics, x - 1, y - 1, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
+        gui.drawTextBanner(guiGraphics, x + width / 2, y - 2);
+        gui.drawScaledCenteredString(guiGraphics, L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".keybinding"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
 
-        gui.drawScaledCenteredString(matrixStack, ChatFormatting.ITALIC.toString() + L10NHelpers.localize(keyBinding.getName()),
+        gui.drawScaledCenteredString(guiGraphics, ChatFormatting.ITALIC.toString() + L10NHelpers.localize(keyBinding.getName()),
                 x, y - 2 + 12, width, 0.9f, gui.getBannerWidth() + 8, Helpers.RGBToInt(30, 20, 120));
 
         String binding = L10NHelpers.localize(keyBinding.saveString());
         int bindingWidth = gui.getFont().width(binding) + 2;
-        gui.drawOuterBorder(matrixStack, x + width / 2 - bindingWidth / 2 - 1, y + 17, bindingWidth, 10, 1, 1, 1, 0.2f);
-        gui.drawScaledCenteredString(matrixStack, binding, x, y + 22, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
+        gui.drawOuterBorder(guiGraphics, x + width / 2 - bindingWidth / 2 - 1, y + 17, bindingWidth, 10, 1, 1, 1, 0.2f);
+        gui.drawScaledCenteredString(guiGraphics, binding, x, y + 22, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    protected void postDrawElement(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
+    protected void postDrawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
 
     }
 

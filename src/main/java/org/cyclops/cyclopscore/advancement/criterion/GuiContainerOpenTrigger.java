@@ -4,8 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -34,7 +34,7 @@ public class GuiContainerOpenTrigger extends SimpleCriterionTrigger<GuiContainer
     }
 
     @Override
-    public Instance createInstance(JsonObject json, EntityPredicate.Composite entityPredicate, DeserializationContext conditionsParser) {
+    public Instance createInstance(JsonObject json, ContextAwarePredicate entityPredicate, DeserializationContext conditionsParser) {
         JsonElement jsonElement = json.get("container_class");
         String className = jsonElement != null && !jsonElement.isJsonNull() ? jsonElement.getAsString() : null;
         Class<?> clazz = null;
@@ -59,7 +59,7 @@ public class GuiContainerOpenTrigger extends SimpleCriterionTrigger<GuiContainer
     public static class Instance extends AbstractCriterionTriggerInstance implements ICriterionInstanceTestable<AbstractContainerMenu> {
         private final Class<?> clazz;
 
-        public Instance(ResourceLocation criterionIn, EntityPredicate.Composite player, @Nullable Class<?> clazz) {
+        public Instance(ResourceLocation criterionIn, ContextAwarePredicate player, @Nullable Class<?> clazz) {
             super(criterionIn, player);
             this.clazz = clazz;
         }

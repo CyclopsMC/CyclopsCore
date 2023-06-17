@@ -10,12 +10,14 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.TerrainParticle;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -72,38 +74,23 @@ public class RenderHelpers {
     }
 
     /**
-     * Draw the given text with the given scale.
-     * @param matrixStack The matrix stack
-     * @param fontRenderer The font renderer
-     * @param string The string to draw
-     * @param x The center X
-     * @param y The center Y
-     * @param scale The scale to render the string by.
-     * @param color The color to draw
-     */
-    public static void drawScaledString(PoseStack matrixStack, Font fontRenderer, String string, int x, int y, float scale, int color) {
-        matrixStack.pushPose();
-        matrixStack.translate(x, y, 0);
-        matrixStack.scale(scale, scale, 1.0f);
-        fontRenderer.draw(matrixStack, string, 0, 0, color);
-        matrixStack.popPose();
-    }
-
-    /**
      * Draw the given text with the given scale with a shadow.
      * @param matrixStack The matrix stack
      * @param fontRenderer The font renderer
+     * @param multiBufferSource The buffer source
      * @param string The string to draw
      * @param x The center X
      * @param y The center Y
      * @param scale The scale to render the string by.
      * @param color The color to draw
+     * @param shadow If a shadow should be drawn
+     * @param displayMode The display mode
      */
-    public static void drawScaledStringWithShadow(PoseStack matrixStack, Font fontRenderer, String string, int x, int y, float scale, int color) {
+    public static void drawScaledString(PoseStack matrixStack, MultiBufferSource multiBufferSource, Font fontRenderer, String string, int x, int y, float scale, int color, boolean shadow, Font.DisplayMode displayMode) {
         matrixStack.pushPose();
         matrixStack.translate(x, y, 0);
         matrixStack.scale(scale, scale, 1.0f);
-        fontRenderer.drawShadow(matrixStack, string, 0, 0, color);
+        fontRenderer.drawInBatch(string, 0, 0, color, shadow, matrixStack.last().pose(), multiBufferSource, displayMode, 0, 15728880);
         matrixStack.popPose();
     }
 
@@ -111,14 +98,17 @@ public class RenderHelpers {
      * Draw the given text and scale it to the max width.
      * @param matrixStack The matrix stack
      * @param fontRenderer The font renderer
+     * @param multiBufferSource The buffer source
      * @param string The string to draw
      * @param x The center X
      * @param y The center Y
      * @param maxWidth The maximum width to scale to
      * @param color The color to draw
+     * @param shadow If a shadow should be drawn
+     * @param displayMode The display mode
      */
-    public static void drawScaledCenteredString(PoseStack matrixStack, Font fontRenderer, String string, int x, int y, int maxWidth, int color) {
-        drawScaledCenteredString(matrixStack, fontRenderer, string, x, y, maxWidth, 1.0F, maxWidth, color);
+    public static void drawScaledCenteredString(PoseStack matrixStack, MultiBufferSource multiBufferSource, Font fontRenderer, String string, int x, int y, int maxWidth, int color, boolean shadow, Font.DisplayMode displayMode) {
+        drawScaledCenteredString(matrixStack, multiBufferSource, fontRenderer, string, x, y, maxWidth, 1.0F, maxWidth, color, shadow, displayMode);
     }
 
     /**
@@ -126,23 +116,26 @@ public class RenderHelpers {
      * The given string may already be scaled and its width must be passed in that case.
      * @param matrixStack The matrix stack
      * @param fontRenderer The font renderer
+     * @param multiBufferSource The buffer source
      * @param string The string to draw
      * @param x The center X
      * @param y The center Y
      * @param width The scaled width
      * @param originalScale The original scale
      * @param maxWidth The maximum width to scale to
-     * @param color The color to draw
+     * @param shadow If a shadow should be drawn
+     * @param displayMode The display mode
      */
-    public static void drawScaledCenteredString(PoseStack matrixStack, Font fontRenderer, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
+    public static void drawScaledCenteredString(PoseStack matrixStack, MultiBufferSource multiBufferSource, Font fontRenderer, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow, Font.DisplayMode displayMode) {
         float originalWidth = fontRenderer.width(string) * originalScale;
         float scale = Math.min(originalScale, maxWidth / originalWidth * originalScale);
-        drawScaledCenteredString(matrixStack, fontRenderer, string, x, y, width, scale, color);
+        drawScaledCenteredString(matrixStack, multiBufferSource, fontRenderer, string, x, y, width, scale, color, shadow, displayMode);
     }
 
     /**
      * Draw the given text with the given width and desired scale.
      * @param matrixStack The matrix stack
+     * @param multiBufferSource The buffer source
      * @param fontRenderer The font renderer
      * @param string The string to draw
      * @param x The center X
@@ -150,13 +143,15 @@ public class RenderHelpers {
      * @param width The scaled width
      * @param scale The desired scale
      * @param color The color to draw
+     * @param shadow If a shadow should be drawn
+     * @param displayMode The font display mode
      */
-    public static void drawScaledCenteredString(PoseStack matrixStack, Font fontRenderer, String string, int x, int y, int width, float scale, int color) {
+    public static void drawScaledCenteredString(PoseStack matrixStack, MultiBufferSource multiBufferSource, Font fontRenderer, String string, int x, int y, int width, float scale, int color, boolean shadow, Font.DisplayMode displayMode) {
         matrixStack.pushPose();
         matrixStack.scale(scale, scale, 1.0f);
         int titleLength = fontRenderer.width(string);
         int titleHeight = fontRenderer.lineHeight;
-        fontRenderer.draw(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+        fontRenderer.drawInBatch(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color, false, matrixStack.last().pose(), multiBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
         matrixStack.popPose();
     }
 
@@ -345,11 +340,11 @@ public class RenderHelpers {
         return isPointInRegion(button.getX(), button.getY(), button.getWidth(), button.getHeight(), pointX, pointY);
     }
 
-    public static void blitColored(PoseStack poseStack, int x, int y, int z, float u, float v, int width, int height, float r, float g, float b, float a) {
-        blitColored(poseStack, x, y, z, width, height, u / 256, (u + width) / 256, v / 256, (v + height) / 256, r, g, b, a);
+    public static void blitColored(GuiGraphics guiGraphics, int x, int y, int z, float u, float v, int width, int height, float r, float g, float b, float a) {
+        blitColored(guiGraphics, x, y, z, width, height, u / 256, (u + width) / 256, v / 256, (v + height) / 256, r, g, b, a);
     }
 
-    public static void blitColored(PoseStack poseStack, int x, int y, int z, int width, int height, float u0, float u1, float v0, float v1, float r, float g, float b, float a) {
+    public static void blitColored(GuiGraphics guiGraphics, int x, int y, int z, int width, int height, float u0, float u1, float v0, float v1, float r, float g, float b, float a) {
         // The following should work, but doesn't, so we just apply a shader color instead.
         /*Matrix4f matrix4f = poseStack.last().pose();
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
@@ -364,7 +359,7 @@ public class RenderHelpers {
 
         RenderSystem.setShaderColor(r, g, b, a);
 
-        Matrix4f matrix4f = poseStack.last().pose();
+        Matrix4f matrix4f = guiGraphics.pose().last().pose();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
         bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);

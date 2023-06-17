@@ -79,6 +79,8 @@ public class ConfigurableType {
     public static final ConfigurableType TRUNK_PLACER = new ConfigurableType(true, TrunkPlacerConfig.class, new TrunkPlacerAction(), "trunk_placer");
     public static final ConfigurableType ARGUMENT_TYPE = new ConfigurableType(true, ArgumentTypeConfig.class, new ArgumentTypeAction(), "argument_type");
     public static final ConfigurableType BIOME_MODIFIER = new ConfigurableType(true, BiomeModifierConfig.class, new BiomeModifierAction(), "biome_modifier");
+    public static final ConfigurableType CREATIVE_MODE_TAB = new ConfigurableType(true, CreativeModeTabConfig.class, new CreativeModeTabAction(), "creative_mode_tab");
+    public static final ConfigurableType LOOT_MODIFIER = new ConfigurableType(true, LootModifierConfig.class, new LootModifierAction(), "loot_modifier");
 
     /**
      * Dummy type, only used for configs that refer to nothing.

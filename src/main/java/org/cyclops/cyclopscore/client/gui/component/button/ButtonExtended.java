@@ -1,9 +1,8 @@
 package org.cyclops.cyclopscore.client.gui.component.button;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import org.cyclops.cyclopscore.helper.RenderHelpers;
 
 /**
  * An extended {@link Button} that is better resizable.
@@ -47,26 +46,24 @@ public abstract class ButtonExtended extends Button {
         return 46 + i * 20;
     }
 
-    protected void drawBackground(PoseStack matrixStack) {
-        RenderHelpers.bindTexture(WIDGETS_LOCATION);
-
+    protected void drawBackground(GuiGraphics guiGraphics) {
         int textureY = getTextureY();
-        blit(matrixStack, getX(), getY(), 0, textureY, width / 2, height / 2); // top left
-        blit(matrixStack, getX() + width / 2, getY(), 200 - width / 2, textureY, width / 2, height / 2); // top right
-        blit(matrixStack, getX(), getY() + height / 2, 0, textureY + 20 - height / 2, width / 2, height / 2); // bottom left
-        blit(matrixStack, getX() + width / 2, getY() + height / 2, 200 - width / 2, textureY + 20 - height / 2, width / 2, height / 2); // bottom right
+        guiGraphics.blit(WIDGETS_LOCATION, getX(), getY(), 0, textureY, width / 2, height / 2); // top left
+        guiGraphics.blit(WIDGETS_LOCATION, getX() + width / 2, getY(), 200 - width / 2, textureY, width / 2, height / 2); // top right
+        guiGraphics.blit(WIDGETS_LOCATION, getX(), getY() + height / 2, 0, textureY + 20 - height / 2, width / 2, height / 2); // bottom left
+        guiGraphics.blit(WIDGETS_LOCATION, getX() + width / 2, getY() + height / 2, 200 - width / 2, textureY + 20 - height / 2, width / 2, height / 2); // bottom right
     }
 
     @Override
-    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(visible) {
             if(background) {
-                drawBackground(matrixStack);
+                drawBackground(guiGraphics);
             }
-            drawButtonInner(matrixStack, mouseX, mouseY);
+            drawButtonInner(guiGraphics, mouseX, mouseY);
         }
     }
 
-    protected abstract void drawButtonInner(PoseStack matrixStack, int mouseX, int mouseY);
+    protected abstract void drawButtonInner(GuiGraphics guiGraphics, int mouseX, int mouseY);
 
 }

@@ -11,6 +11,7 @@ import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.sounds.SoundManager;
@@ -221,51 +222,49 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
     }
 
     @Override
-    public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        RenderHelpers.bindTexture(texture);
-
-        blit(matrixStack, left, top, 0, 0, getPageWidth(), getGuiHeight());
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        guiGraphics.blit(texture, left, top, 0, 0, getPageWidth(), getGuiHeight());
         blitMirrored(left + getPageWidth() - 1, top, 0, 0, getPageWidth(), getGuiHeight());
         int width = getPageWidth() - getOffsetXTotal();
         for(int i = 0; i < getPages(); i++) {
-            infoBook.getCurrentSection().drawScreen(this, matrixStack, left + getOffsetXForPageWithWidths(i), top, getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY, getFootnoteOffsetX(), getFootnoteOffsetY());
+            infoBook.getCurrentSection().drawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top, getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY, getFootnoteOffsetX(), getFootnoteOffsetY());
         }
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
         for(int i = 0; i < getPages(); i++) {
-            infoBook.getCurrentSection().postDrawScreen(this, matrixStack, left + getOffsetXForPageWithWidths(i), top + getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY);
+            infoBook.getCurrentSection().postDrawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top + getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY);
         }
 
         if (this.buttonNextPage.visible && RenderHelpers.isPointInButton(this.buttonNextPage, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, Component.translatable("infobook.cyclopscore.next_page"));
+            drawTooltip(guiGraphics, mouseX, mouseY, Component.translatable("infobook.cyclopscore.next_page"));
         }
         if (this.buttonPreviousPage.visible && RenderHelpers.isPointInButton(this.buttonPreviousPage, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, Component.translatable("infobook.cyclopscore.previous_page"));
+            drawTooltip(guiGraphics, mouseX, mouseY, Component.translatable("infobook.cyclopscore.previous_page"));
         }
         if (this.buttonBack.visible && RenderHelpers.isPointInButton(this.buttonBack, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, Component.translatable("infobook.cyclopscore.last_page"));
+            drawTooltip(guiGraphics, mouseX, mouseY, Component.translatable("infobook.cyclopscore.last_page"));
         }
         if (this.buttonParent.visible && RenderHelpers.isPointInButton(this.buttonParent, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, Component.translatable("infobook.cyclopscore.parent_section"));
+            drawTooltip(guiGraphics, mouseX, mouseY, Component.translatable("infobook.cyclopscore.parent_section"));
         }
         if (this.buttonExternal.visible && RenderHelpers.isPointInButton(this.buttonExternal, mouseX, mouseY)) {
-            drawTooltip(matrixStack, mouseX, mouseY, Component.translatable("infobook.cyclopscore.external"));
+            drawTooltip(guiGraphics, mouseX, mouseY, Component.translatable("infobook.cyclopscore.external"));
         }
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         // Do nothing
     }
 
     @Override
-    protected void renderLabels(PoseStack matrixStack, int x, int y) {
+    protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
         // Do nothing
     }
 
-    public void drawTooltip(PoseStack matrixStack, int mx, int my, Component lines) {
-        matrixStack.pushPose();
-        renderTooltip(matrixStack, lines, mx, my);
-        matrixStack.popPose();
+    public void drawTooltip(GuiGraphics guiGraphics, int mx, int my, Component lines) {
+        guiGraphics.pose().pushPose();
+        guiGraphics.renderTooltip(getFont(), lines, mx, my);
+        guiGraphics.pose().popPose();
 
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -348,72 +347,72 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
     }
 
-    public void drawScaledCenteredString(PoseStack matrixStack, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
-        drawScaledCenteredString(matrixStack, string, x, y, width, originalScale, maxWidth, color, false);
+    public void drawScaledCenteredString(GuiGraphics guiGraphics, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
+        drawScaledCenteredString(guiGraphics, string, x, y, width, originalScale, maxWidth, color, false);
     }
 
-    public void drawScaledCenteredString(PoseStack matrixStack, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow) {
+    public void drawScaledCenteredString(GuiGraphics guiGraphics, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow) {
         float originalWidth = getFont().width(string) * originalScale;
         float scale = Math.min(originalScale, maxWidth / originalWidth * originalScale);
-        drawScaledCenteredString(matrixStack, string, x, y, width, scale, color, shadow);
+        drawScaledCenteredString(guiGraphics, string, x, y, width, scale, color, shadow);
     }
 
-    public void drawScaledCenteredString(PoseStack matrixStack, String string, int x, int y, int width, float scale, int color) {
-        drawScaledCenteredString(matrixStack, string, x, y, width, scale, color, false);
+    public void drawScaledCenteredString(GuiGraphics guiGraphics, String string, int x, int y, int width, float scale, int color) {
+        drawScaledCenteredString(guiGraphics, string, x, y, width, scale, color, false);
     }
 
-    public void drawScaledCenteredString(PoseStack matrixStack, String string, int x, int y, int width, float scale, int color, boolean shadow) {
+    public void drawScaledCenteredString(GuiGraphics guiGraphics, String string, int x, int y, int width, float scale, int color, boolean shadow) {
+        PoseStack matrixStack = guiGraphics.pose();
         matrixStack.pushPose();
         matrixStack.scale(scale, scale, 1.0f);
         int titleLength = font.width(string);
         int titleHeight = font.lineHeight;
         if (shadow) {
-            font.draw(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+            font.drawInBatch(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color, false,
+                    guiGraphics.pose().last().pose(), guiGraphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
         } else {
-            font.draw(matrixStack, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color);
+            font.drawInBatch(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color, false,
+                    guiGraphics.pose().last().pose(), guiGraphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
         }
         matrixStack.popPose();
     }
 
-    public void drawHorizontalRule(PoseStack matrixStack, int x, int y) {
+    public void drawHorizontalRule(GuiGraphics guiGraphics, int x, int y) {
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        RenderHelpers.bindTexture(texture);
-        this.blit(matrixStack, x - HR_WIDTH / 2, y - HR_HEIGHT / 2, 52, 180, HR_WIDTH, HR_HEIGHT);
+        guiGraphics.blit(texture, x - HR_WIDTH / 2, y - HR_HEIGHT / 2, 52, 180, HR_WIDTH, HR_HEIGHT);
         GlStateManager._disableBlend();
     }
 
-    public void drawTextBanner(PoseStack matrixStack, int x, int y) {
+    public void drawTextBanner(GuiGraphics guiGraphics, int x, int y) {
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        RenderHelpers.bindTexture(texture);
-        this.blit(matrixStack, x - BANNER_WIDTH / 2, y - BANNER_HEIGHT / 2, 52, 191, BANNER_WIDTH, BANNER_HEIGHT);
+        guiGraphics.blit(texture, x - BANNER_WIDTH / 2, y - BANNER_HEIGHT / 2, 52, 191, BANNER_WIDTH, BANNER_HEIGHT);
         GlStateManager._disableBlend();
     }
 
-    public void drawArrowRight(PoseStack matrixStack, int x, int y) {
+    public void drawArrowRight(GuiGraphics guiGraphics, int x, int y) {
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        RenderHelpers.bindTexture(texture);
-        this.blit(matrixStack, x, y, 0, 210, ARROW_WIDTH, ARROW_HEIGHT);
+        guiGraphics.blit(texture, x, y, 0, 210, ARROW_WIDTH, ARROW_HEIGHT);
         GlStateManager._disableBlend();
     }
 
-    public void drawOuterBorder(PoseStack matrixStack, int x, int y, int width, int height) {
-        drawOuterBorder(matrixStack, x, y, width, height, 1, 1, 1, 1);
+    public void drawOuterBorder(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+        drawOuterBorder(guiGraphics, x, y, width, height, 1, 1, 1, 1);
     }
 
-    public void drawOuterBorder(PoseStack matrixStack, int x, int y, int width, int height, float r, float g, float b, float alpha) {
+    public void drawOuterBorder(GuiGraphics guiGraphics, int x, int y, int width, int height, float r, float g, float b, float alpha) {
         GlStateManager._enableBlend();
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         RenderHelpers.bindTexture(texture);
         int z = 0; // Was blitOffset
 
         // Corners
-        RenderHelpers.blitColored(matrixStack, x - BORDER_WIDTH, y - BORDER_WIDTH, z, BORDER_X, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
-        RenderHelpers.blitColored(matrixStack, x + width - BORDER_WIDTH, y - BORDER_WIDTH, z, BORDER_X + BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
-        RenderHelpers.blitColored(matrixStack, x - BORDER_WIDTH, y + height - BORDER_WIDTH, z, BORDER_X + 3 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
-        RenderHelpers.blitColored(matrixStack, x + width - BORDER_WIDTH, y + height - BORDER_WIDTH, z, BORDER_X + 2 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
+        RenderHelpers.blitColored(guiGraphics, x - BORDER_WIDTH, y - BORDER_WIDTH, z, BORDER_X, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
+        RenderHelpers.blitColored(guiGraphics, x + width - BORDER_WIDTH, y - BORDER_WIDTH, z, BORDER_X + BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
+        RenderHelpers.blitColored(guiGraphics, x - BORDER_WIDTH, y + height - BORDER_WIDTH, z, BORDER_X + 3 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
+        RenderHelpers.blitColored(guiGraphics, x + width - BORDER_WIDTH, y + height - BORDER_WIDTH, z, BORDER_X + 2 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
 
         // Sides
         for(int i = BORDER_WIDTH; i < width - BORDER_WIDTH; i+=BORDER_WIDTH) {
@@ -421,8 +420,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
             if(i + BORDER_WIDTH >= width - BORDER_CORNER) {
                 drawWidth -= i - (width - BORDER_CORNER);
             }
-            RenderHelpers.blitColored(matrixStack, x + i, y - BORDER_WIDTH, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH, r, g, b, alpha);
-            RenderHelpers.blitColored(matrixStack, x + i, y + height, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH, r, g, b, alpha);
+            RenderHelpers.blitColored(guiGraphics, x + i, y - BORDER_WIDTH, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH, r, g, b, alpha);
+            RenderHelpers.blitColored(guiGraphics, x + i, y + height, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH, r, g, b, alpha);
         }
         for(int i = BORDER_WIDTH; i < height - BORDER_WIDTH; i+=BORDER_WIDTH) {
             int drawHeight = BORDER_WIDTH;
@@ -430,14 +429,14 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
                 drawHeight -= i - (height - BORDER_CORNER);
             }
             if(drawHeight > 0) {
-                RenderHelpers.blitColored(matrixStack, x - BORDER_WIDTH, y + i, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight, r, g, b, alpha);
-                RenderHelpers.blitColored(matrixStack, x + width, y + i, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight, r, g, b, alpha);
+                RenderHelpers.blitColored(guiGraphics, x - BORDER_WIDTH, y + i, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight, r, g, b, alpha);
+                RenderHelpers.blitColored(guiGraphics, x + width, y + i, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight, r, g, b, alpha);
             }
         }
     }
 
-    public void renderTooltip(PoseStack matrixStack, ItemStack itemStack, int x, int y) {
-        super.renderTooltip(matrixStack, itemStack, x, y);
+    public void renderTooltip(GuiGraphics guiGraphics, ItemStack itemStack, int x, int y) {
+        guiGraphics.renderTooltip(getFont(), itemStack, x, y);
     }
 
     public int getTick() {
@@ -484,11 +483,10 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
 
         @Override
-        public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.getX() && mouseY >= this.getY() &&
                                mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
-                RenderHelpers.bindTexture(guiInfoBook.texture);
                 int k = textureX;
                 int l = textureY;
 
@@ -498,7 +496,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
                 GlStateManager._enableBlend();
                 GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-                this.blit(matrixStack, this.getX(), this.getY(), k, l, width, height);
+                guiGraphics.blit(guiInfoBook.texture, this.getX(), this.getY(), k, l, width, height);
                 GlStateManager._disableBlend();
             }
         }
@@ -536,7 +534,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
 
         @Override
-        public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.getX() && mouseY >= this.getY() &&
                         mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
@@ -546,8 +544,9 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
                     msg = msg.withStyle(ChatFormatting.UNDERLINE);
                 }
                 // MCP: drawString
-                minecraft.font.draw(matrixStack, msg, getX(), getY(),
-                        Helpers.RGBToInt(isHover ? 100 : 0, isHover ? 100 : 0, isHover ? 150 : 125));
+                minecraft.font.drawInBatch(msg, getX(), getY(),
+                        Helpers.RGBToInt(isHover ? 100 : 0, isHover ? 100 : 0, isHover ? 150 : 125), false,
+                        guiGraphics.pose().last().pose(), guiGraphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
             }
         }
 

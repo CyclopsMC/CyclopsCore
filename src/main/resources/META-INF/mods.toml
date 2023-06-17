@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[45,)"
+loaderVersion="[47,)"
 issueTrackerURL="https://github.com/CyclopsMC/CyclopsCore/issues"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/cyclops-core"
 license="MIT"
@@ -16,12 +16,12 @@ Coremod for Integrated Dynamics, EvilCraft and others.
 [[dependencies.cyclopscore]]
     modId="forge"
     mandatory=true
-    versionRange="[45.0.50,)"
+    versionRange="[47.0.1,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cyclopscore]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.19.4,]"
+    versionRange="[1.20.1,]"
     ordering="NONE"
     side="BOTH"

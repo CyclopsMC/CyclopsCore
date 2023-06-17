@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.component.button;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.network.chat.Component;
@@ -33,7 +33,7 @@ public class ButtonCheckbox extends Button {
     }
 
     @Override
-    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(visible) {
             // Determine image
             int i = 0;
@@ -51,7 +51,7 @@ public class ButtonCheckbox extends Button {
             int y = this.height <= imageWHeight ? this.getY() : this.getY() + (this.height - imageWHeight) / 2;
 
             // Draw image
-            image.draw(this, matrixStack, x, y);
+            image.draw(guiGraphics, x, y);
         }
     }
 }

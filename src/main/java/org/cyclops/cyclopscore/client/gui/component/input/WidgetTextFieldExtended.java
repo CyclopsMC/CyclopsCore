@@ -1,11 +1,10 @@
 package org.cyclops.cyclopscore.client.gui.component.input;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.image.Images;
-import org.cyclops.cyclopscore.helper.RenderHelpers;
 
 /**
  * An extended text field.
@@ -35,15 +34,13 @@ public class WidgetTextFieldExtended extends EditBox {
         return this.width - 7;
     }
 
-    protected void drawBackground(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        RenderHelpers.bindTexture(Images.WIDGETS);
-
+    protected void drawBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         setX(getX() - 1);
         setY(getY() - 1);
-        blit(matrixStack, getX(), getY(), 0, 0, width / 2, height / 2);//top left
-        blit(matrixStack, getX() + width / 2, getY(), 200 - width / 2, 0, width / 2, height / 2);//top right
-        blit(matrixStack, getX(), getY() + height / 2, 0, 20 - height / 2, width / 2, height / 2);//bottom left
-        blit(matrixStack, getX() + width / 2, getY() + height / 2, 200 - width / 2, 20 - height / 2, width / 2, height / 2);//bottom right
+        guiGraphics.blit(Images.WIDGETS, getX(), getY(), 0, 0, width / 2, height / 2);//top left
+        guiGraphics.blit(Images.WIDGETS, getX() + width / 2, getY(), 200 - width / 2, 0, width / 2, height / 2);//top right
+        guiGraphics.blit(Images.WIDGETS, getX(), getY() + height / 2, 0, 20 - height / 2, width / 2, height / 2);//bottom left
+        guiGraphics.blit(Images.WIDGETS, getX() + width / 2, getY() + height / 2, 200 - width / 2, 20 - height / 2, width / 2, height / 2);//bottom right
         setX(getX() + 1);
         setY(getY() + 1);
     }
@@ -55,11 +52,11 @@ public class WidgetTextFieldExtended extends EditBox {
     }
 
     @Override
-    public void renderWidget(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(background) {
-            drawBackground(matrixStack, mouseX, mouseY, partialTicks);
+            drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         }
-        super.renderWidget(matrixStack, mouseX, mouseY, partialTicks);
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

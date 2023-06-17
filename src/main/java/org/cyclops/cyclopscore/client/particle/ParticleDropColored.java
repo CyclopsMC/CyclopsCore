@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -73,9 +72,8 @@ public class ParticleDropColored extends TextureSheetParticle {
 
         BlockPos blockPos = new BlockPos(Mth.floor(this.x), Mth.floor(this.y), Mth.floor(this.z));
         BlockState blockState = this.level.getBlockState(blockPos);
-        Material material = blockState.getMaterial();
 
-        if (material.isLiquid() || material.isSolid()) {
+        if (blockState.liquid() || blockState.isSolid()) {
             float h = 1;
             FluidState fluidState = level.getFluidState(blockPos);
             if(!fluidState.isEmpty()) {
