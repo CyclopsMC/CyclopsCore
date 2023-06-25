@@ -29,8 +29,7 @@ public class GuiGraphicsExtended {
         guiGraphics.pose().translate(0.0F, 0.0F, 200.0F);
         float scale = 0.5f; // This part was added
         guiGraphics.pose().scale(scale, scale, 1.0f); // This part was added
-        guiGraphics.drawString(font, text, (x + 19 - 2) / scale - font.width(text), (float)(y + 6 + 3) / scale, 16777215, true); // Scale was added here
-        // Coords above used to be "x + 19 - 3" and "y + 6 + 6" in 1.19.4, in case something would look off...
+        guiGraphics.drawString(font, text, (x + 19 - 2) / scale - font.width(text), (float)(y + 6 + 6) / scale, 16777215, true); // Scale was added here
     }
 
     public void renderItemDecorations(Font font, ItemStack stack, int x, int y) {
