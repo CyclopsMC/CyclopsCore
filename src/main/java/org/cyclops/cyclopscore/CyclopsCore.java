@@ -30,6 +30,7 @@ import org.cyclops.cyclopscore.infobook.test.InfoBookTest;
 import org.cyclops.cyclopscore.init.ModBaseVersionable;
 import org.cyclops.cyclopscore.inventory.IRegistryInventoryLocation;
 import org.cyclops.cyclopscore.inventory.RegistryInventoryLocation;
+import org.cyclops.cyclopscore.loot.modifier.LootModifierInjectItemConfig;
 import org.cyclops.cyclopscore.metadata.IRegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportables;
@@ -150,6 +151,9 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         configHandler.addConfigurable(new ArgumentTypeConfigPropertyConfig());
         configHandler.addConfigurable(new ArgumentTypeDebugPacketConfig());
         configHandler.addConfigurable(new ArgumentTypeEnumConfig());
+
+        // Loot modifiers
+        configHandler.addConfigurable(new LootModifierInjectItemConfig());
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {
