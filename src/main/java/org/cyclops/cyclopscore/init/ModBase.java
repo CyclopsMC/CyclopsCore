@@ -363,7 +363,7 @@ public abstract class ModBase<T extends ModBase> {
     }
 
     protected CreativeModeTabConfig constructDefaultCreativeModeTabConfig() {
-        return new CreativeModeTabConfig(this, "default", (config) -> this.constructDefaultCreativeModeTab(CreativeModeTab.builder()).build());
+        return new CreativeModeTabConfig(this, "default", (config) -> this.defaultCreativeTab = this.constructDefaultCreativeModeTab(CreativeModeTab.builder()).build());
     }
 
     protected CreativeModeTab.Builder constructDefaultCreativeModeTab(CreativeModeTab.Builder builder) {
