@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix creative tab not being stored in mod class
+  This fixes a bug in Everlasting Abilities where totems do not show up in the creative tab.
+  Closes CyclopsMC/EverlastingAbilities#232
+
+
