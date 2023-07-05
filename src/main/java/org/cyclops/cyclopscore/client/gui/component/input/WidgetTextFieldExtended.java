@@ -69,6 +69,10 @@ public class WidgetTextFieldExtended extends EditBox {
             this.setHighlightPos(Integer.MAX_VALUE);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, mouseButton);
+        if (super.mouseClicked(mouseX, mouseY, mouseButton)) {
+            this.setFocused(true);
+            return true;
+        }
+        return false;
     }
 }
