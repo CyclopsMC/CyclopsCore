@@ -26,10 +26,12 @@ public class GuiGraphicsExtended {
     }
 
     public void drawSlotText(Font font, @javax.annotation.Nullable String text, int x, int y) { // Abstracted for reuse
+        guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(0.0F, 0.0F, 200.0F);
         float scale = 0.5f; // This part was added
         guiGraphics.pose().scale(scale, scale, 1.0f); // This part was added
         guiGraphics.drawString(font, text, (x + 19 - 2) / scale - font.width(text), (float)(y + 6 + 6) / scale, 16777215, true); // Scale was added here
+        guiGraphics.pose().popPose();
     }
 
     public void renderItemDecorations(Font font, ItemStack stack, int x, int y) {
