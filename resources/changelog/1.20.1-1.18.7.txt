@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix slot text not correctly scoping posestack
+  This fixes various issues in Integrated Terminals related to the gui shifting.
+  Closes CyclopsMC/IntegratedTerminals#105
+
