@@ -14,8 +14,8 @@ import org.cyclops.cyclopscore.config.extendedconfig.CreativeModeTabConfig;
 public class CreativeModeTabAction extends ConfigurableTypeAction<CreativeModeTabConfig, CreativeModeTab> {
 
     @Override
-    public void onRegisterSetup(CreativeModeTabConfig eConfig) {
-        super.onRegisterSetup(eConfig);
+    public void onRegisterForgeFilled(CreativeModeTabConfig eConfig) {
+        super.onRegisterForgeFilled(eConfig);
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, new ResourceLocation(eConfig.getMod().getModId(), eConfig.getNamedId()), eConfig.getInstance());
     }
 }
