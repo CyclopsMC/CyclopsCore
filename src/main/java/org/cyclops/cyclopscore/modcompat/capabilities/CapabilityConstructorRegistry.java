@@ -239,8 +239,10 @@ public class CapabilityConstructorRegistry {
                                  @Nullable Map<? extends K, List<ICapabilityConstructor<?, ? extends K, ? extends V>>> allInstanceConstructors,
                                  K keyObject, V valueObject, AttachCapabilitiesEvent<?> event, Class<? extends K> baseClass) {
         boolean initialized = baked || MinecraftHelpers.isMinecraftInitialized();
-        if (!baked && MinecraftHelpers.isMinecraftInitialized()) {
-            bake();
+        synchronized (this) {
+            if (!baked && MinecraftHelpers.isMinecraftInitialized()) {
+                bake();
+            }
         }
 
         // Normal constructors
