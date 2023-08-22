@@ -21,6 +21,7 @@ lib
 .idea
 logs
 ~
+extra-mods
 
 # Ignore mac-specific file(s)
 .DS_Store

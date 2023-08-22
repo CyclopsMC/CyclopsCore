@@ -11,6 +11,9 @@ apply plugin: 'jacoco'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
 
+// All jar files from this folder will be added automatically as runtime mod dependencies (inspired by AE2's build.gradle)
+def extraModsDir = "extra-mods"
+
 import net.minecraftforge.gradle.common.tasks.SignJar
 
 // Determine build number
@@ -75,6 +78,10 @@ repositories {
         name "Curios"
         url "https://maven.theillusivec4.top/"
     }
+    flatDir {
+        name "extra-mods"
+        dir file(extraModsDir)
+    }
 }
 
 dependencies {
@@ -93,6 +100,16 @@ dependencies {
 
     testImplementation "junit:junit:4.12"
     testImplementation "org.mockito:mockito-core:1.+"
+
+    // Locally sourced extra mods for runtime (i.e. testing)
+    for (extraModJar in fileTree(dir: extraModsDir, include: '*.jar')) {
+        def basename = extraModJar.name.substring(0, extraModJar.name.length() - ".jar".length())
+        def versionSep = basename.lastIndexOf('-')
+        assert versionSep != -1
+        def artifactId = basename.substring(0, versionSep)
+        def version = basename.substring(versionSep + 1)
+        runtimeOnly fg.deobf("extra-mods:$artifactId:$version")
+    }
 }
 
 minecraft {
