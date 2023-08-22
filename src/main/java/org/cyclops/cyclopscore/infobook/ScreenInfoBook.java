@@ -128,6 +128,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
         left = (width - getGuiWidth()) / 2;
         top = (height - getGuiHeight()) / 2;
+        imageWidth = getGuiWidth();
+        imageHeight = getGuiHeight();
 
         this.addRenderableWidget(this.buttonNextPage = new NextPageButton(left + getPageWidth() + 100 + getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 180, 18, 10, (button) -> {
             InfoSection.Location location = infoBook.getCurrentSection().getNext(infoBook.getCurrentPage() + getPages() - 1, MinecraftHelpers.isShifted());
