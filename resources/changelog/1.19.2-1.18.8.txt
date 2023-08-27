@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Improve error logging for packet codec failures
+  Required for debugging CyclopsMC/IntegratedTerminals#102
+
