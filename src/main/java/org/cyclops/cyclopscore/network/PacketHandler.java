@@ -56,7 +56,13 @@ public final class PacketHandler {
         try {
             Constructor<P> constructor = packetType.getConstructor();
             networkChannel.registerMessage(discriminator, packetType,
-                    (packet, packetBuffer) -> packet.encode(packetBuffer),
+                    (packet, packetBuffer) -> {
+                        try {
+                            packet.encode(packetBuffer);
+                        } catch (Throwable e) {
+                            throw new PacketCodecException("An exception occurred during encoding of packet " + packet.toString(), e);
+                        }
+                    },
                     (packetBuffer) -> {
                         P packet = null;
                         try {
@@ -64,7 +70,11 @@ public final class PacketHandler {
                         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                             e.printStackTrace();
                         }
-                        packet.decode(packetBuffer);
+                        try {
+                            packet.decode(packetBuffer);
+                        } catch (Throwable e) {
+                            throw new PacketCodecException("An exception occurred during decoding of packet " + packet.toString(), e);
+                        }
                         return packet;
                     },
                     (packet, contextSupplier) -> {
@@ -143,6 +153,12 @@ public final class PacketHandler {
     public void sendToAll(PacketBase packet) {
         PacketDistributor.PacketTarget target = PacketDistributor.ALL.with(() -> null);
         target.send(networkChannel.toVanillaPacket(packet, target.getDirection()));
+    }
+
+    public static class PacketCodecException extends RuntimeException {
+        public PacketCodecException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 
 }
