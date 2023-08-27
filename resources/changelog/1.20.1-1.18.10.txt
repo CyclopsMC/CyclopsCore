@@ -1,0 +1,13 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Improve error logging for packet codec failures
+  Required for debugging CyclopsMC/IntegratedTerminals#102
+
+Fixes:
+* Fix text fields not losing focus when needed
+  Closes CyclopsMC/IntegratedDynamics#1297
+* Fix EMI overlapping with infobook GUI
+  This caused issues in EvilCraft and Integrated Dynamics.
+  Closes CyclopsMC/IntegratedDynamics#1296
+
