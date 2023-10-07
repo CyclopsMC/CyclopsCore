@@ -94,11 +94,15 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
     }
 
     protected void increase() {
-        setActiveElement((activeElement + 1) % elements.size());
+        if (!elements.isEmpty()) {
+            setActiveElement((activeElement + 1) % elements.size());
+        }
     }
 
     protected void decrease() {
-        setActiveElement((activeElement - 1 + elements.size()) % elements.size());
+        if (!elements.isEmpty()) {
+            setActiveElement((activeElement - 1 + elements.size()) % elements.size());
+        }
     }
 
     @Override
