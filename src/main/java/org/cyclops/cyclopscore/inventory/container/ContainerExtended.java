@@ -361,7 +361,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
 
                             // --- Added ---
                             if (slot1 instanceof SlotExtended && ((SlotExtended) slot1).isPhantom()) {
-                                phantomCount += itemstack2.getCount() - j;
+                                phantomCount += l - j;
                             }
                         }
                     }
