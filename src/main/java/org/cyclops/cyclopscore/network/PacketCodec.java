@@ -530,20 +530,16 @@ public abstract class PacketCodec extends PacketBase {
     }
 
     private void loopCodecFields(ICodecRunnable runnable) {
-        try {
-            for (Field field : fieldCache.get(null)) {
-                Class<?> clazz = field.getType();
-                ICodecAction action = getAction(clazz);
+        for (Field field : fieldCache.get(null)) {
+            Class<?> clazz = field.getType();
+            ICodecAction action = getAction(clazz);
 
-                // Make private fields temporarily accessible.
-                boolean accessible = field.isAccessible();
-                if (!accessible) {
-                    field.setAccessible(true);
-                }
-                runnable.run(field, action);
+            // Make private fields temporarily accessible.
+            boolean accessible = field.isAccessible();
+            if (!accessible) {
+                field.setAccessible(true);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            runnable.run(field, action);
         }
     }
 
