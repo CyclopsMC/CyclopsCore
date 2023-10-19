@@ -224,6 +224,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
     @Override
     public void render(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+
         RenderHelpers.bindTexture(texture);
 
         blit(matrixStack, left, top, 0, 0, getPageWidth(), getGuiHeight());
