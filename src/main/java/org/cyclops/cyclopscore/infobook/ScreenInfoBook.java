@@ -225,6 +225,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+
         guiGraphics.blit(texture, left, top, 0, 0, getPageWidth(), getGuiHeight());
         blitMirrored(left + getPageWidth() - 1, top, 0, 0, getPageWidth(), getGuiHeight());
         int width = getPageWidth() - getOffsetXTotal();

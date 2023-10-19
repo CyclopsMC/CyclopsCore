@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix lack of background render events in infobooks, Closes CyclopsMC/EvilCraft#1008
+* Fix network errors not being caught by PacketHandler
+  Required for debugging CyclopsMC/IntegratedTerminals#102
+* Fix crash when interacting with empty arrowed list field
+
