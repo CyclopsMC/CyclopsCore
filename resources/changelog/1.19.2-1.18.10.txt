@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Actually fix lack of background render events in infobooks
+  Closes CyclopsMC/EvilCraft#1008
+
