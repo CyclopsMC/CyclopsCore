@@ -6,7 +6,9 @@ import com.google.common.collect.Sets;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
+import org.cyclops.cyclopscore.ingredient.collection.IIngredientCollapsedCollectionMutable;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientArrayList;
+import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionHelpers;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionPrototypeMap;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +18,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestIngredientCollectionDiffHelpers {
 
+    private static final IngredientComponent<Integer, Boolean> SIMP = IngredientComponentStubs.SIMPLE;
     private static final IngredientComponent<ComplexStack, Integer> COMP = IngredientComponentStubs.COMPLEX;
 
     private static final ComplexStack CA01_ = new ComplexStack(ComplexStack.Group.A, 0, 1, null);
@@ -154,6 +157,20 @@ public class TestIngredientCollectionDiffHelpers {
         IngredientCollectionDiffHelpers.applyDiff(COMP, diff, collection);
 
         assertThat(Sets.newHashSet(collection), is(Sets.newHashSet(CA02_, CA92B)));
+    }
+
+    @Test
+    public void testApplyDiffSingleCollapsedSimple() {
+        IngredientArrayList<Integer, Boolean> additions = new IngredientArrayList<>(SIMP);
+        IngredientArrayList<Integer, Boolean> deletions = new IngredientArrayList<>(SIMP, Lists.newArrayList(1000));
+        IngredientCollectionDiff<Integer, Boolean> diff = new IngredientCollectionDiff<>(
+                additions, deletions, false);
+        IIngredientCollapsedCollectionMutable<Integer, Boolean> collection = IngredientCollectionHelpers.createCollapsedCollection(SIMP);
+        collection.add(4000);
+
+        IngredientCollectionDiffHelpers.applyDiff(SIMP, diff, collection);
+
+        assertThat(Sets.newHashSet(collection), is(Sets.newHashSet(3000)));
     }
 
 }
