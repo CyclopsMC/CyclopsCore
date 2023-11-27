@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix simple ingredient types returning wrong collapsed collections
+  This fixes an Integrated Terminals issue where energy interactions
+  would be visualized incorrectly.
+  Closes CyclopsMC/IntegratedTerminals#111
+

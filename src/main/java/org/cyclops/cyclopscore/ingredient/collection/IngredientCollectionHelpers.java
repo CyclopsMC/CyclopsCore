@@ -18,7 +18,7 @@ public class IngredientCollectionHelpers {
      */
     public static <T, M> IIngredientCollapsedCollectionMutable<T, M> createCollapsedCollection(IngredientComponent<T, M> ingredientComponent) {
         if (ingredientComponent.getCategoryTypes().size() == 1) {
-            new IngredientCollectionPrototypeMap<>(ingredientComponent);
+            return new IngredientCollectionPrototypeMap<>(ingredientComponent);
         }
         return new IngredientCollectionSingleClassifiedCollapsed<>(
                 ingredientComponent,
