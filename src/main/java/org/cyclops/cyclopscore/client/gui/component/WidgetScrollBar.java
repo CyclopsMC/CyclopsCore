@@ -150,11 +150,21 @@ public class WidgetScrollBar extends AbstractWidget {
     }
 
     public void scrollTo(float scroll) {
+        scrollTo(scroll, true);
+    }
+
+    public void scrollTo(float scroll, boolean invokeCallback) {
         this.currentScroll = Math.max(0, scroll);
-        if (scrollCallback != null) {
+        if (invokeCallback && scrollCallback != null) {
             int firstRow = (int) ((double) (scroll * getScrollStep()) + 0.5D);
             scrollCallback.onScroll(firstRow);
         }
+    }
+
+    public void setFirstRow(int firstRow, boolean invokeCallback) {
+        float scroll = ((float) firstRow) / getScrollStep();
+        scroll = Mth.clamp(scroll, 0.0F, 1.0F);
+        scrollTo(scroll, invokeCallback);
     }
 
     public int getTotalRows() {
