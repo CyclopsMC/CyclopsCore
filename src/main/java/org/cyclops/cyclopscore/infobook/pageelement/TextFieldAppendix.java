@@ -2,10 +2,13 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.StringSplitter;
+import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Style;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 import org.apache.commons.lang3.StringUtils;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
@@ -33,7 +36,12 @@ public class TextFieldAppendix extends SectionAppendix {
         super(infoBook);
         this.text = text;
         this.scale = scale;
-        this.height = this.text.split("\n").length * 9; // Set temp value
+        this.height = this.text.split("\n").length * 9;
+
+        DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
+            calculateLines();
+            return null;
+        });
     }
 
     @Override
@@ -51,21 +59,22 @@ public class TextFieldAppendix extends SectionAppendix {
         return height;
     }
 
+    protected void calculateLines() {
+        Font font = Minecraft.getInstance().font;
+        StringSplitter stringSplitter = font.getSplitter();
+        this.lines = Lists.newArrayList();
+        stringSplitter.splitLines(this.text, this.getWidth(), Style.EMPTY, true, (style, startPos, endPos) -> {
+            String stringPart = this.text.substring(startPos, endPos);
+            String line = StringUtils.stripEnd(stringPart, " \n");
+            lines.add(line);
+            this.maxWidth = (int) Math.max(this.maxWidth, font.width(line) * this.scale);
+        });
+        this.height = (int) (this.scale * lines.size() * font.lineHeight);
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void drawElement(ScreenInfoBook gui, PoseStack matrixStack, int x, int y, int width, int height, int page, int mx, int my) {
-        if (this.lines == null) {
-            StringSplitter stringSplitter = gui.getFont().getSplitter();
-            this.lines = Lists.newArrayList();
-            stringSplitter.splitLines(this.text, this.getWidth(), Style.EMPTY, true, (style, startPos, endPos) -> {
-                String stringPart = this.text.substring(startPos, endPos);
-                String line = StringUtils.stripEnd(stringPart, " \n");
-                lines.add(line);
-                this.maxWidth = (int) Math.max(this.maxWidth, gui.getFont().width(line) * this.scale);
-            });
-            this.height = (int) (this.scale * lines.size() * gui.getFont().lineHeight);
-        }
-
         int lineId = 0;
         for (String line : lines) {
             RenderHelpers.drawScaledString(
