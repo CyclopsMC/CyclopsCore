@@ -84,6 +84,15 @@ public class InfoBookParser {
             }
 
         });
+        registerAppendixFactory("textfield", new IAppendixFactory() {
+
+            @Override
+            public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
+                return new TextFieldAppendix(infoBook, node.getTextContent(),
+                        Double.parseDouble(node.getAttribute("scale")));
+            }
+
+        });
         InfoBookParser.registerAppendixRecipeFactories(RecipeType.CRAFTING, CraftingRecipeAppendix::new);
         InfoBookParser.registerAppendixRecipeFactories(RecipeType.SMELTING, FurnaceRecipeAppendix::new);
         registerAppendixFactory("advancement_rewards", new InfoBookParser.IAppendixFactory() {

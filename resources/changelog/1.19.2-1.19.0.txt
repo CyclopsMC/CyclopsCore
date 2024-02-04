@@ -1,0 +1,10 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add textfield appendix type for infobook (required for Integrated Scripting)
+
+Changes:
+* Allow first row to be set in scrollbar widget
+
+
+
