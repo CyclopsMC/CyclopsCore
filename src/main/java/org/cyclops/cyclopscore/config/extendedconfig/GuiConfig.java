@@ -3,12 +3,13 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -30,6 +31,7 @@ public abstract class GuiConfig<T extends AbstractContainerMenu> extends Extende
      */
     public GuiConfig(ModBase mod, String namedId, Function<GuiConfig<T>, ? extends MenuType<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
+        mod.getModEventBus().addListener(this::onRegisterMenuScreens);
     }
 
     @Override
@@ -49,17 +51,14 @@ public abstract class GuiConfig<T extends AbstractContainerMenu> extends Extende
     }
 
     @Override
-    public IForgeRegistry<? super MenuType<T>> getRegistry() {
-        return ForgeRegistries.MENU_TYPES;
+    public Registry<? super MenuType<T>> getRegistry() {
+        return BuiltInRegistries.MENU;
     }
 
     @OnlyIn(Dist.CLIENT)
     public abstract <U extends Screen & MenuAccess<T>> MenuScreens.ScreenConstructor<T, U> getScreenFactory();
 
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public void onRegistered() {
-        super.onRegistered();
-        MenuScreens.register(getInstance(), getScreenFactory());
+    public void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
+        event.register(getInstance(), getScreenFactory());
     }
 }

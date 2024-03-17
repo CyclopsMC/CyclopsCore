@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.inventory;
 import com.google.common.collect.Queues;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Iterator;

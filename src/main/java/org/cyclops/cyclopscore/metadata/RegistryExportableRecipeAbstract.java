@@ -2,10 +2,11 @@ package org.cyclops.cyclopscore.metadata;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 
 import java.util.function.Supplier;
@@ -31,10 +32,10 @@ public abstract class RegistryExportableRecipeAbstract<T extends RecipeType<? ex
         JsonArray elements = new JsonArray();
         element.add("recipes", elements);
 
-        for (R recipe : CraftingHelpers.findServerRecipes(getRecipeType())) {
-            JsonObject serializedRecipe = serializeRecipe(recipe);
+        for (RecipeHolder<R> recipeHolder : CraftingHelpers.findServerRecipes(getRecipeType())) {
+            JsonObject serializedRecipe = serializeRecipe(recipeHolder);
 
-            serializedRecipe.addProperty("id", recipe.getId().toString());
+            serializedRecipe.addProperty("id", recipeHolder.toString());
 
             elements.add(serializedRecipe);
         }
@@ -44,9 +45,9 @@ public abstract class RegistryExportableRecipeAbstract<T extends RecipeType<? ex
 
     @Override
     public String getName() {
-        return ForgeRegistries.RECIPE_TYPES.getKey(getRecipeType()).toString().replaceAll(":", "__");
+        return BuiltInRegistries.RECIPE_TYPE.getKey(getRecipeType()).toString().replaceAll(":", "__");
     }
 
-    public abstract JsonObject serializeRecipe(R recipe);
+    public abstract JsonObject serializeRecipe(RecipeHolder<R> recipe);
 
 }

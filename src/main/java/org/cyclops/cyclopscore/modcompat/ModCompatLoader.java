@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.modcompat;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.init.ModBase;
 

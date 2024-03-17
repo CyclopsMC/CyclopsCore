@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -12,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -48,7 +46,7 @@ public interface IBlockGui {
         if (!world.isClientSide()) {
             MenuProvider containerProvider = blockContainerProvider.get(blockState, world, blockPos);
             if (containerProvider != null) {
-                NetworkHooks.openScreen((ServerPlayer) player, containerProvider,
+                player.openMenu(containerProvider,
                         packetBuffer -> block.writeExtraGuiData(packetBuffer, world, player, blockPos, hand, rayTraceResult));
                 Stat<ResourceLocation> openStat = block.getOpenStat();
                 if (openStat != null) {

@@ -1,8 +1,10 @@
 package org.cyclops.cyclopscore;
 
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.registries.ObjectHolder;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTest;
 
 /**
@@ -11,12 +13,9 @@ import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTest;
  */
 public class RegistryEntries {
 
-    @ObjectHolder(registryName = "particle_type", value = "cyclopscore:blur")
-    public static final ParticleType<?> PARTICLE_BLUR = null;
-    @ObjectHolder(registryName = "particle_type", value = "cyclopscore:drop_colored")
-    public static final ParticleType<?> PARTICLE_DROP_COLORED = null;
+    public static final DeferredHolder<ParticleType<?>, ParticleType<?>> PARTICLE_BLUR = DeferredHolder.create(Registries.PARTICLE_TYPE, new ResourceLocation("cyclopscore:blur"));
+    public static final DeferredHolder<ParticleType<?>, ParticleType<?>> PARTICLE_DROP_COLORED = DeferredHolder.create(Registries.PARTICLE_TYPE, new ResourceLocation("cyclopscore:drop_colored"));
 
-    @ObjectHolder(registryName = "menu", value = "cyclopscore:test_infobook")
-    public static final MenuType<ContainerInfoBookTest> CONTAINER_INFOBOOK_TEST = null;
+    public static final DeferredHolder<MenuType<?>, MenuType<ContainerInfoBookTest>> CONTAINER_INFOBOOK_TEST = DeferredHolder.create(Registries.MENU, new ResourceLocation("cyclopscore:test_infobook"));
 
 }

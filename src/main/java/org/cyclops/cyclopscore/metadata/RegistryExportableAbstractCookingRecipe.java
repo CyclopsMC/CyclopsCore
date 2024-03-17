@@ -6,8 +6,9 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.function.Supplier;
 
@@ -21,16 +22,16 @@ public class RegistryExportableAbstractCookingRecipe<T extends RecipeType<? exte
     }
 
     @Override
-    public JsonObject serializeRecipe(AbstractCookingRecipe recipe) {
+    public JsonObject serializeRecipe(RecipeHolder<AbstractCookingRecipe> recipe) {
         JsonObject object = new JsonObject();
         JsonArray variants = new JsonArray();
-        for (Ingredient ingredient : recipe.getIngredients()) {
+        for (Ingredient ingredient : recipe.value().getIngredients()) {
             for (ItemStack matchingStack : ingredient.getItems()) {
                 variants.add(IRegistryExportable.serializeItemStack(matchingStack));
             }
         }
         object.add("input", variants);
-        object.add("output", IRegistryExportable.serializeItemStack(recipe.getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess())));
+        object.add("output", IRegistryExportable.serializeItemStack(recipe.value().getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess())));
         return object;
     }
 

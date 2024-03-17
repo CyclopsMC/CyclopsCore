@@ -1,7 +1,5 @@
 package org.cyclops.cyclopscore.blockentity;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import lombok.experimental.Delegate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,16 +10,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import org.apache.commons.lang3.tuple.Pair;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.DirectionHelpers;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
 import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A base class for all the block entities.
@@ -36,12 +30,16 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     private boolean shouldSendUpdate = false;
     private int sendUpdateBackoff = 0;
 
-    private Map<Pair<Capability<?>, Direction>, LazyOptional<?>> capabilities = Maps.newHashMap();
-
     public CyclopsBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
         super(type, blockPos, blockState);
         // Random backoff so not all block entities will be updated at once.
         sendUpdateBackoff = (int) Math.round(Math.random() * getUpdateBackoffTicks());
+
+        CyclopsCore._instance.getModEventBus().addListener(this::registerCapabilities);
+    }
+
+    protected void registerCapabilities(RegisterCapabilitiesEvent event) {
+
     }
 
     @Override
@@ -134,15 +132,6 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
         onLoad();
     }
 
-    /**
-     * When the block entity is loaded or created.
-     */
-    public void onLoad() {
-        if (capabilities instanceof HashMap) {
-            capabilities = ImmutableMap.copyOf(capabilities);
-        }
-    }
-
     @Override
     public CompoundTag getUpdateTag() {
         return saveWithoutMetadata();
@@ -160,58 +149,6 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
 
     public Direction getRotation() {
         return null;
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
-        if (capabilities != null) {
-            LazyOptional<?> value = capabilities.get(Pair.<Capability<?>,
-                    Direction>of(capability, transformFacingForRotation(facing)));
-            if (value == null && facing != null) {
-                value = capabilities.get(Pair.<Capability<?>, Direction>of(capability, null));
-            }
-            if (value != null) {
-                return value.cast();
-            }
-        }
-        return super.getCapability(capability, facing);
-    }
-
-    @Override
-    public void invalidateCaps() {
-        super.invalidateCaps();
-
-        // Invalidate stored capabilities
-        for (LazyOptional<?> lazyOptional : this.capabilities.values()) {
-            lazyOptional.invalidate();
-        }
-    }
-
-    /**
-     * Add a sideless capability.
-     * This can only be called at block entity construction time!
-     * @param capability The capability type.
-     * @param value The capability.
-     * @param <T> The capability type.
-     */
-    public <T> void addCapabilityInternal(Capability<T> capability, LazyOptional<T> value) {
-        capabilities.put(Pair.<Capability<?>, Direction>of(capability, null), value);
-    }
-
-    /**
-     * Add a sided capability.
-     * This can only be called at block entity construction time!
-     * @param capability The capability type.
-     * @param facing The side for the capability.
-     * @param value The capability.
-     * @param <T> The capability type.
-     */
-    public <T> void addCapabilitySided(Capability<T> capability, Direction facing, LazyOptional<T> value) {
-        capabilities.put(Pair.<Capability<?>, Direction>of(capability, facing), value);
-    }
-
-    protected Map<Pair<Capability<?>, Direction>, LazyOptional<?>> getStoredCapabilities() {
-        return capabilities;
     }
 
     @Override

@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.inventory.container;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraftforge.network.IContainerFactory;
+import net.neoforged.neoforge.network.IContainerFactory;
 
 /**
  * A {@link MenuType} for a {@link MenuType.MenuSupplier},

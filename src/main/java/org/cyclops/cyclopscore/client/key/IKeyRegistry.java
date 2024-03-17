@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.client.key;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import org.cyclops.cyclopscore.init.IRegistry;
 
 /**

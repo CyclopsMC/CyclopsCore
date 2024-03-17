@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.network.packet.debug;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.network.CodecField;
 
 /**
@@ -9,6 +11,8 @@ import org.cyclops.cyclopscore.network.CodecField;
  *
  */
 public class PingPongPacketComplexAsync extends PingPongPacketAsync {
+
+    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "ping_pong_complex_async");
 
     @CodecField
     protected String string1;
@@ -19,11 +23,21 @@ public class PingPongPacketComplexAsync extends PingPongPacketAsync {
      * Empty packet.
      */
     public PingPongPacketComplexAsync() {
-        super();
+        super(ID);
     }
 
     public PingPongPacketComplexAsync(int remaining, String string1, String string2) {
-        super(remaining);
+        super(ID, remaining);
+        this.string1 = string1;
+        this.string2 = string2;
+    }
+
+    public PingPongPacketComplexAsync(ResourceLocation id) {
+        super(id);
+    }
+
+    public PingPongPacketComplexAsync(ResourceLocation id, int remaining, String string1, String string2) {
+        super(id, remaining);
         this.string1 = string1;
         this.string2 = string2;
     }

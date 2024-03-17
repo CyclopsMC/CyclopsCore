@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -13,7 +15,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class WorldStructureConfig<S extends Structure> extends ExtendedConfig<WorldStructureConfig<S>, StructureType<S>>{
+public abstract class WorldStructureConfig<S extends Structure> extends ExtendedConfigForge<WorldStructureConfig<S>, StructureType<S>>{
 
     public WorldStructureConfig(ModBase mod, String namedId, Function<WorldStructureConfig<S>, Codec<S>> elementConstructor) {
         super(mod, namedId, elementConstructor.andThen(codec -> () -> codec));
@@ -29,4 +31,8 @@ public abstract class WorldStructureConfig<S extends Structure> extends Extended
         return ConfigurableType.WORLD_STRUCTURE;
     }
 
+    @Override
+    public Registry<? super StructureType<S>> getRegistry() {
+        return BuiltInRegistries.STRUCTURE_TYPE;
+    }
 }

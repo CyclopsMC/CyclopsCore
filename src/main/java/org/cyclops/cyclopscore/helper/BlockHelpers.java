@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceKey;
@@ -16,7 +17,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -31,7 +31,7 @@ public final class BlockHelpers {
     public static HolderGetter<Block> HOLDER_GETTER_FORGE = new HolderGetter<Block>() {
         @Override
         public Optional<Holder.Reference<Block>> get(ResourceKey<Block> key) {
-            return (Optional<Holder.Reference<Block>>) (Object) ForgeRegistries.BLOCKS.getHolder(key);
+            return BuiltInRegistries.BLOCK.getHolder(key);
         }
 
         @Override

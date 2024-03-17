@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -44,8 +44,7 @@ public abstract class BlockEntityConfig<T extends BlockEntity> extends ExtendedC
     }
 
     @Override
-    public IForgeRegistry<? super BlockEntityType<T>> getRegistry() {
-        return ForgeRegistries.BLOCK_ENTITY_TYPES;
+    public Registry<? super BlockEntityType<T>> getRegistry() {
+        return BuiltInRegistries.BLOCK_ENTITY_TYPE;
     }
-
 }

@@ -5,11 +5,12 @@ import com.google.gson.JsonObject;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.core.NonNullList;
-import net.minecraftforge.common.crafting.IShapedRecipe;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.common.crafting.IShapedRecipe;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 /**
  * Crafting recipe exporter.
@@ -21,10 +22,10 @@ public class RegistryExportableCraftingRecipe extends RegistryExportableRecipeAb
     }
 
     @Override
-    public JsonObject serializeRecipe(CraftingRecipe recipe) {
+    public JsonObject serializeRecipe(RecipeHolder<CraftingRecipe> recipe) {
         JsonObject object = new JsonObject();
 
-        NonNullList<Ingredient> inputs = recipe.getIngredients();
+        NonNullList<Ingredient> inputs = recipe.value().getIngredients();
         JsonArray arrayInputs = new JsonArray();
         for (Ingredient input : inputs) {
             JsonArray arrayInputAlternatives = new JsonArray();
@@ -33,13 +34,13 @@ public class RegistryExportableCraftingRecipe extends RegistryExportableRecipeAb
             }
             arrayInputs.add(arrayInputAlternatives);
         }
-        object.addProperty("id", recipe.getId().toString());
+        object.addProperty("id", recipe.id().toString());
         object.add("input", arrayInputs);
-        object.add("output", IRegistryExportable.serializeItemStack(recipe.getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess())));
+        object.add("output", IRegistryExportable.serializeItemStack(recipe.value().getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess())));
 
-        if(recipe instanceof IShapedRecipe) {
-            object.addProperty("width", ((IShapedRecipe) recipe).getRecipeWidth());
-            object.addProperty("height", ((IShapedRecipe) recipe).getRecipeHeight());
+        if(recipe.value() instanceof IShapedRecipe) {
+            object.addProperty("width", ((IShapedRecipe) recipe.value()).getRecipeWidth());
+            object.addProperty("height", ((IShapedRecipe) recipe.value()).getRecipeHeight());
         }
 
         return object;

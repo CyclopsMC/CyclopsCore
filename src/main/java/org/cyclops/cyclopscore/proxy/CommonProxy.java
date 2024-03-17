@@ -26,21 +26,21 @@ public class CommonProxy extends CommonProxyComponent {
         super.registerPacketHandlers(packetHandler);
 
         // Register packets.
-        packetHandler.register(RingOfFirePacket.class);
-        packetHandler.register(ButtonClickPacket.class);
-        packetHandler.register(ValueNotifyPacket.class);
-        packetHandler.register(ReloadResourcesPacket.class);
-        packetHandler.register(AdvancementRewardsObtainPacket.class);
-        packetHandler.register(RequestPlayerNbtPacket.class);
-        packetHandler.register(SendPlayerNbtPacket.class);
-        packetHandler.register(RequestPlayerAdvancementUnlockedPacket.class);
-        packetHandler.register(SendPlayerAdvancementUnlockedPacket.class);
+        packetHandler.register(RingOfFirePacket.ID, RingOfFirePacket::new);
+        packetHandler.register(ButtonClickPacket.ID, ButtonClickPacket::new);
+        packetHandler.register(ValueNotifyPacket.ID, ValueNotifyPacket::new);
+        packetHandler.register(ReloadResourcesPacket.ID, ReloadResourcesPacket::new);
+        packetHandler.register(AdvancementRewardsObtainPacket.ID, AdvancementRewardsObtainPacket::new);
+        packetHandler.register(RequestPlayerNbtPacket.ID, RequestPlayerNbtPacket::new);
+        packetHandler.register(SendPlayerNbtPacket.ID, SendPlayerNbtPacket::new);
+        packetHandler.register(RequestPlayerAdvancementUnlockedPacket.ID, RequestPlayerAdvancementUnlockedPacket::new);
+        packetHandler.register(SendPlayerAdvancementUnlockedPacket.ID, SendPlayerAdvancementUnlockedPacket::new);
 
         // Register debug packets
-        packetHandler.register(PingPongPacketAsync.class);
-        packetHandler.register(PingPongPacketSync.class);
-        packetHandler.register(PingPongPacketComplexAsync.class);
-        packetHandler.register(PingPongPacketComplexSync.class);
+        packetHandler.register(PingPongPacketAsync.ID, PingPongPacketAsync::new);
+        packetHandler.register(PingPongPacketSync.ID, PingPongPacketSync::new);
+        packetHandler.register(PingPongPacketComplexAsync.ID, PingPongPacketComplexAsync::new);
+        packetHandler.register(PingPongPacketComplexSync.ID, PingPongPacketComplexSync::new);
     }
 
 }

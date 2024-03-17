@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.modcompat;
 
 import com.google.common.collect.Maps;
-import net.minecraftforge.fml.InterModComms;
+import net.neoforged.fml.InterModComms;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -30,15 +30,15 @@ public class IMCHandler {
     }
 
     public void handle(InterModComms.IMCMessage message) {
-        mod.log(Level.INFO, String.format("Handling IMC message from %s.", message.getSenderModId()));
-        IIMCAction action = actions.get(message.getMethod());
+        mod.log(Level.INFO, String.format("Handling IMC message from %s.", message.senderModId()));
+        IIMCAction action = actions.get(message.method());
         if(action != null) {
             if(!action.handle(message)) {
                 mod.log(Level.ERROR, String.format("The IMC message for key %s was rejected. " +
-                        "It may have been incorrectly formatted or has resulted in an error.", message.getMethod()));
+                        "It may have been incorrectly formatted or has resulted in an error.", message.method()));
             }
         } else {
-            mod.log(Level.ERROR, String.format("An IMC message with invalid key %s was received.", message.getMethod()));
+            mod.log(Level.ERROR, String.format("An IMC message with invalid key %s was received.", message.method()));
         }
     }
 

@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.datastructure.DimPos;
@@ -465,6 +465,10 @@ public abstract class PacketCodec extends PacketBase {
                 return ItemLocation.readFromPacketBuffer(input);
             }
         });
+    }
+
+    public PacketCodec(ResourceLocation id) {
+        super(id);
     }
 
     /**

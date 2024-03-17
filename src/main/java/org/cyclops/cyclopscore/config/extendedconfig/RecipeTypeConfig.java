@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -43,7 +43,7 @@ public abstract class RecipeTypeConfig<T extends Recipe<?>> extends ExtendedConf
     }
 
     @Override
-    public IForgeRegistry<? super RecipeType<T>> getRegistry() {
-        return ForgeRegistries.RECIPE_TYPES;
+    public Registry<? super RecipeType<T>> getRegistry() {
+        return BuiltInRegistries.RECIPE_TYPE;
     }
 }

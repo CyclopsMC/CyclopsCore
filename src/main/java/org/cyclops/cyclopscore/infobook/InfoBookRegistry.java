@@ -1,11 +1,11 @@
 package org.cyclops.cyclopscore.infobook;
 
 import com.google.common.collect.Maps;
-import net.minecraftforge.client.event.RecipesUpdatedEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TagsUpdatedEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -22,9 +22,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class InfoBookRegistry implements IInfoBookRegistry {
 
     static {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onClientTagsLoadedStatic);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onClientRecipesLoadedStatic);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onServerStartedStatic);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onClientTagsLoadedStatic);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onClientRecipesLoadedStatic);
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onServerStartedStatic);
     }
 
     private final Map<IInfoBook, String> bookPaths = Maps.newIdentityHashMap();
@@ -32,9 +32,9 @@ public class InfoBookRegistry implements IInfoBookRegistry {
     private final Queue<SectionInjection> sectionInjections = new LinkedBlockingQueue<>(); // Thread-safe queue
 
     public InfoBookRegistry() {
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientTagsLoaded);
-        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientRecipesLoaded);
-        MinecraftForge.EVENT_BUS.addListener(this::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientTagsLoaded);
+        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientRecipesLoaded);
+        NeoForge.EVENT_BUS.addListener(this::onServerStarted);
     }
 
     @Override

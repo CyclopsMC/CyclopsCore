@@ -8,17 +8,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidActionResult;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidActionResult;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.cyclops.cyclopscore.Capabilities;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
 import org.cyclops.cyclopscore.datastructure.Wrapper;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Contains helper methods for various fluid specific things.
@@ -95,8 +95,8 @@ public final class FluidHelpers {
      * @param itemStack The itemstack
      * @return The item capacity fluid handler.
      */
-    public static LazyOptional<IFluidHandlerItemCapacity> getFluidHandlerItemCapacity(ItemStack itemStack) {
-        return itemStack.getCapability(Capabilities.FLUID_HANDLER_ITEM_CAPACITY);
+    public static Optional<IFluidHandlerItemCapacity> getFluidHandlerItemCapacity(ItemStack itemStack) {
+        return Optional.ofNullable(itemStack.getCapability(Capabilities.Item.FLUID_HANDLER_CAPACITY));
     }
 
     /**

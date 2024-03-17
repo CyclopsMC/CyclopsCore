@@ -1,12 +1,14 @@
 package org.cyclops.cyclopscore.network.packet.debug;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.network.CodecField;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
@@ -20,6 +22,8 @@ import java.util.List;
  */
 public class PingPongPacketAsync extends PacketCodec {
 
+    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "ping_pong_async");
+
     @CodecField
     protected int remaining;
 
@@ -27,10 +31,20 @@ public class PingPongPacketAsync extends PacketCodec {
      * Empty packet.
      */
     public PingPongPacketAsync() {
-
+        super(ID);
     }
 
     public PingPongPacketAsync(int remaining) {
+        this();
+        this.remaining = remaining;
+    }
+
+    public PingPongPacketAsync(ResourceLocation id) {
+        super(id);
+    }
+
+    public PingPongPacketAsync(ResourceLocation id, int remaining) {
+        super(id);
         this.remaining = remaining;
     }
 

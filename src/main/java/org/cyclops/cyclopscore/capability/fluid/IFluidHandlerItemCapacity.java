@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.capability.fluid;
 
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 
 /**
  * An item fluid handler with a mutable capacity.

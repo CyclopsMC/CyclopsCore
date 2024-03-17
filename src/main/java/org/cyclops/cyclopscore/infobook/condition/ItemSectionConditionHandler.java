@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook.condition;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -13,7 +13,7 @@ public class ItemSectionConditionHandler implements ISectionConditionHandler {
 
     @Override
     public boolean isSatisfied(ModBase<?> mod, String param) {
-        return ForgeRegistries.ITEMS.containsKey(new ResourceLocation(param));
+        return BuiltInRegistries.ITEM.containsKey(new ResourceLocation(param));
     }
 
 }

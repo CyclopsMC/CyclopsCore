@@ -4,15 +4,13 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
 import org.cyclops.cyclopscore.RegistryEntries;
 
 import java.util.Locale;
-
-import net.minecraft.core.particles.ParticleOptions.Deserializer;
 
 /**
  * Data for {@link ParticleDropColored}.
@@ -54,7 +52,7 @@ public class ParticleDropColoredData implements ParticleOptions {
 
     @Override
     public ParticleType<?> getType() {
-        return RegistryEntries.PARTICLE_DROP_COLORED;
+        return RegistryEntries.PARTICLE_DROP_COLORED.get();
     }
 
     @Override
@@ -67,7 +65,7 @@ public class ParticleDropColoredData implements ParticleOptions {
     @Override
     public String writeToString() {
         return String.format(Locale.ROOT, "%s %.2f %.2f %.2f",
-                ForgeRegistries.PARTICLE_TYPES.getKey(this.getType()),
+                BuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()),
                 this.red, this.green, this.blue);
     }
 

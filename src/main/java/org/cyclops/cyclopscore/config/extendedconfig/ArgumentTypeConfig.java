@@ -3,8 +3,8 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import com.mojang.brigadier.arguments.ArgumentType;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -43,8 +43,8 @@ public class ArgumentTypeConfig<A extends ArgumentType<?>, T extends ArgumentTyp
     }
 
     @Override
-    public IForgeRegistry<? super ArgumentTypeInfo<A, T>> getRegistry() {
-        return ForgeRegistries.COMMAND_ARGUMENT_TYPES;
+    public Registry<? super ArgumentTypeInfo<A, T>> getRegistry() {
+        return BuiltInRegistries.COMMAND_ARGUMENT_TYPE;
     }
 
     @Override

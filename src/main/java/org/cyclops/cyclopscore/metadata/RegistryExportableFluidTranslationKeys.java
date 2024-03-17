@@ -2,10 +2,10 @@ package org.cyclops.cyclopscore.metadata;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
 
 import java.util.Map;
@@ -21,7 +21,7 @@ public class RegistryExportableFluidTranslationKeys implements IRegistryExportab
 
         JsonArray elements = new JsonArray();
         element.add("fluids", elements);
-        for (Map.Entry<ResourceKey<Fluid>, Fluid> fluidEntry : ForgeRegistries.FLUIDS.getEntries()) {
+        for (Map.Entry<ResourceKey<Fluid>, Fluid> fluidEntry : BuiltInRegistries.FLUID.entrySet()) {
             FluidStack value = new FluidStack(fluidEntry.getValue(), FluidHelpers.BUCKET_VOLUME);
             String translationKey = value.getTranslationKey();
 

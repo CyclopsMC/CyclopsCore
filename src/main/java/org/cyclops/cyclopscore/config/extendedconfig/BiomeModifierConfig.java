@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import com.mojang.serialization.Codec;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraft.core.Registry;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -31,8 +31,7 @@ public abstract class BiomeModifierConfig<T extends BiomeModifier> extends Exten
     }
 
     @Override
-    public IForgeRegistry<Codec<? extends BiomeModifier>> getRegistry() {
-        return ForgeRegistries.BIOME_MODIFIER_SERIALIZERS.get();
+    public Registry<? super Codec<T>> getRegistry() {
+        return NeoForgeRegistries.BIOME_MODIFIER_SERIALIZERS;
     }
-
 }

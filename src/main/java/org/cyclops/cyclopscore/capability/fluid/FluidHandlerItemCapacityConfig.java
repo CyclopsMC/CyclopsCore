@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.capability.fluid;
 
+import net.neoforged.neoforge.capabilities.ItemCapability;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.config.extendedconfig.CapabilityConfig;
 
@@ -8,7 +9,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.CapabilityConfig;
  * @author rubensworks
  *
  */
-public class FluidHandlerItemCapacityConfig extends CapabilityConfig<IFluidHandlerItemCapacity> {
+public class FluidHandlerItemCapacityConfig extends CapabilityConfig<ItemCapability<IFluidHandlerItemCapacity, Void>> {
 
     /**
      * The unique instance.
@@ -22,7 +23,7 @@ public class FluidHandlerItemCapacityConfig extends CapabilityConfig<IFluidHandl
         super(
                 CyclopsCore._instance,
                 "fluid_handler_capacity",
-                IFluidHandlerItemCapacity.class
+                eConfig -> ItemCapability.createVoid(eConfig.getId(), IFluidHandlerItemCapacity.class)
         );
     }
 

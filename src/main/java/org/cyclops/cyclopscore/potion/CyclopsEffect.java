@@ -4,9 +4,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.LivingEvent;
 import org.cyclops.cyclopscore.config.extendedconfig.EffectConfig;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -23,7 +23,7 @@ public abstract class CyclopsEffect extends MobEffect {
     public CyclopsEffect(MobEffectCategory type, int liquidColor) {
         super(type, liquidColor);
         this.resource = new ResourceLocation(eConfig.getMod().getModId(), eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "potions.png");
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
     }
 
     public boolean isActiveOn(LivingEntity entity) {

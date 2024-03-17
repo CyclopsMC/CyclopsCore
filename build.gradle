@@ -1,12 +1,11 @@
 plugins {
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id 'net.neoforged.gradle.userdev' version '7.0.97'
+    id 'net.darkhax.curseforgegradle' version '1.0.8'
     id 'com.github.kt3k.coveralls' version '2.12.0'
     id 'com.diffplug.spotless' version '5.14.3'
 	id 'com.modrinth.minotaur' version '2.+'
 }
 
-apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'jacoco'
 apply plugin: 'idea'
 apply plugin: 'maven-publish'
@@ -14,7 +13,7 @@ apply plugin: 'maven-publish'
 // All jar files from this folder will be added automatically as runtime mod dependencies (inspired by AE2's build.gradle)
 def extraModsDir = "extra-mods"
 
-import net.minecraftforge.gradle.common.tasks.SignJar
+import net.neoforged.gradle.common.tasks.PotentiallySignJar
 
 // Determine build number
 String build_number = "DEV" // this will be referenced as simply build_number from now on.
@@ -31,7 +30,10 @@ logger.lifecycle "BUILDING VERSION: " + build_number
 // Set mod details
 version = project.mod_version
 group = "org.cyclops.cyclopscore"
-archivesBaseName = "CyclopsCore"
+archivesBaseName = "CyclopsCore-${project.minecraft_version}-neoforge"
+base {
+    archivesName = archivesBaseName
+}
 
 // Set Java details
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -61,6 +63,7 @@ sourceSets {
         runtimeClasspath += sourceSets.api.output
     }
 }
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 configurations {
     apiImplementation.extendsFrom(implementation)
@@ -85,12 +88,10 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+    implementation "net.neoforged:neoforge:${project.neoforge_version}"
 
-    compileOnly "com.github.lazyMods:Baubles:${project.baubles_version}:api" // https://github.com/lazyMods/Baubles/releases
-
-    //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}") // https://maven.theillusivec4.top/top/theillusivec4/curios/curios-forge/
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${project.curios_version}:api")
+    //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-neoforge:${project.curios_version}") // https://maven.theillusivec4.top/top/theillusivec4/curios/curios-neoforge/
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${project.curios_version}:api"
 
     // Project lombok
     compileOnly 'org.projectlombok:lombok:1.18.22'
@@ -108,50 +109,47 @@ dependencies {
         assert versionSep != -1
         def artifactId = basename.substring(0, versionSep)
         def version = basename.substring(versionSep + 1)
-        runtimeOnly fg.deobf("extra-mods:$artifactId:$version")
+        runtimeOnly "extra-mods:$artifactId:$version"
     }
 }
 
 minecraft {
-    mappings channel: "official", version: "${project.minecraft_version}"
+    accessTransformers {
+        file('src/main/resources/META-INF/accesstransformer.cfg')
+	}
+}
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+runs {
+    configureEach {
+		systemProperty 'forge.logging.markers', 'REGISTRIES'
+        systemProperty 'forge.logging.console.level', 'debug'
+        systemProperty 'forge.logging.console.level', 'debug'
+        modSource project.sourceSets.main
+		modSource project.sourceSets.api
+    }
+	
+    client {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
 
-    runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                cyclopscore.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
-            }
-        }
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        programArgument '--nogui'
+    }
 
-        server {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                cyclopscore.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
-            }
-        }
+    gameTestServer {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
 
-        data {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            args '--mod', 'cyclopscore', '--all', '--output', file('src/generated/resources/')
-            mods {
-                cyclopscore.sources((SourceSet[]) [sourceSets.main, sourceSets.api])
-            }
-        }
+    data {
+        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
     }
 }
 
 if (build_number.equals("RELEASE"))
-    version = "${project.minecraft_version}-${project.mod_version}"
+    version = "${project.mod_version}"
 else
-    version = "${project.minecraft_version}-${project.mod_version}-${build_number}"
+    version = "${project.mod_version}-${build_number}"
 
 jar {
     manifest {
@@ -167,15 +165,17 @@ jar {
         ])
     }
 }
-jar.finalizedBy('reobfJar')
 
 javadoc {
+    exclude 'org/cyclops/cyclopscore/modcompat/curios/*'
     source = [sourceSets.main.allJava, sourceSets.api.allJava]
     // prevent java 8's strict doclint for javadocs from failing builds
     options.addStringOption('Xdoclint:accessibility,html,reference,syntax', '-quiet')
 }
 
-task signJar(type: SignJar, dependsOn: jar) {
+task signJar(type: PotentiallySignJar, dependsOn: jar) {
+    dependsOn(tasks.jar)
+
     onlyIf {
         System.getenv().SIGN_KEYSTORE
     }
@@ -184,10 +184,9 @@ task signJar(type: SignJar, dependsOn: jar) {
     alias = System.getenv().SIGN_ALIAS
     storePass = System.getenv().SIGN_STOREPASS
     keyPass = System.getenv().SIGN_KEYPASS
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
+    input = jar.archivePath
+    output = jar.archivePath
 }
-build.dependsOn signJar
 
 task deobfJar(type: Jar) {
     duplicatesStrategy(DuplicatesStrategy.FAIL)
@@ -226,32 +225,26 @@ artifacts {
     archives javadocJar
 }
 
-curseforge {
+task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    dependsOn(tasks.jar)
+
     if(secrets.hasProperty("curseforge_key") && secrets.hasProperty("changelog")) {
-        apiKey = secrets.curseforge_key
+        apiToken = secrets.curseforge_key
     } else if(System.getenv().GITHUB_ACTIONS && System.getenv().CURSEFORGE_KEY_SECRET) {
-        apiKey = System.getenv().CURSEFORGE_KEY_SECRET
+        apiToken = System.getenv().CURSEFORGE_KEY_SECRET
     } else {
-        apiKey = "DUMMY"
+        apiToken = "DUMMY"
     }
 
-    project {
-        id = "232758" // my project url is http://minecraft.curseforge.com/mc-mods/232758/
-        releaseType = project.release_type
-		addGameVersion project.minecraft_version
-        mainArtifact(jar) {
+    def projectId = "232758" // my project url is http://minecraft.curseforge.com/mc-mods/232758/
 
-        }
-
-        changelog = ""
-        if (new File("resources/changelog/${project.version}.txt").exists()) {
-            changelog = new File("resources/changelog/${project.version}.txt").text
-        }
-
-        addArtifact deobfJar
-        addArtifact sourcesJar
-        addArtifact javadocJar
+    def mainFile = upload(projectId, jar)
+	mainFile.changelogType = "text"
+    if (new File("resources/changelog/${project.version}.txt").exists()) {
+        mainFile.changelog = file("resources/changelog/${project.version}.txt")
     }
+	mainFile.addGameVersion(project.minecraft_version)
+	mainFile.addModLoader("NeoForge")
 }
 
 modrinth {
@@ -342,3 +335,8 @@ tasks.register('updateGitHooks', Copy) {
     into './.git/hooks'
 }
 compileJava.dependsOn updateGitHooks
+
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}

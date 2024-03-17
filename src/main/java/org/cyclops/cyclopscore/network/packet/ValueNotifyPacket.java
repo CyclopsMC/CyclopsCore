@@ -1,13 +1,15 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.inventory.MenuType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.network.CodecField;
 import org.cyclops.cyclopscore.network.PacketCodec;
@@ -21,6 +23,8 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class ValueNotifyPacket extends PacketCodec {
 
+    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "value_notify");
+
     @CodecField
     private String containerType;
     @CodecField
@@ -29,11 +33,12 @@ public class ValueNotifyPacket extends PacketCodec {
     private CompoundTag value;
 
     public ValueNotifyPacket() {
-
+        super(ID);
     }
 
     public ValueNotifyPacket(MenuType<?> containerType, int valueId, CompoundTag value) {
-        this.containerType = ForgeRegistries.MENU_TYPES.getKey(containerType).toString();
+        this();
+        this.containerType = BuiltInRegistries.MENU.getKey(containerType).toString();
         this.valueId = valueId;
         this.value = value;
     }
@@ -44,7 +49,7 @@ public class ValueNotifyPacket extends PacketCodec {
     }
 
     protected boolean isContainerValid(IValueNotifiable container) {
-        return ForgeRegistries.MENU_TYPES.getKey(container.getValueNotifiableType()).toString().equals(containerType);
+        return BuiltInRegistries.MENU.getKey(container.getValueNotifiableType()).toString().equals(containerType);
     }
 
     @Override

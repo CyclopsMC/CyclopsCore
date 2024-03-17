@@ -35,10 +35,6 @@ public class ConfigurableType {
      */
     public static final ConfigurableType VILLAGER = new ConfigurableType(true, VillagerConfig.class, new VillagerAction(), "mob");
     /**
-     * Biome type.
-     */
-    public static final ConfigurableType BIOME = new ConfigurableType(true, BiomeConfig.class, new BiomeAction(), "biome");
-    /**
      * Potion effect type.
      */
     public static final ConfigurableType EFFECT = new ConfigurableType(true, EffectConfig.class, new EffectAction(), "potion");
@@ -59,9 +55,9 @@ public class ConfigurableType {
      */
     public static final ConfigurableType RECIPE_TYPE = new ConfigurableType(true, RecipeTypeConfig.class, new RecipeTypeAction(), "recipe_type");
     /**
-     * Recipe condition type.
+     * Condition type.
      */
-    public static final ConfigurableType RECIPE_CONDITION = new ConfigurableType(true, RecipeConditionConfig.class, new RecipeConditionAction(), "recipe_condition");
+    public static final ConfigurableType CONDITION = new ConfigurableType(true, ConditionConfig.class, new ConditionAction(), "condition");
     /**
      * Particle type.
      */
@@ -81,6 +77,12 @@ public class ConfigurableType {
     public static final ConfigurableType BIOME_MODIFIER = new ConfigurableType(true, BiomeModifierConfig.class, new BiomeModifierAction(), "biome_modifier");
     public static final ConfigurableType CREATIVE_MODE_TAB = new ConfigurableType(true, CreativeModeTabConfig.class, new CreativeModeTabAction(), "creative_mode_tab");
     public static final ConfigurableType LOOT_MODIFIER = new ConfigurableType(true, LootModifierConfig.class, new LootModifierAction(), "loot_modifier");
+    public static final ConfigurableType CRITERION_TRIGGER = new ConfigurableType(true, CriterionTriggerConfig.class, new CriterionTriggerAction(), "criterion_trigger");
+    public static final ConfigurableType LOOT_FUNCTION = new ConfigurableType(true, LootFunctionConfig.class, new ConfigurableTypeActionForge<>(), "loot_function");
+    public static final ConfigurableType LOOT_CONDITION = new ConfigurableType(true, LootConditionConfig.class, new ConfigurableTypeActionForge<>(), "loot_condition");
+    public static final ConfigurableType LOOT_NUMBER_PROVIDER = new ConfigurableType(true, LootNumberProviderConfig.class, new ConfigurableTypeActionForge<>(), "loot_number_provider");
+    public static final ConfigurableType LOOT_NBT_PROVIDER = new ConfigurableType(true, LootNbtProviderConfig.class, new ConfigurableTypeActionForge<>(), "loot_nbt_provider");
+    public static final ConfigurableType LOOT_SCORE_PROVIDER = new ConfigurableType(true, LootScoreProviderConfig.class, new ConfigurableTypeActionForge<>(), "loot_score_provider");
 
     /**
      * Dummy type, only used for configs that refer to nothing.

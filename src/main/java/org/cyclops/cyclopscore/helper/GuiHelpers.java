@@ -15,15 +15,15 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Matrix4f;
@@ -99,8 +99,8 @@ public class GuiHelpers {
             }
 
             TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-            textureManager.bindForSetup(TextureAtlas.LOCATION_BLOCKS);
-            textureManager.getTexture(TextureAtlas.LOCATION_BLOCKS).restoreLastBlurMipmap();
+            textureManager.bindForSetup(InventoryMenu.BLOCK_ATLAS);
+            textureManager.getTexture(InventoryMenu.BLOCK_ATLAS).restoreLastBlurMipmap();
 
             Lighting.setupForFlatItems();
             gui.pose().popPose();

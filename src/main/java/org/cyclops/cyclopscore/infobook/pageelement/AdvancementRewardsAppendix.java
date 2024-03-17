@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -125,7 +125,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         boolean allAchievementsValid = true;
         for (int i = 0; i < advancementRewards.getAdvancements().size(); i++) {
             ResourceLocation advancementId = advancementRewards.getAdvancements().get(i);
-            Advancement advancement = AdvancementHelpers.getAdvancement(Dist.CLIENT, advancementId);
+            AdvancementHolder advancement = AdvancementHelpers.getAdvancement(Dist.CLIENT, advancementId);
             if (offsetX + SLOT_SIZE > MAX_WIDTH) {
                 offsetY += SLOT_SIZE + SLOT_PADDING * 2;
                 offsetX = 0;
@@ -135,7 +135,9 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
                 Images.LOCKED.draw(guiGraphics, x + offsetX + 2, y + offsetY + 1);
                 renderButtonHolders.get(advancements[i]).update(x + offsetX, y + offsetY, Component.literal(""), null, gui);
             } else {
-                RecipeAppendix.renderItemForButton(gui, guiGraphics, x + offsetX, y + offsetY, advancement.getDisplay().getIcon(), mx, my, true, null);
+                int finalOffsetX = offsetX;
+                int finalOffsetY = offsetY;
+                advancement.value().display().ifPresent(display -> RecipeAppendix.renderItemForButton(gui, guiGraphics, x + finalOffsetX, y + finalOffsetY, display.getIcon(), mx, my, true, null));
                 if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getInstance().player, advancementId)) {
                     Images.OK.draw(guiGraphics, x + offsetX + 1, y + offsetY + 2);
                 } else {

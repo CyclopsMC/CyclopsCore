@@ -1,11 +1,11 @@
 package org.cyclops.cyclopscore.helper;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * This class contains helper methods to get and set certain enchants
@@ -24,7 +24,7 @@ public class EnchantmentHelpers {
     public static int doesEnchantApply(ItemStack itemStack, Enchantment enchantment) {
         ListTag enchantmentList = itemStack.getEnchantmentTags();
         for(int i = 0; i < enchantmentList.size(); i++) {
-            if (ForgeRegistries.ENCHANTMENTS.getKey(enchantment).equals(new ResourceLocation(enchantmentList.getCompound(i).getString("id")))) {
+            if (BuiltInRegistries.ENCHANTMENT.getKey(enchantment).equals(new ResourceLocation(enchantmentList.getCompound(i).getString("id")))) {
                 return i;
             }
         }
@@ -54,7 +54,7 @@ public class EnchantmentHelpers {
      */
     public static Enchantment getEnchantment(ItemStack itemStack, int enchantmentListID) {
         ListTag enchlist = itemStack.getEnchantmentTags();
-        return ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation(
+        return BuiltInRegistries.ENCHANTMENT.get(new ResourceLocation(
                 enchlist.getCompound(enchantmentListID).getString("id")));
     }
 

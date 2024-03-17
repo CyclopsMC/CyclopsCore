@@ -6,13 +6,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
-import org.cyclops.cyclopscore.helper.BlockEntityHelpers;
 import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
+import org.cyclops.cyclopscore.helper.BlockEntityHelpers;
 
 import javax.annotation.Nullable;
 import java.util.function.BiFunction;
@@ -28,7 +29,7 @@ import java.util.function.BiFunction;
  *
  * @author rubensworks
  */
-public class BlockWithEntity extends BaseEntityBlock {
+public abstract class BlockWithEntity extends BaseEntityBlock {
 
     private final BiFunction<BlockPos, BlockState, CyclopsBlockEntity> blockEntitySupplier;
 
@@ -49,7 +50,7 @@ public class BlockWithEntity extends BaseEntityBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world,
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader world,
                                   BlockPos blockPos, Player player) {
         ItemStack itemStack = this.getDroppedItemStack(state, target, world, blockPos, player,
                 super.getCloneItemStack(state, target, world, blockPos, player));
@@ -65,8 +66,8 @@ public class BlockWithEntity extends BaseEntityBlock {
     }
 
     @Override
-    public void playerWillDestroy(Level world, BlockPos blockPos, BlockState blockState, Player player) {
-        super.playerWillDestroy(world, blockPos, blockState, player);
+    public BlockState playerWillDestroy(Level world, BlockPos blockPos, BlockState blockState, Player player) {
+        return super.playerWillDestroy(world, blockPos, blockState, player);
     }
 
     /**

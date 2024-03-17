@@ -77,14 +77,6 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
-    public void containerTick() {
-        super.containerTick();
-        if (this.searchField != null) {
-            this.searchField.tick();
-        }
-    }
-
-    @Override
     public boolean charTyped(char typedChar, int keyCode) {
         if (isSearchEnabled() && this.searchField.isFocused()) {
             if (this.searchField.charTyped(typedChar, keyCode)) {

@@ -5,17 +5,17 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeSpawnEggItem;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -61,7 +61,7 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
                 itemProperties = itemPropertiesModifier.apply(itemProperties);
             }
             Item.Properties finalItemProperties = itemProperties;
-            ItemConfig itemConfig = new ItemConfig(mod, itemName, (itemConfigSub) -> new ForgeSpawnEggItem(entityType, primaryColorIn, secondaryColorIn, finalItemProperties)) {
+            ItemConfig itemConfig = new ItemConfig(mod, itemName, (itemConfigSub) -> new DeferredSpawnEggItem(entityType, primaryColorIn, secondaryColorIn, finalItemProperties)) {
                 @Override
                 public void onRegistered() {
                     super.onRegistered();
@@ -101,8 +101,8 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
     public abstract EntityRenderer<? super T> getRender(EntityRendererProvider.Context renderContext, ItemRenderer renderItem);
 
     @Override
-    public IForgeRegistry<EntityType<?>> getRegistry() {
-        return ForgeRegistries.ENTITY_TYPES;
+    public Registry<? super EntityType<T>> getRegistry() {
+        return BuiltInRegistries.ENTITY_TYPE;
     }
 
     public void setSpawnEggItemConfig(@Nullable ItemConfig spawnEggItemConfig) {

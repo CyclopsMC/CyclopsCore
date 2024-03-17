@@ -11,10 +11,10 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ServerLevelData;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.versions.mcp.MCPVersion;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.internal.versions.neoform.NeoFormVersion;
 import org.cyclops.cyclopscore.CyclopsCore;
 
 import java.util.Arrays;
@@ -89,7 +89,7 @@ public class MinecraftHelpers {
      * @return The Minecraft version (e.g. "1.14.4")
      */
     public static String getMinecraftVersion() {
-        return MCPVersion.getMCVersion();
+        return NeoFormVersion.getMCVersion();
     }
 
     /**

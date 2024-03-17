@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.world.level.Level;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 /**
  * @author rubensworks

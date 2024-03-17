@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.helper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.DistExecutor;
+import net.neoforged.fml.DistExecutor;
 
 import javax.annotation.Nullable;
 

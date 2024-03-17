@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import com.mojang.serialization.Codec;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import org.cyclops.cyclopscore.config.extendedconfig.LootModifierConfig;
 
 /**

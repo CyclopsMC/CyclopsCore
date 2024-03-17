@@ -7,15 +7,14 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import lombok.Data;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeAction;
@@ -60,7 +59,7 @@ public class ConfigHandler {
 
     public ConfigHandler(ModBase mod) {
         this.mod = mod;
-        FMLJavaModLoadingContext.get().getModEventBus().register(this);
+        mod.getModEventBus().register(this);
     }
 
     /**
@@ -68,22 +67,22 @@ public class ConfigHandler {
      * @param configInitializers A collection of additional initializers to run the config builders through.
      */
     public void initialize(Collection<IConfigInitializer> configInitializers) {
-        Map<ModConfig.Type, ForgeConfigSpec.Builder> configBuilders = new EnumMap<>(ModConfig.Type.class);
+        Map<ModConfig.Type, ModConfigSpec.Builder> configBuilders = new EnumMap<>(ModConfig.Type.class);
 
         // Pass config builder to all configurables
         for (ExtendedConfig<?, ?> eConfig : this.configurables) {
-            ForgeConfigSpec.Builder configBuilder = configBuilders.get(ModConfig.Type.COMMON);
+            ModConfigSpec.Builder configBuilder = configBuilders.get(ModConfig.Type.COMMON);
             if (configBuilder == null) {
-                configBuilder = new ForgeConfigSpec.Builder();
+                configBuilder = new ModConfigSpec.Builder();
                 configBuilders.put(ModConfig.Type.COMMON, configBuilder);
             }
             addCategory(eConfig.getConfigurableType().getCategory());
 
             // Save additional properties
             for (ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
-                ForgeConfigSpec.Builder configBuilderProperty = configBuilders.get(configProperty.getConfigLocation());
+                ModConfigSpec.Builder configBuilderProperty = configBuilders.get(configProperty.getConfigLocation());
                 if (configBuilderProperty == null) {
-                    configBuilderProperty = new ForgeConfigSpec.Builder();
+                    configBuilderProperty = new ModConfigSpec.Builder();
                     configBuilders.put(configProperty.getConfigLocation(), configBuilderProperty);
                 }
                 categories.add(configProperty.getCategory());
@@ -100,7 +99,7 @@ public class ConfigHandler {
         }
 
         // Finalize config builders to config specs, and register them
-        for (Map.Entry<ModConfig.Type, ForgeConfigSpec.Builder> entry : configBuilders.entrySet()) {
+        for (Map.Entry<ModConfig.Type, ModConfigSpec.Builder> entry : configBuilders.entrySet()) {
             ModLoadingContext.get().registerConfig(entry.getKey(), entry.getValue().build());
         }
     }
@@ -142,7 +141,7 @@ public class ConfigHandler {
 
     /**
      * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeAction#onRegisterForge(ExtendedConfig)}
-     * during the {@link net.minecraftforge.registries.NewRegistryEvent} event.
+     * during the {@link net.neoforged.neoforge.registries.NewRegistryEvent} event.
      */
     public void loadForgeRegistries() {
         for (ExtendedConfig<?, ?> eConfig : this.configurables) {
@@ -162,7 +161,7 @@ public class ConfigHandler {
 
     /**
      * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeAction#onRegisterSetup(ExtendedConfig)}
-     * during the {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent}.
+     * during the {@link net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent}.
      */
     public void loadSetup() {
         for (ExtendedConfig<?, ?> eConfig : this.configurables) {
@@ -212,32 +211,30 @@ public class ConfigHandler {
      * @param callback A callback that will be called when the entry is registered.
      * @param <V> The entry type.
      */
-    public <V> void registerToRegistry(IForgeRegistry<? super V> registry,
+    public <V> void registerToRegistry(Registry<? super V> registry,
                                        ExtendedConfigForge<?, V> config,
                                        @Nullable Callable<?> callback) {
-        if (this.registryEventPassed.contains(registry.getRegistryKey().toString())) {
+        if (this.registryEventPassed.contains(registry.key().toString())) {
             throw new IllegalStateException(String.format("Tried registering %s after its registration event.",
                     config.getNamedId()));
         }
-        registryEntriesHolder.put(registry.getRegistryKey().toString(), Pair.of(config, callback));
+        registryEntriesHolder.put(registry.key().toString(), Pair.of(config, callback));
     }
 
     @SubscribeEvent
     public void onRegistryEvent(RegisterEvent event) {
-        if (event.getForgeRegistry() != null) {
-            this.registryEventPassed.add(event.getRegistryKey().toString());
-            IForgeRegistry registry = event.getForgeRegistry();
-            registryEntriesHolder.get(registry.getRegistryKey().toString()).forEach((pair) -> {
-                ExtendedConfigForge<?, ?> config = pair.getLeft();
-                registry.register(new ResourceLocation(config.getMod().getModId(), config.getNamedId()), config.getInstance());
-                try {
-                    if (pair.getRight() != null) {
-                        pair.getRight().call();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        this.registryEventPassed.add(event.getRegistryKey().toString());
+        Registry<?> registry = event.getRegistry();
+        registryEntriesHolder.get(registry.key().toString()).forEach((pair) -> {
+            ExtendedConfigForge<?, ?> config = pair.getLeft();
+            event.register(registry.key(), new ResourceLocation(config.getMod().getModId(), config.getNamedId()), (Supplier) config::getInstance);
+            try {
+                if (pair.getRight() != null) {
+                    pair.getRight().call();
                 }
-            });
-        }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }

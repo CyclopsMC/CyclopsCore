@@ -9,8 +9,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistry;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -39,10 +37,10 @@ public class TestIndexedInventory {
 
     static {
         try {
-            Field field = ForgeRegistry.class.getDeclaredField("delegatesByValue");
+            Field field = MappedRegistry.class.getDeclaredField("unregisteredIntrusiveHolders");
             field.setAccessible(true);
             Map<Item, Holder.Reference<Item>> delegates = ((Map<Item, Holder.Reference<Item>>) field
-                    .get(ForgeRegistries.ITEMS));
+                    .get(BuiltInRegistries.ITEM));
 
             delegates.put(ITEM1, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM.asLookup(), ITEM1));
             delegates.put(ITEM2, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM.asLookup(), ITEM2));

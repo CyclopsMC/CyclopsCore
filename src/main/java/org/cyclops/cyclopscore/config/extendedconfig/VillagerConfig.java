@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -41,8 +41,7 @@ public abstract class VillagerConfig extends ExtendedConfigForge<VillagerConfig,
     }
 
     @Override
-    public IForgeRegistry<VillagerProfession> getRegistry() {
-        return ForgeRegistries.VILLAGER_PROFESSIONS;
+    public Registry<? super VillagerProfession> getRegistry() {
+        return BuiltInRegistries.VILLAGER_PROFESSION;
     }
-
 }

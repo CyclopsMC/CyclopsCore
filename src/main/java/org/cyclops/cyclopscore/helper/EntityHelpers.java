@@ -16,7 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.EventHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -88,7 +88,7 @@ public class EntityHelpers {
      * @return If the entity was spawned.
      */
     public static boolean spawnEntity(ServerLevel world, Mob entityLiving, MobSpawnType spawnReason) {
-        SpawnGroupData spawnData = ForgeEventFactory.onFinalizeSpawn(entityLiving, world, world.getCurrentDifficultyAt(entityLiving.blockPosition()), spawnReason, new SpawnGroupData() {}, null);
+        SpawnGroupData spawnData = EventHooks.onFinalizeSpawn(entityLiving, world, world.getCurrentDifficultyAt(entityLiving.blockPosition()), spawnReason, new SpawnGroupData() {}, null);
         if (spawnData != null) {
             world.addFreshEntity(entityLiving);
             return true;

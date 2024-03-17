@@ -17,7 +17,7 @@ public class ContainerInfoBookTest extends InventoryContainer {
     }
 
     public ContainerInfoBookTest(int id, Inventory playerInventory) {
-        super(RegistryEntries.CONTAINER_INFOBOOK_TEST, id, playerInventory, new SimpleContainer(0));
+        super(RegistryEntries.CONTAINER_INFOBOOK_TEST.get(), id, playerInventory, new SimpleContainer(0));
     }
 
     @Override

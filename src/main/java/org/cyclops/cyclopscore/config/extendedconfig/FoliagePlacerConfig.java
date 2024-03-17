@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -38,7 +38,7 @@ public class FoliagePlacerConfig<T extends FoliagePlacer> extends ExtendedConfig
     }
 
     @Override
-    public IForgeRegistry<? super FoliagePlacerType<T>> getRegistry() {
-        return ForgeRegistries.FOLIAGE_PLACER_TYPES;
+    public Registry<? super FoliagePlacerType<T>> getRegistry() {
+        return BuiltInRegistries.FOLIAGE_PLACER_TYPE;
     }
 }

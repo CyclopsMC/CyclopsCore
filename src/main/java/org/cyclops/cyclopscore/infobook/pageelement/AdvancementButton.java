@@ -2,13 +2,13 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.lwjgl.opengl.GL11;
@@ -38,10 +38,12 @@ public class AdvancementButton extends AdvancedButton {
         guiGraphics.pose().pushPose();
         if(mx >= getX() && my >= getY() && mx <= getX() + AdvancementRewardsAppendix.SLOT_SIZE && my <= getY() + AdvancementRewardsAppendix.SLOT_SIZE) {
             List<FormattedCharSequence> lines = Lists.newArrayList();
-            Advancement advancement = AdvancementHelpers.getAdvancement(Dist.CLIENT, advancementId);
+            AdvancementHolder advancement = AdvancementHelpers.getAdvancement(Dist.CLIENT, advancementId);
             if (advancement != null) {
-                lines.add(advancement.getDisplay().getTitle().getVisualOrderText());
-                lines.add(advancement.getDisplay().getDescription().getVisualOrderText());
+                advancement.value().display().ifPresent(display -> {
+                    lines.add(display.getTitle().getVisualOrderText());
+                    lines.add(display.getDescription().getVisualOrderText());
+                });
             }
             guiGraphics.renderTooltip(font, lines, mx, my);
         }

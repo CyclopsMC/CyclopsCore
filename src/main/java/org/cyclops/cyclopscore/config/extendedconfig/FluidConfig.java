@@ -2,9 +2,9 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.minecraftforge.fluids.FluidType;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.fluids.BaseFlowingFluid;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.datastructure.Wrapper;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -17,7 +17,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class FluidConfig extends ExtendedConfig<FluidConfig, ForgeFlowingFluid.Properties> {
+public abstract class FluidConfig extends ExtendedConfig<FluidConfig, BaseFlowingFluid.Properties> {
 
     /**
      * Make a new instance.
@@ -25,11 +25,11 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, ForgeFlowi
      * @param namedId The unique name ID for the configurable.
      * @param elementConstructor The element constructor.
      */
-    public FluidConfig(ModBase mod, String namedId, Function<FluidConfig, ForgeFlowingFluid.Properties> elementConstructor) {
+    public FluidConfig(ModBase mod, String namedId, Function<FluidConfig, BaseFlowingFluid.Properties> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 
-    protected static ForgeFlowingFluid.Properties getDefaultFluidProperties(ModBase mod, String texturePrefixPath,
+    protected static BaseFlowingFluid.Properties getDefaultFluidProperties(ModBase mod, String texturePrefixPath,
                                                                             Consumer<FluidType.Properties> fluidAttributesConsumer) {
         FluidType.Properties fluidAttributes = FluidType.Properties.create();
         fluidAttributesConsumer.accept(fluidAttributes);
@@ -56,20 +56,20 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, ForgeFlowi
             }
         };
 
-        Wrapper<ForgeFlowingFluid.Properties> properties = new Wrapper<>();
+        Wrapper<BaseFlowingFluid.Properties> properties = new Wrapper<>();
         final Wrapper<Fluid> source = new Wrapper<>();
         final Wrapper<Fluid> flowing = new Wrapper<>();
-        properties.set(new ForgeFlowingFluid.Properties(
+        properties.set(new BaseFlowingFluid.Properties(
                 () -> fluidType,
                 () -> {
                     if (source.get() == null) {
-                        source.set(new ForgeFlowingFluid.Source(properties.get()));
+                        source.set(new BaseFlowingFluid.Source(properties.get()));
                     }
                     return source.get();
                 },
                 () -> {
                     if (flowing.get() == null) {
-                        flowing.set(new ForgeFlowingFluid.Flowing(properties.get()));
+                        flowing.set(new BaseFlowingFluid.Flowing(properties.get()));
                     }
                     return flowing.get();
                 }

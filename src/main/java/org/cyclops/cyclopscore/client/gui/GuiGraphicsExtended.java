@@ -7,8 +7,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.GuiHelpers;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,7 +66,7 @@ public class GuiGraphicsExtended {
             }
 
             guiGraphics.pose().popPose();
-            net.minecraftforge.client.ItemDecoratorHandler.of(stack).render(guiGraphics, font, stack, x, y);
+            net.neoforged.neoforge.client.ItemDecoratorHandler.of(stack).render(guiGraphics, font, stack, x, y);
         }
     }
 }

@@ -1,17 +1,14 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -34,7 +31,7 @@ public abstract class ParticleConfig<T extends ParticleOptions> extends Extended
      */
     public ParticleConfig(ModBase mod, String namedId, Function<ParticleConfig<T>, ? extends ParticleType<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
-        FMLJavaModLoadingContext.get().getModEventBus().register(this);
+        mod.getModEventBus().addListener(this::onParticleFactoryRegister);
     }
 
     @Override
@@ -54,8 +51,8 @@ public abstract class ParticleConfig<T extends ParticleOptions> extends Extended
     }
 
     @Override
-    public IForgeRegistry<? super ParticleType<T>> getRegistry() {
-        return ForgeRegistries.PARTICLE_TYPES;
+    public Registry<? super ParticleType<T>> getRegistry() {
+        return BuiltInRegistries.PARTICLE_TYPE;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -67,15 +64,14 @@ public abstract class ParticleConfig<T extends ParticleOptions> extends Extended
     public abstract ParticleEngine.SpriteParticleRegistration<T> getParticleMetaFactory();
 
     @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
     public void onParticleFactoryRegister(RegisterParticleProvidersEvent event) {
         ParticleProvider<T> factory = getParticleFactory();
         if (factory != null) {
-            Minecraft.getInstance().particleEngine.register(getInstance(), factory);
+            event.registerSpecial(getInstance(), factory);
         }
         ParticleEngine.SpriteParticleRegistration<T> metaFactory = getParticleMetaFactory();
         if (metaFactory != null) {
-            Minecraft.getInstance().particleEngine.register(getInstance(), metaFactory);
+            event.registerSpriteSet(getInstance(), metaFactory);
         }
     }
 

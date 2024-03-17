@@ -1,15 +1,11 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.Util;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.init.ModBase;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A collection of helper methods and fields.
@@ -17,8 +13,6 @@ import java.util.Map;
  *
  */
 public class Helpers {
-
-    private static Map<Pair<ModBase, IDType>, Integer> ID_COUNTER = new HashMap<Pair<ModBase, IDType>, Integer>();
 
     /**
      * Safe parsing of a string to it's real object type.
@@ -41,31 +35,6 @@ public class Helpers {
             }
         } catch (Exception e) {}
         return newValueParsed;
-    }
-
-    /**
-     * Get a new ID for the given type.
-     * @param type Type for something.
-     * @param mod The mod to register the id for.
-     * @return The incremented ID.
-     */
-    public static int getNewId(ModBase mod, IDType type) {
-        Integer ID = ID_COUNTER.get(Pair.of(mod, type));
-        if(ID == null) ID = 0;
-        ID_COUNTER.put(Pair.of(mod, type), ID + 1);
-        return ID;
-    }
-
-    /**
-     * Type of ID's to use in {@link Helpers#getNewId(ModBase, IDType)}
-     * @author rubensworks
-     *
-     */
-    public enum IDType {
-        /**
-         * Packet ID.
-         */
-        PACKET
     }
 
     /**

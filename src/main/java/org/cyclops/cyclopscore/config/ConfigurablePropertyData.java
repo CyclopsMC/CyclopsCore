@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.fml.config.ModConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -31,7 +31,7 @@ public final class ConfigurablePropertyData<T> {
     private final int minValue;
     private final int maxValue;
 
-    private ForgeConfigSpec.ConfigValue<T> configProperty;
+    private ModConfigSpec.ConfigValue<T> configProperty;
 
     /**
      * Define a new configurable property.
@@ -67,14 +67,14 @@ public final class ConfigurablePropertyData<T> {
         this.maxValue = maxValue;
     }
 
-    public void onConfigInit(ForgeConfigSpec.Builder configBuilder) {
+    public void onConfigInit(ModConfigSpec.Builder configBuilder) {
         configBuilder.push(this.category);
 
         // Construct property for enabling the configurable
         if (this.requiresWorldRestart) {
             configBuilder.worldRestart();
         }
-        ForgeConfigSpec.ConfigValue<T> configProperty = configBuilder
+        ModConfigSpec.ConfigValue<T> configProperty = configBuilder
                 .comment(this.comment)
                 .translation(getLanguageKey())
                 .define(this.name, this.defaultValue);
@@ -83,11 +83,11 @@ public final class ConfigurablePropertyData<T> {
         configBuilder.pop();
     }
 
-    private void setConfigProperty(ForgeConfigSpec.ConfigValue<T> configProperty) {
+    private void setConfigProperty(ModConfigSpec.ConfigValue<T> configProperty) {
         this.configProperty = configProperty;
     }
 
-    public ForgeConfigSpec.ConfigValue<T> getConfigProperty() {
+    public ModConfigSpec.ConfigValue<T> getConfigProperty() {
         return configProperty;
     }
 

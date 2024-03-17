@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -44,8 +44,7 @@ public abstract class RecipeConfig<T extends Recipe<?>> extends ExtendedConfigFo
     }
 
     @Override
-    public IForgeRegistry<? super RecipeSerializer<T>> getRegistry() {
-        return ForgeRegistries.RECIPE_SERIALIZERS;
+    public Registry<? super RecipeSerializer<T>> getRegistry() {
+        return BuiltInRegistries.RECIPE_SERIALIZER;
     }
-
 }

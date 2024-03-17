@@ -1,11 +1,12 @@
 package org.cyclops.cyclopscore.network.packet;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.LocationHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.CodecField;
@@ -34,25 +35,16 @@ public abstract class PlayerPositionPacket extends PacketCodec {
     /**
      * Creates a packet with no content
      */
-    public PlayerPositionPacket() {
+    public PlayerPositionPacket(ResourceLocation id) {
+        super(id);
     }
 
-    /**
-     * Creates a PlayerPositionPacket which contains the player data.
-     * @param player The player data.
-     */
-    public PlayerPositionPacket(Player player) {
-        this(player, DEFAULT_RANGE);
+    public PlayerPositionPacket(ResourceLocation id, Player player) {
+        this(id, player, DEFAULT_RANGE);
     }
 
-    /**
-     * Creates a PlayerPositionPacket which contains the player data
-     * and will be sent to all players in the specified range of the
-     * player.
-     * @param player The player data.
-     * @param range The range around the player.
-     */
-    public PlayerPositionPacket(Player player, int range) {
+    public PlayerPositionPacket(ResourceLocation id, Player player, int range) {
+        super(id);
         this.uuid = player.getUUID().toString();
         this.position = player.position();
         this.range = range;

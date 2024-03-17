@@ -9,7 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.ForgeHooksClient;
+import net.neoforged.neoforge.client.ClientHooks;
 import org.cyclops.cyclopscore.helper.Helpers;
 
 import javax.annotation.Nullable;
@@ -224,7 +224,7 @@ public abstract class DynamicBaseModel implements BakedModel {
                 vertexToInts((float) v3.x, (float) v3.y, (float) v3.z, shadeColor, texture, uvs[(2 + rotation) % 4][0] * 16, uvs[(2 + rotation) % 4][1] * 16),
                 vertexToInts((float) v4.x, (float) v4.y, (float) v4.z, shadeColor, texture, uvs[(3 + rotation) % 4][0] * 16, uvs[(3 + rotation) % 4][1] * 16)
         );
-        ForgeHooksClient.fillNormal(data, side); // This fixes lighting issues when item is rendered in hand/inventory
+        ClientHooks.fillNormal(data, side); // This fixes lighting issues when item is rendered in hand/inventory
         quads.add(new BakedQuad(data, -1, side, texture, false));
     }
 

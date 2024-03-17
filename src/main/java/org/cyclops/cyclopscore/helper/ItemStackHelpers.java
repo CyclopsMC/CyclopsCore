@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 
 import java.util.Random;
@@ -121,7 +121,7 @@ public final class ItemStackHelpers {
     public static ItemStack parseItemStack(String itemStackString) {
         String[] split = itemStackString.split(":");
         String itemName = split[0] + ":" + split[1];
-        Item item =  ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName));
+        Item item =  BuiltInRegistries.ITEM.get(new ResourceLocation(itemName));
         if(item == null) {
             throw new IllegalArgumentException("Invalid ItemStack item: " + itemName);
         }

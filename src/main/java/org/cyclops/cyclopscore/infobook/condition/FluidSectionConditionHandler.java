@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook.condition;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -13,7 +13,7 @@ public class FluidSectionConditionHandler implements ISectionConditionHandler {
 
     @Override
     public boolean isSatisfied(ModBase<?> mod, String param) {
-        return ForgeRegistries.FLUIDS.containsKey(new ResourceLocation(param));
+        return BuiltInRegistries.FLUID.containsKey(new ResourceLocation(param));
     }
 
 }

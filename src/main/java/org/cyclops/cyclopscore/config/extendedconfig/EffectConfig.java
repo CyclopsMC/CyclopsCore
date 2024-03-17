@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -36,8 +36,7 @@ public abstract class EffectConfig extends ExtendedConfigForge<EffectConfig, Mob
     }
 
     @Override
-    public IForgeRegistry<MobEffect> getRegistry() {
-        return ForgeRegistries.MOB_EFFECTS;
+    public Registry<? super MobEffect> getRegistry() {
+        return BuiltInRegistries.MOB_EFFECT;
     }
-
 }

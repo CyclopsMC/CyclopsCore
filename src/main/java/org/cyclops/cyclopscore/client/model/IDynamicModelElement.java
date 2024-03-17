@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.client.model;
 
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.ModelEvent;
 
 /**
  * Interface for blocks and items which can have a dynamic model.

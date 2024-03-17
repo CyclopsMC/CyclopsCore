@@ -79,9 +79,9 @@ public class WidgetScrollBar extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scroll) {
-        if (scroll != 0 && this.needsScrollBars()) {
-            scrollRelative(scroll);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (scrollY != 0 && this.needsScrollBars()) {
+            scrollRelative(scrollY);
             return true;
         }
         return false;

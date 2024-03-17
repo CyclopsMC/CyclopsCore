@@ -159,7 +159,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
 
     /**
      * Overridable method that is called after the element of this config is fully registered,
-     * after the {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent}.
+     * after the {@link net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent}.
      */
     public void onRegistered() {
 

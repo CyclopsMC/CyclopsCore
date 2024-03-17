@@ -1,17 +1,17 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.ConfigurableType;
@@ -141,8 +141,8 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
     }
 
     @Override
-    public IForgeRegistry<Block> getRegistry() {
-        return ForgeRegistries.BLOCKS;
+    public Registry<? super Block> getRegistry() {
+        return BuiltInRegistries.BLOCK;
     }
 
     /**

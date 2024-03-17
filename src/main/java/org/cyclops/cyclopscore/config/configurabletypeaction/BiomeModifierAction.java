@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import com.mojang.serialization.Codec;
-import net.minecraftforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.BiomeModifier;
 import org.cyclops.cyclopscore.config.extendedconfig.BiomeModifierConfig;
 
 /**

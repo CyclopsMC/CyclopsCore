@@ -1,32 +1,26 @@
 package org.cyclops.cyclopscore.modcompat.capabilities;
 
 import net.minecraft.nbt.Tag;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
 /**
  * A serializable implementation of the capability provider.
  * @author rubensworks
  */
-public abstract class SerializableCapabilityProvider<T> extends DefaultCapabilityProvider<T> implements INBTSerializable<Tag> {
+public abstract class SerializableCapabilityProvider<O, C, T> extends DefaultCapabilityProvider<O, C, T> implements INBTSerializable<Tag> {
 
-    public SerializableCapabilityProvider(ICapabilityTypeGetter<T> capabilityGetter, T capability) {
-        super(capabilityGetter, capability);
-    }
-
-    @Deprecated
-    public SerializableCapabilityProvider(Capability<T> capabilityType, T capability) {
-        super(capabilityType, capability);
+    public SerializableCapabilityProvider(T capability) {
+        super(capability);
     }
 
     @Override
     public Tag serializeNBT() {
-        return serializeNBT(capability.orElse(null));
+        return serializeNBT(capability);
     }
 
     @Override
     public void deserializeNBT(Tag nbt) {
-        deserializeNBT(capability.orElse(null), nbt);
+        deserializeNBT(capability, nbt);
     }
 
     protected abstract Tag serializeNBT(T capability);

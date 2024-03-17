@@ -1,16 +1,16 @@
 package org.cyclops.cyclopscore.inventory.slot;
 
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Slots that will accept buckets and fluid containers.
@@ -34,7 +34,7 @@ public class SlotFluidContainer extends Slot {
 
     public static boolean checkIsItemValid(ItemStack itemStack, @Nullable Fluid fluid) {
         if (!itemStack.isEmpty()) {
-            LazyOptional<IFluidHandlerItem> fluidHandler = FluidUtil.getFluidHandler(itemStack);
+            Optional<IFluidHandlerItem> fluidHandler = FluidUtil.getFluidHandler(itemStack);
             return fluidHandler.map(h -> {
                 if (fluid == null) {
                     return true;

@@ -16,19 +16,20 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RecipesUpdatedEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +43,7 @@ public class CraftingHelpers {
     private static RecipeManager CLIENT_RECIPE_MANAGER;
 
     public static void load() {
-        MinecraftForge.EVENT_BUS.register(CraftingHelpers.class);
+        NeoForge.EVENT_BUS.register(CraftingHelpers.class);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -51,7 +52,7 @@ public class CraftingHelpers {
         CLIENT_RECIPE_MANAGER = event.getRecipeManager();
     }
 
-    public static <C extends Container, T extends Recipe<C>> Collection<T> findRecipes(Level world, RecipeType<? extends T> recipeType) {
+    public static <C extends Container, T extends Recipe<C>> List<RecipeHolder<T>> findRecipes(Level world, RecipeType<? extends T> recipeType) {
         return world.isClientSide() ? getClientRecipes(recipeType) : findServerRecipes((ServerLevel) world, recipeType);
     }
 
@@ -61,37 +62,37 @@ public class CraftingHelpers {
                 : Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getLevel(Level.OVERWORLD), "Server is still loading").getRecipeManager();
     }
 
-    public static <C extends Container, T extends Recipe<C>> Optional<T> getServerRecipe(RecipeType<? extends T> recipeType, ResourceLocation recipeName) {
-        return (Optional<T>) Optional.ofNullable(getRecipeManager().byType(recipeType).get(recipeName));
+    public static <C extends Container, T extends Recipe<C>> Optional<RecipeHolder<T>> getServerRecipe(RecipeType<T> recipeType, ResourceLocation recipeName) {
+        return Optional.ofNullable(getRecipeManager().byType(recipeType).get(recipeName));
     }
 
-    public static <C extends Container, T extends Recipe<C>> Optional<T> findServerRecipe(RecipeType<T> recipeType, C container, Level world) {
+    public static <C extends Container, T extends Recipe<C>> Optional<RecipeHolder<T>> findServerRecipe(RecipeType<T> recipeType, C container, Level world) {
         return world.getRecipeManager().getRecipeFor(recipeType, container, world);
     }
 
-    public static <C extends Container, T extends Recipe<C>> Collection<T> findServerRecipes(RecipeType<? extends T> recipeType) {
+    public static <C extends Container, T extends Recipe<C>> List<RecipeHolder<T>> findServerRecipes(RecipeType<? extends T> recipeType) {
         return findServerRecipes(Objects.requireNonNull(ServerLifecycleHooks.getCurrentServer().getLevel(Level.OVERWORLD)), recipeType);
     }
 
-    public static <C extends Container, T extends Recipe<C>> Collection<T> findServerRecipes(ServerLevel world, RecipeType<? extends T> recipeType) {
-        return (Collection<T>) world.getRecipeManager().byType(recipeType).values();
+    public static <C extends Container, T extends Recipe<C>> List<RecipeHolder<T>> findServerRecipes(ServerLevel world, RecipeType<? extends T> recipeType) {
+        return (List<RecipeHolder<T>>) (List) world.getRecipeManager().getAllRecipesFor(recipeType);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <C extends Container, T extends Recipe<C>> Optional<T> getClientRecipe(RecipeType<? extends T> recipeType, ResourceLocation recipeName) {
-        return (Optional<T>) Optional.ofNullable(getRecipeManager().byType(recipeType).get(recipeName));
+    public static <C extends Container, T extends Recipe<C>> Optional<RecipeHolder<T>> getClientRecipe(RecipeType<T> recipeType, ResourceLocation recipeName) {
+        return Optional.ofNullable(getRecipeManager().byType(recipeType).get(recipeName));
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <C extends Container, T extends Recipe<C>> Collection<T> getClientRecipes(RecipeType<? extends T> recipeType) {
-        return (Collection<T>) getRecipeManager().byType(recipeType).values();
+    public static <C extends Container, T extends Recipe<C>> List<RecipeHolder<T>> getClientRecipes(RecipeType<? extends T> recipeType) {
+        return (List<RecipeHolder<T>>) (List)  getRecipeManager().getAllRecipesFor(recipeType);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <C extends Container, T extends Recipe<C>> T findClientRecipe(RegistryAccess registryAccess, ItemStack itemStack, RecipeType<T> recipeType, int index) throws IllegalArgumentException {
+    public static <C extends Container, T extends Recipe<C>> RecipeHolder<T> findClientRecipe(RegistryAccess registryAccess, ItemStack itemStack, RecipeType<T> recipeType, int index) throws IllegalArgumentException {
         int indexAttempt = index;
-        for(T recipe : getClientRecipes(recipeType)) {
-            if(ItemStack.isSameItemSameTags(recipe.getResultItem(registryAccess), itemStack) && indexAttempt-- == 0) {
+        for(RecipeHolder<T> recipe : getClientRecipes(recipeType)) {
+            if(ItemStack.isSameItemSameTags(recipe.value().getResultItem(registryAccess), itemStack) && indexAttempt-- == 0) {
                 return recipe;
             }
         }

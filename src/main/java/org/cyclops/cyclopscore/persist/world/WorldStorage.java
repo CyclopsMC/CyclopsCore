@@ -5,9 +5,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
 import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
@@ -78,8 +78,10 @@ public abstract class WorldStorage implements INBTProvider {
 
     private NBTDataHolder initDataHolder(MinecraftServer server) {
         return server.getLevel(Level.OVERWORLD).getDataStorage().computeIfAbsent(
-                e -> NBTDataHolder.load(e, this),
-                () -> new NBTDataHolder(this),
+                new SavedData.Factory<>(
+                        () -> new NBTDataHolder(this),
+                        e -> NBTDataHolder.load(e, this)
+                ),
                 mod.getModId() + "_" + getDataId());
     }
 

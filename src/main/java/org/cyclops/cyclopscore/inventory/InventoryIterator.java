@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.inventory;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Iterator;

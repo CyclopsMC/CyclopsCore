@@ -7,8 +7,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.network.PacketHandler;
@@ -67,7 +67,7 @@ public abstract class ClientProxyComponent extends CommonProxyComponent implemen
     public void registerEventHooks() {
         commonProxyComponent.registerEventHooks();
         getMod().getLoggerHelper().log(Level.TRACE, "Registered event hooks");
-        MinecraftForge.EVENT_BUS.register(getMod().getKeyRegistry());
+        NeoForge.EVENT_BUS.register(getMod().getKeyRegistry());
     }
 
 }

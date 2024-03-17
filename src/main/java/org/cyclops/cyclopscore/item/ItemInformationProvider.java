@@ -3,11 +3,11 @@ package org.cyclops.cyclopscore.item;
 import com.google.common.collect.Sets;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 
 import java.util.Set;
@@ -21,7 +21,7 @@ public class ItemInformationProvider {
     private static final Set<Item> ITEMS_INFO = Sets.newIdentityHashSet();
 
     static {
-        MinecraftForge.EVENT_BUS.register(ItemInformationProvider.class);
+        NeoForge.EVENT_BUS.register(ItemInformationProvider.class);
     }
 
     public static void registerItem(Item item) {

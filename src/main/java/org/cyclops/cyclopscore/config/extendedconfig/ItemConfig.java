@@ -2,14 +2,14 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ItemAction;
@@ -103,8 +103,8 @@ public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements
     }
 
     @Override
-    public IForgeRegistry<Item> getRegistry() {
-        return ForgeRegistries.ITEMS;
+    public Registry<? super Item> getRegistry() {
+        return BuiltInRegistries.ITEM;
     }
 
     /**

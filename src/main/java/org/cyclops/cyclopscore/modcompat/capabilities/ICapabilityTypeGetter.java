@@ -1,17 +1,17 @@
 package org.cyclops.cyclopscore.modcompat.capabilities;
 
-import net.minecraftforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.BaseCapability;
 
 /**
  * Getter for capability types.
  * @param <C> The capability type
  * @author rubensworks
  */
-public interface ICapabilityTypeGetter<C> {
+public interface ICapabilityTypeGetter<T, C> {
 
     /**
      * @return A reference to the capability.
      */
-    public Capability<C> getCapability();
+    public BaseCapability<T, C> getCapability();
 
 }

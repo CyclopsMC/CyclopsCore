@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook.condition;
 
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import org.apache.logging.log4j.util.Strings;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.init.ModBase;

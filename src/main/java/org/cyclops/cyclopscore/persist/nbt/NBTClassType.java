@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -17,8 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -146,13 +146,13 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(Fluid.class, new NBTClassType<Fluid>() {
             @Override
             public void writePersistedField(String name, Fluid object, CompoundTag tag) {
-                tag.putString(name, ForgeRegistries.FLUIDS.getKey(object).toString());
+                tag.putString(name, BuiltInRegistries.FLUID.getKey(object).toString());
             }
 
             @Override
             public Fluid readPersistedField(String name, CompoundTag tag) {
                 String fluidName = tag.getString(name);
-                return ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
+                return BuiltInRegistries.FLUID.get(new ResourceLocation(fluidName));
             }
 
             @Override

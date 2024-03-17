@@ -1,51 +1,35 @@
 package org.cyclops.cyclopscore.advancement.criterion;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.DeserializationContext;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.cyclops.cyclopscore.Reference;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Trigger for when a container gui is opened.
  * @author rubensworks
  */
 public class GuiContainerOpenTrigger extends SimpleCriterionTrigger<GuiContainerOpenTrigger.Instance> {
-    private final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "container_gui_open");
+
+    public static final Codec<GuiContainerOpenTrigger.Instance> CODEC = RecordCodecBuilder.create(
+            p_311401_ -> p_311401_.group(
+                            ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(GuiContainerOpenTrigger.Instance::player),
+                            ExtraCodecs.strictOptionalField(Codec.STRING, "container_class").forGetter(GuiContainerOpenTrigger.Instance::containerClass)
+                    )
+                    .apply(p_311401_, GuiContainerOpenTrigger.Instance::new)
+    );
 
     public GuiContainerOpenTrigger() {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
-    }
-
-    @Override
-    public Instance createInstance(JsonObject json, ContextAwarePredicate entityPredicate, DeserializationContext conditionsParser) {
-        JsonElement jsonElement = json.get("container_class");
-        String className = jsonElement != null && !jsonElement.isJsonNull() ? jsonElement.getAsString() : null;
-        Class<?> clazz = null;
-        if (className != null) {
-            try {
-                clazz = Class.forName(className);
-            } catch (ClassNotFoundException e) {
-                throw new JsonSyntaxException("Could not find the container class with name '" + className + "'");
-            }
-        }
-        return new Instance(getId(), entityPredicate, clazz);
+        NeoForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
@@ -56,17 +40,28 @@ public class GuiContainerOpenTrigger extends SimpleCriterionTrigger<GuiContainer
         }
     }
 
-    public static class Instance extends AbstractCriterionTriggerInstance implements ICriterionInstanceTestable<AbstractContainerMenu> {
-        private final Class<?> clazz;
+    @Override
+    public Codec<Instance> codec() {
+        return CODEC;
+    }
 
-        public Instance(ResourceLocation criterionIn, ContextAwarePredicate player, @Nullable Class<?> clazz) {
-            super(criterionIn, player);
-            this.clazz = clazz;
-        }
-
+    public static record Instance(
+            Optional<ContextAwarePredicate> player,
+            Optional<String> containerClass
+    ) implements SimpleCriterionTrigger.SimpleInstance, ICriterionInstanceTestable<AbstractContainerMenu> {
         @Override
         public boolean test(ServerPlayer player, AbstractContainerMenu container) {
-            return clazz != null && clazz.isInstance(container);
+            return containerClass
+                    .map(className -> {
+                        Class<?> clazz;
+                        try {
+                            clazz = Class.forName(className);
+                        } catch (ClassNotFoundException e) {
+                            throw new IllegalStateException("Could not find the container class with name '" + className + "'");
+                        }
+                        return clazz != null && clazz.isInstance(container);
+                    })
+                    .orElse(true);
         }
     }
 

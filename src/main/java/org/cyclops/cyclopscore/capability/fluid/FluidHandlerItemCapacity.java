@@ -1,16 +1,12 @@
 package org.cyclops.cyclopscore.capability.fluid;
 
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-import org.cyclops.cyclopscore.Capabilities;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import javax.annotation.Nullable;
 
@@ -63,12 +59,6 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
     public FluidStack getFluid() {
         this.capacity = getCapacity(); // Force overriding protected capacity field as soon as possible.
         return super.getFluid();
-    }
-
-    @Nullable
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction facing) {
-        return capability == Capabilities.FLUID_HANDLER_ITEM_CAPACITY ? LazyOptional.of(() -> this).cast() : super.getCapability(capability, facing);
     }
 
     @Override

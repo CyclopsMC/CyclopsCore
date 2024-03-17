@@ -2,14 +2,17 @@ package org.cyclops.cyclopscore;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerConfig;
+import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerConfig;
+import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerConfig;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
 import org.cyclops.cyclopscore.client.particle.ParticleBlurConfig;
 import org.cyclops.cyclopscore.client.particle.ParticleDropColoredConfig;
@@ -35,7 +38,6 @@ import org.cyclops.cyclopscore.metadata.IRegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportables;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
-import org.cyclops.cyclopscore.modcompat.baubles.ModCompatBaubles;
 import org.cyclops.cyclopscore.modcompat.curios.ModCompatCurios;
 import org.cyclops.cyclopscore.proxy.ClientProxy;
 import org.cyclops.cyclopscore.proxy.CommonProxy;
@@ -59,9 +61,9 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
     private boolean loaded = false;
 
-    public CyclopsCore() {
-        super(Reference.MOD_ID, (instance) -> _instance = instance);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
+    public CyclopsCore(IEventBus modEventBus) {
+        super(Reference.MOD_ID, (instance) -> _instance = instance, modEventBus);
+        modEventBus.addListener(this::loadComplete);
 
         // Registries
         getRegistryManager().addRegistry(IRegistryExportableRegistry.class, RegistryExportableRegistry.getInstance());
@@ -85,7 +87,6 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
     protected ModCompatLoader constructModCompatLoader() {
         ModCompatLoader modCompatLoader = super.constructModCompatLoader();
 
-        modCompatLoader.addModCompat(new ModCompatBaubles());
         modCompatLoader.addModCompat(new ModCompatCurios());
 
         return modCompatLoader;
@@ -109,7 +110,6 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         super.setup(event);
 
         // Populate registries
-        Advancements.load();
         RegistryExportables.load();
 
         getRegistryManager().getRegistry(IInfoBookRegistry.class).registerInfoBook(
@@ -154,6 +154,11 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
         // Loot modifiers
         configHandler.addConfigurable(new LootModifierInjectItemConfig());
+
+        // Triggers
+        configHandler.addConfigurable(new GuiContainerOpenTriggerConfig());
+        configHandler.addConfigurable(new ItemCraftedTriggerConfig());
+        configHandler.addConfigurable(new ModItemObtainedTriggerConfig());
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {

@@ -14,9 +14,11 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.GuiHelpers;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -36,12 +38,12 @@ import java.util.Map;
  * Recipes that can be added to sections.
  * @author rubensworks
  */
-public abstract class RecipeAppendix<T> extends SectionAppendix {
+public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendix {
 
     protected static final int SLOT_SIZE = 16;
     protected static final int TICK_DELAY = 30;
 
-    protected T recipe;
+    protected RecipeHolder<? extends T> recipe;
 
     /**
      * This map holds advanced buttons that have a unique identifier.
@@ -50,7 +52,7 @@ public abstract class RecipeAppendix<T> extends SectionAppendix {
      */
     protected Map<AdvancedButtonEnum, AdvancedButton> renderItemHolders = Maps.newHashMap();
 
-    public RecipeAppendix(IInfoBook infoBook, T recipe) {
+    public RecipeAppendix(IInfoBook infoBook, RecipeHolder<? extends T> recipe) {
         super(infoBook);
         this.recipe = recipe;
     }

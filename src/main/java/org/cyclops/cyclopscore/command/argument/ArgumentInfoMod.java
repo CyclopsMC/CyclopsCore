@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.PacketCodec;
 

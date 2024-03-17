@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.item;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
@@ -10,14 +9,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.ItemFluidContainer;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacity;
 
 import java.util.Collection;
@@ -25,7 +24,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * This extension on {@link ItemFluidContainer} with a fluid capability will show a damage indicator depending on how full
+ * This extension on {@link Item} with a fluid capability will show a damage indicator depending on how full
  * the container is. This can be used to hold certain amounts of Fluids in an Item.
  * When this item is available in a CreativeTab, it will add itself as a full and an empty container.
  *
@@ -34,10 +33,11 @@ import java.util.function.Supplier;
  * @author rubensworks
  *
  */
-public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContainer implements IInformationProvider {
+public abstract class DamageIndicatedItemFluidContainer extends Item implements IInformationProvider {
 
+    protected final int capacity;
     protected DamageIndicatedItemComponent component;
-    protected Supplier<Fluid> fluid;
+    protected final Supplier<Fluid> fluid;
 
     /**
      * Create a new DamageIndicatedItemFluidContainer.
@@ -47,9 +47,17 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
      * @param fluid The Fluid instance this container must hold.
      */
     public DamageIndicatedItemFluidContainer(Item.Properties builder, int capacity, Supplier<Fluid> fluid) {
-        super(builder, capacity);
+        super(builder);
+        this.capacity = capacity;
         this.fluid = fluid;
         init();
+
+        CyclopsCore._instance.getModEventBus().addListener(this::registerCapability);
+    }
+
+    private void registerCapability(RegisterCapabilitiesEvent event) {
+        event.registerItem(Capabilities.FluidHandler.ITEM, (itemStack, context) -> new FluidHandlerItemCapacity(itemStack, capacity, getFluid()), this);
+        event.registerItem(org.cyclops.cyclopscore.Capabilities.Item.FLUID_HANDLER_CAPACITY, (itemStack, context) -> new FluidHandlerItemCapacity(itemStack, capacity, getFluid()), this);
     }
 
     private void init() {
@@ -76,10 +84,7 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag flag) {
-        // Can be null during startup
-        if (ForgeCapabilities.FLUID_HANDLER_ITEM != null) {
-            component.addInformation(itemStack, world, list, flag);
-        }
+        component.addInformation(itemStack, world, list, flag);
         super.appendHoverText(itemStack, world, list, flag);
     }
 
@@ -117,10 +122,5 @@ public abstract class DamageIndicatedItemFluidContainer extends ItemFluidContain
         if (fluidHandler == null) return false;
         FluidStack simulatedDrain = fluidHandler.drain(amount, IFluidHandler.FluidAction.SIMULATE);
         return simulatedDrain != null && simulatedDrain.getAmount() == amount;
-    }
-
-    @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt) {
-        return new FluidHandlerItemCapacity(stack, capacity, getFluid());
     }
 }

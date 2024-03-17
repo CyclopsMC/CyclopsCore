@@ -3,8 +3,10 @@ package org.cyclops.cyclopscore.modcompat.jei;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 
@@ -22,7 +24,7 @@ import java.util.Map;
 public abstract class RecipeRegistryJeiRecipeWrapper<C extends Container, R extends Recipe<C>,
         J extends RecipeRegistryJeiRecipeWrapper<C, R, J>> {
 
-    private static final Map<Recipe<?>, RecipeRegistryJeiRecipeWrapper<?, ?, ?>> RECIPE_WRAPPERS = Maps.newIdentityHashMap();
+    private static final Map<ResourceLocation, RecipeRegistryJeiRecipeWrapper<?, ?, ?>> RECIPE_WRAPPERS = Maps.newHashMap();
 
     protected final R recipe;
 
@@ -36,7 +38,7 @@ public abstract class RecipeRegistryJeiRecipeWrapper<C extends Container, R exte
 
     protected abstract RecipeType<R> getRecipeType();
 
-    protected abstract J newInstance(R input);
+    protected abstract J newInstance(RecipeHolder<R> input);
 
     public static <T extends RecipeType<R>, C extends Container, R extends Recipe<C>,
             J extends RecipeRegistryJeiRecipeWrapper<C, R, J>> T getJeiRecipeWrapper(R input) {
@@ -44,14 +46,15 @@ public abstract class RecipeRegistryJeiRecipeWrapper<C extends Container, R exte
     }
 
     public Collection<J> createAllRecipes() {
-        return Collections2.transform(CraftingHelpers.getClientRecipes(getRecipeType()), new Function<R, J>() {
+        return Collections2.transform(CraftingHelpers.getClientRecipes(getRecipeType()), new Function<RecipeHolder<R>, J>() {
             @Nullable
             @Override
-            public J apply(R input) {
-                if (!RECIPE_WRAPPERS.containsKey(input)) {
-                    RECIPE_WRAPPERS.put(input, newInstance(input));
+            public J apply(RecipeHolder<R> input) {
+                ResourceLocation id = input.id();
+                if (!RECIPE_WRAPPERS.containsKey(id)) {
+                    RECIPE_WRAPPERS.put(id, newInstance(input));
                 }
-                return (J) RECIPE_WRAPPERS.get(input);
+                return (J) RECIPE_WRAPPERS.get(id);
             }
         });
     }

@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.inventory;
 
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
 /**
  * Iterate over a player's inventory.

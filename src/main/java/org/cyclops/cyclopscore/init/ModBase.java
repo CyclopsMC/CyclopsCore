@@ -6,29 +6,28 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import lombok.Data;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.server.ServerAboutToStartEvent;
-import net.minecraftforge.event.server.ServerStartedEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.server.ServerStoppingEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.NewRegistryEvent;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
@@ -78,6 +77,7 @@ public abstract class ModBase<T extends ModBase> {
     private final ModCompatLoader modCompatLoader;
     private final CapabilityConstructorRegistry capabilityConstructorRegistry;
     private final IMCHandler imcHandler;
+    private final IEventBus modEventBus;
 
     private ICommonProxy proxy;
     private ModContainer container;
@@ -86,9 +86,10 @@ public abstract class ModBase<T extends ModBase> {
     private CreativeModeTab defaultCreativeTab = null;
     private final List<Pair<ItemStack, CreativeModeTab.TabVisibility>> defaultCreativeTabEntries = Lists.newArrayList();
 
-    public ModBase(String modId, Consumer<T> instanceSetter) {
+    public ModBase(String modId, Consumer<T> instanceSetter, IEventBus modEventBus) {
         instanceSetter.accept((T) this);
         this.modId = modId;
+        this.modEventBus = modEventBus;
         this.loggerHelper = constructLoggerHelper();
         this.configHandler = constructConfigHandler();
         this.registryManager = constructRegistryManager();
@@ -99,12 +100,15 @@ public abstract class ModBase<T extends ModBase> {
         this.imcHandler = constructIMCHandler();
 
         // Register listeners
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setupClient));
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onRegisterKeyMappings));
-        MinecraftForge.EVENT_BUS.register(this);
+        getModEventBus().addListener(this::setup);
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> getModEventBus().addListener(this::setupClient));
+        getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
+        getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
+        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> getModEventBus().addListener(this::onRegisterKeyMappings));
+        NeoForge.EVENT_BUS.addListener(this::onServerStarting);
+        NeoForge.EVENT_BUS.addListener(this::onServerAboutToStart);
+        NeoForge.EVENT_BUS.addListener(this::onServerStarted);
+        NeoForge.EVENT_BUS.addListener(this::onServerStopping);
 
         // Register proxies
         DistExecutor.runForDist(
@@ -129,6 +133,10 @@ public abstract class ModBase<T extends ModBase> {
 
     public String getModName() {
         return getContainer().getModInfo().getDisplayName();
+    }
+
+    public IEventBus getModEventBus() {
+        return modEventBus;
     }
 
     /**
@@ -250,7 +258,6 @@ public abstract class ModBase<T extends ModBase> {
         ICommonProxy proxy = getProxy();
         if(proxy != null) {
             proxy.registerEventHooks();
-            getPacketHandler().init();
             proxy.registerPacketHandlers(getPacketHandler());
             proxy.registerTickHandlers();
         }
@@ -288,7 +295,7 @@ public abstract class ModBase<T extends ModBase> {
      * @param event The Forge registry filling event.
      */
     private void beforeRegistriedFilled(RegisterEvent event) {
-        if (event.getRegistryKey().equals(ForgeRegistries.BLOCKS.getRegistryKey())) {
+        if (event.getRegistryKey().equals(BuiltInRegistries.BLOCK.key())) {
             // We only need to call this once, and the blocks event is emitted first.
             getConfigHandler().loadForgeRegistriesFilled();
         }
@@ -298,7 +305,6 @@ public abstract class ModBase<T extends ModBase> {
      * Register the things that are related to when the server is starting.
      * @param event The Forge server starting event.
      */
-    @SubscribeEvent
     protected void onServerStarting(ServerStartingEvent event) {
         event.getServer().getCommands().getDispatcher().register(constructBaseCommand());
     }
@@ -307,7 +313,6 @@ public abstract class ModBase<T extends ModBase> {
      * Register the things that are related to when the server is about to start.
      * @param event The Forge server about to start event.
      */
-    @SubscribeEvent
     protected void onServerAboutToStart(ServerAboutToStartEvent event) {
         for(WorldStorage worldStorage : worldStorages) {
             worldStorage.onAboutToStartEvent(event);
@@ -318,7 +323,6 @@ public abstract class ModBase<T extends ModBase> {
      * Register the things that are related to server starting.
      * @param event The Forge server started event.
      */
-    @SubscribeEvent
     protected void onServerStarted(ServerStartedEvent event) {
         for(WorldStorage worldStorage : worldStorages) {
             worldStorage.onStartedEvent(event);
@@ -329,7 +333,6 @@ public abstract class ModBase<T extends ModBase> {
      * Register the things that are related to server stopping, like persistent storage.
      * @param event The Forge server stopping event.
      */
-    @SubscribeEvent
     protected void onServerStopping(ServerStoppingEvent event) {
         for(WorldStorage worldStorage : worldStorages) {
             worldStorage.onStoppingEvent(event);
@@ -339,7 +342,7 @@ public abstract class ModBase<T extends ModBase> {
     /**
      * Register a new world storage type.
      * Make sure to call this at least before the event
-     * {@link net.minecraftforge.event.server.ServerStartedEvent} is called.
+     * {@link net.neoforged.neoforge.event.server.ServerStartedEvent} is called.
      * @param worldStorage The world storage to register.
      */
     public void registerWorldStorage(WorldStorage worldStorage) {

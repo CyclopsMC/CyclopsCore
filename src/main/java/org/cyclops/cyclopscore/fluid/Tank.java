@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.fluid;
 
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerCapacity;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerMutable;
 

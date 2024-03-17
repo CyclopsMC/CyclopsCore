@@ -1,17 +1,15 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Sets;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientAdvancements;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.server.ServerLifecycleHooks;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.network.packet.RequestPlayerAdvancementUnlockedPacket;
 
@@ -25,7 +23,7 @@ public class AdvancementHelpers {
 
     public static final Set<ResourceLocation> ACHIEVED_ADVANCEMENTS = Sets.newHashSet();
 
-    public static boolean hasAdvancementUnlocked(Player player, Advancement advancement) {
+    public static boolean hasAdvancementUnlocked(Player player, AdvancementHolder advancement) {
         return player instanceof ServerPlayer
                 && ((ServerPlayer) player).server.getPlayerList()
                 .getPlayerAdvancements((ServerPlayer) player).getOrStartProgress(advancement).isDone();
@@ -39,11 +37,11 @@ public class AdvancementHelpers {
         CyclopsCore._instance.getPacketHandler().sendToServer(new RequestPlayerAdvancementUnlockedPacket(advancementId.toString()));
     }
 
-    public static Advancement getAdvancement(Dist dist, ResourceLocation resourceLocation) {
+    public static AdvancementHolder getAdvancement(Dist dist, ResourceLocation resourceLocation) {
         if (dist.isClient()) {
-            return getAdvancementManagerClient().getAdvancements().get(resourceLocation);
+            return getAdvancementManagerClient().get(resourceLocation);
         }
-        return getAdvancementManagerServer().getAdvancement(resourceLocation);
+        return getAdvancementManagerServer().get(resourceLocation);
     }
 
     public static ServerAdvancementManager getAdvancementManagerServer() {
@@ -52,10 +50,6 @@ public class AdvancementHelpers {
 
     public static ClientAdvancements getAdvancementManagerClient() {
         return Minecraft.getInstance().player.connection.getAdvancements();
-    }
-
-    public static <T extends CriterionTrigger<?>> T registerCriteriaTrigger(T criterion) {
-        return CriteriaTriggers.register(criterion);
     }
 
 }

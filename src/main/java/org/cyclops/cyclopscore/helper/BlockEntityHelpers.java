@@ -1,13 +1,11 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.cyclops.cyclopscore.datastructure.DimPos;
 
 import javax.annotation.Nullable;
@@ -75,13 +73,14 @@ public final class BlockEntityHelpers {
      * Safely get a capability from a block entity.
      * @param dimPos The dimensional position of the block providing the block entity.
      * @param capability The capability.
-     * @param <C> The capability instance.
+     * @param <T> The capability instance.
+     * @param <C> The capability context.
      * @return The lazy optional capability.
      */
-    public static <C> LazyOptional<C> getCapability(DimPos dimPos, Capability<C> capability) {
+    public static <T, C> Optional<T> getCapability(DimPos dimPos, BlockCapability<T, C> capability) {
         Level level = dimPos.getLevel(true);
         if (level == null) {
-            return LazyOptional.empty();
+            return Optional.empty();
         }
         return getCapability(level, dimPos.getBlockPos(), null, capability);
     }
@@ -89,17 +88,18 @@ public final class BlockEntityHelpers {
     /**
      * Safely get a capability from a block entity.
      * @param dimPos The dimensional position of the block providing the block entity.
-     * @param side The side to get the capability from.
+     * @param context The context to get the capability from.
      * @param capability The capability.
-     * @param <C> The capability instance.
+     * @param <T> The capability instance.
+     * @param <C> The capability context.
      * @return The lazy optional capability.
      */
-    public static <C> LazyOptional<C> getCapability(DimPos dimPos, Direction side, Capability<C> capability) {
+    public static <T, C> Optional<T> getCapability(DimPos dimPos, C context, BlockCapability<T, C> capability) {
         Level level = dimPos.getLevel(true);
         if (level == null) {
-            return LazyOptional.empty();
+            return Optional.empty();
         }
-        return getCapability(level, dimPos.getBlockPos(), side, capability);
+        return getCapability(level, dimPos.getBlockPos(), context, capability);
     }
 
     /**
@@ -107,10 +107,11 @@ public final class BlockEntityHelpers {
      * @param level The level.
      * @param pos The position of the block of the block entity providing the capability.
      * @param capability The capability.
-     * @param <C> The capability instance.
+     * @param <T> The capability instance.
+     * @param <C> The capability context.
      * @return The lazy optional capability.
      */
-    public static <C> LazyOptional<C> getCapability(BlockGetter level, BlockPos pos, Capability<C> capability) {
+    public static <T, C> Optional<T> getCapability(Level level, BlockPos pos, BlockCapability<T, C> capability) {
         return getCapability(level, pos, null, capability);
     }
 
@@ -118,17 +119,14 @@ public final class BlockEntityHelpers {
      * Safely get a capability from a block entity.
      * @param level The level.
      * @param pos The position of the block of the block entity providing the capability.
-     * @param side The side to get the capability from.
+     * @param context The context to get the capability from.
      * @param capability The capability.
-     * @param <C> The capability instance.
+     * @param <T> The capability instance.
+     * @param <C> The capability context.
      * @return The lazy optional capability.
      */
-    public static <C> LazyOptional<C> getCapability(BlockGetter level, BlockPos pos, Direction side, Capability<C> capability) {
-        BlockEntity blockEntity = BlockEntityHelpers.get(level, pos, BlockEntity.class).orElse(null);
-        if(blockEntity != null) {
-            return blockEntity.getCapability(capability, side);
-        }
-        return LazyOptional.empty();
+    public static <T, C> Optional<T> getCapability(Level level, BlockPos pos, C context, BlockCapability<T, C> capability) {
+        return Optional.ofNullable(level.getCapability(capability, pos, context));
     }
 
 }

@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -30,8 +30,7 @@ public abstract class WorldFeatureConfig extends ExtendedConfigForge<WorldFeatur
     }
 
     @Override
-    public IForgeRegistry<Feature<?>> getRegistry() {
-        return ForgeRegistries.FEATURES;
+    public Registry<? super Feature<?>> getRegistry() {
+        return BuiltInRegistries.FEATURE;
     }
-
 }

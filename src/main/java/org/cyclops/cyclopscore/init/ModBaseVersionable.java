@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.init;
 
+import net.neoforged.bus.api.IEventBus;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.cyclops.cyclopscore.tracking.IModVersion;
@@ -17,8 +18,8 @@ public abstract class ModBaseVersionable<T extends ModBaseVersionable> extends M
     private String info;
     private String updateUrl;
 
-    public ModBaseVersionable(String modId, Consumer<T> instanceSetter) {
-        super(modId, instanceSetter);
+    public ModBaseVersionable(String modId, Consumer<T> instanceSetter, IEventBus modEventBus) {
+        super(modId, instanceSetter, modEventBus);
     }
 
     @Override

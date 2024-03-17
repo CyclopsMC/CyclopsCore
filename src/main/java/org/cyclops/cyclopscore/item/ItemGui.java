@@ -13,8 +13,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.common.util.FakePlayer;
 import org.cyclops.cyclopscore.inventory.InventoryLocationPlayer;
 import org.cyclops.cyclopscore.inventory.ItemLocation;
 
@@ -62,7 +61,7 @@ public abstract class ItemGui extends Item {
         if (!world.isClientSide()) {
             MenuProvider containerProvider = this.getContainer(world, player, itemLocation);
             if (containerProvider != null) {
-                NetworkHooks.openScreen(player, containerProvider, packetBuffer -> this.writeExtraGuiData(packetBuffer, world, player, itemLocation));
+                player.openMenu(containerProvider, packetBuffer -> this.writeExtraGuiData(packetBuffer, world, player, itemLocation));
                 Stat<ResourceLocation> openStat = this.getOpenStat();
                 if (openStat != null) {
                     player.awardStat(openStat);

@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.client.gui.component.button;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * An extended {@link Button} that is better resizable.
@@ -48,10 +49,11 @@ public abstract class ButtonExtended extends Button {
 
     protected void drawBackground(GuiGraphics guiGraphics) {
         int textureY = getTextureY();
-        guiGraphics.blit(WIDGETS_LOCATION, getX(), getY(), 0, textureY, width / 2, height / 2); // top left
-        guiGraphics.blit(WIDGETS_LOCATION, getX() + width / 2, getY(), 200 - width / 2, textureY, width / 2, height / 2); // top right
-        guiGraphics.blit(WIDGETS_LOCATION, getX(), getY() + height / 2, 0, textureY + 20 - height / 2, width / 2, height / 2); // bottom left
-        guiGraphics.blit(WIDGETS_LOCATION, getX() + width / 2, getY() + height / 2, 200 - width / 2, textureY + 20 - height / 2, width / 2, height / 2); // bottom right
+        ResourceLocation resourceLocation = SPRITES.get(this.active, this.isHoveredOrFocused());
+        guiGraphics.blit(resourceLocation, getX(), getY(), 0, textureY, width / 2, height / 2); // top left
+        guiGraphics.blit(resourceLocation, getX() + width / 2, getY(), 200 - width / 2, textureY, width / 2, height / 2); // top right
+        guiGraphics.blit(resourceLocation, getX(), getY() + height / 2, 0, textureY + 20 - height / 2, width / 2, height / 2); // bottom left
+        guiGraphics.blit(resourceLocation, getX() + width / 2, getY() + height / 2, 200 - width / 2, textureY + 20 - height / 2, width / 2, height / 2); // bottom right
     }
 
     @Override

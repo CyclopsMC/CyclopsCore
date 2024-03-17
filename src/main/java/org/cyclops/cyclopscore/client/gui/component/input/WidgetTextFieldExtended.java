@@ -65,7 +65,7 @@ public class WidgetTextFieldExtended extends EditBox {
                 && mouseY >= this.getY() && mouseY < this.getY() + this.height) {
             // Select everything
             this.setFocused(true);
-            this.moveCursorTo(0);
+            this.moveCursorTo(0, true);
             this.setHighlightPos(Integer.MAX_VALUE);
             return true;
         }

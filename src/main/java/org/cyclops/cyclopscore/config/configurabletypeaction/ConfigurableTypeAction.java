@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraft.core.Registry;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
@@ -45,7 +45,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I>, I> 
 
     /**
      * Logic to register the eConfig target when the config is being loaded during the
-     * {@link net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent}.
+     * {@link net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent}.
      * @param eConfig The config to be registered.
      */
     public void onRegisterSetup(C eConfig) {
@@ -84,7 +84,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I>, I> 
      * @param <C> The subclass of ExtendedConfig.
      * @param <I> The instance corresponding to this config.
      */
-    public static <C extends ExtendedConfigForge<C, I>, I> void register(IForgeRegistry<? super I> registry, C config) {
+    public static <C extends ExtendedConfigForge<C, I>, I> void register(Registry<? super I> registry, C config) {
         register(registry, config, null);
     }
 
@@ -96,7 +96,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I>, I> 
      * @param <C> The subclass of ExtendedConfig.
      * @param <I> The instance corresponding to this config.
      */
-    public static <C extends ExtendedConfigForge<C, I>, I> void register(IForgeRegistry<? super I> registry, C config, @Nullable Callable<?> callback) {
+    public static <C extends ExtendedConfigForge<C, I>, I> void register(Registry<? super I> registry, C config, @Nullable Callable<?> callback) {
         config.getMod().getConfigHandler().registerToRegistry(registry, config, callback);
     }
 }

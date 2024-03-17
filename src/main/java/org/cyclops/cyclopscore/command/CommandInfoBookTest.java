@@ -11,7 +11,6 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.network.NetworkHooks;
 import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTest;
 
 import javax.annotation.Nullable;
@@ -25,7 +24,7 @@ public class CommandInfoBookTest implements Command<CommandSourceStack> {
 
     @Override
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        NetworkHooks.openScreen(context.getSource().getPlayerOrException(), new MenuProvider() {
+        context.getSource().getPlayerOrException().openMenu(new MenuProvider() {
             @Override
             public Component getDisplayName() {
                 return Component.translatable("gui.cyclopscore.infobook");

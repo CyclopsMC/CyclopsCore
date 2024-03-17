@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.capability.item;
 
 import net.minecraft.world.Container;
-import net.minecraftforge.items.wrapper.InvWrapper;
+import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import org.cyclops.cyclopscore.inventory.InventorySlotMasked;
 
 /**

@@ -1,12 +1,14 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -17,14 +19,15 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public class RingOfFirePacket extends PlayerPositionPacket {
 
+    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "ring_of_fire");
     private static final double RING_AREA = 0.9F;
 
     public RingOfFirePacket() {
-        super();
+        super(ID);
     }
 
     public RingOfFirePacket(Player player) {
-        super(player);
+        super(ID, player);
     }
 
     @OnlyIn(Dist.CLIENT)

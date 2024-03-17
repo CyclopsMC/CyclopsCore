@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -22,11 +22,12 @@ import java.util.List;
 public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
 
     private static final List<ItemConfig> MODEL_ENTRIES = Lists.newArrayList();
+    private static final List<ItemConfig> COLOR_ENTRIES = Lists.newArrayList();
 
     static {
         if (MinecraftHelpers.isClientSide()) {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(ItemAction::onModelRegistryLoad);
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(ItemAction::onModelBakeEvent);
+            CyclopsCore._instance.getModEventBus().addListener(ItemAction::onModelRegistryLoad);
+            CyclopsCore._instance.getModEventBus().addListener(ItemAction::onModelBakeEvent);
         }
     }
 
@@ -57,6 +58,13 @@ public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public static void onRegisterColorHandlers(RegisterColorHandlersEvent.Item event){
+        for (ItemConfig itemConfig : COLOR_ENTRIES) {
+            event.register(itemConfig.getItemColorHandler(), itemConfig.getInstance());
+        }
+    }
+
     public static void handleItemModel(ItemConfig extendedConfig) {
         MODEL_ENTRIES.add(extendedConfig);
     }
@@ -65,7 +73,7 @@ public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
         if (MinecraftHelpers.isClientSide()) {
             ItemColor itemColorHandler = config.getItemColorHandler();
             if (itemColorHandler != null) {
-                Minecraft.getInstance().getItemColors().register(itemColorHandler, config.getInstance());
+                COLOR_ENTRIES.add(config);
             }
         }
     }

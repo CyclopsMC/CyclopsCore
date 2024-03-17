@@ -1,20 +1,21 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -33,11 +34,13 @@ import java.util.function.BiFunction;
 public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block> {
 
     private static final List<BlockConfig> MODEL_ENTRIES = Lists.newArrayList();
+    private static final List<BlockConfig> COLOR_ENTRIES = Lists.newArrayList();
 
     static {
         if (MinecraftHelpers.isClientSide()) {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(BlockAction::onModelRegistryLoad);
-            FMLJavaModLoadingContext.get().getModEventBus().addListener(BlockAction::onModelBakeEvent);
+            CyclopsCore._instance.getModEventBus().addListener(BlockAction::onModelRegistryLoad);
+            CyclopsCore._instance.getModEventBus().addListener(BlockAction::onModelBakeEvent);
+            CyclopsCore._instance.getModEventBus().addListener(BlockAction::onRegisterColorHandlers);
         }
     }
 
@@ -50,11 +53,11 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     public static void register(@Nullable BiFunction<BlockConfig, Block, ? extends Item> itemBlockConstructor, BlockConfig config, @Nullable Callable<?> callback) {
         register(config, itemBlockConstructor == null ? callback : null); // Delay onForgeRegistered callback until item has been registered if one is applicable
         if(itemBlockConstructor != null) {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((RegisterEvent event) -> {
-                if (event.getRegistryKey().equals(ForgeRegistries.ITEMS.getRegistryKey())) {
+            config.getMod().getModEventBus().addListener((RegisterEvent event) -> {
+                if (event.getRegistryKey().equals(BuiltInRegistries.ITEM.key())) {
                     Item itemBlock = itemBlockConstructor.apply(config, config.getInstance());
                     Objects.requireNonNull(itemBlock, "Received a null item for the item block constructor of " + config.getNamedId());
-                    event.getForgeRegistry().register(new ResourceLocation(config.getMod().getModId(), config.getNamedId()), itemBlock);
+                    event.register(Registries.ITEM, new ResourceLocation(config.getMod().getModId(), config.getNamedId()), () -> itemBlock);
                     config.setItemInstance(itemBlock);
                     try {
                         if (callback != null) {
@@ -101,16 +104,22 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public static void onRegisterColorHandlers(RegisterColorHandlersEvent.Block event){
+        for (BlockConfig blockConfig : COLOR_ENTRIES) {
+            event.register(blockConfig.getBlockColorHandler(), blockConfig.getInstance());
+        }
+    }
+
     public static void handleDynamicBlockModel(BlockConfig extendedConfig) {
         MODEL_ENTRIES.add(extendedConfig);
     }
 
     protected void polish(BlockConfig config) {
-        Block block = config.getInstance();
         if(MinecraftHelpers.isClientSide()) {
             BlockColor blockColorHandler = config.getBlockColorHandler();
             if (blockColorHandler != null) {
-                Minecraft.getInstance().getBlockColors().register(blockColorHandler, block);
+                COLOR_ENTRIES.add(config);
             }
         }
     }

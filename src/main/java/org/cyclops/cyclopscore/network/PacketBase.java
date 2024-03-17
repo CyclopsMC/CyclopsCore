@@ -1,11 +1,13 @@
 package org.cyclops.cyclopscore.network;
 
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * The base packet for packets.
@@ -13,7 +15,27 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * @author rubensworks
  *
  */
-public abstract class PacketBase {
+public abstract class PacketBase implements CustomPacketPayload {
+
+    private final ResourceLocation id;
+
+    protected PacketBase(ResourceLocation id) {
+        this.id = id;
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        try {
+            this.encode(buf);
+        } catch (Throwable e) {
+            throw new PacketHandler.PacketCodecException("An exception occurred during encoding of packet " + this.toString(), e);
+        }
+    }
+
+    @Override
+    public ResourceLocation id() {
+        return this.id;
+    }
 
     /**
      * @return If this packet can run on a thread other than the main-thread of Minecraft.

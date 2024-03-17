@@ -1,13 +1,14 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.network.CodecField;
 import org.cyclops.cyclopscore.network.PacketCodec;
@@ -19,14 +20,17 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class RequestPlayerAdvancementUnlockedPacket extends PacketCodec {
 
+    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "request_player_advancement_unlocked_packet");
+
     @CodecField
     private String advancementId;
 
     public RequestPlayerAdvancementUnlockedPacket() {
-
+        super(ID);
     }
 
     public RequestPlayerAdvancementUnlockedPacket(String advancementId) {
+        this();
         this.advancementId = advancementId;
     }
 
@@ -43,7 +47,7 @@ public class RequestPlayerAdvancementUnlockedPacket extends PacketCodec {
 
     @Override
     public void actionServer(Level level, ServerPlayer player) {
-        Advancement advancement = AdvancementHelpers.getAdvancement(Dist.DEDICATED_SERVER, new ResourceLocation(advancementId));
+        AdvancementHolder advancement = AdvancementHelpers.getAdvancement(Dist.DEDICATED_SERVER, new ResourceLocation(advancementId));
         if (advancement == null) {
             CyclopsCore.clog(org.apache.logging.log4j.Level.ERROR, "Received an invalid advancement " + advancementId + " from " + player.getName());
             return;

@@ -1,18 +1,16 @@
 package org.cyclops.cyclopscore.fluid;
 
 import com.google.common.collect.Lists;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 
 import java.util.List;
 import java.util.Objects;
-
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 /**
  * A simple tank that can accept and drain fluids until the capacity is reached.
@@ -138,13 +136,13 @@ public class SingleUseTank extends Tank {
     @Override
     public void writeTankToNBT(CompoundTag nbt) {
         super.writeTankToNBT(nbt);
-        nbt.putString(NBT_ACCEPTED_FLUID, ForgeRegistries.FLUIDS.getKey(acceptedFluid).toString());
+        nbt.putString(NBT_ACCEPTED_FLUID, BuiltInRegistries.FLUID.getKey(acceptedFluid).toString());
     }
 
     @Override
     public void readTankFromNBT(CompoundTag nbt) {
         super.readTankFromNBT(nbt);
-        setAcceptedFluid(ForgeRegistries.FLUIDS.getValue(new ResourceLocation(nbt.getString(NBT_ACCEPTED_FLUID))));
+        setAcceptedFluid(BuiltInRegistries.FLUID.get(new ResourceLocation(nbt.getString(NBT_ACCEPTED_FLUID))));
     }
 
 }

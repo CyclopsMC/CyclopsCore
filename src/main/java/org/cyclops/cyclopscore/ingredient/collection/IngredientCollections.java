@@ -267,7 +267,7 @@ public final class IngredientCollections {
 
         // Validate component
         String componentTypeName = tag.getString("component");
-        IngredientComponent<?, ?> component = IngredientComponent.REGISTRY.getValue(new ResourceLocation(componentTypeName));
+        IngredientComponent<?, ?> component = IngredientComponent.REGISTRY.get(new ResourceLocation(componentTypeName));
         if (component == null) {
             throw new IllegalArgumentException("No ingredient component with the given name was found: " + component);
         }

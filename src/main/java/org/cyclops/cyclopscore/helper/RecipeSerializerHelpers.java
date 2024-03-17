@@ -14,17 +14,18 @@ import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.cyclops.cyclopscore.recipe.ItemStackFromIngredient;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Helpers related to recipe serialization.
@@ -43,9 +44,9 @@ public class RecipeSerializerHelpers {
                 return Ingredient.EMPTY;
             }
         } else if (element.isJsonObject()) {
-            return Ingredient.fromJson(GsonHelper.getAsJsonObject(json, key));
+            return Ingredient.fromJson(GsonHelper.getAsJsonObject(json, key), required);
         } else if (element.isJsonArray()) {
-            return Ingredient.fromJson(GsonHelper.getAsJsonArray(json, key));
+            return Ingredient.fromJson(GsonHelper.getAsJsonArray(json, key), required);
         } else {
             String itemName = GsonHelper.getAsString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(itemName);
@@ -75,7 +76,7 @@ public class RecipeSerializerHelpers {
                 return ItemStack.EMPTY;
             }
         } else if (element.isJsonObject()) {
-            return ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, key));
+            return itemStackFromJson(GsonHelper.getAsJsonObject(json, key), true, true);
         } else {
             String itemName = GsonHelper.getAsString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(itemName);
@@ -83,6 +84,57 @@ public class RecipeSerializerHelpers {
                     .orElseThrow(() -> new JsonSyntaxException("Item: " + itemName + " does not exist")));
         }
     }
+
+    // Copied from net.minecraftforge.common.crafting.CraftingHelper.getItemStack in MC 1.20.1
+    public static ItemStack itemStackFromJson(JsonObject json, boolean readNBT, boolean disallowsAirInRecipe)
+    {
+        String itemName = GsonHelper.getAsString(json, "item");
+        Item item = getItem(itemName, disallowsAirInRecipe);
+        if (readNBT && json.has("nbt"))
+        {
+            CompoundTag nbt = getNBT(json.get("nbt"));
+            CompoundTag tmp = new CompoundTag();
+            if (nbt.contains("ForgeCaps"))
+            {
+                tmp.put("ForgeCaps", nbt.get("ForgeCaps"));
+                nbt.remove("ForgeCaps");
+            }
+
+            tmp.put("tag", nbt);
+            tmp.putString("id", itemName);
+            tmp.putInt("Count", GsonHelper.getAsInt(json, "count", 1));
+
+            return ItemStack.of(tmp);
+        }
+
+        return new ItemStack(item, GsonHelper.getAsInt(json, "count", 1));
+    }
+    public static Item getItem(String itemName, boolean disallowsAirInRecipe)
+    {
+        ResourceLocation itemKey = new ResourceLocation(itemName);
+        if (!BuiltInRegistries.ITEM.containsKey(itemKey))
+            throw new JsonSyntaxException("Unknown item '" + itemName + "'");
+
+        Item item = BuiltInRegistries.ITEM.get(itemKey);
+        if (disallowsAirInRecipe && item == Items.AIR)
+            throw new JsonSyntaxException("Invalid item: " + itemName);
+        return Objects.requireNonNull(item);
+    }
+    public static CompoundTag getNBT(JsonElement element)
+    {
+        try
+        {
+            if (element.isJsonObject())
+                return TagParser.parseTag(GSON.toJson(element));
+            else
+                return TagParser.parseTag(GsonHelper.convertToString(element, "nbt"));
+        }
+        catch (CommandSyntaxException e)
+        {
+            throw new JsonSyntaxException("Invalid NBT Entry: " + e);
+        }
+    }
+
 
     @Deprecated
     public static ItemStackFromIngredient getJsonItemStackFromTag(JsonObject json, String key) {
@@ -96,7 +148,7 @@ public class RecipeSerializerHelpers {
             count = json.get("count").getAsInt();
         }
 
-        return new ItemStackFromIngredient(modPriorities, key, Ingredient.fromJson(json), count);
+        return new ItemStackFromIngredient(modPriorities, key, Ingredient.fromJson(json, true), count);
     }
 
     public static FluidStack deserializeFluidStack(JsonObject json, boolean readNbt) {
@@ -107,7 +159,7 @@ public class RecipeSerializerHelpers {
         // Read Fluid
         String fluidName = GsonHelper.getAsString(json, "fluid");
         ResourceLocation resourcelocation = new ResourceLocation(fluidName);
-        Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourcelocation);
+        Fluid fluid = BuiltInRegistries.FLUID.get(resourcelocation);
         if (fluid instanceof EmptyFluid) {
             throw new JsonParseException("Unknown fluid '" + fluidName + "'");
         }
@@ -149,7 +201,7 @@ public class RecipeSerializerHelpers {
         } else {
             String fluidName = GsonHelper.getAsString(json, key);
             ResourceLocation resourcelocation = new ResourceLocation(fluidName);
-            Fluid fluid = ForgeRegistries.FLUIDS.getValue(resourcelocation);
+            Fluid fluid = BuiltInRegistries.FLUID.get(resourcelocation);
             if (fluid instanceof EmptyFluid) {
                 throw new JsonParseException("Unknown fluid '" + fluidName + "'");
             }

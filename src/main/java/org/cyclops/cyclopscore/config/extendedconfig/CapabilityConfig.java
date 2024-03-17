@@ -1,7 +1,10 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import net.minecraft.resources.ResourceLocation;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
+
+import java.util.function.Function;
 
 /**
  * Config for capabilities.
@@ -10,17 +13,17 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfig<T>, T> {
 
-    private final Class<T> type;
+    private final Function<CapabilityConfig<T>, T> registrar;
 
     /**
      * Make a new instance.
      * @param mod The mod
      * @param namedId The unique name ID for the configurable.
-     * @param type The capability type.
+     * @param registrar The capability registrar.
      */
-    public CapabilityConfig(ModBase mod, String namedId, Class<T> type) {
+    public CapabilityConfig(ModBase mod, String namedId, Function<CapabilityConfig<T>, T> registrar) {
         super(mod, namedId, null);
-        this.type = type;
+        this.registrar = registrar;
     }
 
     @Override
@@ -39,7 +42,11 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
         return ConfigurableType.CAPABILITY;
     }
 
-    public Class<T> getType() {
-        return type;
+    public Function<CapabilityConfig<T>, T> getRegistrar() {
+        return registrar;
+    }
+
+    public ResourceLocation getId() {
+        return new ResourceLocation(getMod().getModId(), getNamedId());
     }
 }

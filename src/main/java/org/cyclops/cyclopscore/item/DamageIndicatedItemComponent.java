@@ -8,12 +8,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.ItemFluidContainer;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
 
@@ -38,7 +37,7 @@ public class DamageIndicatedItemComponent {
     /**
      * The item class on which the behaviour will be added.
      */
-    public ItemFluidContainer item;
+    public DamageIndicatedItemFluidContainer item;
 
     /**
      * Create a new DamageIndicatedItemComponent
@@ -46,7 +45,7 @@ public class DamageIndicatedItemComponent {
      * @param item
      *          The item class on which the behaviour will be added.
      */
-    public DamageIndicatedItemComponent(ItemFluidContainer item) {
+    public DamageIndicatedItemComponent(DamageIndicatedItemFluidContainer item) {
         this.item = item;
     }
 

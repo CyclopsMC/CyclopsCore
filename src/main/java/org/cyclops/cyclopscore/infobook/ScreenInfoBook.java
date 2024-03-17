@@ -20,8 +20,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -225,7 +225,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         guiGraphics.blit(texture, left, top, 0, 0, getPageWidth(), getGuiHeight());
@@ -461,7 +461,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
     public abstract void playPagesFlipSound(SoundManager soundHandler);
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollDelta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double mouseZ, double scrollDelta) {
         if (scrollDelta < 0) {
             this.buttonNextPage.onClick(mouseX, mouseY);
             return true;
@@ -470,7 +470,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
             this.buttonPreviousPage.onClick(mouseX, mouseY);
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, scrollDelta);
+        return super.mouseScrolled(mouseX, mouseY, mouseZ, scrollDelta);
     }
 
     @OnlyIn(Dist.CLIENT)

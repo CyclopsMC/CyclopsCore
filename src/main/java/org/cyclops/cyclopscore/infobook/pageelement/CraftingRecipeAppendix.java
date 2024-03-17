@@ -8,10 +8,11 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -33,7 +34,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<Recipe<CraftingContai
     }
     private static final AdvancedButtonEnum RESULT = AdvancedButtonEnum.create();
 
-    public CraftingRecipeAppendix(IInfoBook infoBook, Recipe<CraftingContainer> recipe) {
+    public CraftingRecipeAppendix(IInfoBook infoBook, RecipeHolder<? extends Recipe<CraftingContainer>> recipe) {
         super(infoBook, recipe);
     }
 
@@ -67,7 +68,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<Recipe<CraftingContai
         // Prepare items
         int tick = getTick(gui);
         ItemStack[] grid = new ItemStack[9];
-        ItemStack result = prepareItemStack(recipe.getResultItem(Minecraft.getInstance().player.level().registryAccess()), tick);
+        ItemStack result = prepareItemStack(recipe.value().getResultItem(Minecraft.getInstance().player.level().registryAccess()), tick);
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
                 grid[i + j * 3] = prepareItemStacks(Lists.newArrayList(getItemStacks(i + j * 3).getItems()), tick);
@@ -112,11 +113,11 @@ public class CraftingRecipeAppendix extends RecipeAppendix<Recipe<CraftingContai
     protected Ingredient getItemStacks(int index) {
         NonNullList<Ingredient> ingredients;
 
-        if(recipe instanceof ShapedRecipe) {
-            ingredients = formatShapedGrid(recipe.getIngredients(),
-                    ((ShapedRecipe) recipe).getRecipeWidth(), ((ShapedRecipe) recipe).getRecipeHeight());
+        if(recipe.value() instanceof ShapedRecipe) {
+            ingredients = formatShapedGrid(recipe.value().getIngredients(),
+                    ((ShapedRecipe) recipe.value()).getRecipeWidth(), ((ShapedRecipe) recipe.value()).getRecipeHeight());
         } else {
-            ingredients = recipe.getIngredients();
+            ingredients = recipe.value().getIngredients();
         }
         if(ingredients.size() <= index) return Ingredient.EMPTY;
         return ingredients.get(index);

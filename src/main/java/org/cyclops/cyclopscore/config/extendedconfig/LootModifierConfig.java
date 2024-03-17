@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import com.mojang.serialization.Codec;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraft.core.Registry;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -31,8 +31,7 @@ public abstract class LootModifierConfig<T extends IGlobalLootModifier> extends 
     }
 
     @Override
-    public IForgeRegistry<Codec<? extends IGlobalLootModifier>> getRegistry() {
-        return ForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS.get();
+    public Registry<? super Codec<T>> getRegistry() {
+        return NeoForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS;
     }
-
 }

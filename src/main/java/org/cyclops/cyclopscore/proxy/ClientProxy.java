@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.proxy;
 
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.tracking.Versions;
@@ -30,7 +30,7 @@ public class ClientProxy extends ClientProxyComponent {
     @Override
     public void registerEventHooks() {
         super.registerEventHooks();
-        MinecraftForge.EVENT_BUS.register(new Versions());
+        NeoForge.EVENT_BUS.register(new Versions());
     }
 
 }

@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.ingredient.recipe;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.IPrototypedIngredientAlternatives;
@@ -53,19 +54,19 @@ public abstract class RecipeHandlerRecipeType<C extends Container, R extends Rec
 
     @Override
     public Collection<IRecipeDefinition> getRecipes() {
-        return ((Collection<R>) worldSupplier.get().getRecipeManager().byType(recipeType).values()).stream()
+        return ((Collection<RecipeHolder<R>>) worldSupplier.get().getRecipeManager().byType(recipeType).values()).stream()
                 .map(this::getRecipeDefinition)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
     @Nullable
-    public IRecipeDefinition getRecipeDefinition(R recipe) {
-        Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> inputs = getRecipeInputIngredients(recipe);
+    public IRecipeDefinition getRecipeDefinition(RecipeHolder<R> recipe) {
+        Map<IngredientComponent<?, ?>, List<IPrototypedIngredientAlternatives<?, ?>>> inputs = getRecipeInputIngredients(recipe.value());
         if (inputs == null) {
             return null;
         }
-        IMixedIngredients outputs = getRecipeOutputIngredients(recipe);
+        IMixedIngredients outputs = getRecipeOutputIngredients(recipe.value());
         if (outputs == null) {
             return null;
         }

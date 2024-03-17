@@ -1,11 +1,12 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.network.CodecField;
 import org.cyclops.cyclopscore.network.PacketCodec;
@@ -17,16 +18,19 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class SendPlayerAdvancementUnlockedPacket extends PacketCodec {
 
+    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "send_player_advancement_unlocked");
+
     @CodecField
     private String advancementId;
     @CodecField
     private boolean unlocked;
 
     public SendPlayerAdvancementUnlockedPacket() {
-
+        super(ID);
     }
 
     public SendPlayerAdvancementUnlockedPacket(String advancementId, boolean unlocked) {
+        this();
         this.advancementId = advancementId;
         this.unlocked = unlocked;
     }

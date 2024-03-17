@@ -1,39 +1,42 @@
 package org.cyclops.cyclopscore.advancement.criterion;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.cyclops.cyclopscore.Reference;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.EntityItemPickupEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+
+import java.util.Optional;
 
 /**
  * Trigger for when an item of a given mod is obtained.
  * @author rubensworks
  */
 public class ModItemObtainedTrigger extends SimpleCriterionTrigger<ModItemObtainedTrigger.Instance> {
-    private final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "mod_item_obtained");
+
+    public static final Codec<ModItemObtainedTrigger.Instance> CODEC = RecordCodecBuilder.create(
+            p_311401_ -> p_311401_.group(
+                            ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(ModItemObtainedTrigger.Instance::player),
+                            Codec.STRING.fieldOf("modId").forGetter(ModItemObtainedTrigger.Instance::modId)
+                    )
+                    .apply(p_311401_, ModItemObtainedTrigger.Instance::new)
+    );
 
     public ModItemObtainedTrigger() {
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
     }
 
     @Override
-    public ResourceLocation getId() {
-        return ID;
-    }
-
-    @Override
-    public Instance createInstance(JsonObject json, ContextAwarePredicate entityPredicate, DeserializationContext conditionsParser) {
-        return new Instance(getId(), entityPredicate, json.get("mod_id").getAsString());
+    public Codec<ModItemObtainedTrigger.Instance> codec() {
+        return CODEC;
     }
 
     @SubscribeEvent
@@ -60,18 +63,15 @@ public class ModItemObtainedTrigger extends SimpleCriterionTrigger<ModItemObtain
         }
     }
 
-    public static class Instance extends AbstractCriterionTriggerInstance implements ICriterionInstanceTestable<ItemStack> {
-        private final String modId;
-
-        public Instance(ResourceLocation criterionIn, ContextAwarePredicate player, String modId) {
-            super(criterionIn, player);
-            this.modId = modId;
-        }
+    public static record Instance(
+            Optional<ContextAwarePredicate> player,
+            String modId
+    ) implements SimpleCriterionTrigger.SimpleInstance, ICriterionInstanceTestable<ItemStack> {
 
         @Override
         public boolean test(ServerPlayer player, ItemStack itemStack) {
             return !itemStack.isEmpty()
-                    && ForgeRegistries.ITEMS.getKey(itemStack.getItem()).getNamespace().equals(this.modId);
+                    && BuiltInRegistries.ITEM.getKey(itemStack.getItem()).getNamespace().equals(this.modId);
         }
     }
 

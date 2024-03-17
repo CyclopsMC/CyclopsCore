@@ -3,10 +3,12 @@ package org.cyclops.cyclopscore.modcompat.curios;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.wrapper.EmptyHandler;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.inventory.IInventoryLocation;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
 /**
  * @author rubensworks
@@ -20,7 +22,9 @@ public class InventoryLocationCurios implements IInventoryLocation {
 
     @Override
     public IItemHandlerModifiable getInventory(Player player) {
-        return CuriosApi.getCuriosHelper().getEquippedCurios(player).orElse(null);
+        return CuriosApi.getCuriosInventory(player)
+                .map(ICuriosItemHandler::getEquippedCurios)
+                .orElseGet(EmptyHandler::new);
     }
 
     @Override

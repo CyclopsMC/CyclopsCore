@@ -1,37 +1,35 @@
 package org.cyclops.cyclopscore.advancement.criterion;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.cyclops.cyclopscore.Reference;
+import net.minecraft.util.ExtraCodecs;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+
+import java.util.Optional;
 
 /**
  * Trigger for when items are crafted.
  * @author rubensworks
  */
 public class ItemCraftedTrigger extends SimpleCriterionTrigger<ItemCraftedTrigger.Instance> {
-    private final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "item_crafted");
+
+    public static final Codec<Instance> CODEC = RecordCodecBuilder.create(
+            p_311401_ -> p_311401_.group(
+                            ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(ItemCraftedTrigger.Instance::player),
+                            ItemPredicate.CODEC.fieldOf("item").forGetter(ItemCraftedTrigger.Instance::itemPredicate)
+                    )
+                    .apply(p_311401_, ItemCraftedTrigger.Instance::new)
+    );
 
     public ItemCraftedTrigger() {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
-    }
-
-    @Override
-    public Instance createInstance(JsonObject json, ContextAwarePredicate entityPredicate, DeserializationContext conditionsParser) {
-        return new Instance(getId(), entityPredicate, ItemPredicate.fromJsonArray(json.get("items")));
+        NeoForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
@@ -42,22 +40,24 @@ public class ItemCraftedTrigger extends SimpleCriterionTrigger<ItemCraftedTrigge
         }
     }
 
-    public static class Instance extends AbstractCriterionTriggerInstance implements ICriterionInstanceTestable<PlayerEvent.ItemCraftedEvent> {
-        private final ItemPredicate[] itemPredicates;
+    @Override
+    public Codec<Instance> codec() {
+        return CODEC;
+    }
 
-        public Instance(ResourceLocation criterionIn, ContextAwarePredicate player, ItemPredicate[] itemPredicates) {
-            super(criterionIn, player);
-            this.itemPredicates = itemPredicates;
-        }
+    public static record Instance(
+            Optional<ContextAwarePredicate> player,
+            ItemPredicate itemPredicate
+    ) implements SimpleCriterionTrigger.SimpleInstance, ICriterionInstanceTestable<PlayerEvent.ItemCraftedEvent> {
 
         @Override
         public boolean test(ServerPlayer player, PlayerEvent.ItemCraftedEvent criterionData) {
-            for (ItemPredicate itemPredicate : this.itemPredicates) {
-                if (itemPredicate.matches(criterionData.getCrafting())) {
-                    return true;
-                }
-            }
-            return false;
+            return itemPredicate.matches(criterionData.getCrafting());
+        }
+
+        @Override
+        public Optional<ContextAwarePredicate> player() {
+            return player;
         }
     }
 

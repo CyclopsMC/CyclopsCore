@@ -24,10 +24,10 @@ import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.minecraft.world.level.storage.LevelStorageException;
 import net.minecraft.world.level.storage.LevelSummary;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ScreenEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.GeneralConfig;
@@ -48,7 +48,7 @@ public class GuiMainMenuExtensionDevWorld {
     private static final String WORLD_NAME_PREFIX = "cyclops-dev";
 
     @SubscribeEvent
-    public static void onMainMenuInit(ScreenEvent.Init event) {
+    public static void onMainMenuInit(ScreenEvent.Init.Pre event) {
         // Add a button to the main menu if we're in a dev environment
         if (GeneralConfig.devWorldButton && event.getScreen() instanceof TitleScreen) {
             Button buttonBuilt = Button.builder(Component.translatable("general.cyclopscore.dev_world"), (button) -> {
@@ -82,7 +82,7 @@ public class GuiMainMenuExtensionDevWorld {
 
                             if (devWorldSummary != null && mc.getLevelSource().levelExists(devWorldSummary.getLevelId())) {
                                 mc.forceSetScreen(new GenericDirtMessageScreen(Component.translatable("selectWorld.data_read")));
-                                mc.createWorldOpenFlows().loadLevel(event.getScreen(), devWorldSummary.getLevelId());
+                                mc.createWorldOpenFlows().checkForBackupAndLoad(devWorldSummary.getLevelId(), () -> event.getScreen().getMinecraft().setScreen(event.getScreen()));
                                 return;
                             }
                         }
@@ -113,7 +113,7 @@ public class GuiMainMenuExtensionDevWorld {
                         }
 
                         // Create the world
-                        mc.createWorldOpenFlows().createFreshLevel(saveName, worldsettings, worldOptions, generatorSettings);
+                        mc.createWorldOpenFlows().createFreshLevel(saveName, worldsettings, worldOptions, generatorSettings, event.getScreen());
                     })
                     .pos(event.getScreen().width / 2 + 102, event.getScreen().height / 4 + 48)
                     .size(58, 20)

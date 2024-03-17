@@ -3,6 +3,7 @@
 doc/info.txt
 /build
 /run
+/runs
 
 # Ignore project specific files
 .classpath

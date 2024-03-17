@@ -1,112 +1,91 @@
 package org.cyclops.cyclopscore.network;
 
-import com.google.common.base.Predicates;
+import com.google.common.collect.Lists;
 import io.netty.channel.ChannelHandler.Sharable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
-import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.helper.Helpers;
-import org.cyclops.cyclopscore.helper.Helpers.IDType;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.init.ModBase;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Advanced packet handler of {@link PacketBase} instances.
- * An alternative would be {@link SimpleChannel}.
  * @author rubensworks
  */
 @Sharable
 public final class PacketHandler {
 
     private final ModBase mod;
-
-    private SimpleChannel networkChannel = null;
+    private final List<Pair<ResourceLocation, Supplier<? extends PacketBase>>> pendingPacketRegistrations;
 
     public PacketHandler(ModBase mod) {
         this.mod = mod;
+        this.pendingPacketRegistrations = Lists.newArrayList();
+        mod.getModEventBus().addListener(this::init);
     }
 
-    public void init() {
-        if(networkChannel == null) {
-            networkChannel = NetworkRegistry.newSimpleChannel(
-                    new ResourceLocation(mod.getModId(), "channel_main"), () -> "1.0.0",
-                    Predicates.alwaysTrue(), Predicates.alwaysTrue());
+    protected void init(RegisterPayloadHandlerEvent event) {
+        IPayloadRegistrar registrar = event.registrar(mod.getModId())
+                .versioned("1.0.0")
+                .optional();
+
+        for (Pair<ResourceLocation, Supplier<? extends PacketBase>> pendingPacketRegistration : this.pendingPacketRegistrations) {
+            this.registerActual(registrar, pendingPacketRegistration.getLeft(), pendingPacketRegistration.getRight());
         }
     }
 
-    /**
-     * Register a new packet.
-     * @param packetType The class of the packet.
-     * @param <P> The packet type.
-     */
-    public <P extends PacketBase> void register(Class<P> packetType) {
-        int discriminator = Helpers.getNewId(mod, IDType.PACKET);
-        try {
-            Constructor<P> constructor = packetType.getConstructor();
-            networkChannel.registerMessage(discriminator, packetType,
-                    (packet, packetBuffer) -> {
-                        try {
-                            packet.encode(packetBuffer);
-                        } catch (Throwable e) {
-                            throw new PacketCodecException("An exception occurred during encoding of packet " + packet.toString(), e);
-                        }
-                    },
-                    (packetBuffer) -> {
-                        P packet = null;
-                        try {
-                            packet = constructor.newInstance();
-                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                            e.printStackTrace();
-                        }
-                        try {
-                            packet.decode(packetBuffer);
-                        } catch (Throwable e) {
-                            throw new PacketCodecException("An exception occurred during decoding of packet " + packet.toString(), e);
-                        }
-                        return packet;
-                    },
-                    (packet, contextSupplier) -> {
-                        NetworkEvent.Context context = contextSupplier.get();
-                        if (context.getDirection().getReceptionSide().isClient()) {
-                            if (packet.isAsync()) {
-                                handlePacketClient(context, packet);
-                            } else {
-                                context.enqueueWork(() -> handlePacketClient(context, packet));
-                            }
+    public <P extends PacketBase> void register(ResourceLocation id, Supplier<P> packetSupplier) {
+        this.pendingPacketRegistrations.add(Pair.of(id, packetSupplier));
+    }
+
+    protected <P extends PacketBase> void registerActual(IPayloadRegistrar registrar, ResourceLocation id, Supplier<P> packetSupplier) {
+        registrar.play(
+                id,
+                buffer -> {
+                    P packet = packetSupplier.get();
+                    try {
+                        packet.decode(buffer);
+                    } catch (Throwable e) {
+                        throw new PacketCodecException("An exception occurred during decoding of packet " + packet.toString(), e);
+                    }
+                    return packet;
+                },
+                handler -> {
+                    handler.client((packet, ctx) -> {
+                        if (packet.isAsync()) {
+                            handlePacketClient(ctx, packet);
                         } else {
-                            if (packet.isAsync()) {
-                                handlePacketServer(context, packet);
-                            } else {
-                                context.enqueueWork(() -> handlePacketServer(context, packet));
-                            }
+                            ctx.workHandler().submitAsync(() -> handlePacketClient(ctx, packet));
                         }
-                        context.setPacketHandled(true);
                     });
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            CyclopsCore.clog(org.apache.logging.log4j.Level.ERROR, "Could not find a default constructor for packet " + packetType.getName());
-        }
+                    handler.server((packet, ctx) -> {
+                        if (packet.isAsync()) {
+                            handlePacketServer(ctx, packet);
+                        } else {
+                            ctx.workHandler().submitAsync(() -> handlePacketServer(ctx, packet));
+                        }
+                    });
+                });
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void handlePacketClient(NetworkEvent.Context context, PacketBase packet) {
-        packet.actionClient(Minecraft.getInstance().player.level(), Minecraft.getInstance().player);
+    public void handlePacketClient(PlayPayloadContext context, PacketBase packet) {
+        packet.actionClient(context.level().get(), Minecraft.getInstance().player);
     }
 
-    public void handlePacketServer(NetworkEvent.Context context, PacketBase packet) {
-        packet.actionServer(context.getSender().level(), context.getSender());
+    public void handlePacketServer(PlayPayloadContext context, PacketBase packet) {
+        packet.actionServer(context.level().get(), (ServerPlayer) context.player().get());
     }
 
     /**
@@ -114,7 +93,7 @@ public final class PacketHandler {
      * @param packet The packet.
      */
     public void sendToServer(PacketBase packet) {
-        networkChannel.sendToServer(packet);
+        PacketDistributor.SERVER.noArg().send(packet);
     }
 
     /**
@@ -123,7 +102,7 @@ public final class PacketHandler {
      * @param player The player.
      */
     public void sendToPlayer(PacketBase packet, ServerPlayer player) {
-        networkChannel.sendTo(packet, player.connection.connection, NetworkDirection.PLAY_TO_CLIENT);
+        PacketDistributor.PLAYER.with(player).send(packet);
     }
 
     /**
@@ -132,8 +111,7 @@ public final class PacketHandler {
      * @param point The area to send to.
      */
     public void sendToAllAround(PacketBase packet, PacketDistributor.TargetPoint point) {
-        PacketDistributor.PacketTarget target = PacketDistributor.NEAR.with(() -> point);
-        target.send(networkChannel.toVanillaPacket(packet, target.getDirection()));
+        PacketDistributor.NEAR.with(point).send(packet);
     }
 
     /**
@@ -142,8 +120,7 @@ public final class PacketHandler {
      * @param dimension The dimension to send to.
      */
     public void sendToDimension(PacketBase packet, ResourceKey<Level> dimension) {
-        PacketDistributor.PacketTarget target = PacketDistributor.DIMENSION.with(() -> dimension);
-        target.send(networkChannel.toVanillaPacket(packet, target.getDirection()));
+        PacketDistributor.DIMENSION.with(dimension).send(packet);
     }
 
     /**
@@ -151,8 +128,7 @@ public final class PacketHandler {
      * @param packet The packet.
      */
     public void sendToAll(PacketBase packet) {
-        PacketDistributor.PacketTarget target = PacketDistributor.ALL.with(() -> null);
-        target.send(networkChannel.toVanillaPacket(packet, target.getDirection()));
+        PacketDistributor.ALL.noArg().send(packet);
     }
 
     public static class PacketCodecException extends RuntimeException {
