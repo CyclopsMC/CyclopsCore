@@ -22,9 +22,9 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.apache.commons.lang3.tuple.Triple;
@@ -100,11 +100,11 @@ public class CraftingHelpers {
                 + itemStack.getTag() + " with index " + index);
     }
 
-    private static final LoadingCache<Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<Recipe>> CACHE_RECIPES = CacheBuilder.newBuilder()
+    private static final LoadingCache<Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<RecipeHolder<? extends Recipe>>> CACHE_RECIPES = CacheBuilder.newBuilder()
             .expireAfterWrite(1, TimeUnit.MINUTES)
-            .build(new CacheLoader<Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<Recipe>>() {
+            .build(new CacheLoader<Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<RecipeHolder<? extends Recipe>>>() {
                 @Override
-                public Optional<Recipe> load(Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation> key) throws Exception {
+                public Optional<RecipeHolder<? extends Recipe>> load(Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation> key) throws Exception {
                     ServerLevel world = ServerLifecycleHooks.getCurrentServer().getLevel(ResourceKey.create(Registries.DIMENSION, key.getRight()));
                     return world.getRecipeManager().getRecipeFor((RecipeType) key.getLeft(), key.getMiddle().getInventoryCrafting(), world);
                 }
@@ -121,7 +121,7 @@ public class CraftingHelpers {
      * @param <C> The inventory type.
      * @param <T> The recipe type.
      */
-    public static <C extends Container, T extends Recipe<C>> Optional<T> findRecipeCached(RecipeType<T> recipeType,
+    public static <C extends Container, T extends Recipe<C>> Optional<RecipeHolder<T>> findRecipeCached(RecipeType<T> recipeType,
                                                                                             C inventoryCrafting,
                                                                                             Level world, boolean uniqueInventory) {
         return (Optional) CACHE_RECIPES.getUnchecked(Triple.of(recipeType,

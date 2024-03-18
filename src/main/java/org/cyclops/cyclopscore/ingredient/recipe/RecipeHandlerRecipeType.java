@@ -80,11 +80,11 @@ public abstract class RecipeHandlerRecipeType<C extends Container, R extends Rec
         if (container == null) {
             return null;
         }
-        R recipe = CraftingHelpers.findRecipeCached(recipeType, container, worldSupplier.get(), true).orElse(null);
-        if (recipe == null) {
+        RecipeHolder<R> recipeHolder = CraftingHelpers.findRecipeCached(recipeType, container, worldSupplier.get(), true).orElse(null);
+        if (recipeHolder == null) {
             return null;
         }
-        return getRecipeOutputIngredients(recipe);
+        return getRecipeOutputIngredients(recipeHolder.value());
     }
 
     /**
