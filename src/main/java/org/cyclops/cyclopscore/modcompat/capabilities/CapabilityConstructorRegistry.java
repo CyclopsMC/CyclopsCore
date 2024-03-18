@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.modcompat.capabilities;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -16,26 +15,25 @@ import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.common.NeoForge;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Registry for capabilities created by this mod.
  * @author rubensworks
  */
 public class CapabilityConstructorRegistry {
-    private final Map<BlockEntityType<? extends BlockEntity>, List<ICapabilityConstructor<?, ?, ? extends BlockCapability<?, ?>, ? extends BlockEntityType<? extends BlockEntity>>>>
-            capabilityConstructorsBlockEntity = Maps.newIdentityHashMap();
-    private final Map<EntityType<? extends Entity>, List<ICapabilityConstructor<?, ?, ? extends EntityCapability<?, ?>, ? extends EntityType<? extends Entity>>>>
-            capabilityConstructorsEntity = Maps.newIdentityHashMap();
-    private final Map<ItemLike, List<ICapabilityConstructor<?, ?, ? extends ItemCapability<?, ?>, ? extends ItemLike>>>
-            capabilityConstructorsItem = Maps.newIdentityHashMap();
+    private final List<Pair<Supplier<BlockEntityType<? extends BlockEntity>>, ICapabilityConstructor<?, ?, ?, ? extends BlockEntityType<? extends BlockEntity>>>>
+            capabilityConstructorsBlockEntity = Lists.newArrayList();
+    private final List<Pair<Supplier<EntityType<? extends Entity>>, ICapabilityConstructor<?, ?, ?, ? extends EntityType<? extends Entity>>>>
+            capabilityConstructorsEntity = Lists.newArrayList();
+    private final List<Pair<Supplier<ItemLike>, ICapabilityConstructor<?, ?, ?, ? extends ItemLike>>>
+            capabilityConstructorsItem = Lists.newArrayList();
     private Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?, ?>>>
             capabilityConstructorsBlockEntitySuper = Sets.newHashSet();
     private Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?, ?>>>
@@ -69,18 +67,13 @@ public class CapabilityConstructorRegistry {
      * @param constructor The capability constructor.
      * @param <T> The tile type.
      */
-    public <T extends BlockEntity> void registerBlockEntity(BlockEntityType<T> blockEntityType, ICapabilityConstructor<?, ?, ? extends BlockCapability<?, ?>, BlockEntityType<T>> constructor) {
+    public <T extends BlockEntity> void registerBlockEntity(Supplier<BlockEntityType<T>> blockEntityType, ICapabilityConstructor<?, ?, ?, BlockEntityType<T>> constructor) {
         checkNotBaked();
-        List<ICapabilityConstructor<?, ?, ? extends BlockCapability<?, ?>, ? extends BlockEntityType<?>>> constructors = capabilityConstructorsBlockEntity.get(blockEntityType);
-        if (constructors == null) {
-            constructors = Lists.newArrayList();
-            capabilityConstructorsBlockEntity.put(blockEntityType, constructors);
-        }
-        constructors.add(constructor);
+        capabilityConstructorsBlockEntity.add(Pair.of((Supplier) blockEntityType, constructor));
 
         if (!registeredTileEventListener) {
             registeredTileEventListener = true;
-            NeoForge.EVENT_BUS.register(new TileEventListener());
+            CyclopsCore._instance.getModEventBus().register(new BlockEntityEventListener());
         }
     }
 
@@ -90,18 +83,13 @@ public class CapabilityConstructorRegistry {
      * @param constructor The capability constructor.
      * @param <T> The entity type.
      */
-    public <T extends Entity> void registerEntity(EntityType<T> entityType, ICapabilityConstructor<?, ?, ? extends EntityCapability<?, ?>, ? extends EntityType<T>> constructor) {
+    public <T extends Entity> void registerEntity(Supplier<EntityType<T>> entityType, ICapabilityConstructor<?, ?, ?, ? extends EntityType<T>> constructor) {
         checkNotBaked();
-        List<ICapabilityConstructor<?, ?, ? extends EntityCapability<?, ?>, ? extends EntityType<?>>> constructors = capabilityConstructorsEntity.get(entityType);
-        if (constructors == null) {
-            constructors = Lists.newArrayList();
-            capabilityConstructorsEntity.put(entityType, constructors);
-        }
-        constructors.add(constructor);
+        capabilityConstructorsEntity.add(Pair.of((Supplier) entityType, constructor));
 
         if (!registeredEntityEventListener) {
             registeredEntityEventListener = true;
-            NeoForge.EVENT_BUS.register(new EntityEventListener());
+            CyclopsCore._instance.getModEventBus().register(new EntityEventListener());
         }
     }
 
@@ -110,18 +98,13 @@ public class CapabilityConstructorRegistry {
      * @param item The item class.
      * @param constructor The capability constructor.
      */
-    public void registerItem(ItemLike item, ICapabilityConstructor<?, ?, ? extends ItemCapability<?, ?>, ? extends ItemLike> constructor) {
+    public void registerItem(Supplier<ItemLike> item, ICapabilityConstructor<?, ?, ?, ? extends ItemLike> constructor) {
         checkNotBaked();
-        List<ICapabilityConstructor<?, ?, ? extends ItemCapability<?, ?>, ? extends ItemLike>> constructors = capabilityConstructorsItem.get(item);
-        if (constructors == null) {
-            constructors = Lists.newArrayList();
-            capabilityConstructorsItem.put(item, constructors);
-        }
-        constructors.add(constructor);
+        capabilityConstructorsItem.add(Pair.of((Supplier) item, constructor));
 
         if (!registeredItemStackEventListener) {
             registeredItemStackEventListener = true;
-            NeoForge.EVENT_BUS.register(new ItemStackEventListener());
+            CyclopsCore._instance.getModEventBus().register(new ItemStackEventListener());
         }
     }
 
@@ -138,7 +121,7 @@ public class CapabilityConstructorRegistry {
 
         if (!registeredTileEventListener) {
             registeredTileEventListener = true;
-            NeoForge.EVENT_BUS.register(new TileEventListener());
+            CyclopsCore._instance.getModEventBus().register(new BlockEntityEventListener());
         }
     }
 
@@ -155,7 +138,7 @@ public class CapabilityConstructorRegistry {
 
         if (!registeredEntityEventListener) {
             registeredEntityEventListener = true;
-            NeoForge.EVENT_BUS.register(new EntityEventListener());
+            CyclopsCore._instance.getModEventBus().register(new EntityEventListener());
         }
     }
 
@@ -172,7 +155,7 @@ public class CapabilityConstructorRegistry {
 
         if (!registeredItemStackEventListener) {
             registeredItemStackEventListener = true;
-            NeoForge.EVENT_BUS.register(new ItemStackEventListener());
+            CyclopsCore._instance.getModEventBus().register(new ItemStackEventListener());
         }
     }
 
@@ -181,33 +164,19 @@ public class CapabilityConstructorRegistry {
         return capabilityConstructor.createProvider(capabilityKey);
     }
 
-    protected <CK> void onLoad(Map<CK, List<ICapabilityConstructor<?, ?, ?, CK>>> allConstructors,
-                                 //Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?, CK>>> allInheritableConstructors,
-                                 RegisterCapabilitiesEvent event) {
-        boolean initialized = baked || MinecraftHelpers.isMinecraftInitialized();
+    protected <CK> void onLoad(List<Pair<Supplier<CK>, ICapabilityConstructor<?, ?, ?, CK>>> allConstructors,
+                                  //Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?, CK>>> allInheritableConstructors,
+                                  RegisterCapabilitiesEvent event) {
         synchronized (this) {
-            if (!baked && MinecraftHelpers.isMinecraftInitialized()) {
+            if (!baked) {
                 bake();
             }
         }
 
         // Normal constructors
-        for (Map.Entry<CK, List<ICapabilityConstructor<?, ?, ?, CK>>> entry : allConstructors.entrySet()) {
-            if (initialized) {
-                for (ICapabilityConstructor<?, ?, ?, CK> constructor : entry.getValue()) {
-                    addLoadedCapabilityProvider(event, entry.getKey(), constructor);
-                }
-            }
+        for (Pair<Supplier<CK>, ICapabilityConstructor<?, ?, ?, CK>> entry : allConstructors) {
+            addLoadedCapabilityProvider(event, entry.getKey().get(), entry.getValue());
         }
-
-        // Inheritable constructors
-        // TODO: restore
-//        for (Pair<Class<?>, ICapabilityConstructor<?, ?, ?>> constructorEntry : allInheritableConstructors) {
-//            if ((initialized)
-//                    && (keyObject == baseClass || constructorEntry.getLeft() == keyObject || constructorEntry.getLeft().isInstance(keyObject))) {
-//                addLoadedCapabilityProvider(event, keyObject, valueObject, constructorEntry.getRight());
-//            }
-//        }
     }
 
     protected <CK> void addLoadedCapabilityProvider(RegisterCapabilitiesEvent event, CK capabilityKey, ICapabilityConstructor<?, ?, ?, CK> constructor) {
@@ -239,24 +208,24 @@ public class CapabilityConstructorRegistry {
 
     }
 
-    public class TileEventListener {
+    public class BlockEntityEventListener {
         @SubscribeEvent
-        public void onTileLoad(RegisterCapabilitiesEvent event) {
-            onLoad((Map) capabilityConstructorsBlockEntity, event);
+        public void onBlockEntityLoad(RegisterCapabilitiesEvent event) {
+            onLoad((List) capabilityConstructorsBlockEntity, event);
         }
     }
 
     public class EntityEventListener {
         @SubscribeEvent
         public void onEntityLoad(RegisterCapabilitiesEvent event) {
-            onLoad((Map) capabilityConstructorsEntity, event);
+            onLoad((List) capabilityConstructorsEntity, event);
         }
     }
 
     public class ItemStackEventListener {
         @SubscribeEvent
         public void onItemStackLoad(RegisterCapabilitiesEvent event) {
-            onLoad((Map) capabilityConstructorsItem, event);
+            onLoad((List) capabilityConstructorsItem, event);
         }
     }
 }
