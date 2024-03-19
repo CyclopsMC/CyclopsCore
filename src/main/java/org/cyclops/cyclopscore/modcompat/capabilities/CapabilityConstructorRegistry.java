@@ -1,17 +1,20 @@
 package org.cyclops.cyclopscore.modcompat.capabilities;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.capabilities.BaseCapability;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.neoforged.neoforge.capabilities.IBlockCapabilityProvider;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -30,12 +33,16 @@ import java.util.function.Supplier;
 public class CapabilityConstructorRegistry {
     private final List<Pair<Supplier<BlockEntityType<? extends BlockEntity>>, ICapabilityConstructor<?, ?, ?, ? extends BlockEntityType<? extends BlockEntity>>>>
             capabilityConstructorsBlockEntity = Lists.newArrayList();
+    private final List<Pair<Supplier<? extends Block>, IBlockCapabilityConstructor<?, ?, ?, ? extends Block>>>
+            capabilityConstructorsBlock = Lists.newArrayList();
     private final List<Pair<Supplier<EntityType<? extends Entity>>, ICapabilityConstructor<?, ?, ?, ? extends EntityType<? extends Entity>>>>
             capabilityConstructorsEntity = Lists.newArrayList();
     private final List<Pair<Supplier<ItemLike>, ICapabilityConstructor<?, ?, ?, ? extends ItemLike>>>
             capabilityConstructorsItem = Lists.newArrayList();
     private Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?, ?>>>
             capabilityConstructorsBlockEntitySuper = Sets.newHashSet();
+    private Collection<Pair<Class<?>, IBlockCapabilityConstructor<?, ?, ?, ?>>>
+            capabilityConstructorsBlockSuper = Sets.newHashSet();
     private Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?, ?>>>
             capabilityConstructorsEntitySuper = Sets.newHashSet();
     private Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?, ?>>>
@@ -43,7 +50,8 @@ public class CapabilityConstructorRegistry {
 
     protected final ModBase mod;
     protected boolean baked = false;
-    protected boolean registeredTileEventListener = false;
+    protected boolean registeredBlockEntityEventListener = false;
+    protected boolean registeredBlockEventListener = false;
     protected boolean registeredEntityEventListener = false;
     protected boolean registeredItemStackEventListener = false;
 
@@ -62,8 +70,8 @@ public class CapabilityConstructorRegistry {
     }
 
     /**
-     * Register a tile capability constructor.
-     * @param blockEntityType The tile class.
+     * Register a block entity capability constructor.
+     * @param blockEntityType The block entity class.
      * @param constructor The capability constructor.
      * @param <T> The tile type.
      */
@@ -71,9 +79,25 @@ public class CapabilityConstructorRegistry {
         checkNotBaked();
         capabilityConstructorsBlockEntity.add(Pair.of((Supplier) blockEntityType, constructor));
 
-        if (!registeredTileEventListener) {
-            registeredTileEventListener = true;
+        if (!registeredBlockEntityEventListener) {
+            registeredBlockEntityEventListener = true;
             CyclopsCore._instance.getModEventBus().register(new BlockEntityEventListener());
+        }
+    }
+
+    /**
+     * Register a tile capability constructor.
+     * @param block The block.
+     * @param constructor The capability constructor.
+     * @param <T> The tile type.
+     */
+    public <T extends Block> void registerBlock(Supplier<T> block, IBlockCapabilityConstructor<?, ?, ?, T> constructor) {
+        checkNotBaked();
+        capabilityConstructorsBlock.add(Pair.of((Supplier) block, constructor));
+
+        if (!registeredBlockEventListener) {
+            registeredBlockEventListener = true;
+            CyclopsCore._instance.getModEventBus().register(new BlockEventListener());
         }
     }
 
@@ -109,19 +133,34 @@ public class CapabilityConstructorRegistry {
     }
 
     /**
-     * Register a tile capability constructor with subtype checking.
+     * Register a block entity capability constructor with subtype checking.
      * Only call this when absolutely required, this will is less efficient than its non-inheritable counterpart.
-     * @param clazz The tile class, all subtypes will be checked.
+     * @param clazz The block entity class, all subtypes will be checked.
      * @param constructor The capability constructor.
      */
-    public void registerInheritableTile(Class<?> clazz, ICapabilityConstructor<?, ?, ?, ?> constructor) {
+    public void registerInheritableBlockEntity(Class<?> clazz, ICapabilityConstructor<?, ?, ?, ?> constructor) {
         checkNotBaked();
-        capabilityConstructorsBlockEntitySuper.add(
-                Pair.<Class<?>, ICapabilityConstructor<?, ?, ?, ?>>of(clazz, constructor));
+        capabilityConstructorsBlockEntitySuper.add(Pair.of(clazz, constructor));
 
-        if (!registeredTileEventListener) {
-            registeredTileEventListener = true;
+        if (!registeredBlockEntityEventListener) {
+            registeredBlockEntityEventListener = true;
             CyclopsCore._instance.getModEventBus().register(new BlockEntityEventListener());
+        }
+    }
+
+    /**
+     * Register a block capability constructor with subtype checking.
+     * Only call this when absolutely required, this will is less efficient than its non-inheritable counterpart.
+     * @param clazz The block class, all subtypes will be checked.
+     * @param constructor The capability constructor.
+     */
+    public void registerInheritableBlock(Class<?> clazz, IBlockCapabilityConstructor<?, ?, ?, ?> constructor) {
+        checkNotBaked();
+        capabilityConstructorsBlockSuper.add(Pair.of(clazz, constructor));
+
+        if (!registeredBlockEventListener) {
+            registeredBlockEventListener = true;
+            CyclopsCore._instance.getModEventBus().register(new BlockEventListener());
         }
     }
 
@@ -133,8 +172,7 @@ public class CapabilityConstructorRegistry {
      */
     public void registerInheritableEntity(Class<?> clazz, ICapabilityConstructor<?, ?, ?, ?> constructor) {
         checkNotBaked();
-        capabilityConstructorsEntitySuper.add(
-                Pair.<Class<?>, ICapabilityConstructor<?, ?, ?, ?>>of(clazz, constructor));
+        capabilityConstructorsEntitySuper.add(Pair.of(clazz, constructor));
 
         if (!registeredEntityEventListener) {
             registeredEntityEventListener = true;
@@ -150,8 +188,7 @@ public class CapabilityConstructorRegistry {
      */
     public void registerInheritableItem(Class<?> clazz, ICapabilityConstructor<?, ?, ?, ?> constructor) {
         checkNotBaked();
-        capabilityConstructorsItemSuper.add(
-                Pair.<Class<?>, ICapabilityConstructor<?, ?, ?, ?>>of(clazz, constructor));
+        capabilityConstructorsItemSuper.add(Pair.of(clazz, constructor));
 
         if (!registeredItemStackEventListener) {
             registeredItemStackEventListener = true;
@@ -164,9 +201,11 @@ public class CapabilityConstructorRegistry {
         return capabilityConstructor.createProvider(capabilityKey);
     }
 
-    protected <CK> void onLoad(List<Pair<Supplier<CK>, ICapabilityConstructor<?, ?, ?, CK>>> allConstructors,
-                                  //Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?, CK>>> allInheritableConstructors,
-                                  RegisterCapabilitiesEvent event) {
+    protected <CK> IBlockCapabilityProvider<?, ?> createProviderBlock(CK capabilityKey, IBlockCapabilityConstructor<?, ?, ?, CK> capabilityConstructor) {
+        return capabilityConstructor.createProvider(capabilityKey);
+    }
+
+    protected <CK> void onLoad(List<Pair<Supplier<CK>, ICapabilityConstructor<?, ?, ?, CK>>> allConstructors, RegisterCapabilitiesEvent event) {
         synchronized (this) {
             if (!baked) {
                 bake();
@@ -179,19 +218,30 @@ public class CapabilityConstructorRegistry {
         }
     }
 
-    protected <CK> void addLoadedCapabilityProvider(RegisterCapabilitiesEvent event, CK capabilityKey, ICapabilityConstructor<?, ?, ?, CK> constructor) {
-        ICapabilityProvider provider = createProvider(capabilityKey, constructor);
-        if (provider != null) {
-            BaseCapability capability = constructor.getCapability();
-            if (capability instanceof BlockCapability blockCapability) {
-                event.registerBlockEntity(blockCapability, (BlockEntityType<BlockEntity>) capabilityKey, provider);
-            } else if (capability instanceof EntityCapability entityCapability) {
-                event.registerEntity(entityCapability, (EntityType<? extends Entity>) capabilityKey, provider);
-            } else if (capability instanceof ItemCapability itemCapability) {
-                event.registerItem(itemCapability, provider, (ItemLike) capabilityKey);
-            } else {
-                throw new IllegalStateException("Capability of type " + capability.getClass() + " is not supported");
+    protected <CK> void addLoadedCapabilityProvider(RegisterCapabilitiesEvent event, CK capabilityKey, ICapabilityTypeGetter<?, ?> constructor) {
+        BaseCapability capability = constructor.getCapability();
+        if (capabilityKey instanceof BlockEntityType blockEntityType) {
+            ICapabilityProvider provider = createProvider(capabilityKey, (ICapabilityConstructor<?, ?, ?, ? super CK>) constructor);
+            if (provider != null) {
+                event.registerBlockEntity((BlockCapability) capability, blockEntityType, provider);
             }
+        } else if (capabilityKey instanceof Block block) {
+            IBlockCapabilityProvider provider = createProviderBlock(capabilityKey, (IBlockCapabilityConstructor<?, ?, ?, ? super CK>) constructor);
+            if (provider != null) {
+                event.registerBlock((BlockCapability) capability, (IBlockCapabilityProvider) provider, block);
+            }
+        } else if (capabilityKey instanceof EntityType entityType) {
+            ICapabilityProvider provider = createProvider(capabilityKey, (ICapabilityConstructor<?, ?, ?, ? super CK>) constructor);
+            if (provider != null) {
+                event.registerEntity((EntityCapability) capability, entityType, provider);
+            }
+        } else if (capabilityKey instanceof ItemLike itemLike) {
+            ICapabilityProvider provider = createProvider(capabilityKey, (ICapabilityConstructor<?, ?, ?, ? super CK>) constructor);
+            if (provider != null) {
+                event.registerItem((ItemCapability) capability, provider, itemLike);
+            }
+        } else {
+            throw new IllegalStateException("Capability of type " + capability.getClass() + " is not supported");
         }
     }
 
@@ -202,16 +252,68 @@ public class CapabilityConstructorRegistry {
         baked = true;
 
         // Bake all collections
-        capabilityConstructorsBlockEntitySuper = ImmutableList.copyOf(capabilityConstructorsBlockEntitySuper);
-        capabilityConstructorsEntitySuper = ImmutableList.copyOf(capabilityConstructorsEntitySuper);
-        capabilityConstructorsItemSuper = ImmutableList.copyOf(capabilityConstructorsItemSuper);
+        bakeCapabilityConstructorsSuper((Collection) capabilityConstructorsBlockEntitySuper, (List) capabilityConstructorsBlockEntity);
+        bakeCapabilityConstructorsSuper((Collection) capabilityConstructorsEntitySuper, (List) capabilityConstructorsEntity);
+        bakeCapabilityConstructorsSuper((Collection) capabilityConstructorsItemSuper, (List) capabilityConstructorsItem);
 
+        // Special case for blocks
+        for (Pair<Class<?>, IBlockCapabilityConstructor<?, ?, ?, Block>> entry : (Collection<Pair<Class<?>, IBlockCapabilityConstructor<?, ?, ?, Block>>>) (Collection) capabilityConstructorsBlockSuper) {
+            Class<?> type = entry.getLeft();
+            BuiltInRegistries.BLOCK.forEach(block -> {
+                if (type.isInstance(block)) {
+                    capabilityConstructorsBlock.add(Pair.of((Supplier) () -> block, entry.getRight()));
+                }
+            });
+        }
+
+        capabilityConstructorsBlockEntitySuper = null;
+        capabilityConstructorsBlockSuper = null;
+        capabilityConstructorsEntitySuper = null;
+        capabilityConstructorsItemSuper = null;
+    }
+
+    protected <CK> void bakeCapabilityConstructorsSuper(
+            Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?, CK>>> allInheritableConstructors,
+            List<Pair<Supplier<CK>, ICapabilityConstructor<?, ?, ?, CK>>> allConstructors
+    ) {
+        // Inheritable constructors
+        for (Pair<Class<?>, ICapabilityConstructor<?, ?, ?, CK>> entry : allInheritableConstructors) {
+            Class<?> type = entry.getLeft();
+            if (BlockEntity.class.isAssignableFrom(type)) {
+                BuiltInRegistries.BLOCK_ENTITY_TYPE.forEach(blockEntityType -> {
+                    if (type.isInstance(blockEntityType)) {
+                        allConstructors.add(Pair.of((Supplier) () -> blockEntityType, entry.getRight()));
+                    }
+                });
+            } else if (EntityType.class.isAssignableFrom(type)) {
+                BuiltInRegistries.ENTITY_TYPE.forEach(entityType -> {
+                    if (type.isInstance(entityType)) {
+                        allConstructors.add(Pair.of((Supplier) () -> entityType, entry.getRight()));
+                    }
+                });
+            } else if (Item.class.isAssignableFrom(type)) {
+                BuiltInRegistries.ITEM.forEach(item -> {
+                    if (type.isInstance(item)) {
+                        allConstructors.add(Pair.of((Supplier) () -> item, entry.getRight()));
+                    }
+                });
+            } else {
+                throw new IllegalStateException("Capability of type " + type + " is not supported");
+            }
+        }
     }
 
     public class BlockEntityEventListener {
         @SubscribeEvent
         public void onBlockEntityLoad(RegisterCapabilitiesEvent event) {
             onLoad((List) capabilityConstructorsBlockEntity, event);
+        }
+    }
+
+    public class BlockEventListener {
+        @SubscribeEvent
+        public void onBlockLoad(RegisterCapabilitiesEvent event) {
+            onLoad((List) capabilityConstructorsBlock, event);
         }
     }
 
