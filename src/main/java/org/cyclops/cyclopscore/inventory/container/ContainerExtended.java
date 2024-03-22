@@ -16,7 +16,6 @@ import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import org.apache.logging.log4j.Level;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -29,7 +28,6 @@ import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
 import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -116,22 +114,12 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
         return new Slot(inventory, index, x, y);
     }
 
-    static void setSlotPos(Slot slot, String fieldName, int newValue) {
-        try {
-            Field field = ObfuscationReflectionHelper.findField(Slot.class, fieldName);
-            field.setAccessible(true);
-            field.set(slot, newValue);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void setSlotPosX(Slot slot, int newValue) {
-        setSlotPos(slot, "f_40220_", newValue);
+        slot.x = newValue;
     }
 
     public static void setSlotPosY(Slot slot, int newValue) {
-        setSlotPos(slot, "f_40221_", newValue);
+        slot.y = newValue;
     }
 
     @Override
