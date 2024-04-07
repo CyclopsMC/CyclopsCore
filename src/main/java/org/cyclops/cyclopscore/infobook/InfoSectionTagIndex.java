@@ -19,9 +19,9 @@ import java.util.Map;
  */
 public class InfoSectionTagIndex extends InfoSection {
 
-    public InfoSectionTagIndex(IInfoBook infoBook, InfoSection parent) {
+    public InfoSectionTagIndex(IInfoBook infoBook, InfoSection parent, ModBase<?> mod) {
         super(infoBook, parent, parent.getSubSections(), "info_book." + infoBook.getMod().getModId() + ".tag_index", new ArrayList<String>(),
-                new ArrayList<SectionAppendix>(), new ArrayList<String>());
+                new ArrayList<SectionAppendix>(), new ArrayList<String>(), mod);
 
         // treemap to ensure order by localized tag
         infoBook.setConfigLinks(Maps.<String, String, Pair<InfoSection, Integer>>newTreeMap(new Comparator<String>() {

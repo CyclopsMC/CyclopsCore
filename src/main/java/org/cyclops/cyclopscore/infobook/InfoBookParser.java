@@ -69,7 +69,14 @@ public class InfoBookParser {
             public InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
                                       ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
                                       ArrayList<String> tagList) {
-                return new InfoSection(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList);
+                return this.create(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList, null);
+            }
+
+            @Override
+            public InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
+                                      ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
+                                      ArrayList<String> tagList, ModBase<?> mod) {
+                return new InfoSection(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList, mod);
             }
 
         });
@@ -544,10 +551,10 @@ public class InfoBookParser {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(stream.getInputStream());
-            InfoSection root = buildSection(infoBook, parent, 0, doc.getDocumentElement());
+            InfoSection root = buildSection(infoBook, parent, 0, doc.getDocumentElement(), mod);
             InfoSectionTagIndex tagIndex;
             if (parent == null) {
-                tagIndex = new InfoSectionTagIndex(infoBook, root);
+                tagIndex = new InfoSectionTagIndex(infoBook, root, mod);
                 root.registerSection(tagIndex);
                 infoBook.putIndex(tagIndex);
             } else {
@@ -561,8 +568,8 @@ public class InfoBookParser {
         throw new InfoBookException("Info Book XML is invalid.");
     }
 
-    protected static InfoSection buildSection(IInfoBook infoBook, InfoSection parent, int childIndex, Element sectionElement) {
-        ModBase mod = infoBook.getMod();
+    protected static InfoSection buildSection(IInfoBook infoBook, InfoSection parent, int childIndex, Element sectionElement, ModBase<?> modSection) {
+        ModBase modBook = infoBook.getMod();
         NodeList sections = sectionElement.getElementsByTagName("section");
         NodeList tags = sectionElement.getElementsByTagName("tag");
         NodeList paragraphs = sectionElement.getElementsByTagName("paragraph");
@@ -573,7 +580,7 @@ public class InfoBookParser {
         ArrayList<String> tagList = Lists.newArrayListWithCapacity(tags.getLength());
         String sectionName = sectionElement.getAttribute("name");
         InfoSection section = createSection(infoBook, parent, childIndex, sectionElement.getAttribute("type"),
-                sectionName, paragraphList, appendixList, tagList);
+                sectionName, paragraphList, appendixList, tagList, modSection);
         infoBook.addSection(sectionName, section);
 
         if(sections.getLength() > 0) {
@@ -581,7 +588,7 @@ public class InfoBookParser {
             for (int i = 0; i < sections.getLength(); i++) {
                 Element subsection = (Element) sections.item(i);
                 if(subsection.getParentNode() == sectionElement) {
-                    InfoSection subsubsection = buildSection(infoBook, section, subChildIndex, subsection);
+                    InfoSection subsubsection = buildSection(infoBook, section, subChildIndex, subsection, modSection);
                     if(subsubsection != null) {
                         section.registerSection(subsubsection);
                         subChildIndex++;
@@ -597,7 +604,7 @@ public class InfoBookParser {
                     type = tag.getAttribute("type");
                 }
 
-                ModBase modRecipe = mod;
+                ModBase modRecipe = modBook;
                 if (tagString.contains(":")) {
                     String[] split = tagString.split(":");
                     modRecipe = ModBase.get(split[0]);
@@ -653,13 +660,13 @@ public class InfoBookParser {
 
     protected static InfoSection createSection(IInfoBook infoBook, InfoSection parent, int childIndex, String type, String translationKey,
                                                ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
-                                               ArrayList<String> tagList) {
+                                               ArrayList<String> tagList, ModBase<?> mod) {
         if(type == null) type = "";
         IInfoSectionFactory factory = SECTION_FACTORIES.get(type);
         if(factory == null) {
             throw new InfoBookException("No section of type '" + type + "' was found.");
         }
-        return factory.create(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList);
+        return factory.create(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList, mod);
     }
 
     protected static SectionAppendix createAppendix(IInfoBook infoBook, String type, Element node) throws InvalidAppendixException {
@@ -703,9 +710,16 @@ public class InfoBookParser {
 
     public static interface IInfoSectionFactory {
 
+        @Deprecated // TODO: RM in next major MC version
         public InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
                                   ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
                                   ArrayList<String> tagList);
+
+        public default InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
+                                  ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
+                                  ArrayList<String> tagList, ModBase<?> mod) {
+            return this.create(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList);
+        }
 
     }
 
