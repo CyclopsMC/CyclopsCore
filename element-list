@@ -1,3 +1,4 @@
+org.cyclops.commoncapabilities.api.capability.block
 org.cyclops.commoncapabilities.api.capability.fluidhandler
 org.cyclops.commoncapabilities.api.capability.inventorystate
 org.cyclops.commoncapabilities.api.capability.itemhandler
@@ -22,6 +23,7 @@ org.cyclops.cyclopscore.client.gui.component.button
 org.cyclops.cyclopscore.client.gui.component.input
 org.cyclops.cyclopscore.client.gui.container
 org.cyclops.cyclopscore.client.gui.image
+org.cyclops.cyclopscore.client.icon
 org.cyclops.cyclopscore.client.key
 org.cyclops.cyclopscore.client.model
 org.cyclops.cyclopscore.client.particle
@@ -36,6 +38,7 @@ org.cyclops.cyclopscore.datastructure
 org.cyclops.cyclopscore.event
 org.cyclops.cyclopscore.fluid
 org.cyclops.cyclopscore.helper
+org.cyclops.cyclopscore.helper.obfuscation
 org.cyclops.cyclopscore.infobook
 org.cyclops.cyclopscore.infobook.condition
 org.cyclops.cyclopscore.infobook.pageelement
@@ -50,10 +53,12 @@ org.cyclops.cyclopscore.inventory.container
 org.cyclops.cyclopscore.inventory.container.button
 org.cyclops.cyclopscore.inventory.slot
 org.cyclops.cyclopscore.item
-org.cyclops.cyclopscore.loot.modifier
 org.cyclops.cyclopscore.metadata
 org.cyclops.cyclopscore.modcompat
+org.cyclops.cyclopscore.modcompat.baubles
 org.cyclops.cyclopscore.modcompat.capabilities
+org.cyclops.cyclopscore.modcompat.commoncapabilities
+org.cyclops.cyclopscore.modcompat.curios
 org.cyclops.cyclopscore.modcompat.jei
 org.cyclops.cyclopscore.nbt.path
 org.cyclops.cyclopscore.nbt.path.navigate
