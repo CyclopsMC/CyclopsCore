@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -43,8 +44,8 @@ public class CapabilityConstructorRegistry {
             capabilityConstructorsBlockEntitySuper = Sets.newHashSet();
     private Collection<Pair<Class<?>, IBlockCapabilityConstructor<?, ?, ?, ?>>>
             capabilityConstructorsBlockSuper = Sets.newHashSet();
-    private Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?, ?>>>
-            capabilityConstructorsEntitySuper = Sets.newHashSet();
+    private Collection<Pair<MobCategory, ICapabilityConstructor<?, ?, ?, ? extends EntityType<? extends Entity>>>>
+            capabilityConstructorsEntityCategory = Sets.newHashSet();
     private Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?, ?>>>
             capabilityConstructorsItemSuper = Sets.newHashSet();
 
@@ -165,14 +166,13 @@ public class CapabilityConstructorRegistry {
     }
 
     /**
-     * Register an entity capability constructor with subtype checking.
-     * Only call this when absolutely required, this will is less efficient than its non-inheritable counterpart.
-     * @param clazz The tile class, all subtypes will be checked.
+     * Register an entity capability constructor for the given category.
+     * @param mobCategory The mob category.
      * @param constructor The capability constructor.
      */
-    public void registerInheritableEntity(Class<?> clazz, ICapabilityConstructor<?, ?, ?, ?> constructor) {
+    public void registerMobCategoryEntity(MobCategory mobCategory, ICapabilityConstructor<?, ?, ?, ? extends EntityType<? extends Entity>> constructor) {
         checkNotBaked();
-        capabilityConstructorsEntitySuper.add(Pair.of(clazz, constructor));
+        capabilityConstructorsEntityCategory.add(Pair.of(mobCategory, constructor));
 
         if (!registeredEntityEventListener) {
             registeredEntityEventListener = true;
@@ -253,7 +253,6 @@ public class CapabilityConstructorRegistry {
 
         // Bake all collections
         bakeCapabilityConstructorsSuper((Collection) capabilityConstructorsBlockEntitySuper, (List) capabilityConstructorsBlockEntity);
-        bakeCapabilityConstructorsSuper((Collection) capabilityConstructorsEntitySuper, (List) capabilityConstructorsEntity);
         bakeCapabilityConstructorsSuper((Collection) capabilityConstructorsItemSuper, (List) capabilityConstructorsItem);
 
         // Special case for blocks
@@ -266,10 +265,20 @@ public class CapabilityConstructorRegistry {
             });
         }
 
+        // Special case for mob categories
+        for (Pair<MobCategory, ICapabilityConstructor<?, ?, ?, ? extends EntityType<? extends Entity>>> entry : capabilityConstructorsEntityCategory) {
+            MobCategory category = entry.getLeft();
+            BuiltInRegistries.ENTITY_TYPE.forEach(entityType -> {
+                if (entityType.getCategory() == category) {
+                    capabilityConstructorsEntity.add(Pair.of((Supplier) () -> entityType, entry.getRight()));
+                }
+            });
+        }
+
         capabilityConstructorsBlockEntitySuper = null;
         capabilityConstructorsBlockSuper = null;
-        capabilityConstructorsEntitySuper = null;
         capabilityConstructorsItemSuper = null;
+        capabilityConstructorsEntityCategory = null;
     }
 
     protected <CK> void bakeCapabilityConstructorsSuper(
@@ -283,12 +292,6 @@ public class CapabilityConstructorRegistry {
                 BuiltInRegistries.BLOCK_ENTITY_TYPE.forEach(blockEntityType -> {
                     if (type.isInstance(blockEntityType)) {
                         allConstructors.add(Pair.of((Supplier) () -> blockEntityType, entry.getRight()));
-                    }
-                });
-            } else if (EntityType.class.isAssignableFrom(type)) {
-                BuiltInRegistries.ENTITY_TYPE.forEach(entityType -> {
-                    if (type.isInstance(entityType)) {
-                        allConstructors.add(Pair.of((Supplier) () -> entityType, entry.getRight()));
                     }
                 });
             } else if (Item.class.isAssignableFrom(type)) {
