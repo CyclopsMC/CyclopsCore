@@ -23,7 +23,8 @@ import java.awt.*;
  */
 public class WidgetScrollBar extends AbstractWidget {
 
-    private static final ResourceLocation SCROLLBUTTON = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
+    private static final ResourceLocation SCROLLER_SPRITE = new ResourceLocation("widget/scroller");
+    private static final ResourceLocation SCROLLER_DISABLED_SPRITE = new ResourceLocation("widget/scroller_disabled");
     private static final int SCROLL_BUTTON_HEIGHT = 15;
     private static final int SCROLL_BUTTON_WIDTH = 12;
 
@@ -124,12 +125,10 @@ public class WidgetScrollBar extends AbstractWidget {
         int scrollX = x;
         int scrollMinY = y;
         int scrollMaxY = scrollMinY + height;
-        guiGraphics.blit(
-                SCROLLBUTTON,
+        guiGraphics.blitSprite(
+                this.needsScrollBars() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE,
                 scrollX,
                 scrollMinY + (int)((float)(scrollMaxY - scrollMinY - SCROLL_BUTTON_HEIGHT - 2) * this.currentScroll),
-                232 + (this.needsScrollBars() ? 0 : SCROLL_BUTTON_WIDTH),
-                0,
                 SCROLL_BUTTON_WIDTH,
                 SCROLL_BUTTON_HEIGHT
         );
