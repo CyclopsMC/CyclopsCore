@@ -25,7 +25,7 @@ public class ModItemObtainedTrigger extends SimpleCriterionTrigger<ModItemObtain
     public static final Codec<ModItemObtainedTrigger.Instance> CODEC = RecordCodecBuilder.create(
             p_311401_ -> p_311401_.group(
                             ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(ModItemObtainedTrigger.Instance::player),
-                            Codec.STRING.fieldOf("modId").forGetter(ModItemObtainedTrigger.Instance::modId)
+                            Codec.STRING.fieldOf("mod_id").forGetter(ModItemObtainedTrigger.Instance::modId)
                     )
                     .apply(p_311401_, ModItemObtainedTrigger.Instance::new)
     );
