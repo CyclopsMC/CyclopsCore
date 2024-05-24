@@ -8,11 +8,16 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,11 +26,16 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.recipe.ItemStackFromIngredient;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Helpers related to recipe serialization.
@@ -65,6 +75,37 @@ public class RecipeSerializerHelpers {
             return Either.right(getJsonItemStackFromTag(json, "tag", modPriorities));
         }
         return Either.left(getJsonItemStack(json, "item", required));
+    }
+
+    public static Codec<ItemStackFromIngredient> getCodecItemStackFromIngredient(Supplier<List<String>> modPriorities) {
+        return RecordCodecBuilder.create(
+                builder -> builder.group(
+                                Codec.STRING.fieldOf("tag").forGetter(ItemStackFromIngredient::getTag),
+                                ExtraCodecs.strictOptionalField(Codec.INT, "count").forGetter(i -> Optional.of(i.getCount()))
+                        )
+                        .apply(builder, (tag, count) -> new ItemStackFromIngredient(modPriorities.get(), tag, Ingredient.of(TagKey.create(Registries.ITEM, new ResourceLocation(tag))), count.orElse(1)))
+        );
+    }
+
+    public static ExtraCodecs.EitherCodec<ItemStack, ItemStackFromIngredient> getCodecItemStackOrTag(Supplier<List<String>> modPriorities) {
+        return ExtraCodecs.either(ItemStack.SINGLE_ITEM_CODEC, getCodecItemStackFromIngredient(modPriorities));
+    }
+
+    public static ExtraCodecs.EitherCodec<Pair<ItemStack, Float>, Pair<ItemStackFromIngredient, Float>> getCodecItemStackOrTagChance(Supplier<List<String>> modPriorities) {
+        return ExtraCodecs.either(
+                RecordCodecBuilder.create(
+                        builder -> builder.group(
+                                ItemStack.SINGLE_ITEM_CODEC.fieldOf("item").forGetter(Pair::getLeft),
+                                Codec.FLOAT.optionalFieldOf("chance", 1.0F).forGetter(Pair::getRight)
+                        ).apply(builder, Pair::of)
+                ),
+                RecordCodecBuilder.create(
+                        builder -> builder.group(
+                                RecipeSerializerHelpers.getCodecItemStackFromIngredient(modPriorities).fieldOf("tag").forGetter(Pair::getLeft),
+                                Codec.FLOAT.optionalFieldOf("chance", 1.0F).forGetter(Pair::getRight)
+                        ).apply(builder, Pair::of)
+                )
+        );
     }
 
     public static ItemStack getJsonItemStack(JsonObject json, String key, boolean required) {
@@ -232,6 +273,44 @@ public class RecipeSerializerHelpers {
             outputItem = Either.right(ItemStackFromIngredient.readFromPacket(buffer));
         }
         return outputItem;
+    }
+
+    public static void writeItemStackOrItemStackIngredientChance(FriendlyByteBuf buffer, Either<Pair<ItemStack, Float>, Pair<ItemStackFromIngredient, Float>> itemStackOrItemStackIngredient) {
+        itemStackOrItemStackIngredient.mapBoth(
+                itemStack -> {
+                    buffer.writeBoolean(true);
+                    buffer.writeItem(itemStack.getLeft());
+                    buffer.writeFloat(itemStack.getRight());
+                    return null;
+                },
+                ingredient -> {
+                    buffer.writeBoolean(false);
+                    ingredient.getLeft().writeToPacket(buffer);
+                    buffer.writeFloat(ingredient.getRight());
+                    return null;
+                }
+        );
+    }
+
+    public static Either<Pair<ItemStack, Float>, Pair<ItemStackFromIngredient, Float>> readItemStackOrItemStackIngredientChance(FriendlyByteBuf buffer) {
+        Either<Pair<ItemStack, Float>, Pair<ItemStackFromIngredient, Float>> outputItem;
+        if (buffer.readBoolean()) {
+            outputItem = Either.left(Pair.of(buffer.readItem(), buffer.readFloat()));
+        } else {
+            outputItem = Either.right(Pair.of(ItemStackFromIngredient.readFromPacket(buffer), buffer.readFloat()));
+        }
+        return outputItem;
+    }
+
+    public static <T> void writeOptionalToNetwork(FriendlyByteBuf buffer, Optional<T> value, BiConsumer<FriendlyByteBuf, T> writeToBuffer) {
+        value.ifPresentOrElse(v -> {
+            buffer.writeBoolean(true);
+            writeToBuffer.accept(buffer, v);
+        }, () -> buffer.writeBoolean(false));
+    }
+
+    public static <T> Optional<T> readOptionalFromNetwork(FriendlyByteBuf buffer, Function<FriendlyByteBuf, T> readFromBuffer) {
+        return buffer.readBoolean() ? Optional.of(readFromBuffer.apply(buffer)) : Optional.empty();
     }
 
 }

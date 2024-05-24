@@ -22,18 +22,22 @@ import java.util.Map;
  */
 public class ItemStackFromIngredient {
     private final List<String> modPriorities;
-    private final String key;
+    private final String tag;
     private final Ingredient ingredient;
     private final int count;
 
     @Nullable
     private ItemStack firstItemStack;
 
-    public ItemStackFromIngredient(List<String> modPriorities, String key, Ingredient ingredient, int count) {
+    public ItemStackFromIngredient(List<String> modPriorities, String tag, Ingredient ingredient, int count) {
         this.modPriorities = modPriorities;
-        this.key = key;
+        this.tag = tag;
         this.ingredient = ingredient;
         this.count = count;
+    }
+
+    public String getTag() {
+        return tag;
     }
 
     public Ingredient getIngredient() {
@@ -64,7 +68,7 @@ public class ItemStackFromIngredient {
                         BuiltInRegistries.ITEM.getKey(e.getItem()).getNamespace(),
                         Integer.MAX_VALUE
                 )))
-                .orElseThrow(() -> new IllegalStateException("No tag value found for " + key))
+                .orElseThrow(() -> new IllegalStateException("No tag value found for " + tag))
                 .copy();
 
         firstItemStack = outputStack.copy();
@@ -77,7 +81,7 @@ public class ItemStackFromIngredient {
         for (String modPriority : modPriorities) {
             buf.writeUtf(modPriority);
         }
-        buf.writeUtf(key);
+        buf.writeUtf(tag);
         ingredient.toNetwork(buf);
         buf.writeVarInt(count);
     }
