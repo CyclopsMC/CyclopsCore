@@ -6,6 +6,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.common.extensions.ILevelExtension;
 import org.cyclops.cyclopscore.datastructure.DimPos;
 
 import javax.annotation.Nullable;
@@ -111,7 +112,7 @@ public final class BlockEntityHelpers {
      * @param <C> The capability context.
      * @return The lazy optional capability.
      */
-    public static <T, C> Optional<T> getCapability(Level level, BlockPos pos, BlockCapability<T, C> capability) {
+    public static <T, C> Optional<T> getCapability(ILevelExtension level, BlockPos pos, BlockCapability<T, C> capability) {
         return getCapability(level, pos, null, capability);
     }
 
@@ -125,7 +126,7 @@ public final class BlockEntityHelpers {
      * @param <C> The capability context.
      * @return The lazy optional capability.
      */
-    public static <T, C> Optional<T> getCapability(Level level, BlockPos pos, C context, BlockCapability<T, C> capability) {
+    public static <T, C> Optional<T> getCapability(ILevelExtension level, BlockPos pos, C context, BlockCapability<T, C> capability) {
         return Optional.ofNullable(level.getCapability(capability, pos, context));
     }
 
