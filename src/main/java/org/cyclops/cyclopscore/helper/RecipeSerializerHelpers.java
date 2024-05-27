@@ -88,14 +88,14 @@ public class RecipeSerializerHelpers {
     }
 
     public static ExtraCodecs.EitherCodec<ItemStack, ItemStackFromIngredient> getCodecItemStackOrTag(Supplier<List<String>> modPriorities) {
-        return ExtraCodecs.either(ItemStack.SINGLE_ITEM_CODEC, getCodecItemStackFromIngredient(modPriorities));
+        return ExtraCodecs.either(ItemStack.ITEM_WITH_COUNT_CODEC, getCodecItemStackFromIngredient(modPriorities));
     }
 
     public static ExtraCodecs.EitherCodec<Pair<ItemStack, Float>, Pair<ItemStackFromIngredient, Float>> getCodecItemStackOrTagChance(Supplier<List<String>> modPriorities) {
         return ExtraCodecs.either(
                 RecordCodecBuilder.create(
                         builder -> builder.group(
-                                ItemStack.SINGLE_ITEM_CODEC.fieldOf("item").forGetter(Pair::getLeft),
+                                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("item").forGetter(Pair::getLeft),
                                 Codec.FLOAT.optionalFieldOf("chance", 1.0F).forGetter(Pair::getRight)
                         ).apply(builder, Pair::of)
                 ),
