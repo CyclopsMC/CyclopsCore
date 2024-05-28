@@ -27,6 +27,7 @@ org.cyclops.cyclopscore.client.model
 org.cyclops.cyclopscore.client.particle
 org.cyclops.cyclopscore.client.render.blockentity
 org.cyclops.cyclopscore.client.render.model
+org.cyclops.cyclopscore.codec
 org.cyclops.cyclopscore.command
 org.cyclops.cyclopscore.command.argument
 org.cyclops.cyclopscore.config
