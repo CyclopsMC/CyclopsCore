@@ -27,6 +27,7 @@ import net.minecraft.world.level.material.EmptyFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cyclops.cyclopscore.item.IngredientPublicConstructor;
 import org.cyclops.cyclopscore.recipe.ItemStackFromIngredient;
 
 import java.util.Collections;
@@ -36,6 +37,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Helpers related to recipe serialization.
@@ -83,7 +85,7 @@ public class RecipeSerializerHelpers {
                                 Codec.STRING.fieldOf("tag").forGetter(ItemStackFromIngredient::getTag),
                                 ExtraCodecs.strictOptionalField(Codec.INT, "count").forGetter(i -> Optional.of(i.getCount()))
                         )
-                        .apply(builder, (tag, count) -> new ItemStackFromIngredient(modPriorities.get(), tag, Ingredient.of(TagKey.create(Registries.ITEM, new ResourceLocation(tag))), count.orElse(1)))
+                        .apply(builder, (tag, count) -> new ItemStackFromIngredient(modPriorities.get(), tag, new IngredientPublicConstructor(Stream.of(new Ingredient.TagValue(TagKey.create(Registries.ITEM, new ResourceLocation(tag))))), count.orElse(1)))
         );
     }
 
