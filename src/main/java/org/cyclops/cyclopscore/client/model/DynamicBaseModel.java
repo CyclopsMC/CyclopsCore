@@ -79,14 +79,14 @@ public abstract class DynamicBaseModel implements BakedModel {
      * @return The assembled int array.
      */
     protected static int[] vertexToInts(float x, float y, float z, int color, TextureAtlasSprite texture, float u,
-                                        float v) {
+                                        float v) { // See FaceBakery#fillVertex for inspiration in case this would break.
         return new int[] {
                 Float.floatToRawIntBits(x),
                 Float.floatToRawIntBits(y),
                 Float.floatToRawIntBits(z),
                 color,
-                Float.floatToRawIntBits(texture.getU(u)),
-                Float.floatToRawIntBits(texture.getV(v)),
+                Float.floatToRawIntBits(texture.getU(u / 16F)),
+                Float.floatToRawIntBits(texture.getV(v / 16F)),
                 0,
                 0
         };
