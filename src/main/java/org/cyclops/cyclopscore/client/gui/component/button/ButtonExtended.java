@@ -48,12 +48,8 @@ public abstract class ButtonExtended extends Button {
     }
 
     protected void drawBackground(GuiGraphics guiGraphics) {
-        int textureY = getTextureY();
         ResourceLocation resourceLocation = SPRITES.get(this.active, this.isHoveredOrFocused());
-        guiGraphics.blit(resourceLocation, getX(), getY(), 0, textureY, width / 2, height / 2); // top left
-        guiGraphics.blit(resourceLocation, getX() + width / 2, getY(), 200 - width / 2, textureY, width / 2, height / 2); // top right
-        guiGraphics.blit(resourceLocation, getX(), getY() + height / 2, 0, textureY + 20 - height / 2, width / 2, height / 2); // bottom left
-        guiGraphics.blit(resourceLocation, getX() + width / 2, getY() + height / 2, 200 - width / 2, textureY + 20 - height / 2, width / 2, height / 2); // bottom right
+        guiGraphics.blitSprite(resourceLocation, getX(), getY(), getWidth(), getHeight());
     }
 
     @Override
