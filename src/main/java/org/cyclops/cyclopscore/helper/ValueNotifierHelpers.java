@@ -76,9 +76,11 @@ public class ValueNotifierHelpers {
      * @param value The value
      */
     public static void setValue(IValueNotifier notifier, int valueId, MutableComponent value) {
-        CompoundTag tag = new CompoundTag();
-        tag.putString(KEY, Component.Serializer.toJson(value));
-        notifier.setValue(valueId, tag);
+        if (value != null) {
+            CompoundTag tag = new CompoundTag();
+            tag.putString(KEY, Component.Serializer.toJson(value));
+            notifier.setValue(valueId, tag);
+        }
     }
 
     /**
@@ -91,7 +93,9 @@ public class ValueNotifierHelpers {
         CompoundTag tag = new CompoundTag();
         ListTag list = new ListTag();
         for (Component value : values) {
-            list.add(StringTag.valueOf(Component.Serializer.toJson(value)));
+            if (value != null) {
+                list.add(StringTag.valueOf(Component.Serializer.toJson(value)));
+            }
         }
         tag.put(KEY, list);
         notifier.setValue(valueId, tag);
