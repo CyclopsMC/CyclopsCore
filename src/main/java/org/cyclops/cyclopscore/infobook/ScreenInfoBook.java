@@ -226,7 +226,6 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         guiGraphics.blit(texture, left, top, 0, 0, getPageWidth(), getGuiHeight());
         blitMirrored(left + getPageWidth() - 1, top, 0, 0, getPageWidth(), getGuiHeight());
@@ -234,7 +233,9 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         for(int i = 0; i < getPages(); i++) {
             infoBook.getCurrentSection().drawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top, getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY, getFootnoteOffsetX(), getFootnoteOffsetY());
         }
+
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
+
         for(int i = 0; i < getPages(); i++) {
             infoBook.getCurrentSection().postDrawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top + getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY);
         }
@@ -254,6 +255,15 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         if (this.buttonExternal.visible && RenderHelpers.isPointInButton(this.buttonExternal, mouseX, mouseY)) {
             drawTooltip(guiGraphics, mouseX, mouseY, Component.translatable("infobook.cyclopscore.external"));
         }
+    }
+
+    protected void renderBackgroundSuper(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics p_295206_, int p_295457_, int p_294596_, float p_296351_) {
+        // Do nothing
     }
 
     @Override
