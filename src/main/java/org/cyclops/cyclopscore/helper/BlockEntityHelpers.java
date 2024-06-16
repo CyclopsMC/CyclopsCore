@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.common.extensions.ILevelExtension;
@@ -127,7 +128,10 @@ public final class BlockEntityHelpers {
      * @return The lazy optional capability.
      */
     public static <T, C> Optional<T> getCapability(ILevelExtension level, BlockPos pos, C context, BlockCapability<T, C> capability) {
-        return Optional.ofNullable(level.getCapability(capability, pos, context));
+        Level levelFull = (Level) level;
+        BlockState state = levelFull.getBlockState(pos);
+        BlockEntity blockEntity = state.hasBlockEntity() ? BlockEntityHelpers.get(levelFull, pos, BlockEntity.class).orElse(null) : null;
+        return Optional.ofNullable(level.getCapability(capability, pos, state, blockEntity, context));
     }
 
 }
