@@ -295,8 +295,8 @@ public abstract class ModBase<T extends ModBase> {
      * @param event The Forge registry filling event.
      */
     private void beforeRegistriedFilled(RegisterEvent event) {
-        if (event.getRegistryKey().equals(BuiltInRegistries.BLOCK.key())) {
-            // We only need to call this once, and the blocks event is emitted first.
+        if (event.getRegistryKey().equals(BuiltInRegistries.ATTRIBUTE.key())) {
+            // We only need to call this once, and the ATTRIBUTE event is emitted first.
             getConfigHandler().loadForgeRegistriesFilled();
         }
     }
