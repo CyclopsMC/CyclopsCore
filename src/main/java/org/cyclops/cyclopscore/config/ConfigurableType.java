@@ -71,6 +71,7 @@ public class ConfigurableType {
      */
     public static final ConfigurableType WORLD_FEATURE = new ConfigurableType(true, WorldFeatureConfig.class, new WorldFeatureAction(), "world_feature");
     public static final ConfigurableType WORLD_STRUCTURE = new ConfigurableType(true, WorldStructureConfig.class, new WorldStructureAction(), "world_structure");
+    public static final ConfigurableType WORLD_STRUCTURE_PIECE = new ConfigurableType(true, WorldStructurePieceConfig.class, new WorldStructurePieceAction(), "world_structure_piece");
     public static final ConfigurableType FOLIAGE_PLACER = new ConfigurableType(true, FoliagePlacerConfig.class, new FoliagePlacerAction(), "foliage_placer");
     public static final ConfigurableType TRUNK_PLACER = new ConfigurableType(true, TrunkPlacerConfig.class, new TrunkPlacerAction(), "trunk_placer");
     public static final ConfigurableType ARGUMENT_TYPE = new ConfigurableType(true, ArgumentTypeConfig.class, new ArgumentTypeAction(), "argument_type");

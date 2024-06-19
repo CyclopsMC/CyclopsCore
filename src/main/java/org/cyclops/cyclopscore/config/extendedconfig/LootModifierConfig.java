@@ -27,7 +27,7 @@ public abstract class LootModifierConfig<T extends IGlobalLootModifier> extends 
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableType.BIOME_MODIFIER;
+        return ConfigurableType.LOOT_MODIFIER;
     }
 
     @Override
