@@ -84,6 +84,7 @@ public class ConfigurableType {
     public static final ConfigurableType LOOT_NUMBER_PROVIDER = new ConfigurableType(true, LootNumberProviderConfig.class, new ConfigurableTypeActionForge<>(), "loot_number_provider");
     public static final ConfigurableType LOOT_NBT_PROVIDER = new ConfigurableType(true, LootNbtProviderConfig.class, new ConfigurableTypeActionForge<>(), "loot_nbt_provider");
     public static final ConfigurableType LOOT_SCORE_PROVIDER = new ConfigurableType(true, LootScoreProviderConfig.class, new ConfigurableTypeActionForge<>(), "loot_score_provider");
+    public static final ConfigurableType SOUND_EVENT = new ConfigurableType(true, SoundEventConfig.class, new ConfigurableTypeActionForge<>(), "sound_event");
 
     /**
      * Dummy type, only used for configs that refer to nothing.
