@@ -16,6 +16,7 @@ org.cyclops.cyclopscore.block.multi
 org.cyclops.cyclopscore.blockentity
 org.cyclops.cyclopscore.capability.fluid
 org.cyclops.cyclopscore.capability.item
+org.cyclops.cyclopscore.capability.registrar
 org.cyclops.cyclopscore.client.gui
 org.cyclops.cyclopscore.client.gui.component
 org.cyclops.cyclopscore.client.gui.component.button
