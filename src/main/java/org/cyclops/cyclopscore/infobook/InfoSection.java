@@ -17,7 +17,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.SectionAppendix;
+import org.cyclops.cyclopscore.init.ModBase;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,6 +42,9 @@ public class InfoSection {
     private static final int LINK_INDENT = 8;
 
     @Getter private final IInfoBook infoBook;
+    @Getter
+    @Nullable
+    private final ModBase<?> mod;
     private InfoSection parent;
     private int childIndex;
     @Getter private String translationKey;
@@ -53,8 +58,9 @@ public class InfoSection {
     private Map<Integer, List<AdvancedButton>> advancedButtons = Maps.newHashMap();
 
     public InfoSection(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
-                       List<String> paragraphs, List<SectionAppendix> appendixes, ArrayList<String> tagList) {
+                       List<String> paragraphs, List<SectionAppendix> appendixes, ArrayList<String> tagList, ModBase<?> mod) {
         this.infoBook = infoBook;
+        this.mod = mod;
         this.parent = parent;
         this.childIndex = childIndex;
         this.translationKey = translationKey;
@@ -63,12 +69,25 @@ public class InfoSection {
         this.tagList = tagList;
     }
 
+    @Deprecated // TODO: RM in next major MC version
+    public InfoSection(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
+                       List<String> paragraphs, List<SectionAppendix> appendixes, ArrayList<String> tagList) {
+        this(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList, null);
+    }
+
     public String getRelativeWebPath() {
         if (isRoot()) {
             return "";
         } else {
-            String suffix = getSubSections() > 0 ? "/" : ".html";
-            return getParent().getRelativeWebPath() + getTranslationKey().substring(getTranslationKey().lastIndexOf('.') + 1) + suffix;
+            StringBuilder sb = new StringBuilder();
+            sb = sb.append(getParent().getRelativeWebPath());
+            sb = sb.append(getTranslationKey().substring(getTranslationKey().lastIndexOf('.') + 1));
+            if (getMod() != null && getParent().getMod() != getMod()) {
+                // Go in a subfolder when we are handling a different mod
+                sb = sb.append("/" + getMod().getModId());
+            }
+            sb = sb.append(getSubSections() > 0 ? "/" : ".html");
+            return sb.toString();
         }
     }
 
