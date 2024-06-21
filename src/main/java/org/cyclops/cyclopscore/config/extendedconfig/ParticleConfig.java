@@ -10,6 +10,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
@@ -31,7 +32,9 @@ public abstract class ParticleConfig<T extends ParticleOptions> extends Extended
      */
     public ParticleConfig(ModBase mod, String namedId, Function<ParticleConfig<T>, ? extends ParticleType<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
-        mod.getModEventBus().addListener(this::onParticleFactoryRegister);
+        if (MinecraftHelpers.isClientSide()) {
+            mod.getModEventBus().addListener(this::onParticleFactoryRegister);
+        }
     }
 
     @Override
