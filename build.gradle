@@ -239,6 +239,7 @@ task publishCurseForge(type: net.darkhax.curseforgegradle.TaskPublishCurseForge)
     def projectId = "232758" // my project url is http://minecraft.curseforge.com/mc-mods/232758/
 
     def mainFile = upload(projectId, jar)
+    mainFile.releaseType = 'release'
 	mainFile.changelogType = "text"
     mainFile.changelog = file("resources/changelog/${project.minecraft_version}-${project.version}.txt")
 	mainFile.addGameVersion(project.minecraft_version)
