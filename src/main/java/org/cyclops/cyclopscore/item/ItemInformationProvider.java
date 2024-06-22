@@ -5,10 +5,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import java.util.Set;
 
@@ -21,7 +21,9 @@ public class ItemInformationProvider {
     private static final Set<Item> ITEMS_INFO = Sets.newIdentityHashSet();
 
     static {
-        NeoForge.EVENT_BUS.register(ItemInformationProvider.class);
+        if (MinecraftHelpers.isClientSide()) {
+            NeoForge.EVENT_BUS.addListener(ItemInformationProvider::onTooltip);
+        }
     }
 
     public static void registerItem(Item item) {
@@ -29,7 +31,6 @@ public class ItemInformationProvider {
     }
 
     @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
     public static void onTooltip(ItemTooltipEvent event) {
         ItemStack itemStack = event.getItemStack();
         if (ITEMS_INFO.contains(itemStack.getItem())) {

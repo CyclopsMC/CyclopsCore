@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.codec;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.Codec;
@@ -8,7 +9,6 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.Lifecycle;
 import com.mojang.serialization.ListBuilder;
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.List;

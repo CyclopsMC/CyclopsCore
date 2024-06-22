@@ -23,7 +23,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -43,11 +42,12 @@ public class CraftingHelpers {
     private static RecipeManager CLIENT_RECIPE_MANAGER;
 
     public static void load() {
-        NeoForge.EVENT_BUS.register(CraftingHelpers.class);
+        if (MinecraftHelpers.isClientSide()) {
+            NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, CraftingHelpers::onRecipesLoaded);
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void onRecipesLoaded(RecipesUpdatedEvent event) {
         CLIENT_RECIPE_MANAGER = event.getRecipeManager();
     }
