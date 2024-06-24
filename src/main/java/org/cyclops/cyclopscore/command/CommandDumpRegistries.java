@@ -33,6 +33,7 @@ public class CommandDumpRegistries implements Command<CommandSourceStack> {
 
     public static LiteralArgumentBuilder<CommandSourceStack> make() {
         return Commands.literal("dumpregistries")
+                .requires((commandSource) -> commandSource.hasPermission(2))
                 .executes(new CommandDumpRegistries());
     }
 
