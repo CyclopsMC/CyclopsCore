@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Only enable dumpregistries command for OPs, Closes #180
+
