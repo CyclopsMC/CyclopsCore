@@ -1,3 +1,4 @@
+org.cyclops.commoncapabilities.api.capability
 org.cyclops.commoncapabilities.api.capability.fluidhandler
 org.cyclops.commoncapabilities.api.capability.inventorystate
 org.cyclops.commoncapabilities.api.capability.itemhandler
@@ -31,6 +32,7 @@ org.cyclops.cyclopscore.client.render.model
 org.cyclops.cyclopscore.codec
 org.cyclops.cyclopscore.command
 org.cyclops.cyclopscore.command.argument
+org.cyclops.cyclopscore.component
 org.cyclops.cyclopscore.config
 org.cyclops.cyclopscore.config.configurabletypeaction
 org.cyclops.cyclopscore.config.extendedconfig
