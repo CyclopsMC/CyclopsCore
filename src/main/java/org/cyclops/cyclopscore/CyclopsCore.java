@@ -24,6 +24,9 @@ import org.cyclops.cyclopscore.command.CommandReloadResources;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigPropertyConfig;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacketConfig;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
+import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
+import org.cyclops.cyclopscore.component.DataComponentFluidContentConfig;
+import org.cyclops.cyclopscore.component.DataComponentInventoryConfig;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.infobook.IInfoBookRegistry;
@@ -159,6 +162,11 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         configHandler.addConfigurable(new GuiContainerOpenTriggerConfig());
         configHandler.addConfigurable(new ItemCraftedTriggerConfig());
         configHandler.addConfigurable(new ModItemObtainedTriggerConfig());
+
+        // Data components
+        configHandler.addConfigurable(new DataComponentCapacityConfig());
+        configHandler.addConfigurable(new DataComponentFluidContentConfig());
+        configHandler.addConfigurable(new DataComponentInventoryConfig());
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {

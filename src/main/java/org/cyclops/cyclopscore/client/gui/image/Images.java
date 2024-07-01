@@ -10,13 +10,13 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public class Images {
 
-    public static final ResourceLocation ICONS = new ResourceLocation(CyclopsCore._instance.getModId(),
+    public static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(CyclopsCore._instance.getModId(),
             CyclopsCore._instance.getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "icons.png");
 
-    public static final ResourceLocation BUTTONS = new ResourceLocation(CyclopsCore._instance.getModId(),
+    public static final ResourceLocation BUTTONS = ResourceLocation.fromNamespaceAndPath(CyclopsCore._instance.getModId(),
             CyclopsCore._instance.getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "buttons.png");
 
-    public static final ResourceLocation WIDGETS = new ResourceLocation(CyclopsCore._instance.getModId(),
+    public static final ResourceLocation WIDGETS = ResourceLocation.fromNamespaceAndPath(CyclopsCore._instance.getModId(),
             CyclopsCore._instance.getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "widgets.png");
 
     public static final Image ARROW_DOWN = new Image(ICONS, 18, 0, 18, 18);

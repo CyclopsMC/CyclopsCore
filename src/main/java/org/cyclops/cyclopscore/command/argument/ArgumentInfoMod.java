@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.fml.ModList;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
@@ -22,7 +21,7 @@ public class ArgumentInfoMod<T extends ArgumentType<?>> implements ArgumentTypeI
 
     @Override
     public ArgumentInfoMod.Template deserializeFromNetwork(FriendlyByteBuf packetBuffer) {
-        return new Template((ModBase) ModList.get().getModObjectById(packetBuffer.readUtf(PacketCodec.READ_STRING_MAX_LENGTH)).get());
+        return new Template(ModBase.get(packetBuffer.readUtf(PacketCodec.READ_STRING_MAX_LENGTH)));
     }
 
     @Override

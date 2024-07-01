@@ -23,8 +23,8 @@ import java.awt.*;
  */
 public class WidgetScrollBar extends AbstractWidget {
 
-    private static final ResourceLocation SCROLLER_SPRITE = new ResourceLocation("container/creative_inventory/scroller");
-    private static final ResourceLocation SCROLLER_DISABLED_SPRITE = new ResourceLocation("container/creative_inventory/scroller_disabled");
+    private static final ResourceLocation SCROLLER_SPRITE = ResourceLocation.withDefaultNamespace("container/creative_inventory/scroller");
+    private static final ResourceLocation SCROLLER_DISABLED_SPRITE = ResourceLocation.withDefaultNamespace("container/creative_inventory/scroller_disabled");
     private static final int SCROLL_BUTTON_HEIGHT = 15;
     private static final int SCROLL_BUTTON_WIDTH = 12;
 

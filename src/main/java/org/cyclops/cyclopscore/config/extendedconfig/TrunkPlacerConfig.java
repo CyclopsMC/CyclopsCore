@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
@@ -17,7 +17,7 @@ import java.util.function.Function;
  */
 public class TrunkPlacerConfig<T extends TrunkPlacer> extends ExtendedConfigForge<TrunkPlacerConfig<T>, TrunkPlacerType<T>> {
 
-    public TrunkPlacerConfig(ModBase mod, String namedId, Function<TrunkPlacerConfig<T>, Codec<T>> codec) {
+    public TrunkPlacerConfig(ModBase mod, String namedId, Function<TrunkPlacerConfig<T>, MapCodec<T>> codec) {
         super(mod, namedId, (eConfig) -> new TrunkPlacerType<>(codec.apply(eConfig)));
     }
 

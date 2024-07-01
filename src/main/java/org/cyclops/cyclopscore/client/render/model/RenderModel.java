@@ -34,7 +34,7 @@ public abstract class RenderModel<T extends Entity, M extends Model> extends Ent
     }
 
     protected ResourceLocation createResourceLocation(ExtendedConfig<?, ?> config) {
-        return new ResourceLocation(config.getMod().getModId(), config.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_MODELS) + config.getNamedId() + ".png");
+        return ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_MODELS) + config.getNamedId() + ".png");
     }
 
     protected abstract M constructModel();

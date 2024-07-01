@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -81,27 +82,12 @@ public class InventoryHelpers {
     }
 
     /**
-     * Validate the NBT storage of the given inventory in the given item.
-     * Should be called in constructors of inventories.
-     * @param inventory The inventory.
-     * @param itemStack The item stack to read/write.
-     * @param tagName The tag name to read from.
-     */
-    public static void validateNBTStorage(Container inventory, ItemStack itemStack, String tagName) {
-        CompoundTag tag = itemStack.getOrCreateTag();
-        if(!tag.contains(tagName)) {
-            tag.put(tagName, new ListTag());
-        }
-        readFromNBT(inventory, tag, tagName);
-    }
-
-    /**
      * Read an inventory from NBT.
      * @param inventory The inventory.
      * @param data The tag to read from.
      * @param tagName The tag name to read from.
      */
-    public static void readFromNBT(Container inventory, CompoundTag data, String tagName) {
+    public static void readFromNBT(HolderLookup.Provider provider, Container inventory, CompoundTag data, String tagName) {
         ListTag nbttaglist = data.getList(tagName, Tag.TAG_COMPOUND);
 
         for(int j = 0; j < inventory.getContainerSize(); j++) {
@@ -117,7 +103,7 @@ public class InventoryHelpers {
                 index = slot.getByte("Slot");
             }
             if(index >= 0 && index < inventory.getContainerSize()) {
-                inventory.setItem(index, ItemStack.of(slot));
+                inventory.setItem(index, ItemStack.parseOptional(provider, slot));
             }
         }
     }
@@ -128,7 +114,7 @@ public class InventoryHelpers {
      * @param data The tag to write to.
      * @param tagName The tag name to write into.
      */
-    public static void writeToNBT(Container inventory, CompoundTag data, String tagName) {
+    public static void writeToNBT(HolderLookup.Provider provider, Container inventory, CompoundTag data, String tagName) {
         ListTag slots = new ListTag();
         for(byte index = 0; index < inventory.getContainerSize(); ++index) {
             ItemStack itemStack = inventory.getItem(index);
@@ -136,7 +122,7 @@ public class InventoryHelpers {
                 CompoundTag slot = new CompoundTag();
                 slot.putInt("index", index);
                 slots.add(slot);
-                itemStack.save(slot);
+                itemStack.save(provider, slot);
             }
         }
         data.put(tagName, slots);
@@ -202,7 +188,7 @@ public class InventoryHelpers {
      * @return The remainder of the added stack
      */
     public static ItemStack addToStack(ItemStack itemStack, ItemStack toAdd) {
-        if (ItemStack.isSameItemSameTags(toAdd, itemStack)
+        if (ItemStack.isSameItemSameComponents(toAdd, itemStack)
                 && itemStack.getCount() < itemStack.getMaxStackSize()) {
             toAdd = toAdd.copy();
             int toAddCount = Math.min(itemStack.getMaxStackSize() - itemStack.getCount(), toAdd.getCount());

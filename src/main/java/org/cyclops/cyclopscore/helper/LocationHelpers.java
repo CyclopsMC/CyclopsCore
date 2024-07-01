@@ -2,14 +2,14 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.PacketDistributor;
+import org.cyclops.cyclopscore.network.PacketHandler;
 
 import java.util.Random;
 
 /**
- * Helper methods involving {@link BlockPos}S and {@link PacketDistributor.TargetPoint}S.
+ * Helper methods involving {@link BlockPos}S and {@link org.cyclops.cyclopscore.network.PacketHandler.TargetPoint}S.
  * @author immortaleeb
  *
  */
@@ -18,28 +18,28 @@ public class LocationHelpers {
     private static final Random random = new Random();
 
     /**
-     * Creates a {@link PacketDistributor.TargetPoint} for the dimension and position of the given {@link Entity}
+     * Creates a {@link PacketHandler.TargetPoint} for the dimension and position of the given {@link Entity}
      * and a given range.
      *
-     * @param entity Entity who's dimension and position will be used to create the {@link PacketDistributor.TargetPoint}.
-     * @param range The range of the {@link PacketDistributor.TargetPoint}.
-     * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
+     * @param entity Entity who's dimension and position will be used to create the {@link PacketHandler.TargetPoint}.
+     * @param range The range of the {@link PacketHandler.TargetPoint}.
+     * @return A {@link PacketHandler.TargetPoint} with the position and dimension of the entity and the given range.
      */
-    public static PacketDistributor.TargetPoint createTargetPointFromEntity(Entity entity, int range) {
-        return new PacketDistributor.TargetPoint(entity.getX(), entity.getY(), entity.getZ(), range, entity.level().dimension());
+    public static PacketHandler.TargetPoint createTargetPointFromEntity(Entity entity, int range) {
+        return new PacketHandler.TargetPoint((ServerLevel) entity.level(), entity.getX(), entity.getY(), entity.getZ(), range, null);
     }
 
     /**
-     * Creates a {@link PacketDistributor.TargetPoint} for the dimension of the given world and the
+     * Creates a {@link PacketHandler.TargetPoint} for the dimension of the given world and the
      * given {@link BlockPos}.
      *
      * @param world The world from which the dimension will be used.
      * @param location The location for the target.
-     * @param range The range of the {@link PacketDistributor.TargetPoint}.
-     * @return A {@link PacketDistributor.TargetPoint} with the position and dimension of the entity and the given range.
+     * @param range The range of the {@link PacketHandler.TargetPoint}.
+     * @return A {@link PacketHandler.TargetPoint} with the position and dimension of the entity and the given range.
      */
-    public static PacketDistributor.TargetPoint createTargetPointFromLocation(Level world, BlockPos location, int range) {
-        return new PacketDistributor.TargetPoint(location.getX(), location.getY(), location.getZ(), range, world.dimension());
+    public static PacketHandler.TargetPoint createTargetPointFromLocation(ServerLevel world, BlockPos location, int range) {
+        return new PacketHandler.TargetPoint(world, location.getX(), location.getY(), location.getZ(), range, null);
     }
 
     /**

@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.network.packet;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -17,15 +19,16 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  * @author rubensworks
  *
  */
-public class SendPlayerNbtPacket extends PacketCodec {
+public class SendPlayerNbtPacket extends PacketCodec<SendPlayerNbtPacket> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "send_player_nbt");
+    public static final Type<SendPlayerNbtPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "send_player_nbt"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SendPlayerNbtPacket> CODEC = getCodec(SendPlayerNbtPacket::new);
 
     @CodecField
     private CompoundTag nbtData;
 
     public SendPlayerNbtPacket() {
-        super(ID);
+        super(TYPE);
     }
 
     public SendPlayerNbtPacket(Player player) {

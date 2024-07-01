@@ -23,7 +23,7 @@ public abstract class RecipeTypeConfig<T extends Recipe<?>> extends ExtendedConf
      * @param namedId            A unique name id
      */
     public RecipeTypeConfig(ModBase mod, String namedId) {
-        super(mod, namedId, (eConfig) -> RecipeType.simple(new ResourceLocation(mod.getModId(), namedId)));
+        super(mod, namedId, (eConfig) -> RecipeType.simple(ResourceLocation.fromNamespaceAndPath(mod.getModId(), namedId)));
     }
 
     @Override

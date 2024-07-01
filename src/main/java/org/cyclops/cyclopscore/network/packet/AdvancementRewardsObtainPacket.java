@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.network.packet;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -17,15 +19,16 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  * @author rubensworks
  *
  */
-public class AdvancementRewardsObtainPacket extends PacketCodec {
+public class AdvancementRewardsObtainPacket extends PacketCodec<AdvancementRewardsObtainPacket> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "advancement_rewards_obtain_packet");
+    public static final Type<AdvancementRewardsObtainPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "advancement_rewards_obtain_packet"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, AdvancementRewardsObtainPacket> CODEC = getCodec(AdvancementRewardsObtainPacket::new);
 
     @CodecField
     private String advancementRewardsId;
 
     public AdvancementRewardsObtainPacket() {
-        super(ID);
+        super(TYPE);
     }
 
     public AdvancementRewardsObtainPacket(String advancementRewardsId) {

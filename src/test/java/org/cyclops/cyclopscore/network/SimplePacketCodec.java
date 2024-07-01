@@ -12,7 +12,7 @@ import org.cyclops.cyclopscore.Reference;
  */
 public class SimplePacketCodec extends PacketCodec {
     public SimplePacketCodec() {
-        super(new ResourceLocation(Reference.MOD_ID, "simple_packet"));
+        super(new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "simple_packet")));
     }
 
     @Override

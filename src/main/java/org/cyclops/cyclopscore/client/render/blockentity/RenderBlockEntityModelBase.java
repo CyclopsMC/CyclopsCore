@@ -6,6 +6,7 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.model.Material;
 import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
+import org.cyclops.cyclopscore.helper.Helpers;
 
 /**
  * General renderer for {@link CyclopsBlockEntity} with {@link Model} models.
@@ -22,6 +23,6 @@ public class RenderBlockEntityModelBase<T extends CyclopsBlockEntity, M extends 
     protected void renderModel(T tile, M model, float partialTick, PoseStack matrixStack,
                                VertexConsumer vertexBuilder, MultiBufferSource buffer,
                                int combinedLight, int combinedOverlay) {
-        model.renderToBuffer(matrixStack, vertexBuilder, combinedLight, combinedOverlay, 1, 1, 1, 1); // Last params are RGBA
+        model.renderToBuffer(matrixStack, vertexBuilder, combinedLight, combinedOverlay, Helpers.RGBAToInt(1, 1, 1, 1));
     }
 }

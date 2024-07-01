@@ -84,7 +84,7 @@ public class TestIngredientCollectionSingleClassified {
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), this.categoryType);
         IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> c1 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), new IngredientComponentCategoryType<>(
-                        new ResourceLocation("dummy"), ComplexStack.Group.class, true, ComplexStack::getGroup, ComplexStack.Match.GROUP, false));
+                        ResourceLocation.parse("dummy"), ComplexStack.Group.class, true, ComplexStack::getGroup, ComplexStack.Match.GROUP, false));
         IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> c2 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), this.categoryType);
         c0.addAll(Lists.newArrayList(CA01_, CB02_, CA91B));

@@ -79,6 +79,6 @@ public class ContainerScreenInfoBookTest extends ScreenInfoBook<ContainerInfoBoo
 
     @Override
     protected ResourceLocation constructGuiTexture() {
-        return new ResourceLocation("textures/gui/book.png");
+        return ResourceLocation.withDefaultNamespace("textures/gui/book.png");
     }
 }

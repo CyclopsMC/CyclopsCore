@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.network.packet;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -18,13 +20,14 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class ButtonClickPacket extends PacketCodec {
 
-    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "button_click");
+    public static final Type<ButtonClickPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "button_click"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ButtonClickPacket> CODEC = getCodec(ButtonClickPacket::new);
 
     @CodecField
     private String buttonId;
 
     public ButtonClickPacket() {
-        super(ID);
+        super(TYPE);
     }
 
     public ButtonClickPacket(String buttonId) {

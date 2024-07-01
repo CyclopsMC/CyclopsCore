@@ -1,9 +1,8 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
-import net.neoforged.fml.DistExecutor;
+import net.minecraft.world.level.LevelAccessor;
 
 import javax.annotation.Nullable;
 
@@ -94,7 +93,10 @@ public class WorldHelpers {
      * @return The current level client-side, or the overworld server-side.
      */
     public static Level getActiveLevel() {
-        return DistExecutor.safeRunForDist(()->WorldHelpersClient::getActiveLevel, ()->WorldHelpersServer::getActiveLevel);
+        if (MinecraftHelpers.isClientSide()) {
+            return WorldHelpersClient.getActiveLevel();
+        }
+        return WorldHelpersServer.getActiveLevel();
     }
 
     public static interface WorldFoldingFunction<F, T, W> {

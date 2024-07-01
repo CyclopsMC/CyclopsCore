@@ -7,7 +7,6 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -22,7 +21,7 @@ public class ItemCraftedTrigger extends SimpleCriterionTrigger<ItemCraftedTrigge
 
     public static final Codec<Instance> CODEC = RecordCodecBuilder.create(
             p_311401_ -> p_311401_.group(
-                            ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(ItemCraftedTrigger.Instance::player),
+                            EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(ItemCraftedTrigger.Instance::player),
                             ItemPredicate.CODEC.fieldOf("item").forGetter(ItemCraftedTrigger.Instance::itemPredicate)
                     )
                     .apply(p_311401_, ItemCraftedTrigger.Instance::new)
@@ -52,7 +51,7 @@ public class ItemCraftedTrigger extends SimpleCriterionTrigger<ItemCraftedTrigge
 
         @Override
         public boolean test(ServerPlayer player, PlayerEvent.ItemCraftedEvent criterionData) {
-            return itemPredicate.matches(criterionData.getCrafting());
+            return itemPredicate.test(criterionData.getCrafting());
         }
 
         @Override

@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.network.packet.debug;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.cyclops.cyclopscore.Reference;
@@ -10,9 +12,10 @@ import org.cyclops.cyclopscore.network.CodecField;
  * @author rubensworks
  *
  */
-public class PingPongPacketComplexAsync extends PingPongPacketAsync {
+public class PingPongPacketComplexAsync<T extends PingPongPacketComplexAsync<T>> extends PingPongPacketAsync<T> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "ping_pong_complex_async");
+    public static final Type<PingPongPacketComplexAsync> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "ping_pong_complex_async"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, PingPongPacketComplexAsync> CODEC = getCodec(PingPongPacketComplexAsync::new);
 
     @CodecField
     protected String string1;
@@ -23,27 +26,27 @@ public class PingPongPacketComplexAsync extends PingPongPacketAsync {
      * Empty packet.
      */
     public PingPongPacketComplexAsync() {
-        super(ID);
+        super((Type) TYPE);
     }
 
     public PingPongPacketComplexAsync(int remaining, String string1, String string2) {
-        super(ID, remaining);
+        super((Type) TYPE, remaining);
         this.string1 = string1;
         this.string2 = string2;
     }
 
-    public PingPongPacketComplexAsync(ResourceLocation id) {
-        super(id);
+    public PingPongPacketComplexAsync(Type<T> type) {
+        super(type);
     }
 
-    public PingPongPacketComplexAsync(ResourceLocation id, int remaining, String string1, String string2) {
-        super(id, remaining);
+    public PingPongPacketComplexAsync(Type<T> type, int remaining, String string1, String string2) {
+        super(type, remaining);
         this.string1 = string1;
         this.string2 = string2;
     }
 
     protected PingPongPacketAsync newPacket() {
-        return new PingPongPacketComplexAsync(remaining - 1, string1, string2);
+        return new PingPongPacketComplexAsync<>(remaining - 1, string1, string2);
     }
 
     @Override

@@ -25,8 +25,8 @@ public interface IRegistryExportable {
 
         object.addProperty("item", BuiltInRegistries.ITEM.getKey(itemStack.getItem()).toString());
         object.addProperty("count", itemStack.getCount());
-        if (itemStack.hasTag()) {
-            object.addProperty("nbt", itemStack.getTag().toString());
+        if (!itemStack.getComponents().isEmpty()) {
+            object.addProperty("components", itemStack.getComponents().toString());
         }
 
         return object;
@@ -37,8 +37,8 @@ public interface IRegistryExportable {
 
         object.addProperty("fluid", BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()).toString());
         object.addProperty("amount", fluidStack.getAmount());
-        if (fluidStack.hasTag()) {
-            object.addProperty("nbt", fluidStack.getTag().toString());
+        if (!fluidStack.getComponents().isEmpty()) {
+            object.addProperty("nbt", fluidStack.getComponents().toString());
         }
 
         return object;

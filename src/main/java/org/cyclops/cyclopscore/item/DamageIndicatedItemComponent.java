@@ -4,9 +4,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -93,7 +93,7 @@ public class DamageIndicatedItemComponent {
     public static MutableComponent getInfo(FluidStack fluidStack, int amount, int capacity) {
         MutableComponent prefix = Component.literal("");
         if (!fluidStack.isEmpty()) {
-            prefix = Component.translatable(fluidStack.getTranslationKey()).append(": ");
+            prefix = fluidStack.getHoverName().copy().append(": ");
         }
         return prefix
                 .append(String.format(Locale.ROOT, "%,d", amount))
@@ -105,11 +105,11 @@ public class DamageIndicatedItemComponent {
     /**
      * Add information to the given list for the given item.
      * @param itemStack The {@link ItemStack} to add info for.
-     * @param world The player that will see the info.
+     * @param context The context that will see the info.
      * @param list The info list where the info will be added.
      * @param flag the tooltip flag
      */
-    public void addInformation(ItemStack itemStack, Level world, List<Component> list, TooltipFlag flag) {
+    public void addInformation(ItemStack itemStack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
         list.add(((IInformationProvider) itemStack.getItem()).getInfo(itemStack)
                 .setStyle(Style.EMPTY.withColor(IInformationProvider.ITEM_PREFIX)));
     }

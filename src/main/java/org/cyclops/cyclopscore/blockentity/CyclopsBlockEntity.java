@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.blockentity;
 import lombok.experimental.Delegate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -78,10 +79,10 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet) {
-        super.onDataPacket(net, packet);
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider lookupProvider) {
+        super.onDataPacket(net, packet, lookupProvider);
         CompoundTag tag = packet.getTag();
-        read(tag);
+        read(tag, lookupProvider);
         onUpdateReceived();
     }
 
@@ -105,36 +106,35 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag) {
-        super.saveAdditional(tag);
+    public void saveAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
+        super.saveAdditional(tag, lookupProvider);
         writeGeneratedFieldsToNBT(tag);
     }
 
     /**
      * Write this block entity to the given NBT tag that will be attached to an item.
-     * By default, {@link #saveAdditional(CompoundTag)}} will be called.
+     * By default, {@link #saveAdditional(CompoundTag, HolderLookup.Provider)}  will be called.
      * @param tag The tag to write to.
      * @return The written tag.
      */
-    public CompoundTag writeToItemStack(CompoundTag tag) {
-        this.saveAdditional(tag);
+    public CompoundTag writeToItemStack(CompoundTag tag, HolderLookup.Provider lookupProvider) {
+        this.saveAdditional(tag, lookupProvider);
         return tag;
     }
 
     @Override
-    public final void load(CompoundTag tag) {
-        super.load(tag);
-        read(tag);
+    public final void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        read(tag, provider);
     }
 
-    public void read(CompoundTag tag) {
+    public void read(CompoundTag tag, HolderLookup.Provider provider) {
         readGeneratedFieldsFromNBT(tag);
-        onLoad();
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        return saveWithoutMetadata();
+    public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        return saveWithoutMetadata(provider);
     }
 
     protected Direction transformFacingForRotation(Direction facing) {

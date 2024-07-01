@@ -1,7 +1,5 @@
 package org.cyclops.cyclopscore.infobook.condition;
 
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
 import org.apache.logging.log4j.util.Strings;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -22,11 +20,10 @@ public class ConfigSectionConditionHandler implements ISectionConditionHandler {
             param = split[1];
         }
         if (!Strings.isEmpty(modId)) {
-            ModContainer untypedMod = ModList.get().getModContainerById(modId).orElse(null);
-            if (!(untypedMod.getMod() instanceof ModBase)) {
-                throw new IllegalArgumentException("The mod " + modId + " is not of type ModBase.");
+            mod = ModBase.get(modId);
+            if (mod == null) {
+                throw new IllegalArgumentException("The mod " + modId + " could not be found as ModBase.");
             }
-            mod = (ModBase) untypedMod.getMod();
         }
         ExtendedConfig<?, ?> config = mod.getConfigHandler().getDictionary().get(param);
         return config != null;

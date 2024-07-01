@@ -4,9 +4,9 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 
@@ -21,7 +21,7 @@ import java.util.Map;
  * @param <R> The type of the recipe instance.
  * @author rubensworks
  */
-public abstract class RecipeRegistryJeiRecipeWrapper<C extends Container, R extends Recipe<C>,
+public abstract class RecipeRegistryJeiRecipeWrapper<C extends RecipeInput, R extends Recipe<C>,
         J extends RecipeRegistryJeiRecipeWrapper<C, R, J>> {
 
     private static final Map<ResourceLocation, RecipeRegistryJeiRecipeWrapper<?, ?, ?>> RECIPE_WRAPPERS = Maps.newHashMap();
@@ -40,7 +40,7 @@ public abstract class RecipeRegistryJeiRecipeWrapper<C extends Container, R exte
 
     protected abstract J newInstance(RecipeHolder<R> input);
 
-    public static <T extends RecipeType<R>, C extends Container, R extends Recipe<C>,
+    public static <T extends RecipeType<R>, C extends RecipeInput, R extends Recipe<C>,
             J extends RecipeRegistryJeiRecipeWrapper<C, R, J>> T getJeiRecipeWrapper(R input) {
         return (T) RECIPE_WRAPPERS.get(input);
     }

@@ -1,20 +1,19 @@
 package org.cyclops.cyclopscore.helper;
 
-import cpw.mods.modlauncher.Launcher;
 import cpw.mods.modlauncher.TransformingClassLoader;
-import cpw.mods.modlauncher.api.IEnvironment;
+import net.minecraft.DetectedVersion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ServerLevelData;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.internal.versions.neoform.NeoFormVersion;
+import net.neoforged.fml.loading.FMLLoader;
 import org.cyclops.cyclopscore.CyclopsCore;
 
 import java.util.Arrays;
@@ -75,7 +74,7 @@ public class MinecraftHelpers {
      * @return If we are currently running inside a deobfuscated development environment.
      */
     public static boolean isDevEnvironment() {
-        return "mcp".equals(Launcher.INSTANCE.environment().getProperty(IEnvironment.Keys.NAMING.get()).orElse("mojang"));
+        return !FMLLoader.isProduction();
     }
 
     /**
@@ -89,7 +88,7 @@ public class MinecraftHelpers {
      * @return The Minecraft version (e.g. "1.14.4")
      */
     public static String getMinecraftVersion() {
-        return NeoFormVersion.getMCVersion();
+        return DetectedVersion.BUILT_IN.getName();
     }
 
     /**

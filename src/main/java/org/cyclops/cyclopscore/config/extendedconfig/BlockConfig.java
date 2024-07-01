@@ -105,7 +105,7 @@ public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block
      */
     @OnlyIn(Dist.CLIENT)
     public Pair<ModelResourceLocation, ModelResourceLocation> registerDynamicModel() {
-        ResourceLocation blockName = new ResourceLocation(getMod().getModId(), getNamedId());
+        ResourceLocation blockName = ResourceLocation.fromNamespaceAndPath(getMod().getModId(), getNamedId());
         ModelResourceLocation blockLocation = new ModelResourceLocation(blockName, "");
         ModelResourceLocation itemLocation = new ModelResourceLocation(blockName, "inventory");
         return Pair.of(blockLocation, itemLocation);

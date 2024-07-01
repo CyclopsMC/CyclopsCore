@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.persist.nbt;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import org.apache.logging.log4j.Level;
@@ -22,16 +23,18 @@ public interface INBTSerializable {
 
     /**
      * Convert the data to an NBT tag.
+     * @param provider Holder provider.
      * @return The NBT tag.
      */
-    public CompoundTag toNBT();
+    public CompoundTag toNBT(HolderLookup.Provider provider);
     /**
      * Read the data from an NBT tag and place it in this object.
      * The given tag will never be null, so make sure that all fields have a correct default value in case
      * the received tag would be null anyways.
      * @param tag The tag to read from.
+     * @param provider Holder provider.
      */
-    public void fromNBT(CompoundTag tag);
+    public void fromNBT(HolderLookup.Provider provider, CompoundTag tag);
 
     @EqualsAndHashCode(callSuper = false)
     @Data

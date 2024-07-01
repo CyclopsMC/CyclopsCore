@@ -121,7 +121,7 @@ public final class ItemStackHelpers {
     public static ItemStack parseItemStack(String itemStackString) {
         String[] split = itemStackString.split(":");
         String itemName = split[0] + ":" + split[1];
-        Item item =  BuiltInRegistries.ITEM.get(new ResourceLocation(itemName));
+        Item item =  BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemName));
         if(item == null) {
             throw new IllegalArgumentException("Invalid ItemStack item: " + itemName);
         }

@@ -13,7 +13,7 @@ public class FluidSectionConditionHandler implements ISectionConditionHandler {
 
     @Override
     public boolean isSatisfied(ModBase<?> mod, String param) {
-        return BuiltInRegistries.FLUID.containsKey(new ResourceLocation(param));
+        return BuiltInRegistries.FLUID.containsKey(ResourceLocation.parse(param));
     }
 
 }

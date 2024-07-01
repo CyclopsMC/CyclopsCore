@@ -33,7 +33,7 @@ public abstract class ExtendedConfigForge<C extends ExtendedConfig<C, I>, I>
 
     public ResourceKey<? super I> getResourceKey() {
         return ResourceKey.create(getRegistry().key(),
-                new ResourceLocation(getMod().getModId(), getNamedId()));
+                ResourceLocation.fromNamespaceAndPath(getMod().getModId(), getNamedId()));
     }
 
 }

@@ -1,16 +1,14 @@
 package org.cyclops.cyclopscore.client.particle;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import org.cyclops.cyclopscore.RegistryEntries;
-
-import java.util.Locale;
 
 /**
  * Data for {@link ParticleDropColored}.
@@ -19,26 +17,17 @@ import java.util.Locale;
 public class ParticleDropColoredData implements ParticleOptions {
 
     public static final ParticleDropColoredData INSTANCE = new ParticleDropColoredData(0, 0, 0);
-    public static final Deserializer<ParticleDropColoredData> DESERIALIZER = new Deserializer<ParticleDropColoredData>() {
-        public ParticleDropColoredData fromCommand(ParticleType<ParticleDropColoredData> particleType, StringReader reader) throws CommandSyntaxException {
-            reader.expect(' ');
-            float red = (float) reader.readDouble();
-            reader.expect(' ');
-            float green = (float) reader.readDouble();
-            reader.expect(' ');
-            float blue = (float) reader.readDouble();
-            return new ParticleDropColoredData(red, green, blue);
-        }
-
-        public ParticleDropColoredData fromNetwork(ParticleType<ParticleDropColoredData> particleTypeIn, FriendlyByteBuf buffer) {
-            return new ParticleDropColoredData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-        }
-    };
-    public static final Codec<ParticleDropColoredData> CODEC = RecordCodecBuilder.create((builder) -> builder
+    public static final MapCodec<ParticleDropColoredData> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder
             .group(Codec.FLOAT.fieldOf("r").forGetter(ParticleDropColoredData::getRed),
                     Codec.FLOAT.fieldOf("g").forGetter(ParticleDropColoredData::getGreen),
                     Codec.FLOAT.fieldOf("b").forGetter(ParticleDropColoredData::getBlue))
             .apply(builder, ParticleDropColoredData::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ParticleDropColoredData> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.FLOAT, ParticleDropColoredData::getRed,
+            ByteBufCodecs.FLOAT, ParticleDropColoredData::getGreen,
+            ByteBufCodecs.FLOAT, ParticleDropColoredData::getBlue,
+            ParticleDropColoredData::new
+    );
 
     private final float red;
     private final float green;
@@ -53,20 +42,6 @@ public class ParticleDropColoredData implements ParticleOptions {
     @Override
     public ParticleType<?> getType() {
         return RegistryEntries.PARTICLE_DROP_COLORED.get();
-    }
-
-    @Override
-    public void writeToNetwork(FriendlyByteBuf buffer) {
-        buffer.writeFloat(this.red);
-        buffer.writeFloat(this.green);
-        buffer.writeFloat(this.blue);
-    }
-
-    @Override
-    public String writeToString() {
-        return String.format(Locale.ROOT, "%s %.2f %.2f %.2f",
-                BuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()),
-                this.red, this.green, this.blue);
     }
 
     public float getRed() {

@@ -30,7 +30,7 @@ public class CommandIgnite implements Command<CommandSourceStack> {
         Collection<? extends Entity> entities = EntityArgument.getEntities(context, "targets");
         int duration = this.durationParam ? IntegerArgumentType.getInteger(context, "duration") : 2;
         for (Entity entity : entities) {
-            entity.setSecondsOnFire(duration);
+            entity.setRemainingFireTicks(duration);
             context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable(
                     "chat.cyclopscore.command.ignitedPlayer", entity.getDisplayName(), duration));
         }

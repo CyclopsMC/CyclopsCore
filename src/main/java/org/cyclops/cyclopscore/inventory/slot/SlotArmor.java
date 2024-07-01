@@ -32,7 +32,7 @@ public class SlotArmor extends Slot {
         super(inventory, index, x, y);
         this.armorType = armorType;
         this.player = player;
-        setBackground(InventoryMenu.BLOCK_ATLAS, InventoryMenu.TEXTURE_EMPTY_SLOTS[armorType.getIndex()]);
+        setBackground(InventoryMenu.BLOCK_ATLAS, InventoryMenu.TEXTURE_EMPTY_SLOTS.get(armorType));
     }
 
     @Override

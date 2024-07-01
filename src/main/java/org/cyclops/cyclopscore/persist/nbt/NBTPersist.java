@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.persist.nbt;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
 
@@ -14,8 +15,8 @@ import java.lang.annotation.Target;
  * Fields that are a subtype of {@link INBTSerializable} must not be null, they should
  * have a dummy value that will then be populated with the actual values.
  * It will automatically be added to
- * {@link CyclopsBlockEntity#saveAdditional(CompoundTag)}
- * and {@link CyclopsBlockEntity#load(CompoundTag)}.
+ * {@link CyclopsBlockEntity#saveAdditional(CompoundTag, HolderLookup.Provider)}
+ * and {@link CyclopsBlockEntity#loadAdditional(CompoundTag, HolderLookup.Provider)}.
  * @author rubensworks
  *
  */

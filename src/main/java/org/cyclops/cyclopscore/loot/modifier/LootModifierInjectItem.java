@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.loot.modifier;
 
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +19,7 @@ import java.util.function.Supplier;
  * @author rubensworks
  */
 public class LootModifierInjectItem extends LootModifier {
-    public static final Supplier<Codec<LootModifierInjectItem>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.create(inst -> codecStart(inst).and(
+    public static final Supplier<MapCodec<LootModifierInjectItem>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder.mapCodec(inst -> codecStart(inst).and(
             inst.group(
                     ItemStack.CODEC.fieldOf("item").forGetter(LootModifierInjectItem::getItemStack),
                     Codec.list(Codec.STRING).fieldOf("loot_tables").forGetter(LootModifierInjectItem::getLootTables),
@@ -60,7 +61,7 @@ public class LootModifierInjectItem extends LootModifier {
     }
 
     @Override
-    public Codec<? extends IGlobalLootModifier> codec() {
+    public MapCodec<? extends IGlobalLootModifier> codec() {
         return CODEC.get();
     }
 }

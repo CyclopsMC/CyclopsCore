@@ -58,7 +58,7 @@ public class GuiGraphicsExtended {
 
             Minecraft minecraft = Minecraft.getInstance();
             LocalPlayer localplayer = minecraft.player;
-            float f = localplayer == null ? 0.0F : localplayer.getCooldowns().getCooldownPercent(stack.getItem(), minecraft.getFrameTime());
+            float f = localplayer == null ? 0.0F : localplayer.getCooldowns().getCooldownPercent(stack.getItem(), minecraft.getTimer().getGameTimeDeltaPartialTick(true));
             if (f > 0.0F) {
                 int i1 = y + Mth.floor(16.0F * (1.0F - f));
                 int j1 = i1 + Mth.ceil(16.0F * f);

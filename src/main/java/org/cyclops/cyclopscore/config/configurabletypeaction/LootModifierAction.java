@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import org.cyclops.cyclopscore.config.extendedconfig.LootModifierConfig;
 
@@ -9,6 +9,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.LootModifierConfig;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class LootModifierAction<T extends IGlobalLootModifier> extends ConfigurableTypeActionForge<LootModifierConfig<T>, Codec<T>> {
+public class LootModifierAction<T extends IGlobalLootModifier> extends ConfigurableTypeActionForge<LootModifierConfig<T>, MapCodec<T>> {
 
 }

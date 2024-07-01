@@ -1,8 +1,10 @@
 package org.cyclops.cyclopscore.inventory;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.cyclops.cyclopscore.RegistryEntries;
 import org.cyclops.cyclopscore.helper.InventoryHelpers;
 
 /**
@@ -30,25 +32,22 @@ public class NBTSimpleInventoryItemHeld extends SimpleInventory {
         this.player = player;
         this.itemLocation = itemLocation;
         this.tagName = tagName;
-        InventoryHelpers.validateNBTStorage(this, itemLocation.getItemStack(player), this.tagName);
     }
 
     @Override
     public void setChanged() {
         ItemStack itemStack = itemLocation.getItemStack(player);
-        CompoundTag tag = itemStack.getOrCreateTag();
-        writeToNBT(tag, this.tagName);
-        itemStack.setTag(tag);
+        itemStack.set(RegistryEntries.COMPONENT_INVENTORY, this);
     }
 
     @Override
-    public void readFromNBT(CompoundTag data, String tagName) {
-        InventoryHelpers.readFromNBT(this, data, tagName);
+    public void readFromNBT(HolderLookup.Provider provider, CompoundTag data, String tagName) {
+        InventoryHelpers.readFromNBT(provider, this, data, tagName);
     }
 
     @Override
-    public void writeToNBT(CompoundTag data, String tagName) {
-        InventoryHelpers.writeToNBT(this, data, tagName);
+    public void writeToNBT(HolderLookup.Provider provider, CompoundTag data, String tagName) {
+        InventoryHelpers.writeToNBT(provider, this, data, tagName);
     }
 
 }

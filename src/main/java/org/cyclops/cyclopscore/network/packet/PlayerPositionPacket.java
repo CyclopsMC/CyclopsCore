@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.network.packet;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -21,7 +20,7 @@ import java.util.UUID;
  *
  * @author immortaleeb
  */
-public abstract class PlayerPositionPacket extends PacketCodec {
+public abstract class PlayerPositionPacket<T extends PlayerPositionPacket<T>> extends PacketCodec<T> {
 
     private static final int DEFAULT_RANGE = 3000;
 
@@ -35,16 +34,16 @@ public abstract class PlayerPositionPacket extends PacketCodec {
     /**
      * Creates a packet with no content
      */
-    public PlayerPositionPacket(ResourceLocation id) {
-        super(id);
+    public PlayerPositionPacket(Type<T> type) {
+        super(type);
     }
 
-    public PlayerPositionPacket(ResourceLocation id, Player player) {
-        this(id, player, DEFAULT_RANGE);
+    public PlayerPositionPacket(Type<T> type, Player player) {
+        this(type, player, DEFAULT_RANGE);
     }
 
-    public PlayerPositionPacket(ResourceLocation id, Player player, int range) {
-        super(id);
+    public PlayerPositionPacket(Type<T> type, Player player, int range) {
+        super(type);
         this.uuid = player.getUUID().toString();
         this.position = player.position();
         this.range = range;

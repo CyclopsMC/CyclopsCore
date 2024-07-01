@@ -5,6 +5,8 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -241,7 +243,7 @@ public class GuiHelpers {
         drawTooltipBackground(poseStack, xStart, yStart, tooltipWidth, tooltipHeight);
 
         PoseStack matrixstack = new PoseStack();
-        MultiBufferSource.BufferSource irendertypebuffer$impl = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource irendertypebuffer$impl = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
         matrixstack.translate(0.0D, 0.0D, 300F);
         Matrix4f matrix4f = matrixstack.last().pose();
 
@@ -312,8 +314,7 @@ public class GuiHelpers {
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
+        BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
         float f = (float)(startColor >> 24 & 255) / 255.0F;
         float f1 = (float)(startColor >> 16 & 255) / 255.0F;
         float f2 = (float)(startColor >> 8 & 255) / 255.0F;
@@ -323,11 +324,11 @@ public class GuiHelpers {
         float f6 = (float)(endColor >> 8 & 255) / 255.0F;
         float f7 = (float)(endColor & 255) / 255.0F;
         Matrix4f matrix = poseStack.last().pose();
-        bufferbuilder.vertex(matrix, (float)right, (float)top, zLevel).color(f1, f2, f3, f).endVertex();
-        bufferbuilder.vertex(matrix, (float)left, (float)top, zLevel).color(f1, f2, f3, f).endVertex();
-        bufferbuilder.vertex(matrix, (float)left, (float)bottom, zLevel).color(f5, f6, f7, f4).endVertex();
-        bufferbuilder.vertex(matrix, (float)right, (float)bottom, zLevel).color(f5, f6, f7, f4).endVertex();
-        tesselator.end();
+        bufferbuilder.addVertex(matrix, (float)right, (float)top, zLevel).setColor(f1, f2, f3, f);
+        bufferbuilder.addVertex(matrix, (float)left, (float)top, zLevel).setColor(f1, f2, f3, f);
+        bufferbuilder.addVertex(matrix, (float)left, (float)bottom, zLevel).setColor(f5, f6, f7, f4);
+        bufferbuilder.addVertex(matrix, (float)right, (float)bottom, zLevel).setColor(f5, f6, f7, f4);
+        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
         RenderSystem.disableBlend();
     }
 

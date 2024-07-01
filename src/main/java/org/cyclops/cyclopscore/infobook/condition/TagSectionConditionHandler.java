@@ -23,7 +23,7 @@ public class TagSectionConditionHandler<T> implements ISectionConditionHandler {
 
     @Override
     public boolean isSatisfied(ModBase<?> mod, String param) {
-        Optional<HolderSet.Named<T>> collection = this.registry.getTag(TagKey.create(this.registry.key(), new ResourceLocation(param)));
+        Optional<HolderSet.Named<T>> collection = this.registry.getTag(TagKey.create(this.registry.key(), ResourceLocation.parse(param)));
         return collection.isPresent();
     }
 

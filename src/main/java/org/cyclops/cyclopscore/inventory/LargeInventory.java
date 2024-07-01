@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.inventory;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -28,12 +29,7 @@ public class LargeInventory extends SimpleInventory {
         super(size, stackLimit);
     }
 
-    /**
-     * Read inventory data from the given NBT.
-     * @param data The NBT data containing inventory data.
-     * @param tag The NBT tag name where the info is located.
-     */
-    public void readFromNBT(CompoundTag data, String tag) {
+    public void readFromNBT(HolderLookup.Provider provider, CompoundTag data, String tag) {
         ListTag nbttaglist = data.getList(tag, Tag.TAG_COMPOUND);
 
         for (int j = 0; j < getContainerSize(); ++j)
@@ -48,17 +44,12 @@ public class LargeInventory extends SimpleInventory {
                 index = slot.getInt("Slot");
             }
             if (index >= 0 && index < getContainerSize()) {
-                contents[index] = ItemStack.of(slot);
+                contents[index] = ItemStack.parseOptional(provider, slot);
             }
         }
     }
 
-    /**
-     * Write inventory data to the given NBT.
-     * @param data The NBT tag that will receive inventory data.
-     * @param tag The NBT tag name where the info must be located.
-     */
-    public void writeToNBT(CompoundTag data, String tag) {
+    public void writeToNBT(HolderLookup.Provider provider, CompoundTag data, String tag) {
         ListTag slots = new ListTag();
         for (int index = 0; index < getContainerSize(); ++index) {
             ItemStack itemStack = getItem(index);
@@ -66,7 +57,7 @@ public class LargeInventory extends SimpleInventory {
                 CompoundTag slot = new CompoundTag();
                 slots.add(slot);
                 slot.putInt("Slot", index);
-                itemStack.save(slot);
+                itemStack.save(provider, slot);
             }
         }
         data.put(tag, slots);

@@ -1,7 +1,9 @@
 package org.cyclops.cyclopscore.network.packet;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -16,15 +18,16 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  * @author rubensworks
  *
  */
-public class ReloadResourcesPacket extends PacketCodec {
+public class ReloadResourcesPacket extends PacketCodec<ReloadResourcesPacket> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "reload_resources");
+    public static final Type<ReloadResourcesPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "reload_resources"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ReloadResourcesPacket> CODEC = getCodec(ReloadResourcesPacket::new);
 
     /**
      * Empty packet.
      */
     public ReloadResourcesPacket() {
-        super(ID);
+        super(TYPE);
     }
 
     @Override

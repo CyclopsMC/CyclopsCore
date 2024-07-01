@@ -2,14 +2,16 @@ package org.cyclops.cyclopscore.recipe.type;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -41,7 +43,7 @@ public class RecipeCraftingShapelessCustomOutput extends ShapelessRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
+    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registryAccess) {
         Serializer.IOutputTransformer outputTransformer = serializer.getOutputTransformer();
         if (outputTransformer != null) {
             return outputTransformer.transform(inv, this.getResultItem());
@@ -54,25 +56,26 @@ public class RecipeCraftingShapelessCustomOutput extends ShapelessRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
         return getResultItem();
     }
 
     // Partially copied from ShapelessRecipe.Serializer
     public static class Serializer implements RecipeSerializer<RecipeCraftingShapelessCustomOutput> {
-        private static final net.minecraft.resources.ResourceLocation NAME = new net.minecraft.resources.ResourceLocation("minecraft", "crafting_shapeless");
+        private static final net.minecraft.resources.ResourceLocation NAME = ResourceLocation.fromNamespaceAndPath("minecraft", "crafting_shapeless");
 
         private final Supplier<ItemStack> outputProvider;
         @Nullable
         private final Serializer.IOutputTransformer outputTransformer;
-        private final Codec<RecipeCraftingShapelessCustomOutput> codec;
+        private final MapCodec<RecipeCraftingShapelessCustomOutput> codec;
+        private final StreamCodec<RegistryFriendlyByteBuf, RecipeCraftingShapelessCustomOutput> streamCodec;
 
         public Serializer(Supplier<ItemStack> outputProvider, @Nullable Serializer.IOutputTransformer outputTransformer) {
             this.outputProvider = outputProvider;
             this.outputTransformer = outputTransformer;
-            this.codec = RecordCodecBuilder.create(
+            this.codec = RecordCodecBuilder.mapCodec(
                     p_311734_ -> p_311734_.group(
-                                    ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(p_301127_ -> p_301127_.getGroup()),
+                                    Codec.STRING.optionalFieldOf("group", "").forGetter(p_301127_ -> p_301127_.getGroup()),
                                     CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(p_301133_ -> p_301133_.category()),
 //                                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(p_301142_ -> p_301142_.getRecipeOutput()), // This is removed
                                     Ingredient.CODEC_NONEMPTY
@@ -96,6 +99,7 @@ public class RecipeCraftingShapelessCustomOutput extends ShapelessRecipe {
                             )
                             .apply(p_311734_, (group, category, ingredients) -> new RecipeCraftingShapelessCustomOutput(this, group, category, this.outputProvider.get(), ingredients)) // This line is different
             );
+            this.streamCodec = StreamCodec.of(this::toNetwork, this::fromNetwork);
         }
 
         public Serializer(Supplier<ItemStack> outputProvider) {
@@ -108,38 +112,39 @@ public class RecipeCraftingShapelessCustomOutput extends ShapelessRecipe {
         }
 
         @Override
-        public Codec<RecipeCraftingShapelessCustomOutput> codec() {
+        public MapCodec<RecipeCraftingShapelessCustomOutput> codec() {
             return codec;
         }
 
-        public RecipeCraftingShapelessCustomOutput fromNetwork(FriendlyByteBuf p_44294_) {
-            String s = p_44294_.readUtf();
-            CraftingBookCategory craftingbookcategory = p_44294_.readEnum(CraftingBookCategory.class);
-            int i = p_44294_.readVarInt();
+        @Override
+        public StreamCodec<RegistryFriendlyByteBuf, RecipeCraftingShapelessCustomOutput> streamCodec() {
+            return streamCodec;
+        }
+
+        private RecipeCraftingShapelessCustomOutput fromNetwork(RegistryFriendlyByteBuf p_319905_) {
+            String s = p_319905_.readUtf();
+            CraftingBookCategory craftingbookcategory = p_319905_.readEnum(CraftingBookCategory.class);
+            int i = p_319905_.readVarInt();
             NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i, Ingredient.EMPTY);
-
-            for(int j = 0; j < nonnulllist.size(); ++j) {
-                nonnulllist.set(j, Ingredient.fromNetwork(p_44294_));
-            }
-
-            ItemStack itemstack = p_44294_.readItem();
+            nonnulllist.replaceAll(p_319735_ -> Ingredient.CONTENTS_STREAM_CODEC.decode(p_319905_));
+            ItemStack itemstack = ItemStack.STREAM_CODEC.decode(p_319905_);
             return new RecipeCraftingShapelessCustomOutput(this, s, craftingbookcategory, itemstack, nonnulllist);
         }
 
-        public void toNetwork(FriendlyByteBuf p_44281_, RecipeCraftingShapelessCustomOutput p_44282_) {
-            p_44281_.writeUtf(p_44282_.getGroup());
-            p_44281_.writeEnum(p_44282_.category());
-            p_44281_.writeVarInt(p_44282_.getIngredients().size());
+        private void toNetwork(RegistryFriendlyByteBuf p_320371_, RecipeCraftingShapelessCustomOutput p_320323_) {
+            p_320371_.writeUtf(p_320323_.getGroup());
+            p_320371_.writeEnum(p_320323_.category());
+            p_320371_.writeVarInt(p_320323_.getIngredients().size());
 
-            for(Ingredient ingredient : p_44282_.getIngredients()) {
-                ingredient.toNetwork(p_44281_);
+            for (Ingredient ingredient : p_320323_.getIngredients()) {
+                Ingredient.CONTENTS_STREAM_CODEC.encode(p_320371_, ingredient);
             }
 
-            p_44281_.writeItem(p_44282_.getRecipeOutput());
+            ItemStack.STREAM_CODEC.encode(p_320371_, p_320323_.getResultItem());
         }
 
         public static interface IOutputTransformer {
-            public ItemStack transform(CraftingContainer inventory, ItemStack staticOutput);
+            public ItemStack transform(CraftingInput inventory, ItemStack staticOutput);
         }
     }
 }

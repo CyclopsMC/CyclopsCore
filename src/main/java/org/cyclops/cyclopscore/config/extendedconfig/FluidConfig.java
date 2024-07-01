@@ -38,8 +38,8 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, BaseFlowin
             public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
                 consumer.accept(new IClientFluidTypeExtensions()
                 {
-                    private final ResourceLocation STILL = new ResourceLocation(mod.getModId(), texturePrefixPath + "_still");
-                    private final ResourceLocation FLOW = new ResourceLocation(mod.getModId(), texturePrefixPath + "_flow");
+                    private final ResourceLocation STILL = ResourceLocation.fromNamespaceAndPath(mod.getModId(), texturePrefixPath + "_still");
+                    private final ResourceLocation FLOW = ResourceLocation.fromNamespaceAndPath(mod.getModId(), texturePrefixPath + "_flow");
 
                     @Override
                     public ResourceLocation getStillTexture()
@@ -92,7 +92,7 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, BaseFlowin
      * @return The icon location.
      */
     public ResourceLocation getIconLocationStill() {
-        return new ResourceLocation(getMod().getModId(), "blocks/" + getNamedId() + "_still");
+        return ResourceLocation.fromNamespaceAndPath(getMod().getModId(), "blocks/" + getNamedId() + "_still");
     }
 
     /**
@@ -100,7 +100,7 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, BaseFlowin
      * @return The icon location.
      */
     public ResourceLocation getIconLocationFlow() {
-        return new ResourceLocation(getMod().getModId(), "blocks/" + getNamedId() + "_flow");
+        return ResourceLocation.fromNamespaceAndPath(getMod().getModId(), "blocks/" + getNamedId() + "_flow");
     }
 
 }

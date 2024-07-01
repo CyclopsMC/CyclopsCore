@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.network.packet.debug;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -20,9 +22,10 @@ import java.util.List;
  * @author rubensworks
  *
  */
-public class PingPongPacketAsync extends PacketCodec {
+public class PingPongPacketAsync<T extends PingPongPacketAsync<T>> extends PacketCodec<T> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "ping_pong_async");
+    public static final Type<PingPongPacketAsync> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "ping_pong_async"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, PingPongPacketAsync> CODEC = getCodec(PingPongPacketAsync::new);
 
     @CodecField
     protected int remaining;
@@ -31,7 +34,7 @@ public class PingPongPacketAsync extends PacketCodec {
      * Empty packet.
      */
     public PingPongPacketAsync() {
-        super(ID);
+        super((Type) TYPE);
     }
 
     public PingPongPacketAsync(int remaining) {
@@ -39,12 +42,12 @@ public class PingPongPacketAsync extends PacketCodec {
         this.remaining = remaining;
     }
 
-    public PingPongPacketAsync(ResourceLocation id) {
-        super(id);
+    public PingPongPacketAsync(Type<T> type) {
+        super(type);
     }
 
-    public PingPongPacketAsync(ResourceLocation id, int remaining) {
-        super(id);
+    public PingPongPacketAsync(Type<T> type, int remaining) {
+        super(type);
         this.remaining = remaining;
     }
 

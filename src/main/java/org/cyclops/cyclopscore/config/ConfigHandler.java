@@ -6,7 +6,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
-import lombok.Data;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -39,8 +38,6 @@ import java.util.concurrent.Callable;
  * @author rubensworks
  *
  */
-@SuppressWarnings("rawtypes")
-@Data
 public class ConfigHandler {
 
     private final ModBase mod;
@@ -60,6 +57,34 @@ public class ConfigHandler {
     public ConfigHandler(ModBase mod) {
         this.mod = mod;
         mod.getModEventBus().register(this);
+    }
+
+    public ModBase getMod() {
+        return mod;
+    }
+
+    public LinkedHashSet<ExtendedConfig<?, ?>> getConfigurables() {
+        return configurables;
+    }
+
+    public Map<String, ExtendedConfig<?, ?>> getConfigDictionary() {
+        return configDictionary;
+    }
+
+    public Set<String> getCategories() {
+        return categories;
+    }
+
+    public Map<String, ConfigurablePropertyData> getCommandableProperties() {
+        return commandableProperties;
+    }
+
+    public Multimap<String, Pair<ExtendedConfigForge<?, ?>, Callable<?>>> getRegistryEntriesHolder() {
+        return registryEntriesHolder;
+    }
+
+    public Set<String> getRegistryEventPassed() {
+        return registryEventPassed;
     }
 
     /**
@@ -100,7 +125,7 @@ public class ConfigHandler {
 
         // Finalize config builders to config specs, and register them
         for (Map.Entry<ModConfig.Type, ModConfigSpec.Builder> entry : configBuilders.entrySet()) {
-            ModLoadingContext.get().registerConfig(entry.getKey(), entry.getValue().build());
+            ModLoadingContext.get().getActiveContainer().registerConfig(entry.getKey(), entry.getValue().build());
         }
     }
 
@@ -227,7 +252,7 @@ public class ConfigHandler {
         Registry<?> registry = event.getRegistry();
         registryEntriesHolder.get(registry.key().toString()).forEach((pair) -> {
             ExtendedConfigForge<?, ?> config = pair.getLeft();
-            event.register(registry.key(), new ResourceLocation(config.getMod().getModId(), config.getNamedId()), (Supplier) config::getInstance);
+            event.register(registry.key(), ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()), (Supplier) config::getInstance);
             try {
                 if (pair.getRight() != null) {
                     pair.getRight().call();

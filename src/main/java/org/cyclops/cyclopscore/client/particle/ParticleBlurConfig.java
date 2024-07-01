@@ -1,11 +1,13 @@
 package org.cyclops.cyclopscore.client.particle;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -20,9 +22,14 @@ import javax.annotation.Nullable;
 public class ParticleBlurConfig extends ParticleConfig<ParticleBlurData> {
 
     public ParticleBlurConfig() {
-        super(CyclopsCore._instance, "blur", eConfig -> new ParticleType<ParticleBlurData>(false, ParticleBlurData.DESERIALIZER) {
-            public Codec<ParticleBlurData> codec() {
+        super(CyclopsCore._instance, "blur", eConfig -> new ParticleType<ParticleBlurData>(false) {
+            public MapCodec<ParticleBlurData> codec() {
                 return ParticleBlurData.CODEC;
+            }
+
+            @Override
+            public StreamCodec<? super RegistryFriendlyByteBuf, ParticleBlurData> streamCodec() {
+                return ParticleBlurData.STREAM_CODEC;
             }
         });
     }

@@ -5,7 +5,7 @@ import net.minecraft.FileUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ErrorScreen;
-import net.minecraft.client.gui.screens.GenericDirtMessageScreen;
+import net.minecraft.client.gui.screens.GenericMessageScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.RegistryAccess;
@@ -26,7 +26,7 @@ import net.minecraft.world.level.storage.LevelStorageException;
 import net.minecraft.world.level.storage.LevelSummary;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
-@Mod.EventBusSubscriber(Dist.CLIENT)
+@EventBusSubscriber(Dist.CLIENT)
 public class GuiMainMenuExtensionDevWorld {
 
     private static final String WORLD_NAME_PREFIX = "cyclops-dev";
@@ -81,8 +81,8 @@ public class GuiMainMenuExtensionDevWorld {
                             }
 
                             if (devWorldSummary != null && mc.getLevelSource().levelExists(devWorldSummary.getLevelId())) {
-                                mc.forceSetScreen(new GenericDirtMessageScreen(Component.translatable("selectWorld.data_read")));
-                                mc.createWorldOpenFlows().checkForBackupAndLoad(devWorldSummary.getLevelId(), () -> event.getScreen().getMinecraft().setScreen(event.getScreen()));
+                                mc.forceSetScreen(new GenericMessageScreen(Component.translatable("selectWorld.data_read")));
+                                mc.createWorldOpenFlows().openWorld(devWorldSummary.getLevelId(), () -> event.getScreen().getMinecraft().setScreen(event.getScreen()));
                                 return;
                             }
                         }

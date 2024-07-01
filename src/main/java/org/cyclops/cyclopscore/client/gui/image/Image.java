@@ -52,10 +52,10 @@ public class Image implements IImage {
         v2 = (float) (getSheetY() + getSheetHeight()) / 256F;
         int a = Math.round(alpha * 255F);
         Matrix4f matrix = matrixStack.last().pose();
-        vb.vertex(matrix, x2, y2, z).color(255, 255, 255, a).uv(u2, v2).uv2(combinedLight).endVertex();
-        vb.vertex(matrix, x2, y1, z).color(255, 255, 255, a).uv(u2, v1).uv2(combinedLight).endVertex();
-        vb.vertex(matrix, x1, y1, z).color(255, 255, 255, a).uv(u1, v1).uv2(combinedLight).endVertex();
-        vb.vertex(matrix, x1, y2, z).color(255, 255, 255, a).uv(u1, v2).uv2(combinedLight).endVertex();
+        vb.addVertex(matrix, x2, y2, z).setColor(255, 255, 255, a).setUv(u2, v2).setLight(combinedLight);
+        vb.addVertex(matrix, x2, y1, z).setColor(255, 255, 255, a).setUv(u2, v1).setLight(combinedLight);
+        vb.addVertex(matrix, x1, y1, z).setColor(255, 255, 255, a).setUv(u1, v1).setLight(combinedLight);
+        vb.addVertex(matrix, x1, y2, z).setColor(255, 255, 255, a).setUv(u1, v2).setLight(combinedLight);
         matrixStack.popPose();
     }
 

@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.event;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -50,7 +51,7 @@ public class PlayerRingOfFire {
         if(!player.level().isClientSide() && player.getGameProfile() != null
                 && ALLOW_RING.contains(player.getGameProfile().getId())) {
             CyclopsCore._instance.getPacketHandler().sendToAllAround(new RingOfFirePacket(player),
-                    LocationHelpers.createTargetPointFromLocation(player.level(), player.blockPosition(), 50));
+                    LocationHelpers.createTargetPointFromLocation((ServerLevel) player.level(), player.blockPosition(), 50));
         }
     }
 

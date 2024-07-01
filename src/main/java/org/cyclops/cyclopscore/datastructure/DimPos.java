@@ -35,7 +35,7 @@ public class DimPos implements Comparable<DimPos> {
             .build(new CacheLoader<String, ResourceKey<Level>>() {
                 @Override
                 public ResourceKey<Level> load(String key) {
-                    return ResourceKey.create(Registries.DIMENSION, new ResourceLocation(key));
+                    return ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(key));
                 }
             });
 

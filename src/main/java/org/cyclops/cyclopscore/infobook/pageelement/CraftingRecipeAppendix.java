@@ -4,10 +4,9 @@ import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.Blocks;
@@ -22,7 +21,7 @@ import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
  * Shaped recipes.
  * @author rubensworks
  */
-public class CraftingRecipeAppendix extends RecipeAppendix<Recipe<CraftingContainer>> {
+public class CraftingRecipeAppendix extends RecipeAppendix<CraftingRecipe> {
 
     private static final int SLOT_OFFSET_X = 5;
     private static final int SLOT_OFFSET_Y = 5;
@@ -34,7 +33,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<Recipe<CraftingContai
     }
     private static final AdvancedButtonEnum RESULT = AdvancedButtonEnum.create();
 
-    public CraftingRecipeAppendix(IInfoBook infoBook, RecipeHolder<? extends Recipe<CraftingContainer>> recipe) {
+    public CraftingRecipeAppendix(IInfoBook infoBook, RecipeHolder<? extends CraftingRecipe> recipe) {
         super(infoBook, recipe);
     }
 
@@ -115,7 +114,7 @@ public class CraftingRecipeAppendix extends RecipeAppendix<Recipe<CraftingContai
 
         if(recipe.value() instanceof ShapedRecipe) {
             ingredients = formatShapedGrid(recipe.value().getIngredients(),
-                    ((ShapedRecipe) recipe.value()).getRecipeWidth(), ((ShapedRecipe) recipe.value()).getRecipeHeight());
+                    ((ShapedRecipe) recipe.value()).getWidth(), ((ShapedRecipe) recipe.value()).getHeight());
         } else {
             ingredients = recipe.value().getIngredients();
         }

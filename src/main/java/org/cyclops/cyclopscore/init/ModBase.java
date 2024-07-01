@@ -15,7 +15,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.DistExecutor;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
@@ -37,6 +36,7 @@ import org.cyclops.cyclopscore.command.CommandVersion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.CreativeModeTabConfig;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.modcompat.IMCHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.capabilities.CapabilityConstructorRegistry;
@@ -55,8 +55,9 @@ import java.util.function.Consumer;
  * Dont forget to call the supers for the init events.
  * @author rubensworks
  */
-@Data
 public abstract class ModBase<T extends ModBase> {
+
+    private static final Map<String, ModBase<?>> MOD_BASES = Maps.newHashMap();
 
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_GUI = EnumReferenceKey.create("texture_path_gui", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_MODELS = EnumReferenceKey.create("texture_path_models", String.class);
@@ -87,6 +88,7 @@ public abstract class ModBase<T extends ModBase> {
     private final List<Pair<ItemStack, CreativeModeTab.TabVisibility>> defaultCreativeTabEntries = Lists.newArrayList();
 
     public ModBase(String modId, Consumer<T> instanceSetter, IEventBus modEventBus) {
+        MOD_BASES.put(modId, this);
         instanceSetter.accept((T) this);
         this.modId = modId;
         this.modEventBus = modEventBus;
@@ -101,20 +103,19 @@ public abstract class ModBase<T extends ModBase> {
 
         // Register listeners
         getModEventBus().addListener(this::setup);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> getModEventBus().addListener(this::setupClient));
         getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
         getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> getModEventBus().addListener(this::onRegisterKeyMappings));
+        if (MinecraftHelpers.isClientSide()) {
+            getModEventBus().addListener(this::setupClient);
+            getModEventBus().addListener(this::onRegisterKeyMappings);
+        }
         NeoForge.EVENT_BUS.addListener(this::onServerStarting);
         NeoForge.EVENT_BUS.addListener(this::onServerAboutToStart);
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
         NeoForge.EVENT_BUS.addListener(this::onServerStopping);
 
         // Register proxies
-        DistExecutor.runForDist(
-                () -> () -> this.proxy = this.constructClientProxy(),
-                () -> () -> this.proxy = this.constructCommonProxy()
-        );
+        this.proxy = MinecraftHelpers.isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
 
         populateDefaultGenericReferences();
 
@@ -131,6 +132,59 @@ public abstract class ModBase<T extends ModBase> {
         loadModCompats(getModCompatLoader());
     }
 
+    public String getModId() {
+        return modId;
+    }
+
+    public LoggerHelper getLoggerHelper() {
+        return loggerHelper;
+    }
+
+    public ConfigHandler getConfigHandler() {
+        return configHandler;
+    }
+
+    public Map<EnumReferenceKey<?>, Object> getGenericReference() {
+        return genericReference;
+    }
+
+    public List<WorldStorage> getWorldStorages() {
+        return worldStorages;
+    }
+
+    public RegistryManager getRegistryManager() {
+        return registryManager;
+    }
+
+    public IKeyRegistry getKeyRegistry() {
+        return keyRegistry;
+    }
+
+    public PacketHandler getPacketHandler() {
+        return packetHandler;
+    }
+
+    public ModCompatLoader getModCompatLoader() {
+        return modCompatLoader;
+    }
+
+    public CapabilityConstructorRegistry getCapabilityConstructorRegistry() {
+        return capabilityConstructorRegistry;
+    }
+
+    public IMCHandler getImcHandler() {
+        return imcHandler;
+    }
+
+    @Nullable
+    public CreativeModeTab getDefaultCreativeTab() {
+        return defaultCreativeTab;
+    }
+
+    public List<Pair<ItemStack, CreativeModeTab.TabVisibility>> getDefaultCreativeTabEntries() {
+        return defaultCreativeTabEntries;
+    }
+
     public String getModName() {
         return getContainer().getModInfo().getDisplayName();
     }
@@ -144,7 +198,7 @@ public abstract class ModBase<T extends ModBase> {
      */
     public ModContainer getContainer() {
         if (container == null) {
-            container = ModList.get().getModContainerByObject(this).get();
+            container = ModList.get().getModContainerById(this.getModId()).get();
         }
         return container;
     }
@@ -423,13 +477,9 @@ public abstract class ModBase<T extends ModBase> {
      * @param modId The mod id.
      * @return The mod instance or null.
      */
+    @Nullable
     public static ModBase get(String modId) {
-        ModContainer modContainer = ModList.get().getModContainerById(modId).orElse(null);
-        Object mod = modContainer.getMod();
-        if (mod instanceof ModBase) {
-            return (ModBase) mod;
-        }
-        return null;
+        return MOD_BASES.get(modId);
     }
 
     /**

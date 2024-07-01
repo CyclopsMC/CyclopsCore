@@ -27,10 +27,6 @@ public class ConfigurableType {
      */
     public static final ConfigurableType FLUID = new ConfigurableType(true, FluidConfig.class, new FluidAction(), "fluid");
     /**
-     * Enchantment type.
-     */
-    public static final ConfigurableType ENCHANTMENT = new ConfigurableType(true, EnchantmentConfig.class, new EnchantmentAction(), "enchantment");
-    /**
      * Villager type.
      */
     public static final ConfigurableType VILLAGER = new ConfigurableType(true, VillagerConfig.class, new VillagerAction(), "mob");
@@ -85,6 +81,7 @@ public class ConfigurableType {
     public static final ConfigurableType LOOT_NBT_PROVIDER = new ConfigurableType(true, LootNbtProviderConfig.class, new ConfigurableTypeActionForge<>(), "loot_nbt_provider");
     public static final ConfigurableType LOOT_SCORE_PROVIDER = new ConfigurableType(true, LootScoreProviderConfig.class, new ConfigurableTypeActionForge<>(), "loot_score_provider");
     public static final ConfigurableType SOUND_EVENT = new ConfigurableType(true, SoundEventConfig.class, new ConfigurableTypeActionForge<>(), "sound_event");
+    public static final ConfigurableType DATA_COMPONENT = new ConfigurableType(true, DataComponentConfig.class, new ConfigurableTypeActionForge<>(), "data_component");
 
     /**
      * Dummy type, only used for configs that refer to nothing.

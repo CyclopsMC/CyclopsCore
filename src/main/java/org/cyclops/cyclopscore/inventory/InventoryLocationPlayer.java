@@ -25,7 +25,7 @@ public class InventoryLocationPlayer implements IInventoryLocation {
 
     @Override
     public ResourceLocation getUniqueName() {
-        return new ResourceLocation(Reference.MOD_ID, "player");
+        return ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "player");
     }
     @Override
     public IItemHandlerModifiable getInventory(Player player) {

@@ -13,7 +13,7 @@ public class ItemSectionConditionHandler implements ISectionConditionHandler {
 
     @Override
     public boolean isSatisfied(ModBase<?> mod, String param) {
-        return BuiltInRegistries.ITEM.containsKey(new ResourceLocation(param));
+        return BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(param));
     }
 
 }

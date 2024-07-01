@@ -10,6 +10,6 @@ import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
  */
 public class Capabilities {
     public static class Item {
-        public static ItemCapability<IFluidHandlerItemCapacity, Void> FLUID_HANDLER_CAPACITY = ItemCapability.createVoid(new ResourceLocation(Reference.MOD_ID, "fluid_handler_item_capacity"), IFluidHandlerItemCapacity.class);
+        public static ItemCapability<IFluidHandlerItemCapacity, Void> FLUID_HANDLER_CAPACITY = ItemCapability.createVoid(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "fluid_handler_item_capacity"), IFluidHandlerItemCapacity.class);
     }
 }

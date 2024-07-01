@@ -1,9 +1,13 @@
 package org.cyclops.cyclopscore.block;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -24,7 +28,7 @@ import java.util.function.BiFunction;
  * By default, the NBT data of block entities will not be persisted,
  * unless enabled via {@link #isPersistNbt()}.
  * If so, then the {@link #getDroppedItemStackNbt} method will be called
- * to call {@link CyclopsBlockEntity#writeToItemStack(CompoundTag)}.
+ * to call {@link CyclopsBlockEntity#writeToItemStack(CompoundTag, HolderLookup.Provider)}.
  * This NBT data will automatically be read when placing the block.
  *
  * @author rubensworks
@@ -58,7 +62,7 @@ public abstract class BlockWithEntity extends BaseEntityBlock {
             BlockEntityHelpers.get(world, blockPos, CyclopsBlockEntity.class).ifPresent(blockEntity -> {
                 CompoundTag compoundnbt = getDroppedItemStackNbt(state, target, world, blockPos, player, itemStack, blockEntity);
                 if (!compoundnbt.isEmpty()) {
-                    itemStack.addTagElement("BlockEntityTag", compoundnbt);
+                    itemStack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundnbt));
                 }
             });
         }
@@ -87,7 +91,7 @@ public abstract class BlockWithEntity extends BaseEntityBlock {
 
     /**
      * Override this method to modify how NBT is constructed for the item.
-     * By default, {@link CyclopsBlockEntity#writeToItemStack(CompoundTag)} will be called.
+     * By default, {@link CyclopsBlockEntity#writeToItemStack(CompoundTag, HolderLookup.Provider)} will be called.
      * @param state A block state.
      * @param target The ray trace result.
      * @param world The world.
@@ -100,7 +104,7 @@ public abstract class BlockWithEntity extends BaseEntityBlock {
     protected CompoundTag getDroppedItemStackNbt(BlockState state, HitResult target, BlockGetter world,
                                                  BlockPos blockPos, Player player, ItemStack itemStack,
                                                  CyclopsBlockEntity blockEntity) {
-        return blockEntity.writeToItemStack(new CompoundTag());
+        return blockEntity.writeToItemStack(new CompoundTag(), VanillaRegistries.createLookup());
     }
 
     /**

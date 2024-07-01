@@ -6,7 +6,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3d;
 import org.junit.Test;
@@ -235,7 +235,7 @@ public class TestPacketCodec {
     }
 
     protected static <T extends PacketCodec> void encodeDecode(T packetIn, T packetOut) {
-        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), null, null);
         packetIn.encode(buffer);
         packetOut.decode(buffer);
     }

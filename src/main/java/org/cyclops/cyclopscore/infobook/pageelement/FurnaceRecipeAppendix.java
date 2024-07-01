@@ -3,11 +3,10 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
@@ -19,7 +18,7 @@ import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
  * Blood Infuser recipes.
  * @author rubensworks
  */
-public class FurnaceRecipeAppendix extends RecipeAppendix<Recipe<Container>> {
+public class FurnaceRecipeAppendix extends RecipeAppendix<SmeltingRecipe> {
 
     private static final int SLOT_OFFSET_X = 16;
     private static final int SLOT_OFFSET_Y = 3;
@@ -28,7 +27,7 @@ public class FurnaceRecipeAppendix extends RecipeAppendix<Recipe<Container>> {
     private static final AdvancedButtonEnum INPUT = AdvancedButtonEnum.create();
     private static final AdvancedButtonEnum RESULT = AdvancedButtonEnum.create();
 
-    public FurnaceRecipeAppendix(IInfoBook infoBook, RecipeHolder<? extends Recipe<Container>> recipe) {
+    public FurnaceRecipeAppendix(IInfoBook infoBook, RecipeHolder<? extends SmeltingRecipe> recipe) {
         super(infoBook, recipe);
     }
 

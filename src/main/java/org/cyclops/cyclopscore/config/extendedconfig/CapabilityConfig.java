@@ -47,6 +47,6 @@ public abstract class CapabilityConfig<T> extends ExtendedConfig<CapabilityConfi
     }
 
     public ResourceLocation getId() {
-        return new ResourceLocation(getMod().getModId(), getNamedId());
+        return ResourceLocation.fromNamespaceAndPath(getMod().getModId(), getNamedId());
     }
 }

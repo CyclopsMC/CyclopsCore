@@ -8,9 +8,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Style;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.fml.DistExecutor;
 import org.apache.commons.lang3.StringUtils;
 import org.cyclops.cyclopscore.helper.Helpers;
+import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -38,10 +38,9 @@ public class TextFieldAppendix extends SectionAppendix {
         this.scale = scale;
         this.height = this.text.split("\n").length * 9;
 
-        DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
+        if (MinecraftHelpers.isClientSide()) {
             calculateLines();
-            return null;
-        });
+        }
     }
 
     @Override

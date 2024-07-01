@@ -123,7 +123,7 @@ public final class ModelHelpers {
      */
     public static BlockModel loadModelBlock(ResourceLocation modelLocation) throws IOException {
         Resource resource = Minecraft.getInstance().getResourceManager().getResource(
-                new ResourceLocation(modelLocation.getNamespace(), modelLocation.getPath() + ".json")).get();
+                ResourceLocation.fromNamespaceAndPath(modelLocation.getNamespace(), modelLocation.getPath() + ".json")).get();
         return BlockModel.fromStream(resource.openAsReader());
     }
 

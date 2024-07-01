@@ -231,7 +231,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                 int maxSlotSize = Math.min(slot.getMaxStackSize(), maxStack);
                 existingStack = slot.getItem().copy();
 
-                if (slot.mayPlace(stack) && !existingStack.isEmpty() && ItemStack.isSameItemSameTags(stack, existingStack)) {
+                if (slot.mayPlace(stack) && !existingStack.isEmpty() && ItemStack.isSameItemSameComponents(stack, existingStack)) {
                     int existingSize = existingStack.getCount() + stack.getCount();
                     if (existingSize <= maxSlotSize) {
                         stack.setCount(0);
@@ -403,7 +403,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                 adjustPhantomSlot(slot, mouseButton, clickType);
                 slot.onTake(player, this.getCarried());
             } else if (slot.mayPlace(stackHeld)) {
-                if (ItemMatch.areItemStacksEqual(stackSlot, stackHeld, ItemMatch.ITEM | ItemMatch.TAG)) {
+                if (ItemMatch.areItemStacksEqual(stackSlot, stackHeld, ItemMatch.ITEM | ItemMatch.DATA)) {
                     adjustPhantomSlot(slot, mouseButton, clickType);
                 } else {
                     fillPhantomSlot(slot, stackHeld, mouseButton, clickType);

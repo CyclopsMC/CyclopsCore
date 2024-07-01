@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -14,9 +14,9 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class BiomeModifierConfig<T extends BiomeModifier> extends ExtendedConfigForge<BiomeModifierConfig<T>, Codec<T>>{
+public abstract class BiomeModifierConfig<T extends BiomeModifier> extends ExtendedConfigForge<BiomeModifierConfig<T>, MapCodec<T>>{
 
-    public BiomeModifierConfig(ModBase mod, String namedId, Function<BiomeModifierConfig<T>, Codec<T>> elementConstructor) {
+    public BiomeModifierConfig(ModBase mod, String namedId, Function<BiomeModifierConfig<T>, MapCodec<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 
@@ -31,7 +31,7 @@ public abstract class BiomeModifierConfig<T extends BiomeModifier> extends Exten
     }
 
     @Override
-    public Registry<? super Codec<T>> getRegistry() {
+    public Registry<? super MapCodec<T>> getRegistry() {
         return NeoForgeRegistries.BIOME_MODIFIER_SERIALIZERS;
     }
 }

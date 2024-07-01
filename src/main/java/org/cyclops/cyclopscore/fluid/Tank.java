@@ -1,7 +1,8 @@
 package org.cyclops.cyclopscore.fluid;
 
-import net.minecraft.world.level.material.Fluid;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerCapacity;
@@ -52,36 +53,36 @@ public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHand
     }
 
     @Override
-    public CompoundTag writeToNBT(CompoundTag nbt) {
+    public CompoundTag writeToNBT(HolderLookup.Provider lookupProvider, CompoundTag nbt) {
         if(replaceInnerFluid()) {
-            super.writeToNBT(nbt);
+            super.writeToNBT(lookupProvider, nbt);
         }
         writeTankToNBT(nbt);
         return nbt;
     }
 
-    public CompoundTag writeToNBT(CompoundTag nbt, String tag) {
+    public CompoundTag writeToNBT(HolderLookup.Provider lookupProvider, CompoundTag nbt, String tag) {
         CompoundTag subTag = new CompoundTag();
-        writeToNBT(subTag);
+        writeToNBT(lookupProvider, subTag);
         nbt.put(tag, subTag);
         return nbt;
     }
 
     @Override
-    public FluidTank readFromNBT(CompoundTag nbt) {
+    public FluidTank readFromNBT(HolderLookup.Provider lookupProvider, CompoundTag nbt) {
         if(replaceInnerFluid()) {
             if (nbt.contains("Empty")) {
                 setFluid(null);
             }
-            super.readFromNBT(nbt);
+            super.readFromNBT(lookupProvider, nbt);
         }
         readTankFromNBT(nbt);
         return this;
     }
 
-    public FluidTank readFromNBT(CompoundTag data, String tag) {
+    public FluidTank readFromNBT(HolderLookup.Provider lookupProvider, CompoundTag data, String tag) {
         CompoundTag subTag = data.getCompound(tag);
-        return readFromNBT(subTag);
+        return readFromNBT(lookupProvider, subTag);
     }
 
     /**

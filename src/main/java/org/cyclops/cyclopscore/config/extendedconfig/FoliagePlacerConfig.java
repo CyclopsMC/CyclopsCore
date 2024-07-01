@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
@@ -17,7 +17,7 @@ import java.util.function.Function;
  */
 public class FoliagePlacerConfig<T extends FoliagePlacer> extends ExtendedConfigForge<FoliagePlacerConfig<T>, FoliagePlacerType<T>> {
 
-    public FoliagePlacerConfig(ModBase mod, String namedId, Function<FoliagePlacerConfig<T>, Codec<T>> codec) {
+    public FoliagePlacerConfig(ModBase mod, String namedId, Function<FoliagePlacerConfig<T>, MapCodec<T>> codec) {
         super(mod, namedId, (eConfig) ->  new FoliagePlacerType<>(codec.apply(eConfig)));
     }
 

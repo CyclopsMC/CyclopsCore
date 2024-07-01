@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -13,6 +12,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -87,8 +87,8 @@ public class EntityHelpers {
      * @param spawnReason The spawn reason.
      * @return If the entity was spawned.
      */
-    public static boolean spawnEntity(ServerLevel world, Mob entityLiving, MobSpawnType spawnReason) {
-        SpawnGroupData spawnData = EventHooks.onFinalizeSpawn(entityLiving, world, world.getCurrentDifficultyAt(entityLiving.blockPosition()), spawnReason, new SpawnGroupData() {}, null);
+    public static boolean spawnEntity(ServerLevelAccessor world, Mob entityLiving, MobSpawnType spawnReason) {
+        SpawnGroupData spawnData = EventHooks.finalizeMobSpawn(entityLiving, world, world.getCurrentDifficultyAt(entityLiving.blockPosition()), spawnReason, new SpawnGroupData() {});
         if (spawnData != null) {
             world.addFreshEntity(entityLiving);
             return true;

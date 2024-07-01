@@ -2,9 +2,9 @@ package org.cyclops.cyclopscore.ingredient.recipe;
 
 import com.google.common.collect.Lists;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.neoforged.neoforge.common.crafting.CompoundIngredient;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.IPrototypedIngredientAlternatives;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.PrototypedIngredientAlternativesList;
@@ -12,7 +12,6 @@ import org.cyclops.commoncapabilities.api.ingredient.IPrototypedIngredient;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.PrototypedIngredient;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,14 +26,14 @@ public class IngredientRecipeHelpers {
      * @param ingredient An ingredient.
      * @return Prototyped alternatives.
      */
-    public static IPrototypedIngredientAlternatives<ItemStack, Integer> getPrototypesFromIngredient(Ingredient ingredient) {
+    public static IPrototypedIngredientAlternatives<ItemStack, Integer> getPrototypesFromIngredient(ICustomIngredient ingredient) {
         List<IPrototypedIngredient<ItemStack, Integer>> items;
-        if (ingredient instanceof NBTIngredient) {
+        if (ingredient instanceof CompoundIngredient) {
             items = Lists.newArrayList(new PrototypedIngredient<>(IngredientComponent.ITEMSTACK,
-                    ingredient.getItems()[0], ItemMatch.ITEM | ItemMatch.TAG));
+                    ingredient.getItems().findFirst().get(), ItemMatch.ITEM | ItemMatch.DATA));
 
         } else {
-            items = Arrays.stream(ingredient.getItems())
+            items = ingredient.getItems()
                     .map(itemStack -> new PrototypedIngredient<>(IngredientComponent.ITEMSTACK, itemStack, ItemMatch.ITEM))
                     .collect(Collectors.toList());
         }

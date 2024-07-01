@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Lists;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -78,7 +79,7 @@ public class ValueNotifierHelpers {
     public static void setValue(IValueNotifier notifier, int valueId, MutableComponent value) {
         if (value != null) {
             CompoundTag tag = new CompoundTag();
-            tag.putString(KEY, Component.Serializer.toJson(value));
+            tag.putString(KEY, Component.Serializer.toJson(value, VanillaRegistries.createLookup()));
             notifier.setValue(valueId, tag);
         }
     }
@@ -94,7 +95,7 @@ public class ValueNotifierHelpers {
         ListTag list = new ListTag();
         for (Component value : values) {
             if (value != null) {
-                list.add(StringTag.valueOf(Component.Serializer.toJson(value)));
+                list.add(StringTag.valueOf(Component.Serializer.toJson(value, VanillaRegistries.createLookup())));
             }
         }
         tag.put(KEY, list);
@@ -169,7 +170,7 @@ public class ValueNotifierHelpers {
     public static MutableComponent getValueTextComponent(IValueNotifier notifier, int valueId) {
         CompoundTag tag = notifier.getValue(valueId);
         if(tag != null) {
-            return Component.Serializer.fromJson(tag.getString(KEY));
+            return Component.Serializer.fromJson(tag.getString(KEY), VanillaRegistries.createLookup());
         }
         return null;
     }
@@ -187,7 +188,7 @@ public class ValueNotifierHelpers {
             ListTag listTag = tag.getList(KEY, Tag.TAG_STRING);
             List<MutableComponent> list = Lists.newArrayList();
             for (int i = 0; i < listTag.size(); i++) {
-                list.add(Component.Serializer.fromJson(listTag.getString(i)));
+                list.add(Component.Serializer.fromJson(listTag.getString(i), VanillaRegistries.createLookup()));
             }
             return list;
         }

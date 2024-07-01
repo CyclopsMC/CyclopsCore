@@ -11,9 +11,9 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class LootFunctionConfig extends ExtendedConfigForge<LootFunctionConfig, LootItemFunctionType> {
+public abstract class LootFunctionConfig extends ExtendedConfigForge<LootFunctionConfig, LootItemFunctionType<?>> {
 
-    public LootFunctionConfig(ModBase mod, String namedId, LootItemFunctionType lootItemFunctionType) {
+    public LootFunctionConfig(ModBase mod, String namedId, LootItemFunctionType<?> lootItemFunctionType) {
         super(mod, namedId, (eConfig) -> lootItemFunctionType);
     }
 
@@ -34,7 +34,7 @@ public abstract class LootFunctionConfig extends ExtendedConfigForge<LootFunctio
     }
 
     @Override
-    public Registry<LootItemFunctionType> getRegistry() {
+    public Registry<LootItemFunctionType<?>> getRegistry() {
         return BuiltInRegistries.LOOT_FUNCTION_TYPE;
     }
 }

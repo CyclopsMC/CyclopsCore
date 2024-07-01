@@ -1,12 +1,10 @@
 package org.cyclops.cyclopscore.capability.fluid;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
+import org.cyclops.cyclopscore.RegistryEntries;
 
 import javax.annotation.Nullable;
 
@@ -14,7 +12,7 @@ import javax.annotation.Nullable;
  * An itemfluid handler with a mutable capacity.
  * @author rubensworks
  */
-public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements IFluidHandlerItemCapacity, IFluidHandlerMutable, INBTSerializable {
+public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements IFluidHandlerItemCapacity, IFluidHandlerMutable {
 
     private final Fluid fluid;
 
@@ -32,7 +30,7 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
      * @param fluid     The accepted fluid.
      */
     public FluidHandlerItemCapacity(ItemStack container, int capacity, Fluid fluid) {
-        super(container, capacity);
+        super(RegistryEntries.COMPONENT_FLUID_CONTENT, container, capacity);
         this.fluid = fluid;
     }
 
@@ -43,15 +41,13 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
 
     @Override
     public void setCapacity(int capacity) {
-        CompoundTag tag = getContainer().getOrCreateTag();
+        getContainer().set(RegistryEntries.COMPONENT_CAPACITY, capacity);
         this.capacity = capacity;
-        tag.putInt("capacity", capacity);
     }
 
     @Override
     public int getCapacity() {
-        CompoundTag tag = getContainer().getOrCreateTag();
-        return tag.contains("capacity", Tag.TAG_INT) ? tag.getInt("capacity") : this.capacity;
+        return getContainer().has(RegistryEntries.COMPONENT_CAPACITY) ? getContainer().get(RegistryEntries.COMPONENT_CAPACITY) : this.capacity;
     }
 
     @Nullable
@@ -66,28 +62,5 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
         if (tank == 0) {
             setFluid(fluidStack);
         }
-    }
-
-    @Override
-    public Tag serializeNBT() {
-        CompoundTag nbt = new CompoundTag();
-        FluidStack fluid = this.getFluid();
-        if (fluid != null) {
-            fluid.writeToNBT(nbt);
-        } else {
-            nbt.putString("Empty", "");
-        }
-        nbt.putInt("capacity", this.getCapacity());
-        return nbt;
-    }
-
-    @Override
-    public void deserializeNBT(Tag nbt) {
-        CompoundTag tags = (CompoundTag) nbt;
-        if (tags.contains("capacity", Tag.TAG_INT)) {
-            this.setCapacity(tags.getInt("capacity"));
-        }
-        FluidStack fluid = FluidStack.loadFluidStackFromNBT(tags);
-        this.setFluid(fluid);
     }
 }

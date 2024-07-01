@@ -6,7 +6,6 @@ import net.minecraft.advancements.critereon.ContextAwarePredicate;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -22,8 +21,8 @@ public class GuiContainerOpenTrigger extends SimpleCriterionTrigger<GuiContainer
 
     public static final Codec<GuiContainerOpenTrigger.Instance> CODEC = RecordCodecBuilder.create(
             p_311401_ -> p_311401_.group(
-                            ExtraCodecs.strictOptionalField(EntityPredicate.ADVANCEMENT_CODEC, "player").forGetter(GuiContainerOpenTrigger.Instance::player),
-                            ExtraCodecs.strictOptionalField(Codec.STRING, "container_class").forGetter(GuiContainerOpenTrigger.Instance::containerClass)
+                            EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(GuiContainerOpenTrigger.Instance::player),
+                            Codec.STRING.optionalFieldOf("container_class").forGetter(GuiContainerOpenTrigger.Instance::containerClass)
                     )
                     .apply(p_311401_, GuiContainerOpenTrigger.Instance::new)
     );

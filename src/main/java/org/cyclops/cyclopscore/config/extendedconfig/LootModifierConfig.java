@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -14,9 +14,9 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class LootModifierConfig<T extends IGlobalLootModifier> extends ExtendedConfigForge<LootModifierConfig<T>, Codec<T>>{
+public abstract class LootModifierConfig<T extends IGlobalLootModifier> extends ExtendedConfigForge<LootModifierConfig<T>, MapCodec<T>>{
 
-    public LootModifierConfig(ModBase mod, String namedId, Function<LootModifierConfig<T>, Codec<T>> elementConstructor) {
+    public LootModifierConfig(ModBase mod, String namedId, Function<LootModifierConfig<T>, MapCodec<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 
@@ -31,7 +31,7 @@ public abstract class LootModifierConfig<T extends IGlobalLootModifier> extends 
     }
 
     @Override
-    public Registry<? super Codec<T>> getRegistry() {
+    public Registry<? super MapCodec<T>> getRegistry() {
         return NeoForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS;
     }
 }

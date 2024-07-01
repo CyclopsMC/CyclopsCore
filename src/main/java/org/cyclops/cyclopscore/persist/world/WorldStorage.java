@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.persist.world;
 
 import lombok.experimental.Delegate;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -78,9 +79,9 @@ public abstract class WorldStorage implements INBTProvider {
 
     private NBTDataHolder initDataHolder(MinecraftServer server) {
         return server.getLevel(Level.OVERWORLD).getDataStorage().computeIfAbsent(
-                new SavedData.Factory<>(
+                new SavedData.Factory<NBTDataHolder>(
                         () -> new NBTDataHolder(this),
-                        e -> NBTDataHolder.load(e, this)
+                        (t, p) -> NBTDataHolder.load(t, this)
                 ),
                 mod.getModId() + "_" + getDataId());
     }
@@ -117,7 +118,7 @@ public abstract class WorldStorage implements INBTProvider {
         }
 
         @Override
-        public CompoundTag save(CompoundTag tag) {
+        public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider) {
             parentStorage.writeToNBT(tag);
             return tag;
         }

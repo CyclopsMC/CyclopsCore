@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import com.google.common.collect.Maps;
-import lombok.Getter;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
@@ -28,11 +27,8 @@ import java.util.function.Function;
 public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
         implements Comparable<ExtendedConfig<C, I>> {
 
-    @Getter
     private final ModBase mod;
-    @Getter
     private final String namedId;
-    @Getter
     private final Function<C, ? extends I> elementConstructor;
 
     private I instance;
@@ -57,6 +53,18 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I>
         } catch (IllegalArgumentException | IllegalAccessException e1) {
             e1.printStackTrace();
         }
+    }
+
+    public ModBase getMod() {
+        return mod;
+    }
+
+    public String getNamedId() {
+        return namedId;
+    }
+
+    public Function<C, ? extends I> getElementConstructor() {
+        return elementConstructor;
     }
 
     /**

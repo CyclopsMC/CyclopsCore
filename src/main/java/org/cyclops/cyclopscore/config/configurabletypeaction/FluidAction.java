@@ -66,8 +66,8 @@ public class FluidAction extends ConfigurableTypeAction<FluidConfig, BaseFlowing
                 BaseFlowingFluid.Properties instance = config.getInstance();
                 Supplier<Fluid> still = ObfuscationReflectionHelper.getPrivateValue(BaseFlowingFluid.Properties.class, instance, "still");
                 Supplier<Fluid> flowing = ObfuscationReflectionHelper.getPrivateValue(BaseFlowingFluid.Properties.class, instance, "flowing");
-                registerFluid(registry, event, still, new ResourceLocation(config.getMod().getModId(), config.getNamedId()));
-                registerFluid(registry, event, flowing, new ResourceLocation(config.getMod().getModId(), config.getNamedId() + "_flowing"));
+                registerFluid(registry, event, still, ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()));
+                registerFluid(registry, event, flowing, ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId() + "_flowing"));
                 try {
                     if (pair.getRight() != null) {
                         pair.getRight().call();
@@ -81,7 +81,7 @@ public class FluidAction extends ConfigurableTypeAction<FluidConfig, BaseFlowing
                 FluidConfig config = pair.getLeft();
                 BaseFlowingFluid.Properties instance = config.getInstance();
                 Supplier<FluidType> fluidType = ObfuscationReflectionHelper.getPrivateValue(BaseFlowingFluid.Properties.class, instance, "fluidType");
-                event.register((ResourceKey) event.getRegistry().key(), new ResourceLocation(config.getMod().getModId(), config.getNamedId()), fluidType);
+                event.register((ResourceKey) event.getRegistry().key(), ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()), fluidType);
             });
         }
     }

@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.infobook;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -289,14 +290,13 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         float f = 0.00390625F;
         float f1 = 0.00390625F;
         Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder worldRenderer = tessellator.getBuilder();
-        worldRenderer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        BufferBuilder worldRenderer = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         int z = 0;
-        worldRenderer.vertex(x + 0, y + height, z).uv(((float) (u + width) * f), ((float) (v + height) * f1)).endVertex();
-        worldRenderer.vertex(x + width, y + height, z).uv(((float) (u + 0) * f), ((float) (v + height) * f1)).endVertex();
-        worldRenderer.vertex(x + width, y + 0, z).uv(((float) (u + 0) * f), ((float) (v + 0) * f1)).endVertex();
-        worldRenderer.vertex(x + 0, y + 0, z).uv(((float) (u + width) * f), ((float) (v + 0) * f1)).endVertex();
-        tessellator.end();
+        worldRenderer.addVertex(x + 0, y + height, z).setUv(((float) (u + width) * f), ((float) (v + height) * f1));
+        worldRenderer.addVertex(x + width, y + height, z).setUv(((float) (u + 0) * f), ((float) (v + height) * f1));
+        worldRenderer.addVertex(x + width, y + 0, z).setUv(((float) (u + 0) * f), ((float) (v + 0) * f1));
+        worldRenderer.addVertex(x + 0, y + 0, z).setUv(((float) (u + width) * f), ((float) (v + 0) * f1));
+        BufferUploader.drawWithShader(worldRenderer.buildOrThrow());
     }
 
     @Override

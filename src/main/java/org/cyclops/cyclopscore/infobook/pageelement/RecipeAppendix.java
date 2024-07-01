@@ -164,10 +164,9 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
         guiGraphics.pose().pushPose();
         if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && !fluidStack.isEmpty() ) {
             List<FormattedCharSequence> lines = Lists.newArrayList();
-            lines.add(FormattedCharSequence.forward(
-                    L10NHelpers.localize(fluidStack.getTranslationKey()),
-                    Style.EMPTY.withColor(TextColor.fromLegacyFormat(fluidStack.getFluid().getFluidType().getRarity(fluidStack).color)))
-            );
+            lines.add(fluidStack.getHoverName().copy()
+                    .withColor(TextColor.fromLegacyFormat(fluidStack.getFluid().getFluidType().getRarity(fluidStack).color()).getValue())
+                    .getVisualOrderText());
             lines.add(FormattedCharSequence.forward(
                     fluidStack.getAmount() + " mB",
                     Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.GRAY)))

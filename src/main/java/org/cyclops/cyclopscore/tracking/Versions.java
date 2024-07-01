@@ -17,7 +17,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.VersionChecker;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforgespi.language.IModInfo;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -136,13 +136,13 @@ public class Versions {
      */
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent(priority = EventPriority.NORMAL)
-    public synchronized void onTick(TickEvent.PlayerTickEvent event) {
-        if(event.phase == TickEvent.Phase.END && allDone && !displayed) {
+    public synchronized void onTick(PlayerTickEvent.Post event) {
+        if(allDone && !displayed) {
             List<Triple<ModBase, IModVersion, String>> versionMods = getVersionMods();
             for (Triple<ModBase, IModVersion, String> triple : versionMods) {
                 if (triple.getMiddle().needsUpdate()) {
                     // Chat formatting inspired by CoFH
-                    Player player = event.player;
+                    Player player = event.getEntity();
                     MutableComponent chat = Component.literal("");
 
                     Style modNameStyle = Style.EMPTY;

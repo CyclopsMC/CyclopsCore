@@ -72,7 +72,7 @@ public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements
      */
     @OnlyIn(Dist.CLIENT)
     public ModelResourceLocation registerDynamicModel() {
-        ResourceLocation itemName = new ResourceLocation(getMod().getModId(), getNamedId());
+        ResourceLocation itemName = ResourceLocation.fromNamespaceAndPath(getMod().getModId(), getNamedId());
         return new ModelResourceLocation(itemName, "inventory");
     }
 

@@ -1,16 +1,14 @@
 package org.cyclops.cyclopscore.client.particle;
 
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import org.cyclops.cyclopscore.RegistryEntries;
-
-import java.util.Locale;
 
 /**
  * Data for {@link ParticleBlur}.
@@ -19,33 +17,21 @@ import java.util.Locale;
 public class ParticleBlurData implements ParticleOptions {
 
     public static final ParticleBlurData INSTANCE = new ParticleBlurData(0, 0, 0, 1, 1);
-    public static final ParticleOptions.Deserializer<ParticleBlurData> DESERIALIZER = new ParticleOptions.Deserializer<ParticleBlurData>() {
-        public ParticleBlurData fromCommand(ParticleType<ParticleBlurData> particleType, StringReader reader) throws CommandSyntaxException {
-            reader.expect(' ');
-            float red = (float) reader.readDouble();
-            reader.expect(' ');
-            float green = (float) reader.readDouble();
-            reader.expect(' ');
-            float blue = (float) reader.readDouble();
-            reader.expect(' ');
-            float scale = (float) reader.readDouble();
-            reader.expect(' ');
-            float ageMultiplier = (float) reader.readDouble();
-            return new ParticleBlurData(red, green, blue, scale, ageMultiplier);
-        }
-
-        public ParticleBlurData fromNetwork(ParticleType<ParticleBlurData> particleTypeIn, FriendlyByteBuf buffer) {
-            return new ParticleBlurData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(),
-                    buffer.readFloat(), buffer.readFloat());
-        }
-    };
-    public static final Codec<ParticleBlurData> CODEC = RecordCodecBuilder.create((builder) -> builder
+    public static final MapCodec<ParticleBlurData> CODEC = RecordCodecBuilder.mapCodec((builder) -> builder
             .group(Codec.FLOAT.fieldOf("r").forGetter(ParticleBlurData::getRed),
                     Codec.FLOAT.fieldOf("g").forGetter(ParticleBlurData::getGreen),
                     Codec.FLOAT.fieldOf("b").forGetter(ParticleBlurData::getBlue),
                     Codec.FLOAT.fieldOf("scale").forGetter(ParticleBlurData::getScale),
                     Codec.FLOAT.fieldOf("ageMultiplier").forGetter(ParticleBlurData::getAgeMultiplier))
             .apply(builder, ParticleBlurData::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, ParticleBlurData> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.FLOAT, ParticleBlurData::getRed,
+            ByteBufCodecs.FLOAT, ParticleBlurData::getGreen,
+            ByteBufCodecs.FLOAT, ParticleBlurData::getBlue,
+            ByteBufCodecs.FLOAT, ParticleBlurData::getScale,
+            ByteBufCodecs.FLOAT, ParticleBlurData::getAgeMultiplier,
+            ParticleBlurData::new
+    );
 
     private final float red;
     private final float green;
@@ -65,23 +51,6 @@ public class ParticleBlurData implements ParticleOptions {
     @Override
     public ParticleType<?> getType() {
         return RegistryEntries.PARTICLE_BLUR.get();
-    }
-
-    @Override
-    public void writeToNetwork(FriendlyByteBuf buffer) {
-        buffer.writeFloat(this.red);
-        buffer.writeFloat(this.green);
-        buffer.writeFloat(this.blue);
-        buffer.writeFloat(this.scale);
-        buffer.writeFloat(this.ageMultiplier);
-    }
-
-    @Override
-    public String writeToString() {
-        return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f",
-                BuiltInRegistries.PARTICLE_TYPE.getKey(this.getType()),
-                this.red, this.green, this.blue,
-                this.scale, this.ageMultiplier);
     }
 
     public float getRed() {

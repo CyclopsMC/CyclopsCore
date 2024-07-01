@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.network.packet.debug;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.cyclops.cyclopscore.Reference;
 
@@ -8,19 +10,20 @@ import org.cyclops.cyclopscore.Reference;
  * @author rubensworks
  *
  */
-public class PingPongPacketSync extends PingPongPacketAsync {
+public class PingPongPacketSync extends PingPongPacketAsync<PingPongPacketSync> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "ping_pong_sync");
+    public static final Type<PingPongPacketSync> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "ping_pong_sync"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, PingPongPacketSync> CODEC = getCodec(PingPongPacketSync::new);
 
     /**
      * Empty packet.
      */
     public PingPongPacketSync() {
-        super(ID);
+        super(TYPE);
     }
 
     public PingPongPacketSync(int remaining) {
-        super(ID, remaining);
+        super(TYPE, remaining);
     }
 
     protected PingPongPacketAsync newPacket() {

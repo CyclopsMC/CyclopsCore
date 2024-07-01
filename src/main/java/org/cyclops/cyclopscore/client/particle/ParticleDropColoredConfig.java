@@ -1,11 +1,13 @@
 package org.cyclops.cyclopscore.client.particle;
 
-import com.mojang.serialization.Codec;
-import net.minecraft.client.particle.ParticleProvider;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
@@ -20,9 +22,14 @@ import javax.annotation.Nullable;
 public class ParticleDropColoredConfig extends ParticleConfig<ParticleDropColoredData> {
 
     public ParticleDropColoredConfig() {
-        super(CyclopsCore._instance, "drop_colored", eConfig -> new ParticleType<ParticleDropColoredData>(false, ParticleDropColoredData.DESERIALIZER){
-            public Codec<ParticleDropColoredData> codec() {
+        super(CyclopsCore._instance, "drop_colored", eConfig -> new ParticleType<>(false){
+            public MapCodec<ParticleDropColoredData> codec() {
                 return ParticleDropColoredData.CODEC;
+            }
+
+            @Override
+            public StreamCodec<? super RegistryFriendlyByteBuf, ParticleDropColoredData> streamCodec() {
+                return ParticleDropColoredData.STREAM_CODEC;
             }
         });
     }

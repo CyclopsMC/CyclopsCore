@@ -83,9 +83,9 @@ public abstract class DamageIndicatedItemFluidContainer extends Item implements 
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack itemStack, Level world, List<Component> list, TooltipFlag flag) {
-        component.addInformation(itemStack, world, list, flag);
-        super.appendHoverText(itemStack, world, list, flag);
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
+        component.addInformation(itemStack, context, list, flag);
+        super.appendHoverText(itemStack, context, list, flag);
     }
 
     @Override

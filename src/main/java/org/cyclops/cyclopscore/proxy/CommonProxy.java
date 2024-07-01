@@ -26,21 +26,21 @@ public class CommonProxy extends CommonProxyComponent {
         super.registerPacketHandlers(packetHandler);
 
         // Register packets.
-        packetHandler.register(RingOfFirePacket.ID, RingOfFirePacket::new);
-        packetHandler.register(ButtonClickPacket.ID, ButtonClickPacket::new);
-        packetHandler.register(ValueNotifyPacket.ID, ValueNotifyPacket::new);
-        packetHandler.register(ReloadResourcesPacket.ID, ReloadResourcesPacket::new);
-        packetHandler.register(AdvancementRewardsObtainPacket.ID, AdvancementRewardsObtainPacket::new);
-        packetHandler.register(RequestPlayerNbtPacket.ID, RequestPlayerNbtPacket::new);
-        packetHandler.register(SendPlayerNbtPacket.ID, SendPlayerNbtPacket::new);
-        packetHandler.register(RequestPlayerAdvancementUnlockedPacket.ID, RequestPlayerAdvancementUnlockedPacket::new);
-        packetHandler.register(SendPlayerAdvancementUnlockedPacket.ID, SendPlayerAdvancementUnlockedPacket::new);
+        packetHandler.register(RingOfFirePacket.TYPE, RingOfFirePacket.CODEC);
+        packetHandler.register(ButtonClickPacket.TYPE, ButtonClickPacket.CODEC);
+        packetHandler.register(ValueNotifyPacket.TYPE, ValueNotifyPacket.CODEC);
+        packetHandler.register(ReloadResourcesPacket.TYPE, ReloadResourcesPacket.CODEC);
+        packetHandler.register(AdvancementRewardsObtainPacket.TYPE, AdvancementRewardsObtainPacket.CODEC);
+        packetHandler.register(RequestPlayerNbtPacket.TYPE, RequestPlayerNbtPacket.CODEC);
+        packetHandler.register(SendPlayerNbtPacket.TYPE, SendPlayerNbtPacket.CODEC);
+        packetHandler.register(RequestPlayerAdvancementUnlockedPacket.TYPE, RequestPlayerAdvancementUnlockedPacket.CODEC);
+        packetHandler.register(SendPlayerAdvancementUnlockedPacket.TYPE, SendPlayerAdvancementUnlockedPacket.CODEC);
 
         // Register debug packets
-        packetHandler.register(PingPongPacketAsync.ID, PingPongPacketAsync::new);
-        packetHandler.register(PingPongPacketSync.ID, PingPongPacketSync::new);
-        packetHandler.register(PingPongPacketComplexAsync.ID, PingPongPacketComplexAsync::new);
-        packetHandler.register(PingPongPacketComplexSync.ID, PingPongPacketComplexSync::new);
+        packetHandler.register(PingPongPacketAsync.TYPE, PingPongPacketAsync.CODEC);
+        packetHandler.register(PingPongPacketSync.TYPE, PingPongPacketSync.CODEC);
+        packetHandler.register(PingPongPacketComplexAsync.TYPE, PingPongPacketComplexAsync.CODEC);
+        packetHandler.register(PingPongPacketComplexSync.TYPE, PingPongPacketComplexSync.CODEC);
     }
 
 }

@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -152,7 +153,7 @@ public abstract class NBTClassType<T> {
             @Override
             public Fluid readPersistedField(String name, CompoundTag tag) {
                 String fluidName = tag.getString(name);
-                return BuiltInRegistries.FLUID.get(new ResourceLocation(fluidName));
+                return BuiltInRegistries.FLUID.get(ResourceLocation.parse(fluidName));
             }
 
             @Override
@@ -165,15 +166,14 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, @Nullable FluidStack object, CompoundTag tag) {
                 if (object != null) {
-                    CompoundTag subTag = new CompoundTag();
-                    object.writeToNBT(subTag);
+                    Tag subTag = object.save(VanillaRegistries.createLookup());
                     tag.put(name, subTag);
                 }
             }
 
             @Override
             public FluidStack readPersistedField(String name, CompoundTag tag) {
-                return FluidStack.loadFluidStackFromNBT(tag.getCompound(name));
+                return FluidStack.parse(VanillaRegistries.createLookup(), tag.getCompound(name)).get();
             }
 
             @Override
@@ -406,7 +406,7 @@ public abstract class NBTClassType<T> {
             public DimPos readPersistedField(String name, CompoundTag tag) {
                 CompoundTag dimPos = tag.getCompound(name);
                 String dimensionName = dimPos.getString("dim");
-                ResourceKey<net.minecraft.world.level.Level> dimensionType = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimensionName));
+                ResourceKey<net.minecraft.world.level.Level> dimensionType = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dimensionName));
                 return DimPos.of(dimensionType, new BlockPos(dimPos.getInt("x"), dimPos.getInt("y"), dimPos.getInt("z")));
             }
 
@@ -419,13 +419,13 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, ItemStack object, CompoundTag tag) {
                 if (object != null) {
-                    tag.put(name, object.copy().save(new CompoundTag()));
+                    tag.put(name, object.copy().save(VanillaRegistries.createLookup()));
                 }
             }
 
             @Override
             public ItemStack readPersistedField(String name, CompoundTag tag) {
-                return ItemStack.of(tag.getCompound(name));
+                return ItemStack.parseOptional(VanillaRegistries.createLookup(), tag.getCompound(name));
             }
 
             @Override
@@ -437,13 +437,13 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, MutableComponent object, CompoundTag tag) {
                 if (object != null) {
-                    tag.putString(name, MutableComponent.Serializer.toJson(object));
+                    tag.putString(name, MutableComponent.Serializer.toJson(object, VanillaRegistries.createLookup()));
                 }
             }
 
             @Override
             public MutableComponent readPersistedField(String name, CompoundTag tag) {
-                return Component.Serializer.fromJson(tag.getString(name));
+                return Component.Serializer.fromJson(tag.getString(name), VanillaRegistries.createLookup());
             }
 
             @Override

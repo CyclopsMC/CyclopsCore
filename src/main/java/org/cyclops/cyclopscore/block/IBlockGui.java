@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stat;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +24,7 @@ import javax.annotation.Nullable;
  */
 public interface IBlockGui {
 
-    public default void writeExtraGuiData(FriendlyByteBuf packetBuffer, Level world, Player player, BlockPos blockPos, InteractionHand hand, BlockHitResult rayTraceResult) {
+    public default void writeExtraGuiData(FriendlyByteBuf packetBuffer, Level world, Player player, BlockPos blockPos, BlockHitResult rayTraceResult) {
 
     }
 
@@ -37,7 +36,7 @@ public interface IBlockGui {
         return null;
     }
 
-    public static InteractionResult onBlockActivatedHook(IBlockGui block, IBlockContainerProvider blockContainerProvider, BlockState blockState, Level world, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult rayTraceResult) {
+    public static InteractionResult onBlockActivatedHook(IBlockGui block, IBlockContainerProvider blockContainerProvider, BlockState blockState, Level world, BlockPos blockPos, Player player, BlockHitResult rayTraceResult) {
         // Drop through if the player is sneaking
         if (player.isCrouching()) {
             return InteractionResult.PASS;
@@ -47,7 +46,7 @@ public interface IBlockGui {
             MenuProvider containerProvider = blockContainerProvider.get(blockState, world, blockPos);
             if (containerProvider != null) {
                 player.openMenu(containerProvider,
-                        packetBuffer -> block.writeExtraGuiData(packetBuffer, world, player, blockPos, hand, rayTraceResult));
+                        packetBuffer -> block.writeExtraGuiData(packetBuffer, world, player, blockPos, rayTraceResult));
                 Stat<ResourceLocation> openStat = block.getOpenStat();
                 if (openStat != null) {
                     player.awardStat(openStat);

@@ -2,12 +2,12 @@ package org.cyclops.cyclopscore.metadata;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.function.Supplier;
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 /**
  * Furnace recipe exporter.
  */
-public class RegistryExportableAbstractCookingRecipe<T extends RecipeType<? extends AbstractCookingRecipe>> extends RegistryExportableRecipeAbstract<T, AbstractCookingRecipe, Container> {
+public class RegistryExportableAbstractCookingRecipe<T extends RecipeType<? extends AbstractCookingRecipe>> extends RegistryExportableRecipeAbstract<T, AbstractCookingRecipe, SingleRecipeInput> {
 
     protected RegistryExportableAbstractCookingRecipe(Supplier<T> recipeType) {
         super(recipeType);

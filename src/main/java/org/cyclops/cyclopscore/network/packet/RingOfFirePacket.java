@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.network.packet;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -17,17 +19,18 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  *
  */
-public class RingOfFirePacket extends PlayerPositionPacket {
+public class RingOfFirePacket extends PlayerPositionPacket<RingOfFirePacket> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "ring_of_fire");
+    public static final Type<RingOfFirePacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "ring_of_fire"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, RingOfFirePacket> CODEC = getCodec(RingOfFirePacket::new);
     private static final double RING_AREA = 0.9F;
 
     public RingOfFirePacket() {
-        super(ID);
+        super(TYPE);
     }
 
     public RingOfFirePacket(Player player) {
-        super(ID, player);
+        super(TYPE, player);
     }
 
     @OnlyIn(Dist.CLIENT)

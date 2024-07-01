@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.recipe;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -76,24 +76,24 @@ public class ItemStackFromIngredient {
         return firstItemStack;
     }
 
-    public void writeToPacket(FriendlyByteBuf buf) {
+    public void writeToPacket(RegistryFriendlyByteBuf buf) {
         buf.writeVarInt(modPriorities.size());
         for (String modPriority : modPriorities) {
             buf.writeUtf(modPriority);
         }
         buf.writeUtf(tag);
-        ingredient.toNetwork(buf);
+        Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient);
         buf.writeVarInt(count);
     }
 
-    public static ItemStackFromIngredient readFromPacket(FriendlyByteBuf buf) {
+    public static ItemStackFromIngredient readFromPacket(RegistryFriendlyByteBuf buf) {
         List<String> modPriorities = Lists.newArrayList();
         int modPrioritiesSize = buf.readVarInt();
         for (int i = 0; i < modPrioritiesSize; i++) {
             modPriorities.add(buf.readUtf());
         }
         String key = buf.readUtf();
-        Ingredient ingredient = Ingredient.fromNetwork(buf);
+        Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
         int count = buf.readVarInt();
 
         return new ItemStackFromIngredient(modPriorities, key, ingredient, count);

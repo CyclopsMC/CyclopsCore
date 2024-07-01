@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.ingredient.recipe;
 
-import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.IPrototypedIngredientAlternatives;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * A recipe handler that handles {@link RecipeType}.
  * @author rubensworks
  */
-public abstract class RecipeHandlerRecipeType<C extends Container, R extends Recipe<C>> implements IRecipeHandler {
+public abstract class RecipeHandlerRecipeType<C extends RecipeInput, R extends Recipe<C>> implements IRecipeHandler {
 
     private final Supplier<Level> worldSupplier;
     private final RecipeType<R> recipeType;
@@ -54,7 +54,7 @@ public abstract class RecipeHandlerRecipeType<C extends Container, R extends Rec
 
     @Override
     public Collection<IRecipeDefinition> getRecipes() {
-        return ((Collection<RecipeHolder<R>>) worldSupplier.get().getRecipeManager().byType(recipeType).values()).stream()
+        return worldSupplier.get().getRecipeManager().getAllRecipesFor(recipeType).stream()
                 .map(this::getRecipeDefinition)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

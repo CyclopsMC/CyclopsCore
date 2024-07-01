@@ -57,7 +57,7 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
                 if (event.getRegistryKey().equals(BuiltInRegistries.ITEM.key())) {
                     Item itemBlock = itemBlockConstructor.apply(config, config.getInstance());
                     Objects.requireNonNull(itemBlock, "Received a null item for the item block constructor of " + config.getNamedId());
-                    event.register(Registries.ITEM, new ResourceLocation(config.getMod().getModId(), config.getNamedId()), () -> itemBlock);
+                    event.register(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()), () -> itemBlock);
                     config.setItemInstance(itemBlock);
                     try {
                         if (callback != null) {

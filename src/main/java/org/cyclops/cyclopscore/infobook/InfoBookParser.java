@@ -6,12 +6,12 @@ import com.google.common.collect.Sets;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
@@ -101,8 +101,8 @@ public class InfoBookParser {
             }
 
         });
-        InfoBookParser.registerAppendixRecipeFactories(RecipeType.CRAFTING, (infoBook, recipe) -> new CraftingRecipeAppendix(infoBook, recipe));
-        InfoBookParser.registerAppendixRecipeFactories(RecipeType.SMELTING, (infoBook, recipe) -> new FurnaceRecipeAppendix(infoBook, recipe));
+        InfoBookParser.registerAppendixRecipeFactories(RecipeType.CRAFTING, CraftingRecipeAppendix::new);
+        InfoBookParser.registerAppendixRecipeFactories(RecipeType.SMELTING, FurnaceRecipeAppendix::new);
         registerAppendixFactory("advancement_rewards", new InfoBookParser.IAppendixFactory() {
 
             @Override
@@ -123,7 +123,7 @@ public class InfoBookParser {
                                         Element advancementNode = (Element) subChildren.item(j);
                                         String advancementId = advancementNode.getAttribute("id");
                                         if (!advancementId.isEmpty()) {
-                                            advancements.add(new ResourceLocation(advancementId));
+                                            advancements.add(ResourceLocation.parse(advancementId));
                                         }
                                     }
                                 }
@@ -163,7 +163,7 @@ public class InfoBookParser {
                 List<SectionAppendix> appendixList = Lists.newArrayList();
 
                 String type = node.getAttribute("type");
-                RecipeType<?> recipeType = BuiltInRegistries.RECIPE_TYPE.get(new ResourceLocation(type));
+                RecipeType<?> recipeType = BuiltInRegistries.RECIPE_TYPE.get(ResourceLocation.parse(type));
                 if (recipeType == null) {
                     throw new InvalidAppendixException("Could not find a recipe type: " + type);
                 }
@@ -205,7 +205,7 @@ public class InfoBookParser {
     }
 
     protected static ResourceLocation getNodeResourceLocation(Element node) {
-        return new ResourceLocation(node.getTextContent().trim());
+        return ResourceLocation.parse(node.getTextContent().trim());
     }
 
     /**
@@ -257,7 +257,7 @@ public class InfoBookParser {
      * @param <C> The recipe inventory type
      * @param <R> The recipe type
      */
-    public static <C extends Container, R extends Recipe<C>> void registerAppendixRecipeFactories(RecipeType<R> recipeType, IAppendixItemFactory<C, R> factory) {
+    public static <C extends RecipeInput, R extends Recipe<C>> void registerAppendixRecipeFactories(RecipeType<R> recipeType, IAppendixItemFactory<C, R> factory) {
         String name = BuiltInRegistries.RECIPE_TYPE.getKey(recipeType).toString();
         registerAppendixFactory(name, (infoBook, node) -> {
             ResourceLocation recipeId = getNodeResourceLocation(node);
@@ -745,7 +745,7 @@ public class InfoBookParser {
 
     }
 
-    public static interface IAppendixItemFactory<C extends Container, R extends Recipe<C>> {
+    public static interface IAppendixItemFactory<C extends RecipeInput, R extends Recipe<C>> {
 
         public SectionAppendix create(IInfoBook infoBook, RecipeHolder<R> recipe) throws InvalidAppendixException;
 

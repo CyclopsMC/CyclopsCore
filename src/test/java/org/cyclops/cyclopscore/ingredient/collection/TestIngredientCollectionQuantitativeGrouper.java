@@ -58,11 +58,11 @@ public class TestIngredientCollectionQuantitativeGrouper {
         IngredientComponent<ComplexStack, Integer> comp =
                 new IngredientComponent<>("cyclopscore:complex", new IngredientMatcherComplex(),
                         new IngredientSerializerStub<>(), Lists.newArrayList(
-                        new IngredientComponentCategoryType<>(new ResourceLocation("cyclopscore:complex/group"),
+                        new IngredientComponentCategoryType<>(ResourceLocation.parse("cyclopscore:complex/group"),
                                 ComplexStack.Group.class, true, ComplexStack::getGroup, ComplexStack.Match.GROUP, false),
-                        new IngredientComponentCategoryType<>(new ResourceLocation("cyclopscore:complex/meta"),
+                        new IngredientComponentCategoryType<>(ResourceLocation.parse("cyclopscore:complex/meta"),
                                 Integer.class, false, ComplexStack::getMeta, ComplexStack.Match.META, false),
-                        new IngredientComponentCategoryType<>(new ResourceLocation("cyclopscore:complex/tag"),
+                        new IngredientComponentCategoryType<>(ResourceLocation.parse("cyclopscore:complex/tag"),
                                 ComplexStack.Tag.class, true, ComplexStack::getTag, ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false)
                 )).setTranslationKey("recipecomponent.cyclopscore.complex");
         new IngredientCollectionQuantitativeGrouper<>(new IngredientArrayList<>(comp));
