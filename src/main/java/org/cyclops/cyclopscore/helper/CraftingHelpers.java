@@ -169,9 +169,12 @@ public class CraftingHelpers {
             if (!(obj instanceof CacheableCraftingInventory)) {
                 return false;
             }
+            RecipeInput otherInput = ((CacheableCraftingInventory) obj).getInventoryCrafting();
+            if (getInventoryCrafting().size() != otherInput.size()) {
+                return false;
+            }
             for (int i = 0; i < getInventoryCrafting().size(); i++) {
-                if (!ItemStack.isSameItemSameComponents(getInventoryCrafting().getItem(i),
-                        ((CacheableCraftingInventory) obj).getInventoryCrafting().getItem(i))) {
+                if (!ItemStack.isSameItemSameComponents(getInventoryCrafting().getItem(i), otherInput.getItem(i))) {
                     return false;
                 }
             }
