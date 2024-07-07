@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import lombok.Data;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -21,6 +22,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -113,6 +115,7 @@ public abstract class ModBase<T extends ModBase> {
         NeoForge.EVENT_BUS.addListener(this::onServerAboutToStart);
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
         NeoForge.EVENT_BUS.addListener(this::onServerStopping);
+        NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
 
         // Register proxies
         this.proxy = MinecraftHelpers.isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
@@ -231,7 +234,7 @@ public abstract class ModBase<T extends ModBase> {
         return new IMCHandler(this);
     }
 
-    protected LiteralArgumentBuilder<CommandSourceStack> constructBaseCommand() {
+    protected LiteralArgumentBuilder<CommandSourceStack> constructBaseCommand(Commands.CommandSelection selection, CommandBuildContext context) {
         LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(this.getModId());
 
         root.then(CommandConfig.make(this));
@@ -360,7 +363,11 @@ public abstract class ModBase<T extends ModBase> {
      * @param event The Forge server starting event.
      */
     protected void onServerStarting(ServerStartingEvent event) {
-        event.getServer().getCommands().getDispatcher().register(constructBaseCommand());
+
+    }
+
+    protected void onRegisterCommands(RegisterCommandsEvent event) {
+        event.getDispatcher().register(constructBaseCommand(event.getCommandSelection(), event.getBuildContext()));
     }
 
     /**

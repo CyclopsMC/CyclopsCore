@@ -1,7 +1,9 @@
 package org.cyclops.cyclopscore;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
@@ -96,8 +98,8 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
     }
 
     @Override
-    protected LiteralArgumentBuilder<CommandSourceStack> constructBaseCommand() {
-        LiteralArgumentBuilder<CommandSourceStack> root = super.constructBaseCommand();
+    protected LiteralArgumentBuilder<CommandSourceStack> constructBaseCommand(Commands.CommandSelection selection, CommandBuildContext context) {
+        LiteralArgumentBuilder<CommandSourceStack> root = super.constructBaseCommand(selection, context);
 
         root.then(CommandIgnite.make());
         root.then(CommandDebug.make());
