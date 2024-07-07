@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.client.particle;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -147,7 +148,7 @@ public class ParticleBlur extends TextureSheetParticle {
         private final Runnable onBuild;
 
         public BufferBuilderWrapper(BufferBuilder bufferBuilder, Runnable onBuild) {
-            super(null, null, null);
+            super(null, null, DefaultVertexFormat.PARTICLE);
             this.bufferBuilder = bufferBuilder;
             this.onBuild = onBuild;
         }
@@ -155,9 +156,14 @@ public class ParticleBlur extends TextureSheetParticle {
         @Nullable
         @Override
         public MeshData build() {
+            // Flush the buffer manually, so we can ensure on callback is invoked to apply effects
             MeshData ret = this.bufferBuilder.build();
+            if (ret != null) {
+                BufferUploader.drawWithShader(ret);
+            }
             this.onBuild.run();
-            return ret;
+
+            return null;
         }
 
         @Override
