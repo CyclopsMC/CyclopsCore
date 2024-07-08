@@ -45,4 +45,9 @@ public class InventoryFluid extends TransientCraftingContainer implements IInven
     public IFluidHandler getFluidHandler() {
         return this.fluidHandler;
     }
+
+    @Override
+    public int size() {
+        return getContainerSize();
+    }
 }
