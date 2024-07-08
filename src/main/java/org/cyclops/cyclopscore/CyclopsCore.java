@@ -27,6 +27,7 @@ import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigPropertyConfig
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacketConfig;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
+import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.component.DataComponentFluidContentConfig;
 import org.cyclops.cyclopscore.component.DataComponentInventoryConfig;
 import org.cyclops.cyclopscore.config.ConfigHandler;
@@ -167,6 +168,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
         // Data components
         configHandler.addConfigurable(new DataComponentCapacityConfig());
+        configHandler.addConfigurable(new DataComponentEnergyStorageConfig());
         configHandler.addConfigurable(new DataComponentFluidContentConfig());
         configHandler.addConfigurable(new DataComponentInventoryConfig());
     }

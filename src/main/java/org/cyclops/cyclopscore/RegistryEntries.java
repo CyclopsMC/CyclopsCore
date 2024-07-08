@@ -22,6 +22,7 @@ public class RegistryEntries {
     public static final DeferredHolder<MenuType<?>, MenuType<ContainerInfoBookTest>> CONTAINER_INFOBOOK_TEST = DeferredHolder.create(Registries.MENU, ResourceLocation.parse("cyclopscore:test_infobook"));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> COMPONENT_CAPACITY = DeferredHolder.create(Registries.DATA_COMPONENT_TYPE, ResourceLocation.parse("cyclopscore:capacity"));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> COMPONENT_ENERGY_STORAGE = DeferredHolder.create(Registries.DATA_COMPONENT_TYPE, ResourceLocation.parse("cyclopscore:energy_storage"));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidContent>> COMPONENT_FLUID_CONTENT = DeferredHolder.create(Registries.DATA_COMPONENT_TYPE, ResourceLocation.parse("cyclopscore:fluid_content"));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleInventory>> COMPONENT_INVENTORY = DeferredHolder.create(Registries.DATA_COMPONENT_TYPE, ResourceLocation.parse("cyclopscore:inventory"));
 
