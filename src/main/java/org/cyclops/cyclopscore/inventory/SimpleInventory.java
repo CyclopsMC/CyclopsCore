@@ -194,9 +194,8 @@ public class SimpleInventory implements INBTInventory, WorldlyContainer {
             ItemStack itemStack = getItem(index);
             if (!itemStack.isEmpty() && itemStack.getCount() > 0) {
                 CompoundTag slot = new CompoundTag();
-                slots.add(slot);
                 slot.putByte("Slot", index);
-                itemStack.save(provider, slot);
+                slots.add(itemStack.save(provider, slot));
             }
         }
         data.put(tag, slots);

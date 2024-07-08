@@ -121,8 +121,7 @@ public class InventoryHelpers {
             if(!itemStack.isEmpty() && itemStack.getCount() > 0) {
                 CompoundTag slot = new CompoundTag();
                 slot.putInt("index", index);
-                slots.add(slot);
-                itemStack.save(provider, slot);
+                slots.add(itemStack.save(provider, slot));
             }
         }
         data.put(tagName, slots);
