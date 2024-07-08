@@ -275,12 +275,12 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
-                ItemStack.STREAM_CODEC.encode(output, (ItemStack) object);
+                ItemStack.OPTIONAL_STREAM_CODEC.encode(output, (ItemStack) object);
             }
 
             @Override
             public Object decode(RegistryFriendlyByteBuf input) {
-                return ItemStack.STREAM_CODEC.decode(input);
+                return ItemStack.OPTIONAL_STREAM_CODEC.decode(input);
             }
         });
 
@@ -288,12 +288,12 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
-                FluidStack.STREAM_CODEC.encode(output, (FluidStack) object);
+                FluidStack.OPTIONAL_STREAM_CODEC.encode(output, (FluidStack) object);
             }
 
             @Override
             public Object decode(RegistryFriendlyByteBuf input) {
-                return FluidStack.STREAM_CODEC.decode(input);
+                return FluidStack.OPTIONAL_STREAM_CODEC.decode(input);
             }
         });
 
