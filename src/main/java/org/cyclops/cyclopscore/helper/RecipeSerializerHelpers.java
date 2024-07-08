@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -57,6 +58,11 @@ public class RecipeSerializerHelpers {
         );
     }
 
+    public static final StreamCodec<RegistryFriendlyByteBuf, Either<ItemStack, ItemStackFromIngredient>> STREAM_CODEC_ITEMSTACK_OR_TAG = StreamCodec.of(
+            RecipeSerializerHelpers::writeItemStackOrItemStackIngredient,
+            RecipeSerializerHelpers::readItemStackOrItemStackIngredient
+    );
+
     public static void writeItemStackOrItemStackIngredient(RegistryFriendlyByteBuf buffer, Either<ItemStack, ItemStackFromIngredient> itemStackOrItemStackIngredient) {
         itemStackOrItemStackIngredient.mapBoth(
                 itemStack -> {
@@ -81,6 +87,11 @@ public class RecipeSerializerHelpers {
         }
         return outputItem;
     }
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, Either<Pair<ItemStack, Float>, Pair<ItemStackFromIngredient, Float>>> STREAM_CODEC_ITEMSTACK_OR_ITEMSTACKINGREDIENT_CHANCE = StreamCodec.of(
+            RecipeSerializerHelpers::writeItemStackOrItemStackIngredientChance,
+            RecipeSerializerHelpers::readItemStackOrItemStackIngredientChance
+    );
 
     public static void writeItemStackOrItemStackIngredientChance(RegistryFriendlyByteBuf buffer, Either<Pair<ItemStack, Float>, Pair<ItemStackFromIngredient, Float>> itemStackOrItemStackIngredient) {
         itemStackOrItemStackIngredient.mapBoth(
