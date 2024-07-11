@@ -42,7 +42,7 @@ public class ModItemObtainedTrigger extends SimpleCriterionTrigger<ModItemObtain
     public void onPickup(ItemEntityPickupEvent.Post event) {
         if (event.getPlayer() != null && event.getPlayer() instanceof ServerPlayer) {
             this.trigger((ServerPlayer) event.getPlayer(),
-                    (i) -> i.test((ServerPlayer) event.getPlayer(), event.getItemEntity().getItem()));
+                    (i) -> i.test((ServerPlayer) event.getPlayer(), event.getOriginalStack()));
         }
     }
 
