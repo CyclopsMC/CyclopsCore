@@ -524,7 +524,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
      * @return A supplier that can be called for retrieving the value.
      */
     public <T> Supplier<T> registerSyncedVariable(Class<T> clazz, Supplier<T> serverValueSupplier) {
-        SyncedGuiVariable<T> variable = new SyncedGuiVariable<>(this, clazz, serverValueSupplier);
+        SyncedGuiVariable<T> variable = new SyncedGuiVariable<>(this, clazz, serverValueSupplier, this.player.level().registryAccess());
         this.syncedGuiVariables.add(variable);
         return variable;
     }

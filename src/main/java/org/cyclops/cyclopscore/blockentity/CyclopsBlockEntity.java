@@ -108,7 +108,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     @Override
     public void saveAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
         super.saveAdditional(tag, lookupProvider);
-        writeGeneratedFieldsToNBT(tag);
+        writeGeneratedFieldsToNBT(tag, lookupProvider);
     }
 
     /**
@@ -129,7 +129,7 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     }
 
     public void read(CompoundTag tag, HolderLookup.Provider provider) {
-        readGeneratedFieldsFromNBT(tag);
+        readGeneratedFieldsFromNBT(tag, provider);
     }
 
     @Override

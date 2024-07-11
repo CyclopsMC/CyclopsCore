@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.persist.nbt;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 /**
@@ -13,12 +14,12 @@ public interface INBTProvider {
      * Write the data in this provider to NBT.
      * @param tag The tag to write to.
      */
-    public void writeGeneratedFieldsToNBT(CompoundTag tag);
+    public void writeGeneratedFieldsToNBT(CompoundTag tag, HolderLookup.Provider holderLookupProvider);
 
     /**
      * Read data from the given tag to this provider.
      * @param tag The tag to read from.
      */
-    public void readGeneratedFieldsFromNBT(CompoundTag tag);
+    public void readGeneratedFieldsFromNBT(CompoundTag tag, HolderLookup.Provider holderLookupProvider);
 
 }

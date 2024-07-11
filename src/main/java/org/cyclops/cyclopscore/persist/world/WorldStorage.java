@@ -29,18 +29,22 @@ public abstract class WorldStorage implements INBTProvider {
 
     /**
      * Read the counters.
-     * @param tag The tag to read from.
+     *
+     * @param tag                  The tag to read from.
+     * @param holderLookupProvider
      */
-    public void readFromNBT(CompoundTag tag) {
-        readGeneratedFieldsFromNBT(tag);
+    public void readFromNBT(CompoundTag tag, HolderLookup.Provider holderLookupProvider) {
+        readGeneratedFieldsFromNBT(tag, holderLookupProvider);
     }
 
     /**
      * Write the counters.
-     * @param tag The tag to write to.
+     *
+     * @param tag                  The tag to write to.
+     * @param holderLookupProvider
      */
-    public void writeToNBT(CompoundTag tag) {
-        writeGeneratedFieldsToNBT(tag);
+    public void writeToNBT(CompoundTag tag, HolderLookup.Provider holderLookupProvider) {
+        writeGeneratedFieldsToNBT(tag, holderLookupProvider);
     }
 
     /**
@@ -81,7 +85,7 @@ public abstract class WorldStorage implements INBTProvider {
         return server.getLevel(Level.OVERWORLD).getDataStorage().computeIfAbsent(
                 new SavedData.Factory<NBTDataHolder>(
                         () -> new NBTDataHolder(this),
-                        (t, p) -> NBTDataHolder.load(t, this)
+                        (t, p) -> NBTDataHolder.load(t, this, server.registryAccess())
                 ),
                 mod.getModId() + "_" + getDataId());
     }
@@ -111,15 +115,15 @@ public abstract class WorldStorage implements INBTProvider {
             this.parentStorage = parentStorage;
         }
 
-        public static NBTDataHolder load(CompoundTag tag, WorldStorage parentStorage) {
+        public static NBTDataHolder load(CompoundTag tag, WorldStorage parentStorage, HolderLookup.Provider holderLookupProvider) {
             NBTDataHolder dataHolder = new NBTDataHolder(parentStorage);
-            dataHolder.parentStorage.readFromNBT(tag);
+            dataHolder.parentStorage.readFromNBT(tag, holderLookupProvider);
             return dataHolder;
         }
 
         @Override
         public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider) {
-            parentStorage.writeToNBT(tag);
+            parentStorage.writeToNBT(tag, provider);
             return tag;
         }
 

@@ -43,10 +43,10 @@ public interface INBTSerializable {
         private final Class<?> fieldType;
 
         @Override
-        public void writePersistedField(String name, INBTSerializable object, CompoundTag tag) {
+        public void writePersistedField(String name, INBTSerializable object, CompoundTag tag, HolderLookup.Provider provider) {
             try {
-                Method method = fieldType.getMethod("toNBT");
-                tag.put(name, (Tag) method.invoke(object));
+                Method method = fieldType.getMethod("toNBT", HolderLookup.Provider.class);
+                tag.put(name, (Tag) method.invoke(object, provider));
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException("No method toNBT for field " + name + " of class " + fieldType + " was found.");
             } catch (InvocationTargetException e) {
@@ -59,17 +59,17 @@ public interface INBTSerializable {
         }
 
         @Override
-        public INBTSerializable readPersistedField(String name, CompoundTag tag) {
+        public INBTSerializable readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
             try {
                 Constructor<?> constructor = fieldType.getConstructor();
                 if(constructor == null) {
                     throw new RuntimeException("The NBT serializable " + name + " of class " + fieldType + " must " +
                             "have a constructor without parameters.");
                 }
-                Method method = fieldType.getMethod("fromNBT", CompoundTag.class);
+                Method method = fieldType.getMethod("fromNBT", HolderLookup.Provider.class, CompoundTag.class);
                 INBTSerializable obj = (INBTSerializable) constructor.newInstance();
                 if(tag.contains(name)) {
-                    method.invoke(obj, tag.get(name));
+                    method.invoke(obj, provider, tag.get(name));
                 } else {
                     CyclopsCore.clog(Level.WARN, String.format("The tag %s did not contain the key %s, skipping " +
                             "reading.", tag, name));
