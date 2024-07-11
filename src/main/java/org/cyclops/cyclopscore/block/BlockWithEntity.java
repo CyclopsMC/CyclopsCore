@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.block;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -104,7 +103,7 @@ public abstract class BlockWithEntity extends BaseEntityBlock {
     protected CompoundTag getDroppedItemStackNbt(BlockState state, HitResult target, BlockGetter world,
                                                  BlockPos blockPos, Player player, ItemStack itemStack,
                                                  CyclopsBlockEntity blockEntity) {
-        return blockEntity.writeToItemStack(new CompoundTag(), VanillaRegistries.createLookup());
+        return blockEntity.writeToItemStack(new CompoundTag(), player.level().registryAccess());
     }
 
     /**

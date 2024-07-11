@@ -9,7 +9,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -167,14 +166,14 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, @Nullable FluidStack object, CompoundTag tag, HolderLookup.Provider provider) {
                 if (object != null) {
-                    Tag subTag = object.save(VanillaRegistries.createLookup());
+                    Tag subTag = object.save(provider);
                     tag.put(name, subTag);
                 }
             }
 
             @Override
             public FluidStack readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return FluidStack.parse(VanillaRegistries.createLookup(), tag.getCompound(name)).get();
+                return FluidStack.parse(provider, tag.getCompound(name)).get();
             }
 
             @Override
@@ -420,13 +419,13 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, ItemStack object, CompoundTag tag, HolderLookup.Provider provider) {
                 if (object != null) {
-                    tag.put(name, object.copy().save(VanillaRegistries.createLookup()));
+                    tag.put(name, object.copy().save(provider));
                 }
             }
 
             @Override
             public ItemStack readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return ItemStack.parseOptional(VanillaRegistries.createLookup(), tag.getCompound(name));
+                return ItemStack.parseOptional(provider, tag.getCompound(name));
             }
 
             @Override
@@ -438,13 +437,13 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, MutableComponent object, CompoundTag tag, HolderLookup.Provider provider) {
                 if (object != null) {
-                    tag.putString(name, MutableComponent.Serializer.toJson(object, VanillaRegistries.createLookup()));
+                    tag.putString(name, MutableComponent.Serializer.toJson(object, provider));
                 }
             }
 
             @Override
             public MutableComponent readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return Component.Serializer.fromJson(tag.getString(name), VanillaRegistries.createLookup());
+                return Component.Serializer.fromJson(tag.getString(name), provider);
             }
 
             @Override

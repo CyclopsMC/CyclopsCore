@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import io.netty.handler.codec.EncoderException;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -90,6 +91,11 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
      */
     public void setGuiValueListener(IValueNotifiable listener) {
         this.guiValueListener = listener;
+    }
+
+    @Override
+    public HolderLookup.Provider getHolderLookupProvider() {
+        return this.player.level().registryAccess();
     }
 
     @Override

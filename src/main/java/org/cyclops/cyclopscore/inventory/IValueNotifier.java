@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.inventory;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.Set;
@@ -33,5 +34,7 @@ public interface IValueNotifier {
      * @return The value or null.
      */
     CompoundTag getValue(int valueId);
+
+    HolderLookup.Provider getHolderLookupProvider();
 
 }

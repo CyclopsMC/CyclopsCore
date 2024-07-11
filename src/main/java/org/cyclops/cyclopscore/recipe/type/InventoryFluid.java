@@ -42,6 +42,11 @@ public class InventoryFluid extends TransientCraftingContainer implements IInven
     }
 
     @Override
+    public boolean isEmpty() {
+        return super.isEmpty();
+    }
+
+    @Override
     public IFluidHandler getFluidHandler() {
         return this.fluidHandler;
     }

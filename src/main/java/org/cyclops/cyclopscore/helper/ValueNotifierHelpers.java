@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Lists;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -79,7 +78,7 @@ public class ValueNotifierHelpers {
     public static void setValue(IValueNotifier notifier, int valueId, MutableComponent value) {
         if (value != null) {
             CompoundTag tag = new CompoundTag();
-            tag.putString(KEY, Component.Serializer.toJson(value, VanillaRegistries.createLookup()));
+            tag.putString(KEY, Component.Serializer.toJson(value, notifier.getHolderLookupProvider()));
             notifier.setValue(valueId, tag);
         }
     }
@@ -95,7 +94,7 @@ public class ValueNotifierHelpers {
         ListTag list = new ListTag();
         for (Component value : values) {
             if (value != null) {
-                list.add(StringTag.valueOf(Component.Serializer.toJson(value, VanillaRegistries.createLookup())));
+                list.add(StringTag.valueOf(Component.Serializer.toJson(value, notifier.getHolderLookupProvider())));
             }
         }
         tag.put(KEY, list);
@@ -170,7 +169,7 @@ public class ValueNotifierHelpers {
     public static MutableComponent getValueTextComponent(IValueNotifier notifier, int valueId) {
         CompoundTag tag = notifier.getValue(valueId);
         if(tag != null) {
-            return Component.Serializer.fromJson(tag.getString(KEY), VanillaRegistries.createLookup());
+            return Component.Serializer.fromJson(tag.getString(KEY), notifier.getHolderLookupProvider());
         }
         return null;
     }
@@ -188,7 +187,7 @@ public class ValueNotifierHelpers {
             ListTag listTag = tag.getList(KEY, Tag.TAG_STRING);
             List<MutableComponent> list = Lists.newArrayList();
             for (int i = 0; i < listTag.size(); i++) {
-                list.add(Component.Serializer.fromJson(listTag.getString(i), VanillaRegistries.createLookup()));
+                list.add(Component.Serializer.fromJson(listTag.getString(i), notifier.getHolderLookupProvider()));
             }
             return list;
         }
