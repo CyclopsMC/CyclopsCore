@@ -43,6 +43,11 @@ public class InventoryFluid extends TransientCraftingContainer implements IInven
 
     @Override
     public boolean isEmpty() {
+        for (int i = 0; i < getFluidHandler().getTanks(); i++) {
+            if (!getFluidHandler().getFluidInTank(i).isEmpty()) {
+                return false;
+            }
+        }
         return super.isEmpty();
     }
 
