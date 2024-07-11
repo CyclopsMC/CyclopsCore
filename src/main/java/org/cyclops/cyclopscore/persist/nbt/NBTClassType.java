@@ -166,14 +166,14 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, @Nullable FluidStack object, CompoundTag tag, HolderLookup.Provider provider) {
                 if (object != null) {
-                    Tag subTag = object.save(provider);
+                    Tag subTag = object.saveOptional(provider);
                     tag.put(name, subTag);
                 }
             }
 
             @Override
             public FluidStack readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return FluidStack.parse(provider, tag.getCompound(name)).get();
+                return FluidStack.parseOptional(provider, tag.getCompound(name));
             }
 
             @Override
@@ -419,7 +419,7 @@ public abstract class NBTClassType<T> {
             @Override
             public void writePersistedField(String name, ItemStack object, CompoundTag tag, HolderLookup.Provider provider) {
                 if (object != null) {
-                    tag.put(name, object.copy().save(provider));
+                    tag.put(name, object.copy().saveOptional(provider));
                 }
             }
 
