@@ -10,8 +10,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -135,26 +135,16 @@ public class CraftingHelpers {
                 // Deep-copy of the inventory to enable caching
                 int width = inventoryCrafting.size();
                 int height = 1;
-                if (inventoryCrafting instanceof CraftingContainer) {
-                    width = ((CraftingContainer) inventoryCrafting).getWidth();
-                    height = ((CraftingContainer) inventoryCrafting).getHeight();
+                if (inventoryCrafting instanceof CraftingInput) {
+                    width = ((CraftingInput) inventoryCrafting).width();
+                    height = ((CraftingInput) inventoryCrafting).height();
                 }
                 int size = inventoryCrafting.size();
-                NonNullList<ItemStack> items = NonNullList.createWithCapacity(size);
+                NonNullList<ItemStack> items = NonNullList.withSize(size, ItemStack.EMPTY);
                 for (int i = 0; i < inventoryCrafting.size(); i++) {
                     items.set(i, inventoryCrafting.getItem(i).copy());
                 }
-                this.inventoryCrafting = new RecipeInput() {
-                    @Override
-                    public ItemStack getItem(int index) {
-                        return items.get(index);
-                    }
-
-                    @Override
-                    public int size() {
-                        return size;
-                    }
-                };
+                this.inventoryCrafting = CraftingInput.of(width, height, items);
             } else {
                 this.inventoryCrafting = inventoryCrafting;
             }
