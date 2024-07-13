@@ -83,6 +83,7 @@ public class ConfigurableType {
     public static final ConfigurableType SOUND_EVENT = new ConfigurableType(true, SoundEventConfig.class, new ConfigurableTypeActionForge<>(), "sound_event");
     public static final ConfigurableType DATA_COMPONENT = new ConfigurableType(true, DataComponentConfig.class, new ConfigurableTypeActionForge<>(), "data_component");
     public static final ConfigurableType ARMOR_MATERIAL = new ConfigurableType(true, ArmorMaterialConfig.class, new ConfigurableTypeActionForge<>(), "armor_material");
+    public static final ConfigurableType ENCHANTMENT_ENTITY_EFFECT = new ConfigurableType(true, EnchantmentEntityEffectConfig.class, new ConfigurableTypeActionForge<>(), "enchantment_entity_effect");
 
     /**
      * Dummy type, only used for configs that refer to nothing.

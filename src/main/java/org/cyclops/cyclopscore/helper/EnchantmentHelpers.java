@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -56,5 +57,23 @@ public class EnchantmentHelpers {
         ItemEnchantments.Mutable enchantmentsMutable = new ItemEnchantments.Mutable(enchantments);
         enchantmentsMutable.set(enchantment, level);
         itemStack.set(datacomponenttype, enchantmentsMutable.toImmutable());
+    }
+
+    public static void runIterationOnItem(ItemStack itemStack, EnchantmentVisitor visitor) {
+        ItemEnchantments itemenchantments = itemStack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+
+        // Neo: Respect gameplay-only enchantments when doing iterations
+        var lookup = net.neoforged.neoforge.common.CommonHooks.resolveLookup(net.minecraft.core.registries.Registries.ENCHANTMENT);
+        if (lookup != null) {
+            itemenchantments = itemStack.getAllEnchantments(lookup);
+        }
+
+        for (Object2IntMap.Entry<Holder<Enchantment>> entry : itemenchantments.entrySet()) {
+            visitor.accept(entry.getKey(), entry.getIntValue());
+        }
+    }
+
+    public static interface EnchantmentVisitor {
+        void accept(Holder<Enchantment> enchantment, int level);
     }
 }
