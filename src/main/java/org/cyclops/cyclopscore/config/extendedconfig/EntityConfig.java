@@ -10,9 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
@@ -61,13 +59,7 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
                 itemProperties = itemPropertiesModifier.apply(itemProperties);
             }
             Item.Properties finalItemProperties = itemProperties;
-            ItemConfig itemConfig = new ItemConfig(mod, itemName, (itemConfigSub) -> new DeferredSpawnEggItem(entityType, primaryColorIn, secondaryColorIn, finalItemProperties)) {
-                @Override
-                public void onRegistered() {
-                    super.onRegistered();
-                    getMod().registerDefaultCreativeTabEntry(new ItemStack(getInstance()), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-                }
-            };
+            ItemConfig itemConfig = new ItemConfig(mod, itemName, (itemConfigSub) -> new DeferredSpawnEggItem(entityType, primaryColorIn, secondaryColorIn, finalItemProperties));
             entityConfig.setSpawnEggItemConfig(itemConfig);
             return itemConfig;
         };
