@@ -28,6 +28,13 @@ public class NBTSimpleInventoryItemStack extends SimpleInventory {
         super(size, stackLimit);
         this.itemStack = itemStack;
         this.tagName = tagName;
+
+        SimpleInventory contents = itemStack.get(RegistryEntries.COMPONENT_INVENTORY);
+        if (contents != null) {
+            for (int i = 0; i < contents.getContainerSize(); i++) {
+                setItem(i, contents.getItem(i));
+            }
+        }
     }
 
     @Override

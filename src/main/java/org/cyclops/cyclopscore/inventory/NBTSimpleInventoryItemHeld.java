@@ -32,6 +32,14 @@ public class NBTSimpleInventoryItemHeld extends SimpleInventory {
         this.player = player;
         this.itemLocation = itemLocation;
         this.tagName = tagName;
+
+        ItemStack itemStack = itemLocation.getItemStack(player);
+        SimpleInventory contents = itemStack.get(RegistryEntries.COMPONENT_INVENTORY);
+        if (contents != null) {
+            for (int i = 0; i < contents.getContainerSize(); i++) {
+                setItem(i, contents.getItem(i));
+            }
+        }
     }
 
     @Override

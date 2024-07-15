@@ -35,12 +35,12 @@ public class SimpleInventory implements INBTInventory, WorldlyContainer {
     public static final Codec<SimpleInventory> CODEC = RecordCodecBuilder.create((builder) -> builder
             .group(Codec.INT.fieldOf("size").forGetter(SimpleInventory::getContainerSize),
                     Codec.INT.fieldOf("stackLimit").forGetter(SimpleInventory::getMaxStackSize),
-                    ItemStack.CODEC.listOf().fieldOf("contents").forGetter(i -> Arrays.asList(i.getItemStacks())))
+                    ItemStack.OPTIONAL_CODEC.listOf().fieldOf("contents").forGetter(i -> Arrays.asList(i.getItemStacks())))
             .apply(builder, SimpleInventory::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, SimpleInventory> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, SimpleInventory::getContainerSize,
             ByteBufCodecs.INT, SimpleInventory::getMaxStackSize,
-            ItemStack.STREAM_CODEC.apply(ByteBufCodecs.list()), i -> Arrays.asList(i.getItemStacks()),
+            ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()), i -> Arrays.asList(i.getItemStacks()),
             SimpleInventory::new
     );
 
