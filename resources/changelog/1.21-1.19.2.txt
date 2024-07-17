@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix startup crash with many mods
+  This removes references to the CyclopsCore instance, as it may not be
+  loaded yet in specific cases.
+  Closes #184
