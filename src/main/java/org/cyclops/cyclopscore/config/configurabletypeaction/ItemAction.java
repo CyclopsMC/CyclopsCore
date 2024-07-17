@@ -5,9 +5,11 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.item.Item;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -19,17 +21,11 @@ import java.util.List;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
+@EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
 public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
 
     private static final List<ItemConfig> MODEL_ENTRIES = Lists.newArrayList();
     private static final List<ItemConfig> COLOR_ENTRIES = Lists.newArrayList();
-
-    static {
-        if (MinecraftHelpers.isClientSide()) {
-            CyclopsCore._instance.getModEventBus().addListener(ItemAction::onModelRegistryLoad);
-            CyclopsCore._instance.getModEventBus().addListener(ItemAction::onModelBakeEvent);
-        }
-    }
 
     @Override
     public void onRegisterForgeFilled(ItemConfig eConfig) {
@@ -42,6 +38,7 @@ public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
     }
 
     @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
     public static void onModelRegistryLoad(ModelEvent.RegisterAdditional event) {
         for (ItemConfig config : MODEL_ENTRIES) {
             config.dynamicItemVariantLocation  = config.registerDynamicModel();
@@ -49,6 +46,7 @@ public class ItemAction extends ConfigurableTypeActionForge<ItemConfig, Item>{
     }
 
     @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
     public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event){
         for (ItemConfig config : MODEL_ENTRIES) {
             IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
