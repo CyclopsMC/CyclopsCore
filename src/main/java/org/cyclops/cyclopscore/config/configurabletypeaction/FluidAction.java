@@ -10,13 +10,15 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.Reference;
+import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
 
 import java.util.Collection;
@@ -29,6 +31,7 @@ import java.util.function.Supplier;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class FluidAction extends ConfigurableTypeAction<FluidConfig, BaseFlowingFluid.Properties> {
 
     private final Multimap<String, Pair<FluidConfig, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<String, Collection<Pair<FluidConfig, Callable<?>>>>newHashMap(), new com.google.common.base.Supplier<List<Pair<FluidConfig, Callable<?>>>>() {
@@ -39,10 +42,6 @@ public class FluidAction extends ConfigurableTypeAction<FluidConfig, BaseFlowing
         }
     });
     private boolean registryEventPassed = false;
-
-    public FluidAction() {
-        CyclopsCore._instance.getModEventBus().register(this);
-    }
 
     @Override
     public void onRegisterForge(FluidConfig config) {
@@ -57,7 +56,11 @@ public class FluidAction extends ConfigurableTypeAction<FluidConfig, BaseFlowing
     }
 
     @SubscribeEvent
-    public void onRegistryEvent(RegisterEvent event) {
+    public static void onRegistryEvent(RegisterEvent event) {
+        ((FluidAction) ConfigurableType.FLUID.getConfigurableTypeAction()).onRegistryEventInner(event);
+    }
+
+    public void onRegistryEventInner(RegisterEvent event) {
         if (event.getRegistryKey() == BuiltInRegistries.FLUID.key()) {
             this.registryEventPassed = true;
             Registry<Fluid> registry = (Registry<Fluid>) event.getRegistry();

@@ -11,11 +11,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
@@ -31,18 +33,11 @@ import java.util.function.BiFunction;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block> {
 
     private static final List<BlockConfig> MODEL_ENTRIES = Lists.newArrayList();
     private static final List<BlockConfig> COLOR_ENTRIES = Lists.newArrayList();
-
-    static {
-        if (MinecraftHelpers.isClientSide()) {
-            CyclopsCore._instance.getModEventBus().addListener(BlockAction::onModelRegistryLoad);
-            CyclopsCore._instance.getModEventBus().addListener(BlockAction::onModelBakeEvent);
-            CyclopsCore._instance.getModEventBus().addListener(BlockAction::onRegisterColorHandlers);
-        }
-    }
 
     /**
      * Registers a block and its optional item block.
@@ -82,6 +77,7 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     }
 
     @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
     public static void onModelRegistryLoad(ModelEvent.RegisterAdditional event) {
         for (BlockConfig config : MODEL_ENTRIES) {
             Pair<ModelResourceLocation, ModelResourceLocation> resourceLocations = config.registerDynamicModel();
@@ -91,6 +87,7 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     }
 
     @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
     public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event){
         for (BlockConfig config : MODEL_ENTRIES) {
             IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
@@ -105,6 +102,7 @@ public class BlockAction extends ConfigurableTypeActionForge<BlockConfig, Block>
     }
 
     @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
     public static void onRegisterColorHandlers(RegisterColorHandlersEvent.Block event){
         for (BlockConfig blockConfig : COLOR_ENTRIES) {
             event.register(blockConfig.getBlockColorHandler(), blockConfig.getInstance());
