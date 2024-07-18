@@ -1,3 +1,4 @@
+org.cyclops.commoncapabilities.api.capability.block
 org.cyclops.commoncapabilities.api.capability.fluidhandler
 org.cyclops.commoncapabilities.api.capability.inventorystate
 org.cyclops.commoncapabilities.api.capability.itemhandler
@@ -16,7 +17,6 @@ org.cyclops.cyclopscore.block.multi
 org.cyclops.cyclopscore.blockentity
 org.cyclops.cyclopscore.capability.fluid
 org.cyclops.cyclopscore.capability.item
-org.cyclops.cyclopscore.capability.registrar
 org.cyclops.cyclopscore.client.gui
 org.cyclops.cyclopscore.client.gui.component
 org.cyclops.cyclopscore.client.gui.component.button
@@ -28,7 +28,6 @@ org.cyclops.cyclopscore.client.model
 org.cyclops.cyclopscore.client.particle
 org.cyclops.cyclopscore.client.render.blockentity
 org.cyclops.cyclopscore.client.render.model
-org.cyclops.cyclopscore.codec
 org.cyclops.cyclopscore.command
 org.cyclops.cyclopscore.command.argument
 org.cyclops.cyclopscore.config
@@ -38,6 +37,7 @@ org.cyclops.cyclopscore.datastructure
 org.cyclops.cyclopscore.event
 org.cyclops.cyclopscore.fluid
 org.cyclops.cyclopscore.helper
+org.cyclops.cyclopscore.helper.obfuscation
 org.cyclops.cyclopscore.infobook
 org.cyclops.cyclopscore.infobook.condition
 org.cyclops.cyclopscore.infobook.pageelement
@@ -55,7 +55,10 @@ org.cyclops.cyclopscore.item
 org.cyclops.cyclopscore.loot.modifier
 org.cyclops.cyclopscore.metadata
 org.cyclops.cyclopscore.modcompat
+org.cyclops.cyclopscore.modcompat.baubles
 org.cyclops.cyclopscore.modcompat.capabilities
+org.cyclops.cyclopscore.modcompat.commoncapabilities
+org.cyclops.cyclopscore.modcompat.curios
 org.cyclops.cyclopscore.modcompat.jei
 org.cyclops.cyclopscore.nbt.path
 org.cyclops.cyclopscore.nbt.path.navigate
