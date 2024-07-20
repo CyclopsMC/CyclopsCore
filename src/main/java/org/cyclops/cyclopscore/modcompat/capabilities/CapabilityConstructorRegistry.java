@@ -20,7 +20,6 @@ import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.Collection;
@@ -82,7 +81,7 @@ public class CapabilityConstructorRegistry {
 
         if (!registeredBlockEntityEventListener) {
             registeredBlockEntityEventListener = true;
-            CyclopsCore._instance.getModEventBus().register(new BlockEntityEventListener());
+            this.mod.getModEventBus().register(new BlockEntityEventListener());
         }
     }
 
@@ -98,7 +97,7 @@ public class CapabilityConstructorRegistry {
 
         if (!registeredBlockEventListener) {
             registeredBlockEventListener = true;
-            CyclopsCore._instance.getModEventBus().register(new BlockEventListener());
+            this.mod.getModEventBus().register(new BlockEventListener());
         }
     }
 
@@ -114,7 +113,7 @@ public class CapabilityConstructorRegistry {
 
         if (!registeredEntityEventListener) {
             registeredEntityEventListener = true;
-            CyclopsCore._instance.getModEventBus().register(new EntityEventListener());
+            this.mod.getModEventBus().register(new EntityEventListener());
         }
     }
 
@@ -129,7 +128,7 @@ public class CapabilityConstructorRegistry {
 
         if (!registeredItemStackEventListener) {
             registeredItemStackEventListener = true;
-            CyclopsCore._instance.getModEventBus().register(new ItemStackEventListener());
+            this.mod.getModEventBus().register(new ItemStackEventListener());
         }
     }
 
@@ -145,7 +144,7 @@ public class CapabilityConstructorRegistry {
 
         if (!registeredBlockEntityEventListener) {
             registeredBlockEntityEventListener = true;
-            CyclopsCore._instance.getModEventBus().register(new BlockEntityEventListener());
+            this.mod.getModEventBus().register(new BlockEntityEventListener());
         }
     }
 
@@ -161,7 +160,7 @@ public class CapabilityConstructorRegistry {
 
         if (!registeredBlockEventListener) {
             registeredBlockEventListener = true;
-            CyclopsCore._instance.getModEventBus().register(new BlockEventListener());
+            this.mod.getModEventBus().register(new BlockEventListener());
         }
     }
 
@@ -176,7 +175,7 @@ public class CapabilityConstructorRegistry {
 
         if (!registeredEntityEventListener) {
             registeredEntityEventListener = true;
-            CyclopsCore._instance.getModEventBus().register(new EntityEventListener());
+            this.mod.getModEventBus().register(new EntityEventListener());
         }
     }
 
@@ -192,7 +191,7 @@ public class CapabilityConstructorRegistry {
 
         if (!registeredItemStackEventListener) {
             registeredItemStackEventListener = true;
-            CyclopsCore._instance.getModEventBus().register(new ItemStackEventListener());
+            this.mod.getModEventBus().register(new ItemStackEventListener());
         }
     }
 
