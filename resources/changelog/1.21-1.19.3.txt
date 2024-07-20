@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix CapabilityConstructorRegistry can have null mod reference
+  Closes CyclopsMC/IntegratedDynamics#1364
+* Replace BufferBuilderWrapper with more compatible Mixin variant (#188)
+  This fixes incompatibilities with Embeddium and Sodium.
+  Closes #187
+
