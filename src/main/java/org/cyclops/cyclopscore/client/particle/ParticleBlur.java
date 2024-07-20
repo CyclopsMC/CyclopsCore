@@ -2,11 +2,8 @@ package org.cyclops.cyclopscore.client.particle;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -16,7 +13,6 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.world.entity.LivingEntity;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -132,7 +128,11 @@ public class ParticleBlur extends TextureSheetParticle {
             RenderHelpers.bindTexture(TextureAtlas.LOCATION_PARTICLES);
             textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES).setBlurMipmap(true, false);
 
-            return new BufferBuilderWrapper(tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE), this::end);
+            BufferBuilder builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+
+            ((BufferBuilderWrapper) builder).cc$setRunnableOnBuild(this::end);
+
+            return builder;
         }
 
         public void end() {
@@ -142,79 +142,4 @@ public class ParticleBlur extends TextureSheetParticle {
             RenderSystem.depthMask(true);
         }
     }
-
-    public static class BufferBuilderWrapper extends BufferBuilder {
-        private final BufferBuilder bufferBuilder;
-        private final Runnable onBuild;
-
-        public BufferBuilderWrapper(BufferBuilder bufferBuilder, Runnable onBuild) {
-            super(null, null, DefaultVertexFormat.PARTICLE);
-            this.bufferBuilder = bufferBuilder;
-            this.onBuild = onBuild;
-        }
-
-        @Nullable
-        @Override
-        public MeshData build() {
-            // Flush the buffer manually, so we can ensure on callback is invoked to apply effects
-            MeshData ret = this.bufferBuilder.build();
-            if (ret != null) {
-                BufferUploader.drawWithShader(ret);
-            }
-            this.onBuild.run();
-
-            return null;
-        }
-
-        @Override
-        public VertexConsumer addVertex(float p_350828_, float p_350614_, float p_350700_) {
-            return this.bufferBuilder.addVertex(p_350828_, p_350614_, p_350700_);
-        }
-
-        @Override
-        public VertexConsumer setColor(int p_350581_, int p_350952_, int p_350275_, int p_350985_) {
-            return this.bufferBuilder.setColor(p_350581_, p_350952_, p_350275_, p_350985_);
-        }
-
-        @Override
-        public VertexConsumer setColor(int p_350530_) {
-            return this.bufferBuilder.setColor(p_350530_);
-        }
-
-        @Override
-        public VertexConsumer setUv(float p_350574_, float p_350773_) {
-            return this.bufferBuilder.setUv(p_350574_, p_350773_);
-        }
-
-        @Override
-        public VertexConsumer setUv1(int p_350396_, int p_350722_) {
-            return this.bufferBuilder.setUv1(p_350396_, p_350722_);
-        }
-
-        @Override
-        public VertexConsumer setOverlay(int p_350297_) {
-            return this.bufferBuilder.setOverlay(p_350297_);
-        }
-
-        @Override
-        public VertexConsumer setUv2(int p_351058_, int p_350320_) {
-            return this.bufferBuilder.setUv2(p_351058_, p_350320_);
-        }
-
-        @Override
-        public VertexConsumer setLight(int p_350848_) {
-            return this.bufferBuilder.setLight(p_350848_);
-        }
-
-        @Override
-        public VertexConsumer setNormal(float p_351000_, float p_350982_, float p_350974_) {
-            return this.bufferBuilder.setNormal(p_351000_, p_350982_, p_350974_);
-        }
-
-        @Override
-        public void addVertex(float p_350423_, float p_350381_, float p_350383_, int p_350371_, float p_350977_, float p_350674_, int p_350816_, int p_350690_, float p_350640_, float p_350490_, float p_350810_) {
-            this.bufferBuilder.addVertex(p_350423_, p_350381_, p_350383_, p_350371_, p_350977_, p_350674_, p_350816_, p_350690_, p_350640_, p_350490_, p_350810_);
-        }
-    }
-
 }
