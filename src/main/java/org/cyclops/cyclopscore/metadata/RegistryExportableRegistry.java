@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public class RegistryExportableRegistry implements IRegistryExportableRegistry {
 
     public static final RegistryExportableRegistry INSTANCE = new RegistryExportableRegistry();
 
-    private final List<IRegistryExportable> exportables = Lists.newArrayList();
+    private final List<IRegistryExportable> exportables = Collections.synchronizedList(Lists.newArrayList());
 
     private RegistryExportableRegistry() {
 
