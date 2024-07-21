@@ -23,7 +23,6 @@ org.cyclops.cyclopscore.client.gui.component.button
 org.cyclops.cyclopscore.client.gui.component.input
 org.cyclops.cyclopscore.client.gui.container
 org.cyclops.cyclopscore.client.gui.image
-org.cyclops.cyclopscore.client.icon
 org.cyclops.cyclopscore.client.key
 org.cyclops.cyclopscore.client.model
 org.cyclops.cyclopscore.client.particle
@@ -53,6 +52,7 @@ org.cyclops.cyclopscore.inventory.container
 org.cyclops.cyclopscore.inventory.container.button
 org.cyclops.cyclopscore.inventory.slot
 org.cyclops.cyclopscore.item
+org.cyclops.cyclopscore.loot.modifier
 org.cyclops.cyclopscore.metadata
 org.cyclops.cyclopscore.modcompat
 org.cyclops.cyclopscore.modcompat.baubles
