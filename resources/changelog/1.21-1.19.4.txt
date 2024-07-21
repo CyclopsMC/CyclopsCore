@@ -1,0 +1,11 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add tr_tr.json Turkish localization
+
+Fixes:
+* Make RegistryExportableRegistry thread-safe
+  This fixes rare crashes at startup
+  Closes CyclopsMC/IntegratedDynamics#1360
+
+
