@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Expose cache in IngredientCollectionDiffManager
+  Required for CyclopsMC/IntegratedDynamics#1359
+
