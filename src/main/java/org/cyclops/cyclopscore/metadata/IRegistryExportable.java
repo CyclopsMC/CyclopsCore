@@ -1,9 +1,14 @@
 package org.cyclops.cyclopscore.metadata;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import org.cyclops.cyclopscore.CyclopsCore;
 
 /**
  * A registry export handler.
@@ -25,8 +30,14 @@ public interface IRegistryExportable {
 
         object.addProperty("item", BuiltInRegistries.ITEM.getKey(itemStack.getItem()).toString());
         object.addProperty("count", itemStack.getCount());
-        if (!itemStack.getComponents().isEmpty()) {
-            object.addProperty("components", itemStack.getComponents().toString());
+        String componentsString = "{}";
+        try {
+            componentsString = componentsToString(ServerLifecycleHooks.getCurrentServer().registryAccess(), itemStack.getComponentsPatch());
+        } catch (IllegalStateException e) {
+            CyclopsCore.clog(e.getMessage());
+        }
+        if(!"{}".equals(componentsString)) {
+            object.addProperty("components", componentsString);
         }
 
         return object;
@@ -37,11 +48,21 @@ public interface IRegistryExportable {
 
         object.addProperty("fluid", BuiltInRegistries.FLUID.getKey(fluidStack.getFluid()).toString());
         object.addProperty("amount", fluidStack.getAmount());
-        if (!fluidStack.getComponents().isEmpty()) {
-            object.addProperty("nbt", fluidStack.getComponents().toString());
+        String componentsString = "{}";
+        try {
+            componentsString = componentsToString(ServerLifecycleHooks.getCurrentServer().registryAccess(), fluidStack.getComponentsPatch());
+        } catch (IllegalStateException e) {
+            CyclopsCore.clog(e.getMessage());
+        }
+        if(!"{}".equals(componentsString)) {
+            object.addProperty("components", componentsString);
         }
 
         return object;
+    }
+
+    public static String componentsToString(HolderLookup.Provider lookupProvider, DataComponentPatch components) {
+        return DataComponentPatch.CODEC.encodeStart(lookupProvider.createSerializationContext(NbtOps.INSTANCE), components).getOrThrow().toString();
     }
 
 }

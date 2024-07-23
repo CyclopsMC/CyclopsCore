@@ -2,14 +2,14 @@ package org.cyclops.cyclopscore.metadata;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.core.NonNullList;
-import net.neoforged.neoforge.common.crafting.IShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 /**
@@ -38,9 +38,9 @@ public class RegistryExportableCraftingRecipe extends RegistryExportableRecipeAb
         object.add("input", arrayInputs);
         object.add("output", IRegistryExportable.serializeItemStack(recipe.value().getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess())));
 
-        if(recipe.value() instanceof IShapedRecipe) {
-            object.addProperty("width", ((IShapedRecipe) recipe.value()).getWidth());
-            object.addProperty("height", ((IShapedRecipe) recipe.value()).getHeight());
+        if(recipe.value() instanceof ShapedRecipe) {
+            object.addProperty("width", ((ShapedRecipe) recipe.value()).getWidth());
+            object.addProperty("height", ((ShapedRecipe) recipe.value()).getHeight());
         }
 
         return object;
