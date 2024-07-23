@@ -1,0 +1,11 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Expose cache in IngredientCollectionDiffManager
+  Required for CyclopsMC/IntegratedDynamics#1359
+
+Fixes:
+* Make RegistryExportableRegistry thread-safe
+  This fixes rare crashes at startup
+  Closes CyclopsMC/IntegratedDynamics#1360
+
