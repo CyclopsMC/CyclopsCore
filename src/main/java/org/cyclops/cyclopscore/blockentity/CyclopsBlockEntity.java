@@ -11,8 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.helper.DirectionHelpers;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
@@ -35,12 +33,6 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
         super(type, blockPos, blockState);
         // Random backoff so not all block entities will be updated at once.
         sendUpdateBackoff = (int) Math.round(Math.random() * getUpdateBackoffTicks());
-
-        CyclopsCore._instance.getModEventBus().addListener(this::registerCapabilities);
-    }
-
-    protected void registerCapabilities(RegisterCapabilitiesEvent event) {
-
     }
 
     @Override
