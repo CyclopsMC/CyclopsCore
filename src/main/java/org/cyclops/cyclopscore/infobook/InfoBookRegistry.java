@@ -45,7 +45,7 @@ public class InfoBookRegistry implements IInfoBookRegistry {
     @Override
     public void registerSection(ModBase<?> mod, IInfoBook infoBook, String parentSection, String sectionPath) {
         synchronized (sectionInjections) {
-            sectionInjections.add(new SectionInjection(mod, infoBook, parentSection, sectionPath));
+            sectionInjections.add(new SectionInjection(Objects.requireNonNull(mod), infoBook, parentSection, sectionPath));
         }
     }
 

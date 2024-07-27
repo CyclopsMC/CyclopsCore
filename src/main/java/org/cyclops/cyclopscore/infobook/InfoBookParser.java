@@ -618,6 +618,9 @@ public class InfoBookParser {
                 if (tagString.contains(":")) {
                     String[] split = tagString.split(":");
                     modRecipe = ModBase.get(split[0]);
+                    if (modRecipe == null) {
+                        throw new IllegalArgumentException("The mod " + split[0] + " could not be found as ModBase.");
+                    }
                     tagString = split[1];
                 }
 
