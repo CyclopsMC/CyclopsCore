@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Check earlier if mod is null when creating infobooks, Closes #189
+
