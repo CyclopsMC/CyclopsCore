@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Make ModBase.MOD_BASES thread-safe, Closes #189
+
