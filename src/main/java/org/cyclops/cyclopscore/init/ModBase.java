@@ -59,7 +59,7 @@ import java.util.function.Consumer;
  */
 public abstract class ModBase<T extends ModBase> {
 
-    private static final Map<String, ModBase<?>> MOD_BASES = Maps.newHashMap();
+    private static final Map<String, ModBase<?>> MOD_BASES = Maps.newConcurrentMap();
 
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_GUI = EnumReferenceKey.create("texture_path_gui", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_MODELS = EnumReferenceKey.create("texture_path_models", String.class);
@@ -487,6 +487,10 @@ public abstract class ModBase<T extends ModBase> {
     @Nullable
     public static ModBase get(String modId) {
         return MOD_BASES.get(modId);
+    }
+
+    public static Map<String, ModBase<?>> getMods() {
+        return MOD_BASES;
     }
 
     /**
