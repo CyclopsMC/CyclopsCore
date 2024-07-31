@@ -78,7 +78,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
 
     @Override
     protected void renderBg(PoseStack matrixStack, float f, int x, int y) {
-        RenderHelpers.bindTexture(texture);
+        RenderHelpers.bindTexture(getGuiTexture());
         blit(matrixStack, leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY);
     }
 
