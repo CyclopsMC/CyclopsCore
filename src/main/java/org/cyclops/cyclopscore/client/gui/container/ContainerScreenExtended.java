@@ -79,7 +79,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float f, int x, int y) {
-        guiGraphics.blit(texture, leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY);
+        guiGraphics.blit(getGuiTexture(), leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY);
     }
 
     @Override
