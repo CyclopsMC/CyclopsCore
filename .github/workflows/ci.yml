@@ -68,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          path: build/libs/*
+          path: loader-*/build/libs/*
       - name: 'Deploy to CurseForge'
         if: startsWith(github.ref, 'refs/tags/')
         env:
@@ -92,5 +92,5 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
-          folder: build/docs/javadoc
+          folder: loader-neoforge/build/docs/javadoc
           clean: true

@@ -1,0 +1,100 @@
+/* Based on https://github.com/jaredlll08/MultiLoader-Template/ */
+
+plugins {
+    id 'multiloader-common'
+    id 'net.darkhax.curseforgegradle'
+    id 'com.modrinth.minotaur'
+}
+
+// Load secrets
+def getSecrets() {
+    Properties props = new Properties()
+    if (file('./secrets.properties').exists()) {
+        props.load(new FileInputStream(file('./secrets.properties')))
+    }
+    return props
+}
+Properties secrets = getSecrets();
+
+configurations {
+    commonJava{
+        canBeResolved = true
+    }
+    commonResources{
+        canBeResolved = true
+    }
+}
+
+dependencies {
+    compileOnly(project(':loader-common')) {
+        capabilities {
+            requireCapability "$group:$mod_id"
+        }
+    }
+    commonJava project(path: ':loader-common', configuration: 'commonJava')
+    commonResources project(path: ':loader-common', configuration: 'commonResources')
+}
+
+tasks.named('compileJava', JavaCompile) {
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava)
+}
+
+processResources {
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources)
+}
+
+tasks.named('javadoc', Javadoc).configure {
+    dependsOn(configurations.commonJava)
+    source(configurations.commonJava)
+}
+
+javadoc {
+    // prevent java 8's strict doclint for javadocs from failing builds
+    options.addStringOption('Xdoclint:accessibility,html,reference,syntax', '-quiet')
+}
+
+tasks.named('sourcesJar', Jar) {
+    dependsOn(configurations.commonJava)
+    from(configurations.commonJava)
+    dependsOn(configurations.commonResources)
+    from(configurations.commonResources)
+}
+
+tasks.register('publishCurseForge').configure {
+    dependsOn(tasks.jar)
+
+    if(secrets.hasProperty("curseforge_key") && secrets.hasProperty("changelog")) {
+        apiToken = secrets.curseforge_key
+    } else if(System.getenv().GITHUB_ACTIONS && System.getenv().CURSEFORGE_KEY_SECRET) {
+        apiToken = System.getenv().CURSEFORGE_KEY_SECRET
+    } else {
+        apiToken = "DUMMY"
+    }
+
+    def mainFile = upload(project.curseforge_project_id, jar)
+    mainFile.releaseType = 'release'
+	mainFile.changelogType = "text"
+    mainFile.changelog = file("resources/changelog/${project.minecraft_version}-${project.version}.txt")
+	mainFile.addGameVersion(project.minecraft_version)
+}
+
+modrinth {
+    if(secrets.modrinth_key) {
+        token = secrets.modrinth_key
+    } else if(System.getenv().GITHUB_ACTIONS && System.getenv().MODRINTH_KEY_SECRET) {
+        token = System.getenv().MODRINTH_KEY_SECRET
+    } else {
+        token = "DUMMY"
+    }
+    projectId = "${modrinth_project_id}"
+    versionNumber = project.minecraft_version + '-' + project.mod_version
+    versionType = project.release_type
+    uploadFile = jar
+    gameVersions = [ project.minecraft_version ]
+    changelog = ""
+    if (new File("resources/changelog/${project.version}.txt").exists()) {
+        changelog = new File("resources/changelog/${project.version}.txt").text
+    }
+}
