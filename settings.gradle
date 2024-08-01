@@ -3,7 +3,7 @@ pluginManagement {
         mavenLocal()
         gradlePluginPortal()
         maven { url = 'https://maven.neoforged.net/releases' }
-//        maven { url = 'https://maven.minecraftforge.net/' }
+        maven { url = 'https://maven.minecraftforge.net/' }
         exclusiveContent {
             forRepository {
                 maven {
@@ -28,4 +28,4 @@ rootProject.name = 'CyclopsCore'
 include('loader-common')
 include('loader-fabric')
 include('loader-neoforge')
-// include('loader-forge') // TODO
+include('loader-forge')

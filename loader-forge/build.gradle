@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-loader'
-    id 'net.neoforged.gradle.userdev'
+    id 'net.minecraftforge.gradle'
 }
 
 // All jar files from this folder will be added automatically as runtime mod dependencies (inspired by AE2's build.gradle)
@@ -44,7 +44,7 @@ repositories {
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${neoforge_version}"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-neoforge:${curios_version}") // https://maven.theillusivec4.top/top/theillusivec4/curios/curios-neoforge/
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
@@ -67,49 +67,62 @@ dependencies {
         def version = basename.substring(versionSep + 1)
         runtimeOnly "extra-mods:$artifactId:$version"
     }
+
+    // Hack to make Forge run
+    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
 minecraft {
+    mappings channel: 'official', version: minecraft_version
+
+    // TODO: is this needed?
+//    reobf = false
+
+    copyIdeResources.set(true)
+
     // Automatically enable neoforge AccessTransformers if the file exists
     def at = project(':loader-common').file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {
-        accessTransformers {
-            file(at.absolutePath)
+        accessTransformer = at
+    }
+
+    runs {
+        client {
+            workingDirectory file('runs/client')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName 'Client'
+            mods {
+                modClientRun {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+            }
         }
-    }
-}
 
-subsystems {
-    parchment {
-        minecraftVersion = "${minecraft_version}"
-        mappingsVersion = "${parchment_version}"
-    }
-}
+        server {
+            workingDirectory file('runs/server')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName 'Server'
+            mods {
+                modServerRun {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+            }
+        }
 
-runs {
-    configureEach {
-		systemProperty 'neoforge.logging.markers', 'REGISTRIES'
-        systemProperty 'neoforge.logging.console.level', 'debug'
-        systemProperty 'neoforge.logging.console.level', 'debug'
-        modSource project.sourceSets.main
-		modSource project.sourceSets.api
-    }
-
-    client {
-        systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
-    }
-
-    server {
-        systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
-        programArgument '--nogui'
-    }
-
-    gameTestServer {
-        systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
-    }
-
-    data {
-        programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        data {
+            workingDirectory file('runs/data')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            taskName 'Data'
+            mods {
+                modDataRun {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+            }
+        }
     }
 }
 
@@ -118,7 +131,7 @@ javadoc {
     exclude 'org/cyclops/cyclopscore/modcompat/curios/*'
 }
 
-task signJar(type: net.neoforged.gradle.common.tasks.PotentiallySignJar, dependsOn: jar) {
+task signJar(type: net.minecraftforge.gradle.common.tasks.SignJar, dependsOn: jar) {
     dependsOn(tasks.jar)
 
     onlyIf {
@@ -129,6 +142,6 @@ task signJar(type: net.neoforged.gradle.common.tasks.PotentiallySignJar, depends
     alias = System.getenv().SIGN_ALIAS
     storePass = System.getenv().SIGN_STOREPASS
     keyPass = System.getenv().SIGN_KEYPASS
-    input = jar.archivePath
-    output = jar.archivePath
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
 }
