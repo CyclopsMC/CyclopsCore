@@ -1,13 +1,9 @@
 package org.cyclops.cyclopscore.helper;
 
-import cpw.mods.modlauncher.TransformingClassLoader;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.fml.loading.FMLLoader;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.CyclopsCoreMainFabric;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -16,39 +12,24 @@ import org.cyclops.cyclopscore.CyclopsCore;
  */
 public class MinecraftHelpers extends MinecraftHelpersCommon {
     /**
-     * @return If the user is shifted.
-     */
-    @OnlyIn(Dist.CLIENT)
-    public static boolean isShifted() {
-        return Screen.hasShiftDown();
-    }
-
-    /**
      * @return If we are currently running inside a deobfuscated development environment.
      */
     public static boolean isDevEnvironment() {
-        return !FMLLoader.isProduction();
+        return FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
     /**
      * @return If minecraft has been fully loaded.
      */
     public static boolean isMinecraftInitialized() {
-        return CyclopsCore._instance.isLoaded();
-    }
-    /**
-     * Check if we are inside a modded minecraft environment.
-     * @return If in minecraft.
-     */
-    public static boolean isModdedEnvironment() {
-        return MinecraftHelpers.class.getClassLoader() instanceof TransformingClassLoader;
+        return CyclopsCoreMainFabric._instance.isLoaded();
     }
 
     /**
      * @return If we are physically running on a client.
      */
     public static boolean isClientSide() {
-        return FMLEnvironment.dist == Dist.CLIENT;
+        return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     }
 
     /**

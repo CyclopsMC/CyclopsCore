@@ -1,0 +1,7 @@
+accessWidener v1 named
+
+# Screens
+accessible method net/minecraft/client/gui/screens/Screen addRenderableWidget (Lnet/minecraft/client/gui/components/events/GuiEventListener;)Lnet/minecraft/client/gui/components/events/GuiEventListener;
+
+# World
+accessible field net/minecraft/world/level/Level thread Ljava/lang/Thread;

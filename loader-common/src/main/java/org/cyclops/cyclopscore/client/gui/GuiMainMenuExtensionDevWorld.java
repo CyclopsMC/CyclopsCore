@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ErrorScreen;
 import net.minecraft.client.gui.screens.GenericMessageScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.RegistryAccess;
@@ -24,14 +25,6 @@ import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.minecraft.world.level.storage.LevelStorageException;
 import net.minecraft.world.level.storage.LevelSummary;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ScreenEvent;
-import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.GeneralConfig;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,21 +35,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 
-@EventBusSubscriber(Dist.CLIENT)
 public class GuiMainMenuExtensionDevWorld {
 
     private static final String WORLD_NAME_PREFIX = "cyclops-dev";
 
-    @SubscribeEvent
-    public static void onMainMenuInit(ScreenEvent.Init.Pre event) {
-        // Add a button to the main menu if we're in a dev environment
-        if (GeneralConfig.devWorldButton && event.getScreen() instanceof TitleScreen) {
+    public static void onMainMenuInit(Minecraft minecraft, Screen screen) {
+        if (screen instanceof TitleScreen) {
             Button buttonBuilt = Button.builder(Component.translatable("general.cyclopscore.dev_world"), (button) -> {
                         Minecraft mc = Minecraft.getInstance();
 
                         // Open the last played dev world
                         // If shift is held, create a new world.
-                        if (!MinecraftHelpers.isShifted()) {
+                        if (!Screen.hasShiftDown()) {
                             LevelSummary devWorldSummary = null;
                             mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                             try {
@@ -76,13 +66,13 @@ public class GuiMainMenuExtensionDevWorld {
                                 }
 
                             } catch (InterruptedException | ExecutionException | TimeoutException | LevelStorageException e) {
-                                CyclopsCore.clog(Level.ERROR, "Couldn't load level list" + e.getMessage());
+                                e.printStackTrace();
                                 mc.setScreen(new ErrorScreen(Component.translatable("selectWorld.unable_to_load"), Component.literal(e.getMessage())));
                             }
 
                             if (devWorldSummary != null && mc.getLevelSource().levelExists(devWorldSummary.getLevelId())) {
                                 mc.forceSetScreen(new GenericMessageScreen(Component.translatable("selectWorld.data_read")));
-                                mc.createWorldOpenFlows().openWorld(devWorldSummary.getLevelId(), () -> event.getScreen().getMinecraft().setScreen(event.getScreen()));
+                                mc.createWorldOpenFlows().openWorld(devWorldSummary.getLevelId(), () -> minecraft.setScreen(screen));
                                 return;
                             }
                         }
@@ -113,12 +103,12 @@ public class GuiMainMenuExtensionDevWorld {
                         }
 
                         // Create the world
-                        mc.createWorldOpenFlows().createFreshLevel(saveName, worldsettings, worldOptions, generatorSettings, event.getScreen());
+                        mc.createWorldOpenFlows().createFreshLevel(saveName, worldsettings, worldOptions, generatorSettings, screen);
                     })
-                    .pos(event.getScreen().width / 2 + 102, event.getScreen().height / 4 + 48)
+                    .pos(screen.width / 2 + 102, screen.height / 4 + 48)
                     .size(58, 20)
                     .build();
-            event.addListener(buttonBuilt);
+            screen.addRenderableWidget(buttonBuilt);
         }
     }
 

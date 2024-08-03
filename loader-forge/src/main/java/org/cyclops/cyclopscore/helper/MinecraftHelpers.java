@@ -3,11 +3,11 @@ package org.cyclops.cyclopscore.helper;
 import cpw.mods.modlauncher.TransformingClassLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.fml.loading.FMLLoader;
-import org.cyclops.cyclopscore.CyclopsCore;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLLoader;
+import org.cyclops.cyclopscore.CyclopsCoreForge;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -34,7 +34,7 @@ public class MinecraftHelpers extends MinecraftHelpersCommon {
      * @return If minecraft has been fully loaded.
      */
     public static boolean isMinecraftInitialized() {
-        return CyclopsCore._instance.isLoaded();
+        return CyclopsCoreForge._instance.isLoaded();
     }
     /**
      * Check if we are inside a modded minecraft environment.
