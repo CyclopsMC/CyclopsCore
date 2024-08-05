@@ -6,16 +6,6 @@ plugins {
     id 'com.modrinth.minotaur'
 }
 
-// Load secrets
-def getSecrets() {
-    Properties props = new Properties()
-    if (file('./secrets.properties').exists()) {
-        props.load(new FileInputStream(file('./secrets.properties')))
-    }
-    return props
-}
-Properties secrets = getSecrets();
-
 configurations {
     commonJava{
         canBeResolved = true
@@ -62,23 +52,24 @@ tasks.named('sourcesJar', Jar) {
     from(configurations.commonResources)
 }
 
-tasks.register('publishCurseForge').configure {
-    dependsOn(tasks.jar)
-
-    if(secrets.hasProperty("curseforge_key") && secrets.hasProperty("changelog")) {
-        apiToken = secrets.curseforge_key
-    } else if(System.getenv().GITHUB_ACTIONS && System.getenv().CURSEFORGE_KEY_SECRET) {
-        apiToken = System.getenv().CURSEFORGE_KEY_SECRET
-    } else {
-        apiToken = "DUMMY"
-    }
-
-    def mainFile = upload(project.curseforge_project_id, jar)
-    mainFile.releaseType = 'release'
-	mainFile.changelogType = "text"
-    mainFile.changelog = file("resources/changelog/${project.minecraft_version}-${project.version}.txt")
-	mainFile.addGameVersion(project.minecraft_version)
-}
+// TODO: restore
+//tasks.register('publishCurseForge').configure {
+//    dependsOn(tasks.jar)
+//
+//    if(secrets.hasProperty("curseforge_key") && secrets.hasProperty("changelog")) {
+//        apiToken = secrets.curseforge_key
+//    } else if(System.getenv().GITHUB_ACTIONS && System.getenv().CURSEFORGE_KEY_SECRET) {
+//        apiToken = System.getenv().CURSEFORGE_KEY_SECRET
+//    } else {
+//        apiToken = "DUMMY"
+//    }
+//
+//    def mainFile = upload(project.curseforge_project_id, jar)
+//    mainFile.releaseType = 'release'
+//	mainFile.changelogType = "text"
+//    mainFile.changelog = file("resources/changelog/${project.minecraft_version}-${project.version}.txt")
+//	mainFile.addGameVersion(project.minecraft_version)
+//}
 
 modrinth {
     if(secrets.modrinth_key) {

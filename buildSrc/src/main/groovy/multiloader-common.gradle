@@ -9,6 +9,18 @@ plugins {
     id 'com.diffplug.spotless'
 }
 
+// Load secrets
+def getSecrets() {
+    Properties props = new Properties()
+    if (file('../secrets.properties').exists()) {
+        props.load(new FileInputStream(file('../secrets.properties')))
+    }
+    return props
+}
+ext {
+    secrets = getSecrets();
+}
+
 // Determine build number
 String build_number = "DEV" // this will be referenced as simply build_number from now on.
 if (System.getenv().BUILD_NUMBER)
@@ -72,6 +84,15 @@ repositories {
         filter {
             includeGroupAndSubgroups('org.lwjgl')
             includeGroupAndSubgroups('com.mojang')
+        }
+    }
+
+    maven {
+        name "Cyclops Repo"
+        url "https://maven.pkg.github.com/CyclopsMC/packages"
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("MAVEN_USERNAME") ?: System.getenv("GITHUB_USER")
+            password = project.findProperty("gpr.key") ?: System.getenv("MAVEN_KEY") ?: System.getenv("GITHUB_TOKEN")
         }
     }
 }
