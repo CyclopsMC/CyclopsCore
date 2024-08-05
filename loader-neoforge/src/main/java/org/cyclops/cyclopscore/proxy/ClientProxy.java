@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.proxy;
 import net.neoforged.neoforge.common.NeoForge;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.item.ItemInformationProviderNeoForge;
 import org.cyclops.cyclopscore.tracking.Versions;
 
 /**
@@ -15,6 +16,8 @@ public class ClientProxy extends ClientProxyComponent {
 
     public ClientProxy() {
         super(new CommonProxy());
+
+        NeoForge.EVENT_BUS.addListener(ItemInformationProviderNeoForge::onTooltip);
     }
 
     @Override
