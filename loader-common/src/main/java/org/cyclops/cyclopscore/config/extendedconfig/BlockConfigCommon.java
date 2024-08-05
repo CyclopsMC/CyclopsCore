@@ -35,11 +35,11 @@ public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConf
         this.itemConstructor = itemConstructor;
     }
 
-    protected static BiFunction<BlockConfigCommon, Block, ? extends BlockItem> getDefaultItemConstructor(IModBase mod) {
+    protected static <M extends IModBase> BiFunction<BlockConfigCommon<M>, Block, ? extends BlockItem> getDefaultItemConstructor(M mod) {
         return getDefaultItemConstructor(mod, null);
     }
 
-    protected static BiFunction<BlockConfigCommon, Block, ? extends BlockItem> getDefaultItemConstructor(IModBase mod, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
+    protected static <M extends IModBase> BiFunction<BlockConfigCommon<M>, Block, ? extends BlockItem> getDefaultItemConstructor(M mod, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
         return (eConfig, block) -> {
             Item.Properties itemProperties = new Item.Properties();
             if (itemPropertiesModifier != null) {
