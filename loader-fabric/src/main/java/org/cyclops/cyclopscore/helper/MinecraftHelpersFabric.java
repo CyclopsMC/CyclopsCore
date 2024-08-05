@@ -1,0 +1,40 @@
+package org.cyclops.cyclopscore.helper;
+
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.Minecraft;
+import org.cyclops.cyclopscore.CyclopsCoreMainFabric;
+
+/**
+ * Contains helper methods for various minecraft specific things.
+ * @author rubensworks, immortaleeb
+ *
+ */
+public class MinecraftHelpersFabric extends MinecraftHelpersCommon {
+    @Override
+    public boolean isDevEnvironment() {
+        return FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    @Override
+    public boolean isMinecraftInitialized() {
+        return CyclopsCoreMainFabric._instance.isLoaded();
+    }
+
+    @Override
+    public boolean isModdedEnvironment() {
+        return !FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    @Override
+    public boolean isClientSide() {
+        return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
+    }
+
+    @Override
+    public boolean isClientSideThread() {
+        return isClientSide() && Minecraft.getInstance().level != null
+                && Thread.currentThread() == Minecraft.getInstance().level.thread;
+    }
+
+}

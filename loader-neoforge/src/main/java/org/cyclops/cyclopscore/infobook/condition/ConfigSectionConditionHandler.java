@@ -25,7 +25,7 @@ public class ConfigSectionConditionHandler implements ISectionConditionHandler {
                 throw new IllegalArgumentException("The mod " + modId + " could not be found as ModBase.");
             }
         }
-        ExtendedConfig<?, ?> config = mod.getConfigHandler().getDictionary().get(param);
+        ExtendedConfig<?, ?, ?> config = mod.getConfigHandler().getDictionary().get(param);
         return config != null;
     }
 

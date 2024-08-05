@@ -18,8 +18,9 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.Reference;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
+import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,8 +32,9 @@ import java.util.function.Supplier;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
+// TODO: append NeoForge to name in next major
 @EventBusSubscriber(modid = Reference.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-public class FluidAction extends ConfigurableTypeAction<FluidConfig, BaseFlowingFluid.Properties> {
+public class FluidAction<M extends ModBase> extends ConfigurableTypeAction<FluidConfig<M>, BaseFlowingFluid.Properties, M> {
 
     private final Multimap<String, Pair<FluidConfig, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<String, Collection<Pair<FluidConfig, Callable<?>>>>newHashMap(), new com.google.common.base.Supplier<List<Pair<FluidConfig, Callable<?>>>>() {
         // Compiler complains when this is replaced with a lambda :-(
@@ -57,7 +59,7 @@ public class FluidAction extends ConfigurableTypeAction<FluidConfig, BaseFlowing
 
     @SubscribeEvent
     public static void onRegistryEvent(RegisterEvent event) {
-        ((FluidAction) ConfigurableType.FLUID.getConfigurableTypeAction()).onRegistryEventInner(event);
+        ((FluidAction) ConfigurableTypesNeoForge.FLUID.getConfigurableTypeAction()).onRegistryEventInner(event);
     }
 
     public void onRegistryEventInner(RegisterEvent event) {
@@ -65,7 +67,7 @@ public class FluidAction extends ConfigurableTypeAction<FluidConfig, BaseFlowing
             this.registryEventPassed = true;
             Registry<Fluid> registry = (Registry<Fluid>) event.getRegistry();
             registryEntriesHolder.get(registry.key().toString()).forEach((pair) -> {
-                FluidConfig config = pair.getLeft();
+                FluidConfig<M> config = pair.getLeft();
                 BaseFlowingFluid.Properties instance = config.getInstance();
                 Supplier<Fluid> still = ObfuscationReflectionHelper.getPrivateValue(BaseFlowingFluid.Properties.class, instance, "still");
                 Supplier<Fluid> flowing = ObfuscationReflectionHelper.getPrivateValue(BaseFlowingFluid.Properties.class, instance, "flowing");
@@ -81,7 +83,7 @@ public class FluidAction extends ConfigurableTypeAction<FluidConfig, BaseFlowing
             });
         } else if (event.getRegistryKey() == NeoForgeRegistries.FLUID_TYPES.key()) {
             registryEntriesHolder.get(BuiltInRegistries.FLUID.key().toString()).forEach((pair) -> {
-                FluidConfig config = pair.getLeft();
+                FluidConfig<M> config = pair.getLeft();
                 BaseFlowingFluid.Properties instance = config.getInstance();
                 Supplier<FluidType> fluidType = ObfuscationReflectionHelper.getPrivateValue(BaseFlowingFluid.Properties.class, instance, "fluidType");
                 event.register((ResourceKey) event.getRegistry().key(), ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()), fluidType);

@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigProperty;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
 import org.cyclops.cyclopscore.helper.Helpers;
@@ -37,8 +38,8 @@ public class CommandConfig implements Command<CommandSourceStack> {
             String value = context.getArgument("value", String.class);
             Object newValue = Helpers.tryParse(value, property.getConfigProperty().get());
             if(newValue != null) {
-                property.getConfigProperty().set(newValue);
-                property.getConfigProperty().save();
+                ((ModConfigSpec.ConfigValue) property.getConfigProperty()).set(newValue);
+                ((ModConfigSpec.ConfigValue) property.getConfigProperty()).save();
                 context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable("chat.cyclopscore.command.updatedValue",
                         property.getName(), newValue.toString()));
             } else {

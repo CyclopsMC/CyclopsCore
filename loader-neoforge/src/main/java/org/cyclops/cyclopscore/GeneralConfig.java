@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore;
 
 import net.neoforged.fml.config.ModConfig;
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
-import org.cyclops.cyclopscore.config.extendedconfig.DummyConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.DummyConfigCommon;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.tracking.Analytics;
@@ -15,7 +15,7 @@ import java.util.UUID;
  * @author rubensworks
  *
  */
-public class GeneralConfig extends DummyConfig {
+public class GeneralConfig extends DummyConfigCommon<ModBase<?>> {
 
     @ConfigurableProperty(category = "core", comment = "Set 'true' to enable development debug mode. This will result in a lower performance!", requiresMcRestart = true)
     public static boolean debug = false;
@@ -54,7 +54,7 @@ public class GeneralConfig extends DummyConfig {
             Analytics.registerMod(getMod(), Reference.GA_TRACKING_ID);
         }
         if(versionChecker) {
-            Versions.registerMod(getMod(), CyclopsCore._instance, Reference.VERSION_URL);
+            Versions.registerMod(getMod(), CyclopsCore._instance, "https://raw.githubusercontent.com/CyclopsMC/Versions/master/" + getMod().getModHelpers().getMinecraftHelpers().getMinecraftVersionMajorMinor() + "/CyclopsCore.txt");
         }
     }
 

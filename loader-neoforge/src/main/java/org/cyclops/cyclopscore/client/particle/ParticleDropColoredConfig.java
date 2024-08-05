@@ -12,6 +12,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.config.extendedconfig.ParticleConfig;
+import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
 
@@ -19,7 +20,7 @@ import javax.annotation.Nullable;
  * Config for {@link ParticleDropColored}.
  * @author rubensworks
  */
-public class ParticleDropColoredConfig extends ParticleConfig<ParticleDropColoredData> {
+public class ParticleDropColoredConfig extends ParticleConfig<ParticleDropColoredData, ModBase<?>> {
 
     public ParticleDropColoredConfig() {
         super(CyclopsCore._instance, "drop_colored", eConfig -> new ParticleType<>(false){

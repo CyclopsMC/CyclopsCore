@@ -1,13 +1,14 @@
 package org.cyclops.cyclopscore.advancement.criterion;
 
 import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.config.extendedconfig.CriterionTriggerConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.CriterionTriggerConfigCommon;
+import org.cyclops.cyclopscore.init.ModBase;
 
 /**
  * @author rubensworks
  *
  */
-public class GuiContainerOpenTriggerConfig extends CriterionTriggerConfig<GuiContainerOpenTrigger.Instance> {
+public class GuiContainerOpenTriggerConfig extends CriterionTriggerConfigCommon<GuiContainerOpenTrigger.Instance, ModBase<?>> {
 
     /**
      * The unique instance.

@@ -5,6 +5,7 @@ import net.minecraft.core.Registry;
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.function.Function;
@@ -14,9 +15,9 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class LootModifierConfig<T extends IGlobalLootModifier> extends ExtendedConfigForge<LootModifierConfig<T>, MapCodec<T>>{
+public abstract class LootModifierConfig<T extends IGlobalLootModifier> extends ExtendedConfigForge<LootModifierConfig<T>, MapCodec<T>, ModBase<?>>{
 
-    public LootModifierConfig(ModBase mod, String namedId, Function<LootModifierConfig<T>, MapCodec<T>> elementConstructor) {
+    public LootModifierConfig(ModBase<?> mod, String namedId, Function<LootModifierConfig<T>, MapCodec<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 
@@ -27,7 +28,7 @@ public abstract class LootModifierConfig<T extends IGlobalLootModifier> extends 
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableType.LOOT_MODIFIER;
+        return ConfigurableTypesNeoForge.LOOT_MODIFIER;
     }
 
     @Override

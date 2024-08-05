@@ -5,6 +5,7 @@ import net.minecraft.core.Registry;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.function.Function;
@@ -14,9 +15,9 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class BiomeModifierConfig<T extends BiomeModifier> extends ExtendedConfigForge<BiomeModifierConfig<T>, MapCodec<T>>{
+public abstract class BiomeModifierConfig<T extends BiomeModifier, M extends ModBase> extends ExtendedConfigForge<BiomeModifierConfig<T, M>, MapCodec<T>, M> {
 
-    public BiomeModifierConfig(ModBase mod, String namedId, Function<BiomeModifierConfig<T>, MapCodec<T>> elementConstructor) {
+    public BiomeModifierConfig(M mod, String namedId, Function<BiomeModifierConfig<T, M>, MapCodec<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 
@@ -27,7 +28,7 @@ public abstract class BiomeModifierConfig<T extends BiomeModifier> extends Exten
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableType.BIOME_MODIFIER;
+        return ConfigurableTypesNeoForge.BIOME_MODIFIER;
     }
 
     @Override

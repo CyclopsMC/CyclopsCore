@@ -5,6 +5,7 @@ import net.minecraft.core.Registry;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -12,9 +13,9 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class ConditionConfig<T extends ICondition> extends ExtendedConfigForge<ConditionConfig<T>, MapCodec<T>> {
+public abstract class ConditionConfig<T extends ICondition, M extends ModBase> extends ExtendedConfigForge<ConditionConfig<T, M>, MapCodec<T>, M> {
 
-    public ConditionConfig(ModBase mod, String namedId, MapCodec<T> conditionSerializer) {
+    public ConditionConfig(M mod, String namedId, MapCodec<T> conditionSerializer) {
         super(mod, namedId, (eConfig) -> conditionSerializer);
     }
 
@@ -31,7 +32,7 @@ public abstract class ConditionConfig<T extends ICondition> extends ExtendedConf
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableType.CONDITION;
+        return ConfigurableTypesNeoForge.CONDITION;
     }
 
     @Override

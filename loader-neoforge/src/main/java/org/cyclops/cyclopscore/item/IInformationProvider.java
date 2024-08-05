@@ -31,7 +31,8 @@ public interface IInformationProvider {
     /**
      * A prefix for additional info.
      */
-    public static String INFO_PREFIX = ChatFormatting.DARK_PURPLE.toString() + ChatFormatting.ITALIC.toString();
+    @Deprecated
+    public static String INFO_PREFIX = ChatFormatting.DARK_PURPLE.toString() + ChatFormatting.ITALIC.toString(); // TODO: remove in next major
     /**
      * Additional info prefix styles
      */

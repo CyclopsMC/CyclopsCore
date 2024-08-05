@@ -27,13 +27,13 @@ public abstract class RenderModel<T extends Entity, M extends Model> extends Ent
      * @param renderContext The render context
      * @param config The config.
      */
-    public RenderModel(EntityRendererProvider.Context renderContext, ExtendedConfig<?, ?> config) {
+    public RenderModel(EntityRendererProvider.Context renderContext, ExtendedConfig<?, ?, ModBase<?>> config) {
         super(renderContext);
         texture = createResourceLocation(config);
         model = constructModel();
     }
 
-    protected ResourceLocation createResourceLocation(ExtendedConfig<?, ?> config) {
+    protected ResourceLocation createResourceLocation(ExtendedConfig<?, ?, ModBase<?>> config) {
         return ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_MODELS) + config.getNamedId() + ".png");
     }
 

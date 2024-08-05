@@ -9,7 +9,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
-import org.cyclops.cyclopscore.config.extendedconfig.EffectConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.EffectConfigCommon;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -20,7 +20,7 @@ public abstract class CyclopsEffect extends MobEffect {
 
     private final ResourceLocation resource;
 
-    protected EffectConfig eConfig = null;
+    protected EffectConfigCommon<ModBase<?>> eConfig = null;
 
     public CyclopsEffect(MobEffectCategory type, int liquidColor) {
         super(type, liquidColor);

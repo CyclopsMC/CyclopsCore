@@ -5,3 +5,13 @@ accessible method net/minecraft/client/gui/screens/Screen addRenderableWidget (L
 
 # World
 accessible field net/minecraft/world/level/Level thread Ljava/lang/Thread;
+
+# Creative mode tabs
+accessible class net/minecraft/world/item/CreativeModeTab$TabVisibility
+
+# ArgumentTypeInfos
+accessible field net/minecraft/commands/synchronization/ArgumentTypeInfos BY_CLASS Ljava/util/Map;
+
+# # Worldgen
+extendable class net/minecraft/world/level/levelgen/feature/trunkplacers/TrunkPlacerType
+extendable class net/minecraft/world/level/levelgen/feature/foliageplacers/FoliagePlacerType

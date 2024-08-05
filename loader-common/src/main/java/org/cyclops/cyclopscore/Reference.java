@@ -1,7 +1,5 @@
 package org.cyclops.cyclopscore;
 
-import org.cyclops.cyclopscore.helper.MinecraftHelpersCommon;
-
 /**
  * Class that can hold basic static things that are better not hard-coded
  * like mod details, texture paths, ID's...
@@ -12,7 +10,6 @@ public final class Reference {
     // Mod info
     public static final String MOD_ID = "cyclopscore";
     public static final String GA_TRACKING_ID = "UA-65307010-1";
-    public static final String VERSION_URL = "https://raw.githubusercontent.com/CyclopsMC/Versions/master/" + MinecraftHelpersCommon.getMinecraftVersionMajorMinor() + "/CyclopsCore.txt";
 
     // Mod ID's
     public static final String MOD_VANILLA = "minecraft";

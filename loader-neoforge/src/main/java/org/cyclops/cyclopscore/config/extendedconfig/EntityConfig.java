@@ -15,6 +15,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
+import org.cyclops.cyclopscore.init.IModBase;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
@@ -28,17 +30,17 @@ import java.util.function.Supplier;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge<EntityConfig<T>, EntityType<T>> {
+public abstract class EntityConfig<T extends Entity, M extends ModBase> extends ExtendedConfigForge<EntityConfig<T, M>, EntityType<T>, M> {
 
     @Nullable
-    private ItemConfig spawnEggItemConfig;
+    private ItemConfigCommon<M> spawnEggItemConfig;
 
-    public EntityConfig(ModBase mod, String namedId, Function<EntityConfig<T>, EntityType.Builder<T>> elementConstructor) {
+    public EntityConfig(M mod, String namedId, Function<EntityConfig<T, M>, EntityType.Builder<T>> elementConstructor) {
         this(mod, namedId, elementConstructor, null);
     }
 
-    public EntityConfig(ModBase mod, String namedId, Function<EntityConfig<T>, EntityType.Builder<T>> elementConstructor,
-                        @Nullable BiFunction<EntityConfig<T>, Supplier<EntityType<T>>, ItemConfig> spawnEggItemConstructor) {
+    public EntityConfig(M mod, String namedId, Function<EntityConfig<T, M>, EntityType.Builder<T>> elementConstructor,
+                        @Nullable BiFunction<EntityConfig<T, M>, Supplier<EntityType<T>>, ItemConfigCommon<M>> spawnEggItemConstructor) {
         super(mod, namedId, elementConstructor
                 .andThen(builder -> builder.build(mod.getModId() + ":" + namedId)));
 
@@ -48,18 +50,18 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
         }
     }
 
-    public static <T extends Mob> BiFunction<EntityConfig<T>, Supplier<EntityType<T>>, ItemConfig> getDefaultSpawnEggItemConfigConstructor(ModBase mod, String itemName, int primaryColorIn, int secondaryColorIn) {
+    public static <T extends Mob, M extends ModBase> BiFunction<EntityConfig<T, M>, Supplier<EntityType<T>>, ItemConfigCommon<M>> getDefaultSpawnEggItemConfigConstructor(IModBase mod, String itemName, int primaryColorIn, int secondaryColorIn) {
         return getDefaultSpawnEggItemConfigConstructor(mod, itemName, primaryColorIn, secondaryColorIn, null);
     }
 
-    public static <T extends Mob> BiFunction<EntityConfig<T>, Supplier<EntityType<T>>, ItemConfig> getDefaultSpawnEggItemConfigConstructor(ModBase mod, String itemName, int primaryColorIn, int secondaryColorIn, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
+    public static <T extends Mob, M extends ModBase> BiFunction<EntityConfig<T, M>, Supplier<EntityType<T>>, ItemConfigCommon<M>> getDefaultSpawnEggItemConfigConstructor(IModBase mod, String itemName, int primaryColorIn, int secondaryColorIn, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
         return (entityConfig, entityType) -> {
             Item.Properties itemProperties = new Item.Properties();
             if (itemPropertiesModifier != null) {
                 itemProperties = itemPropertiesModifier.apply(itemProperties);
             }
             Item.Properties finalItemProperties = itemProperties;
-            ItemConfig itemConfig = new ItemConfig(mod, itemName, (itemConfigSub) -> new DeferredSpawnEggItem(entityType, primaryColorIn, secondaryColorIn, finalItemProperties));
+            ItemConfigCommon itemConfig = new ItemConfigCommon(mod, itemName, (itemConfigSub) -> new DeferredSpawnEggItem(entityType, primaryColorIn, secondaryColorIn, finalItemProperties));
             entityConfig.setSpawnEggItemConfig(itemConfig);
             return itemConfig;
         };
@@ -72,7 +74,7 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableType.ENTITY;
+        return ConfigurableTypesNeoForge.ENTITY;
     }
 
     @Override
@@ -97,7 +99,7 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
         return BuiltInRegistries.ENTITY_TYPE;
     }
 
-    public void setSpawnEggItemConfig(@Nullable ItemConfig spawnEggItemConfig) {
+    public void setSpawnEggItemConfig(@Nullable ItemConfigCommon spawnEggItemConfig) {
         this.spawnEggItemConfig = spawnEggItemConfig;
     }
 }

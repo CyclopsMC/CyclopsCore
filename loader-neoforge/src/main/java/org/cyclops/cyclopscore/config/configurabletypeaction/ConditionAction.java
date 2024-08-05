@@ -3,12 +3,14 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 import com.mojang.serialization.MapCodec;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import org.cyclops.cyclopscore.config.extendedconfig.ConditionConfig;
+import org.cyclops.cyclopscore.init.ModBase;
 
 /**
  * The action used for {@link ConditionConfig}.
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class ConditionAction<T extends ICondition> extends ConfigurableTypeActionForge<ConditionConfig<T>, MapCodec<T>> {
+// TODO: append NeoForge to name in next major
+public class ConditionAction<T extends ICondition, M extends ModBase> extends ConfigurableTypeActionForge<ConditionConfig<T, M>, MapCodec<T>, M> {
 
 }

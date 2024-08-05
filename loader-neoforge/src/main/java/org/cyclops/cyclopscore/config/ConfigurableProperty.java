@@ -13,6 +13,7 @@ import java.lang.annotation.Target;
  * @author rubensworks
  *
  */
+@Deprecated // TODO: remove in next major version; and rename ConfigurablePropertyCommon to non-common
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface ConfigurableProperty {

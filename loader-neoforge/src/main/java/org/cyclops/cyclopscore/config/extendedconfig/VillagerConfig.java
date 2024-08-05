@@ -1,9 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.function.Function;
@@ -13,7 +10,8 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class VillagerConfig extends ExtendedConfigForge<VillagerConfig, VillagerProfession> {
+@Deprecated // TODO: rm in next major
+public abstract class VillagerConfig extends VillagerConfigCommon<ModBase<?>> {
 
     /**
      * Make a new instance.
@@ -21,27 +19,7 @@ public abstract class VillagerConfig extends ExtendedConfigForge<VillagerConfig,
      * @param namedId The unique name ID for the configurable.
      * @param elementConstructor The element constructor.
      */
-    public VillagerConfig(ModBase mod, String namedId, Function<VillagerConfig, ? extends VillagerProfession> elementConstructor) {
+    public VillagerConfig(ModBase<?> mod, String namedId, Function<VillagerConfigCommon<ModBase<?>>, ? extends VillagerProfession> elementConstructor) {
         super(mod, namedId, elementConstructor);
-    }
-
-    @Override
-    public String getTranslationKey() {
-        return "entity.villager." + getNamedId();
-    }
-
-    @Override
-    public String getFullTranslationKey() {
-        return "entity.Villager." + getNamedId();
-    }
-
-    @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.VILLAGER;
-    }
-
-    @Override
-    public Registry<? super VillagerProfession> getRegistry() {
-        return BuiltInRegistries.VILLAGER_PROFESSION;
     }
 }

@@ -11,7 +11,7 @@ import java.util.function.Consumer;
  * A {@link ModBase} which is also a {@link org.cyclops.cyclopscore.tracking.IModVersion}.
  * @author rubensworks
  */
-public abstract class ModBaseVersionable<T extends ModBaseVersionable> extends ModBase<T> implements IModVersion {
+public abstract class ModBaseVersionable<T extends ModBaseVersionable<T>> extends ModBase<T> implements IModVersion {
 
     private boolean versionInfo = false;
     private String version;

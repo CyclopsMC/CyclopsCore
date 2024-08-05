@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.util.Map;
 

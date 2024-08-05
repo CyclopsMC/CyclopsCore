@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.client.gui;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.CyclopsCoreMainFabric;
 
 /**
  * @author rubensworks
@@ -16,7 +16,7 @@ public class GuiMainMenuExtensionDevWorldFabricRegistrar {
 
     private static void afterInit(Minecraft minecraft, Screen screen, int scaledWidth, int scaledHeight) {
         // Add a button to the main menu if we're in a dev environment
-        if (MinecraftHelpers.isDevEnvironment()) {
+        if (CyclopsCoreMainFabric._instance.getModHelpers().getMinecraftHelpers().isDevEnvironment()) {
             GuiMainMenuExtensionDevWorld.onMainMenuInit(minecraft, screen);
         }
     }

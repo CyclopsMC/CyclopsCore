@@ -11,6 +11,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.function.Function;
@@ -20,7 +21,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class GuiConfig<T extends AbstractContainerMenu> extends ExtendedConfigForge<GuiConfig<T>, MenuType<T>> {
+public abstract class GuiConfig<T extends AbstractContainerMenu, M extends ModBase> extends ExtendedConfigForge<GuiConfig<T, M>, MenuType<T>, M> {
 
     /**
      * Create a new config
@@ -29,9 +30,9 @@ public abstract class GuiConfig<T extends AbstractContainerMenu> extends Extende
      * @param namedId            A unique name id
      * @param elementConstructor The element constructor.
      */
-    public GuiConfig(ModBase mod, String namedId, Function<GuiConfig<T>, ? extends MenuType<T>> elementConstructor) {
+    public GuiConfig(M mod, String namedId, Function<GuiConfig<T, M>, ? extends MenuType<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
-        mod.getModEventBus().addListener(this::onRegisterMenuScreens);
+        ((ModBase<?>) mod).getModEventBus().addListener(this::onRegisterMenuScreens);
     }
 
     @Override
@@ -47,7 +48,7 @@ public abstract class GuiConfig<T extends AbstractContainerMenu> extends Extende
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableType.GUI;
+        return ConfigurableTypesNeoForge.GUI;
     }
 
     @Override

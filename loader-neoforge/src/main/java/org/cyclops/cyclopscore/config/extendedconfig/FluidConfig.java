@@ -6,7 +6,9 @@ import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtension
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.datastructure.Wrapper;
+import org.cyclops.cyclopscore.init.IModBase;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.function.Consumer;
@@ -17,7 +19,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class FluidConfig extends ExtendedConfig<FluidConfig, BaseFlowingFluid.Properties> {
+public abstract class FluidConfig<M extends ModBase> extends ExtendedConfig<FluidConfig<M>, BaseFlowingFluid.Properties, M> {
 
     /**
      * Make a new instance.
@@ -25,11 +27,11 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, BaseFlowin
      * @param namedId The unique name ID for the configurable.
      * @param elementConstructor The element constructor.
      */
-    public FluidConfig(ModBase mod, String namedId, Function<FluidConfig, BaseFlowingFluid.Properties> elementConstructor) {
+    public FluidConfig(M mod, String namedId, Function<FluidConfig<M>, BaseFlowingFluid.Properties> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 
-    protected static BaseFlowingFluid.Properties getDefaultFluidProperties(ModBase mod, String texturePrefixPath,
+    protected static BaseFlowingFluid.Properties getDefaultFluidProperties(IModBase mod, String texturePrefixPath,
                                                                             Consumer<FluidType.Properties> fluidAttributesConsumer) {
         FluidType.Properties fluidAttributes = FluidType.Properties.create();
         fluidAttributesConsumer.accept(fluidAttributes);
@@ -84,7 +86,7 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, BaseFlowin
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableType.FLUID;
+        return ConfigurableTypesNeoForge.FLUID;
     }
 
     /**

@@ -4,6 +4,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.cyclops.cyclopscore.init.ModBaseForge;
 
 /**
  * The main mod class of CyclopsCore.
@@ -11,7 +12,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
  *
  */
 @Mod(Reference.MOD_ID)
-public class CyclopsCoreForge {
+public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
 
     /**
      * The unique instance of this mod.
@@ -21,7 +22,7 @@ public class CyclopsCoreForge {
     private boolean loaded = false;
 
     public CyclopsCoreForge() {
-        _instance = this;
+        super(Reference.MOD_ID, (instance) -> _instance = instance);
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::loadComplete);

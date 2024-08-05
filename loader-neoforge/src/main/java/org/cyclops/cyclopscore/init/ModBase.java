@@ -8,10 +8,6 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
@@ -29,16 +25,18 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.client.key.KeyRegistry;
 import org.cyclops.cyclopscore.command.CommandConfig;
 import org.cyclops.cyclopscore.command.CommandVersion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
-import org.cyclops.cyclopscore.config.extendedconfig.CreativeModeTabConfig;
+import org.cyclops.cyclopscore.config.ConfigHandlerNeoForge;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.helper.ModBaseCommon;
+import org.cyclops.cyclopscore.helper.ModHelpersNeoForge;
 import org.cyclops.cyclopscore.modcompat.IMCHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.capabilities.CapabilityConstructorRegistry;
@@ -54,12 +52,10 @@ import java.util.function.Consumer;
 
 /**
  * Base class for mods which adds a few convenience methods.
- * Dont forget to call the supers for the init events.
  * @author rubensworks
  */
-public abstract class ModBase<T extends ModBase> {
-
-    private static final Map<String, ModBase<?>> MOD_BASES = Maps.newConcurrentMap();
+// TODO: rename to ModBaseNeoForge in next major
+public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
 
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_GUI = EnumReferenceKey.create("texture_path_gui", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_MODELS = EnumReferenceKey.create("texture_path_models", String.class);
@@ -69,8 +65,6 @@ public abstract class ModBase<T extends ModBase> {
     public static final EnumReferenceKey<Boolean> REFKEY_CRASH_ON_MODCOMPAT_CRASH = EnumReferenceKey.create("crash_on_modcompat_crash", Boolean.class);
     public static final EnumReferenceKey<Boolean> REFKEY_INFOBOOK_REWARDS = EnumReferenceKey.create("rewards", Boolean.class);
 
-    private final String modId;
-    private final LoggerHelper loggerHelper;
     private final ConfigHandler configHandler;
     private final Map<EnumReferenceKey<?>, Object> genericReference = Maps.newHashMap();
     private final List<WorldStorage> worldStorages = Lists.newLinkedList();
@@ -85,16 +79,9 @@ public abstract class ModBase<T extends ModBase> {
     private ICommonProxy proxy;
     private ModContainer container;
 
-    @Nullable
-    private CreativeModeTab defaultCreativeTab = null;
-    private final List<Pair<ItemStack, CreativeModeTab.TabVisibility>> defaultCreativeTabEntries = Lists.newArrayList();
-
     public ModBase(String modId, Consumer<T> instanceSetter, IEventBus modEventBus) {
-        MOD_BASES.put(modId, this);
-        instanceSetter.accept((T) this);
-        this.modId = modId;
+        super(modId, instanceSetter);
         this.modEventBus = modEventBus;
-        this.loggerHelper = constructLoggerHelper();
         this.configHandler = constructConfigHandler();
         this.registryManager = constructRegistryManager();
         this.keyRegistry = new KeyRegistry();
@@ -127,24 +114,27 @@ public abstract class ModBase<T extends ModBase> {
         getConfigHandler().initialize(Lists.newArrayList());
         getConfigHandler().loadModInit();
 
-        // Register default creative tab
-        if (this.hasDefaultCreativeModeTab()) {
-            this.getConfigHandler().addConfigurable(this.constructDefaultCreativeModeTabConfig());
-        }
-
         loadModCompats(getModCompatLoader());
     }
 
-    public String getModId() {
-        return modId;
+    @Override
+    public String getModId() { // TODO: rm in next major version
+        return super.getModId();
     }
 
-    public LoggerHelper getLoggerHelper() {
-        return loggerHelper;
+    @Override
+    public IModHelpers getModHelpers() {
+        return ModHelpersNeoForge.INSTANCE;
     }
 
-    public ConfigHandler getConfigHandler() {
-        return configHandler;
+    @Override
+    public LoggerHelper getLoggerHelper() { // TODO: rm in next major version
+        return super.getLoggerHelper();
+    }
+
+    @Override
+    public ConfigHandlerNeoForge getConfigHandler() {
+        return (ConfigHandlerNeoForge) this.configHandler;
     }
 
     public Map<EnumReferenceKey<?>, Object> getGenericReference() {
@@ -179,15 +169,6 @@ public abstract class ModBase<T extends ModBase> {
         return imcHandler;
     }
 
-    @Nullable
-    public CreativeModeTab getDefaultCreativeTab() {
-        return defaultCreativeTab;
-    }
-
-    public List<Pair<ItemStack, CreativeModeTab.TabVisibility>> getDefaultCreativeTabEntries() {
-        return defaultCreativeTabEntries;
-    }
-
     public String getModName() {
         return getContainer().getModInfo().getDisplayName();
     }
@@ -211,7 +192,7 @@ public abstract class ModBase<T extends ModBase> {
     }
 
     protected ConfigHandler constructConfigHandler() {
-        return new ConfigHandler(this);
+        return new ConfigHandlerNeoForge(this);
     }
 
     protected RegistryManager constructRegistryManager() {
@@ -288,7 +269,8 @@ public abstract class ModBase<T extends ModBase> {
      * Log a new info message for this mod.
      * @param message The message to show.
      */
-    public void log(String message) {
+    @Override
+    public void log(String message) { // TODO: rm in next major version due to default interface method
         log(Level.INFO, message);
     }
 
@@ -297,8 +279,9 @@ public abstract class ModBase<T extends ModBase> {
      * @param level The level in which the message must be shown.
      * @param message The message to show.
      */
-    public void log(Level level, String message) {
-        loggerHelper.log(level, message);
+    @Override
+    public void log(Level level, String message) { // TODO: rm in next major version due to default interface method
+        super.log(level, message);
     }
 
     /**
@@ -416,45 +399,13 @@ public abstract class ModBase<T extends ModBase> {
     @OnlyIn(Dist.DEDICATED_SERVER)
     protected abstract ICommonProxy constructCommonProxy();
 
-    public void registerDefaultCreativeTabEntry(ItemStack itemStack, CreativeModeTab.TabVisibility visibility) {
-        if (defaultCreativeTabEntries == null) {
-            throw new IllegalStateException("Tried to register default tab entries after the CreativeModeTabEvent.BuildContents event");
-        }
-        if (itemStack.getCount() != 1) {
-            throw new IllegalStateException("Tried to register default tab entries with a non-1-count ItemStack");
-        }
-        defaultCreativeTabEntries.add(Pair.of(itemStack, visibility));
-    }
-
-    protected CreativeModeTabConfig constructDefaultCreativeModeTabConfig() {
-        return new CreativeModeTabConfig(this, "default", (config) -> this.defaultCreativeTab = this.constructDefaultCreativeModeTab(CreativeModeTab.builder()).build());
-    }
-
-    protected CreativeModeTab.Builder constructDefaultCreativeModeTab(CreativeModeTab.Builder builder) {
-        return builder
-                .title(Component.translatable("itemGroup." + getModId()))
-                .icon(() -> new ItemStack(Items.BARRIER))
-                .displayItems((parameters, output) -> {
-                    for (Pair<ItemStack, CreativeModeTab.TabVisibility> entry : defaultCreativeTabEntries) {
-                        output.accept(entry.getLeft(), entry.getRight());
-                    }
-                });
-    }
-
-    /**
-     * @return If a default creative tab should be constructed.
-     *         If so, make sure to override {@link #constructDefaultCreativeModeTab(CreativeModeTab.Builder)}.
-     */
-    protected boolean hasDefaultCreativeModeTab() {
-        return true;
-    };
-
     /**
      * Called when the configs should be registered.
      * @param configHandler The config handler to register to.
      */
-    protected void onConfigsRegister(ConfigHandler configHandler) {
-
+    @Override
+    protected void onConfigsRegister(ConfigHandler configHandler) { // TODO: remove override in next major
+        super.onConfigsRegister(configHandler);
     }
 
     /**
@@ -465,18 +416,18 @@ public abstract class ModBase<T extends ModBase> {
     }
 
     @Override
-    public String toString() {
-        return getModId();
+    public String toString() { // TODO: rm in next major version
+        return super.toString();
     }
 
     @Override
-    public int hashCode() {
-        return toString().hashCode();
+    public int hashCode() { // TODO: rm in next major version
+        return super.hashCode();
     }
 
     @Override
-    public boolean equals(Object object) {
-        return object == this;
+    public boolean equals(Object object) { // TODO: rm in next major version
+        return super.equals(object);
     }
 
     /**
@@ -486,11 +437,11 @@ public abstract class ModBase<T extends ModBase> {
      */
     @Nullable
     public static ModBase get(String modId) {
-        return MOD_BASES.get(modId);
+        return (ModBase) ModBaseCommon.getCommon(modId);
     }
 
     public static Map<String, ModBase<?>> getMods() {
-        return MOD_BASES;
+        return (Map) ModBaseCommon.getCommonMods();
     }
 
     /**

@@ -10,7 +10,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import org.cyclops.cyclopscore.config.ConfigurableType;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
@@ -21,7 +21,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class ParticleConfig<T extends ParticleOptions> extends ExtendedConfigForge<ParticleConfig<T>, ParticleType<T>> {
+public abstract class ParticleConfig<T extends ParticleOptions, M extends ModBase> extends ExtendedConfigForge<ParticleConfig<T, M>, ParticleType<T>, M> {
 
     /**
      * Create a new config
@@ -30,9 +30,9 @@ public abstract class ParticleConfig<T extends ParticleOptions> extends Extended
      * @param namedId            A unique name id
      * @param elementConstructor The element constructor.
      */
-    public ParticleConfig(ModBase mod, String namedId, Function<ParticleConfig<T>, ? extends ParticleType<T>> elementConstructor) {
+    public ParticleConfig(M mod, String namedId, Function<ParticleConfig<T, M>, ? extends ParticleType<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
-        if (MinecraftHelpers.isClientSide()) {
+        if (mod.getModHelpers().getMinecraftHelpers().isClientSide()) {
             mod.getModEventBus().addListener(this::onParticleFactoryRegister);
         }
     }
@@ -50,7 +50,7 @@ public abstract class ParticleConfig<T extends ParticleOptions> extends Extended
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableType.PARTICLE;
+        return ConfigurableTypesNeoForge.PARTICLE;
     }
 
     @Override
