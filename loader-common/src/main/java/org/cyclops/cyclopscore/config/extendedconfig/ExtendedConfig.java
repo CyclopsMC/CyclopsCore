@@ -21,6 +21,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @param <C> Class of the extension of ExtendedConfig
  * @param <I> The instance corresponding to this config.
+ * @param <M> The mod type
  */
 public abstract class ExtendedConfig<C extends ExtendedConfig<C, I, M>, I, M extends IModBase>
         implements Comparable<ExtendedConfig<C, I, M>> {

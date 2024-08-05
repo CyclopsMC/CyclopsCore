@@ -11,6 +11,7 @@ import java.util.function.Function;
 /**
  * Config for world features.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public abstract class WorldFeatureConfigCommon<M extends IModBase> extends ExtendedConfigForge<WorldFeatureConfigCommon<M>, Feature<?>, M> {

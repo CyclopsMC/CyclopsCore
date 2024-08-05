@@ -12,6 +12,7 @@ import java.util.function.Function;
 /**
  * Config for enchantment entity effects.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public class EnchantmentEntityEffectConfigCommon<M extends IModBase> extends ExtendedConfigForge<EnchantmentEntityEffectConfigCommon<M>, MapCodec<? extends EnchantmentEntityEffect>, M>{

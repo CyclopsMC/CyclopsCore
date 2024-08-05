@@ -6,6 +6,7 @@ import org.cyclops.cyclopscore.init.IModBase;
 /**
  * The action used for {@link ExtendedConfigForge}.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ConfigurableTypeAction
  */
 public class ConfigurableTypeActionForge<C extends ExtendedConfigForge<C, I, M>, I, M extends IModBase>

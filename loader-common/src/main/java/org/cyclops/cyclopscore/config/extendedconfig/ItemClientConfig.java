@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 
 /**
  * @author rubensworks
+ * @param <M> The mod type
  */
 public class ItemClientConfig<M extends IModBase> {
 

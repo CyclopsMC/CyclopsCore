@@ -18,6 +18,7 @@ import java.util.function.Function;
 /**
  * Config for blocks.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConfigForge<BlockConfigCommon<M>, Block, M> implements IModelProviderConfig {

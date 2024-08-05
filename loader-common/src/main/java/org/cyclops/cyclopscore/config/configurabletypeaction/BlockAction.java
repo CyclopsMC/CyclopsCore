@@ -22,6 +22,7 @@ import java.util.function.BiFunction;
 /**
  * The action used for {@link BlockConfigCommon}.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ConfigurableTypeAction
  */
 public class BlockAction<M extends IModBase> extends ConfigurableTypeActionForge<BlockConfigCommon<M>, Block, M> {

@@ -12,6 +12,7 @@ import org.cyclops.cyclopscore.init.IModBase;
 /**
  * Config for recipe types.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public abstract class RecipeTypeConfigCommon<T extends Recipe<?>, M extends IModBase> extends ExtendedConfigForge<RecipeTypeConfigCommon<T, M>, RecipeType<T>, M> {

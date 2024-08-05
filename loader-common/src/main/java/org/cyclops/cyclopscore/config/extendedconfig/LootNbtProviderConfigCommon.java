@@ -9,6 +9,7 @@ import org.cyclops.cyclopscore.init.IModBase;
 /**
  * Config for loot nbt providers.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public abstract class LootNbtProviderConfigCommon<M extends IModBase> extends ExtendedConfigForge<LootNbtProviderConfigCommon<M>, LootNbtProviderType, M> {

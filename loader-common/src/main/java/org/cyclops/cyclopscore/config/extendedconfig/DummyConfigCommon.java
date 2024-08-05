@@ -6,6 +6,7 @@ import org.cyclops.cyclopscore.init.IModBase;
 /**
  * Dummy config.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  *
  */

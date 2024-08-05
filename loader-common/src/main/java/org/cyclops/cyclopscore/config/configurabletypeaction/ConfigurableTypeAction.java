@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
  * @author rubensworks
  * @param <C> The subclass of ExtendedConfig.
  * @param <I> The instance corresponding to this config.
+ * @param <M> The mod type
  * @see ConfigHandler
  */
 public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I, M>, I, M extends IModBase> {
@@ -58,6 +59,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I, M>, 
      * @param config The corresponding config.
      * @param <C> The subclass of ExtendedConfig.
      * @param <I> The instance corresponding to this config.
+     * @param <M> The mod type
      */
     public static <C extends ExtendedConfigForge<C, I, M>, I, M extends IModBase> void register(C config) {
         register(config, () -> {
@@ -72,6 +74,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I, M>, 
      * @param callback A callback that will be called when the entry is registered.
      * @param <C> The subclass of ExtendedConfig.
      * @param <I> The instance corresponding to this config.
+     * @param <M> The mod type
      */
     public static <C extends ExtendedConfigForge<C, I, M>, I, M extends IModBase> void register(C config, @Nullable Callable<?> callback) {
         register(Objects.requireNonNull(config.getRegistry(),
@@ -84,6 +87,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I, M>, 
      * @param config The corresponding config.
      * @param <C> The subclass of ExtendedConfig.
      * @param <I> The instance corresponding to this config.
+     * @param <M> The mod type
      */
     public static <C extends ExtendedConfigForge<C, I, M>, I, M extends IModBase> void register(Registry<? super I> registry, C config) {
         register(registry, config, null);
@@ -96,6 +100,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I, M>, 
      * @param callback A callback that will be called when the entry is registered.
      * @param <C> The subclass of ExtendedConfig.
      * @param <I> The instance corresponding to this config.
+     * @param <M> The mod type
      */
     public static <C extends ExtendedConfigForge<C, I, M>, I, M extends IModBase> void register(Registry<? super I> registry, C config, @Nullable Callable<?> callback) {
         config.getMod().getConfigHandler().registerToRegistry(registry, config, callback);

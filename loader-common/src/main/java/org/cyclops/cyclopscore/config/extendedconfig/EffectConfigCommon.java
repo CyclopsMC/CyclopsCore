@@ -11,6 +11,7 @@ import java.util.function.Function;
 /**
  * Config for potion effects.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public abstract class EffectConfigCommon<M extends IModBase> extends ExtendedConfigForge<EffectConfigCommon<M>, MobEffect, M> {

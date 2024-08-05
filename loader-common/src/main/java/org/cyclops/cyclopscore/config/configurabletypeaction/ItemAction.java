@@ -15,6 +15,7 @@ import java.util.List;
 /**
  * The action used for {@link ItemConfigCommon}.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ConfigurableTypeAction
  */
 public class ItemAction<M extends IModBase> extends ConfigurableTypeActionForge<ItemConfigCommon<M>, Item, M>{

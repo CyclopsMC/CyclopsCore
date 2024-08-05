@@ -11,6 +11,7 @@ import java.util.function.Function;
 /**
  * Config for armor materials.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public class ArmorMaterialConfigCommon<M extends IModBase> extends ExtendedConfigForge<ArmorMaterialConfigCommon<M>, ArmorMaterial, M>{

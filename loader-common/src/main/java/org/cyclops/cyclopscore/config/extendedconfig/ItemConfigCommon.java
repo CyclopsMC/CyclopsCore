@@ -15,6 +15,7 @@ import java.util.function.Function;
 /**
  * Config for items.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public class ItemConfigCommon<M extends IModBase> extends ExtendedConfigForge<ItemConfigCommon<M>, Item, M> implements IModelProviderConfig {

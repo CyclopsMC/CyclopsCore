@@ -11,6 +11,7 @@ import java.util.function.Function;
 /**
  * Config for creative mode tabs.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public class CreativeModeTabConfigCommon<M extends IModBase> extends ExtendedConfigForge<CreativeModeTabConfigCommon<M>, CreativeModeTab, M>{

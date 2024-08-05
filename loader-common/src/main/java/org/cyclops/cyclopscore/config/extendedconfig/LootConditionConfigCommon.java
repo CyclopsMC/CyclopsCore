@@ -9,6 +9,7 @@ import org.cyclops.cyclopscore.init.IModBase;
 /**
  * Config for loot functions.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public abstract class LootConditionConfigCommon<M extends IModBase> extends ExtendedConfigForge<LootConditionConfigCommon<M>, LootItemConditionType, M> {

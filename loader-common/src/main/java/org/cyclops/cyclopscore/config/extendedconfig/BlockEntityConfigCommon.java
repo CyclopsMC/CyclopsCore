@@ -12,6 +12,7 @@ import java.util.function.Function;
 /**
  * Config for block entities.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public abstract class BlockEntityConfigCommon<T extends BlockEntity, M extends IModBase> extends ExtendedConfigForge<BlockEntityConfigCommon<T, M>, BlockEntityType<T>, M> {

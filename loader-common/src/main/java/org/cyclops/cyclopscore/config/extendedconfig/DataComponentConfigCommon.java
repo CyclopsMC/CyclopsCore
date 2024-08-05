@@ -11,6 +11,7 @@ import java.util.function.UnaryOperator;
 /**
  * Config for data component types.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public abstract class DataComponentConfigCommon<T, M extends IModBase> extends ExtendedConfigForge<DataComponentConfigCommon<T, M>, DataComponentType<T>, M> {

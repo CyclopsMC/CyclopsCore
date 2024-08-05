@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 
 /**
  * @author rubensworks
+ * @param <M> The mod type
  */
 public class BlockClientConfig<M extends IModBase> {
 

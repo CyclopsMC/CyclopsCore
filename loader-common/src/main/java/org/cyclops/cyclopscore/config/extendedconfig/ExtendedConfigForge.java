@@ -11,6 +11,7 @@ import java.util.function.Function;
  * An extended config for instances that are to be registered in a Forge registry.
  * @param <C> Class of the extension of ExtendedConfig
  * @param <I> The instance corresponding to this config.
+ * @param <M> The mod type
  */
 public abstract class ExtendedConfigForge<C extends ExtendedConfig<C, I, M>, I, M extends IModBase>
         extends ExtendedConfig<C, I, M> { // TODO: in next major version rename this class to ExtendedConfigRegistry

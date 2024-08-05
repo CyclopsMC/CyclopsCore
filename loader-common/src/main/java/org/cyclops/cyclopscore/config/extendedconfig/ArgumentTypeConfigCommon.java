@@ -11,6 +11,7 @@ import org.cyclops.cyclopscore.init.IModBase;
 /**
  * Config for argument types.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public class ArgumentTypeConfigCommon<A extends ArgumentType<?>, T extends ArgumentTypeInfo.Template<A>, M extends IModBase> extends ExtendedConfigForge<ArgumentTypeConfigCommon<A, T, M>, ArgumentTypeInfo<A, T>, M> {

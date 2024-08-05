@@ -9,6 +9,7 @@ import java.util.function.Function;
 /**
  * Config for capabilities.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public abstract class CapabilityConfigCommon<T, M extends IModBase> extends ExtendedConfig<CapabilityConfigCommon<T, M>, T, M> {

@@ -9,6 +9,7 @@ import org.cyclops.cyclopscore.init.IModBase;
 /**
  * Config for loot score providers.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public abstract class LootScoreProviderConfigCommon<M extends IModBase> extends ExtendedConfigForge<LootScoreProviderConfigCommon<M>, LootScoreProviderType, M> {

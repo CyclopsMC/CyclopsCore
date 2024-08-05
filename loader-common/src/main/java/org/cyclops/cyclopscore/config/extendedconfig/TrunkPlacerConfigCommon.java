@@ -13,6 +13,7 @@ import java.util.function.Function;
 /**
  * Config for trunk placer types.
  * @author rubensworks
+ * @param <M> The mod type
  * @see ExtendedConfig
  */
 public class TrunkPlacerConfigCommon<T extends TrunkPlacer, M extends IModBase> extends ExtendedConfigForge<TrunkPlacerConfigCommon<T, M>, TrunkPlacerType<T>, M> {
