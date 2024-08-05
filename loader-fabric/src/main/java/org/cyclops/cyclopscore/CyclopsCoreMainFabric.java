@@ -6,7 +6,6 @@ import org.cyclops.cyclopscore.init.ModBaseFabric;
 /**
  * The main mod class of CyclopsCore.
  * @author rubensworks
- *
  */
 public class CyclopsCoreMainFabric extends ModBaseFabric<CyclopsCoreMainFabric> implements ModInitializer {
 
@@ -17,10 +16,5 @@ public class CyclopsCoreMainFabric extends ModBaseFabric<CyclopsCoreMainFabric> 
 
     public CyclopsCoreMainFabric() {
         super(Reference.MOD_ID, (instance) -> _instance = instance);
-    }
-
-    @Override
-    protected boolean hasDefaultCreativeModeTab() {
-        return true;
     }
 }

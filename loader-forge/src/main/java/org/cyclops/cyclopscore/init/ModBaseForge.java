@@ -5,6 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
@@ -28,6 +29,8 @@ public class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCommon<T> {
     private final ConfigHandler configHandler;
     private final IEventBus modEventBus;
 
+    private boolean loaded = false;
+
     public ModBaseForge(String modId, Consumer<T> instanceSetter) {
         super(modId, instanceSetter);
         this.modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -37,11 +40,23 @@ public class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCommon<T> {
         getModEventBus().addListener(this::setup);
         getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
         getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
+        getModEventBus().addListener(this::loadComplete);
 
         // Initialize config handler
         this.onConfigsRegister(getConfigHandler());
         getConfigHandler().initialize(Lists.newArrayList());
         getConfigHandler().loadModInit();
+    }
+
+    private void loadComplete(FMLLoadCompleteEvent event) {
+        this.loaded = true;
+    }
+
+    /**
+     * @return If this mod has been fully loaded. (The {@link FMLLoadCompleteEvent} has been called)
+     */
+    public boolean isLoaded() {
+        return loaded;
     }
 
     protected ConfigHandler constructConfigHandler() {
