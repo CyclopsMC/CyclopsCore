@@ -1,10 +1,7 @@
 plugins {
-    id 'multiloader-loader'
+    id 'multiloader-loader-forge'
     id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
 }
-
-// All jar files from this folder will be added automatically as runtime mod dependencies (inspired by AE2's build.gradle)
-def extraModsDir = "extra-mods"
 
 sourceSets {
     api {
@@ -19,7 +16,6 @@ sourceSets {
         runtimeClasspath += sourceSets.api.output
     }
 }
-sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 configurations {
     apiImplementation.extendsFrom(implementation)
@@ -37,15 +33,9 @@ repositories {
         name "Curios"
         url "https://maven.theillusivec4.top/"
     }
-    flatDir {
-        name "extra-mods"
-        dir file(extraModsDir)
-    }
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-
     //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-neoforge:${curios_version}") // https://maven.theillusivec4.top/top/theillusivec4/curios/curios-neoforge/
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
 
@@ -54,37 +44,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
     testCompileOnly 'org.projectlombok:lombok:1.18.30'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
-
-    testImplementation "junit:junit:4.12"
-    testImplementation "org.mockito:mockito-core:1.+"
-
-    // Locally sourced extra mods for runtime (i.e. testing)
-    for (extraModJar in fileTree(dir: extraModsDir, include: '*.jar')) {
-        def basename = extraModJar.name.substring(0, extraModJar.name.length() - ".jar".length())
-        def versionSep = basename.lastIndexOf('-')
-        assert versionSep != -1
-        def artifactId = basename.substring(0, versionSep)
-        def version = basename.substring(versionSep + 1)
-        runtimeOnly "extra-mods:$artifactId:$version"
-    }
-
-    // Hack to make Forge run
-    implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
 }
 
 minecraft {
-    mappings channel: 'official', version: minecraft_version
-
-    reobf = false
-
-    copyIdeResources.set(true)
-
-    // Automatically enable neoforge AccessTransformers if the file exists
-    def at = project(':loader-common').file('src/main/resources/META-INF/accesstransformer.cfg')
-    if (at.exists()) {
-        accessTransformer = file(at.absolutePath)
-    }
-
     runs {
         client {
             workingDirectory file('runs/client')
@@ -128,26 +90,4 @@ minecraft {
 javadoc {
     source = [sourceSets.main.allJava, sourceSets.api.allJava]
     exclude 'org/cyclops/cyclopscore/modcompat/curios/*'
-}
-
-task signJar(type: net.minecraftforge.gradle.common.tasks.SignJar, dependsOn: jar) {
-    dependsOn(tasks.jar)
-
-    onlyIf {
-        System.getenv().SIGN_KEYSTORE
-    }
-
-    keyStore = System.getenv().SIGN_KEYSTORE
-    alias = System.getenv().SIGN_ALIAS
-    storePass = System.getenv().SIGN_STOREPASS
-    keyPass = System.getenv().SIGN_KEYPASS
-    inputFile = jar.archivePath
-    outputFile = jar.archivePath
-}
-
-// Required because FG, copied from the MDK
-sourceSets.forEach {
-    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
-    it.output.resourcesDir = dir
-    it.java.destinationDirectory = dir
 }

@@ -1,10 +1,6 @@
 plugins {
-    id 'multiloader-loader'
-    id 'net.neoforged.gradle.userdev'
+    id 'multiloader-loader-neoforge'
 }
-
-// All jar files from this folder will be added automatically as runtime mod dependencies (inspired by AE2's build.gradle)
-def extraModsDir = "extra-mods"
 
 sourceSets {
     api {
@@ -19,7 +15,6 @@ sourceSets {
         runtimeClasspath += sourceSets.api.output
     }
 }
-sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 configurations {
     apiImplementation.extendsFrom(implementation)
@@ -37,14 +32,10 @@ repositories {
         name "Curios"
         url "https://maven.theillusivec4.top/"
     }
-    flatDir {
-        name "extra-mods"
-        dir file(extraModsDir)
-    }
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${neoforge_version}"
+    implementation "net.neoforged:neoforge:${neoforge_version}" // Only necessary for the api sourceSet
 
     //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-neoforge:${curios_version}") // https://maven.theillusivec4.top/top/theillusivec4/curios/curios-neoforge/
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
@@ -54,81 +45,16 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
     testCompileOnly 'org.projectlombok:lombok:1.18.30'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
-
-    testImplementation "junit:junit:4.12"
-    testImplementation "org.mockito:mockito-core:1.+"
-
-    // Locally sourced extra mods for runtime (i.e. testing)
-    for (extraModJar in fileTree(dir: extraModsDir, include: '*.jar')) {
-        def basename = extraModJar.name.substring(0, extraModJar.name.length() - ".jar".length())
-        def versionSep = basename.lastIndexOf('-')
-        assert versionSep != -1
-        def artifactId = basename.substring(0, versionSep)
-        def version = basename.substring(versionSep + 1)
-        runtimeOnly "extra-mods:$artifactId:$version"
-    }
-}
-
-minecraft {
-    // Automatically enable neoforge AccessTransformers if the file exists
-    def at = project(':loader-common').file('src/main/resources/META-INF/accesstransformer.cfg')
-    if (at.exists()) {
-        accessTransformers {
-            file(at.absolutePath)
-        }
-    }
-}
-
-subsystems {
-    parchment {
-        minecraftVersion = "${minecraft_version}"
-        mappingsVersion = "${parchment_version}"
-    }
 }
 
 runs {
     configureEach {
-		systemProperty 'neoforge.logging.markers', 'REGISTRIES'
-        systemProperty 'neoforge.logging.console.level', 'debug'
-        systemProperty 'neoforge.logging.console.level', 'debug'
         modSource project.sourceSets.main
-		modSource project.sourceSets.api
-    }
-
-    client {
-        systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
-    }
-
-    server {
-        systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
-        programArgument '--nogui'
-    }
-
-    gameTestServer {
-        systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
-    }
-
-    data {
-        programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        modSource project.sourceSets.api
     }
 }
 
 javadoc {
     source = [sourceSets.main.allJava, sourceSets.api.allJava]
     exclude 'org/cyclops/cyclopscore/modcompat/curios/*'
-}
-
-task signJar(type: net.neoforged.gradle.common.tasks.PotentiallySignJar, dependsOn: jar) {
-    dependsOn(tasks.jar)
-
-    onlyIf {
-        System.getenv().SIGN_KEYSTORE
-    }
-
-    keyStore = System.getenv().SIGN_KEYSTORE
-    alias = System.getenv().SIGN_ALIAS
-    storePass = System.getenv().SIGN_STOREPASS
-    keyPass = System.getenv().SIGN_KEYPASS
-    input = jar.archivePath
-    output = jar.archivePath
 }
