@@ -26,6 +26,7 @@ import java.util.Optional;
  * Contains helper methods for various block specific things.
  * @author rubensworks
  */
+@Deprecated // TODO: remove in next major version
 public final class BlockHelpers {
 
     public static HolderGetter<Block> HOLDER_GETTER_FORGE = new HolderGetter<Block>() {

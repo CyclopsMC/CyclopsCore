@@ -1,12 +1,8 @@
 package org.cyclops.cyclopscore.persist.nbt;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.CyclopsCore;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -36,11 +32,17 @@ public interface INBTSerializable {
      */
     public void fromNBT(HolderLookup.Provider provider, CompoundTag tag);
 
-    @EqualsAndHashCode(callSuper = false)
-    @Data
     public static class SelfNBTClassType extends NBTClassType<INBTSerializable> {
 
         private final Class<?> fieldType;
+
+        public SelfNBTClassType(Class<?> fieldType) {
+            this.fieldType = fieldType;
+        }
+
+        public Class<?> getFieldType() {
+            return fieldType;
+        }
 
         @Override
         public void writePersistedField(String name, INBTSerializable object, CompoundTag tag, HolderLookup.Provider provider) {
@@ -71,7 +73,7 @@ public interface INBTSerializable {
                 if(tag.contains(name)) {
                     method.invoke(obj, provider, tag.get(name));
                 } else {
-                    CyclopsCore.clog(Level.WARN, String.format("The tag %s did not contain the key %s, skipping " +
+                    System.out.println(String.format("The tag %s did not contain the key %s, skipping " +
                             "reading.", tag, name));
                 }
                 return obj;

@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore;
 
 import net.fabricmc.api.ModInitializer;
+import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseFabric;
 
 /**
@@ -15,6 +16,9 @@ public class CyclopsCoreMainFabric extends ModBaseFabric<CyclopsCoreMainFabric> 
     public static CyclopsCoreMainFabric _instance;
 
     public CyclopsCoreMainFabric() {
-        super(Reference.MOD_ID, (instance) -> _instance = instance);
+        super(Reference.MOD_ID, (instance) -> {
+            _instance = instance;
+            CyclopsCoreInstance.MOD = instance;
+        });
     }
 }

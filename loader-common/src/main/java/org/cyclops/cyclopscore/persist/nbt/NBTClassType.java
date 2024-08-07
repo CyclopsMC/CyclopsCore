@@ -3,32 +3,26 @@ package org.cyclops.cyclopscore.persist.nbt;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
-import org.cyclops.cyclopscore.datastructure.DimPos;
+import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntityCommon;
 import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
-import org.cyclops.cyclopscore.helper.LocationHelpers;
+import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
-import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.IdentityHashMap;
@@ -37,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Types of NBT field classes used for persistence of fields in {@link CyclopsBlockEntity}.
+ * Types of NBT field classes used for persistence of fields in {@link CyclopsBlockEntityCommon}.
  * @author rubensworks
  *
  * @param <T> The field class type.
@@ -162,26 +156,6 @@ public abstract class NBTClassType<T> {
             }
         });
 
-        NBTYPES.put(FluidStack.class, new NBTClassType<FluidStack>() {
-            @Override
-            public void writePersistedField(String name, @Nullable FluidStack object, CompoundTag tag, HolderLookup.Provider provider) {
-                if (object != null) {
-                    Tag subTag = object.saveOptional(provider);
-                    tag.put(name, subTag);
-                }
-            }
-
-            @Override
-            public FluidStack readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return FluidStack.parseOptional(provider, tag.getCompound(name));
-            }
-
-            @Override
-            public FluidStack getDefaultValue() {
-                return null;
-            }
-        });
-
         NBTYPES.put(Tag.class, new NBTClassType<Tag>() {
 
             @Override
@@ -259,7 +233,7 @@ public abstract class NBTClassType<T> {
                         Class<?> keyType = Class.forName(mapTag.getString("keyType"));
                         keyNBTClassType = getType(keyType, map);
                     } catch (ClassNotFoundException e) {
-                        CyclopsCore.clog(Level.WARN, "No class found for NBT type map key '" + mapTag.getString("keyType")
+                        CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type map key '" + mapTag.getString("keyType")
                                 + "', this could be a mod error.");
                         return map;
                     }
@@ -268,7 +242,7 @@ public abstract class NBTClassType<T> {
                             Class<?> valueType = Class.forName(mapTag.getString("valueType"));
                             valueNBTClassType = getType(valueType, map);
                         } catch (ClassNotFoundException e) {
-                            CyclopsCore.clog(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
+                            CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
                                     + "', this could be a mod error.");
                             return map;
                         }
@@ -310,7 +284,7 @@ public abstract class NBTClassType<T> {
 
             @Override
             public Vec3i getDefaultValue() {
-                return LocationHelpers.copyLocation(Vec3i.ZERO);
+                return IModHelpers.get().getLocationHelpers().copyLocation(Vec3i.ZERO);
             }
         });
 
@@ -364,7 +338,7 @@ public abstract class NBTClassType<T> {
                     Class<?> elementType = Class.forName(pairTag.getString("leftType"));
                     leftElementNBTClassType = getType(elementType, Pair.class);
                 } catch (ClassNotFoundException e) {
-                    CyclopsCore.clog(Level.WARN, "No class found for NBT type Pair left element '" + pairTag.getString("leftType")
+                    CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type Pair left element '" + pairTag.getString("leftType")
                             + "', this could be a mod error.");
                     return Pair.of(null, null);
                 }
@@ -374,7 +348,7 @@ public abstract class NBTClassType<T> {
                     Class<?> elementType = Class.forName(pairTag.getString("rightType"));
                     rightElementNBTClassType = getType(elementType, Pair.class);
                 } catch (ClassNotFoundException e) {
-                    CyclopsCore.clog(Level.WARN, "No class found for NBT type Pair right element '" + pairTag.getString("rightType")
+                    CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type Pair right element '" + pairTag.getString("rightType")
                             + "', this could be a mod error.");
                     return Pair.of(null, null);
                 }
@@ -390,31 +364,6 @@ public abstract class NBTClassType<T> {
             }
         });
 
-        NBTYPES.put(DimPos.class, new NBTClassType<DimPos>() {
-
-            @Override
-            public void writePersistedField(String name, DimPos object, CompoundTag tag, HolderLookup.Provider provider) {
-                CompoundTag dimPos = new CompoundTag();
-                dimPos.putString("dim", object.getLevel());
-                dimPos.putInt("x", object.getBlockPos().getX());
-                dimPos.putInt("y", object.getBlockPos().getY());
-                dimPos.putInt("z", object.getBlockPos().getZ());
-                tag.put(name, dimPos);
-            }
-
-            @Override
-            public DimPos readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                CompoundTag dimPos = tag.getCompound(name);
-                String dimensionName = dimPos.getString("dim");
-                ResourceKey<net.minecraft.world.level.Level> dimensionType = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dimensionName));
-                return DimPos.of(dimensionType, new BlockPos(dimPos.getInt("x"), dimPos.getInt("y"), dimPos.getInt("z")));
-            }
-
-            @Override
-            public DimPos getDefaultValue() {
-                return null;
-            }
-        });
         NBTYPES.put(ItemStack.class, new NBTClassType<ItemStack>() {
             @Override
             public void writePersistedField(String name, ItemStack object, CompoundTag tag, HolderLookup.Provider provider) {
@@ -490,7 +439,7 @@ public abstract class NBTClassType<T> {
                             Class<?> valueType = Class.forName(mapTag.getString("valueType"));
                             valueNBTClassType = getType(valueType, map);
                         } catch (ClassNotFoundException e) {
-                            CyclopsCore.clog(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
+                            CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
                                     + "', this could be a mod error.");
                             return map;
                         }
@@ -728,7 +677,7 @@ public abstract class NBTClassType<T> {
                     Class<?> elementType = Class.forName(collectionTag.getString("elementType"));
                     elementNBTClassType = getType(elementType, collection);
                 } catch (ClassNotFoundException e) {
-                    CyclopsCore.clog(Level.WARN, "No class found for NBT type collection element '" + collectionTag.getString("elementType")
+                    CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type collection element '" + collectionTag.getString("elementType")
                             + "', this could be a mod error.");
                     return collection;
                 }

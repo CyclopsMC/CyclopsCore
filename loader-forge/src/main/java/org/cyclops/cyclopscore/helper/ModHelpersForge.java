@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.helper;
 /**
  * @author rubensworks
  */
-public class ModHelpersForge implements IModHelpers {
+public class ModHelpersForge extends ModHelpersCommon {
 
     public static final ModHelpersForge INSTANCE = new ModHelpersForge();
 
@@ -12,15 +12,5 @@ public class ModHelpersForge implements IModHelpers {
     @Override
     public IMinecraftHelpers getMinecraftHelpers() {
         return new MinecraftHelpersForge();
-    }
-
-    @Override
-    public IMinecraftClientHelpers getMinecraftClientHelpers() {
-        return new MinecraftClientHelpersCommon();
-    }
-
-    @Override
-    public IL10NHelpers getL10NHelpers() {
-        return new L10NHelpersCommon(this);
     }
 }

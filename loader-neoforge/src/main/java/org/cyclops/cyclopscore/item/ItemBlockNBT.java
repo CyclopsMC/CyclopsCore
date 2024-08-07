@@ -9,14 +9,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import org.cyclops.cyclopscore.block.BlockWithEntity;
+import org.cyclops.cyclopscore.block.BlockWithEntityCommon;
 
 import javax.annotation.Nullable;
 
 /**
  * An extended {@link BlockItem} that will add the NBT data that is stored inside
  * the item to the placed {@link BlockEntity} for the blockState.
- * Subinstances of {@link BlockWithEntity} will perform the inverse operation, being
+ * Subinstances of {@link BlockWithEntityCommon} will perform the inverse operation, being
  * that broken blocks will save the NBT data inside the dropped {@link BlockItem}.
  * @author rubensworks
  *

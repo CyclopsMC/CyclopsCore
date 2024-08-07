@@ -32,6 +32,7 @@ import org.cyclops.cyclopscore.component.DataComponentFluidContentConfig;
 import org.cyclops.cyclopscore.component.DataComponentInventoryConfig;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
+import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.infobook.IInfoBookRegistry;
 import org.cyclops.cyclopscore.infobook.InfoBookRegistry;
 import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTestConfig;
@@ -45,6 +46,7 @@ import org.cyclops.cyclopscore.metadata.RegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportables;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.curios.ModCompatCurios;
+import org.cyclops.cyclopscore.persist.nbt.NBTClassTypesNeoForge;
 import org.cyclops.cyclopscore.proxy.ClientProxy;
 import org.cyclops.cyclopscore.proxy.CommonProxy;
 import org.cyclops.cyclopscore.proxy.IClientProxy;
@@ -68,7 +70,10 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
     private boolean loaded = false;
 
     public CyclopsCore(IEventBus modEventBus) {
-        super(Reference.MOD_ID, (instance) -> _instance = instance, modEventBus);
+        super(Reference.MOD_ID, (instance) -> {
+            _instance = instance;
+            CyclopsCoreInstance.MOD = instance;
+        }, modEventBus);
         modEventBus.addListener(this::loadComplete);
 
         // Registries
@@ -114,6 +119,9 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
     @Override
     protected void setup(FMLCommonSetupEvent event) {
         super.setup(event);
+
+        // Load core stuff
+        NBTClassTypesNeoForge.load();
 
         // Populate registries
         RegistryExportables.load();

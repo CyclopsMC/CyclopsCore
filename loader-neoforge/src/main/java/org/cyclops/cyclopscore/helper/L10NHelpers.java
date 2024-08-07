@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
  *
  * @author rubensworks
  */
-public final class L10NHelpers { // TODO: remove in next major version
+@Deprecated // TODO: remove in next major version
+public final class L10NHelpers {
 
     public static final int MAX_TOOLTIP_LINE_LENGTH = 25;
     private static final String KEY_ENABLED = "general." + Reference.MOD_ID + ".info.enabled";

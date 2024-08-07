@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore;
 
 import net.minecraftforge.fml.common.Mod;
+import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseForge;
 
 /**
@@ -17,7 +18,10 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
     public static CyclopsCoreForge _instance;
 
     public CyclopsCoreForge() {
-        super(Reference.MOD_ID, (instance) -> _instance = instance);
+        super(Reference.MOD_ID, (instance) -> {
+            _instance = instance;
+            CyclopsCoreInstance.MOD = instance;
+        });
     }
 
 }

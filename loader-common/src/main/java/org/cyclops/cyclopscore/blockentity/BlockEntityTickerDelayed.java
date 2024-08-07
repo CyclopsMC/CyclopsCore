@@ -5,7 +5,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
-import org.cyclops.cyclopscore.helper.BlockHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
 /**
  * This ticker has an anti-lag mechanism to send updates.
@@ -66,7 +66,7 @@ public class BlockEntityTickerDelayed<T extends BlockEntity & IBlockEntityDelaye
      * @param pos The position.
      */
     protected void onSendUpdate(Level level, BlockPos pos) {
-        BlockHelpers.markForUpdate(level, pos);
+        IModHelpers.get().getBlockHelpers().markForUpdate(level, pos);
     }
 
     /**

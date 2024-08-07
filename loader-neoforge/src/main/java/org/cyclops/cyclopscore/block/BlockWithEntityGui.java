@@ -13,11 +13,11 @@ import java.util.function.BiFunction;
 /**
  * Base block with a block entity and gui.
  *
- * @see BlockWithEntity
+ * @see BlockWithEntityCommon
  * @see BlockGui
  * @author rubensworks
  */
-public abstract class BlockWithEntityGui extends BlockWithEntity implements IBlockGui {
+public abstract class BlockWithEntityGui extends BlockWithEntityCommon implements IBlockGui {
 
     public BlockWithEntityGui(Properties properties, BiFunction<BlockPos, BlockState, CyclopsBlockEntity> blockEntitySupplier) {
         super(properties, blockEntitySupplier);

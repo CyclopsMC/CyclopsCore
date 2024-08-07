@@ -25,6 +25,8 @@ import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.minecraft.world.level.storage.LevelStorageException;
 import net.minecraft.world.level.storage.LevelSummary;
+import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,7 +68,7 @@ public class GuiMainMenuExtensionDevWorld {
                                 }
 
                             } catch (InterruptedException | ExecutionException | TimeoutException | LevelStorageException e) {
-                                e.printStackTrace();
+                                CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.ERROR, "Couldn't load level list" + e.getMessage());
                                 mc.setScreen(new ErrorScreen(Component.translatable("selectWorld.unable_to_load"), Component.literal(e.getMessage())));
                             }
 
