@@ -18,6 +18,7 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author immortaleeb
  *
  */
+@Deprecated // TODO: remove in next major version
 public class InventoryHelpers {
 
     /**

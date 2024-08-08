@@ -24,4 +24,8 @@ public interface IModHelpers {
 
     public IBlockEntityHelpers getBlockEntityHelpers();
 
+    public IInventoryHelpers getInventoryHelpers();
+
+    public IItemStackHelpers getItemStackHelpers();
+
 }

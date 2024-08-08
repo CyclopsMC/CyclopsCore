@@ -7,4 +7,6 @@ public interface IModHelpersForge extends IModHelpers {
 
     public ICapabilityHelpersForge getCapabilityHelpers();
 
+    public IFluidHelpersForge getFluidHelpers();
+
 }

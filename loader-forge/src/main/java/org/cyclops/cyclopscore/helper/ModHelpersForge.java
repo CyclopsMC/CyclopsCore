@@ -18,4 +18,9 @@ public class ModHelpersForge extends ModHelpersCommon implements IModHelpersForg
     public ICapabilityHelpersForge getCapabilityHelpers() {
         return new CapabilityHelpersForge(this);
     }
+
+    @Override
+    public IFluidHelpersForge getFluidHelpers() {
+        return new FluidHelpersForge();
+    }
 }

@@ -28,4 +28,14 @@ public abstract class ModHelpersCommon implements IModHelpers {
     public IBlockEntityHelpers getBlockEntityHelpers() {
         return new BlockEntityHelpersCommon();
     }
+
+    @Override
+    public IInventoryHelpers getInventoryHelpers() {
+        return new InventoryHelpersCommon(this);
+    }
+
+    @Override
+    public IItemStackHelpers getItemStackHelpers() {
+        return new ItemStackHelpersCommon();
+    }
 }
