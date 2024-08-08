@@ -12,7 +12,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.ConfigHandlerForge;
-import org.cyclops.cyclopscore.helper.IModHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpersForge;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersForge;
 import org.jetbrains.annotations.Nullable;
@@ -64,7 +64,7 @@ public class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCommon<T> {
     }
 
     @Override
-    public IModHelpers getModHelpers() {
+    public IModHelpersForge getModHelpers() {
         return ModHelpersForge.INSTANCE;
     }
 
