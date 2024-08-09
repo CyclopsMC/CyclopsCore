@@ -20,12 +20,12 @@ Coremod for Integrated Dynamics, EvilCraft and others.
 [[dependencies.cyclopscore]]
     modId="neoforge"
     type="required"
-    versionRange="[21.0.43-beta,)"
+    versionRange="[21.1.2,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.cyclopscore]]
     modId="minecraft"
     type="required"
-    versionRange="[1.21,]"
+    versionRange="[1.21.1,]"
     ordering="NONE"
     side="BOTH"
