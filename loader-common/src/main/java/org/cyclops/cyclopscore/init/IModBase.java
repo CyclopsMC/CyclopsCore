@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
+import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -24,6 +25,11 @@ public interface IModBase {
     public ConfigHandler getConfigHandler();
 
     public LoggerHelper getLoggerHelper();
+
+    /**
+     * @return The proxy for this mod.
+     */
+    public ICommonProxyCommon getProxy();
 
     @Nullable
     public CreativeModeTab getDefaultCreativeTab();

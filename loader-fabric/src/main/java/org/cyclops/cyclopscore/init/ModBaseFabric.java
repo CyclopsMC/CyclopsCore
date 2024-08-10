@@ -6,6 +6,7 @@ import org.cyclops.cyclopscore.helper.ConfigHandlerFabric;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersFabric;
+import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.function.Consumer;
  * Base class for mods which adds a few convenience methods.
  * @author rubensworks
  */
-public class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseCommon<T> implements ModInitializer {
+public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseCommon<T> implements ModInitializer {
 
     private boolean loaded = false;
     private final ConfigHandler configHandler;
@@ -41,6 +42,17 @@ public class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseCommon<T> 
         this.loaded = true;
 
         getConfigHandler().loadSetup();
+
+        // Register proxy things
+        ICommonProxyCommon proxy = getProxy();
+        if(proxy != null) {
+            proxy.registerEventHooks();
+            proxy.registerTickHandlers();
+            if (getModHelpers().getMinecraftHelpers().isClientSide()) {
+                proxy.registerRenderers();
+            }
+        }
+
         getConfigHandler().loadForgeRegistries();
         getConfigHandler().loadForgeRegistriesFilled();
     }

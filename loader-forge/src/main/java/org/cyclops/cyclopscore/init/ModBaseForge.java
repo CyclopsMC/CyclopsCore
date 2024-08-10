@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -15,6 +16,7 @@ import org.cyclops.cyclopscore.config.ConfigHandlerForge;
 import org.cyclops.cyclopscore.helper.IModHelpersForge;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersForge;
+import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
@@ -24,7 +26,7 @@ import java.util.function.Consumer;
  * Base class for mods which adds a few convenience methods.
  * @author rubensworks
  */
-public class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCommon<T> {
+public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCommon<T> {
 
     private final ConfigHandler configHandler;
     private final IEventBus modEventBus;
@@ -41,6 +43,9 @@ public class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCommon<T> {
         getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
         getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
         getModEventBus().addListener(this::loadComplete);
+        if (getModHelpers().getMinecraftHelpers().isClientSide()) {
+            getModEventBus().addListener(this::setupClient);
+        }
 
         // Initialize config handler
         this.onConfigsRegister(getConfigHandler());
@@ -86,6 +91,25 @@ public class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCommon<T> {
 
         // Iterate over all configs again
         getConfigHandler().loadSetup();
+
+        // Register proxy things
+        ICommonProxyCommon proxy = getProxy();
+        if(proxy != null) {
+            proxy.registerEventHooks();
+            proxy.registerTickHandlers();
+        }
+    }
+
+    /**
+     * Called on the Forge client setup lifecycle event.
+     * @param event The setup event.
+     */
+    protected void setupClient(FMLClientSetupEvent event) {
+        // Register proxy things
+        ICommonProxyCommon proxy = getProxy();
+        if(proxy != null) {
+            proxy.registerRenderers();
+        }
     }
 
     /**

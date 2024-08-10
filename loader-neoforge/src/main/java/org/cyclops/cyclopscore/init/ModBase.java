@@ -8,8 +8,6 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -76,7 +74,6 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
     private final IMCHandler imcHandler;
     private final IEventBus modEventBus;
 
-    private ICommonProxy proxy;
     private ModContainer container;
 
     public ModBase(String modId, Consumer<T> instanceSetter, IEventBus modEventBus) {
@@ -103,9 +100,6 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
         NeoForge.EVENT_BUS.addListener(this::onServerStopping);
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
-
-        // Register proxies
-        this.proxy = MinecraftHelpers.isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
 
         populateDefaultGenericReferences();
 
@@ -393,11 +387,9 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
         worldStorages.add(worldStorage);
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected abstract IClientProxy constructClientProxy();
+    protected abstract IClientProxy constructClientProxy(); // TODO: remove override in next major
 
-    @OnlyIn(Dist.DEDICATED_SERVER)
-    protected abstract ICommonProxy constructCommonProxy();
+    protected abstract ICommonProxy constructCommonProxy(); // TODO: remove override in next major
 
     /**
      * Called when the configs should be registered.
@@ -412,7 +404,7 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
      * @return The proxy for this mod.
      */
     public ICommonProxy getProxy() {
-        return this.proxy;
+        return (ICommonProxy) super.getProxy();
     }
 
     @Override

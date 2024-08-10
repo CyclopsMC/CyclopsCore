@@ -12,6 +12,9 @@ accessible class net/minecraft/world/item/CreativeModeTab$TabVisibility
 # ArgumentTypeInfos
 accessible field net/minecraft/commands/synchronization/ArgumentTypeInfos BY_CLASS Ljava/util/Map;
 
-# # Worldgen
+# Worldgen
 extendable class net/minecraft/world/level/levelgen/feature/trunkplacers/TrunkPlacerType
 extendable class net/minecraft/world/level/levelgen/feature/foliageplacers/FoliagePlacerType
+
+# BlockEntityRenderers
+accessible method net/minecraft/client/renderer/blockentity/BlockEntityRenderers register (Lnet/minecraft/world/level/block/entity/BlockEntityType;Lnet/minecraft/client/renderer/blockentity/BlockEntityRendererProvider;)V

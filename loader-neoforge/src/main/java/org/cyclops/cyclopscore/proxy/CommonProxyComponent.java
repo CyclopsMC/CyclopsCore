@@ -1,8 +1,5 @@
 package org.cyclops.cyclopscore.proxy;
 
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
@@ -14,17 +11,7 @@ import org.cyclops.cyclopscore.network.PacketHandler;
  * @author rubensworks
  *
  */
-public abstract class CommonProxyComponent implements ICommonProxy {
-
-    @Override
-    public <T extends BlockEntity> void registerRenderer(BlockEntityType<? extends T> blockEntityType, BlockEntityRendererProvider<T> rendererFactory) {
-        throw new IllegalArgumentException("Registration of renderers should not be called server side!");
-    }
-
-    @Override
-    public void registerRenderers() {
-        // Nothing here as the server doesn't render graphics!
-    }
+public abstract class CommonProxyComponent extends CommonProxyComponentCommon implements ICommonProxy {
 
     @Override
     public void registerKeyBindings(IKeyRegistry keyRegistry, RegisterKeyMappingsEvent event) {
@@ -36,12 +23,8 @@ public abstract class CommonProxyComponent implements ICommonProxy {
     }
 
     @Override
-    public void registerTickHandlers() {
-
-    }
-
-    @Override
     public void registerEventHooks() {
+        super.registerEventHooks();
         NeoForge.EVENT_BUS.register(new PlayerRingOfFire());
     }
 }

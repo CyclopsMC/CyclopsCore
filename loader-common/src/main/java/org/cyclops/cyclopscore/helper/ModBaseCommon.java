@@ -10,6 +10,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.CreativeModeTabConfigCommon;
 import org.cyclops.cyclopscore.init.IModBase;
+import org.cyclops.cyclopscore.proxy.IClientProxyCommon;
+import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -25,6 +27,7 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
 
     private final String modId;
     private final LoggerHelper loggerHelper;
+    private final ICommonProxyCommon proxy;
 
     @Nullable
     private CreativeModeTab defaultCreativeTab = null;
@@ -35,6 +38,7 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
         MOD_BASES.put(modId, this);
         this.modId = modId;
         this.loggerHelper = constructLoggerHelper();
+        this.proxy = getModHelpers().getMinecraftHelpers().isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
     }
 
     @Override
@@ -49,6 +53,15 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
 
     protected LoggerHelper constructLoggerHelper() {
         return new LoggerHelper(getModId());
+    }
+
+    protected abstract IClientProxyCommon constructClientProxy();
+
+    protected abstract ICommonProxyCommon constructCommonProxy();
+
+    @Override
+    public ICommonProxyCommon getProxy() {
+        return proxy;
     }
 
     @Nullable
