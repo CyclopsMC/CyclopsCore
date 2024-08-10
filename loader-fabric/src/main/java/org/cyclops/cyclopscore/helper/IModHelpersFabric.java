@@ -12,4 +12,8 @@ public interface IModHelpersFabric extends IModHelpers {
         return (IModHelpersFabric) CyclopsCoreInstance.MOD.getModHelpers();
     }
 
+    public IRenderHelpersFabric getRenderHelpers();
+
+    public IFluidHelpersFabric getFluidHelpers();
+
 }

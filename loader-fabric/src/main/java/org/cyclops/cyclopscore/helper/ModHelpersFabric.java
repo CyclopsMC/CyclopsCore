@@ -13,4 +13,14 @@ public class ModHelpersFabric extends ModHelpersCommon implements IModHelpersFab
     public IMinecraftHelpers getMinecraftHelpers() {
         return new MinecraftHelpersFabric();
     }
+
+    @Override
+    public IFluidHelpersFabric getFluidHelpers() {
+        return new FluidHelpersFabric();
+    }
+
+    @Override
+    public IRenderHelpersFabric getRenderHelpers() {
+        return new RenderHelpersFabric(this);
+    }
 }
