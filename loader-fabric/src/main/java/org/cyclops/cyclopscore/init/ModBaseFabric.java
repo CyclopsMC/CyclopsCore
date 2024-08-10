@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.init;
 import net.fabricmc.api.ModInitializer;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.helper.ConfigHandlerFabric;
-import org.cyclops.cyclopscore.helper.IModHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpersFabric;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersFabric;
 import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
@@ -62,7 +62,7 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
     }
 
     @Override
-    public IModHelpers getModHelpers() {
+    public IModHelpersFabric getModHelpers() {
         return ModHelpersFabric.INSTANCE;
     }
 
