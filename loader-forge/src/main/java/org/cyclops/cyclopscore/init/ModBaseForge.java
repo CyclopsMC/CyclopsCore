@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.init;
 
 import com.google.common.collect.Lists;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.Level;
@@ -125,7 +125,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
      * @param event The Forge registry filling event.
      */
     private void beforeRegistriedFilled(RegisterEvent event) {
-        if (event.getRegistryKey().equals(BuiltInRegistries.ATTRIBUTE.key())) {
+        if (event.getRegistryKey().equals(ForgeRegistries.BLOCKS.getRegistryKey())) {
             // We only need to call this once, and the ATTRIBUTE event is emitted first.
             getConfigHandler().loadForgeRegistriesFilled();
         }
