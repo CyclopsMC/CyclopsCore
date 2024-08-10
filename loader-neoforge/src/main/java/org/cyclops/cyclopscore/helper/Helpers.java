@@ -12,6 +12,7 @@ import java.net.URI;
  * @author rubensworks
  *
  */
+@Deprecated // TODO: remove in next major version
 public class Helpers {
 
     /**

@@ -51,6 +51,7 @@ import java.util.Random;
  * @author rubensworks
  *
  */
+@Deprecated // TODO: remove in next major version
 @OnlyIn(Dist.CLIENT)
 public class RenderHelpers {
 

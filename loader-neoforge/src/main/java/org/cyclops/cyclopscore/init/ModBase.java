@@ -30,7 +30,7 @@ import org.cyclops.cyclopscore.command.CommandConfig;
 import org.cyclops.cyclopscore.command.CommandVersion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.ConfigHandlerNeoForge;
-import org.cyclops.cyclopscore.helper.IModHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
@@ -117,7 +117,7 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
     }
 
     @Override
-    public IModHelpers getModHelpers() {
+    public IModHelpersNeoForge getModHelpers() {
         return ModHelpersNeoForge.INSTANCE;
     }
 

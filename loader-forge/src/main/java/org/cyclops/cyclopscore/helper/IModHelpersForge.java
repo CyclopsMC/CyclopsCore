@@ -5,6 +5,8 @@ package org.cyclops.cyclopscore.helper;
  */
 public interface IModHelpersForge extends IModHelpers {
 
+    public IRenderHelpersForge getRenderHelpers();
+
     public ICapabilityHelpersForge getCapabilityHelpers();
 
     public IFluidHelpersForge getFluidHelpers();

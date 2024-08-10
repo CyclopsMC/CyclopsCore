@@ -28,4 +28,8 @@ public interface IModHelpers {
 
     public IItemStackHelpers getItemStackHelpers();
 
+    public IRenderHelpers getRenderHelpers();
+
+    public IBaseHelpers getBaseHelpers();
+
 }

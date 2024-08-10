@@ -10,6 +10,11 @@ public class ModHelpersForge extends ModHelpersCommon implements IModHelpersForg
     private ModHelpersForge() {}
 
     @Override
+    public IRenderHelpersForge getRenderHelpers() {
+        return new RenderHelpersForge(this);
+    }
+
+    @Override
     public IMinecraftHelpers getMinecraftHelpers() {
         return new MinecraftHelpersForge();
     }
