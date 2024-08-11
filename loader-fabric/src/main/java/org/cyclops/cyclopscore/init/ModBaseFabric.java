@@ -42,6 +42,8 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
         this.loaded = true;
 
         getConfigHandler().loadSetup();
+        getConfigHandler().loadForgeRegistries();
+        getConfigHandler().loadForgeRegistriesFilled();
 
         // Register proxy things
         ICommonProxyCommon proxy = getProxy();
@@ -52,9 +54,6 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
                 proxy.registerRenderers();
             }
         }
-
-        getConfigHandler().loadForgeRegistries();
-        getConfigHandler().loadForgeRegistriesFilled();
     }
 
     protected ConfigHandler constructConfigHandler() {

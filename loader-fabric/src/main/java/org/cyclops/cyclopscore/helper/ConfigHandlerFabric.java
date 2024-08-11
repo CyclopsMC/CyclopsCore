@@ -5,6 +5,7 @@ import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
 import org.cyclops.cyclopscore.init.IModBase;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 
 /**
@@ -16,12 +17,14 @@ public class ConfigHandlerFabric extends ConfigHandler {
     }
 
     @Override
-    public <V> void registerToRegistry(Registry<? super V> registry, ExtendedConfigForge<?, V, ?> config, Callable<?> callback) {
+    public <V> void registerToRegistry(Registry<? super V> registry, ExtendedConfigForge<?, V, ?> config, @Nullable Callable<?> callback) {
         Registry.register(registry, getConfigId(config), config.getInstance());
-        try {
-            callback.call();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (callback != null) {
+            try {
+                callback.call();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

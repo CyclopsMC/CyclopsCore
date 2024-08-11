@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
 import org.cyclops.cyclopscore.CyclopsCoreMainFabric;
 
@@ -23,7 +24,7 @@ public class MinecraftHelpersFabric extends MinecraftHelpersCommon {
 
     @Override
     public boolean isModdedEnvironment() {
-        return !FabricLoader.getInstance().isDevelopmentEnvironment();
+        return FabricLoaderImpl.INSTANCE != null;
     }
 
     @Override

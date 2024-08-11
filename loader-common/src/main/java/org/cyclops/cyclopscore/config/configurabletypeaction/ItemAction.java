@@ -24,14 +24,6 @@ public class ItemAction<M extends IModBase> extends ConfigurableTypeActionForge<
     protected static final List<ItemConfigCommon<?>> COLOR_ENTRIES = Lists.newArrayList();
 
     @Override
-    public void onRegisterSetup(ItemConfigCommon<M> eConfig) {
-        super.onRegisterSetup(eConfig);
-        for (ItemStack itemStack : eConfig.getDefaultCreativeTabEntriesPublic()) {
-            eConfig.getMod().registerDefaultCreativeTabEntry(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-        }
-    }
-
-    @Override
     public void onRegisterForgeFilled(ItemConfigCommon<M> eConfig) {
         // Register item and set creative tab.
         register(eConfig, () -> {
@@ -46,6 +38,11 @@ public class ItemAction<M extends IModBase> extends ConfigurableTypeActionForge<
     }
 
     protected void polish(ItemConfigCommon<M> config) {
+        // Register creative tab entry
+        for (ItemStack itemStack : config.getDefaultCreativeTabEntriesPublic()) {
+            config.getMod().registerDefaultCreativeTabEntry(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+        }
+
         // Add item to information provider
         ItemInformationProviderCommon.registerItem(config.getInstance());
 
