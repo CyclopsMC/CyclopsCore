@@ -2,20 +2,25 @@ package org.cyclops.cyclopscore.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntityCommon;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
 import javax.annotation.Nullable;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 /**
  * Base block with a block entity.
@@ -88,9 +93,25 @@ public abstract class BlockWithEntityCommon extends BaseEntityBlock {
 
     /**
      * If the NBT data of this block entity should be added to the dropped item.
+     * When overriding this, make sure to override the more sensitive getCloneItemStack methods in Forge and NeoForge,
+     * and delegate to {@link #getCloneItemStack(BlockWithEntityCommon, Supplier, BlockState, HitResult, LevelReader, BlockPos, Player)}.
      * @return If the NBT data should be added.
      */
     public boolean isPersistNbt() {
         return false;
+    }
+
+    public static ItemStack getCloneItemStack(BlockWithEntityCommon self, Supplier<ItemStack> superMethod, BlockState state, HitResult target, LevelReader world,
+                                              BlockPos blockPos, Player player) {
+        ItemStack itemStack = self.getDroppedItemStack(state, target, world, blockPos, player, superMethod.get());
+        if (self.isPersistNbt()) {
+            IModHelpers.get().getBlockEntityHelpers().get(world, blockPos, CyclopsBlockEntityCommon.class).ifPresent(blockEntity -> {
+                CompoundTag compoundnbt = self.getDroppedItemStackNbt(state, target, world, blockPos, player, itemStack, blockEntity);
+                if (!compoundnbt.isEmpty()) {
+                    itemStack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundnbt));
+                }
+            });
+        }
+        return itemStack;
     }
 }
