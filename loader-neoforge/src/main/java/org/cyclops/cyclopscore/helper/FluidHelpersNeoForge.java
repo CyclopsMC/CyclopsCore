@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
@@ -16,73 +15,48 @@ import org.cyclops.cyclopscore.Capabilities;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
 import org.cyclops.cyclopscore.datastructure.Wrapper;
 import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
- * Contains helper methods for various fluid specific things.
  * @author rubensworks
  */
-@Deprecated // TODO: remove in next major version
-public final class FluidHelpers {
+public class FluidHelpersNeoForge implements IFluidHelpersNeoForge {
+    @Override
+    public int getBucketVolume() {
+        return 1000;
+    }
 
-    public static final int BUCKET_VOLUME = 1000;
-
-    /**
-     * Get the fluid amount of the given stack in a safe manner.
-     * @param fluidStack The fluid stack
-     * @return The fluid amount.
-     */
-    public static int getAmount(FluidStack fluidStack) {
+    @Override
+    public int getAmount(FluidStack fluidStack) {
         return fluidStack.getAmount();
     }
 
-    /**
-     * Copy the given fluid stack
-     * @param fluidStack The fluid stack to copy.
-     * @return A copy of the fluid stack.
-     */
-    public static FluidStack copy(FluidStack fluidStack) {
+    @Override
+    public FluidStack copy(FluidStack fluidStack) {
         if(fluidStack.isEmpty()) return FluidStack.EMPTY;
         return fluidStack.copy();
     }
 
-    /**
-     * If this destination can completely contain the given fluid in the given source.
-     * @param source The source of the fluid that has to be moved.
-     * @param destination The target of the fluid that has to be moved.
-     * @return If the destination can completely contain the fluid of the source.
-     */
-    public static boolean canCompletelyFill(IFluidHandler source, IFluidHandler destination) {
+    @Override
+    public boolean canCompletelyFill(IFluidHandler source, IFluidHandler destination) {
         FluidStack drained = source.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
         return !drained.isEmpty() && destination.fill(drained, IFluidHandler.FluidAction.SIMULATE) == drained.getAmount();
     }
 
-    /**
-     * Get the fluid contained in a fluid handler.
-     * @param fluidHandler The fluid handler.
-     * @return The fluid.
-     */
-    public static FluidStack getFluid(@Nullable IFluidHandler fluidHandler) {
+    @Override
+    public FluidStack getFluid(@Nullable IFluidHandler fluidHandler) {
         return fluidHandler != null ? fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE) : FluidStack.EMPTY;
     }
 
-    /**
-     * Check if the fluid handler is not empty.
-     * @param fluidHandler The fluid handler.
-     * @return If it is not empty.
-     */
-    public static boolean hasFluid(@Nullable IFluidHandler fluidHandler) {
+    @Override
+    public boolean hasFluid(@Nullable IFluidHandler fluidHandler) {
         return !getFluid(fluidHandler).isEmpty();
     }
 
-    /**
-     * Get the capacity of a fluid handler.
-     * @param fluidHandler The fluid handler.
-     * @return The capacity.
-     */
-    public static int getCapacity(@Nullable IFluidHandler fluidHandler) {
+    @Override
+    public int getCapacity(@Nullable IFluidHandler fluidHandler) {
         int capacity = 0;
         if (fluidHandler != null) {
             for (int i = 0; i < fluidHandler.getTanks(); i++) {
@@ -92,26 +66,13 @@ public final class FluidHelpers {
         return capacity;
     }
 
-    /**
-     * @param itemStack The itemstack
-     * @return The item capacity fluid handler.
-     */
-    public static Optional<IFluidHandlerItemCapacity> getFluidHandlerItemCapacity(ItemStack itemStack) {
+    @Override
+    public Optional<IFluidHandlerItemCapacity> getFluidHandlerItemCapacity(ItemStack itemStack) {
         return Optional.ofNullable(itemStack.getCapability(Capabilities.Item.FLUID_HANDLER_CAPACITY));
     }
 
-    /**
-     * Extract the given fluid amount from any item inside the player's inventory.
-     * @param amount A fluid amount to extract.
-     * @param blacklistedStack The itemstack to skip. Useful if this is the stack that you are inserting to.
-     * @param fluidWhitelist A fluid to transfer, can be null to allow any fluid to be transferred.
-     * @param player The player to scan the inventory from.
-     * @param action The fluid action.
-     * @return The extracted fluidstack.
-     */
-    public static FluidStack extractFromInventory(int amount, @Nullable ItemStack blacklistedStack,
-                                                  @Nullable Fluid fluidWhitelist, Player player,
-                                                  IFluidHandler.FluidAction action) {
+    @Override
+    public FluidStack extractFromInventory(int amount, @Nullable ItemStack blacklistedStack, @Nullable Fluid fluidWhitelist, Player player, IFluidHandler.FluidAction action) {
         PlayerExtendedInventoryIterator it = new PlayerExtendedInventoryIterator(player);
         Wrapper<FluidStack> drained = new Wrapper<>(FluidStack.EMPTY);
         Wrapper<Integer> amountHolder = new Wrapper<>(amount);
@@ -140,17 +101,8 @@ public final class FluidHelpers {
         return drained.get();
     }
 
-    /**
-     * Extract the given fluid amount from the given item, or from the player's inventory if that fails.
-     * @param amount A fluid amount to extract.
-     * @param itemStack The item to extract from first.
-     * @param player The player to scan the inventory from.
-     * @param action The fluid action.
-     * @return The extracted fluidstack.
-     */
-    public static FluidStack extractFromItemOrInventory(int amount, ItemStack itemStack,
-                                                        @Nullable Player player,
-                                                        IFluidHandler.FluidAction action) {
+    @Override
+    public FluidStack extractFromItemOrInventory(int amount, ItemStack itemStack, @Nullable Player player, IFluidHandler.FluidAction action) {
         if (action.execute() && player != null && player.isCreative() && !player.level().isClientSide()) {
             action = IFluidHandler.FluidAction.SIMULATE;
         }
@@ -169,16 +121,8 @@ public final class FluidHelpers {
         }).orElse(FluidStack.EMPTY);
     }
 
-    /**
-     * Try placing or picking up fluids from the held item.
-     * This can be called in {@link Item#use}.
-     * @param player The active player.
-     * @param hand The active hand.
-     * @param world The world.
-     * @param blockPos The target position.
-     * @param side The target side.
-     */
-    public static void placeOrPickUpFluid(Player player, InteractionHand hand, Level world, BlockPos blockPos, Direction side) {
+    @Override
+    public void placeOrPickUpFluid(Player player, InteractionHand hand, Level world, BlockPos blockPos, Direction side) {
         ItemStack itemStack = player.getItemInHand(hand);
         ItemStack itemStackResult = FluidHelpers.getFluidHandlerItemCapacity(itemStack).map(fluidHandler -> {
             FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(FluidStack.EMPTY);
@@ -205,13 +149,8 @@ public final class FluidHelpers {
         player.setItemInHand(hand, itemStackResult);
     }
 
-    /**
-     * Convert a boolean-based simulate to a fluid action enum value.
-     * @param simulate If in simulation mode.
-     * @return The fluid action.
-     */
-    public static IFluidHandler.FluidAction simulateBooleanToAction(boolean simulate) {
+    @Override
+    public IFluidHandler.FluidAction simulateBooleanToAction(boolean simulate) {
         return simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE;
     }
-
 }

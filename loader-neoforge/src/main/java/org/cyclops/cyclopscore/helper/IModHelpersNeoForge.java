@@ -14,6 +14,8 @@ public interface IModHelpersNeoForge extends IModHelpers {
 
     public ICapabilityHelpersNeoForge getCapabilityHelpers();
 
+    public IFluidHelpersNeoForge getFluidHelpers();
+
     public IRenderHelpersNeoForge getRenderHelpers();
 
 }

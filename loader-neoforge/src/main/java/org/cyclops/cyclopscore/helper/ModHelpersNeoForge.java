@@ -20,6 +20,11 @@ public class ModHelpersNeoForge extends ModHelpersCommon implements IModHelpersN
     }
 
     @Override
+    public IFluidHelpersNeoForge getFluidHelpers() {
+        return new FluidHelpersNeoForge();
+    }
+
+    @Override
     public IRenderHelpersNeoForge getRenderHelpers() {
         return new RenderHelpersNeoForge(this);
     }
