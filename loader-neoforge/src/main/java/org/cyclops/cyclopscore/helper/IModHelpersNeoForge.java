@@ -12,6 +12,8 @@ public interface IModHelpersNeoForge extends IModHelpers {
         return (IModHelpersNeoForge) CyclopsCoreInstance.MOD.getModHelpers();
     }
 
+    public ICapabilityHelpersNeoForge getCapabilityHelpers();
+
     public IRenderHelpersNeoForge getRenderHelpers();
 
 }

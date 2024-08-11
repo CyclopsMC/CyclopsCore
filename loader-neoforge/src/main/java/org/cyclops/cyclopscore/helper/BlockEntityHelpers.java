@@ -17,7 +17,7 @@ import java.util.Optional;
  * Contains helper methods for various block entity specific things.
  * @author rubensworks
  */
-@Deprecated // TODO: remove in next major version (after moving capabilities)
+@Deprecated // TODO: remove in next major version
 public final class BlockEntityHelpers {
 
     /**
