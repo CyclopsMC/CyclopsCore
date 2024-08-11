@@ -1,5 +1,8 @@
 package org.cyclops.cyclopscore.client.gui;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.sounds.SoundSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -14,6 +17,13 @@ public class GuiMainMenuExtensionDevWorldNeoForgeRegistrar {
         // Add a button to the main menu if we're in a dev environment
         if (GeneralConfig.devWorldButton) {
             GuiMainMenuExtensionDevWorld.onMainMenuInit(event.getScreen().getMinecraft(), event.getScreen());
+        }
+
+        // And disable music
+        if (GeneralConfig.devDisableMusic) {
+            if (event.getScreen() instanceof TitleScreen) {
+                Minecraft.getInstance().options.getSoundSourceOptionInstance(SoundSource.MUSIC).set(0.0);
+            }
         }
     }
 

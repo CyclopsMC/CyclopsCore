@@ -38,6 +38,9 @@ public class GeneralConfig extends DummyConfigCommon<ModBase<?>> {
     @ConfigurableProperty(category = "general", comment = "If a button should be added to the main menu to open a dev world (shift-click creates a new world).", configLocation = ModConfig.Type.CLIENT)
     public static boolean devWorldButton = MinecraftHelpers.isDevEnvironment();
 
+    @ConfigurableProperty(category = "general", comment = "If music should be disabled at startup.", configLocation = ModConfig.Type.CLIENT)
+    public static boolean devDisableMusic = MinecraftHelpers.isDevEnvironment();
+
     /**
      * Create a new instance.
      */
