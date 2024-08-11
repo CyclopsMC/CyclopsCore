@@ -14,7 +14,10 @@ import org.cyclops.cyclopscore.init.IModBase;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -151,7 +154,7 @@ public abstract class ConfigHandler {
     }
 
     public void generateConfigProperties(ExtendedConfig<?, ?, ?> config) throws IllegalArgumentException, IllegalAccessException {
-        for(Field field : this.getClass().getDeclaredFields()) {
+        for(Field field : getAllFields(config.getClass())) {
             if(field.isAnnotationPresent(ConfigurablePropertyCommon.class)) {
                 ConfigurablePropertyCommon annotation = field.getAnnotation(ConfigurablePropertyCommon.class);
                 ConfigurablePropertyData<?> configProperty = new ConfigurablePropertyData<>(
@@ -171,5 +174,13 @@ public abstract class ConfigHandler {
                 config.configProperties.put(configProperty.getName(), configProperty);
             }
         }
+    }
+
+    protected static List<Field> getAllFields(Class<?> type) {
+        List<Field> fields = new ArrayList<Field>();
+        for (Class<?> c = type; c != null; c = c.getSuperclass()) {
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
+        return fields;
     }
 }

@@ -116,7 +116,7 @@ public class ConfigHandlerForge extends ConfigHandler {
 
             // Save additional properties
             for (ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
-                ForgeConfigSpec.Builder configBuilderProperty = configBuilders.get(configProperty.getConfigLocation());
+                ForgeConfigSpec.Builder configBuilderProperty = configBuilders.get(modConfigLocationToType(configProperty.getConfigLocation()));
                 if (configBuilderProperty == null) {
                     configBuilderProperty = new ForgeConfigSpec.Builder();
                     configBuilders.put(modConfigLocationToType(configProperty.getConfigLocation()), configBuilderProperty);

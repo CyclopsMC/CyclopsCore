@@ -114,7 +114,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
 
             // Save additional properties
             for (ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
-                ModConfigSpec.Builder configBuilderProperty = configBuilders.get(configProperty.getConfigLocation());
+                ModConfigSpec.Builder configBuilderProperty = configBuilders.get(modConfigLocationToType(configProperty.getConfigLocation()));
                 if (configBuilderProperty == null) {
                     configBuilderProperty = new ModConfigSpec.Builder();
                     configBuilders.put(modConfigLocationToType(configProperty.getConfigLocation()), configBuilderProperty);
@@ -216,7 +216,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
         super.generateConfigProperties(config);
 
         // TODO: rm in next major version
-        for(Field field : this.getClass().getDeclaredFields()) {
+        for(Field field : getAllFields(config.getClass())) {
             if(field.isAnnotationPresent(ConfigurableProperty.class)) {
                 ConfigurableProperty annotation = field.getAnnotation(ConfigurableProperty.class);
                 ConfigurablePropertyData<?> configProperty = new ConfigurablePropertyData<>(

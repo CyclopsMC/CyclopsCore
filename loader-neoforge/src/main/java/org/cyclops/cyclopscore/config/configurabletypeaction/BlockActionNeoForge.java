@@ -34,9 +34,11 @@ public class BlockActionNeoForge<M extends ModBase> extends BlockAction<M> {
             }
 
             // TODO: backwards-compat, remove the following in next major
-            BlockColor blockColorHandler = ((BlockConfig) config).getBlockColorHandler();
-            if (blockColorHandler != null) {
-                COLOR_ENTRIES.add(config);
+            if (config instanceof BlockConfig blockConfig) {
+                BlockColor blockColorHandler = blockConfig.getBlockColorHandler();
+                if (blockColorHandler != null) {
+                    COLOR_ENTRIES.add(config);
+                }
             }
         }
     }

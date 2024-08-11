@@ -31,9 +31,11 @@ public class ItemActionNeoForge<M extends ModBase> extends ItemAction<M> {
             }
 
             // TODO: backwards-compat, remove the following in next major
-            ItemColor itemColorHandler = ((ItemConfig) config).getItemColorHandler();
-            if (itemColorHandler != null) {
-                COLOR_ENTRIES.add(config);
+            if (config instanceof ItemConfig itemConfig) {
+                ItemColor itemColorHandler = itemConfig.getItemColorHandler();
+                if (itemColorHandler != null) {
+                    COLOR_ENTRIES.add(config);
+                }
             }
         }
     }
