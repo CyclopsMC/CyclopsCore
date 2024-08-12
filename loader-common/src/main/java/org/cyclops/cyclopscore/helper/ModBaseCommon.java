@@ -10,6 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.CreativeModeTabConfigCommon;
 import org.cyclops.cyclopscore.init.IModBase;
+import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.proxy.IClientProxyCommon;
 import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 
@@ -28,6 +29,7 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
     private final String modId;
     private final LoggerHelper loggerHelper;
     private final ICommonProxyCommon proxy;
+    private final ModCompatLoader modCompatLoader;
 
     @Nullable
     private CreativeModeTab defaultCreativeTab = null;
@@ -39,6 +41,7 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
         this.modId = modId;
         this.loggerHelper = constructLoggerHelper();
         this.proxy = getModHelpers().getMinecraftHelpers().isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
+        this.modCompatLoader = constructModCompatLoader();
     }
 
     @Override
@@ -62,6 +65,23 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
     @Override
     public ICommonProxyCommon getProxy() {
         return proxy;
+    }
+
+    @Override
+    public ModCompatLoader getModCompatLoader() {
+        return modCompatLoader;
+    }
+
+    protected ModCompatLoader constructModCompatLoader() {
+        return new ModCompatLoader(this);
+    }
+
+    /**
+     * This is called only once to let the mod compatibilities register themselves.
+     * @param modCompatLoader The loader.
+     */
+    protected void loadModCompats(ModCompatLoader modCompatLoader) {
+
     }
 
     @Nullable

@@ -1,7 +1,6 @@
-package org.cyclops.cyclopscore.helper;
+package org.cyclops.cyclopscore.config;
 
 import net.minecraft.core.Registry;
-import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
 import org.cyclops.cyclopscore.init.IModBase;
 

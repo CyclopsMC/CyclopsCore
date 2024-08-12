@@ -69,7 +69,6 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
     private final RegistryManager registryManager;
     private final IKeyRegistry keyRegistry;
     private final PacketHandler packetHandler;
-    private final ModCompatLoader modCompatLoader;
     private final CapabilityConstructorRegistry capabilityConstructorRegistry;
     private final IMCHandler imcHandler;
     private final IEventBus modEventBus;
@@ -83,7 +82,6 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
         this.registryManager = constructRegistryManager();
         this.keyRegistry = new KeyRegistry();
         this.packetHandler = constructPacketHandler();
-        this.modCompatLoader = constructModCompatLoader();
         this.capabilityConstructorRegistry = constructCapabilityConstructorRegistry();
         this.imcHandler = constructIMCHandler();
 
@@ -151,10 +149,6 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
         return packetHandler;
     }
 
-    public ModCompatLoader getModCompatLoader() {
-        return modCompatLoader;
-    }
-
     public CapabilityConstructorRegistry getCapabilityConstructorRegistry() {
         return capabilityConstructorRegistry;
     }
@@ -195,10 +189,6 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
 
     protected PacketHandler constructPacketHandler() {
         return new PacketHandler(this);
-    }
-
-    protected ModCompatLoader constructModCompatLoader() {
-        return new ModCompatLoader(this);
     }
 
     protected CapabilityConstructorRegistry constructCapabilityConstructorRegistry() {
@@ -242,8 +232,8 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
      * This is called only once to let the mod compatibilities register themselves.
      * @param modCompatLoader The loader.
      */
-    protected void loadModCompats(ModCompatLoader modCompatLoader) {
-
+    protected void loadModCompats(ModCompatLoader modCompatLoader) { // TODO: remove this override in next major
+        super.loadModCompats(modCompatLoader);
     }
 
     /**

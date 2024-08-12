@@ -51,6 +51,8 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
         this.onConfigsRegister(getConfigHandler());
         getConfigHandler().initialize(Lists.newArrayList());
         getConfigHandler().loadModInit();
+
+        loadModCompats(getModCompatLoader());
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {

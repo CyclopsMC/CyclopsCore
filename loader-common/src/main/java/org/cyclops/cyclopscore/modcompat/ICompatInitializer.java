@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.modcompat;
 
+import org.cyclops.cyclopscore.init.IModBase;
+
 /**
  * A compat initializer.
  *
@@ -9,6 +11,13 @@ package org.cyclops.cyclopscore.modcompat;
  */
 public interface ICompatInitializer {
 
-    public void initialize();
+    @Deprecated // TODO: rm in next major
+    public default void initialize() {
+
+    }
+
+    public default void initialize(IModBase mod) {
+        this.initialize();
+    }
 
 }

@@ -2,9 +2,7 @@ package org.cyclops.cyclopscore.modcompat;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import net.neoforged.fml.ModList;
-import org.cyclops.cyclopscore.Reference;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.List;
 import java.util.Set;
@@ -18,11 +16,11 @@ public class ModCompatLoader {
 
     private static final String CONFIG_CATEGORY = "mod compat";
 
-    protected final ModBase mod;
+    protected final IModBase mod;
     protected final List<IExternalCompat> compats = Lists.newLinkedList();
     protected final Set<String> crashedcompats = Sets.newHashSet();
 
-    public ModCompatLoader(ModBase mod) {
+    public ModCompatLoader(IModBase mod) {
         this.mod = mod;
     }
 
@@ -33,7 +31,7 @@ public class ModCompatLoader {
      */
     public void addModCompat(IModCompat modCompat) {
         if(shouldLoadExternalCompat(modCompat)) {
-            modCompat.createInitializer().initialize();
+            modCompat.createInitializer().initialize(this.mod);
         }
     }
 
@@ -63,7 +61,7 @@ public class ModCompatLoader {
     }
 
     private boolean isModLoaded(IModCompat modCompat) {
-        return Reference.MOD_VANILLA.equals(modCompat.getModId()) || ModList.get().isLoaded(modCompat.getModId());
+        return mod.getModHelpers().getMinecraftHelpers().isModLoaded(modCompat.getModId());
     }
 
     private boolean isNotCrashed(String id) {

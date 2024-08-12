@@ -1,11 +1,12 @@
 package org.cyclops.cyclopscore.init;
 
 import net.fabricmc.api.ModInitializer;
-import org.cyclops.cyclopscore.config.ConfigHandler;
-import org.cyclops.cyclopscore.helper.ConfigHandlerFabric;
+import org.cyclops.cyclopscore.config.ConfigHandlerFabric;
 import org.cyclops.cyclopscore.helper.IModHelpersFabric;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersFabric;
+import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
+import org.cyclops.cyclopscore.modcompat.forgeconfig.ModCompatForgeConfig;
 import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +20,7 @@ import java.util.function.Consumer;
 public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseCommon<T> implements ModInitializer {
 
     private boolean loaded = false;
-    private final ConfigHandler configHandler;
+    private final ConfigHandlerFabric configHandler;
 
     public ModBaseFabric(String modId, Consumer<T> instanceSetter) {
         super(modId, instanceSetter);
@@ -28,6 +29,8 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
         // Initialize config handler
         this.onConfigsRegister(getConfigHandler());
         getConfigHandler().loadModInit();
+
+        loadModCompats(getModCompatLoader());
     }
 
     /**
@@ -56,7 +59,7 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
         }
     }
 
-    protected ConfigHandler constructConfigHandler() {
+    protected ConfigHandlerFabric constructConfigHandler() {
         return new ConfigHandlerFabric(this);
     }
 
@@ -66,8 +69,15 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
     }
 
     @Override
-    public ConfigHandler getConfigHandler() {
+    public ConfigHandlerFabric getConfigHandler() {
         return this.configHandler;
+    }
+
+    @Override
+    protected void loadModCompats(ModCompatLoader modCompatLoader) {
+        super.loadModCompats(modCompatLoader);
+
+        modCompatLoader.addModCompat(new ModCompatForgeConfig());
     }
 
     /**

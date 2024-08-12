@@ -3,9 +3,11 @@ package org.cyclops.cyclopscore.helper;
 import cpw.mods.modlauncher.TransformingClassLoader;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
 import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.Reference;
 
 /**
  * @author rubensworks
@@ -35,5 +37,10 @@ public class MinecraftHelpersNeoForge extends MinecraftHelpersCommon implements 
     public boolean isClientSideThread() {
         return isClientSide() && Minecraft.getInstance().level != null
                 && Thread.currentThread() == Minecraft.getInstance().level.thread;
+    }
+
+    @Override
+    public boolean isModLoaded(String modId) {
+        return Reference.MOD_VANILLA.equals(modId) || ModList.get().isLoaded(modId);
     }
 }

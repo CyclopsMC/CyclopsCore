@@ -3,9 +3,11 @@ package org.cyclops.cyclopscore.helper;
 import cpw.mods.modlauncher.TransformingClassLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
 import org.cyclops.cyclopscore.CyclopsCoreForge;
+import org.cyclops.cyclopscore.Reference;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -38,6 +40,11 @@ public class MinecraftHelpersForge extends MinecraftHelpersCommon {
     public boolean isClientSideThread() {
         return isClientSide() && Minecraft.getInstance().level != null
                 && Thread.currentThread() == Minecraft.getInstance().level.thread;
+    }
+
+    @Override
+    public boolean isModLoaded(String modId) {
+        return Reference.MOD_VANILLA.equals(modId) || ModList.get().isLoaded(modId);
     }
 
 }

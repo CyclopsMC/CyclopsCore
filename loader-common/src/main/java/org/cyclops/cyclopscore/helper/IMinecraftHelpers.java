@@ -106,4 +106,11 @@ public interface IMinecraftHelpers {
      */
     public boolean isClientSideThread();
 
+    /**
+     * Check if the given mod is available and loaded.
+     * @param modId A mod's id.
+     * @return If it is loaded.
+     */
+    public boolean isModLoaded(String modId);
+
 }

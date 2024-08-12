@@ -1,3 +1,14 @@
 plugins {
     id 'multiloader-loader-fabric'
 }
+
+repositories {
+    maven {
+        name "Forge Config API Port"
+        url "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+    }
+}
+
+dependencies {
+    modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forgeconfigapiport_fabric_version}"
+}

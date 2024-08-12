@@ -5,6 +5,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
 import org.cyclops.cyclopscore.CyclopsCoreMainFabric;
+import org.cyclops.cyclopscore.Reference;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -36,6 +37,11 @@ public class MinecraftHelpersFabric extends MinecraftHelpersCommon {
     public boolean isClientSideThread() {
         return isClientSide() && Minecraft.getInstance().level != null
                 && Thread.currentThread() == Minecraft.getInstance().level.thread;
+    }
+
+    @Override
+    public boolean isModLoaded(String modId) {
+        return Reference.MOD_VANILLA.equals(modId) || FabricLoader.getInstance().isModLoaded(modId);
     }
 
 }
