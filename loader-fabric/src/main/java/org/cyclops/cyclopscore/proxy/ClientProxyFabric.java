@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.proxy;
 
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
-import org.cyclops.cyclopscore.CyclopsCoreMainFabric;
+import org.cyclops.cyclopscore.CyclopsCoreFabric;
 import org.cyclops.cyclopscore.client.gui.GuiMainMenuExtensionDevWorldFabricRegistrar;
 import org.cyclops.cyclopscore.init.ModBaseFabric;
 import org.cyclops.cyclopscore.item.ItemInformationProviderFabric;
@@ -21,7 +21,7 @@ public class ClientProxyFabric extends ClientProxyComponentFabric {
 
     @Override
     public ModBaseFabric<?> getMod() {
-        return CyclopsCoreMainFabric._instance;
+        return CyclopsCoreFabric._instance;
     }
 
     @Override

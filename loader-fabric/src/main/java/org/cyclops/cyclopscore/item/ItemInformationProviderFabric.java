@@ -4,7 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import org.cyclops.cyclopscore.CyclopsCoreMainFabric;
+import org.cyclops.cyclopscore.CyclopsCoreFabric;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
 public class ItemInformationProviderFabric extends ItemInformationProviderCommon {
     public static void onTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> lines) {
         if (ITEMS_INFO.contains(itemStack.getItem())) {
-            CyclopsCoreMainFabric._instance.getModHelpers().getL10NHelpers().addOptionalInfo(lines, itemStack.getDescriptionId());
+            CyclopsCoreFabric._instance.getModHelpers().getL10NHelpers().addOptionalInfo(lines, itemStack.getDescriptionId());
         }
     }
 }

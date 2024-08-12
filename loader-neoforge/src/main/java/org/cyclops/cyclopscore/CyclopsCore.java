@@ -149,7 +149,9 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
     @Override
     public void onConfigsRegister(ConfigHandler configHandler) {
-        configHandler.addConfigurable(new GeneralConfig());
+        super.onConfigsRegister(configHandler);
+
+        configHandler.addConfigurable(new GeneralConfigNeoForge());
 
         // Capabilities
         configHandler.addConfigurable(new FluidHandlerItemCapacityConfig());

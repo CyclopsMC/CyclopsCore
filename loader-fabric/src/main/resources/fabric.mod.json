@@ -19,7 +19,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "org.cyclops.cyclopscore.CyclopsCoreMainFabric"
+      "org.cyclops.cyclopscore.CyclopsCoreFabric"
     ],
     "client": [
       "org.cyclops.cyclopscore.CyclopsCoreClientFabric"

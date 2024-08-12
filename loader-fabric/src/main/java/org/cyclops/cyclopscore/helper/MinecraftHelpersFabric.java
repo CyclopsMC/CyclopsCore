@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
-import org.cyclops.cyclopscore.CyclopsCoreMainFabric;
+import org.cyclops.cyclopscore.CyclopsCoreFabric;
 import org.cyclops.cyclopscore.Reference;
 
 /**
@@ -20,7 +20,7 @@ public class MinecraftHelpersFabric extends MinecraftHelpersCommon {
 
     @Override
     public boolean isMinecraftInitialized() {
-        return CyclopsCoreMainFabric._instance.isLoaded();
+        return CyclopsCoreFabric._instance.isLoaded();
     }
 
     @Override

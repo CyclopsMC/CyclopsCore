@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore;
 
 import net.minecraftforge.fml.common.Mod;
+import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseForge;
 import org.cyclops.cyclopscore.proxy.ClientProxyForge;
@@ -36,5 +37,12 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
     @Override
     protected ICommonProxyCommon constructCommonProxy() {
         return new CommonProxyForge();
+    }
+
+    @Override
+    protected void onConfigsRegister(ConfigHandler configHandler) {
+        super.onConfigsRegister(configHandler);
+
+        configHandler.addConfigurable(new GeneralConfig(this));
     }
 }

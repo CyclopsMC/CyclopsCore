@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore;
 
 import net.fabricmc.api.ModInitializer;
+import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseFabric;
 import org.cyclops.cyclopscore.proxy.ClientProxyFabric;
@@ -12,14 +13,14 @@ import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
  * The main mod class of CyclopsCore.
  * @author rubensworks
  */
-public class CyclopsCoreMainFabric extends ModBaseFabric<CyclopsCoreMainFabric> implements ModInitializer {
+public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implements ModInitializer {
 
     /**
      * The unique instance of this mod.
      */
-    public static CyclopsCoreMainFabric _instance;
+    public static CyclopsCoreFabric _instance;
 
-    public CyclopsCoreMainFabric() {
+    public CyclopsCoreFabric() {
         super(Reference.MOD_ID, (instance) -> {
             _instance = instance;
             CyclopsCoreInstance.MOD = instance;
@@ -34,5 +35,12 @@ public class CyclopsCoreMainFabric extends ModBaseFabric<CyclopsCoreMainFabric> 
     @Override
     protected ICommonProxyCommon constructCommonProxy() {
         return new CommonProxyFabric();
+    }
+
+    @Override
+    protected void onConfigsRegister(ConfigHandler configHandler) {
+        super.onConfigsRegister(configHandler);
+
+        configHandler.addConfigurable(new GeneralConfig(this));
     }
 }
