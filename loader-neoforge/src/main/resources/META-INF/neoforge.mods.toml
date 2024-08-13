@@ -9,7 +9,7 @@ authors="${mod_author}"
 modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
-updateJSONURL="${update_json_url}"
+updateJSONURL="${neoforge_update_json_url}"
 description="${description}"
 [[accessTransformers]]
     file="META-INF/accesstransformer.cfg"

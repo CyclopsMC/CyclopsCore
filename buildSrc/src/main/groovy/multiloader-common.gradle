@@ -179,12 +179,13 @@ processResources {
             'license'                      : license,
 			'issue_tracker_url'            : issue_tracker_url,
 			'display_url'                  : display_url,
-			'update_json_url'              : update_json_url,
             'description'                  : project.description,
             'neoforge_version'             : neoforge_version,
             'neoforge_loader_version_range': neoforge_loader_version_range,
+            'neoforge_update_json_url'     : neoforge_update_json_url,
             'forge_version'                : forge_version,
             'forge_loader_version_range'   : forge_loader_version_range,
+            'forge_update_json_url'        : forge_update_json_url,
             'java_version'                 : java_version
     ]
 
