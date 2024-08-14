@@ -5,7 +5,6 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.GeneralConfig;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -23,6 +22,7 @@ import java.util.List;
  * This will be disabled when the Minecraft snooper is disabled or if this service is disabled in the config file.
  * @author rubensworks
  */
+@Deprecated // This class is not used anymore
 public class Analytics {
 
     // Tracking id, Anonymized user id, Mod name, Mod version, Minecraft version, Server/Client, Java Version
@@ -75,7 +75,7 @@ public class Analytics {
 
     protected static String createRequestURL(ModBase<?> mod, String trackingId) throws UnsupportedEncodingException {
         String mcVersion = URLEncoder.encode(MinecraftHelpers.getMinecraftVersion(), "UTF-8");
-        return String.format(REQUEST_PATTERN, trackingId, GeneralConfig.anonymousAnalyticsID,
+        return String.format(REQUEST_PATTERN, trackingId, null /* GeneralConfig.anonymousAnalyticsID */,
                 URLEncoder.encode(mod.getModName(), "UTF-8"),
                 mcVersion + "-" + URLEncoder.encode(mod.getContainer().getModInfo().getVersion().toString(), "UTF-8"),
                 mcVersion, FMLEnvironment.dist.isClient() ? "client" : "server", System.getProperty("java.version"));

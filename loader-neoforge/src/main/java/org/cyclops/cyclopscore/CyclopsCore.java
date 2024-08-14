@@ -51,7 +51,6 @@ import org.cyclops.cyclopscore.proxy.ClientProxy;
 import org.cyclops.cyclopscore.proxy.CommonProxy;
 import org.cyclops.cyclopscore.proxy.IClientProxy;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
-import org.cyclops.cyclopscore.tracking.Analytics;
 import org.cyclops.cyclopscore.tracking.ImportantUsers;
 
 /**
@@ -138,7 +137,6 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         super.onServerStarting(event);
 
         // Handle metadata
-        Analytics.sendAll();
         ImportantUsers.checkAll();
     }
 
@@ -151,7 +149,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
     public void onConfigsRegister(ConfigHandler configHandler) {
         super.onConfigsRegister(configHandler);
 
-        configHandler.addConfigurable(new GeneralConfigNeoForge());
+        configHandler.addConfigurable(new GeneralConfig(this));
 
         // Capabilities
         configHandler.addConfigurable(new FluidHandlerItemCapacityConfig());
