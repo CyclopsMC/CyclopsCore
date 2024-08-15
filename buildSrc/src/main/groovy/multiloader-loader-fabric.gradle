@@ -41,3 +41,12 @@ loom {
     }
 }
 
+publishing {
+    publications { PublicationContainer publicationContainer ->
+        publicationContainer.getByName("maven") { MavenPublication publication ->
+            publication.artifacts = [remapJar, javadocJar, deobfJar, remapSourcesJar]
+            publication.artifactId = project.archivesBaseName.toLowerCase() // GH can't handle uppercase...
+        }
+    }
+}
+
