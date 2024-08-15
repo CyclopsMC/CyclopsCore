@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.modcompat.forgeconfig;
 
-import org.apache.commons.compress.utils.Lists;
+import com.google.common.collect.Lists;
 import org.cyclops.cyclopscore.init.IModBase;
 import org.cyclops.cyclopscore.init.ModBaseFabric;
 import org.cyclops.cyclopscore.modcompat.ICompatInitializer;
