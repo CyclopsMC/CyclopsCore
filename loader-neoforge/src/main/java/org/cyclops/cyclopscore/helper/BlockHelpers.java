@@ -6,10 +6,8 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -50,19 +48,7 @@ public final class BlockHelpers {
      * @return The value.
      */
     public static <T extends Comparable<T>> T getSafeBlockStateProperty(@Nullable BlockState state, Property<T> property, T fallback) {
-        if(state == null) {
-            return fallback;
-        }
-        T value;
-        try {
-            value = state.getValue(property);
-        } catch (IllegalArgumentException e) {
-            return fallback;
-        }
-        if(value == null) {
-            return fallback;
-        }
-        return value;
+        return IModHelpers.get().getBlockHelpers().getSafeBlockStateProperty(state, property, fallback);
     }
 
     /**
@@ -71,7 +57,7 @@ public final class BlockHelpers {
      * @return The blockstate as NBT.
      */
     public static CompoundTag serializeBlockState(BlockState blockState) {
-        return NbtUtils.writeBlockState(blockState);
+        return IModHelpers.get().getBlockHelpers().serializeBlockState(blockState);
     }
 
     /**
@@ -81,7 +67,7 @@ public final class BlockHelpers {
      * @return The resulting blockstate.
      */
     public static BlockState deserializeBlockState(HolderGetter<Block> holderGetter, CompoundTag serializedBlockState) {
-        return NbtUtils.readBlockState(holderGetter, serializedBlockState);
+        return IModHelpers.get().getBlockHelpers().deserializeBlockState(holderGetter, serializedBlockState);
     }
 
     /**
@@ -90,8 +76,7 @@ public final class BlockHelpers {
      * @return The blockstate
      */
     public static BlockState getBlockStateFromItemStack(ItemStack itemStack) {
-        Block block = ((BlockItem) itemStack.getItem()).getBlock();
-        return block.defaultBlockState();
+        return IModHelpers.get().getBlockHelpers().getBlockStateFromItemStack(itemStack);
     }
 
     /**
@@ -100,7 +85,7 @@ public final class BlockHelpers {
      * @return The itemstack
      */
     public static ItemStack getItemStackFromBlockState(BlockState blockState) {
-        return new ItemStack(blockState.getBlock().asItem());
+        return IModHelpers.get().getBlockHelpers().getItemStackFromBlockState(blockState);
     }
 
     /**
@@ -109,8 +94,7 @@ public final class BlockHelpers {
      * @param pos The pos.
      */
     public static void markForUpdate(Level world, BlockPos pos) {
-        BlockState blockState = world.getBlockState(pos);
-        world.sendBlockUpdated(pos, blockState, blockState, MinecraftHelpers.BLOCK_NOTIFY | MinecraftHelpers.BLOCK_NOTIFY_CLIENT);
+        IModHelpers.get().getBlockHelpers().markForUpdate(world, pos);
     }
 
     /**
@@ -121,12 +105,7 @@ public final class BlockHelpers {
      * @param addingBox The box to add to the lost, relative coordinates.
      */
     public static void addCollisionBoxToList(BlockPos pos, AABB collidingBox, List<AABB> collisions, AABB addingBox) {
-        if (addingBox != null) {
-            AABB axisalignedbb = addingBox.move(pos);
-            if (collidingBox.intersects(axisalignedbb)) {
-                collisions.add(axisalignedbb);
-            }
-        }
+        IModHelpers.get().getBlockHelpers().addCollisionBoxToList(pos, collidingBox, collisions, addingBox);
     }
 
     /**
@@ -136,7 +115,7 @@ public final class BlockHelpers {
      * @return If it has a solid top surface.
      */
     public static boolean doesBlockHaveSolidTopSurface(LevelReader world, BlockPos blockPos) {
-        return world.getBlockState(blockPos.offset(0, -1, 0)).isSolidRender(world, blockPos);
+        return IModHelpers.get().getBlockHelpers().doesBlockHaveSolidTopSurface(world, blockPos);
     }
 
 }

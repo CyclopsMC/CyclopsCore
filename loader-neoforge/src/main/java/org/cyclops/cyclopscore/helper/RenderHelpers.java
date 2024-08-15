@@ -1,13 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.base.Function;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,33 +9,21 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.particle.TerrainParticle;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Triple;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.Random;
@@ -63,7 +45,7 @@ public class RenderHelpers {
      * @param texture The texture to bind.
      */
     public static void bindTexture(ResourceLocation texture) {
-        RenderSystem.setShaderTexture(0, texture);
+        IModHelpers.get().getRenderHelpers().bindTexture(texture);
     }
 
     /**
@@ -71,7 +53,7 @@ public class RenderHelpers {
      * @param particle A particle.
      */
     public static void emitParticle(Particle particle) {
-        Minecraft.getInstance().particleEngine.add(particle);
+        IModHelpers.get().getRenderHelpers().emitParticle(particle);
     }
 
     /**
@@ -87,11 +69,7 @@ public class RenderHelpers {
      * @param displayMode The display mode
      */
     public static void drawScaledString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, float scale, int color, boolean shadow, Font.DisplayMode displayMode) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(x, y, 0);
-        guiGraphics.pose().scale(scale, scale, 1.0f);
-        fontRenderer.drawInBatch(string, 0, 0, color, shadow, guiGraphics.pose().last().pose(), guiGraphics.bufferSource(), displayMode, 0, 15728880);
-        guiGraphics.pose().popPose();
+        IModHelpers.get().getRenderHelpers().drawScaledString(guiGraphics, fontRenderer, string, x, y, scale, color, shadow, displayMode);
     }
 
     /**
@@ -129,7 +107,7 @@ public class RenderHelpers {
      * @param displayMode The display mode
      */
     public static void drawScaledCenteredString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, int maxWidth, int color, boolean shadow, Font.DisplayMode displayMode) {
-        drawScaledCenteredString(guiGraphics, fontRenderer, string, x, y, maxWidth, 1.0F, maxWidth, color, shadow, displayMode);
+        IModHelpers.get().getRenderHelpers().drawScaledCenteredString(guiGraphics, fontRenderer, string, x, y, maxWidth, color, shadow, displayMode);
     }
 
     /**
@@ -165,9 +143,7 @@ public class RenderHelpers {
      * @param displayMode The display mode
      */
     public static void drawScaledCenteredString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow, Font.DisplayMode displayMode) {
-        float originalWidth = fontRenderer.width(string) * originalScale;
-        float scale = Math.min(originalScale, maxWidth / originalWidth * originalScale);
-        drawScaledCenteredString(guiGraphics, fontRenderer, string, x, y, width, scale, color, shadow, displayMode);
+        IModHelpers.get().getRenderHelpers().drawScaledCenteredString(guiGraphics, fontRenderer, string, x, y, width, originalScale, maxWidth, color, shadow, displayMode);
     }
 
     /**
@@ -206,12 +182,7 @@ public class RenderHelpers {
      * @param displayMode The font display mode
      */
     public static void drawScaledCenteredString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, int width, float scale, int color, boolean shadow, Font.DisplayMode displayMode) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(scale, scale, 1.0f);
-        int titleLength = fontRenderer.width(string);
-        int titleHeight = fontRenderer.lineHeight;
-        fontRenderer.drawInBatch(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color, false, guiGraphics.pose().last().pose(), guiGraphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
-        guiGraphics.pose().popPose();
+        IModHelpers.get().getRenderHelpers().drawScaledCenteredString(guiGraphics, fontRenderer, string, x, y, width, scale, color, shadow, displayMode);
     }
 
     /**
@@ -244,10 +215,7 @@ public class RenderHelpers {
      * @return The corresponding baked model.
      */
     public static BakedModel getBakedModel(BlockState blockState) {
-        Minecraft mc = Minecraft.getInstance();
-        BlockRenderDispatcher blockRendererDispatcher = mc.getBlockRenderer();
-        BlockModelShaper blockModelShapes = blockRendererDispatcher.getBlockModelShaper();
-        return blockModelShapes.getBlockModel(blockState);
+        return IModHelpers.get().getRenderHelpers().getBakedModel(blockState);
     }
 
     /**
@@ -259,7 +227,7 @@ public class RenderHelpers {
      */
 
     public static BakedModel getDynamicBakedModel(Level world, BlockPos pos) {
-        return getBakedModel(world.getBlockState(pos));
+        return IModHelpers.get().getRenderHelpers().getDynamicBakedModel(world, pos);
     }
 
     /**
@@ -271,26 +239,7 @@ public class RenderHelpers {
      * @param side The hit side.
      */
     public static void addBlockHitEffects(ParticleEngine particleManager, ClientLevel world, BlockState blockState, BlockPos pos, Direction side)  {
-        if (blockState.getRenderShape() != RenderShape.INVISIBLE) {
-            int i = pos.getX();
-            int j = pos.getY();
-            int k = pos.getZ();
-            float f = 0.1F;
-            AABB bb = blockState.getShape(world, pos).bounds();
-            double d0 = (double)i + rand.nextDouble() * (bb.maxX - bb.minX - (double)(f * 2.0F)) + (double)f + bb.minX;
-            double d1 = (double)j + rand.nextDouble() * (bb.maxY - bb.minY - (double)(f * 2.0F)) + (double)f + bb.minY;
-            double d2 = (double)k + rand.nextDouble() * (bb.maxZ - bb.minZ - (double)(f * 2.0F)) + (double)f + bb.minZ;
-
-            if (side == Direction.DOWN)  d1 = (double)j + bb.minY - (double)f;
-            if (side == Direction.UP)    d1 = (double)j + bb.maxY + (double)f;
-            if (side == Direction.NORTH) d2 = (double)k + bb.minZ - (double)f;
-            if (side == Direction.SOUTH) d2 = (double)k + bb.maxZ + (double)f;
-            if (side == Direction.WEST)  d0 = (double)i + bb.minX - (double)f;
-            if (side == Direction.EAST)  d0 = (double)i + bb.maxX + (double)f;
-
-            Particle fx = new TerrainParticle.Provider().createParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockState), world, d0, d1, d2, 0.0D, 0.0D, 0.0D);
-            particleManager.add(fx);
-        }
+        IModHelpers.get().getRenderHelpers().addBlockHitEffects(particleManager, world, blockState, pos, side);
     }
 
     public static final Function<ResourceLocation, TextureAtlasSprite> TEXTURE_GETTER =
@@ -302,7 +251,7 @@ public class RenderHelpers {
      * @return The icon.
      */
     public static TextureAtlasSprite getBlockIcon(Block block) {
-        return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getParticleIcon(block.defaultBlockState());
+        return IModHelpers.get().getRenderHelpers().getBlockIcon(block);
     }
 
     /**
@@ -312,7 +261,7 @@ public class RenderHelpers {
      * @return The icon.
      */
     public static TextureAtlasSprite getFluidIcon(Fluid fluid, Direction side) {
-        return getFluidIcon(new FluidStack(fluid, 1000), side);
+        return IModHelpersNeoForge.get().getRenderHelpers().getFluidIcon(fluid, side);
     }
 
     /**
@@ -322,15 +271,7 @@ public class RenderHelpers {
      * @return The icon.
      */
     public static TextureAtlasSprite getFluidIcon(FluidStack fluid, Direction side) {
-        if(side == null) side = Direction.UP;
-
-        IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid.getFluid());
-        TextureAtlasSprite icon = TEXTURE_GETTER.apply(renderProperties.getFlowingTexture(fluid));
-        if(icon == null || (side == Direction.UP || side == Direction.DOWN)) {
-            icon = TEXTURE_GETTER.apply(renderProperties.getStillTexture(fluid));
-        }
-
-        return icon;
+        return IModHelpersNeoForge.get().getRenderHelpers().getFluidIcon(fluid, side);
     }
 
     /**
@@ -340,25 +281,7 @@ public class RenderHelpers {
      * @param render The actual fluid renderer.
      */
     public static void renderFluidContext(FluidStack fluid, PoseStack matrixStack, IFluidContextRender render) {
-        if(fluid != null && fluid.getAmount() > 0) {
-            matrixStack.pushPose();
-
-            // Make sure both sides are rendered
-            RenderSystem.enableBlend();
-            RenderSystem.disableCull();
-
-            // Correct color & lighting
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-
-            // Set blockState textures
-            Minecraft.getInstance().getTextureManager().bindForSetup(TextureAtlas.LOCATION_BLOCKS);
-
-            render.render();
-
-            RenderSystem.disableBlend();
-            matrixStack.popPose();
-        }
+        IModHelpersNeoForge.get().getRenderHelpers().renderFluidContext(fluid, matrixStack, render::render);
     }
 
     /**
@@ -367,9 +290,7 @@ public class RenderHelpers {
      * @return The RGB colors.
      */
     public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidStack fluidStack) {
-        IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-        int color = renderProperties.getTintColor(fluidStack);
-        return Helpers.intToRGB(color);
+        return IModHelpersNeoForge.get().getRenderHelpers().getFluidVertexBufferColor(fluidStack);
     }
 
     /**
@@ -378,14 +299,7 @@ public class RenderHelpers {
      * @return The BGR colors.
      */
     public static int getFluidBakedQuadColor(FluidStack fluidStack) {
-        IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-        Triple<Float, Float, Float> colorParts = Helpers.intToRGB(renderProperties.getTintColor(fluidStack));
-        return Helpers.RGBAToInt(
-                (int) (colorParts.getRight() * 255),
-                (int) (colorParts.getMiddle() * 255),
-                (int) (colorParts.getLeft() * 255),
-                255
-        );
+        return IModHelpersNeoForge.get().getRenderHelpers().getFluidBakedQuadColor(fluidStack);
     }
 
     /**
@@ -399,7 +313,7 @@ public class RenderHelpers {
      * @return If the point is inside the region.
      */
     public static boolean isPointInRegion(int left, int top, int width, int height, double pointX, double pointY) {
-        return pointX >= left && pointX < left + width && pointY >= top && pointY < top + height;
+        return IModHelpersNeoForge.get().getRenderHelpers().isPointInRegion(left, top, width, height, pointX, pointY);
     }
 
     /**
@@ -409,7 +323,7 @@ public class RenderHelpers {
      * @return If the point is inside the region.
      */
     public static boolean isPointInRegion(Rectangle region, Point point) {
-        return isPointInRegion(region.x, region.y, region.width, region.height, point.x, point.y);
+        return IModHelpersNeoForge.get().getRenderHelpers().isPointInRegion(region, point);
     }
 
     /**
@@ -420,38 +334,15 @@ public class RenderHelpers {
      * @return If the point is inside the button's region.
      */
     public static boolean isPointInButton(Button button, int pointX, int pointY) {
-        return isPointInRegion(button.getX(), button.getY(), button.getWidth(), button.getHeight(), pointX, pointY);
+        return IModHelpersNeoForge.get().getRenderHelpers().isPointInButton(button, pointX, pointY);
     }
 
     public static void blitColored(GuiGraphics guiGraphics, int x, int y, int z, float u, float v, int width, int height, float r, float g, float b, float a) {
-        blitColored(guiGraphics, x, y, z, width, height, u / 256, (u + width) / 256, v / 256, (v + height) / 256, r, g, b, a);
+        IModHelpersNeoForge.get().getRenderHelpers().blitColored(guiGraphics, x, y, z, u, v, width, height, r, g, b, a);
     }
 
     public static void blitColored(GuiGraphics guiGraphics, int x, int y, int z, int width, int height, float u0, float u1, float v0, float v1, float r, float g, float b, float a) {
-        // The following should work, but doesn't, so we just apply a shader color instead.
-        /*Matrix4f matrix4f = poseStack.last().pose();
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
-        bufferbuilder.vertex(matrix4f, (float)x, (float)y + height, (float)z).color(r, g, b, a).uv(u0, v1).endVertex();
-        bufferbuilder.vertex(matrix4f, (float)x + width, (float)y + height, (float)z).color(r, g, b, a).uv(u1, v1).endVertex();
-        bufferbuilder.vertex(matrix4f, (float)x + width, (float)y, (float)z).color(r, g, b, a).uv(u1, v0).endVertex();
-        bufferbuilder.vertex(matrix4f, (float)x, (float)y, (float)z).color(r, g, b, a).uv(u0, v0).endVertex();
-        bufferbuilder.end();
-        BufferUploader.end(bufferbuilder);*/
-
-        RenderSystem.setShaderColor(r, g, b, a);
-
-        Matrix4f matrix4f = guiGraphics.pose().last().pose();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferbuilder.addVertex(matrix4f, (float)x, (float)y + height, (float)z).setUv(u0, v1);
-        bufferbuilder.addVertex(matrix4f, (float)x + width, (float)y + height, (float)z).setUv(u1, v1);
-        bufferbuilder.addVertex(matrix4f, (float)x + width, (float)y, (float)z).setUv(u1, v0);
-        bufferbuilder.addVertex(matrix4f, (float)x, (float)y, (float)z).setUv(u0, v0);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        IModHelpersNeoForge.get().getRenderHelpers().blitColored(guiGraphics, x, y, z, width, height, u0, u1, v0, v1, r, g, b, a);
     }
 
     /**

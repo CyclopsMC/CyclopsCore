@@ -4,8 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.LevelChunk;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.common.extensions.ILevelExtension;
 import org.cyclops.cyclopscore.datastructure.DimPos;
@@ -65,11 +63,7 @@ public final class BlockEntityHelpers {
     /* This is just a copy of {@link Level#getBlockEntity} without the thread checks. */
     @Nullable
     static BlockEntity getLevelBlockEntityUnchecked(Level level, BlockPos pos) {
-        if (level.isOutsideBuildHeight(pos)) {
-            return null;
-        } else {
-            return level.getChunkAt(pos).getBlockEntity(pos, LevelChunk.EntityCreationType.IMMEDIATE);
-        }
+        return IModHelpersNeoForge.get().getBlockEntityHelpers().getLevelBlockEntityUnchecked(level, pos);
     }
 
     /**
@@ -81,11 +75,7 @@ public final class BlockEntityHelpers {
      * @return The lazy optional capability.
      */
     public static <T, C> Optional<T> getCapability(DimPos dimPos, BlockCapability<T, C> capability) {
-        Level level = dimPos.getLevel(true);
-        if (level == null) {
-            return Optional.empty();
-        }
-        return getCapability(level, dimPos.getBlockPos(), null, capability);
+        return IModHelpersNeoForge.get().getCapabilityHelpers().getCapability(dimPos, capability);
     }
 
     /**
@@ -98,11 +88,7 @@ public final class BlockEntityHelpers {
      * @return The lazy optional capability.
      */
     public static <T, C> Optional<T> getCapability(DimPos dimPos, C context, BlockCapability<T, C> capability) {
-        Level level = dimPos.getLevel(true);
-        if (level == null) {
-            return Optional.empty();
-        }
-        return getCapability(level, dimPos.getBlockPos(), context, capability);
+        return IModHelpersNeoForge.get().getCapabilityHelpers().getCapability(dimPos, context, capability);
     }
 
     /**
@@ -115,7 +101,7 @@ public final class BlockEntityHelpers {
      * @return The lazy optional capability.
      */
     public static <T, C> Optional<T> getCapability(ILevelExtension level, BlockPos pos, BlockCapability<T, C> capability) {
-        return getCapability(level, pos, null, capability);
+        return IModHelpersNeoForge.get().getCapabilityHelpers().getCapability(level, pos, capability);
     }
 
     /**
@@ -129,10 +115,7 @@ public final class BlockEntityHelpers {
      * @return The lazy optional capability.
      */
     public static <T, C> Optional<T> getCapability(ILevelExtension level, BlockPos pos, C context, BlockCapability<T, C> capability) {
-        Level levelFull = (Level) level;
-        BlockState state = levelFull.getBlockState(pos);
-        BlockEntity blockEntity = state.hasBlockEntity() ? BlockEntityHelpers.get(levelFull, pos, BlockEntity.class).orElse(null) : null;
-        return Optional.ofNullable(level.getCapability(capability, pos, state, blockEntity, context));
+        return IModHelpersNeoForge.get().getCapabilityHelpers().getCapability(level, pos, context, capability);
     }
 
 }

@@ -13,7 +13,7 @@ import java.util.Random;
  * @author immortaleeb
  *
  */
-@Deprecated // TODO: remove in next major version
+@Deprecated // TODO: remove in next major version, after porting PacketHandler.TargetPoint stuff
 public class LocationHelpers {
 
     private static final Random random = new Random();
@@ -50,47 +50,35 @@ public class LocationHelpers {
      * @return The coordinates of the random point.
      */
     public static BlockPos getRandomPointInSphere(BlockPos center, int radius) {
-        BlockPos randomPoint = null;
-        while(randomPoint == null) {
-            BlockPos coordinates = center.offset(- radius + random.nextInt(2 * radius),
-                    - radius + random.nextInt(2 * radius), - radius + random.nextInt(2 * radius));
-            double totalDistance = center.distSqr(coordinates);
-            if((int) Math.sqrt(totalDistance) <= radius) {
-                randomPoint = coordinates;
-            }
-        }
-        return randomPoint;
+        return IModHelpers.get().getLocationHelpers().getRandomPointInSphere(center, radius);
     }
 
     public static BlockPos copyLocation(BlockPos blockPos) {
-        return new BlockPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        return IModHelpers.get().getLocationHelpers().copyLocation(blockPos);
     }
 
     public static Vec3i copyLocation(Vec3i blockPos) {
-        return new Vec3i(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+        return IModHelpers.get().getLocationHelpers().copyLocation(blockPos);
     }
 
     public static BlockPos addToDimension(BlockPos blockPos, int dimension, int value) {
-        if(dimension == 0) return blockPos.offset(value, 0, 0);
-        if(dimension == 1) return blockPos.offset(0, value, 0);
-        if(dimension == 2) return blockPos.offset(0, 0, value);
-        return blockPos;
+        return IModHelpers.get().getLocationHelpers().addToDimension(blockPos, dimension, value);
     }
 
     public static BlockPos fromArray(int[] coordinates) {
-        return new BlockPos(coordinates[0], coordinates[1], coordinates[2]);
+        return IModHelpers.get().getLocationHelpers().fromArray(coordinates);
     }
 
     public static int[] toArray(Vec3i blockPos) {
-        return new int[]{blockPos.getX(), blockPos.getY(), blockPos.getZ()};
+        return IModHelpers.get().getLocationHelpers().toArray(blockPos);
     }
 
     public static BlockPos subtract(BlockPos blockPos, Vec3i vec) {
-        return new BlockPos(blockPos.getX() - vec.getX(), blockPos.getY() - vec.getY(), blockPos.getZ() - vec.getZ());
+        return IModHelpers.get().getLocationHelpers().subtract(blockPos, vec);
     }
 
     public static Vec3i subtract(Vec3i vec1, Vec3i vec2) {
-        return new Vec3i(vec1.getX() - vec2.getX(), vec1.getY() - vec2.getY(), vec1.getZ() - vec2.getZ());
+        return IModHelpers.get().getLocationHelpers().subtract(vec1, vec2);
     }
 
     /**
@@ -100,10 +88,7 @@ public class LocationHelpers {
      * @return The yaw
      */
     public static double getYaw(BlockPos start, BlockPos end) {
-        double dX = start.getX() - end.getX();
-        double dY = start.getY() - end.getY();
-        double dZ = start.getZ() - end.getZ();
-        return Math.atan2(dZ, dX) * 180 / Math.PI;
+        return IModHelpers.get().getLocationHelpers().getYaw(start, end);
     }
 
     /**
@@ -113,10 +98,7 @@ public class LocationHelpers {
      * @return The pitch
      */
     public static double getPitch(BlockPos start, BlockPos end) {
-        double dX = start.getX() - end.getX();
-        double dY = start.getY() - end.getY();
-        double dZ = start.getZ() - end.getZ();
-        return (Math.atan2(Math.sqrt(dZ * dZ + dX * dX), dY) + Math.PI) * 180 / Math.PI;
+        return IModHelpers.get().getLocationHelpers().getPitch(start, end);
     }
 
     /**
@@ -125,7 +107,7 @@ public class LocationHelpers {
      * @return The string.
      */
     public static String toCompactString(BlockPos pos) {
-        return String.format("x: %s ; y: %s ;z: %s", pos.getX(), pos.getY(), pos.getZ());
+        return IModHelpers.get().getLocationHelpers().toCompactString(pos);
     }
 
     /**
@@ -134,7 +116,7 @@ public class LocationHelpers {
      * @return The string.
      */
     public static String toCompactString(Vec3i vec) {
-        return String.format("%sx%sx%s", vec.getX(), vec.getY(), vec.getZ());
+        return IModHelpers.get().getLocationHelpers().toCompactString(vec);
     }
 
 }

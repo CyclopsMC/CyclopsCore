@@ -1,18 +1,11 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.Reference;
-import org.cyclops.cyclopscore.item.IInformationProvider;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A set of localization helpers.
@@ -35,11 +28,7 @@ public final class L10NHelpers {
      */
     @OnlyIn(Dist.CLIENT)
     public static String localize(String key, Object... params) {
-        if(MinecraftHelpers.isModdedEnvironment()) {
-            return I18n.get(key, params);
-        } else {
-            return String.format("%s: %s", key, Arrays.toString(params));
-        }
+        return IModHelpers.get().getL10NHelpers().localize(key, params);
     }
 
     /**
@@ -52,11 +41,7 @@ public final class L10NHelpers {
      */
     @OnlyIn(Dist.CLIENT)
     public static void addStatusInfo(List<Component> infoLines, boolean isEnabled, String statusPrefixKey) {
-        Component autoSupply = Component.translatable(KEY_DISABLED);
-        if (isEnabled) {
-            autoSupply = Component.translatable(KEY_ENABLED);
-        }
-        infoLines.add(Component.translatable(statusPrefixKey, autoSupply));
+        IModHelpers.get().getL10NHelpers().addStatusInfo(infoLines, isEnabled, statusPrefixKey);
     }
 
     /**
@@ -67,21 +52,7 @@ public final class L10NHelpers {
      */
     @OnlyIn(Dist.CLIENT)
     public static void addOptionalInfo(List<Component> list, String prefix) {
-        String key = prefix + ".info";
-        if (I18n.exists(key)) {
-            if (MinecraftHelpers.isShifted()) {
-                String localized = localize(key);
-                list.addAll(StringHelpers.splitLines(localized, MAX_TOOLTIP_LINE_LENGTH, IInformationProvider.INFO_PREFIX)
-                        .stream()
-                        .map(Component::literal)
-                        .collect(Collectors.toList()));
-            } else {
-                list.add(Component.translatable("general." + Reference.MOD_ID + ".tooltip.info")
-                        .setStyle(Style.EMPTY
-                                .withColor(TextColor.fromLegacyFormat(ChatFormatting.GRAY))
-                                .withItalic(true)));
-            }
-        }
+        IModHelpers.get().getL10NHelpers().addOptionalInfo(list, prefix);
     }
 
 }
