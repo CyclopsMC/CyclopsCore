@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
@@ -847,16 +848,17 @@ public final class IngredientStorageHelpers {
 
     /**
      * Serialize the given storage to NBT.
-     *
+     * <p>
      * All ingredients, the max quantity, and whether or not it is slotted will be stored.
      *
-     * @param storage An ingredient storage.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
+     * @param <T>            The instance type.
+     * @param <M>            The matching condition parameter.
+     * @param lookupProvider The holder lookup provider.
+     * @param storage        An ingredient storage.
      * @return An NBT tag.
      */
-    public static <T, M> CompoundTag serialize(IIngredientComponentStorage<T, M> storage) {
-        CompoundTag tag = IngredientCollections.serialize(new IngredientArrayList<>(storage.getComponent(), storage.iterator()));
+    public static <T, M> CompoundTag serialize(HolderLookup.Provider lookupProvider, IIngredientComponentStorage<T, M> storage) {
+        CompoundTag tag = IngredientCollections.serialize(lookupProvider, new IngredientArrayList<>(storage.getComponent(), storage.iterator()));
         tag.putLong("maxQuantity", storage.getMaxQuantity());
         tag.putBoolean("slotted", storage instanceof IIngredientComponentStorageSlotted);
         return tag;
@@ -864,15 +866,16 @@ public final class IngredientStorageHelpers {
 
     /**
      * Deserialize the storage from the given NBT tag.
-     *
+     * <p>
      * All ingredients, the max quantity, and whether or not it is slotted will be restored.
      *
-     * @param tag An NBT tag.
-     * @param rateLimit The rate limit per insertion/extraction.
+     * @param lookupProvider The holder lookup provider.
+     * @param tag            An NBT tag.
+     * @param rateLimit      The rate limit per insertion/extraction.
      * @return The deserialized storage.
      * @throws IllegalArgumentException If the tag was invalid.
      */
-    public static IIngredientComponentStorage<?, ?> deserialize(CompoundTag tag, long rateLimit) {
+    public static IIngredientComponentStorage<?, ?> deserialize(HolderLookup.Provider lookupProvider, CompoundTag tag, long rateLimit) {
         if (!tag.contains("maxQuantity", Tag.TAG_LONG)) {
             throw new IllegalArgumentException("No maxQuantity was found in the given tag");
         }
@@ -882,10 +885,10 @@ public final class IngredientStorageHelpers {
         long maxQuantity = tag.getLong("maxQuantity");
         if (tag.getBoolean("slotted")) {
             return new IngredientComponentStorageSlottedCollectionWrapper<>(
-                    IngredientCollections.deserialize(tag, IngredientArrayList::new), maxQuantity, rateLimit);
+                    IngredientCollections.deserialize(lookupProvider, tag, IngredientArrayList::new), maxQuantity, rateLimit);
         } else {
             return new IngredientComponentStorageCollectionWrapper<>(
-                    IngredientCollections.deserialize(tag, (IngredientCollections.IIngredientCollectionConstructor<IIngredientCollapsedCollectionMutable<?, ?>>) IngredientCollectionHelpers::createCollapsedCollection),
+                    IngredientCollections.deserialize(lookupProvider, tag, (IngredientCollections.IIngredientCollectionConstructor<IIngredientCollapsedCollectionMutable<?, ?>>) IngredientCollectionHelpers::createCollapsedCollection),
                     maxQuantity, rateLimit);
         }
     }

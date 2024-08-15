@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.ingredient;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
@@ -8,12 +9,12 @@ import org.cyclops.commoncapabilities.api.ingredient.IIngredientSerializer;
 public class IngredientSerializerInt implements IIngredientSerializer<Integer, Boolean> {
 
     @Override
-    public Tag serializeInstance(Integer instance) {
+    public Tag serializeInstance(HolderLookup.Provider lookupProvider, Integer instance) {
         return IntTag.valueOf(instance);
     }
 
     @Override
-    public Integer deserializeInstance(Tag tag) throws IllegalArgumentException {
+    public Integer deserializeInstance(HolderLookup.Provider lookupProvider, Tag tag) throws IllegalArgumentException {
         if (!(tag instanceof IntTag)) {
             throw new IllegalArgumentException("This deserializer only accepts NBTTagInt");
         }

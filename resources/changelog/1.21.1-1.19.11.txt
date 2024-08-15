@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Update to updated CommonCapabilities API
+  Required for CyclopsMC/IntegratedDynamics#1375

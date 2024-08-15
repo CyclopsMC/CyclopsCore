@@ -1,16 +1,17 @@
 package org.cyclops.cyclopscore.ingredient;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.Tag;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientSerializer;
 
 public class IngredientSerializerStub<T, M> implements IIngredientSerializer<T, M> {
     @Override
-    public Tag serializeInstance(T instance) {
+    public Tag serializeInstance(HolderLookup.Provider lookupProvider, T instance) {
         return null;
     }
 
     @Override
-    public T deserializeInstance(Tag tag) throws IllegalArgumentException {
+    public T deserializeInstance(HolderLookup.Provider lookupProvider, Tag tag) throws IllegalArgumentException {
         return null;
     }
 

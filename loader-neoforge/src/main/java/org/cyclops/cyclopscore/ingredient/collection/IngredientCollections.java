@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.ingredient.collection;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -223,12 +224,13 @@ public final class IngredientCollections {
      * The type of collection will be lost,
      * only the component type and the ingredients will be saved.
      *
-     * @param collection An ingredient collection.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
+     * @param <T>            The instance type.
+     * @param <M>            The matching condition parameter.
+     * @param lookupProvider The holder lookup provider.
+     * @param collection     An ingredient collection.
      * @return An NBT tag.
      */
-    public static <T, M> CompoundTag serialize(IIngredientCollection<T, M> collection) {
+    public static <T, M> CompoundTag serialize(HolderLookup.Provider lookupProvider, IIngredientCollection<T, M> collection) {
         CompoundTag tag = new CompoundTag();
 
         IngredientComponent<T, M> component = collection.getComponent();
@@ -237,7 +239,7 @@ public final class IngredientCollections {
         ListTag list = new ListTag();
         IIngredientSerializer<T, M> serializer = component.getSerializer();
         for (T ingredient : collection) {
-            list.add(serializer.serializeInstance(ingredient));
+            list.add(serializer.serializeInstance(lookupProvider, ingredient));
         }
         tag.put("ingredients", list);
 
@@ -247,14 +249,16 @@ public final class IngredientCollections {
     /**
      * Deserialize the given NBT tag to an ingredient array list.
      *
-     * @param tag An NBT tag.
+     * @param <C>                         The collection type.
+     * @param lookupProvider              The holder lookup provider.
+     * @param tag                         An NBT tag.
      * @param ingredientCollectionFactory A function that creates a {@link IIngredientCollectionMutable}
      *                                    from an {@link IngredientComponent}.
-     * @param <C> The collection type.
      * @return An ingredient collection.
      * @throws IllegalArgumentException If the tag was invalid.
      */
-    public static <C extends IIngredientCollectionMutable<?, ?>> C deserialize(CompoundTag tag,
+    public static <C extends IIngredientCollectionMutable<?, ?>> C deserialize(HolderLookup.Provider lookupProvider,
+                                                                               CompoundTag tag,
                                                                                IIngredientCollectionConstructor<C>
                                                                                        ingredientCollectionFactory) {
         // Validate tag
@@ -278,7 +282,7 @@ public final class IngredientCollections {
         C collection = ingredientCollectionFactory.create(component);
         IIngredientCollectionMutable collectionUnsafe = collection;
         for (Tag subTag : ingredients) {
-            collectionUnsafe.add(serializer.deserializeInstance(subTag));
+            collectionUnsafe.add(serializer.deserializeInstance(lookupProvider, subTag));
         }
 
         return collection;
@@ -287,12 +291,13 @@ public final class IngredientCollections {
     /**
      * Deserialize the given NBT tag to an ingredient array list.
      *
-     * @param tag An NBT tag.
+     * @param lookupProvider The holder lookup provider.
+     * @param tag            An NBT tag.
      * @return An ingredient array list.
      * @throws IllegalArgumentException If the tag was invalid.
      */
-    public static IngredientArrayList<?, ?> deserialize(CompoundTag tag) {
-        return deserialize(tag, IngredientArrayList::new);
+    public static IngredientArrayList<?, ?> deserialize(HolderLookup.Provider lookupProvider, CompoundTag tag) {
+        return deserialize(lookupProvider, tag, IngredientArrayList::new);
     }
 
     /**
