@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.UnaryOperator;
@@ -27,8 +27,8 @@ public class EnchantmentEffectComponentConfigCommon<T, M extends IModBase> exten
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.ENCHANTMENT_ENTITY_EFFECT;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.ENCHANTMENT_ENTITY_EFFECT;
     }
 
     @Override

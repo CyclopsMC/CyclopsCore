@@ -4,7 +4,7 @@ import com.google.common.collect.Maps;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyCommon;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.config.CyclopsCoreConfigException;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -90,7 +90,7 @@ public abstract class ExtendedConfigCommon<C extends ExtendedConfigCommon<C, I, 
      * Return the configurable type for which this config holds data
      * @return the type of the configurable to where the config belongs
      */
-    public abstract ConfigurableType getConfigurableType();
+    public abstract ConfigurableTypeCommon getConfigurableType();
 
     /**
      * Get the unlocalized name (must be unique!) for this configurable.

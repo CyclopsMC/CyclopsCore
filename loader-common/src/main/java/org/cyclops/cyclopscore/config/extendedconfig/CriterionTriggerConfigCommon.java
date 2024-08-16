@@ -4,7 +4,7 @@ import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 /**
@@ -31,8 +31,8 @@ public abstract class CriterionTriggerConfigCommon<T extends CriterionTriggerIns
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.CRITERION_TRIGGER;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.CRITERION_TRIGGER;
     }
 
     @Override

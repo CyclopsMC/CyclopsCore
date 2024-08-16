@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.enchantment.effects.EnchantmentEntityEffect;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.Function;
@@ -27,8 +27,8 @@ public class EnchantmentEntityEffectConfigCommon<M extends IModBase> extends Ext
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.ENCHANTMENT_ENTITY_EFFECT;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.ENCHANTMENT_ENTITY_EFFECT;
     }
 
     @Override

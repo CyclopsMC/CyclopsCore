@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ArmorMaterial;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.Function;
@@ -26,8 +26,8 @@ public class ArmorMaterialConfigCommon<M extends IModBase> extends ExtendedConfi
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.ARMOR_MATERIAL;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.ARMOR_MATERIAL;
     }
 
     @Override

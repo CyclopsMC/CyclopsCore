@@ -5,7 +5,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 
@@ -39,8 +39,8 @@ public abstract class RecipeTypeConfigCommon<T extends Recipe<?>, M extends IMod
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.RECIPE_TYPE;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.RECIPE_TYPE;
     }
 
     @Override

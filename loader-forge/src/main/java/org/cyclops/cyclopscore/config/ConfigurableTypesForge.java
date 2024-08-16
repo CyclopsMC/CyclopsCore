@@ -12,12 +12,12 @@ import org.cyclops.cyclopscore.config.extendedconfig.FluidConfigForge;
 public class ConfigurableTypesForge {
 
     static {
-        ConfigurableType.BLOCK.setAction(new BlockActionForge<>());
-        ConfigurableType.ITEM.setAction(new ItemActionForge<>());
-        ConfigurableType.CREATIVE_MODE_TAB.setAction(new CreativeModeTabActionForge<>());
+        ConfigurableTypeCommon.BLOCK.setAction(new BlockActionForge<>());
+        ConfigurableTypeCommon.ITEM.setAction(new ItemActionForge<>());
+        ConfigurableTypeCommon.CREATIVE_MODE_TAB.setAction(new CreativeModeTabActionForge<>());
     }
 
     // Forge-specific
-    public static final ConfigurableType FLUID = new ConfigurableType(true, FluidConfigForge.class, new FluidActionForge<>(), "fluid");
+    public static final ConfigurableTypeCommon FLUID = new ConfigurableTypeCommon(true, FluidConfigForge.class, new FluidActionForge<>(), "fluid");
 
 }

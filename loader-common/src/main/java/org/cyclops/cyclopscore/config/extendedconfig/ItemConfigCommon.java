@@ -4,7 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import javax.annotation.Nullable;
@@ -46,8 +46,8 @@ public class ItemConfigCommon<M extends IModBase> extends ExtendedConfigRegistry
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.ITEM;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.ITEM;
     }
 
     public Collection<ItemStack> getDefaultCreativeTabEntriesPublic() { // TODO: rm in next major, and make other method public

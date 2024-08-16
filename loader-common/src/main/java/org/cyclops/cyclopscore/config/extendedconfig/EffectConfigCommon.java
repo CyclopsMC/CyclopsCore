@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.effect.MobEffect;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.Function;
@@ -32,8 +32,8 @@ public abstract class EffectConfigCommon<M extends IModBase> extends ExtendedCon
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.EFFECT;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.EFFECT;
     }
 
     @Override

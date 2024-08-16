@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.storage.loot.providers.nbt.LootNbtProviderType;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 /**
@@ -30,8 +30,8 @@ public abstract class LootNbtProviderConfigCommon<M extends IModBase> extends Ex
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.LOOT_NBT_PROVIDER;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.LOOT_NBT_PROVIDER;
     }
 
     @Override

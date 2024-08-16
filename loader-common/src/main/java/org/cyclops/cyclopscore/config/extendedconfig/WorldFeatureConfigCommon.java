@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.Function;
@@ -26,8 +26,8 @@ public abstract class WorldFeatureConfigCommon<M extends IModBase> extends Exten
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.WORLD_FEATURE;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.WORLD_FEATURE;
     }
 
     @Override

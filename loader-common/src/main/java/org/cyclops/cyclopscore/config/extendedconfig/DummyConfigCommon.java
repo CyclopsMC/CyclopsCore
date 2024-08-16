@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 /**
@@ -22,8 +22,8 @@ public class DummyConfigCommon<M extends IModBase> extends ExtendedConfigCommon<
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.DUMMY;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.DUMMY;
     }
 
     @Override

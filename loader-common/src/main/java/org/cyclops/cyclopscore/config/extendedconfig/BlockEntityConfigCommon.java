@@ -4,7 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.Function;
@@ -40,8 +40,8 @@ public abstract class BlockEntityConfigCommon<T extends BlockEntity, M extends I
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.BLOCK_ENTITY;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.BLOCK_ENTITY;
     }
 
     @Override

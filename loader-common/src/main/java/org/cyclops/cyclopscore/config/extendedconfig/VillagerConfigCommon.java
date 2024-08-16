@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.Function;
@@ -37,8 +37,8 @@ public abstract class VillagerConfigCommon<M extends IModBase> extends ExtendedC
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.VILLAGER;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.VILLAGER;
     }
 
     @Override

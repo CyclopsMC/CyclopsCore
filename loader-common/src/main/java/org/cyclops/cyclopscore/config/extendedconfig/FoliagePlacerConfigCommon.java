@@ -5,7 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.Function;
@@ -34,8 +34,8 @@ public class FoliagePlacerConfigCommon<T extends FoliagePlacer, M extends IModBa
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.FOLIAGE_PLACER;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.FOLIAGE_PLACER;
     }
 
     @Override

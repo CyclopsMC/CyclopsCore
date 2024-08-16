@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.Function;
@@ -26,8 +26,8 @@ public abstract class WorldStructurePieceConfigCommon<M extends IModBase> extend
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.WORLD_STRUCTURE_PIECE;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.WORLD_STRUCTURE_PIECE;
     }
 
     @Override

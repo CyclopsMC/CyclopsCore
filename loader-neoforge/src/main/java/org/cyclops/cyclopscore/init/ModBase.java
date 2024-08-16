@@ -106,7 +106,7 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
 
         // Initialize config handler
         this.onConfigsRegister((ConfigHandlerCommon) getConfigHandler());
-        getConfigHandler().initialize(Lists.newArrayList());
+        ((ConfigHandlerNeoForge) getConfigHandler()).initialize(Lists.newArrayList());
         getConfigHandler().loadModInit();
 
         loadModCompats(getModCompatLoader());
@@ -133,7 +133,7 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
     }
 
     @Override
-    public ConfigHandlerNeoForge getConfigHandler() {
+    public ConfigHandler getConfigHandler() {
         return (ConfigHandlerNeoForge) this.configHandler;
     }
 

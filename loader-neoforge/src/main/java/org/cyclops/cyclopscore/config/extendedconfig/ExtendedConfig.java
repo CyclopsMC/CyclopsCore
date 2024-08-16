@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyCommon;
+import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.function.Function;
@@ -21,6 +22,8 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I> extends 
     public ExtendedConfig(ModBase<?> mod, String namedId, Function<C, ? extends I> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
+
+    public abstract ConfigurableType getConfigurableType();
 
     @Override
     public ModBase<?> getMod() {

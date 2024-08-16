@@ -11,6 +11,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
@@ -60,7 +61,7 @@ public class ItemConfig extends ExtendedConfigForge<ItemConfig, Item> implements
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableType.ITEM;
+        return ConfigurableTypesNeoForge.D_ITEM;
     }
 
     public Collection<ItemStack> getDefaultCreativeTabEntriesPublic() { // TODO: rm in next major, and make other method public

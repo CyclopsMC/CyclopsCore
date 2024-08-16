@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.resources.ResourceLocation;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.Function;
@@ -39,8 +39,8 @@ public abstract class CapabilityConfigCommon<T, M extends IModBase> extends Exte
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.CAPABILITY;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.CAPABILITY;
     }
 
     public Function<CapabilityConfigCommon<T, M>, T> getRegistrar() {

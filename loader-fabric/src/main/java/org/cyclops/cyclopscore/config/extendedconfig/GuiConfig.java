@@ -9,7 +9,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.config.ConfigurableTypesFabric;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -46,7 +46,7 @@ public abstract class GuiConfig<T extends AbstractContainerMenu, M extends IModB
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
+    public ConfigurableTypeCommon getConfigurableType() {
         return ConfigurableTypesFabric.GUI;
     }
 

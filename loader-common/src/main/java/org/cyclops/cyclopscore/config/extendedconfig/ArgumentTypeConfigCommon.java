@@ -5,7 +5,7 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 /**
@@ -39,8 +39,8 @@ public class ArgumentTypeConfigCommon<A extends ArgumentType<?>, T extends Argum
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.ARGUMENT_TYPE;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.ARGUMENT_TYPE;
     }
 
     @Override

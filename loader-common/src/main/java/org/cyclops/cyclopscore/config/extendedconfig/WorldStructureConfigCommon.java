@@ -5,7 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.Function;
@@ -28,8 +28,8 @@ public abstract class WorldStructureConfigCommon<S extends Structure, M extends 
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.WORLD_STRUCTURE;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.WORLD_STRUCTURE;
     }
 
     @Override

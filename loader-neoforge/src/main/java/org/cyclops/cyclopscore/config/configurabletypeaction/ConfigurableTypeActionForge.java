@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraft.core.Registry;
+import org.cyclops.cyclopscore.config.ConfigHandlerNeoForge;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
 
 import javax.annotation.Nullable;
@@ -63,7 +64,7 @@ public class ConfigurableTypeActionForge<C extends ExtendedConfigForge<C, I>, I>
      * @param <I> The instance corresponding to this config.
      */
     public static <C extends ExtendedConfigForge<C, I>, I> void register(Registry<? super I> registry, C config, @Nullable Callable<?> callback) {
-        config.getMod().getConfigHandler().registerToRegistry(registry, config, callback);
+        ((ConfigHandlerNeoForge) config.getMod().getConfigHandler()).registerToRegistry(registry, config, callback);
     }
 
 }

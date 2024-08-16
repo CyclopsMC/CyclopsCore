@@ -18,6 +18,7 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
+import org.cyclops.cyclopscore.config.ConfigHandlerNeoForge;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -52,7 +53,7 @@ public class BlockActionNeoForge extends ConfigurableTypeActionForge<BlockConfig
                 Objects.requireNonNull(itemBlock, "Received a null item for the item block constructor of " + config.getNamedId());
                 return itemBlock;
             });
-            config.getMod().getConfigHandler().registerToRegistry(BuiltInRegistries.ITEM, itemConfig, () -> {
+            ((ConfigHandlerNeoForge) config.getMod().getConfigHandler()).registerToRegistry(BuiltInRegistries.ITEM, itemConfig, () -> {
                 config.setItemInstance(itemConfig.getInstance());
                 try {
                     if (callback != null) {

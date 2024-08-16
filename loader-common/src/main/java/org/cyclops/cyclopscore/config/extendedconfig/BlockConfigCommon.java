@@ -6,7 +6,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import javax.annotation.Nullable;
@@ -79,8 +79,8 @@ public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConf
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.BLOCK;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.BLOCK;
     }
 
     public Collection<ItemStack> getDefaultCreativeTabEntriesPublic() { // TODO: rm in next major, and make other method public

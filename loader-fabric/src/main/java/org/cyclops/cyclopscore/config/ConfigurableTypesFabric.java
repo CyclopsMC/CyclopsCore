@@ -8,6 +8,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.GuiConfig;
  */
 public class ConfigurableTypesFabric {
 
-    public static final ConfigurableType GUI = new ConfigurableType(true, GuiConfig.class, new ConfigurableTypeActionRegistry<>(), "gui");
+    public static final ConfigurableTypeCommon GUI = new ConfigurableTypeCommon(true, GuiConfig.class, new ConfigurableTypeActionRegistry<>(), "gui");
 
 }

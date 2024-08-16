@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.UnaryOperator;
@@ -32,8 +32,8 @@ public abstract class DataComponentConfigCommon<T, M extends IModBase> extends E
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
-        return ConfigurableType.DATA_COMPONENT;
+    public ConfigurableTypeCommon getConfigurableType() {
+        return ConfigurableTypeCommon.DATA_COMPONENT;
     }
 
     @Override

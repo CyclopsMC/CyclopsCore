@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -23,7 +24,7 @@ public class DummyConfig extends ExtendedConfig<DummyConfig, Void>{
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableType.DUMMY;
+        return ConfigurableTypesNeoForge.D_DUMMY;
     }
 
     @Override

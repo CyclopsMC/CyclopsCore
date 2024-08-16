@@ -5,7 +5,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
-import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.config.ConfigurableTypesForge;
 import org.cyclops.cyclopscore.datastructure.Wrapper;
 import org.cyclops.cyclopscore.init.IModBase;
@@ -85,7 +85,7 @@ public abstract class FluidConfigForge<M extends ModBaseForge> extends ExtendedC
     }
 
     @Override
-    public ConfigurableType getConfigurableType() {
+    public ConfigurableTypeCommon getConfigurableType() {
         return ConfigurableTypesForge.FLUID;
     }
 

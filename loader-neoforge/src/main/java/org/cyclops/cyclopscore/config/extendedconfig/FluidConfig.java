@@ -8,7 +8,6 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.datastructure.Wrapper;
-import org.cyclops.cyclopscore.init.IModBase;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.function.Consumer;
@@ -31,7 +30,7 @@ public abstract class FluidConfig extends ExtendedConfig<FluidConfig, BaseFlowin
         super(mod, namedId, elementConstructor);
     }
 
-    protected static BaseFlowingFluid.Properties getDefaultFluidProperties(IModBase mod, String texturePrefixPath,
+    protected static BaseFlowingFluid.Properties getDefaultFluidProperties(ModBase<?> mod, String texturePrefixPath,
                                                                             Consumer<FluidType.Properties> fluidAttributesConsumer) {
         FluidType.Properties fluidAttributes = FluidType.Properties.create();
         fluidAttributesConsumer.accept(fluidAttributes);

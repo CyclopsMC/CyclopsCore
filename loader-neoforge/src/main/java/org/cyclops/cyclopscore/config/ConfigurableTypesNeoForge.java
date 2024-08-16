@@ -21,7 +21,7 @@ public class ConfigurableTypesNeoForge {
 
     // Deprecated config types
     // TODO: rm in next major
-    public static final ConfigurableType D_EFFECT = new ConfigurableType(true, EffectConfigCommon.class, new ConfigurableTypeActionForge<>(), "potion");
+    public static final ConfigurableType D_EFFECT = new ConfigurableType(true, EffectConfig.class, new ConfigurableTypeActionForge<>(), "potion");
     public static final ConfigurableType D_ARGUMENT_TYPE = new ConfigurableType(true, ArgumentTypeConfig.class, new ConfigurableTypeActionForge<>(), "argument_type");
     public static final ConfigurableType D_ARMOR_MATERIAL = new ConfigurableType(true, ArmorMaterialConfig.class, new ConfigurableTypeActionForge<>(), "armor_material");
     public static final ConfigurableType D_BLOCK_ENTITY = new ConfigurableType(true, BlockEntityConfig.class, new ConfigurableTypeActionForge<>(), "block_entity");
@@ -47,5 +47,6 @@ public class ConfigurableTypesNeoForge {
     public static final ConfigurableType D_WORLD_STRUCTURE_PIECE = new ConfigurableType(true, WorldStructurePieceConfig.class, new ConfigurableTypeActionForge<>(), "world_structure_piece");
     public static final ConfigurableType D_BLOCK = new ConfigurableType(true, BlockConfig.class, new BlockActionNeoForge(), "block");
     public static final ConfigurableType D_ITEM = new ConfigurableType(true, ItemConfig.class, new ItemActionNeoForge(), "item");
+    public static final ConfigurableType D_DUMMY = new ConfigurableType(false, DummyConfig.class, new DummyAction(), "general");
 
 }
