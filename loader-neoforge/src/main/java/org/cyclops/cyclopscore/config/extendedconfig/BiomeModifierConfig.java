@@ -13,9 +13,9 @@ import java.util.function.Function;
 /**
  * Config for biome modifiers.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
-public abstract class BiomeModifierConfig<T extends BiomeModifier> extends ExtendedConfigRegistry<BiomeModifierConfig<T>, MapCodec<T>, ModBase<?>> {
+public abstract class BiomeModifierConfig<T extends BiomeModifier> extends ExtendedConfigForge<BiomeModifierConfig<T>, MapCodec<T>> {
 
     public BiomeModifierConfig(ModBase<?> mod, String namedId, Function<BiomeModifierConfig<T>, MapCodec<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);

@@ -12,7 +12,7 @@ import java.util.function.Function;
  * Config for sound events.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public abstract class SoundEventConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<SoundEventConfigCommon<M>, SoundEvent, M> {
 

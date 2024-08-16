@@ -6,7 +6,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 /**
  * Config for loot score providers.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public abstract class LootScoreProviderConfig extends LootScoreProviderConfigCommon<ModBase<?>> {

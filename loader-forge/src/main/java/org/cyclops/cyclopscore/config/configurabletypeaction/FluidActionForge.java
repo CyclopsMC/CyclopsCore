@@ -30,10 +30,10 @@ import java.util.function.Supplier;
 /**
  * The action used for {@link FluidConfigForge}.
  * @author rubensworks
- * @see ConfigurableTypeAction
+ * @see ConfigurableTypeActionCommon
  */
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class FluidActionForge<M extends ModBaseForge> extends ConfigurableTypeAction<FluidConfigForge<M>, ForgeFlowingFluid.Properties, M> {
+public class FluidActionForge<M extends ModBaseForge> extends ConfigurableTypeActionCommon<FluidConfigForge<M>, ForgeFlowingFluid.Properties, M> {
 
     private final Multimap<String, Pair<FluidConfigForge, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<String, Collection<Pair<FluidConfigForge, Callable<?>>>>newHashMap(), new com.google.common.base.Supplier<List<Pair<FluidConfigForge, Callable<?>>>>() {
         // Compiler complains when this is replaced with a lambda :-(

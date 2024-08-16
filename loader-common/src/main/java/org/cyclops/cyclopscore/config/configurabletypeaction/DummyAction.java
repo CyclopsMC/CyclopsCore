@@ -8,6 +8,6 @@ import org.cyclops.cyclopscore.init.IModBase;
  * @author rubensworks
  * @param <M> The mod type
  */
-public class DummyAction<M extends IModBase> extends ConfigurableTypeAction<DummyConfigCommon<M>, Void, M> {
+public class DummyAction<M extends IModBase> extends ConfigurableTypeActionCommon<DummyConfigCommon<M>, Void, M> {
 
 }

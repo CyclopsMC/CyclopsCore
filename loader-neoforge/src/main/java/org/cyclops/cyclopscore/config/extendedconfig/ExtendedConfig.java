@@ -1,19 +1,14 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.function.Function;
 
 /**
- * Config for recipe serializers.
  * @author rubensworks
- * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
-public abstract class RecipeConfig<T extends Recipe<?>> extends RecipeConfigCommon<T, ModBase<?>> {
-
+public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I> extends ExtendedConfigCommon<C, I, ModBase<?>> {
     /**
      * Create a new config
      *
@@ -21,7 +16,7 @@ public abstract class RecipeConfig<T extends Recipe<?>> extends RecipeConfigComm
      * @param namedId            A unique name id
      * @param elementConstructor The element constructor.
      */
-    public RecipeConfig(ModBase<?> mod, String namedId, Function<RecipeConfigCommon<T, ModBase<?>>, ? extends RecipeSerializer<T>> elementConstructor) {
+    public ExtendedConfig(ModBase<?> mod, String namedId, Function<C, ? extends I> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 }

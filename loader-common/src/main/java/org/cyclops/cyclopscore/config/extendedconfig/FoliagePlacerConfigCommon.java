@@ -14,7 +14,7 @@ import java.util.function.Function;
  * Config for foliage placer types.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public class FoliagePlacerConfigCommon<T extends FoliagePlacer, M extends IModBase> extends ExtendedConfigRegistry<FoliagePlacerConfigCommon<T, M>, FoliagePlacerType<T>, M> {
 

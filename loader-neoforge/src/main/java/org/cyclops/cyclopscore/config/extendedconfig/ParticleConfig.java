@@ -19,9 +19,9 @@ import java.util.function.Function;
 /**
  * Config for recipe serializers.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
-public abstract class ParticleConfig<T extends ParticleOptions> extends ExtendedConfigRegistry<ParticleConfig<T>, ParticleType<T>, ModBase<?>> {
+public abstract class ParticleConfig<T extends ParticleOptions> extends ExtendedConfigForge<ParticleConfig<T>, ParticleType<T>> {
 
     /**
      * Create a new config

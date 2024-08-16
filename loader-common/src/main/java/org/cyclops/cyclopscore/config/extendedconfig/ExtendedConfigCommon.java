@@ -23,8 +23,8 @@ import java.util.function.Function;
  * @param <I> The instance corresponding to this config.
  * @param <M> The mod type
  */
-public abstract class ExtendedConfig<C extends ExtendedConfig<C, I, M>, I, M extends IModBase>
-        implements Comparable<ExtendedConfig<C, I, M>> {
+public abstract class ExtendedConfigCommon<C extends ExtendedConfigCommon<C, I, M>, I, M extends IModBase>
+        implements Comparable<ExtendedConfigCommon<C, I, M>> {
 
     private final M mod;
     private final String namedId;
@@ -43,7 +43,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I, M>, I, M ext
      * @param namedId A unique name id
      * @param elementConstructor The element constructor.
      */
-    public ExtendedConfig(M mod, String namedId, Function<C, ? extends I> elementConstructor) {
+    public ExtendedConfigCommon(M mod, String namedId, Function<C, ? extends I> elementConstructor) {
         this.mod = mod;
         this.namedId = namedId.toLowerCase(Locale.ROOT);
         this.elementConstructor = elementConstructor;
@@ -142,7 +142,7 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I, M>, I, M ext
     }
 
     @Override
-    public int compareTo(ExtendedConfig<C, I, M> o) {
+    public int compareTo(ExtendedConfigCommon<C, I, M> o) {
         return getNamedId().compareTo(o.getNamedId());
     }
 

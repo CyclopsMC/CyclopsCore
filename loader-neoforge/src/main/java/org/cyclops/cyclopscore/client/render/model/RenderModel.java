@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -27,13 +27,13 @@ public abstract class RenderModel<T extends Entity, M extends Model> extends Ent
      * @param renderContext The render context
      * @param config The config.
      */
-    public RenderModel(EntityRendererProvider.Context renderContext, ExtendedConfig<?, ?, ModBase<?>> config) {
+    public RenderModel(EntityRendererProvider.Context renderContext, ExtendedConfigCommon<?, ?, ModBase<?>> config) {
         super(renderContext);
         texture = createResourceLocation(config);
         model = constructModel();
     }
 
-    protected ResourceLocation createResourceLocation(ExtendedConfig<?, ?, ModBase<?>> config) {
+    protected ResourceLocation createResourceLocation(ExtendedConfigCommon<?, ?, ModBase<?>> config) {
         return ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_MODELS) + config.getNamedId() + ".png");
     }
 

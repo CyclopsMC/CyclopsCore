@@ -12,7 +12,7 @@ import java.util.function.Function;
  * Config for creative mode tabs.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public class CreativeModeTabConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<CreativeModeTabConfigCommon<M>, CreativeModeTab, M> {
 

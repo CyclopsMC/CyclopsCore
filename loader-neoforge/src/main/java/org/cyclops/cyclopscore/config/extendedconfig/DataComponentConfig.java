@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
 /**
  * Config for data component types.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public abstract class DataComponentConfig<T> extends DataComponentConfigCommon<T, ModBase<?>> {

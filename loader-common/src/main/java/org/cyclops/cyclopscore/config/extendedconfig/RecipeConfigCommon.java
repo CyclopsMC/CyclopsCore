@@ -13,7 +13,7 @@ import java.util.function.Function;
  * Config for recipe serializers.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public abstract class RecipeConfigCommon<T extends Recipe<?>, M extends IModBase> extends ExtendedConfigRegistry<RecipeConfigCommon<T, M>, RecipeSerializer<T>, M> {
 

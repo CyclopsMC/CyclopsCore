@@ -12,7 +12,7 @@ import java.util.function.Function;
  * Config for world structures.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public abstract class WorldStructurePieceConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<WorldStructurePieceConfigCommon<M>, StructurePieceType, M> {
 

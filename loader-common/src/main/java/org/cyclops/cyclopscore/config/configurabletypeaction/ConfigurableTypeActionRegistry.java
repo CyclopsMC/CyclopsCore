@@ -7,10 +7,10 @@ import org.cyclops.cyclopscore.init.IModBase;
  * The action used for {@link ExtendedConfigRegistry}.
  * @author rubensworks
  * @param <M> The mod type
- * @see ConfigurableTypeAction
+ * @see ConfigurableTypeActionCommon
  */
 public class ConfigurableTypeActionRegistry<C extends ExtendedConfigRegistry<C, I, M>, I, M extends IModBase>
-        extends ConfigurableTypeAction<C, I, M> {
+        extends ConfigurableTypeActionCommon<C, I, M> {
 
     @Override
     public void onRegisterForgeFilled(C eConfig) {

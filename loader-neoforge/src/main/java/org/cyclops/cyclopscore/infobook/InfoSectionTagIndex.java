@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.infobook;
 import com.google.common.collect.Maps;
 import net.minecraft.client.gui.Font;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.SectionAppendix;
@@ -61,7 +61,7 @@ public class InfoSectionTagIndex extends InfoSection {
                 throw new IllegalArgumentException("The tag " + tag + " occurs multiple times.");
             }
 
-            ExtendedConfig<?, ?, ?> config = mod.getConfigHandler().getDictionary().get(tag);
+            ExtendedConfigCommon<?, ?, ?> config = mod.getConfigHandler().getDictionary().get(tag);
             if(config != null) {
                 softLinks.put(config.getFullTranslationKey(), Pair.of(section, 0));
             }

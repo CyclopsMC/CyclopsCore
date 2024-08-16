@@ -14,7 +14,7 @@ import java.util.function.Function;
  * Config for world structures.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public abstract class WorldStructureConfigCommon<S extends Structure, M extends IModBase> extends ExtendedConfigRegistry<WorldStructureConfigCommon<S, M>, StructureType<S>, M> {
 

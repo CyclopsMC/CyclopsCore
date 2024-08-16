@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigHandlerFabric;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
 import org.cyclops.cyclopscore.config.ModConfigLocation;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 
 import java.util.Collection;
 import java.util.EnumMap;
@@ -46,7 +46,7 @@ public class ConfigHandlerFabricHandler {
         Map<ModConfig.Type, ModConfigSpec.Builder> configBuilders = new EnumMap<>(ModConfig.Type.class);
 
         // Pass config builder to all configurables
-        for (ExtendedConfig<?, ?, ?> eConfig : this.configHandler.getConfigurables()) {
+        for (ExtendedConfigCommon<?, ?, ?> eConfig : this.configHandler.getConfigurables()) {
             ModConfigSpec.Builder configBuilder = configBuilders.get(ModConfig.Type.COMMON);
             if (configBuilder == null) {
                 configBuilder = new ModConfigSpec.Builder();
@@ -103,7 +103,7 @@ public class ConfigHandlerFabricHandler {
      */
     @SuppressWarnings("unchecked")
     public void syncProcessedConfigs(boolean reload) {
-        for(ExtendedConfig<?, ?, ?> eConfig : this.configHandler.getConfigurables()) {
+        for(ExtendedConfigCommon<?, ?, ?> eConfig : this.configHandler.getConfigurables()) {
             // Re-save additional properties
             for(ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
                 configProperty.saveToField();

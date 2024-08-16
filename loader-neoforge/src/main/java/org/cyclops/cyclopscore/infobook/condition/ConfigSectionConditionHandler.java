@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook.condition;
 
 import org.apache.logging.log4j.util.Strings;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -25,7 +25,7 @@ public class ConfigSectionConditionHandler implements ISectionConditionHandler {
                 throw new IllegalArgumentException("The mod " + modId + " could not be found as ModBase.");
             }
         }
-        ExtendedConfig<?, ?, ?> config = mod.getConfigHandler().getDictionary().get(param);
+        ExtendedConfigCommon<?, ?, ?> config = mod.getConfigHandler().getDictionary().get(param);
         return config != null;
     }
 

@@ -17,9 +17,9 @@ import java.util.function.Function;
 /**
  * Config for fluids.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
-public abstract class FluidConfig extends ExtendedConfig<FluidConfig, BaseFlowingFluid.Properties, ModBase<?>> {
+public abstract class FluidConfig extends ExtendedConfig<FluidConfig, BaseFlowingFluid.Properties> {
 
     /**
      * Make a new instance.

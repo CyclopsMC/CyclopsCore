@@ -15,7 +15,8 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigRegistry;
 import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -38,6 +39,14 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
         // Compiler complains when this is replaced with a lambda :-(
         @Override
         public List<Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>> get() {
+            return Lists.newArrayList();
+        }
+    });
+    // TODO: rm in next major
+    private final Multimap<String, Pair<ExtendedConfigForge<?, ?>, Callable<?>>> registryEntriesHolderOld = Multimaps.newListMultimap(Maps.<String, Collection<Pair<ExtendedConfigForge<?, ?>, Callable<?>>>>newHashMap(), new Supplier<List<Pair<ExtendedConfigForge<?, ?>, Callable<?>>>>() {
+        // Compiler complains when this is replaced with a lambda :-(
+        @Override
+        public List<Pair<ExtendedConfigForge<?, ?>, Callable<?>>> get() {
             return Lists.newArrayList();
         }
     });
@@ -67,6 +76,17 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
         registryEntriesHolder.put(registry.key().toString(), Pair.of(config, callback));
     }
 
+    @Deprecated // TODO: rm in next major
+    public <V> void registerToRegistry(Registry<? super V> registry,
+                                       ExtendedConfigForge<?, V> config,
+                                       @Nullable Callable<?> callback) {
+        if (this.registryEventPassed.contains(registry.key().toString())) {
+            throw new IllegalStateException(String.format("Tried registering %s after its registration event.",
+                    config.getNamedId()));
+        }
+        registryEntriesHolderOld.put(registry.key().toString(), Pair.of(config, callback));
+    }
+
     @SubscribeEvent
     public void onLoad(ModConfigEvent.Loading configEvent) {
         this.getMod().log(Level.TRACE, "Load config");
@@ -83,8 +103,21 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
     public void onRegistryEvent(RegisterEvent event) {
         this.registryEventPassed.add(event.getRegistryKey().toString());
         Registry<?> registry = event.getRegistry();
+
         registryEntriesHolder.get(registry.key().toString()).forEach((pair) -> {
             ExtendedConfigRegistry<?, ?, ?> config = pair.getLeft();
+            event.register(registry.key(), getConfigId(config), (Supplier) config::getInstance);
+            try {
+                if (pair.getRight() != null) {
+                    pair.getRight().call();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        registryEntriesHolderOld.get(registry.key().toString()).forEach((pair) -> {
+            ExtendedConfigForge<?, ?> config = pair.getLeft();
             event.register(registry.key(), getConfigId(config), (Supplier) config::getInstance);
             try {
                 if (pair.getRight() != null) {
@@ -104,7 +137,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
         Map<ModConfig.Type, ModConfigSpec.Builder> configBuilders = new EnumMap<>(ModConfig.Type.class);
 
         // Pass config builder to all configurables
-        for (ExtendedConfig<?, ?, ?> eConfig : getConfigurables()) {
+        for (ExtendedConfigCommon<?, ?, ?> eConfig : getConfigurables()) {
             ModConfigSpec.Builder configBuilder = configBuilders.get(ModConfig.Type.COMMON);
             if (configBuilder == null) {
                 configBuilder = new ModConfigSpec.Builder();
@@ -162,7 +195,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
      */
     @SuppressWarnings("unchecked")
     public void syncProcessedConfigs(ModConfig config, boolean reload) {
-        for(ExtendedConfig<?, ?, ?> eConfig : this.getConfigurables()) {
+        for(ExtendedConfigCommon<?, ?, ?> eConfig : this.getConfigurables()) {
             // Re-save additional properties
             for(ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
                 configProperty.saveToField();
@@ -171,7 +204,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
         }
     }
 
-    protected String getConfigPropertyLegacyPrefix(ExtendedConfig<?, ?, ?> config, ConfigurableProperty annotation) { // TODO: rm in next major version
+    protected String getConfigPropertyLegacyPrefix(ExtendedConfigCommon<?, ?, ?> config, ConfigurableProperty annotation) { // TODO: rm in next major version
         return annotation.namedId().isEmpty() ? config.getNamedId() : annotation.namedId();
     }
 
@@ -212,7 +245,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
     }
 
     @Override
-    public void generateConfigProperties(ExtendedConfig<?, ?, ?> config) throws IllegalArgumentException, IllegalAccessException {
+    public void generateConfigProperties(ExtendedConfigCommon<?, ?, ?> config) throws IllegalArgumentException, IllegalAccessException {
         super.generateConfigProperties(config);
 
         // TODO: rm in next major version
@@ -239,7 +272,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
     }
 
     @Override
-    public void addToConfigDictionary(ExtendedConfig<?, ?, ?> e) {
+    public void addToConfigDictionary(ExtendedConfigCommon<?, ?, ?> e) {
         super.addToConfigDictionary(e);
         if (e instanceof FluidConfig) {
             getConfigDictionary().put(e.getNamedId(), e);

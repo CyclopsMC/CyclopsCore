@@ -12,7 +12,7 @@ import java.util.function.Function;
  * Config for armor materials.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public class ArmorMaterialConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<ArmorMaterialConfigCommon<M>, ArmorMaterial, M> {
 

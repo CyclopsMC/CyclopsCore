@@ -7,7 +7,7 @@ import java.util.function.Function;
 /**
  * Config for capabilities.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public abstract class CapabilityConfig<T> extends CapabilityConfigCommon<T, ModBase<?>> {

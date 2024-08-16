@@ -18,7 +18,7 @@ import java.util.function.Function;
 /**
  * Config for blocks.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public abstract class BlockConfig extends BlockConfigCommon<ModBase<?>> {

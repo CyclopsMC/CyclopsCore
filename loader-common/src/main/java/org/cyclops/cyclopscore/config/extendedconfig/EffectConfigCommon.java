@@ -12,7 +12,7 @@ import java.util.function.Function;
  * Config for potion effects.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public abstract class EffectConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<EffectConfigCommon<M>, MobEffect, M> {
 

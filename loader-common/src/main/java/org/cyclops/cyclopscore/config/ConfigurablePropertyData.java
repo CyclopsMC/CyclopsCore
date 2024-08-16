@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config;
 
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.lang.reflect.Field;
@@ -41,7 +41,7 @@ public final class ConfigurablePropertyData<T> {
      * @param comment Comment of the property for in the config file.
      * @param isCommandable If this property should be able to be changed at runtime via commands.
      * @param configLocation The config location.
-     * @param field The field of the {@link ExtendedConfig} this property refers to.
+     * @param field The field of the {@link ExtendedConfigCommon} this property refers to.
      * @param requiresWorldRestart If this property requires a world restart after change.
      * @param requiresMcRestart If this property requires a minecraft restart after change.
      * @param showInGui If this property should be editable via the gui.

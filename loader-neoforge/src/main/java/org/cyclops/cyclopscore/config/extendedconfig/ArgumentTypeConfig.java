@@ -7,7 +7,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 /**
  * Config for argument types.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public class ArgumentTypeConfig<A extends ArgumentType<?>, T extends ArgumentTypeInfo.Template<A>> extends ArgumentTypeConfigCommon<A, T, ModBase<?>> {

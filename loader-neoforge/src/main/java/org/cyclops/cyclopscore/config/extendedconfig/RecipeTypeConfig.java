@@ -7,7 +7,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 /**
  * Config for recipe types.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public abstract class RecipeTypeConfig<T extends Recipe<?>> extends RecipeTypeConfigCommon<T, ModBase<?>> {

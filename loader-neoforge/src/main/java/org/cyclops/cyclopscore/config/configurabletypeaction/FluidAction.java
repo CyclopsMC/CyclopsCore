@@ -20,7 +20,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
-import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,11 +29,11 @@ import java.util.function.Supplier;
 /**
  * The action used for {@link FluidConfig}.
  * @author rubensworks
- * @see ConfigurableTypeAction
+ * @see ConfigurableTypeActionCommon
  */
 // TODO: append NeoForge to name in next major
 @EventBusSubscriber(modid = Reference.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-public class FluidAction extends ConfigurableTypeAction<FluidConfig, BaseFlowingFluid.Properties, ModBase<?>> {
+public class FluidAction extends ConfigurableTypeAction<FluidConfig, BaseFlowingFluid.Properties> {
 
     private final Multimap<String, Pair<FluidConfig, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<String, Collection<Pair<FluidConfig, Callable<?>>>>newHashMap(), new com.google.common.base.Supplier<List<Pair<FluidConfig, Callable<?>>>>() {
         // Compiler complains when this is replaced with a lambda :-(

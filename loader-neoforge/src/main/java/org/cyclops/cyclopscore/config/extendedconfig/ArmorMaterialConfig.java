@@ -8,7 +8,7 @@ import java.util.function.Function;
 /**
  * Config for armor materials.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public class ArmorMaterialConfig extends ArmorMaterialConfigCommon<ModBase<?>>{

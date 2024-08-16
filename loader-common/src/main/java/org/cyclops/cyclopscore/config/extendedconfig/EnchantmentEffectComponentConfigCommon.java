@@ -12,7 +12,7 @@ import java.util.function.UnaryOperator;
  * Config for enchantment effect components.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public class EnchantmentEffectComponentConfigCommon<T, M extends IModBase> extends ExtendedConfigRegistry<EnchantmentEffectComponentConfigCommon<T, M>, DataComponentType<T>, M> {
 

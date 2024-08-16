@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
 /**
  * Config for enchantment effect components.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public class EnchantmentEffectComponentConfig<T> extends EnchantmentEffectComponentConfigCommon<T, ModBase<?>>{

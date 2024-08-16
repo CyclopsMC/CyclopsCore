@@ -7,7 +7,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 /**
  * Config for recipe conditions.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public abstract class CriterionTriggerConfig<T extends CriterionTriggerInstance> extends CriterionTriggerConfigCommon<T, ModBase<?>> {

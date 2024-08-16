@@ -12,7 +12,7 @@ import java.util.function.Function;
  * Config for villagers.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public abstract class VillagerConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<VillagerConfigCommon<M>, VillagerProfession, M> {
 

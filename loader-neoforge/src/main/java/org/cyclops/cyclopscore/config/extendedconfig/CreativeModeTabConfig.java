@@ -8,7 +8,7 @@ import java.util.function.Function;
 /**
  * Config for creative mode tabs.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public class CreativeModeTabConfig extends CreativeModeTabConfigCommon<ModBase<?>>{

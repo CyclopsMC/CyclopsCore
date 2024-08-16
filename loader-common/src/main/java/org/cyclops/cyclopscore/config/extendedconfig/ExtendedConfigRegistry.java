@@ -13,8 +13,8 @@ import java.util.function.Function;
  * @param <I> The instance corresponding to this config.
  * @param <M> The mod type
  */
-public abstract class ExtendedConfigRegistry<C extends ExtendedConfig<C, I, M>, I, M extends IModBase>
-        extends ExtendedConfig<C, I, M> {
+public abstract class ExtendedConfigRegistry<C extends ExtendedConfigCommon<C, I, M>, I, M extends IModBase>
+        extends ExtendedConfigCommon<C, I, M> {
 
     /**
      * Create a new config

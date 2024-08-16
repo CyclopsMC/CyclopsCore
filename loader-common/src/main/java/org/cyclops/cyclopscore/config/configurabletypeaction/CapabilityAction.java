@@ -7,9 +7,9 @@ import org.cyclops.cyclopscore.init.IModBase;
  * The action used for {@link CapabilityConfigCommon}.
  * @author rubensworks
  * @param <M> The mod type
- * @see ConfigurableTypeAction
+ * @see ConfigurableTypeActionCommon
  */
-public class CapabilityAction<T, M extends IModBase> extends ConfigurableTypeAction<CapabilityConfigCommon<T, M>, T, M> {
+public class CapabilityAction<T, M extends IModBase> extends ConfigurableTypeActionCommon<CapabilityConfigCommon<T, M>, T, M> {
 
     public CapabilityAction() {}
 

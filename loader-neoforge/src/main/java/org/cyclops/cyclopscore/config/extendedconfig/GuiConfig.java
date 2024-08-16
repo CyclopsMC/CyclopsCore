@@ -19,9 +19,9 @@ import java.util.function.Function;
 /**
  * Config for client-side guis and server-side containers.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
-public abstract class GuiConfig<T extends AbstractContainerMenu> extends ExtendedConfigRegistry<GuiConfig<T>, MenuType<T>, ModBase<?>> {
+public abstract class GuiConfig<T extends AbstractContainerMenu> extends ExtendedConfigForge<GuiConfig<T>, MenuType<T>> {
 
     /**
      * Create a new config

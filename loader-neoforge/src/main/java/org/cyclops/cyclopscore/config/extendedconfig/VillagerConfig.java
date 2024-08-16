@@ -8,7 +8,7 @@ import java.util.function.Function;
 /**
  * Config for villagers.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public abstract class VillagerConfig extends VillagerConfigCommon<ModBase<?>> {

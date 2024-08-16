@@ -14,7 +14,7 @@ import java.util.function.Function;
 /**
  * Config for items.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public class ItemConfig extends ItemConfigCommon<ModBase<?>> {

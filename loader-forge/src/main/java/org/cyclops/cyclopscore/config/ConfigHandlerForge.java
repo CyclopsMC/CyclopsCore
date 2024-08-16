@@ -16,7 +16,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigRegistry;
 import org.cyclops.cyclopscore.config.extendedconfig.FluidConfigForge;
 import org.cyclops.cyclopscore.init.ModBaseForge;
@@ -106,7 +106,7 @@ public class ConfigHandlerForge extends ConfigHandler {
         Map<ModConfig.Type, ForgeConfigSpec.Builder> configBuilders = new EnumMap<>(ModConfig.Type.class);
 
         // Pass config builder to all configurables
-        for (ExtendedConfig<?, ?, ?> eConfig : getConfigurables()) {
+        for (ExtendedConfigCommon<?, ?, ?> eConfig : getConfigurables()) {
             ForgeConfigSpec.Builder configBuilder = configBuilders.get(ModConfig.Type.COMMON);
             if (configBuilder == null) {
                 configBuilder = new ForgeConfigSpec.Builder();
@@ -164,7 +164,7 @@ public class ConfigHandlerForge extends ConfigHandler {
      */
     @SuppressWarnings("unchecked")
     public void syncProcessedConfigs(ModConfig config, boolean reload) {
-        for(ExtendedConfig<?, ?, ?> eConfig : this.getConfigurables()) {
+        for(ExtendedConfigCommon<?, ?, ?> eConfig : this.getConfigurables()) {
             // Re-save additional properties
             for(ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
                 configProperty.saveToField();
@@ -192,7 +192,7 @@ public class ConfigHandlerForge extends ConfigHandler {
     }
 
     @Override
-    public void addToConfigDictionary(ExtendedConfig<?, ?, ?> e) {
+    public void addToConfigDictionary(ExtendedConfigCommon<?, ?, ?> e) {
         super.addToConfigDictionary(e);
         if (e instanceof FluidConfigForge<?>) {
             getConfigDictionary().put(e.getNamedId(), e);

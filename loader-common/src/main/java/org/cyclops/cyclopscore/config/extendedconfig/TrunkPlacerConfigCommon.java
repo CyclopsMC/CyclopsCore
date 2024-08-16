@@ -14,7 +14,7 @@ import java.util.function.Function;
  * Config for trunk placer types.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public class TrunkPlacerConfigCommon<T extends TrunkPlacer, M extends IModBase> extends ExtendedConfigRegistry<TrunkPlacerConfigCommon<T, M>, TrunkPlacerType<T>, M> {
 

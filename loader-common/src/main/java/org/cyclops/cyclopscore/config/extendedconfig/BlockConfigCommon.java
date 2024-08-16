@@ -19,7 +19,7 @@ import java.util.function.Function;
  * Config for blocks.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<BlockConfigCommon<M>, Block, M> implements IModelProviderConfig {
 

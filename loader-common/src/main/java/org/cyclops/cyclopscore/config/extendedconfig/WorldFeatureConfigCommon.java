@@ -12,7 +12,7 @@ import java.util.function.Function;
  * Config for world features.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public abstract class WorldFeatureConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<WorldFeatureConfigCommon<M>, Feature<?>, M> {
 

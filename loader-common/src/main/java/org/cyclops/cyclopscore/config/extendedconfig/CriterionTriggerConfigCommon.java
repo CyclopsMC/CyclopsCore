@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.init.IModBase;
  * Config for recipe conditions.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 public abstract class CriterionTriggerConfigCommon<T extends CriterionTriggerInstance, M extends IModBase> extends ExtendedConfigRegistry<CriterionTriggerConfigCommon<T, M>, CriterionTrigger<T>, M> {
 

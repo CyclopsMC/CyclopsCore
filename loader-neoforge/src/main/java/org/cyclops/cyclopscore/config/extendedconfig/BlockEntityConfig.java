@@ -9,7 +9,7 @@ import java.util.function.Function;
 /**
  * Config for block entities.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public abstract class BlockEntityConfig<T extends BlockEntity> extends BlockEntityConfigCommon<T, ModBase<?>> {

@@ -6,7 +6,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 /**
  * Config for loot nbt providers.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public abstract class LootNbtProviderConfig extends LootNbtProviderConfigCommon<ModBase<?>> {

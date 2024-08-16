@@ -11,9 +11,9 @@ import org.cyclops.cyclopscore.init.ModBase;
 /**
  * Config for recipe conditions.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
-public abstract class ConditionConfig<T extends ICondition> extends ExtendedConfigRegistry<ConditionConfig<T>, MapCodec<T>, ModBase<?>> {
+public abstract class ConditionConfig<T extends ICondition> extends ExtendedConfigForge<ConditionConfig<T>, MapCodec<T>> {
 
     public ConditionConfig(ModBase<?> mod, String namedId, MapCodec<T> conditionSerializer) {
         super(mod, namedId, (eConfig) -> conditionSerializer);

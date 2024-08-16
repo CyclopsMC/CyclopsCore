@@ -5,7 +5,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 /**
  * Dummy config.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  *
  */
 @Deprecated // TODO: rm in next major

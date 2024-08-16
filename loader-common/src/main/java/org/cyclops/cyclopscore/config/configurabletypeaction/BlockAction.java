@@ -23,7 +23,7 @@ import java.util.function.BiFunction;
  * The action used for {@link BlockConfigCommon}.
  * @author rubensworks
  * @param <M> The mod type
- * @see ConfigurableTypeAction
+ * @see ConfigurableTypeActionCommon
  */
 public class BlockAction<M extends IModBase> extends ConfigurableTypeActionRegistry<BlockConfigCommon<M>, Block, M> {
 

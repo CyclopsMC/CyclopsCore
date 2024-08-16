@@ -7,10 +7,10 @@ import org.cyclops.cyclopscore.init.IModBase;
  * Dummy config.
  * @author rubensworks
  * @param <M> The mod type
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  *
  */
-public class DummyConfigCommon<M extends IModBase> extends ExtendedConfig<DummyConfigCommon<M>, Void, M>{
+public class DummyConfigCommon<M extends IModBase> extends ExtendedConfigCommon<DummyConfigCommon<M>, Void, M> {
 
     /**
      * Make a new instance.

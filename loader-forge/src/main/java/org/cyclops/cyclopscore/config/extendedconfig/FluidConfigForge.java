@@ -17,9 +17,9 @@ import java.util.function.Function;
 /**
  * Config for fluids.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
-public abstract class FluidConfigForge<M extends ModBaseForge> extends ExtendedConfig<FluidConfigForge<M>, ForgeFlowingFluid.Properties, M> {
+public abstract class FluidConfigForge<M extends ModBaseForge> extends ExtendedConfigCommon<FluidConfigForge<M>, ForgeFlowingFluid.Properties, M> {
 
     /**
      * Make a new instance.

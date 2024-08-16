@@ -27,9 +27,9 @@ import java.util.function.Supplier;
  * Config for entities.
  * @param <T> The entity type
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
-public abstract class EntityConfig<T extends Entity> extends ExtendedConfigRegistry<EntityConfig<T>, EntityType<T>, ModBase<?>> {
+public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge<EntityConfig<T>, EntityType<T>> {
 
     @Nullable
     private ItemConfigCommon<ModBase<?>> spawnEggItemConfig;

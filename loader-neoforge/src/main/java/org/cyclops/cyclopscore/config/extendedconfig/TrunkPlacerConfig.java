@@ -9,7 +9,7 @@ import java.util.function.Function;
 /**
  * Config for trunk placer types.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public class TrunkPlacerConfig<T extends TrunkPlacer> extends TrunkPlacerConfigCommon<T, ModBase<?>> {

@@ -5,9 +5,9 @@ import com.google.common.collect.Sets;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeAction;
+import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeActionCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfigCommon;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigRegistry;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfigCommon;
 import org.cyclops.cyclopscore.init.IModBase;
@@ -30,8 +30,8 @@ import java.util.concurrent.Callable;
 public abstract class ConfigHandler {
 
     private final IModBase mod;
-    private final LinkedHashSet<ExtendedConfig<?, ?, ?>> configurables = new LinkedHashSet<>();
-    private final Map<String, ExtendedConfig<?, ?, ?>> configDictionary = Maps.newHashMap();
+    private final LinkedHashSet<ExtendedConfigCommon<?, ?, ?>> configurables = new LinkedHashSet<>();
+    private final Map<String, ExtendedConfigCommon<?, ?, ?>> configDictionary = Maps.newHashMap();
     private final Set<String> categories = Sets.newHashSet();
     private final Map<String, ConfigurablePropertyData> commandableProperties = Maps.newHashMap();
 
@@ -43,11 +43,11 @@ public abstract class ConfigHandler {
         return mod;
     }
 
-    public LinkedHashSet<ExtendedConfig<?, ?, ?>> getConfigurables() {
+    public LinkedHashSet<ExtendedConfigCommon<?, ?, ?>> getConfigurables() {
         return configurables;
     }
 
-    public Map<String, ExtendedConfig<?, ?, ?>> getConfigDictionary() {
+    public Map<String, ExtendedConfigCommon<?, ?, ?>> getConfigDictionary() {
         return configDictionary;
     }
 
@@ -59,12 +59,12 @@ public abstract class ConfigHandler {
         return commandableProperties;
     }
 
-    public boolean addConfigurable(ExtendedConfig<?, ?, ?> e) {
+    public boolean addConfigurable(ExtendedConfigCommon<?, ?, ?> e) {
         addToConfigDictionary(e);
         return configurables.add(e);
     }
 
-    public void addToConfigDictionary(ExtendedConfig<?, ?, ?> e) {
+    public void addToConfigDictionary(ExtendedConfigCommon<?, ?, ?> e) {
         if (e instanceof BlockConfigCommon || e instanceof ItemConfigCommon) {
             configDictionary.put(e.getNamedId(), e);
         }
@@ -76,38 +76,38 @@ public abstract class ConfigHandler {
      * This is called during mod construction.
      */
     public void loadModInit() {
-        for (ExtendedConfig<?, ?, ?> eConfig : this.configurables) {
+        for (ExtendedConfigCommon<?, ?, ?> eConfig : this.configurables) {
             mod.log(Level.TRACE, "Registering " + eConfig.getNamedId());
             eConfig.getConfigurableType().getConfigurableTypeAction().onRegisterModInit(eConfig);
         }
     }
 
     /**
-     * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeAction#onRegisterForge(ExtendedConfig)}
+     * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeActionCommon#onRegisterForge(ExtendedConfigCommon)}
      * during the net.neoforged.neoforge.registries.NewRegistryEvent event.
      */
     public void loadForgeRegistries() {
-        for (ExtendedConfig<?, ?, ?> eConfig : this.configurables) {
+        for (ExtendedConfigCommon<?, ?, ?> eConfig : this.configurables) {
             eConfig.getConfigurableType().getConfigurableTypeAction().onRegisterForge(eConfig);
         }
     }
 
     /**
-     * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeAction#onRegisterForgeFilled(ExtendedConfig)}
+     * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeActionCommon#onRegisterForgeFilled(ExtendedConfigCommon)}
      * during the RegisterEvent event.
      */
     public void loadForgeRegistriesFilled() {
-        for (ExtendedConfig<?, ?, ?> eConfig : this.configurables) {
+        for (ExtendedConfigCommon<?, ?, ?> eConfig : this.configurables) {
             eConfig.getConfigurableType().getConfigurableTypeAction().onRegisterForgeFilled(eConfig);
         }
     }
 
     /**
-     * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeAction#onRegisterSetup(ExtendedConfig)}
+     * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeActionCommon#onRegisterSetup(ExtendedConfigCommon)}
      * during net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent.
      */
     public void loadSetup() {
-        for (ExtendedConfig<?, ?, ?> eConfig : this.configurables) {
+        for (ExtendedConfigCommon<?, ?, ?> eConfig : this.configurables) {
             eConfig.getConfigurableType().getConfigurableTypeAction().onRegisterSetup(eConfig);
             eConfig.onRegistered();
         }
@@ -125,7 +125,7 @@ public abstract class ConfigHandler {
      * Get the map of config nameid to config.
      * @return The dictionary.
      */
-    public Map<String, ExtendedConfig<?, ?, ?>> getDictionary() {
+    public Map<String, ExtendedConfigCommon<?, ?, ?>> getDictionary() {
         return configDictionary;
     }
 
@@ -141,7 +141,7 @@ public abstract class ConfigHandler {
                                        ExtendedConfigRegistry<?, V, ?> config,
                                        @Nullable Callable<?> callback);
 
-    public static ResourceLocation getConfigId(ExtendedConfigRegistry<?, ?, ?> config) {
+    public static ResourceLocation getConfigId(ExtendedConfigCommon<?, ?, ?> config) {
         return ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId());
     }
 
@@ -149,11 +149,11 @@ public abstract class ConfigHandler {
      * @param annotation The annotation to define the prefix for.
      * @return The prefix that will be used inside the config file for {@link ConfigurablePropertyCommon}'s.
      */
-    protected String getConfigPropertyPrefix(ExtendedConfig<?, ?, ?> config, ConfigurablePropertyCommon annotation) {
+    protected String getConfigPropertyPrefix(ExtendedConfigCommon<?, ?, ?> config, ConfigurablePropertyCommon annotation) {
         return annotation.namedId().isEmpty() ? config.getNamedId() : annotation.namedId();
     }
 
-    public void generateConfigProperties(ExtendedConfig<?, ?, ?> config) throws IllegalArgumentException, IllegalAccessException {
+    public void generateConfigProperties(ExtendedConfigCommon<?, ?, ?> config) throws IllegalArgumentException, IllegalAccessException {
         for(Field field : getAllFields(config.getClass())) {
             if(field.isAnnotationPresent(ConfigurablePropertyCommon.class)) {
                 ConfigurablePropertyCommon annotation = field.getAnnotation(ConfigurablePropertyCommon.class);

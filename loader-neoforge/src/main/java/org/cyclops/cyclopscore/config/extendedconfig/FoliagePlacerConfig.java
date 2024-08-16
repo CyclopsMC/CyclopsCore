@@ -9,7 +9,7 @@ import java.util.function.Function;
 /**
  * Config for foliage placer types.
  * @author rubensworks
- * @see ExtendedConfig
+ * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
 public class FoliagePlacerConfig<T extends FoliagePlacer> extends FoliagePlacerConfigCommon<T, ModBase<?>> {

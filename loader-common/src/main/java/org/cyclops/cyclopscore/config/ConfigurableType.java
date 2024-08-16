@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.config;
 
 import org.cyclops.cyclopscore.config.configurabletypeaction.BlockAction;
 import org.cyclops.cyclopscore.config.configurabletypeaction.CapabilityAction;
-import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeAction;
+import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeActionCommon;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeActionRegistry;
 import org.cyclops.cyclopscore.config.configurabletypeaction.DummyAction;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ItemAction;
@@ -48,9 +48,9 @@ public class ConfigurableType {
 
     private final boolean uniqueInstance;
     @SuppressWarnings("rawtypes")
-    private final Class<? extends ExtendedConfig> configClass;
+    private final Class<? extends ExtendedConfigCommon> configClass;
     @SuppressWarnings("rawtypes")
-    private ConfigurableTypeAction action;
+    private ConfigurableTypeActionCommon action;
     private final String category;
 
     /**
@@ -61,8 +61,8 @@ public class ConfigurableType {
      * @param category The category in which the configs should be saved.
      */
     @SuppressWarnings("rawtypes")
-    public ConfigurableType(boolean uniqueInstance, Class<? extends ExtendedConfig> configClass,
-                            ConfigurableTypeAction action, String category) {
+    public ConfigurableType(boolean uniqueInstance, Class<? extends ExtendedConfigCommon> configClass,
+                            ConfigurableTypeActionCommon action, String category) {
         this.uniqueInstance = uniqueInstance;
         this.configClass = configClass;
         this.action = action;
@@ -81,11 +81,11 @@ public class ConfigurableType {
     }
 
     /**
-     * Get the class that extends {@link ExtendedConfig} this type can hold.
-     * @return The class that extends {@link ExtendedConfig} this type can hold.
+     * Get the class that extends {@link ExtendedConfigCommon} this type can hold.
+     * @return The class that extends {@link ExtendedConfigCommon} this type can hold.
      */
     @SuppressWarnings("rawtypes")
-    public Class<? extends ExtendedConfig> getConfigClass() {
+    public Class<? extends ExtendedConfigCommon> getConfigClass() {
         return configClass;
     }
 
@@ -94,11 +94,11 @@ public class ConfigurableType {
      * @return The action for this type.
      */
     @SuppressWarnings("rawtypes")
-    public ConfigurableTypeAction getConfigurableTypeAction() {
+    public ConfigurableTypeActionCommon getConfigurableTypeAction() {
         return action;
     }
 
-    public void setAction(ConfigurableTypeAction action) {
+    public void setAction(ConfigurableTypeActionCommon action) {
         this.action = action;
     }
 

@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraft.core.Registry;
 import org.cyclops.cyclopscore.config.ConfigHandler;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigRegistry;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
  * @param <M> The mod type
  * @see ConfigHandler
  */
-public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I, M>, I, M extends IModBase> {
+public abstract class ConfigurableTypeActionCommon<C extends ExtendedConfigCommon<C, I, M>, I, M extends IModBase> {
 
     /**
      * Logic to register the eConfig target when the config is being loaded during mod construction.
