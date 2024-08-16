@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class EntityConfig<T extends Entity, M extends ModBase> extends ExtendedConfigForge<EntityConfig<T, M>, EntityType<T>, M> {
+public abstract class EntityConfig<T extends Entity, M extends ModBase> extends ExtendedConfigRegistry<EntityConfig<T, M>, EntityType<T>, M> {
 
     @Nullable
     private ItemConfigCommon<M> spawnEggItemConfig;

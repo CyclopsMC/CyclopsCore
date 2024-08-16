@@ -14,7 +14,7 @@ import java.util.function.UnaryOperator;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public class EnchantmentEffectComponentConfigCommon<T, M extends IModBase> extends ExtendedConfigForge<EnchantmentEffectComponentConfigCommon<T, M>, DataComponentType<T>, M>{
+public class EnchantmentEffectComponentConfigCommon<T, M extends IModBase> extends ExtendedConfigRegistry<EnchantmentEffectComponentConfigCommon<T, M>, DataComponentType<T>, M> {
 
     public EnchantmentEffectComponentConfigCommon(M mod, String namedId, UnaryOperator<DataComponentType.Builder<T>> builder) {
         super(mod, namedId, (eConfig) -> builder.apply(DataComponentType.builder()).build());

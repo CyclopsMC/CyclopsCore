@@ -14,7 +14,7 @@ import java.util.function.UnaryOperator;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public abstract class DataComponentConfigCommon<T, M extends IModBase> extends ExtendedConfigForge<DataComponentConfigCommon<T, M>, DataComponentType<T>, M> {
+public abstract class DataComponentConfigCommon<T, M extends IModBase> extends ExtendedConfigRegistry<DataComponentConfigCommon<T, M>, DataComponentType<T>, M> {
 
     public DataComponentConfigCommon(M mod, String namedId, UnaryOperator<DataComponentType.Builder<T>> builder) {
         super(mod, namedId, (eConfig) -> builder.apply(DataComponentType.builder()).build());

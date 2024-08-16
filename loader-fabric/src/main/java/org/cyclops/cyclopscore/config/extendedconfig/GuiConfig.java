@@ -20,7 +20,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class GuiConfig<T extends AbstractContainerMenu, M extends IModBase> extends ExtendedConfigForge<GuiConfig<T, M>, MenuType<T>, M> {
+public abstract class GuiConfig<T extends AbstractContainerMenu, M extends IModBase> extends ExtendedConfigRegistry<GuiConfig<T, M>, MenuType<T>, M> {
 
     /**
      * Create a new config

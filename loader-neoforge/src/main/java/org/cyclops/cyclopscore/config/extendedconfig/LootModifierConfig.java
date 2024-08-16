@@ -15,7 +15,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class LootModifierConfig<T extends IGlobalLootModifier> extends ExtendedConfigForge<LootModifierConfig<T>, MapCodec<T>, ModBase<?>>{
+public abstract class LootModifierConfig<T extends IGlobalLootModifier> extends ExtendedConfigRegistry<LootModifierConfig<T>, MapCodec<T>, ModBase<?>> {
 
     public LootModifierConfig(ModBase<?> mod, String namedId, Function<LootModifierConfig<T>, MapCodec<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);

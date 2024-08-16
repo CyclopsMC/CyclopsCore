@@ -10,7 +10,7 @@ import org.cyclops.cyclopscore.init.ModBaseForge;
 /**
  * @author rubensworks
  */
-public class CreativeModeTabActionForge<M extends ModBaseForge<M>> extends ConfigurableTypeActionForge<CreativeModeTabConfigCommon<M>, CreativeModeTab, M> {
+public class CreativeModeTabActionForge<M extends ModBaseForge<M>> extends ConfigurableTypeActionRegistry<CreativeModeTabConfigCommon<M>, CreativeModeTab, M> {
     @Override
     public void onRegisterForgeFilled(CreativeModeTabConfigCommon<M> eConfig) {
         super.onRegisterForgeFilled(eConfig);

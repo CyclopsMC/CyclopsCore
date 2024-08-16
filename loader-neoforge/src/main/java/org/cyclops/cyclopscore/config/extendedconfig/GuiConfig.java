@@ -21,7 +21,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class GuiConfig<T extends AbstractContainerMenu, M extends ModBase> extends ExtendedConfigForge<GuiConfig<T, M>, MenuType<T>, M> {
+public abstract class GuiConfig<T extends AbstractContainerMenu, M extends ModBase> extends ExtendedConfigRegistry<GuiConfig<T, M>, MenuType<T>, M> {
 
     /**
      * Create a new config

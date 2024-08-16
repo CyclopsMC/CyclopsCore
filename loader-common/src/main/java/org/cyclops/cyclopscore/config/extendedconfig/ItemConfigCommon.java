@@ -18,7 +18,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public class ItemConfigCommon<M extends IModBase> extends ExtendedConfigForge<ItemConfigCommon<M>, Item, M> implements IModelProviderConfig {
+public class ItemConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<ItemConfigCommon<M>, Item, M> implements IModelProviderConfig {
 
     /**
      * Make a new instance.

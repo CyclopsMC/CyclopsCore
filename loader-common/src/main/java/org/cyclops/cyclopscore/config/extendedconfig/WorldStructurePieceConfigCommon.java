@@ -14,7 +14,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public abstract class WorldStructurePieceConfigCommon<M extends IModBase> extends ExtendedConfigForge<WorldStructurePieceConfigCommon<M>, StructurePieceType, M>{
+public abstract class WorldStructurePieceConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<WorldStructurePieceConfigCommon<M>, StructurePieceType, M> {
 
     public WorldStructurePieceConfigCommon(M mod, String namedId, Function<WorldStructurePieceConfigCommon<M>, StructurePieceType> elementConstructor) {
         super(mod, namedId, elementConstructor);

@@ -11,6 +11,6 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @see ConfigurableTypeAction
  */
 // TODO: append NeoForge to name in next major
-public class GuiAction<T extends AbstractContainerMenu, M extends ModBase> extends ConfigurableTypeActionForge<GuiConfig<T, M>, MenuType<T>, M> {
+public class GuiAction<T extends AbstractContainerMenu, M extends ModBase> extends ConfigurableTypeActionRegistry<GuiConfig<T, M>, MenuType<T>, M> {
 
 }

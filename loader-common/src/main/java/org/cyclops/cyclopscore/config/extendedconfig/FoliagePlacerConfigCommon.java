@@ -16,7 +16,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public class FoliagePlacerConfigCommon<T extends FoliagePlacer, M extends IModBase> extends ExtendedConfigForge<FoliagePlacerConfigCommon<T, M>, FoliagePlacerType<T>, M> {
+public class FoliagePlacerConfigCommon<T extends FoliagePlacer, M extends IModBase> extends ExtendedConfigRegistry<FoliagePlacerConfigCommon<T, M>, FoliagePlacerType<T>, M> {
 
     public FoliagePlacerConfigCommon(M mod, String namedId, Function<FoliagePlacerConfigCommon<T, M>, MapCodec<T>> codec) {
         super(mod, namedId, (eConfig) -> new FoliagePlacerType<>(codec.apply(eConfig)));

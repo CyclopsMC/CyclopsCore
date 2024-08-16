@@ -14,7 +14,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public class CreativeModeTabConfigCommon<M extends IModBase> extends ExtendedConfigForge<CreativeModeTabConfigCommon<M>, CreativeModeTab, M>{
+public class CreativeModeTabConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<CreativeModeTabConfigCommon<M>, CreativeModeTab, M> {
 
     public CreativeModeTabConfigCommon(M mod, String namedId, Function<CreativeModeTabConfigCommon<M>, CreativeModeTab> elementConstructor) {
         super(mod, namedId, elementConstructor);

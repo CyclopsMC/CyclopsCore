@@ -21,7 +21,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConfigForge<BlockConfigCommon<M>, Block, M> implements IModelProviderConfig {
+public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<BlockConfigCommon<M>, Block, M> implements IModelProviderConfig {
 
     @Nullable
     private final BiFunction<BlockConfigCommon<M>, Block, ? extends Item> itemConstructor;

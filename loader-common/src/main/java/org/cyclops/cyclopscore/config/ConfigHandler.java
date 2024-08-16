@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeAction;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfigCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigRegistry;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfigCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -138,10 +138,10 @@ public abstract class ConfigHandler {
      * @param <V> The entry type.
      */
     public abstract <V> void registerToRegistry(Registry<? super V> registry,
-                                       ExtendedConfigForge<?, V, ?> config,
+                                       ExtendedConfigRegistry<?, V, ?> config,
                                        @Nullable Callable<?> callback);
 
-    public static ResourceLocation getConfigId(ExtendedConfigForge<?, ?, ?> config) {
+    public static ResourceLocation getConfigId(ExtendedConfigRegistry<?, ?, ?> config) {
         return ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId());
     }
 

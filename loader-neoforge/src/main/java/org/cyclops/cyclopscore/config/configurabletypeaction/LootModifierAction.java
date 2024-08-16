@@ -11,6 +11,6 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @see ConfigurableTypeAction
  */
 // TODO: append NeoForge to name in next major
-public class LootModifierAction<T extends IGlobalLootModifier> extends ConfigurableTypeActionForge<LootModifierConfig<T>, MapCodec<T>, ModBase<?>> {
+public class LootModifierAction<T extends IGlobalLootModifier> extends ConfigurableTypeActionRegistry<LootModifierConfig<T>, MapCodec<T>, ModBase<?>> {
 
 }

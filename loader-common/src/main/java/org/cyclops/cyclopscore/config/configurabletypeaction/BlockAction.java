@@ -25,7 +25,7 @@ import java.util.function.BiFunction;
  * @param <M> The mod type
  * @see ConfigurableTypeAction
  */
-public class BlockAction<M extends IModBase> extends ConfigurableTypeActionForge<BlockConfigCommon<M>, Block, M> {
+public class BlockAction<M extends IModBase> extends ConfigurableTypeActionRegistry<BlockConfigCommon<M>, Block, M> {
 
     protected static final List<BlockConfigCommon<?>> MODEL_ENTRIES = Lists.newArrayList();
     protected static final List<BlockConfigCommon<?>> COLOR_ENTRIES = Lists.newArrayList();

@@ -13,7 +13,7 @@ import org.cyclops.cyclopscore.init.IModBase;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public abstract class CriterionTriggerConfigCommon<T extends CriterionTriggerInstance, M extends IModBase> extends ExtendedConfigForge<CriterionTriggerConfigCommon<T, M>, CriterionTrigger<T>, M> {
+public abstract class CriterionTriggerConfigCommon<T extends CriterionTriggerInstance, M extends IModBase> extends ExtendedConfigRegistry<CriterionTriggerConfigCommon<T, M>, CriterionTrigger<T>, M> {
 
     public CriterionTriggerConfigCommon(M mod, String namedId, CriterionTrigger<T> criterionTrigger) {
         super(mod, namedId, (eConfig) -> criterionTrigger);

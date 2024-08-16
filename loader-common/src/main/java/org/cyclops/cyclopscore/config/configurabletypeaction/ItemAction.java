@@ -18,7 +18,7 @@ import java.util.List;
  * @param <M> The mod type
  * @see ConfigurableTypeAction
  */
-public class ItemAction<M extends IModBase> extends ConfigurableTypeActionForge<ItemConfigCommon<M>, Item, M>{
+public class ItemAction<M extends IModBase> extends ConfigurableTypeActionRegistry<ItemConfigCommon<M>, Item, M> {
 
     protected static final List<ItemConfigCommon<?>> MODEL_ENTRIES = Lists.newArrayList();
     protected static final List<ItemConfigCommon<?>> COLOR_ENTRIES = Lists.newArrayList();

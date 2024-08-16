@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config;
 
-import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeActionForge;
+import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeActionRegistry;
 import org.cyclops.cyclopscore.config.extendedconfig.GuiConfig;
 
 /**
@@ -8,6 +8,6 @@ import org.cyclops.cyclopscore.config.extendedconfig.GuiConfig;
  */
 public class ConfigurableTypesFabric {
 
-    public static final ConfigurableType GUI = new ConfigurableType(true, GuiConfig.class, new ConfigurableTypeActionForge<>(), "gui");
+    public static final ConfigurableType GUI = new ConfigurableType(true, GuiConfig.class, new ConfigurableTypeActionRegistry<>(), "gui");
 
 }

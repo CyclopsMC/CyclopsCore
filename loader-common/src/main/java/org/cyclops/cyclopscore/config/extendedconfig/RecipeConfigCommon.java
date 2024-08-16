@@ -15,7 +15,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public abstract class RecipeConfigCommon<T extends Recipe<?>, M extends IModBase> extends ExtendedConfigForge<RecipeConfigCommon<T, M>, RecipeSerializer<T>, M> {
+public abstract class RecipeConfigCommon<T extends Recipe<?>, M extends IModBase> extends ExtendedConfigRegistry<RecipeConfigCommon<T, M>, RecipeSerializer<T>, M> {
 
     /**
      * Create a new config

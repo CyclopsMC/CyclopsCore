@@ -13,8 +13,8 @@ import java.util.function.Function;
  * @param <I> The instance corresponding to this config.
  * @param <M> The mod type
  */
-public abstract class ExtendedConfigForge<C extends ExtendedConfig<C, I, M>, I, M extends IModBase>
-        extends ExtendedConfig<C, I, M> { // TODO: in next major version rename this class to ExtendedConfigRegistry
+public abstract class ExtendedConfigRegistry<C extends ExtendedConfig<C, I, M>, I, M extends IModBase>
+        extends ExtendedConfig<C, I, M> {
 
     /**
      * Create a new config
@@ -23,7 +23,7 @@ public abstract class ExtendedConfigForge<C extends ExtendedConfig<C, I, M>, I, 
      * @param namedId            A unique name id
      * @param elementConstructor The element constructor.
      */
-    public ExtendedConfigForge(M mod, String namedId, Function<C, ? extends I> elementConstructor) {
+    public ExtendedConfigRegistry(M mod, String namedId, Function<C, ? extends I> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 

@@ -10,6 +10,6 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  * @see ConfigurableTypeAction
  */
-public class BiomeModifierAction<T extends BiomeModifier, M extends ModBase> extends ConfigurableTypeActionForge<BiomeModifierConfig<T, M>, MapCodec<T>, M> {
+public class BiomeModifierAction<T extends BiomeModifier, M extends ModBase> extends ConfigurableTypeActionRegistry<BiomeModifierConfig<T, M>, MapCodec<T>, M> {
 
 }

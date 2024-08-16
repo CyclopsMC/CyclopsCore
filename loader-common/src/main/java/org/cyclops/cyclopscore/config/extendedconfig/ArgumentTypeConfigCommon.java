@@ -14,7 +14,7 @@ import org.cyclops.cyclopscore.init.IModBase;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public class ArgumentTypeConfigCommon<A extends ArgumentType<?>, T extends ArgumentTypeInfo.Template<A>, M extends IModBase> extends ExtendedConfigForge<ArgumentTypeConfigCommon<A, T, M>, ArgumentTypeInfo<A, T>, M> {
+public class ArgumentTypeConfigCommon<A extends ArgumentType<?>, T extends ArgumentTypeInfo.Template<A>, M extends IModBase> extends ExtendedConfigRegistry<ArgumentTypeConfigCommon<A, T, M>, ArgumentTypeInfo<A, T>, M> {
 
     private final Class<A> infoClass;
 

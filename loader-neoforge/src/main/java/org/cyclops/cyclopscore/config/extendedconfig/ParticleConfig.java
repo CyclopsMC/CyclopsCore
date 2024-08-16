@@ -21,7 +21,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class ParticleConfig<T extends ParticleOptions, M extends ModBase> extends ExtendedConfigForge<ParticleConfig<T, M>, ParticleType<T>, M> {
+public abstract class ParticleConfig<T extends ParticleOptions, M extends ModBase> extends ExtendedConfigRegistry<ParticleConfig<T, M>, ParticleType<T>, M> {
 
     /**
      * Create a new config

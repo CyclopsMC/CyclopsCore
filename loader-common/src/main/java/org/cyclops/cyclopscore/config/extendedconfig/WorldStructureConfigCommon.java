@@ -16,7 +16,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public abstract class WorldStructureConfigCommon<S extends Structure, M extends IModBase> extends ExtendedConfigForge<WorldStructureConfigCommon<S, M>, StructureType<S>, M>{
+public abstract class WorldStructureConfigCommon<S extends Structure, M extends IModBase> extends ExtendedConfigRegistry<WorldStructureConfigCommon<S, M>, StructureType<S>, M> {
 
     public WorldStructureConfigCommon(M mod, String namedId, Function<WorldStructureConfigCommon<S, M>, MapCodec<S>> elementConstructor) {
         super(mod, namedId, elementConstructor.andThen(codec -> () -> codec));

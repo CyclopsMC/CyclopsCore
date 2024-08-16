@@ -14,7 +14,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public abstract class EffectConfigCommon<M extends IModBase> extends ExtendedConfigForge<EffectConfigCommon<M>, MobEffect, M> {
+public abstract class EffectConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<EffectConfigCommon<M>, MobEffect, M> {
 
     /**
      * Make a new instance.

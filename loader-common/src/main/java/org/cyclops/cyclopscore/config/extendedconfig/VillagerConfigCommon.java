@@ -14,7 +14,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public abstract class VillagerConfigCommon<M extends IModBase> extends ExtendedConfigForge<VillagerConfigCommon<M>, VillagerProfession, M> {
+public abstract class VillagerConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<VillagerConfigCommon<M>, VillagerProfession, M> {
 
     /**
      * Make a new instance.

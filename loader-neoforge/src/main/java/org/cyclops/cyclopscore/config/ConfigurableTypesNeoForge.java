@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.config;
 import org.cyclops.cyclopscore.config.configurabletypeaction.BiomeModifierAction;
 import org.cyclops.cyclopscore.config.configurabletypeaction.BlockActionNeoForge;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ConditionAction;
-import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeActionForge;
+import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeActionRegistry;
 import org.cyclops.cyclopscore.config.configurabletypeaction.EntityAction;
 import org.cyclops.cyclopscore.config.configurabletypeaction.FluidAction;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ItemActionNeoForge;
@@ -32,7 +32,7 @@ public class ConfigurableTypesNeoForge {
     public static final ConfigurableType PARTICLE = new ConfigurableType(true, ParticleConfig.class, new ParticleAction<>(), "particle");
 
     // NeoForge-specific
-    public static final ConfigurableType GUI = new ConfigurableType(true, GuiConfig.class, new ConfigurableTypeActionForge<>(), "gui");
+    public static final ConfigurableType GUI = new ConfigurableType(true, GuiConfig.class, new ConfigurableTypeActionRegistry<>(), "gui");
     public static final ConfigurableType FLUID = new ConfigurableType(true, FluidConfig.class, new FluidAction<>(), "fluid");
     public static final ConfigurableType CONDITION = new ConfigurableType(true, ConditionConfig.class, new ConditionAction<>(), "condition");
     public static final ConfigurableType BIOME_MODIFIER = new ConfigurableType(true, BiomeModifierConfig.class, new BiomeModifierAction<>(), "biome_modifier");

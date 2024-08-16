@@ -12,7 +12,7 @@ import org.cyclops.cyclopscore.init.IModBase;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public abstract class LootScoreProviderConfigCommon<M extends IModBase> extends ExtendedConfigForge<LootScoreProviderConfigCommon<M>, LootScoreProviderType, M> {
+public abstract class LootScoreProviderConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<LootScoreProviderConfigCommon<M>, LootScoreProviderType, M> {
 
     public LootScoreProviderConfigCommon(M mod, String namedId, LootScoreProviderType lootItemFunctionType) {
         super(mod, namedId, (eConfig) -> lootItemFunctionType);

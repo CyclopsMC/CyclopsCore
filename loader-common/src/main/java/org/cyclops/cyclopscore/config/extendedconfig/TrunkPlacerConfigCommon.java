@@ -16,7 +16,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public class TrunkPlacerConfigCommon<T extends TrunkPlacer, M extends IModBase> extends ExtendedConfigForge<TrunkPlacerConfigCommon<T, M>, TrunkPlacerType<T>, M> {
+public class TrunkPlacerConfigCommon<T extends TrunkPlacer, M extends IModBase> extends ExtendedConfigRegistry<TrunkPlacerConfigCommon<T, M>, TrunkPlacerType<T>, M> {
 
     public TrunkPlacerConfigCommon(M mod, String namedId, Function<TrunkPlacerConfigCommon<T, M>, MapCodec<T>> codec) {
         super(mod, namedId, (eConfig) -> new TrunkPlacerType<>(codec.apply(eConfig)));

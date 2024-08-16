@@ -15,7 +15,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public class EnchantmentEntityEffectConfigCommon<M extends IModBase> extends ExtendedConfigForge<EnchantmentEntityEffectConfigCommon<M>, MapCodec<? extends EnchantmentEntityEffect>, M>{
+public class EnchantmentEntityEffectConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<EnchantmentEntityEffectConfigCommon<M>, MapCodec<? extends EnchantmentEntityEffect>, M> {
 
     public EnchantmentEntityEffectConfigCommon(M mod, String namedId, Function<EnchantmentEntityEffectConfigCommon<M>, MapCodec<? extends EnchantmentEntityEffect>> elementConstructor) {
         super(mod, namedId, elementConstructor);

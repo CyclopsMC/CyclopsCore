@@ -14,7 +14,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public abstract class SoundEventConfigCommon<M extends IModBase> extends ExtendedConfigForge<SoundEventConfigCommon<M>, SoundEvent, M>{
+public abstract class SoundEventConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<SoundEventConfigCommon<M>, SoundEvent, M> {
 
     public SoundEventConfigCommon(M mod, String namedId, Function<SoundEventConfigCommon<M>, SoundEvent> elementConstructor) {
         super(mod, namedId, elementConstructor);

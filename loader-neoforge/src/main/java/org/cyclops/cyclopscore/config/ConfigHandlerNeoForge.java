@@ -16,7 +16,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigRegistry;
 import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -34,10 +34,10 @@ import java.util.concurrent.Callable;
  */
 public class ConfigHandlerNeoForge extends ConfigHandler {
 
-    private final Multimap<String, Pair<ExtendedConfigForge<?, ?, ?>, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<String, Collection<Pair<ExtendedConfigForge<?, ?, ?>, Callable<?>>>>newHashMap(), new Supplier<List<Pair<ExtendedConfigForge<?, ?, ?>, Callable<?>>>>() {
+    private final Multimap<String, Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<String, Collection<Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>>>newHashMap(), new Supplier<List<Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>>>() {
         // Compiler complains when this is replaced with a lambda :-(
         @Override
-        public List<Pair<ExtendedConfigForge<?, ?, ?>, Callable<?>>> get() {
+        public List<Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>> get() {
             return Lists.newArrayList();
         }
     });
@@ -48,7 +48,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
         mod.getModEventBus().register(this);
     }
 
-    public Multimap<String, Pair<ExtendedConfigForge<?, ?, ?>, Callable<?>>> getRegistryEntriesHolder() {
+    public Multimap<String, Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>> getRegistryEntriesHolder() {
         return registryEntriesHolder;
     }
 
@@ -58,7 +58,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
 
     @Override
     public <V> void registerToRegistry(Registry<? super V> registry,
-                                       ExtendedConfigForge<?, V, ?> config,
+                                       ExtendedConfigRegistry<?, V, ?> config,
                                        @Nullable Callable<?> callback) {
         if (this.registryEventPassed.contains(registry.key().toString())) {
             throw new IllegalStateException(String.format("Tried registering %s after its registration event.",
@@ -84,7 +84,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
         this.registryEventPassed.add(event.getRegistryKey().toString());
         Registry<?> registry = event.getRegistry();
         registryEntriesHolder.get(registry.key().toString()).forEach((pair) -> {
-            ExtendedConfigForge<?, ?, ?> config = pair.getLeft();
+            ExtendedConfigRegistry<?, ?, ?> config = pair.getLeft();
             event.register(registry.key(), getConfigId(config), (Supplier) config::getInstance);
             try {
                 if (pair.getRight() != null) {

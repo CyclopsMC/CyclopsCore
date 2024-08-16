@@ -15,7 +15,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public abstract class BlockEntityConfigCommon<T extends BlockEntity, M extends IModBase> extends ExtendedConfigForge<BlockEntityConfigCommon<T, M>, BlockEntityType<T>, M> {
+public abstract class BlockEntityConfigCommon<T extends BlockEntity, M extends IModBase> extends ExtendedConfigRegistry<BlockEntityConfigCommon<T, M>, BlockEntityType<T>, M> {
 
     /**
      * Create a new config

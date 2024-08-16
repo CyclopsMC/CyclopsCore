@@ -14,7 +14,7 @@ import java.util.function.Function;
  * @param <M> The mod type
  * @see ExtendedConfig
  */
-public class ArmorMaterialConfigCommon<M extends IModBase> extends ExtendedConfigForge<ArmorMaterialConfigCommon<M>, ArmorMaterial, M>{
+public class ArmorMaterialConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<ArmorMaterialConfigCommon<M>, ArmorMaterial, M> {
 
     public ArmorMaterialConfigCommon(M mod, String namedId, Function<ArmorMaterialConfigCommon<M>, ArmorMaterial> elementConstructor) {
         super(mod, namedId, elementConstructor);

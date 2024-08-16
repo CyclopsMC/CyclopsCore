@@ -11,6 +11,6 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @see ConfigurableTypeAction
  */
 // TODO: append NeoForge to name in next major
-public class ConditionAction<T extends ICondition, M extends ModBase> extends ConfigurableTypeActionForge<ConditionConfig<T, M>, MapCodec<T>, M> {
+public class ConditionAction<T extends ICondition, M extends ModBase> extends ConfigurableTypeActionRegistry<ConditionConfig<T, M>, MapCodec<T>, M> {
 
 }

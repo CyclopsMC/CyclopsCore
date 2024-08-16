@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 import net.minecraft.core.Registry;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigRegistry;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import javax.annotation.Nullable;
@@ -61,7 +61,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I, M>, 
      * @param <I> The instance corresponding to this config.
      * @param <M> The mod type
      */
-    public static <C extends ExtendedConfigForge<C, I, M>, I, M extends IModBase> void register(C config) {
+    public static <C extends ExtendedConfigRegistry<C, I, M>, I, M extends IModBase> void register(C config) {
         register(config, () -> {
             config.onForgeRegistered();
             return null;
@@ -76,7 +76,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I, M>, 
      * @param <I> The instance corresponding to this config.
      * @param <M> The mod type
      */
-    public static <C extends ExtendedConfigForge<C, I, M>, I, M extends IModBase> void register(C config, @Nullable Callable<?> callback) {
+    public static <C extends ExtendedConfigRegistry<C, I, M>, I, M extends IModBase> void register(C config, @Nullable Callable<?> callback) {
         register(Objects.requireNonNull(config.getRegistry(),
                 "Tried registering a config for which no registry exists: " + config.getNamedId()), config, callback);
     }
@@ -89,7 +89,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I, M>, 
      * @param <I> The instance corresponding to this config.
      * @param <M> The mod type
      */
-    public static <C extends ExtendedConfigForge<C, I, M>, I, M extends IModBase> void register(Registry<? super I> registry, C config) {
+    public static <C extends ExtendedConfigRegistry<C, I, M>, I, M extends IModBase> void register(Registry<? super I> registry, C config) {
         register(registry, config, null);
     }
 
@@ -102,7 +102,7 @@ public abstract class ConfigurableTypeAction<C extends ExtendedConfig<C, I, M>, 
      * @param <I> The instance corresponding to this config.
      * @param <M> The mod type
      */
-    public static <C extends ExtendedConfigForge<C, I, M>, I, M extends IModBase> void register(Registry<? super I> registry, C config, @Nullable Callable<?> callback) {
+    public static <C extends ExtendedConfigRegistry<C, I, M>, I, M extends IModBase> void register(Registry<? super I> registry, C config, @Nullable Callable<?> callback) {
         config.getMod().getConfigHandler().registerToRegistry(registry, config, callback);
     }
 }

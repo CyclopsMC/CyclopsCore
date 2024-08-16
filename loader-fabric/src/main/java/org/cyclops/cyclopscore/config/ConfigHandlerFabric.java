@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config;
 
 import net.minecraft.core.Registry;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigRegistry;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import javax.annotation.Nullable;
@@ -16,7 +16,7 @@ public class ConfigHandlerFabric extends ConfigHandler {
     }
 
     @Override
-    public <V> void registerToRegistry(Registry<? super V> registry, ExtendedConfigForge<?, V, ?> config, @Nullable Callable<?> callback) {
+    public <V> void registerToRegistry(Registry<? super V> registry, ExtendedConfigRegistry<?, V, ?> config, @Nullable Callable<?> callback) {
         Registry.register(registry, getConfigId(config), config.getInstance());
         if (callback != null) {
             try {
