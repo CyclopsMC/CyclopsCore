@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
@@ -37,6 +38,21 @@ public abstract class BlockConfig extends BlockConfigCommon<ModBase<?>> {
             dynamicItemVariantLocation = null;
         }
     }
+
+    protected static BiFunction<BlockConfig, Block, ? extends BlockItem> getDefaultItemConstructor(ModBase<?> mod) {
+        return getDefaultItemConstructor(mod, null);
+    }
+
+    protected static BiFunction<BlockConfig, Block, ? extends BlockItem> getDefaultItemConstructor(ModBase<?> mod, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
+        return (eConfig, block) -> {
+            Item.Properties itemProperties = new Item.Properties();
+            if (itemPropertiesModifier != null) {
+                itemProperties = itemPropertiesModifier.apply(itemProperties);
+            }
+            return new BlockItem(block, itemProperties);
+        };
+    }
+
     /**
      * Register default block and item models for this block.
      * This should only be used when registering dynamic models.
