@@ -4,7 +4,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.config.ConfigHandler;
+import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
@@ -23,7 +23,7 @@ public interface IModBase {
 
     public IModHelpers getModHelpers();
 
-    public ConfigHandler getConfigHandler();
+    public ConfigHandlerCommon getConfigHandler();
 
     public LoggerHelper getLoggerHelper();
 

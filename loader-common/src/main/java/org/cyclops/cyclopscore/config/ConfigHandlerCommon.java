@@ -27,7 +27,7 @@ import java.util.concurrent.Callable;
  * @author rubensworks
  *
  */
-public abstract class ConfigHandler {
+public abstract class ConfigHandlerCommon {
 
     private final IModBase mod;
     private final LinkedHashSet<ExtendedConfigCommon<?, ?, ?>> configurables = new LinkedHashSet<>();
@@ -35,7 +35,7 @@ public abstract class ConfigHandler {
     private final Set<String> categories = Sets.newHashSet();
     private final Map<String, ConfigurablePropertyData> commandableProperties = Maps.newHashMap();
 
-    public ConfigHandler(IModBase mod) {
+    public ConfigHandlerCommon(IModBase mod) {
         this.mod = mod;
     }
 

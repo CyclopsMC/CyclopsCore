@@ -32,7 +32,7 @@ import java.util.concurrent.Callable;
 /**
  * @author rubensworks
  */
-public class ConfigHandlerForge extends ConfigHandler {
+public class ConfigHandlerForge extends ConfigHandlerCommon {
 
     private final Multimap<String, Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<String, Collection<Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>>>newHashMap(), new Supplier<List<Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>>>() {
         // Compiler complains when this is replaced with a lambda :-(

@@ -7,7 +7,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.config.ConfigHandler;
+import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.CreativeModeTabConfigCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
@@ -126,7 +126,7 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
      * Called when the configs should be registered.
      * @param configHandler The config handler to register to.
      */
-    protected void onConfigsRegister(ConfigHandler configHandler) {
+    protected void onConfigsRegister(ConfigHandlerCommon configHandler) {
         // Register default creative tab
         if (this.hasDefaultCreativeModeTab()) {
             this.getConfigHandler().addConfigurable(this.constructDefaultCreativeModeTabConfig());

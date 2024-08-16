@@ -10,7 +10,7 @@ import java.util.concurrent.Callable;
 /**
  * @author rubensworks
  */
-public class ConfigHandlerFabric extends ConfigHandler {
+public class ConfigHandlerFabric extends ConfigHandlerCommon {
     public ConfigHandlerFabric(IModBase mod) {
         super(mod);
     }

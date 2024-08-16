@@ -11,7 +11,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.NewRegistryEvent;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.config.ConfigHandler;
+import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.ConfigHandlerForge;
 import org.cyclops.cyclopscore.helper.IModHelpersForge;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCommon<T> {
 
     private final ICommonProxyCommon proxy;
-    private final ConfigHandler configHandler;
+    private final ConfigHandlerCommon configHandler;
     private final IEventBus modEventBus;
 
     private boolean loaded = false;
@@ -68,7 +68,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
         return loaded;
     }
 
-    protected ConfigHandler constructConfigHandler() {
+    protected ConfigHandlerCommon constructConfigHandler() {
         return new ConfigHandlerForge(this);
     }
 

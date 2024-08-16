@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraft.core.Registry;
-import org.cyclops.cyclopscore.config.ConfigHandler;
+import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigRegistry;
 import org.cyclops.cyclopscore.init.IModBase;
@@ -12,12 +12,12 @@ import java.util.concurrent.Callable;
 
 /**
  * An action that is used to register Configurables.
- * Used inside of {@link ConfigHandler}.
+ * Used inside of {@link ConfigHandlerCommon}.
  * @author rubensworks
  * @param <C> The subclass of ExtendedConfig.
  * @param <I> The instance corresponding to this config.
  * @param <M> The mod type
- * @see ConfigHandler
+ * @see ConfigHandlerCommon
  */
 public abstract class ConfigurableTypeActionCommon<C extends ExtendedConfigCommon<C, I, M>, I, M extends IModBase> {
 

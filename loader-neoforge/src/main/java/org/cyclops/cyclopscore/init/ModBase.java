@@ -29,6 +29,7 @@ import org.cyclops.cyclopscore.client.key.KeyRegistry;
 import org.cyclops.cyclopscore.command.CommandConfig;
 import org.cyclops.cyclopscore.command.CommandVersion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
+import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.ConfigHandlerNeoForge;
 import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
@@ -64,7 +65,7 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
     public static final EnumReferenceKey<Boolean> REFKEY_INFOBOOK_REWARDS = EnumReferenceKey.create("rewards", Boolean.class);
 
     private final ICommonProxy proxy;
-    private final ConfigHandler configHandler;
+    private final ConfigHandlerCommon configHandler;
     private final Map<EnumReferenceKey<?>, Object> genericReference = Maps.newHashMap();
     private final List<WorldStorage> worldStorages = Lists.newLinkedList();
     private final RegistryManager registryManager;
@@ -186,7 +187,7 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
         return new LoggerHelper(getModId());
     }
 
-    protected ConfigHandler constructConfigHandler() {
+    protected ConfigHandlerCommon constructConfigHandler() {
         return new ConfigHandlerNeoForge(this);
     }
 
@@ -393,8 +394,14 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
      * @param configHandler The config handler to register to.
      */
     @Override
-    protected void onConfigsRegister(ConfigHandler configHandler) { // TODO: remove override in next major
+    protected void onConfigsRegister(ConfigHandlerCommon configHandler) { // TODO: remove override in next major
         super.onConfigsRegister(configHandler);
+        this.onConfigsRegister((ConfigHandler) configHandler);
+    }
+
+    @Deprecated // TODO: rm in next major
+    protected void onConfigsRegister(ConfigHandler configHandler) {
+
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 /**
  * A holder class for properties that go inside the config file.
- * Used inside the {@link ConfigHandler} for configuring the settings of the configurable.
+ * Used inside the {@link ConfigHandlerCommon} for configuring the settings of the configurable.
  * Do no confuse with {@link ConfigurablePropertyCommon} which is an annotation an is internally used to
  * make new instances of {@link ConfigurablePropertyData}.
  * @author rubensworks
