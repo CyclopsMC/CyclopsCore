@@ -20,10 +20,12 @@ import java.util.function.Consumer;
 public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseCommon<T> implements ModInitializer {
 
     private boolean loaded = false;
+    private final ICommonProxyCommon proxy;
     private final ConfigHandlerFabric configHandler;
 
     public ModBaseFabric(String modId, Consumer<T> instanceSetter) {
         super(modId, instanceSetter);
+        this.proxy = getModHelpers().getMinecraftHelpers().isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
         this.configHandler = constructConfigHandler();
 
         // Initialize config handler
@@ -66,6 +68,11 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
     @Override
     public IModHelpersFabric getModHelpers() {
         return ModHelpersFabric.INSTANCE;
+    }
+
+    @Override
+    public ICommonProxyCommon getProxy() {
+        return proxy;
     }
 
     @Override

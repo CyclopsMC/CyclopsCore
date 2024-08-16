@@ -63,6 +63,7 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
     public static final EnumReferenceKey<Boolean> REFKEY_CRASH_ON_MODCOMPAT_CRASH = EnumReferenceKey.create("crash_on_modcompat_crash", Boolean.class);
     public static final EnumReferenceKey<Boolean> REFKEY_INFOBOOK_REWARDS = EnumReferenceKey.create("rewards", Boolean.class);
 
+    private final ICommonProxy proxy;
     private final ConfigHandler configHandler;
     private final Map<EnumReferenceKey<?>, Object> genericReference = Maps.newHashMap();
     private final List<WorldStorage> worldStorages = Lists.newLinkedList();
@@ -78,6 +79,7 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
     public ModBase(String modId, Consumer<T> instanceSetter, IEventBus modEventBus) {
         super(modId, instanceSetter);
         this.modEventBus = modEventBus;
+        this.proxy = getModHelpers().getMinecraftHelpers().isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
         this.configHandler = constructConfigHandler();
         this.registryManager = constructRegistryManager();
         this.keyRegistry = new KeyRegistry();
@@ -122,6 +124,11 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
     @Override
     public LoggerHelper getLoggerHelper() { // TODO: rm in next major version
         return super.getLoggerHelper();
+    }
+
+    @Override
+    public ICommonProxy getProxy() {
+        return proxy;
     }
 
     @Override
@@ -388,13 +395,6 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
     @Override
     protected void onConfigsRegister(ConfigHandler configHandler) { // TODO: remove override in next major
         super.onConfigsRegister(configHandler);
-    }
-
-    /**
-     * @return The proxy for this mod.
-     */
-    public ICommonProxy getProxy() {
-        return (ICommonProxy) super.getProxy();
     }
 
     @Override

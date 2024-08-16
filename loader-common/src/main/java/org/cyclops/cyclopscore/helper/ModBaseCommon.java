@@ -28,7 +28,6 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
 
     private final String modId;
     private final LoggerHelper loggerHelper;
-    private final ICommonProxyCommon proxy;
     private final ModCompatLoader modCompatLoader;
 
     @Nullable
@@ -40,7 +39,6 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
         MOD_BASES.put(modId, this);
         this.modId = modId;
         this.loggerHelper = constructLoggerHelper();
-        this.proxy = getModHelpers().getMinecraftHelpers().isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
         this.modCompatLoader = constructModCompatLoader();
     }
 
@@ -61,11 +59,6 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
     protected abstract IClientProxyCommon constructClientProxy();
 
     protected abstract ICommonProxyCommon constructCommonProxy();
-
-    @Override
-    public ICommonProxyCommon getProxy() {
-        return proxy;
-    }
 
     @Override
     public ModCompatLoader getModCompatLoader() {

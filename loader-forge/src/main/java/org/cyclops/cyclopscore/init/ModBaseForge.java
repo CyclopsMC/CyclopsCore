@@ -28,6 +28,7 @@ import java.util.function.Consumer;
  */
 public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCommon<T> {
 
+    private final ICommonProxyCommon proxy;
     private final ConfigHandler configHandler;
     private final IEventBus modEventBus;
 
@@ -36,6 +37,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
     public ModBaseForge(String modId, Consumer<T> instanceSetter) {
         super(modId, instanceSetter);
         this.modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        this.proxy = getModHelpers().getMinecraftHelpers().isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
         this.configHandler = constructConfigHandler();
 
         // Register listeners
@@ -73,6 +75,11 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
     @Override
     public IModHelpersForge getModHelpers() {
         return ModHelpersForge.INSTANCE;
+    }
+
+    @Override
+    public ICommonProxyCommon getProxy() {
+        return proxy;
     }
 
     @Override
