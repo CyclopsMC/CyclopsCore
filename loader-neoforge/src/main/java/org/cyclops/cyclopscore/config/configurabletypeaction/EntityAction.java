@@ -12,6 +12,6 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @see ConfigurableTypeAction
  */
 // TODO: append NeoForge to name in next major
-public class EntityAction<T extends Entity, M extends ModBase> extends ConfigurableTypeActionRegistry<EntityConfig<T, M>, EntityType<T>, M> {
+public class EntityAction<T extends Entity> extends ConfigurableTypeActionRegistry<EntityConfig<T>, EntityType<T>, ModBase<?>> {
 
 }

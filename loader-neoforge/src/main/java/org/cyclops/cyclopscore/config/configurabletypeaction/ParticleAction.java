@@ -11,6 +11,6 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @see ConfigurableTypeAction
  */
 // TODO: append NeoForge to name in next major
-public class ParticleAction<T extends ParticleOptions, M extends ModBase> extends ConfigurableTypeActionRegistry<ParticleConfig<T, M>, ParticleType<T>, M> {
+public class ParticleAction<T extends ParticleOptions> extends ConfigurableTypeActionRegistry<ParticleConfig<T>, ParticleType<T>, ModBase<?>> {
 
 }

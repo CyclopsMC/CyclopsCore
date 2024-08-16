@@ -21,7 +21,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class ParticleConfig<T extends ParticleOptions, M extends ModBase> extends ExtendedConfigRegistry<ParticleConfig<T, M>, ParticleType<T>, M> {
+public abstract class ParticleConfig<T extends ParticleOptions> extends ExtendedConfigRegistry<ParticleConfig<T>, ParticleType<T>, ModBase<?>> {
 
     /**
      * Create a new config
@@ -30,7 +30,7 @@ public abstract class ParticleConfig<T extends ParticleOptions, M extends ModBas
      * @param namedId            A unique name id
      * @param elementConstructor The element constructor.
      */
-    public ParticleConfig(M mod, String namedId, Function<ParticleConfig<T, M>, ? extends ParticleType<T>> elementConstructor) {
+    public ParticleConfig(ModBase<?> mod, String namedId, Function<ParticleConfig<T>, ? extends ParticleType<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
         if (mod.getModHelpers().getMinecraftHelpers().isClientSide()) {
             mod.getModEventBus().addListener(this::onParticleFactoryRegister);

@@ -9,14 +9,13 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.client.gui.ScreenFactorySafe;
 import org.cyclops.cyclopscore.config.extendedconfig.GuiConfig;
-import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.inventory.container.ContainerTypeData;
 
 /**
  * Config for {@link ContainerInfoBookTest}.
  * @author rubensworks
  */
-public class ContainerInfoBookTestConfig extends GuiConfig<ContainerInfoBookTest, ModBase<?>> {
+public class ContainerInfoBookTestConfig extends GuiConfig<ContainerInfoBookTest> {
 
     public ContainerInfoBookTestConfig() {
         super(CyclopsCore._instance,

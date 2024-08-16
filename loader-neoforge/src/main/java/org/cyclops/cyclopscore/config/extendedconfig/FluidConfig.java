@@ -19,7 +19,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class FluidConfig<M extends ModBase> extends ExtendedConfig<FluidConfig<M>, BaseFlowingFluid.Properties, M> {
+public abstract class FluidConfig extends ExtendedConfig<FluidConfig, BaseFlowingFluid.Properties, ModBase<?>> {
 
     /**
      * Make a new instance.
@@ -27,7 +27,7 @@ public abstract class FluidConfig<M extends ModBase> extends ExtendedConfig<Flui
      * @param namedId The unique name ID for the configurable.
      * @param elementConstructor The element constructor.
      */
-    public FluidConfig(M mod, String namedId, Function<FluidConfig<M>, BaseFlowingFluid.Properties> elementConstructor) {
+    public FluidConfig(ModBase<?> mod, String namedId, Function<FluidConfig, BaseFlowingFluid.Properties> elementConstructor) {
         super(mod, namedId, elementConstructor);
     }
 

@@ -23,8 +23,8 @@ import org.cyclops.cyclopscore.config.extendedconfig.ParticleConfig;
 public class ConfigurableTypesNeoForge {
 
     static {
-        ConfigurableType.BLOCK.setAction(new BlockActionNeoForge());
-        ConfigurableType.ITEM.setAction(new ItemActionNeoForge());
+        ConfigurableType.BLOCK.setAction(new BlockActionNeoForge<>());
+        ConfigurableType.ITEM.setAction(new ItemActionNeoForge<>());
     }
 
     // The following could be generalized to common if needed
@@ -33,7 +33,7 @@ public class ConfigurableTypesNeoForge {
 
     // NeoForge-specific
     public static final ConfigurableType GUI = new ConfigurableType(true, GuiConfig.class, new ConfigurableTypeActionRegistry<>(), "gui");
-    public static final ConfigurableType FLUID = new ConfigurableType(true, FluidConfig.class, new FluidAction<>(), "fluid");
+    public static final ConfigurableType FLUID = new ConfigurableType(true, FluidConfig.class, new FluidAction(), "fluid");
     public static final ConfigurableType CONDITION = new ConfigurableType(true, ConditionConfig.class, new ConditionAction<>(), "condition");
     public static final ConfigurableType BIOME_MODIFIER = new ConfigurableType(true, BiomeModifierConfig.class, new BiomeModifierAction<>(), "biome_modifier");
     public static final ConfigurableType LOOT_MODIFIER = new ConfigurableType(true, LootModifierConfig.class, new LootModifierAction<>(), "loot_modifier");

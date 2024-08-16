@@ -21,7 +21,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfig
  */
-public abstract class GuiConfig<T extends AbstractContainerMenu, M extends ModBase> extends ExtendedConfigRegistry<GuiConfig<T, M>, MenuType<T>, M> {
+public abstract class GuiConfig<T extends AbstractContainerMenu> extends ExtendedConfigRegistry<GuiConfig<T>, MenuType<T>, ModBase<?>> {
 
     /**
      * Create a new config
@@ -30,7 +30,7 @@ public abstract class GuiConfig<T extends AbstractContainerMenu, M extends ModBa
      * @param namedId            A unique name id
      * @param elementConstructor The element constructor.
      */
-    public GuiConfig(M mod, String namedId, Function<GuiConfig<T, M>, ? extends MenuType<T>> elementConstructor) {
+    public GuiConfig(ModBase<?> mod, String namedId, Function<GuiConfig<T>, ? extends MenuType<T>> elementConstructor) {
         super(mod, namedId, elementConstructor);
         ((ModBase<?>) mod).getModEventBus().addListener(this::onRegisterMenuScreens);
     }

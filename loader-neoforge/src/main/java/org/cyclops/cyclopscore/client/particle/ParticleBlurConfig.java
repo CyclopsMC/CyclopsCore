@@ -12,7 +12,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.config.extendedconfig.ParticleConfig;
-import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
 
@@ -20,7 +19,7 @@ import javax.annotation.Nullable;
  * Config for {@link ParticleBlur}.
  * @author rubensworks
  */
-public class ParticleBlurConfig extends ParticleConfig<ParticleBlurData, ModBase<?>> {
+public class ParticleBlurConfig extends ParticleConfig<ParticleBlurData> {
 
     public ParticleBlurConfig() {
         super(CyclopsCore._instance, "blur", eConfig -> new ParticleType<ParticleBlurData>(false) {

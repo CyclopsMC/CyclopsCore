@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  */
 // TODO: append NeoForge to name in next major
 @EventBusSubscriber(modid = Reference.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
-public class FluidAction<M extends ModBase> extends ConfigurableTypeAction<FluidConfig<M>, BaseFlowingFluid.Properties, M> {
+public class FluidAction extends ConfigurableTypeAction<FluidConfig, BaseFlowingFluid.Properties, ModBase<?>> {
 
     private final Multimap<String, Pair<FluidConfig, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<String, Collection<Pair<FluidConfig, Callable<?>>>>newHashMap(), new com.google.common.base.Supplier<List<Pair<FluidConfig, Callable<?>>>>() {
         // Compiler complains when this is replaced with a lambda :-(
@@ -67,7 +67,7 @@ public class FluidAction<M extends ModBase> extends ConfigurableTypeAction<Fluid
             this.registryEventPassed = true;
             Registry<Fluid> registry = (Registry<Fluid>) event.getRegistry();
             registryEntriesHolder.get(registry.key().toString()).forEach((pair) -> {
-                FluidConfig<M> config = pair.getLeft();
+                FluidConfig config = pair.getLeft();
                 BaseFlowingFluid.Properties instance = config.getInstance();
                 Supplier<Fluid> still = ObfuscationReflectionHelper.getPrivateValue(BaseFlowingFluid.Properties.class, instance, "still");
                 Supplier<Fluid> flowing = ObfuscationReflectionHelper.getPrivateValue(BaseFlowingFluid.Properties.class, instance, "flowing");
@@ -83,7 +83,7 @@ public class FluidAction<M extends ModBase> extends ConfigurableTypeAction<Fluid
             });
         } else if (event.getRegistryKey() == NeoForgeRegistries.FLUID_TYPES.key()) {
             registryEntriesHolder.get(BuiltInRegistries.FLUID.key().toString()).forEach((pair) -> {
-                FluidConfig<M> config = pair.getLeft();
+                FluidConfig config = pair.getLeft();
                 BaseFlowingFluid.Properties instance = config.getInstance();
                 Supplier<FluidType> fluidType = ObfuscationReflectionHelper.getPrivateValue(BaseFlowingFluid.Properties.class, instance, "fluidType");
                 event.register((ResourceKey) event.getRegistry().key(), ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()), fluidType);
