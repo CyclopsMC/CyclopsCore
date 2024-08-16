@@ -23,6 +23,11 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I> extends 
     }
 
     @Override
+    public ModBase<?> getMod() {
+        return super.getMod();
+    }
+
+    @Override
     public String getConfigPropertyPrefix(ConfigurablePropertyCommon annotation) {
         return super.getConfigPropertyPrefix(annotation);
     }
