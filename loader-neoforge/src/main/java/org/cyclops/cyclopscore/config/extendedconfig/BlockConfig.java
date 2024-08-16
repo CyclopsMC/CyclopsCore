@@ -33,7 +33,7 @@ public abstract class BlockConfig extends BlockConfigCommon<ModBase<?>> {
 
     public BlockConfig(ModBase<?> mod, String namedId, Function<BlockConfig, ? extends Block> blockConstructor,
                        @Nullable BiFunction<BlockConfig, Block, ? extends Item> itemConstructor) {
-        super(mod, namedId, (eConfig) -> blockConstructor.apply((BlockConfig) eConfig), (eConfig, block) -> itemConstructor.apply((BlockConfig) eConfig, block));
+        super(mod, namedId, (eConfig) -> blockConstructor.apply((BlockConfig) eConfig), itemConstructor == null ? null : (eConfig, block) -> itemConstructor.apply((BlockConfig) eConfig, block));
         if(mod.getModHelpers().getMinecraftHelpers().isClientSide()) {
             dynamicBlockVariantLocation = null;
             dynamicItemVariantLocation = null;
