@@ -105,7 +105,7 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
         populateDefaultGenericReferences();
 
         // Initialize config handler
-        this.onConfigsRegister(getConfigHandler());
+        this.onConfigsRegister((ConfigHandlerCommon) getConfigHandler());
         getConfigHandler().initialize(Lists.newArrayList());
         getConfigHandler().loadModInit();
 
