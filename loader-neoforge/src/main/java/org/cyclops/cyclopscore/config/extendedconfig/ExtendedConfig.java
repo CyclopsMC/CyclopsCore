@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
+import org.cyclops.cyclopscore.config.ConfigurableProperty;
+import org.cyclops.cyclopscore.config.ConfigurablePropertyCommon;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import java.util.function.Function;
@@ -18,5 +20,18 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I> extends 
      */
     public ExtendedConfig(ModBase<?> mod, String namedId, Function<C, ? extends I> elementConstructor) {
         super(mod, namedId, elementConstructor);
+    }
+
+    @Override
+    public String getConfigPropertyPrefix(ConfigurablePropertyCommon annotation) {
+        return super.getConfigPropertyPrefix(annotation);
+    }
+
+    /**
+     * @param annotation The annotation to define the prefix for.
+     * @return The prefix that will be used inside the config file for {@link ConfigurableProperty}'s.
+     */
+    public String getConfigPropertyPrefix(ConfigurableProperty annotation) {
+        return annotation.namedId().isEmpty() ? this.getNamedId() : annotation.namedId();
     }
 }

@@ -15,6 +15,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigRegistry;
@@ -204,10 +205,6 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
         }
     }
 
-    protected String getConfigPropertyLegacyPrefix(ExtendedConfigCommon<?, ?, ?> config, ConfigurableProperty annotation) { // TODO: rm in next major version
-        return annotation.namedId().isEmpty() ? config.getNamedId() : annotation.namedId();
-    }
-
     public static ModConfigLocation modConfigTypeToLocation(ModConfig.Type modConfigType) { // TODO: rm in next major version
         switch (modConfigType) {
             case COMMON -> {
@@ -255,7 +252,7 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
                 ConfigurablePropertyData<?> configProperty = new ConfigurablePropertyData<>(
                         getMod(),
                         annotation.category(),
-                        getConfigPropertyLegacyPrefix(config, annotation) + "." + field.getName(),
+                        config instanceof ExtendedConfig configLegacy ? configLegacy.getConfigPropertyPrefix(annotation) : getConfigPropertyLegacyPrefix(config, annotation) + "." + field.getName(),
                         field.get(null),
                         annotation.comment(),
                         annotation.isCommandable(),
@@ -269,6 +266,10 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
                 config.configProperties.put(configProperty.getName(), configProperty);
             }
         }
+    }
+
+    protected String getConfigPropertyLegacyPrefix(ExtendedConfigCommon<?, ?, ?> config, ConfigurableProperty annotation) { // TODO: rm in next major version
+        return annotation.namedId().isEmpty() ? config.getNamedId() : annotation.namedId();
     }
 
     @Override

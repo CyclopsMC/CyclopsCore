@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import com.google.common.collect.Maps;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.config.ConfigurablePropertyCommon;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
 import org.cyclops.cyclopscore.config.ConfigurableType;
 import org.cyclops.cyclopscore.config.CyclopsCoreConfigException;
@@ -172,5 +173,13 @@ public abstract class ExtendedConfigCommon<C extends ExtendedConfigCommon<C, I, 
      */
     public void onConfigPropertyReload(ConfigurablePropertyData<?> configProperty, boolean reload) {
 
+    }
+
+    /**
+     * @param annotation The annotation to define the prefix for.
+     * @return The prefix that will be used inside the config file for {@link ConfigurablePropertyCommon}'s.
+     */
+    public String getConfigPropertyPrefix(ConfigurablePropertyCommon annotation) {
+        return annotation.namedId().isEmpty() ? this.getNamedId() : annotation.namedId();
     }
 }

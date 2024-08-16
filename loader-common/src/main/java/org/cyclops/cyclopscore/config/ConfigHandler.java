@@ -145,14 +145,6 @@ public abstract class ConfigHandler {
         return ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId());
     }
 
-    /**
-     * @param annotation The annotation to define the prefix for.
-     * @return The prefix that will be used inside the config file for {@link ConfigurablePropertyCommon}'s.
-     */
-    protected String getConfigPropertyPrefix(ExtendedConfigCommon<?, ?, ?> config, ConfigurablePropertyCommon annotation) {
-        return annotation.namedId().isEmpty() ? config.getNamedId() : annotation.namedId();
-    }
-
     public void generateConfigProperties(ExtendedConfigCommon<?, ?, ?> config) throws IllegalArgumentException, IllegalAccessException {
         for(Field field : getAllFields(config.getClass())) {
             if(field.isAnnotationPresent(ConfigurablePropertyCommon.class)) {
@@ -160,7 +152,7 @@ public abstract class ConfigHandler {
                 ConfigurablePropertyData<?> configProperty = new ConfigurablePropertyData<>(
                         getMod(),
                         annotation.category(),
-                        getConfigPropertyPrefix(config, annotation) + "." + field.getName(),
+                        config.getConfigPropertyPrefix(annotation) + "." + field.getName(),
                         field.get(null),
                         annotation.comment(),
                         annotation.isCommandable(),
