@@ -10,6 +10,11 @@ import org.cyclops.cyclopscore.modcompat.ICompatInitializer;
  */
 public class ModCompatForgeConfigInitializer implements ICompatInitializer {
     @Override
+    public void initialize() {
+        // Unused
+    }
+
+    @Override
     public void initialize(IModBase mod) {
         new ConfigHandlerFabricHandler(((ModBaseFabric<?>) mod).getConfigHandler()).initialize(Lists.newArrayList());
     }

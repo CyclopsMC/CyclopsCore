@@ -9,12 +9,11 @@ import org.cyclops.cyclopscore.init.IModBase;
  * and will only be loaded if the compat *can* be loaded,
  * so you can safely refer to third-party mod classes in this initializer.
  */
+@FunctionalInterface
 public interface ICompatInitializer {
 
     @Deprecated // TODO: rm in next major
-    public default void initialize() {
-
-    }
+    public void initialize();
 
     public default void initialize(IModBase mod) {
         this.initialize();
