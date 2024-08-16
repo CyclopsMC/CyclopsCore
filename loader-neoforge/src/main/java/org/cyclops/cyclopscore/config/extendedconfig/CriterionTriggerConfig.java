@@ -2,6 +2,10 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -10,8 +14,29 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
-public abstract class CriterionTriggerConfig<T extends CriterionTriggerInstance> extends CriterionTriggerConfigCommon<T, ModBase<?>> {
+public abstract class CriterionTriggerConfig<T extends CriterionTriggerInstance> extends ExtendedConfigForge<CriterionTriggerConfig<T>, CriterionTrigger<T>> {
     public CriterionTriggerConfig(ModBase<?> mod, String namedId, CriterionTrigger<T> criterionTrigger) {
-        super(mod, namedId, criterionTrigger);
+        super(mod, namedId, (eConfig) -> criterionTrigger);
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return "recipecondition." + getMod().getModId() + "." + getNamedId();
+    }
+
+    // Needed for config gui
+    @Override
+    public String getFullTranslationKey() {
+        return getTranslationKey();
+    }
+
+    @Override
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableTypesNeoForge.D_CRITERION_TRIGGER;
+    }
+
+    @Override
+    public Registry<? super CriterionTrigger<T>> getRegistry() {
+        return BuiltInRegistries.TRIGGER_TYPES;
     }
 }

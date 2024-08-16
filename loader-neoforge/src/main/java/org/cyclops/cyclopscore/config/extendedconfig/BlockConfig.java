@@ -2,17 +2,24 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.ConfigurableProperty;
+import org.cyclops.cyclopscore.config.ConfigurableType;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -22,7 +29,13 @@ import java.util.function.Function;
  * @see ExtendedConfigCommon
  */
 @Deprecated // TODO: rm in next major
-public abstract class BlockConfig extends BlockConfigCommon<ModBase<?>> {
+public abstract class BlockConfig extends ExtendedConfigForge<BlockConfig, Block> implements IModelProviderConfig {
+
+    @Nullable
+    private final BiFunction<BlockConfig, Block, ? extends Item> itemConstructor;
+
+    @Nullable
+    private Item itemInstance;
 
     @Deprecated // TODO: Use BlockClientConfig instead; remove in next major
     @OnlyIn(Dist.CLIENT)
@@ -33,7 +46,8 @@ public abstract class BlockConfig extends BlockConfigCommon<ModBase<?>> {
 
     public BlockConfig(ModBase<?> mod, String namedId, Function<BlockConfig, ? extends Block> blockConstructor,
                        @Nullable BiFunction<BlockConfig, Block, ? extends Item> itemConstructor) {
-        super(mod, namedId, (eConfig) -> blockConstructor.apply((BlockConfig) eConfig), itemConstructor == null ? null : (eConfig, block) -> itemConstructor.apply((BlockConfig) eConfig, block));
+        super(mod, namedId, blockConstructor);
+        this.itemConstructor = itemConstructor;
         if(mod.getModHelpers().getMinecraftHelpers().isClientSide()) {
             dynamicBlockVariantLocation = null;
             dynamicItemVariantLocation = null;
@@ -52,6 +66,53 @@ public abstract class BlockConfig extends BlockConfigCommon<ModBase<?>> {
             }
             return new BlockItem(block, itemProperties);
         };
+    }
+
+    @Nullable
+    public BiFunction<BlockConfig, Block, ? extends Item> getItemConstructor() {
+        return itemConstructor;
+    }
+
+    @Nullable
+    public Item getItemInstance() {
+        return itemInstance;
+    }
+
+    public void setItemInstance(@Nullable Item itemInstance) {
+        this.itemInstance = itemInstance;
+    }
+
+    @Override
+    public String getModelName(ItemStack itemStack) {
+        return getNamedId();
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return "block." + getMod().getModId() + "." + getNamedId();
+    }
+
+    @Override
+    public String getFullTranslationKey() {
+        return getTranslationKey();
+    }
+
+    @Override
+    public ConfigurableType getConfigurableType() {
+        return ConfigurableTypesNeoForge.D_BLOCK;
+    }
+
+    public Collection<ItemStack> getDefaultCreativeTabEntriesPublic() { // TODO: rm in next major, and make other method public
+        return this.defaultCreativeTabEntries();
+    }
+
+    protected Collection<ItemStack> defaultCreativeTabEntries() {
+        return Collections.singleton(new ItemStack(getInstance()));
+    }
+
+    @Override
+    public Registry<? super Block> getRegistry() {
+        return BuiltInRegistries.BLOCK;
     }
 
     /**

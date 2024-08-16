@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge<EntityConfig<T>, EntityType<T>> {
 
     @Nullable
-    private ItemConfigCommon<ModBase<?>> spawnEggItemConfig;
+    private ItemConfig spawnEggItemConfig;
 
     public EntityConfig(ModBase<?> mod, String namedId, Function<EntityConfig<T>, EntityType.Builder<T>> elementConstructor) {
         this(mod, namedId, elementConstructor, null);
@@ -98,7 +98,7 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
         return BuiltInRegistries.ENTITY_TYPE;
     }
 
-    public void setSpawnEggItemConfig(@Nullable ItemConfigCommon spawnEggItemConfig) {
+    public void setSpawnEggItemConfig(@Nullable ItemConfig spawnEggItemConfig) {
         this.spawnEggItemConfig = spawnEggItemConfig;
     }
 }
