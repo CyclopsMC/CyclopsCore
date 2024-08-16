@@ -15,11 +15,13 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigRegistry;
 import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
@@ -252,7 +254,10 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
                 ConfigurablePropertyData<?> configProperty = new ConfigurablePropertyData<>(
                         getMod(),
                         annotation.category(),
-                        config instanceof ExtendedConfig configLegacy ? configLegacy.getConfigPropertyPrefix(annotation) : getConfigPropertyLegacyPrefix(config, annotation) + "." + field.getName(),
+                        config instanceof ExtendedConfig configLegacy ? configLegacy.getConfigPropertyPrefixPublic(annotation) :
+                                config instanceof BlockConfig blockConfig ? blockConfig.getConfigPropertyPrefixPublic(annotation) :
+                                        config instanceof ItemConfig itemConfig ? itemConfig.getConfigPropertyPrefixPublic(annotation) :
+                                            getConfigPropertyLegacyPrefix(config, annotation) + "." + field.getName(),
                         field.get(null),
                         annotation.comment(),
                         annotation.isCommandable(),

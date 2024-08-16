@@ -27,11 +27,15 @@ public abstract class ExtendedConfig<C extends ExtendedConfig<C, I>, I> extends 
         return super.getConfigPropertyPrefix(annotation);
     }
 
+    public String getConfigPropertyPrefixPublic(ConfigurableProperty annotation) {
+        return getConfigPropertyPrefix(annotation);
+    }
+
     /**
      * @param annotation The annotation to define the prefix for.
      * @return The prefix that will be used inside the config file for {@link ConfigurableProperty}'s.
      */
-    public String getConfigPropertyPrefix(ConfigurableProperty annotation) {
+    protected String getConfigPropertyPrefix(ConfigurableProperty annotation) {
         return annotation.namedId().isEmpty() ? this.getNamedId() : annotation.namedId();
     }
 }

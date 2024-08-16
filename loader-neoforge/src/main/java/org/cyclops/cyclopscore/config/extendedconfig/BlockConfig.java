@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cyclops.cyclopscore.config.ConfigurableProperty;
 import org.cyclops.cyclopscore.init.ModBase;
 
 import javax.annotation.Nullable;
@@ -75,6 +76,18 @@ public abstract class BlockConfig extends BlockConfigCommon<ModBase<?>> {
     @Deprecated // TODO: Use BlockClientConfig instead; remove in next major
     public BlockColor getBlockColorHandler() {
         return null;
+    }
+
+    public String getConfigPropertyPrefixPublic(ConfigurableProperty annotation) {
+        return getConfigPropertyPrefix(annotation);
+    }
+
+    /**
+     * @param annotation The annotation to define the prefix for.
+     * @return The prefix that will be used inside the config file for {@link ConfigurableProperty}'s.
+     */
+    protected String getConfigPropertyPrefix(ConfigurableProperty annotation) {
+        return annotation.namedId().isEmpty() ? this.getNamedId() : annotation.namedId();
     }
 
 }
