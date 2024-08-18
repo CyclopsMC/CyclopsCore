@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forgeconfigapiport_fabric_version}"
+    modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${fabric_forgeconfigapiport_version}"
 }
 
 task publishCurseForge(type: TaskPublishCurseForge) {

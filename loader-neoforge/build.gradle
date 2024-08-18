@@ -41,7 +41,7 @@ dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}" // Only necessary for the api sourceSet
 
     //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-neoforge:${curios_version}") // https://maven.theillusivec4.top/top/theillusivec4/curios/curios-neoforge/
-    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${neoforge_curios_version}:api"
 
     // Project lombok
     compileOnly 'org.projectlombok:lombok:1.18.30'
