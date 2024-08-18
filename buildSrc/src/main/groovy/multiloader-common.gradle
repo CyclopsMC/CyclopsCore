@@ -47,14 +47,10 @@ def getModrinthKey() {
 }
 def getChangelog() {
     if (System.getenv().RELEASE) {
-        def path = "../resources/changelog/${project.minecraft_version}-${project.version}.txt";
-        if (new File(path).exists()) {
-            return file(path).readText();
-        }
+        return file("../resources/changelog/${project.minecraft_version}-${project.mod_version}.txt").getText();
     } else {
         return "Changes since last release: ${project.github_url}/compare/${project.minecraft_version}-${project.mod_version}...${System.getenv().GITHUB_SHA}"
     }
-    return "";
 }
 ext {
     secrets = getSecrets();
