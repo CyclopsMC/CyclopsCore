@@ -10,7 +10,6 @@ org.cyclops.commoncapabilities.api.ingredient.capability
 org.cyclops.commoncapabilities.api.ingredient.storage
 org.cyclops.cyclopscore
 org.cyclops.cyclopscore.advancement.criterion
-org.cyclops.cyclopscore.algorithm
 org.cyclops.cyclopscore.block
 org.cyclops.cyclopscore.block.component
 org.cyclops.cyclopscore.block.multi
@@ -66,7 +65,6 @@ org.cyclops.cyclopscore.nbt.path.parse
 org.cyclops.cyclopscore.network
 org.cyclops.cyclopscore.network.packet
 org.cyclops.cyclopscore.network.packet.debug
-org.cyclops.cyclopscore.persist
 org.cyclops.cyclopscore.persist.nbt
 org.cyclops.cyclopscore.persist.world
 org.cyclops.cyclopscore.potion
