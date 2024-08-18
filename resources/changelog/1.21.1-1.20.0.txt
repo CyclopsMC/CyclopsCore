@@ -1,0 +1,4 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Refactor code to be compatible with NeoForge, Forge, and Fabric.
