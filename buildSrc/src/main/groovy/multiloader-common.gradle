@@ -9,18 +9,6 @@ plugins {
     id 'com.diffplug.spotless'
 }
 
-// Load secrets
-def getSecrets() {
-    Properties props = new Properties()
-    if (file('../secrets.properties').exists()) {
-        props.load(new FileInputStream(file('../secrets.properties')))
-    }
-    return props
-}
-ext {
-    secrets = getSecrets();
-}
-
 // Determine build number
 String build_number = "DEV" // this will be referenced as simply build_number from now on.
 if (System.getenv().BUILD_NUMBER)
@@ -32,6 +20,47 @@ if (System.getenv().GITHUB_RUN_ID)
 if (System.getenv().RELEASE || System.getenv().TRAVIS_TAG)
     build_number = "RELEASE"
 logger.lifecycle "BUILDING VERSION: " + build_number
+
+// Load secrets
+def getSecrets() {
+    Properties props = new Properties()
+    if (file('../secrets.properties').exists()) {
+        props.load(new FileInputStream(file('../secrets.properties')))
+    }
+    return props
+}
+def getCurseforgeKey() {
+    if(secrets.curseforge_key) {
+        return secrets.curseforge_key
+    } else if(System.getenv().GITHUB_ACTIONS && System.getenv().CURSEFORGE_KEY_SECRET) {
+        return System.getenv().CURSEFORGE_KEY_SECRET
+    } else {
+        return "DUMMY"
+    }
+}
+def getModrinthKey() {
+    if(secrets.modrinth_key) {
+        return secrets.modrinth_key
+    } else if(System.getenv().GITHUB_ACTIONS && System.getenv().MODRINTH_KEY_SECRET) {
+        return System.getenv().MODRINTH_KEY_SECRET
+    } else {
+        return "DUMMY"
+    }
+}
+def getChangelog() {
+    def path = "../resources/changelog/${project.minecraft_version}-${project.version}.txt";
+    if (new File(path).exists()) {
+        return path;
+    }
+    return "";
+}
+ext {
+    secrets = getSecrets();
+    secrets.curseforgeKey = getCurseforgeKey();
+    secrets.modrinthKey = getModrinthKey();
+    secrets.changelog = getChangelog();
+    secrets.build_number = build_number;
+}
 
 // Include build number in version
 if (build_number.equals("RELEASE"))

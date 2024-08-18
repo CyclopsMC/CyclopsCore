@@ -1,3 +1,6 @@
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+import net.darkhax.curseforgegradle.Constants as CFG_Constants
+
 plugins {
     id 'multiloader-loader-neoforge'
 }
@@ -58,3 +61,29 @@ javadoc {
     source = [sourceSets.main.allJava, sourceSets.api.allJava]
     exclude 'org/cyclops/cyclopscore/modcompat/curios/*'
 }
+
+task publishCurseForge(type: TaskPublishCurseForge) {
+    dependsOn(tasks.jar)
+    apiToken = secrets.curseforgeKey;
+    def mainFile = upload(project.curseforge_project_id, jar)
+    mainFile.releaseType = secrets.build_number.equals("RELEASE") ? CFG_Constants.RELEASE_TYPE_RELEASE : CFG_Constants.RELEASE_TYPE_BETA
+    mainFile.changelogType = "text"
+    mainFile.changelog = secrets.changelog ? file(secrets.changelog) : ""
+    mainFile.addJavaVersion("Java ${project.java_version}")
+    mainFile.addGameVersion(project.minecraft_version)
+    mainFile.addModLoader("NeoForge")
+}
+
+modrinth {
+    token = secrets.modrinthKey;
+    projectId = "${modrinth_project_id}"
+    versionNumber = project.minecraft_version + '-' + project.mod_version
+    versionName = "${project.version} for NeoForge ${project.minecraft_version}"
+    versionType = secrets.build_number.equals("RELEASE") ? "release" : "beta"
+    uploadFile = jar
+    gameVersions = [ project.minecraft_version ]
+    if (secrets.changelog) {
+        changelog = provider { file(secrets.changelog).readText() }
+    }
+}
+tasks.modrinth.dependsOn(tasks.jar)
