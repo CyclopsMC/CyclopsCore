@@ -13,11 +13,9 @@ plugins {
 String build_number = "DEV" // this will be referenced as simply build_number from now on.
 if (System.getenv().BUILD_NUMBER)
     build_number = System.getenv().BUILD_NUMBER
-if (System.getenv().TRAVIS_BUILD_NUMBER)
-    build_number = System.getenv().TRAVIS_BUILD_NUMBER
 if (System.getenv().GITHUB_RUN_ID)
     build_number = System.getenv().GITHUB_RUN_NUMBER
-if (System.getenv().RELEASE || System.getenv().TRAVIS_TAG)
+if (System.getenv().RELEASE)
     build_number = "RELEASE"
 logger.lifecycle "BUILDING VERSION: " + build_number
 
@@ -48,9 +46,13 @@ def getModrinthKey() {
     }
 }
 def getChangelog() {
-    def path = "../resources/changelog/${project.minecraft_version}-${project.version}.txt";
-    if (new File(path).exists()) {
-        return file(path).readText();
+    if (System.getenv().RELEASE) {
+        def path = "../resources/changelog/${project.minecraft_version}-${project.version}.txt";
+        if (new File(path).exists()) {
+            return file(path).readText();
+        }
+    } else {
+        return "Changes since last release: ${project.github_url}/compare/${project.minecraft_version}-${project.mod_version}...${System.getenv().GITHUB_SHA}"
     }
     return "";
 }
