@@ -50,7 +50,7 @@ def getModrinthKey() {
 def getChangelog() {
     def path = "../resources/changelog/${project.minecraft_version}-${project.version}.txt";
     if (new File(path).exists()) {
-        return path;
+        return file(path).readText();
     }
     return "";
 }

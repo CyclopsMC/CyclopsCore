@@ -22,7 +22,7 @@ task publishCurseForge(type: TaskPublishCurseForge) {
     def mainFile = upload(project.curseforge_project_id, remapJar)
     mainFile.releaseType = secrets.build_number.equals("RELEASE") ? CFG_Constants.RELEASE_TYPE_RELEASE : CFG_Constants.RELEASE_TYPE_BETA
     mainFile.changelogType = "text"
-    mainFile.changelog = secrets.changelog ? file(secrets.changelog) : ""
+    mainFile.changelog = secrets.changelog
     mainFile.addJavaVersion("Java ${project.java_version}")
     mainFile.addGameVersion(project.minecraft_version)
     mainFile.addModLoader("Fabric")
@@ -40,9 +40,7 @@ modrinth {
     uploadFile = remapJar
     gameVersions = [ project.minecraft_version ]
     loaders = ["fabric", "quilt"]
-    if (secrets.changelog) {
-        changelog = provider { file(secrets.changelog).readText() }
-    }
+    changelog = provider { secrets.changelog }
 
     dependencies {
         optional.project "ohNO6lps" // forge-config-api-port-fabric

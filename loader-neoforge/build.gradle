@@ -68,7 +68,7 @@ task publishCurseForge(type: TaskPublishCurseForge) {
     def mainFile = upload(project.curseforge_project_id, jar)
     mainFile.releaseType = secrets.build_number.equals("RELEASE") ? CFG_Constants.RELEASE_TYPE_RELEASE : CFG_Constants.RELEASE_TYPE_BETA
     mainFile.changelogType = "text"
-    mainFile.changelog = secrets.changelog ? file(secrets.changelog) : ""
+    mainFile.changelog = secrets.changelog
     mainFile.addJavaVersion("Java ${project.java_version}")
     mainFile.addGameVersion(project.minecraft_version)
     mainFile.addModLoader("NeoForge")
@@ -82,8 +82,6 @@ modrinth {
     versionType = secrets.build_number.equals("RELEASE") ? "release" : "beta"
     uploadFile = jar
     gameVersions = [ project.minecraft_version ]
-    if (secrets.changelog) {
-        changelog = provider { file(secrets.changelog).readText() }
-    }
+    changelog = provider { secrets.changelog }
 }
 tasks.modrinth.dependsOn(tasks.jar)
