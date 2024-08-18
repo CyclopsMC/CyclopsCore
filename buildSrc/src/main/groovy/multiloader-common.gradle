@@ -217,7 +217,8 @@ processResources {
             'forge_version'                : forge_version,
             'forge_loader_version_range'   : forge_loader_version_range,
             'forge_update_json_url'        : forge_update_json_url,
-            'java_version'                 : java_version
+            'java_version'                 : java_version,
+            'cyclopscore_version'          : cyclopscore_version
     ]
 
     filesMatching(['pack.mcmeta', 'fabric.mod.json', 'META-INF/mods.toml', 'META-INF/neoforge.mods.toml', 'mixins.*.json']) {
