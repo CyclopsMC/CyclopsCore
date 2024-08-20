@@ -129,7 +129,9 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
                 InfoBookTest.getInstance(), "/data/" + Reference.MOD_ID + "/info/test.xml");
 
         // Load others
-        CraftingHelpers.load();
+        if (getModHelpers().getMinecraftHelpers().isClientSide()) {
+            CraftingHelpers.load();
+        }
     }
 
     @Override

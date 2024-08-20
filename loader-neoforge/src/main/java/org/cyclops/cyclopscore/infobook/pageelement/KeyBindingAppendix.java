@@ -7,11 +7,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.Helpers;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
-import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoBookParser;
 import org.cyclops.cyclopscore.infobook.InfoSection;
+import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
 /**
  * An appendix for key bindings.
@@ -27,7 +26,7 @@ public class KeyBindingAppendix extends SectionAppendix {
 
     public KeyBindingAppendix(IInfoBook infoBook, String keybindingName) throws InfoBookParser.InvalidAppendixException {
         super(infoBook);
-        if (MinecraftHelpers.isClientSide()) {
+        if (infoBook.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
             this.keyBinding = KeyMapping.ALL.get(keybindingName);
             if (this.keyBinding == null) {
                 throw new InfoBookParser.InvalidAppendixException("Could not find a keybinding by name " + keybindingName);

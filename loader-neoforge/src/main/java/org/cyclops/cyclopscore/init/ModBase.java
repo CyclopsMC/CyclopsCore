@@ -33,7 +33,6 @@ import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.ConfigHandlerNeoForge;
 import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersNeoForge;
 import org.cyclops.cyclopscore.modcompat.IMCHandler;
@@ -92,7 +91,7 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
         getModEventBus().addListener(this::setup);
         getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
         getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
-        if (MinecraftHelpers.isClientSide()) {
+        if (getModHelpers().getMinecraftHelpers().isClientSide()) {
             getModEventBus().addListener(this::setupClient);
             getModEventBus().addListener(this::onRegisterKeyMappings);
         }

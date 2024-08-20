@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.util.Strings;
 import org.cyclops.cyclopscore.helper.CraftingHelpers;
 import org.cyclops.cyclopscore.helper.FluidHelpers;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.infobook.condition.ConfigSectionConditionHandler;
 import org.cyclops.cyclopscore.infobook.condition.FluidSectionConditionHandler;
 import org.cyclops.cyclopscore.infobook.condition.ISectionConditionHandler;
@@ -261,7 +260,7 @@ public class InfoBookParser {
         String name = BuiltInRegistries.RECIPE_TYPE.getKey(recipeType).toString();
         registerAppendixFactory(name, (infoBook, node) -> {
             ResourceLocation recipeId = getNodeResourceLocation(node);
-            Optional<RecipeHolder<R>> recipe = MinecraftHelpers.isClientSide()
+            Optional<RecipeHolder<R>> recipe = infoBook.getMod().getModHelpers().getMinecraftHelpers().isClientSide()
                     ? CraftingHelpers.getClientRecipe(recipeType, recipeId)
                     : CraftingHelpers.getServerRecipe(recipeType, recipeId);
             if (!recipe.isPresent()) {

@@ -10,7 +10,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.StringUtils;
 import org.cyclops.cyclopscore.helper.Helpers;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 import org.cyclops.cyclopscore.helper.RenderHelpers;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -38,7 +37,7 @@ public class TextFieldAppendix extends SectionAppendix {
         this.scale = scale;
         this.height = this.text.split("\n").length * 9;
 
-        if (MinecraftHelpers.isClientSide()) {
+        if (infoBook.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
             calculateLines();
         }
     }

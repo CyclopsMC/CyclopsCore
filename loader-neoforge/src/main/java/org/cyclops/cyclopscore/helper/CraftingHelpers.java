@@ -40,9 +40,7 @@ public class CraftingHelpers {
     private static RecipeManager CLIENT_RECIPE_MANAGER;
 
     public static void load() {
-        if (MinecraftHelpers.isClientSide()) {
-            NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, CraftingHelpers::onRecipesLoaded);
-        }
+        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, CraftingHelpers::onRecipesLoaded);
     }
 
     @OnlyIn(Dist.CLIENT)
