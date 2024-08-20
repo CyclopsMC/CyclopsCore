@@ -1,0 +1,4 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix CyclopsCore mod helpers being invoked before mod is initialized, Closes #190
