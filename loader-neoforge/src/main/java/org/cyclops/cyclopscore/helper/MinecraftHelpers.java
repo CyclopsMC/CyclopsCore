@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -7,6 +8,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.loading.FMLEnvironment;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -127,14 +129,15 @@ public class MinecraftHelpers {
      * @return If we are physically running on a client.
      */
     public static boolean isClientSide() {
-        return IModHelpers.get().getMinecraftHelpers().isClientSide();
+        return FMLEnvironment.dist == Dist.CLIENT;
     }
 
     /**
      * @return If we are physically running on a client and are running in the client thread.
      */
     public static boolean isClientSideThread() {
-        return IModHelpers.get().getMinecraftHelpers().isClientSideThread();
+        return isClientSide() && Minecraft.getInstance().level != null
+                && Thread.currentThread() == Minecraft.getInstance().level.thread;
     }
 
 }
