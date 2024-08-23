@@ -29,7 +29,7 @@ public class Helpers {
      * @return integer representation of the color.
      */
     public static int RGBToInt(int r, int g, int b) {
-        return IModHelpers.get().getBaseHelpers().RGBToInt(r, g, b);
+        return (int)r << 16 | (int)g << 8 | (int)b;
     }
 
     /**
@@ -41,7 +41,7 @@ public class Helpers {
      * @return integer representation of the color.
      */
     public static int RGBAToInt(int r, int g, int b, int a) {
-        return IModHelpers.get().getBaseHelpers().RGBAToInt(r, g, b, a);
+        return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
     /**
@@ -51,7 +51,7 @@ public class Helpers {
      * @return The color with alpha.
      */
     public static int addAlphaToColor(int color, int alpha) {
-        return IModHelpers.get().getBaseHelpers().addAlphaToColor(color, alpha);
+        return alpha << 24 | color;
     }
 
     /**
@@ -61,7 +61,7 @@ public class Helpers {
      * @return The color with alpha.
      */
     public static int addAlphaToColor(int color, float alpha) {
-        return IModHelpers.get().getBaseHelpers().addAlphaToColor(color, alpha);
+        return addAlphaToColor(color, Math.round(alpha * 255F));
     }
 
     /**
@@ -70,7 +70,12 @@ public class Helpers {
      * @return The separated r, g and b colors.
      */
     public static Triple<Float, Float, Float> intToRGB(int color) {
-        return IModHelpers.get().getBaseHelpers().intToRGB(color);
+        float red, green, blue;
+        red = (float)(color >> 16 & 255) / 255.0F;
+        green = (float)(color >> 8 & 255) / 255.0F;
+        blue = (float)(color & 255) / 255.0F;
+        //this.alpha = (float)(color >> 24 & 255) / 255.0F;
+        return Triple.of(red, green, blue);
     }
 
     /**
@@ -80,7 +85,11 @@ public class Helpers {
      * @return The color in BGR
      */
     public static int rgbToBgra(int color, int alpha) {
-        return IModHelpers.get().getBaseHelpers().rgbToBgra(color, alpha);
+        Triple<Float, Float, Float> triple = intToRGB(color);
+        // RGB to BGR
+        return RGBAToInt(
+                (int) (float) (triple.getRight() * 255F), (int) (float) (triple.getMiddle() * 255F), (int) (float) (triple.getLeft() * 255F),
+                alpha);
     }
 
     /**
@@ -89,7 +98,7 @@ public class Helpers {
      * @return The color in BGR
      */
     public static int rgbToBgr(int color) {
-        return IModHelpers.get().getBaseHelpers().rgbToBgr(color);
+        return rgbToBgra(color, 255);
     }
 
     /**
@@ -99,7 +108,9 @@ public class Helpers {
      * @return The safe sum.
      */
     public static int addSafe(int a, int b) {
-        return IModHelpers.get().getBaseHelpers().addSafe(a, b);
+        int sum = a + b;
+        if(sum < a || sum < b) return Integer.MAX_VALUE;
+        return sum;
     }
 
     /**
@@ -109,7 +120,9 @@ public class Helpers {
      * @return The safe multiplication.
      */
     public static int multiplySafe(int a, int b) {
-        return IModHelpers.get().getBaseHelpers().multiplySafe(a, b);
+        int mul = a * b;
+        if(a > 0 && b > 0 && (mul < a || mul < b)) return Integer.MAX_VALUE;
+        return mul;
     }
 
     /**
