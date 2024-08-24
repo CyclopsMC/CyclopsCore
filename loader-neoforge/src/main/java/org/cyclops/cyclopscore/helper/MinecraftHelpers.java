@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
+import cpw.mods.modlauncher.TransformingClassLoader;
+import net.minecraft.DetectedVersion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
@@ -9,6 +11,9 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLLoader;
+
+import java.util.Arrays;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -65,7 +70,7 @@ public class MinecraftHelpers {
      * @return If we are currently running inside a deobfuscated development environment.
      */
     public static boolean isDevEnvironment() {
-        return IModHelpers.get().getMinecraftHelpers().isDevEnvironment();
+        return !FMLLoader.isProduction();
     }
 
     /**
@@ -79,14 +84,14 @@ public class MinecraftHelpers {
      * @return The Minecraft version (e.g. "1.14.4")
      */
     public static String getMinecraftVersion() {
-        return IModHelpers.get().getMinecraftHelpers().getMinecraftVersion();
+        return DetectedVersion.BUILT_IN.getName();
     }
 
     /**
      * @return The Minecraft major and minor version (e.g. "1.14")
      */
     public static String getMinecraftVersionMajorMinor() {
-        return IModHelpers.get().getMinecraftHelpers().getMinecraftVersionMajorMinor();
+        return String.join(".", Arrays.asList(getMinecraftVersion().split("\\.")).subList(0, 2));
     }
 
     /**
@@ -94,7 +99,7 @@ public class MinecraftHelpers {
      * @return If in minecraft.
      */
     public static boolean isModdedEnvironment() {
-        return IModHelpers.get().getMinecraftHelpers().isModdedEnvironment();
+        return MinecraftHelpersNeoForge.class.getClassLoader() instanceof TransformingClassLoader;
     }
 
     /**
