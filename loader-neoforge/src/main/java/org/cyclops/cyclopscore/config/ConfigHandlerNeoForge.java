@@ -254,10 +254,10 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
                 ConfigurablePropertyData<?> configProperty = new ConfigurablePropertyData<>(
                         getMod(),
                         annotation.category(),
-                        config instanceof ExtendedConfig configLegacy ? configLegacy.getConfigPropertyPrefixPublic(annotation) :
+                        (config instanceof ExtendedConfig configLegacy ? configLegacy.getConfigPropertyPrefixPublic(annotation) :
                                 config instanceof BlockConfig blockConfig ? blockConfig.getConfigPropertyPrefixPublic(annotation) :
                                         config instanceof ItemConfig itemConfig ? itemConfig.getConfigPropertyPrefixPublic(annotation) :
-                                            getConfigPropertyLegacyPrefix(config, annotation) + "." + field.getName(),
+                                            getConfigPropertyLegacyPrefix(config, annotation)) + "." + field.getName(),
                         field.get(null),
                         annotation.comment(),
                         annotation.isCommandable(),
