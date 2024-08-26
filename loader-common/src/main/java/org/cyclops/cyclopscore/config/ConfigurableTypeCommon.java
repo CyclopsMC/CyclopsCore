@@ -40,6 +40,7 @@ public class ConfigurableTypeCommon {
     public static final ConfigurableTypeCommon DATA_COMPONENT = new ConfigurableTypeCommon(true, DataComponentConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "data_component");
     public static final ConfigurableTypeCommon ARMOR_MATERIAL = new ConfigurableTypeCommon(true, ArmorMaterialConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "armor_material");
     public static final ConfigurableTypeCommon ENCHANTMENT_ENTITY_EFFECT = new ConfigurableTypeCommon(true, EnchantmentEntityEffectConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "enchantment_entity_effect");
+    public static final ConfigurableTypeCommon GUI = new ConfigurableTypeCommon(true, GuiConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "gui");
 
     /**
      * Dummy type, only used for configs that refer to nothing.

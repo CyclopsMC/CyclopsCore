@@ -18,3 +18,13 @@ extendable class net/minecraft/world/level/levelgen/feature/foliageplacers/Folia
 
 # BlockEntityRenderers
 accessible method net/minecraft/client/renderer/blockentity/BlockEntityRenderers register (Lnet/minecraft/world/level/block/entity/BlockEntityType;Lnet/minecraft/client/renderer/blockentity/BlockEntityRendererProvider;)V
+
+# Screens
+accessible class net/minecraft/client/gui/screens/MenuScreens$ScreenConstructor
+
+# Slot
+accessible field net/minecraft/world/inventory/Slot x I
+mutable field net/minecraft/world/inventory/Slot x I
+accessible field net/minecraft/world/inventory/Slot y I
+mutable field net/minecraft/world/inventory/Slot y I
+accessible field net/minecraft/world/inventory/Slot index I

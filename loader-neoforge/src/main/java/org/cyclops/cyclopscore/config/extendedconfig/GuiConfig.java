@@ -21,6 +21,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfigCommon
  */
+@Deprecated // TODO: rm in next major
 public abstract class GuiConfig<T extends AbstractContainerMenu> extends ExtendedConfigForge<GuiConfig<T>, MenuType<T>> {
 
     /**

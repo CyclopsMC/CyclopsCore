@@ -1,12 +1,6 @@
 package org.cyclops.cyclopscore.inventory.container;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import io.netty.handler.codec.EncoderException;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,40 +11,20 @@ import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.apache.logging.log4j.Level;
-import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
-import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.inventory.IValueNotifiable;
-import org.cyclops.cyclopscore.inventory.IValueNotifier;
-import org.cyclops.cyclopscore.inventory.container.button.IContainerButtonAction;
-import org.cyclops.cyclopscore.inventory.container.button.IContainerButtonClickAcceptorServer;
-import org.cyclops.cyclopscore.inventory.slot.SlotArmor;
 import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
-import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 /**
  * A container with inventory.
  * @author rubensworks
  */
-@Deprecated // TODO: rm in next major after porting all neo-specific stuff
-public abstract class ContainerExtended extends AbstractContainerMenu implements IContainerButtonClickAcceptorServer<ContainerExtended>,
-        IValueNotifier, IValueNotifiable {
+public abstract class ContainerExtendedCommon extends AbstractContainerMenu {
 
     private static final EquipmentSlot[] EQUIPMENT_SLOTS = new EquipmentSlot[] {
             EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     protected static final int ITEMBOX = 18;
-
-    private final Map<String, IContainerButtonAction<ContainerExtended>> buttonActions = Maps.newHashMap();
-    private final Map<Integer, CompoundTag> values = Maps.newHashMap();
-    private final List<SyncedGuiVariable<?>> syncedGuiVariables = Lists.newArrayList();
-    private int nextValueId = 0;
-    private IValueNotifiable guiValueListener = null;
 
     private Inventory playerIInventory;
     protected final Player player;
@@ -70,33 +44,10 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
      * @param id The container id.
      * @param inventory The player inventory.
      */
-    public ContainerExtended(@Nullable MenuType<?> type, int id, Inventory inventory) {
+    public ContainerExtendedCommon(@Nullable MenuType<?> type, int id, Inventory inventory) {
         super(type, id);
         this.playerIInventory = inventory;
         this.player = inventory.player;
-    }
-
-    @Override
-    public void broadcastChanges() {
-        super.broadcastChanges();
-        if (!player.level().isClientSide()) {
-            for (SyncedGuiVariable<?> syncedGuiVariable : this.syncedGuiVariables) {
-                syncedGuiVariable.detectAndSendChanges();
-            }
-        }
-    }
-
-    /**
-     * Set the listener that will be triggered when a value in this container is updated by the server.
-     * @param listener The listener that will be triggered.
-     */
-    public void setGuiValueListener(IValueNotifiable listener) {
-        this.guiValueListener = listener;
-    }
-
-    @Override
-    public HolderLookup.Provider getHolderLookupProvider() {
-        return this.player.level().registryAccess();
     }
 
     @Override
@@ -160,19 +111,6 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
 
         // Player inventory
         addInventory(inventory, cols, offsetX, offsetY, rows, cols);
-    }
-
-    /**
-     * Add player armor inventory to the GUI.
-     * @param inventory Inventory of the player
-     * @param offsetX Offset to X
-     * @param offsetY Offset to Y
-     */
-    protected void addPlayerArmorInventory(Inventory inventory, int offsetX, int offsetY) {
-        for (int k = 0; k < 4; ++k) {
-            EquipmentSlot equipmentSlot = EQUIPMENT_SLOTS[k];
-            addSlot(new SlotArmor(inventory, 4 * 9 + (3 - k), offsetX, offsetY + k * ITEMBOX, inventory.player, equipmentSlot));
-        }
     }
 
     protected abstract int getSizeInventory();
@@ -410,7 +348,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                 adjustPhantomSlot(slot, mouseButton, clickType);
                 slot.onTake(player, this.getCarried());
             } else if (slot.mayPlace(stackHeld)) {
-                if (ItemMatch.areItemStacksEqual(stackSlot, stackHeld, ItemMatch.ITEM | ItemMatch.DATA)) {
+                if (ItemStack.isSameItemSameComponents(stackSlot, stackHeld)) {
                     adjustPhantomSlot(slot, mouseButton, clickType);
                 } else {
                     fillPhantomSlot(slot, stackHeld, mouseButton, clickType);
@@ -455,85 +393,6 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
         phantomStack.setCount(stackSize);
 
         slot.set(phantomStack);
-    }
-
-    @Override
-    public void putButtonAction(String buttonId, IContainerButtonAction<ContainerExtended> action) {
-        buttonActions.put(buttonId, action);
-    }
-
-    @Override
-    public boolean onButtonClick(String buttonId) {
-        IContainerButtonAction<ContainerExtended> action;
-        if((action = buttonActions.get(buttonId)) != null) {
-            action.onAction(buttonId, this);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * @return The next unique value id.
-     */
-    protected int getNextValueId() {
-        return nextValueId++;
-    }
-
-    @Override
-    public void setValue(int valueId, CompoundTag value) {
-        if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
-            try {
-                if (!player.level().isClientSide()) { // server -> client
-                    CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getType(), valueId, value), (ServerPlayer) player);
-                } else { // client -> server
-                    CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getType(), valueId, value));
-                }
-                values.put(valueId, value);
-            } catch (EncoderException e) {
-                CyclopsCore.clog(Level.WARN, e.getMessage());
-            }
-        }
-    }
-
-    @Override
-    public CompoundTag getValue(int valueId) {
-        return values.get(valueId);
-    }
-
-    @Override
-    public Set<Integer> getValueIds() {
-        return values.keySet();
-    }
-
-    @Override
-    public MenuType<?> getValueNotifiableType() {
-        return getType();
-    }
-
-    @Override
-    public void onUpdate(int valueId, CompoundTag value) {
-        values.put(valueId, value);
-        if(guiValueListener != null) {
-            guiValueListener.onUpdate(valueId, value);
-        }
-    }
-
-    /**
-     * Register the given variable for automatically sychronizing between client and server.
-     *
-     * This method should be called in the constructor of a container,
-     * and the resulting supplier should be stored.
-     * This resulting supplier can be called at any time by the client to lookup values.
-     *
-     * @param clazz The class of the variable to sync.
-     * @param serverValueSupplier A supplier for the server-side variable value.
-     * @param <T> The variable type.
-     * @return A supplier that can be called for retrieving the value.
-     */
-    public <T> Supplier<T> registerSyncedVariable(Class<T> clazz, Supplier<T> serverValueSupplier) {
-        SyncedGuiVariable<T> variable = new SyncedGuiVariable<>(this, clazz, serverValueSupplier, this.player.level().registryAccess());
-        this.syncedGuiVariables.add(variable);
-        return variable;
     }
 
 }

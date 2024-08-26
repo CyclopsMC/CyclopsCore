@@ -1,43 +1,32 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
-import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.helper.GuiHelpers;
-import org.cyclops.cyclopscore.helper.RenderHelpers;
-import org.cyclops.cyclopscore.inventory.IValueNotifiable;
-import org.cyclops.cyclopscore.inventory.container.ContainerExtended;
-import org.cyclops.cyclopscore.inventory.container.button.IContainerButtonAction;
-import org.cyclops.cyclopscore.network.packet.ButtonClickPacket;
+import org.cyclops.cyclopscore.helper.IModHelpers;
+import org.cyclops.cyclopscore.inventory.container.ContainerExtendedCommon;
 
-import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.List;
 
 /**
  * An extended GUI container.
  * @author rubensworks
  */
-@Deprecated // TODO: rm in next major after porting all neo-specific stuff
-public abstract class ContainerScreenExtended<T extends ContainerExtended> extends AbstractContainerScreen<T>
-        implements IValueNotifiable {
+public abstract class ContainerScreenExtendedCommon<T extends ContainerExtendedCommon> extends AbstractContainerScreen<T> {
+
+    private final IModHelpers modHelpers;
 
     protected T container;
     protected ResourceLocation texture;
     protected int offsetX = 0;
     protected int offsetY = 0;
 
-    public ContainerScreenExtended(T container, Inventory playerInventory, Component title) {
+    public ContainerScreenExtendedCommon(T container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
-        container.setGuiValueListener(this);
+        this.modHelpers = IModHelpers.get();
         this.container = container;
         this.texture = constructGuiTexture();
     }
@@ -83,56 +72,19 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
         guiGraphics.blit(getGuiTexture(), leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY);
     }
 
-    @Override
+    // @Override // This is an override in Forge and NeoForge, but not in Fabric
     public boolean isHovering(Slot slotIn, double mouseX, double mouseY) {
         return this.isHovering(slotIn.x - 1, slotIn.y - 1,
-                GuiHelpers.SLOT_SIZE, GuiHelpers.SLOT_SIZE, mouseX, mouseY);
+                18, 18, mouseX, mouseY);
     }
 
     @Override
     public boolean isHovering(int left, int top, int right, int bottom, double pointX, double pointY) {
-        return RenderHelpers.isPointInRegion(left, top, right, bottom, pointX - this.leftPos, pointY - this.topPos);
+        return this.modHelpers.getRenderHelpers().isPointInRegion(left, top, right, bottom, pointX - this.leftPos, pointY - this.topPos);
     }
 
     public boolean isPointInRegion(Rectangle region, Point mouse) {
         return isHovering(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
-    }
-
-    public void drawTooltip(List<Component> lines, PoseStack poseStack, int x, int y) {
-        GuiHelpers.drawTooltip(this, poseStack, lines, x, y);
-    }
-
-    /**
-     * Call this to create a button pressable callback so that the container is notified as well,
-     * assuming it has a corresponding registered {@link IContainerButtonAction} registered in the container
-     * by the same button id.
-     * @param buttonId The button id.
-     * @param clientPressable An optional pressable that should be called client-side.
-     * @return The created pressable.
-     */
-    protected Button.OnPress createServerPressable(String buttonId, @Nullable Button.OnPress clientPressable) {
-        return (button) -> {
-            if (clientPressable != null) {
-                clientPressable.onPress(button);
-            }
-            if (getMenu().onButtonClick(buttonId)) {
-                CyclopsCore._instance.getPacketHandler().sendToServer(new ButtonClickPacket(buttonId));
-            }
-        };
-    }
-
-    @Override
-    public void onUpdate(int valueId, CompoundTag value) {
-
-    }
-
-    /**
-     * Will send client-side onUpdate events for all stored values
-     */
-    protected void refreshValues() {
-        for (int id : getMenu().getValueIds()) {
-            onUpdate(id, getMenu().getValue(id));
-        }
     }
 
     /**
@@ -147,10 +99,5 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
      */
     public int getGuiTopTotal() {
         return this.topPos + offsetY;
-    }
-
-    @Override
-    public MenuType<?> getValueNotifiableType() {
-        return getMenu().getType();
     }
 }
