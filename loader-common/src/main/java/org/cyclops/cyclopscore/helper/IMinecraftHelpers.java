@@ -1,9 +1,14 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.function.Consumer;
 
 /**
  * @author rubensworks
@@ -112,5 +117,12 @@ public interface IMinecraftHelpers {
      * @return If it is loaded.
      */
     public boolean isModLoaded(String modId);
+
+    /**
+     * Open a menu with the given extra data.
+     * @param containerSupplier A supplier of container properties including the registry name of the container
+     * @param extraDataWriter Consumer to write any additional data the GUI needs
+     */
+    public void openMenu(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter);
 
 }

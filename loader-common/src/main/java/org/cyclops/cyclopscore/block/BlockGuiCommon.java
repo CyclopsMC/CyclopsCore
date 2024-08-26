@@ -18,10 +18,9 @@ import net.minecraft.world.phys.BlockHitResult;
  * @author rubensworks
  *
  */
-@Deprecated // TODO: Use BlockGuiCommon instead; rm in next major
-public abstract class BlockGui extends Block implements IBlockGui {
+public abstract class BlockGuiCommon extends Block implements IBlockGui {
 
-    public BlockGui(Block.Properties properties) {
+    public BlockGuiCommon(Properties properties) {
         super(properties);
     }
 

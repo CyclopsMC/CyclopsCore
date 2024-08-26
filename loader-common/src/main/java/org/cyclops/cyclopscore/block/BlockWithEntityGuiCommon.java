@@ -4,25 +4,23 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntityCommon;
+
+import java.util.function.BiFunction;
 
 /**
- * Block with a gui.
+ * Base block with a block entity and gui.
  *
- * Implement {@link IBlockContainerProvider#get(BlockState, Level, BlockPos)} to specify the gui.
- *
- * Optionally implement {@link #getOpenStat()} to specify a stat on gui opening.
- *
+ * @see BlockWithEntityCommon
+ * @see BlockGuiCommon
  * @author rubensworks
- *
  */
-@Deprecated // TODO: Use BlockGuiCommon instead; rm in next major
-public abstract class BlockGui extends Block implements IBlockGui {
+public abstract class BlockWithEntityGuiCommon extends BlockWithEntityCommon implements IBlockGui {
 
-    public BlockGui(Block.Properties properties) {
-        super(properties);
+    public BlockWithEntityGuiCommon(Properties properties, BiFunction<BlockPos, BlockState, ? extends CyclopsBlockEntityCommon> blockEntitySupplier) {
+        super(properties, blockEntitySupplier);
     }
 
     @Override

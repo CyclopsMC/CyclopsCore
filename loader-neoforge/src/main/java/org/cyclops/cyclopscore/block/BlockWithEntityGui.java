@@ -17,6 +17,7 @@ import java.util.function.BiFunction;
  * @see BlockGui
  * @author rubensworks
  */
+@Deprecated // TODO: Use BlockWithEntityGuiCommon instead; rm in next major
 public abstract class BlockWithEntityGui extends BlockWithEntityCommon implements IBlockGui {
 
     public BlockWithEntityGui(Properties properties, BiFunction<BlockPos, BlockState, CyclopsBlockEntity> blockEntitySupplier) {
