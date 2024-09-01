@@ -51,24 +51,8 @@ public class MinecraftHelpersFabric extends MinecraftHelpersCommon {
 
     @Override
     public void openMenu(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter) {
-        throw new UnsupportedOperationException("openMenu has not been implemented yet for Fabric");
-//        player.openMenu(new ExtendedScreenHandlerFactory<>() {
-//            @Nullable
-//            @Override
-//            public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-//                return containerSupplier.createMenu(i, inventory, player);
-//            }
-//
-//            @Override
-//            public Component getDisplayName() {
-//                return containerSupplier.getDisplayName();
-//            }
-//
-//            @Override
-//            public Object getScreenOpeningData(ServerPlayer player) {
-//                return null;
-//            }
-//        });
+        // TODO: packet buffers are not supported yet. When needed, implement support for ExtendedScreenHandlerFactory which will require registering codecs for containers.
+        player.openMenu(containerSupplier);
     }
 
 }
