@@ -34,8 +34,8 @@ task publishCurseForge(type: TaskPublishCurseForge) {
 modrinth {
     token = secrets.modrinthKey;
     projectId = "${modrinth_project_id}"
-    versionNumber = project.minecraft_version + '-' + project.mod_version
-    versionName = "${project.version} for Fabric ${project.minecraft_version}"
+    versionNumber = project.minecraft_version + '-' + project.version
+    versionName = "${project.version} for Forge ${project.minecraft_version}"
     versionType = secrets.build_number.equals("RELEASE") ? "release" : "beta"
     uploadFile = remapJar
     gameVersions = [ project.minecraft_version ]
