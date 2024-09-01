@@ -48,6 +48,8 @@ public abstract class GuiConfigCommon<T extends AbstractContainerMenu, M extends
     public void onForgeRegistered() {
         super.onForgeRegistered();
 
-        MenuScreens.register(getInstance(), getScreenFactoryProvider().getScreenFactory());
+        if (getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
+            MenuScreens.register(getInstance(), getScreenFactoryProvider().getScreenFactory());
+        }
     }
 }
