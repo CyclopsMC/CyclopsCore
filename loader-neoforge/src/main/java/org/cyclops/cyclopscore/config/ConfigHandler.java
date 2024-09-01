@@ -1,6 +1,9 @@
 package org.cyclops.cyclopscore.config;
 
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
+import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
+import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
 import org.cyclops.cyclopscore.init.ModBase;
 
 /**
@@ -17,6 +20,17 @@ public abstract class ConfigHandler extends ConfigHandlerCommon {
     }
 
     public void addToConfigDictionary(ExtendedConfig<?, ?> e) {
+        if (e instanceof BlockConfig || e instanceof ItemConfig) {
+            getDictionary().put(e.getNamedId(), e);
+        }
+        super.addToConfigDictionary(e);
+    }
+
+    @Override
+    public void addToConfigDictionary(ExtendedConfigCommon<?, ?, ?> e) {
+        if (e instanceof BlockConfig || e instanceof ItemConfig) {
+            getDictionary().put(e.getNamedId(), e);
+        }
         super.addToConfigDictionary(e);
     }
 }
