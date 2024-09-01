@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix config dictionary not being fully populated
+  This could cause mods with infobooks still depending on the old configs
+  API to miss many book entries.
+  Closes CyclopsMC/EvilCraft#1055
+
