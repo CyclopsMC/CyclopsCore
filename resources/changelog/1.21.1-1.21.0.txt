@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Additions for multiloader support
+  * Implement barebones openMenu helper for Fabric
+  * Port base guis and registration to common
+  * Add SimpleInventoryCommon
+  * Move blocks with guis to common
+
