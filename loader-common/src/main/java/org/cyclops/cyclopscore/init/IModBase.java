@@ -27,6 +27,8 @@ public interface IModBase {
 
     public LoggerHelper getLoggerHelper();
 
+    public RegistryManager getRegistryManager();
+
     /**
      * @return The proxy for this mod.
      */

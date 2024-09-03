@@ -10,6 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.CreativeModeTabConfigCommon;
 import org.cyclops.cyclopscore.init.IModBase;
+import org.cyclops.cyclopscore.init.RegistryManager;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.proxy.IClientProxyCommon;
 import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
@@ -28,6 +29,7 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
 
     private final String modId;
     private final LoggerHelper loggerHelper;
+    private final RegistryManager registryManager;
     private final ModCompatLoader modCompatLoader;
 
     @Nullable
@@ -39,6 +41,7 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
         MOD_BASES.put(modId, this);
         this.modId = modId;
         this.loggerHelper = constructLoggerHelper();
+        this.registryManager = constructRegistryManager();
         this.modCompatLoader = constructModCompatLoader();
     }
 
@@ -54,6 +57,14 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
 
     protected LoggerHelper constructLoggerHelper() {
         return new LoggerHelper(getModId());
+    }
+
+    protected RegistryManager constructRegistryManager() {
+        return new RegistryManager();
+    }
+
+    public RegistryManager getRegistryManager() {
+        return registryManager;
     }
 
     protected abstract IClientProxyCommon constructClientProxy();

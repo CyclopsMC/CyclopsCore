@@ -67,7 +67,6 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
     private final ConfigHandlerCommon configHandler;
     private final Map<EnumReferenceKey<?>, Object> genericReference = Maps.newHashMap();
     private final List<WorldStorage> worldStorages = Lists.newLinkedList();
-    private final RegistryManager registryManager;
     private final IKeyRegistry keyRegistry;
     private final PacketHandler packetHandler;
     private final CapabilityConstructorRegistry capabilityConstructorRegistry;
@@ -81,7 +80,6 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
         this.modEventBus = modEventBus;
         this.proxy = getModHelpers().getMinecraftHelpers().isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
         this.configHandler = constructConfigHandler();
-        this.registryManager = constructRegistryManager();
         this.keyRegistry = new KeyRegistry();
         this.packetHandler = constructPacketHandler();
         this.capabilityConstructorRegistry = constructCapabilityConstructorRegistry();
@@ -144,10 +142,6 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
         return worldStorages;
     }
 
-    public RegistryManager getRegistryManager() {
-        return registryManager;
-    }
-
     public IKeyRegistry getKeyRegistry() {
         return keyRegistry;
     }
@@ -188,10 +182,6 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
 
     protected ConfigHandlerCommon constructConfigHandler() {
         return new ConfigHandlerNeoForge(this);
-    }
-
-    protected RegistryManager constructRegistryManager() {
-        return new RegistryManager();
     }
 
     protected PacketHandler constructPacketHandler() {
