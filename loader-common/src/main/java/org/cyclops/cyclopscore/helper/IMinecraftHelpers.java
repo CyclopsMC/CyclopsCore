@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResultHolder;
@@ -124,5 +125,10 @@ public interface IMinecraftHelpers {
      * @param extraDataWriter Consumer to write any additional data the GUI needs
      */
     public void openMenu(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter);
+
+    /**
+     * @return The current server instance.
+     */
+    public MinecraftServer getCurrentServer();
 
 }

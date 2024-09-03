@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit;
  * Several convenience functions for crafting.
  * @author rubensworks
  */
+@Deprecated // TODO: remove in next major version
 public class CraftingHelpers {
 
     private static RecipeManager CLIENT_RECIPE_MANAGER;

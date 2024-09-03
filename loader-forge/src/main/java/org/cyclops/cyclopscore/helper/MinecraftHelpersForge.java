@@ -3,12 +3,14 @@ package org.cyclops.cyclopscore.helper;
 import cpw.mods.modlauncher.TransformingClassLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.cyclops.cyclopscore.CyclopsCoreForge;
 import org.cyclops.cyclopscore.Reference;
 
@@ -55,6 +57,11 @@ public class MinecraftHelpersForge extends MinecraftHelpersCommon {
     @Override
     public void openMenu(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter) {
         player.openMenu(containerSupplier, extraDataWriter);
+    }
+
+    @Override
+    public MinecraftServer getCurrentServer() {
+        return ServerLifecycleHooks.getCurrentServer();
     }
 
 }
