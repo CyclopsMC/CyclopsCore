@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Additions for multiloader support
+  * Add crafting helpers to common
+  * Move registry manager to common
