@@ -25,7 +25,7 @@ public class MinecraftHelpersFabric extends MinecraftHelpersCommon {
     private WeakReference<MinecraftServer> server;
 
     public MinecraftHelpersFabric() {
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
            this.server = new WeakReference<>(server);
         });
     }

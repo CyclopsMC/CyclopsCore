@@ -7,11 +7,15 @@ public class ModHelpersFabric extends ModHelpersCommon implements IModHelpersFab
 
     public static final ModHelpersFabric INSTANCE = new ModHelpersFabric();
 
-    private ModHelpersFabric() {}
+    private final IMinecraftHelpers minecraftHelpers;
+
+    private ModHelpersFabric() {
+        this.minecraftHelpers = new MinecraftHelpersFabric();
+    }
 
     @Override
     public IMinecraftHelpers getMinecraftHelpers() {
-        return new MinecraftHelpersFabric();
+        return this.minecraftHelpers;
     }
 
     @Override
