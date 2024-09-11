@@ -11,6 +11,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.EntityConfig;
  * @see ConfigurableTypeActionCommon
  */
 // TODO: append NeoForge to name in next major
+@Deprecated // TODO: rm in next major
 public class EntityAction<T extends Entity> extends ConfigurableTypeActionForge<EntityConfig<T>, EntityType<T>> {
 
 }

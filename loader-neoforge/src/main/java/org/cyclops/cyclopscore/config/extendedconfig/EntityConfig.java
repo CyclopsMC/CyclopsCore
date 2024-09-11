@@ -29,6 +29,7 @@ import java.util.function.Supplier;
  * @author rubensworks
  * @see ExtendedConfigCommon
  */
+@Deprecated // TODO: rm in next major
 public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge<EntityConfig<T>, EntityType<T>> {
 
     @Nullable

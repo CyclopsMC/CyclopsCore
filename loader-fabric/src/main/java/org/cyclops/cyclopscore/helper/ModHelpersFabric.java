@@ -27,4 +27,9 @@ public class ModHelpersFabric extends ModHelpersCommon implements IModHelpersFab
     public IRenderHelpersFabric getRenderHelpers() {
         return new RenderHelpersFabric(this);
     }
+
+    @Override
+    public IRegistrationHelpers getRegistrationHelpers() {
+        return new RegistrationHelpersFabric();
+    }
 }

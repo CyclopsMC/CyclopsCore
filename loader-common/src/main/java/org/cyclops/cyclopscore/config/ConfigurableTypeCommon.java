@@ -5,6 +5,7 @@ import org.cyclops.cyclopscore.config.configurabletypeaction.CapabilityAction;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeActionCommon;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeActionRegistry;
 import org.cyclops.cyclopscore.config.configurabletypeaction.DummyActionCommon;
+import org.cyclops.cyclopscore.config.configurabletypeaction.EntityActionCommon;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ItemAction;
 import org.cyclops.cyclopscore.config.extendedconfig.*;
 
@@ -41,6 +42,7 @@ public class ConfigurableTypeCommon {
     public static final ConfigurableTypeCommon ARMOR_MATERIAL = new ConfigurableTypeCommon(true, ArmorMaterialConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "armor_material");
     public static final ConfigurableTypeCommon ENCHANTMENT_ENTITY_EFFECT = new ConfigurableTypeCommon(true, EnchantmentEntityEffectConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "enchantment_entity_effect");
     public static final ConfigurableTypeCommon GUI = new ConfigurableTypeCommon(true, GuiConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "gui");
+    public static final ConfigurableTypeCommon ENTITY = new ConfigurableTypeCommon(true, EntityConfigCommon.class, new EntityActionCommon<>(), "entity");
 
     /**
      * Dummy type, only used for configs that refer to nothing.

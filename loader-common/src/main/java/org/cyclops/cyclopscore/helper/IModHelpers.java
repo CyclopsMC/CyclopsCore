@@ -34,4 +34,6 @@ public interface IModHelpers {
 
     public ICraftingHelpers getCraftingHelpers();
 
+    public IRegistrationHelpers getRegistrationHelpers();
+
 }

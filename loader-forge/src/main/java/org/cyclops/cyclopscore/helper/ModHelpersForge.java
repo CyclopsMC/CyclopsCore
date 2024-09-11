@@ -15,6 +15,11 @@ public class ModHelpersForge extends ModHelpersCommon implements IModHelpersForg
     }
 
     @Override
+    public IRegistrationHelpers getRegistrationHelpers() {
+        return new RegistrationHelpersForge();
+    }
+
+    @Override
     public IMinecraftHelpers getMinecraftHelpers() {
         return new MinecraftHelpersForge();
     }
