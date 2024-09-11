@@ -177,8 +177,8 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         configHandler.addConfigurable(new ModItemObtainedTriggerConfig());
 
         // Data components
-        configHandler.addConfigurable(new DataComponentCapacityConfig());
-        configHandler.addConfigurable(new DataComponentEnergyStorageConfig());
+        configHandler.addConfigurable(new DataComponentCapacityConfig(this));
+        configHandler.addConfigurable(new DataComponentEnergyStorageConfig(this));
         configHandler.addConfigurable(new DataComponentFluidContentConfig());
         configHandler.addConfigurable(new DataComponentInventoryConfig());
     }

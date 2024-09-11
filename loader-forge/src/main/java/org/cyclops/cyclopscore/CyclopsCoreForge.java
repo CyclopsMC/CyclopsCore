@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore;
 
 import net.minecraftforge.fml.common.Mod;
+import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
+import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseForge;
@@ -44,5 +46,9 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
         super.onConfigsRegister(configHandler);
 
         configHandler.addConfigurable(new GeneralConfig(this));
+
+        // Data components
+        configHandler.addConfigurable(new DataComponentCapacityConfig(this));
+        configHandler.addConfigurable(new DataComponentEnergyStorageConfig(this));
     }
 }

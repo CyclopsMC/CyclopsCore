@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore;
 
 import net.fabricmc.api.ModInitializer;
+import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
+import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseFabric;
@@ -42,5 +44,9 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
         super.onConfigsRegister(configHandler);
 
         configHandler.addConfigurable(new GeneralConfig(this));
+
+        // Data components
+        configHandler.addConfigurable(new DataComponentCapacityConfig(this));
+        configHandler.addConfigurable(new DataComponentEnergyStorageConfig(this));
     }
 }
