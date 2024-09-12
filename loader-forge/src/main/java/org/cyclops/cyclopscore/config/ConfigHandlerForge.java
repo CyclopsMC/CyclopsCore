@@ -7,12 +7,12 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
@@ -81,21 +81,18 @@ public class ConfigHandlerForge extends ConfigHandlerCommon {
 
     @SubscribeEvent
     public void onRegistryEvent(RegisterEvent event) {
-        if (event.getForgeRegistry() != null) {
-            this.registryEventPassed.add(event.getRegistryKey().toString());
-            IForgeRegistry registry = event.getForgeRegistry();
-            registryEntriesHolder.get(registry.getRegistryKey().toString()).forEach((pair) -> {
-                ExtendedConfigRegistry<?, ?, ?> config = pair.getLeft();
-                registry.register(getConfigId(config), config.getInstance());
-                try {
-                    if (pair.getRight() != null) {
-                        pair.getRight().call();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+        this.registryEventPassed.add(event.getRegistryKey().toString());
+        registryEntriesHolder.get(event.getRegistryKey().toString()).forEach((pair) -> {
+            ExtendedConfigRegistry<?, ?, ?> config = pair.getLeft();
+            event.register((ResourceKey) event.getRegistryKey(), getConfigId(config), (Supplier) config::getInstance);
+            try {
+                if (pair.getRight() != null) {
+                    pair.getRight().call();
                 }
-            });
-        }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     /**

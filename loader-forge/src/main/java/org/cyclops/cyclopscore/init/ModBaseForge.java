@@ -134,8 +134,8 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
      * @param event The Forge registry filling event.
      */
     private void beforeRegistriedFilled(RegisterEvent event) {
-        if (event.getRegistryKey().equals(ForgeRegistries.BLOCKS.getRegistryKey())) {
-            // We only need to call this once, and the ATTRIBUTE event is emitted first.
+        if (event.getRegistryKey().equals(ForgeRegistries.SOUND_EVENTS.getRegistryKey())) {
+            // We only need to call this once, and the SOUND_EVENTS event is emitted first.
             getConfigHandler().loadForgeRegistriesFilled();
         }
     }
