@@ -13,8 +13,11 @@ import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerConfig;
+import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerEventHooksNeoForge;
 import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerConfig;
+import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerTriggerEventHooksNeoForge;
 import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerConfig;
+import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerEventHooksNeoForge;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
 import org.cyclops.cyclopscore.client.particle.ParticleBlurConfig;
 import org.cyclops.cyclopscore.client.particle.ParticleDropColoredConfig;
@@ -132,6 +135,9 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         if (getModHelpers().getMinecraftHelpers().isClientSide()) {
             CraftingHelpers.load();
         }
+        new GuiContainerOpenTriggerEventHooksNeoForge();
+        new ModItemObtainedTriggerEventHooksNeoForge();
+        new ItemCraftedTriggerTriggerEventHooksNeoForge();
     }
 
     @Override
@@ -172,9 +178,9 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         configHandler.addConfigurable(new LootModifierInjectItemConfig());
 
         // Triggers
-        configHandler.addConfigurable(new GuiContainerOpenTriggerConfig());
-        configHandler.addConfigurable(new ItemCraftedTriggerConfig());
-        configHandler.addConfigurable(new ModItemObtainedTriggerConfig());
+        configHandler.addConfigurable(new GuiContainerOpenTriggerConfig<>(this));
+        configHandler.addConfigurable(new ItemCraftedTriggerConfig<>(this));
+        configHandler.addConfigurable(new ModItemObtainedTriggerConfig<>(this));
 
         // Data components
         configHandler.addConfigurable(new DataComponentCapacityConfig(this));

@@ -1,14 +1,13 @@
 package org.cyclops.cyclopscore.advancement.criterion;
 
-import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.config.extendedconfig.CriterionTriggerConfigCommon;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.IModBase;
 
 /**
  * @author rubensworks
  *
  */
-public class GuiContainerOpenTriggerConfig extends CriterionTriggerConfigCommon<GuiContainerOpenTrigger.Instance, ModBase<?>> {
+public class GuiContainerOpenTriggerConfig<M extends IModBase> extends CriterionTriggerConfigCommon<GuiContainerOpenTrigger.Instance, M> {
 
     /**
      * The unique instance.
@@ -18,9 +17,9 @@ public class GuiContainerOpenTriggerConfig extends CriterionTriggerConfigCommon<
     /**
      * Make a new instance.
      */
-    public GuiContainerOpenTriggerConfig() {
+    public GuiContainerOpenTriggerConfig(M mod) {
         super(
-                CyclopsCore._instance,
+                mod,
                 "container_gui_open",
                 new GuiContainerOpenTrigger()
         );

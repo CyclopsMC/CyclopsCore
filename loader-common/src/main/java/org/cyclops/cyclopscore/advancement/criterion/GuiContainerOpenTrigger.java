@@ -7,11 +7,9 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Trigger for when a container gui is opened.
@@ -19,35 +17,27 @@ import java.util.Optional;
  */
 public class GuiContainerOpenTrigger extends SimpleCriterionTrigger<GuiContainerOpenTrigger.Instance> {
 
-    public static final Codec<GuiContainerOpenTrigger.Instance> CODEC = RecordCodecBuilder.create(
+    public static final Codec<Instance> CODEC = RecordCodecBuilder.create(
             p_311401_ -> p_311401_.group(
-                            EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(GuiContainerOpenTrigger.Instance::player),
-                            Codec.STRING.optionalFieldOf("container_class").forGetter(GuiContainerOpenTrigger.Instance::containerClass)
+                            EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
+                            Codec.STRING.optionalFieldOf("container_class").forGetter(Instance::containerClass)
                     )
-                    .apply(p_311401_, GuiContainerOpenTrigger.Instance::new)
+                    .apply(p_311401_, Instance::new)
     );
-
-    public GuiContainerOpenTrigger() {
-        NeoForge.EVENT_BUS.register(this);
-    }
-
-    @SubscribeEvent
-    public void onEvent(PlayerContainerEvent.Open event) {
-        if (event.getEntity() != null && event.getEntity() instanceof ServerPlayer) {
-            this.trigger((ServerPlayer) event.getEntity(),
-                    (i) -> i.test((ServerPlayer) event.getEntity(), event.getContainer()));
-        }
-    }
 
     @Override
     public Codec<Instance> codec() {
         return CODEC;
     }
 
+    public void trigger(ServerPlayer pPlayer, Predicate<GuiContainerOpenTrigger.Instance> pTestTrigger) {
+        super.trigger(pPlayer, pTestTrigger);
+    }
+
     public static record Instance(
             Optional<ContextAwarePredicate> player,
             Optional<String> containerClass
-    ) implements SimpleCriterionTrigger.SimpleInstance, ICriterionInstanceTestable<AbstractContainerMenu> {
+    ) implements SimpleInstance, ICriterionInstanceTestable<AbstractContainerMenu> {
         @Override
         public boolean test(ServerPlayer player, AbstractContainerMenu container) {
             return containerClass

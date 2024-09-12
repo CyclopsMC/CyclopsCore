@@ -1,6 +1,13 @@
 package org.cyclops.cyclopscore;
 
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerConfig;
+import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerEventHooksForge;
+import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerConfig;
+import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerTriggerEventHooksForge;
+import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerConfig;
+import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerEventHooksForge;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
 import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
@@ -32,6 +39,15 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
     }
 
     @Override
+    protected void setup(FMLCommonSetupEvent event) {
+        super.setup(event);
+
+        new GuiContainerOpenTriggerEventHooksForge();
+        new ItemCraftedTriggerTriggerEventHooksForge();
+        new ModItemObtainedTriggerEventHooksForge();
+    }
+
+    @Override
     protected IClientProxyCommon constructClientProxy() {
         return new ClientProxyForge();
     }
@@ -46,6 +62,11 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
         super.onConfigsRegister(configHandler);
 
         configHandler.addConfigurable(new GeneralConfig(this));
+
+        // Triggers
+        configHandler.addConfigurable(new GuiContainerOpenTriggerConfig<>(this));
+        configHandler.addConfigurable(new ItemCraftedTriggerConfig<>(this));
+        configHandler.addConfigurable(new ModItemObtainedTriggerConfig<>(this));
 
         // Data components
         configHandler.addConfigurable(new DataComponentCapacityConfig(this));

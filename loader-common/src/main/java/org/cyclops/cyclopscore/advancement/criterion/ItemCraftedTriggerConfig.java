@@ -1,14 +1,13 @@
 package org.cyclops.cyclopscore.advancement.criterion;
 
-import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.config.extendedconfig.CriterionTriggerConfigCommon;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.IModBase;
 
 /**
  * @author rubensworks
  *
  */
-public class ItemCraftedTriggerConfig extends CriterionTriggerConfigCommon<ItemCraftedTrigger.Instance, ModBase<?>> {
+public class ItemCraftedTriggerConfig<M extends IModBase> extends CriterionTriggerConfigCommon<ItemCraftedTrigger.Instance, M> {
 
     /**
      * The unique instance.
@@ -18,9 +17,9 @@ public class ItemCraftedTriggerConfig extends CriterionTriggerConfigCommon<ItemC
     /**
      * Make a new instance.
      */
-    public ItemCraftedTriggerConfig() {
+    public ItemCraftedTriggerConfig(M mod) {
         super(
-                CyclopsCore._instance,
+                mod,
                 "item_crafted",
                 new ItemCraftedTrigger()
         );
