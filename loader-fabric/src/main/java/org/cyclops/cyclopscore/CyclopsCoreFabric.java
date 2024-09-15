@@ -1,6 +1,12 @@
 package org.cyclops.cyclopscore;
 
 import net.fabricmc.api.ModInitializer;
+import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerConfig;
+import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerEventHooksFabric;
+import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerConfig;
+import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerTriggerEventHooksFabric;
+import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerConfig;
+import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerEventHooksFabric;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
 import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
@@ -30,6 +36,15 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
     }
 
     @Override
+    public void onInitialize() {
+        super.onInitialize();
+
+        new GuiContainerOpenTriggerEventHooksFabric();
+        new ItemCraftedTriggerTriggerEventHooksFabric();
+        new ModItemObtainedTriggerEventHooksFabric();
+    }
+
+    @Override
     protected IClientProxyCommon constructClientProxy() {
         return new ClientProxyFabric();
     }
@@ -44,6 +59,11 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
         super.onConfigsRegister(configHandler);
 
         configHandler.addConfigurable(new GeneralConfig(this));
+
+        // Triggers
+        configHandler.addConfigurable(new GuiContainerOpenTriggerConfig<>(this));
+        configHandler.addConfigurable(new ItemCraftedTriggerConfig<>(this));
+        configHandler.addConfigurable(new ModItemObtainedTriggerConfig<>(this));
 
         // Data components
         configHandler.addConfigurable(new DataComponentCapacityConfig(this));

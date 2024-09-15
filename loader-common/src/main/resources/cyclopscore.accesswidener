@@ -31,6 +31,10 @@ mutable field net/minecraft/world/inventory/Slot x I
 accessible field net/minecraft/world/inventory/Slot y I
 mutable field net/minecraft/world/inventory/Slot y I
 accessible field net/minecraft/world/inventory/Slot index I
+accessible field net/minecraft/world/inventory/ResultSlot removeCount I
+accessible field net/minecraft/world/inventory/ResultSlot player Lnet/minecraft/world/entity/player/Player;
+accessible field net/minecraft/world/inventory/FurnaceResultSlot removeCount I
+accessible field net/minecraft/world/inventory/FurnaceResultSlot player Lnet/minecraft/world/entity/player/Player;
 
 # EntityRenderers
 accessible method net/minecraft/client/renderer/entity/EntityRenderers register (Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/client/renderer/entity/EntityRendererProvider;)V

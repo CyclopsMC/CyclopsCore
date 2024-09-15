@@ -23,6 +23,9 @@
     ]
   },
   "accessWidener" : "cyclopscore.accesswidener",
+  "mixins": [
+    "mixins.cyclopscore.json"
+  ],
 
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
