@@ -1,0 +1,12 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Port advancement criteria to Forge and Fabric
+* Add biome modifier config to Forge
+* Add entity config to common
+
+Changes:
+* Move capacity and energy components to common
+
+Fixes:
+* Fix some config registrations for some registries in Forge failing
