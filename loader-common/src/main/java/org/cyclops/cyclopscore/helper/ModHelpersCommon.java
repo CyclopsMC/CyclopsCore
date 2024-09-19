@@ -53,4 +53,9 @@ public abstract class ModHelpersCommon implements IModHelpers {
     public ICraftingHelpers getCraftingHelpers() {
         return new CraftingHelpersCommon(this);
     }
+
+    @Override
+    public IWorldHelpers getWorldHelpers() {
+        return new WorldHelpersCommon(this);
+    }
 }

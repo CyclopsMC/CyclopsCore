@@ -6,6 +6,7 @@ import net.neoforged.neoforge.server.ServerLifecycleHooks;
 /**
  * @author rubensworks
  */
+@Deprecated // TODO: remove in next major version
 public class WorldHelpersServer {
 
     public static Level getActiveLevel() {

@@ -36,4 +36,6 @@ public interface IModHelpers {
 
     public IRegistrationHelpers getRegistrationHelpers();
 
+    public IWorldHelpers getWorldHelpers();
+
 }
