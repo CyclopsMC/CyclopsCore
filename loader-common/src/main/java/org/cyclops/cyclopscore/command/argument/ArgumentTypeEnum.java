@@ -14,7 +14,6 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import org.cyclops.cyclopscore.network.PacketCodec;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -70,7 +69,7 @@ public class ArgumentTypeEnum<T extends Enum<T>> implements ArgumentType<T> {
         @Override
         public ArgumentTypeEnum.Info.Template deserializeFromNetwork(FriendlyByteBuf packetBuffer) {
             try {
-                return new ArgumentTypeEnum.Info.Template(Class.forName(packetBuffer.readUtf(PacketCodec.READ_STRING_MAX_LENGTH)));
+                return new ArgumentTypeEnum.Info.Template(Class.forName(packetBuffer.readUtf()));
             } catch (ClassNotFoundException e) {
                 return null;
             }

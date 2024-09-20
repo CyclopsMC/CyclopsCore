@@ -2,6 +2,10 @@ package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -86,6 +90,12 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
      */
     protected void loadModCompats(ModCompatLoader modCompatLoader) {
 
+    }
+
+    protected LiteralArgumentBuilder<CommandSourceStack> constructBaseCommand(Commands.CommandSelection selection, CommandBuildContext context) {
+        LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(this.getModId());
+
+        return root;
     }
 
     @Nullable

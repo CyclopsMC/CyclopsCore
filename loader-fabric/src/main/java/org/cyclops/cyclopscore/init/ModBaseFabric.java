@@ -1,6 +1,11 @@
 package org.cyclops.cyclopscore.init;
 
+import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import org.cyclops.cyclopscore.config.ConfigHandlerFabric;
 import org.cyclops.cyclopscore.helper.IModHelpersFabric;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
@@ -49,6 +54,7 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
         getConfigHandler().loadSetup();
         getConfigHandler().loadForgeRegistries();
         getConfigHandler().loadForgeRegistriesFilled();
+        CommandRegistrationCallback.EVENT.register(this::onRegisterCommands);
 
         // Register proxy things
         ICommonProxyCommon proxy = getProxy();
@@ -85,6 +91,10 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
         super.loadModCompats(modCompatLoader);
 
         modCompatLoader.addModCompat(new ModCompatForgeConfig());
+    }
+
+    protected void onRegisterCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
+        dispatcher.register(constructBaseCommand(environment, registryAccess));
     }
 
     /**

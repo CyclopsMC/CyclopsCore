@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.init;
 
 import com.google.common.collect.Lists;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -48,6 +50,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
         if (getModHelpers().getMinecraftHelpers().isClientSide()) {
             getModEventBus().addListener(this::setupClient);
         }
+        MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
 
         // Initialize config handler
         this.onConfigsRegister(getConfigHandler());
@@ -138,6 +141,10 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
             // We only need to call this once, and the SOUND_EVENTS event is emitted first.
             getConfigHandler().loadForgeRegistriesFilled();
         }
+    }
+
+    protected void onRegisterCommands(RegisterCommandsEvent event) {
+        event.getDispatcher().register(constructBaseCommand(event.getCommandSelection(), event.getBuildContext()));
     }
 
     /**

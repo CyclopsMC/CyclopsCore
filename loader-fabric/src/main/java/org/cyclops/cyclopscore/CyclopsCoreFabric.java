@@ -1,12 +1,18 @@
 package org.cyclops.cyclopscore;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.commands.CommandBuildContext;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerConfig;
 import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerEventHooksFabric;
 import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerConfig;
 import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerTriggerEventHooksFabric;
 import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerConfig;
 import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerEventHooksFabric;
+import org.cyclops.cyclopscore.command.CommandIgnite;
+import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
 import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
@@ -55,10 +61,22 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
     }
 
     @Override
+    protected LiteralArgumentBuilder<CommandSourceStack> constructBaseCommand(Commands.CommandSelection selection, CommandBuildContext context) {
+        LiteralArgumentBuilder<CommandSourceStack> root = super.constructBaseCommand(selection, context);
+
+        root.then(CommandIgnite.make());
+
+        return root;
+    }
+
+    @Override
     protected void onConfigsRegister(ConfigHandlerCommon configHandler) {
         super.onConfigsRegister(configHandler);
 
         configHandler.addConfigurable(new GeneralConfig(this));
+
+        // Argument types
+        configHandler.addConfigurable(new ArgumentTypeEnumConfig<>(this));
 
         // Triggers
         configHandler.addConfigurable(new GuiContainerOpenTriggerConfig<>(this));

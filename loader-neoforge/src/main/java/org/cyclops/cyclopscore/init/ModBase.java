@@ -197,7 +197,7 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
     }
 
     protected LiteralArgumentBuilder<CommandSourceStack> constructBaseCommand(Commands.CommandSelection selection, CommandBuildContext context) {
-        LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(this.getModId());
+        LiteralArgumentBuilder<CommandSourceStack> root = super.constructBaseCommand(selection, context);
 
         root.then(CommandConfig.make(this));
         root.then(CommandVersion.make(this));

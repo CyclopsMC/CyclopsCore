@@ -172,7 +172,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         // Argument types
         configHandler.addConfigurable(new ArgumentTypeConfigPropertyConfig());
         configHandler.addConfigurable(new ArgumentTypeDebugPacketConfig());
-        configHandler.addConfigurable(new ArgumentTypeEnumConfig());
+        configHandler.addConfigurable(new ArgumentTypeEnumConfig<>(this));
 
         // Loot modifiers
         configHandler.addConfigurable(new LootModifierInjectItemConfig());
