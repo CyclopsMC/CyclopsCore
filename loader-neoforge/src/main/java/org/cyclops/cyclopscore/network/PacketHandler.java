@@ -25,8 +25,9 @@ import java.util.List;
  * Advanced packet handler of {@link PacketBase} instances.
  * @author rubensworks
  */
+// TODO: rename to PacketHandlerNeoForge in next major
 @Sharable
-public final class PacketHandler {
+public final class PacketHandler implements IPacketHandler {
 
     private final ModBase mod;
     private final List<Pair<CustomPacketPayload.Type<?>, StreamCodec<? super RegistryFriendlyByteBuf, ? extends PacketBase>>> pendingPacketRegistrations;
@@ -47,6 +48,12 @@ public final class PacketHandler {
         }
     }
 
+    @Override
+    public <P extends PacketBase> void register(Class<P> clazz, CustomPacketPayload.Type<P> type, StreamCodec<? super RegistryFriendlyByteBuf, P> codec) {
+        register(type, codec);
+    }
+
+    @Deprecated // TODO: rm in next major
     public <P extends PacketBase> void register(CustomPacketPayload.Type<P> type, StreamCodec<? super RegistryFriendlyByteBuf, P> codec) {
         this.pendingPacketRegistrations.add(Pair.of(type, codec));
     }
@@ -81,19 +88,12 @@ public final class PacketHandler {
         packet.actionServer(context.player().level(), (ServerPlayer) context.player());
     }
 
-    /**
-     * Send a packet to the server.
-     * @param packet The packet.
-     */
+    @Override
     public void sendToServer(PacketBase packet) {
         PacketDistributor.sendToServer(packet);
     }
 
-    /**
-     * Send a packet to the player.
-     * @param packet The packet.
-     * @param player The player.
-     */
+    @Override
     public void sendToPlayer(PacketBase packet, ServerPlayer player) {
         PacketDistributor.sendToPlayer(player, packet);
     }
@@ -103,33 +103,34 @@ public final class PacketHandler {
      * @param packet The packet.
      * @param point The point.
      */
+    @Deprecated // TODO: rm in next major
     public void sendToAllAround(PacketBase packet, TargetPoint point) {
         PacketDistributor.sendToPlayersNear(point.level, point.excluded, point.x, point.y, point.z, point.radius, packet);
     }
 
-    /**
-     * Send a packet to everything in the given dimension.
-     * @param packet The packet.
-     * @param dimension The dimension to send to.
-     */
+    @Override
+    public void sendToAllAroundPoint(PacketBase packet, IPacketHandler.TargetPoint point) {
+        PacketDistributor.sendToPlayersNear(point.level(), point.excluded(), point.x(), point.y(), point.z(), point.radius(), packet);
+    }
+
+    @Override
     public void sendToDimension(PacketBase packet, ServerLevel dimension) {
         PacketDistributor.sendToPlayersInDimension(dimension, packet);
     }
 
-    /**
-     * Send a packet to everything.
-     * @param packet The packet.
-     */
+    @Override
     public void sendToAll(PacketBase packet) {
         PacketDistributor.sendToAllPlayers(packet);
     }
 
+    @Deprecated // TODO: rm in next major
     public static class PacketCodecException extends RuntimeException {
         public PacketCodecException(String message, Throwable cause) {
             super(message, cause);
         }
     }
 
+    @Deprecated // TODO: rm in next major
     public static record TargetPoint(ServerLevel level, double x, double y, double z, double radius, @Nullable ServerPlayer excluded) {}
 
 }

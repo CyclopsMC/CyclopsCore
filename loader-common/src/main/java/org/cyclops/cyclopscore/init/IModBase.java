@@ -8,6 +8,7 @@ import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
+import org.cyclops.cyclopscore.network.IPacketHandler;
 import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 
 import javax.annotation.Nullable;
@@ -22,6 +23,9 @@ public interface IModBase {
     public String getModId();
 
     public IModHelpers getModHelpers();
+
+    // TODO: rename to getPacketHandler in next major
+    public IPacketHandler getPacketHandlerCommon();
 
     public ConfigHandlerCommon getConfigHandler();
 

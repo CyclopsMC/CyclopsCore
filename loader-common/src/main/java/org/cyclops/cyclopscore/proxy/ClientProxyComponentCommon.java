@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.network.IPacketHandler;
 
 import java.util.Map;
 
@@ -58,4 +59,9 @@ public abstract class ClientProxyComponentCommon extends CommonProxyComponentCom
         getMod().getLoggerHelper().log(Level.TRACE, "Registered event hooks");
     }
 
+    @Override
+    public void registerPackets(IPacketHandler packetHandler) {
+        commonProxyComponent.registerPackets(packetHandler);
+        getMod().getLoggerHelper().log(Level.TRACE, "Registered packet handlers");
+    }
 }

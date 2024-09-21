@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.proxy;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import org.cyclops.cyclopscore.network.IPacketHandler;
 
 /**
  * Base proxy for server and client side.
@@ -27,6 +28,11 @@ public abstract class CommonProxyComponentCommon implements ICommonProxyCommon {
 
     @Override
     public void registerEventHooks() {
+
+    }
+
+    @Override
+    public void registerPackets(IPacketHandler packetHandler) {
 
     }
 }

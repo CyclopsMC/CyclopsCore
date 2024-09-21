@@ -12,6 +12,7 @@ import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersFabric;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.forgeconfig.ModCompatForgeConfig;
+import org.cyclops.cyclopscore.network.PacketHandlerFabric;
 import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,11 +28,13 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
     private boolean loaded = false;
     private final ICommonProxyCommon proxy;
     private final ConfigHandlerFabric configHandler;
+    private final PacketHandlerFabric packetHandler;
 
     public ModBaseFabric(String modId, Consumer<T> instanceSetter) {
         super(modId, instanceSetter);
         this.proxy = getModHelpers().getMinecraftHelpers().isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
         this.configHandler = constructConfigHandler();
+        this.packetHandler = constructPacketHandler();
 
         // Initialize config handler
         this.onConfigsRegister(getConfigHandler());
@@ -64,6 +67,7 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
             if (getModHelpers().getMinecraftHelpers().isClientSide()) {
                 proxy.registerRenderers();
             }
+            proxy.registerPackets(getPacketHandlerCommon());
         }
     }
 
@@ -84,6 +88,15 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
     @Override
     public ConfigHandlerFabric getConfigHandler() {
         return this.configHandler;
+    }
+
+    protected PacketHandlerFabric constructPacketHandler() {
+        return new PacketHandlerFabric(this);
+    }
+
+    @Override
+    public PacketHandlerFabric getPacketHandlerCommon() {
+        return this.packetHandler;
     }
 
     @Override

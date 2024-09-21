@@ -13,6 +13,7 @@ import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerTriggerEv
 import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerConfig;
 import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerEventHooksForge;
 import org.cyclops.cyclopscore.command.CommandIgnite;
+import org.cyclops.cyclopscore.command.CommandReloadResources;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
 import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
@@ -68,6 +69,7 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
         LiteralArgumentBuilder<CommandSourceStack> root = super.constructBaseCommand(selection, context);
 
         root.then(CommandIgnite.make());
+        root.then(CommandReloadResources.make());
 
         return root;
     }

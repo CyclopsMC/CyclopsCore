@@ -18,6 +18,7 @@ import org.cyclops.cyclopscore.config.ConfigHandlerForge;
 import org.cyclops.cyclopscore.helper.IModHelpersForge;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersForge;
+import org.cyclops.cyclopscore.neywork.PacketHandlerForge;
 import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,6 +34,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
     private final ICommonProxyCommon proxy;
     private final ConfigHandlerCommon configHandler;
     private final IEventBus modEventBus;
+    private final PacketHandlerForge packetHandler;
 
     private boolean loaded = false;
 
@@ -41,6 +43,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
         this.modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         this.proxy = getModHelpers().getMinecraftHelpers().isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
         this.configHandler = constructConfigHandler();
+        this.packetHandler = constructPacketHandler();
 
         // Register listeners
         getModEventBus().addListener(this::setup);
@@ -94,6 +97,15 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
         return modEventBus;
     }
 
+    protected PacketHandlerForge constructPacketHandler() {
+        return new PacketHandlerForge(this); // TODO
+    }
+
+    @Override
+    public PacketHandlerForge getPacketHandlerCommon() {
+        return this.packetHandler;
+    }
+
     /**
      * Called on the Forge setup lifecycle event.
      * @param event The setup event.
@@ -109,6 +121,11 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
         if(proxy != null) {
             proxy.registerEventHooks();
             proxy.registerTickHandlers();
+            if (getModHelpers().getMinecraftHelpers().isClientSide()) {
+                proxy.registerRenderers();
+            }
+            proxy.registerPackets(getPacketHandlerCommon());
+            getPacketHandlerCommon().init();
         }
     }
 

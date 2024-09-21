@@ -38,6 +38,7 @@ import org.cyclops.cyclopscore.helper.ModHelpersNeoForge;
 import org.cyclops.cyclopscore.modcompat.IMCHandler;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.capabilities.CapabilityConstructorRegistry;
+import org.cyclops.cyclopscore.network.IPacketHandler;
 import org.cyclops.cyclopscore.network.PacketHandler;
 import org.cyclops.cyclopscore.persist.world.WorldStorage;
 import org.cyclops.cyclopscore.proxy.IClientProxy;
@@ -146,7 +147,13 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
         return keyRegistry;
     }
 
+    @Deprecated // TODO: rm in next major
     public PacketHandler getPacketHandler() {
+        return packetHandler;
+    }
+
+    @Override
+    public IPacketHandler getPacketHandlerCommon() {
         return packetHandler;
     }
 

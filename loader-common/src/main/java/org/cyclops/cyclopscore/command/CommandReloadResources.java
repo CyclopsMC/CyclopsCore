@@ -6,7 +6,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.network.packet.ReloadResourcesPacket;
 
 /**
@@ -18,7 +18,7 @@ public class CommandReloadResources implements Command<CommandSourceStack> {
 
     @Override
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        CyclopsCore._instance.getPacketHandler().sendToPlayer(new ReloadResourcesPacket(), context.getSource().getPlayerOrException());
+        CyclopsCoreInstance.MOD.getPacketHandlerCommon().sendToPlayer(new ReloadResourcesPacket(), context.getSource().getPlayerOrException());
         return 0;
     }
 

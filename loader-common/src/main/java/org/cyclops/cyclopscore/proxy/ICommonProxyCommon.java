@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.cyclops.cyclopscore.init.IModBase;
+import org.cyclops.cyclopscore.network.IPacketHandler;
 
 
 /**
@@ -39,5 +40,7 @@ public interface ICommonProxyCommon {
      * Register the event hooks
      */
     public void registerEventHooks();
+
+    public void registerPackets(IPacketHandler packetHandler);
 
 }

@@ -6,8 +6,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.function.Supplier;
 
@@ -34,7 +32,7 @@ public abstract class PacketBase<T extends PacketBase<T>> implements CustomPacke
         try {
             this.encode(buf);
         } catch (Throwable e) {
-            throw new PacketHandler.PacketCodecException("An exception occurred during encoding of packet " + this.toString(), e);
+            throw new PacketCodecException("An exception occurred during encoding of packet " + this.toString(), e);
         }
     }
 
@@ -61,7 +59,6 @@ public abstract class PacketBase<T extends PacketBase<T>> implements CustomPacke
      * @param level The world.
      * @param player The player. Can be null if this packet is asynchronous.
      */
-    @OnlyIn(Dist.CLIENT)
     public abstract void actionClient(Level level, Player player);
 
     /**
@@ -79,7 +76,7 @@ public abstract class PacketBase<T extends PacketBase<T>> implements CustomPacke
                     try {
                         payload.decode(buff);
                     } catch (Throwable e) {
-                        throw new PacketHandler.PacketCodecException("An exception occurred during decoding of packet " + payload.toString(), e);
+                        throw new PacketCodecException("An exception occurred during decoding of packet " + payload.toString(), e);
                     }
                     return payload;
                 }

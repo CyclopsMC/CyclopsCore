@@ -12,36 +12,92 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.datastructure.DimPos;
-import org.cyclops.cyclopscore.datastructure.SingleCache;
-import org.cyclops.cyclopscore.inventory.ItemLocation;
 import org.joml.Vector3d;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
 /**
- * Packet with automatic coding and decoding of basic fields annotated with {@link CodecField}.
  * @author rubensworks
- *
  */
-public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T> {
+public class PacketCodecs {
 
     public static final int READ_STRING_MAX_LENGTH = 32767;
 
-    private static Map<Class<?>, ICodecAction> codecActions = Maps.newHashMap();
+    private static Map<Class<?>, PacketCodec.ICodecAction> codecActions = Maps.newHashMap();
+
+    /**
+     * Register a new coded action.
+     * @param clazz A class type.
+     * @param action A codec action for the given type.
+     */
+    public static void addCodedAction(Class<?> clazz, PacketCodec.ICodecAction action) {
+        codecActions.put(clazz, action);
+    }
+
+    @Nullable
+    public static PacketCodec.ICodecAction getActionSuper(Class<?> clazz) {
+        if(ClassUtils.isPrimitiveWrapper(clazz)) {
+            clazz = ClassUtils.wrapperToPrimitive(clazz);
+        }
+        PacketCodec.ICodecAction action = codecActions.get(clazz);
+        if(action == null) {
+            for (Class<?> iface : clazz.getInterfaces()) {
+                action = codecActions.get(iface);
+                if (action != null) {
+                    return action;
+                }
+            }
+            Class<?> superClass = clazz.getSuperclass();
+            if (superClass != null) {
+                return getActionSuper(superClass);
+            } else {
+                return null;
+            }
+        }
+        return action;
+    }
+
+    public static PacketCodec.ICodecAction getAction(Class<?> clazz) {
+        PacketCodec.ICodecAction action = getActionSuper(clazz);
+        if(action == null) {
+            System.err.println("No ICodecAction was found for " + clazz
+                    + ". You should add one in PacketCodec.");
+        }
+        return action;
+    }
+
+    /**
+     * Write the given object into the packet buffer.
+     * @param packetBuffer A packet buffer.
+     * @param object An object.
+     */
+    public static void write(RegistryFriendlyByteBuf packetBuffer, Object object) {
+        PacketCodec.ICodecAction action = Objects.requireNonNull(getActionSuper(object.getClass()),
+                "No codec action was registered for " + object.getClass().getName());
+        action.encode(object, packetBuffer);
+    }
+
+    /**
+     * Read the an object of the given type from the packet buffer.
+     * @param <T> The type of object.
+     * @param packetBuffer A packet buffer.
+     * @param clazz The class type to read.
+     * @return The read object.
+     */
+    public static <T> T read(RegistryFriendlyByteBuf packetBuffer, Class<T> clazz) {
+        PacketCodec.ICodecAction action = Objects.requireNonNull(getActionSuper(clazz));
+        return (T) action.decode(packetBuffer);
+    }
+
     static {
-        codecActions.put(String.class, new ICodecAction() {
+        codecActions.put(String.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -54,7 +110,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(double.class, new ICodecAction() {
+        codecActions.put(double.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -67,7 +123,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(int.class, new ICodecAction() {
+        codecActions.put(int.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -80,7 +136,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(long.class, new ICodecAction() {
+        codecActions.put(long.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -93,7 +149,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(short.class, new ICodecAction() {
+        codecActions.put(short.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -106,7 +162,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(boolean.class, new ICodecAction() {
+        codecActions.put(boolean.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -119,7 +175,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(float.class, new ICodecAction() {
+        codecActions.put(float.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -132,7 +188,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(Vector3d.class, new ICodecAction() {
+        codecActions.put(Vector3d.class, new PacketCodec.ICodecAction() {
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
                 Vector3d v = (Vector3d)object;
@@ -150,7 +206,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(Vec3i.class, new ICodecAction() {
+        codecActions.put(Vec3i.class, new PacketCodec.ICodecAction() {
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
                 Vec3i v = (Vec3i)object;
@@ -168,7 +224,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(Vec3.class, new ICodecAction() {
+        codecActions.put(Vec3.class, new PacketCodec.ICodecAction() {
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
                 Vec3 v = (Vec3)object;
@@ -186,7 +242,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(Map.class, new ICodecAction() {
+        codecActions.put(Map.class, new PacketCodec.ICodecAction() {
 
             // Packet structure:
             // Map length (int)
@@ -203,8 +259,8 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
                 Map map = (Map) object;
                 output.writeInt(map.size());
                 Set<Map.Entry> entries = map.entrySet();
-                ICodecAction keyAction = null;
-                ICodecAction valueAction = null;
+                PacketCodec.ICodecAction keyAction = null;
+                PacketCodec.ICodecAction valueAction = null;
                 for(Map.Entry entry : entries) {
                     if(keyAction == null) {
                         keyAction = getAction(entry.getKey().getClass());
@@ -228,8 +284,8 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
                     return map;
                 }
                 try {
-                    ICodecAction keyAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
-                    ICodecAction valueAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
+                    PacketCodec.ICodecAction keyAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
+                    PacketCodec.ICodecAction valueAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
                     for(int i = 0; i < size; i++) {
                         Object key = keyAction.decode(input);
                         Object value = valueAction.decode(input);
@@ -242,7 +298,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(CompoundTag.class, new ICodecAction() {
+        codecActions.put(CompoundTag.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -255,7 +311,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(Tag.class, new ICodecAction() {
+        codecActions.put(Tag.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -271,7 +327,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(ItemStack.class, new ICodecAction() {
+        codecActions.put(ItemStack.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -284,20 +340,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(FluidStack.class, new ICodecAction() {
-
-            @Override
-            public void encode(Object object, RegistryFriendlyByteBuf output) {
-                FluidStack.OPTIONAL_STREAM_CODEC.encode(output, (FluidStack) object);
-            }
-
-            @Override
-            public Object decode(RegistryFriendlyByteBuf input) {
-                return FluidStack.OPTIONAL_STREAM_CODEC.decode(input);
-            }
-        });
-
-        codecActions.put(Direction.class, new ICodecAction() {
+        codecActions.put(Direction.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -310,7 +353,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(BlockPos.class, new ICodecAction() {
+        codecActions.put(BlockPos.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -323,7 +366,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(ResourceKey.class, new ICodecAction() {
+        codecActions.put(ResourceKey.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -339,23 +382,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(DimPos.class, new ICodecAction() {
-
-            @Override
-            public void encode(Object object, RegistryFriendlyByteBuf output) {
-                write(output, ((DimPos) object).getLevelKey());
-                write(output, ((DimPos) object).getBlockPos());
-            }
-
-            @Override
-            public Object decode(RegistryFriendlyByteBuf input) {
-                ResourceKey dimensionType = read(input, ResourceKey.class);
-                BlockPos blockPos = read(input, BlockPos.class);
-                return DimPos.of(dimensionType, blockPos);
-            }
-        });
-
-        codecActions.put(List.class, new ICodecAction() {
+        codecActions.put(List.class, new PacketCodec.ICodecAction() {
 
             // Packet structure:
             // list length (int)
@@ -369,7 +396,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
                 List<?> list = (List<?>) object;
                 output.writeInt(list.size());
                 if(list.size() == 0) return;
-                ICodecAction valueAction = null;
+                PacketCodec.ICodecAction valueAction = null;
                 for(int i = 0; i < list.size(); i++) {
                     Object value = list.get(i);
                     if(value != null) {
@@ -401,7 +428,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
                 try {
                     String className = input.readUtf(READ_STRING_MAX_LENGTH);
                     if(!className.equals("__noclass")) {
-                        ICodecAction valueAction = getAction(Class.forName(className));
+                        PacketCodec.ICodecAction valueAction = getAction(Class.forName(className));
                         int i, currentLength = 0;
                         while((i = input.readInt()) >= 0) {
                             while(currentLength < i) {
@@ -428,7 +455,7 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             }
         });
 
-        codecActions.put(Pair.class, new ICodecAction() {
+        codecActions.put(Pair.class, new PacketCodec.ICodecAction() {
 
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
@@ -441,8 +468,8 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
             @Override
             public Object decode(RegistryFriendlyByteBuf input) {
                 try {
-                    ICodecAction keyAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
-                    ICodecAction valueAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
+                    PacketCodec.ICodecAction keyAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
+                    PacketCodec.ICodecAction valueAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
                     Object key = keyAction.decode(input);
                     Object value = valueAction.decode(input);
                     return Pair.of(key, value);
@@ -452,195 +479,6 @@ public abstract class PacketCodec<T extends PacketCodec<T>> extends PacketBase<T
                 return Pair.of(null, null);
             }
         });
-
-        codecActions.put(ItemLocation.class, new ICodecAction() {
-
-            @Override
-            public void encode(Object object, RegistryFriendlyByteBuf output) {
-                ItemLocation.writeToPacketBuffer(output, (ItemLocation) object);
-            }
-
-            @Override
-            public Object decode(RegistryFriendlyByteBuf input) {
-                return ItemLocation.readFromPacketBuffer(input);
-            }
-        });
-    }
-
-    public PacketCodec(Type<T> type) {
-        super(type);
-    }
-
-    /**
-     * Register a new coded action.
-     * @param clazz A class type.
-     * @param action A codec action for the given type.
-     */
-    public static void addCodedAction(Class<?> clazz, ICodecAction action) {
-        codecActions.put(clazz, action);
-    }
-
-    protected SingleCache<Void, List<Field>> fieldCache = new SingleCache<Void, List<Field>>(
-            new SingleCache.ICacheUpdater<Void, List<Field>>() {
-
-        @Override
-        public List<Field> getNewValue(Void key) {
-            List<Field> fieldList = Lists.newLinkedList();
-
-            Class<?> clazz = PacketCodec.this.getClass();
-            for (; clazz != PacketCodec.class && clazz != null; clazz = clazz.getSuperclass()) {
-                Field[] fields = clazz.getDeclaredFields();
-
-                // Sort this because the Java API tells us that getDeclaredFields()
-                // does not deterministically define the order of the fields in the array.
-                // Otherwise we might get nasty class cast exceptions when running in SMP.
-                Arrays.sort(fields, new Comparator<Field>() {
-
-                    @Override
-                    public int compare(Field o1, Field o2) {
-                        return o1.getName().compareTo(o2.getName());
-                    }
-
-                });
-
-                for (final Field field : fields) {
-                    if (field.isAnnotationPresent(CodecField.class)) {
-                        fieldList.add(field);
-                    }
-                }
-            }
-
-            return fieldList;
-        }
-
-        @Override
-        public boolean isKeyEqual(Void cacheKey, Void newKey) {
-            return true;
-        }
-
-    });
-
-    @Nullable
-    protected static ICodecAction getActionSuper(Class<?> clazz) {
-        if(ClassUtils.isPrimitiveWrapper(clazz)) {
-            clazz = ClassUtils.wrapperToPrimitive(clazz);
-        }
-        ICodecAction action = codecActions.get(clazz);
-        if(action == null) {
-            for (Class<?> iface : clazz.getInterfaces()) {
-                action = codecActions.get(iface);
-                if (action != null) {
-                    return action;
-                }
-            }
-            Class<?> superClass = clazz.getSuperclass();
-            if (superClass != null) {
-                return getActionSuper(superClass);
-            } else {
-                return null;
-            }
-        }
-        return action;
-    }
-
-    public static ICodecAction getAction(Class<?> clazz) {
-        ICodecAction action = getActionSuper(clazz);
-        if(action == null) {
-            System.err.println("No ICodecAction was found for " + clazz
-                    + ". You should add one in PacketCodec.");
-        }
-        return action;
-    }
-
-    private void loopCodecFields(ICodecRunnable runnable) {
-        for (Field field : fieldCache.get(null)) {
-            Class<?> clazz = field.getType();
-            ICodecAction action = getAction(clazz);
-
-            // Make private fields temporarily accessible.
-            boolean accessible = field.isAccessible();
-            if (!accessible) {
-                field.setAccessible(true);
-            }
-            runnable.run(field, action);
-        }
-    }
-
-    @Override
-    public void encode(final RegistryFriendlyByteBuf output) {
-        loopCodecFields((field, action) -> {
-            Object object = null;
-            try {
-                object = field.get(PacketCodec.this);
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            action.encode(object, output);
-        });
-    }
-
-    @Override
-    public void decode(final RegistryFriendlyByteBuf input) {
-        loopCodecFields((field, action) -> {
-            Object object = action.decode(input);
-            try {
-                field.set(PacketCodec.this, object);
-            } catch (IllegalArgumentException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    /**
-     * Write the given object into the packet buffer.
-     * @param packetBuffer A packet buffer.
-     * @param object An object.
-     */
-    public static void write(RegistryFriendlyByteBuf packetBuffer, Object object) {
-        ICodecAction action = Objects.requireNonNull(getActionSuper(object.getClass()),
-                "No codec action was registered for " + object.getClass().getName());
-        action.encode(object, packetBuffer);
-    }
-
-    /**
-     * Read the an object of the given type from the packet buffer.
-     * @param <T> The type of object.
-     * @param packetBuffer A packet buffer.
-     * @param clazz The class type to read.
-     * @return The read object.
-     */
-    public static <T> T read(RegistryFriendlyByteBuf packetBuffer, Class<T> clazz) {
-        ICodecAction action = Objects.requireNonNull(getActionSuper(clazz));
-        return (T) action.decode(packetBuffer);
-    }
-
-    public static interface ICodecAction {
-
-        /**
-         * Encode the given object.
-         * @param object The object to encode into the output.
-         * @param output The byte array to encode to.
-         */
-        public void encode(Object object, RegistryFriendlyByteBuf output);
-
-        /**
-         * Decode from the input.
-         * @param input The byte array to decode from.
-         * @return The object to return after reading it from the input.
-         */
-        public Object decode(RegistryFriendlyByteBuf input);
-
-    }
-
-    public static interface ICodecRunnable {
-
-        /**
-         * Run a type of codec.
-         * @param field The field annotated with {@link CodecField}.
-         * @param action The action that must be applied to the field.
-         */
-        public void run(Field field, ICodecAction action);
-
     }
 
 }

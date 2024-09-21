@@ -49,6 +49,7 @@ import org.cyclops.cyclopscore.metadata.RegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportables;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.curios.ModCompatCurios;
+import org.cyclops.cyclopscore.network.PacketCodecsNeoForge;
 import org.cyclops.cyclopscore.persist.nbt.NBTClassTypesNeoForge;
 import org.cyclops.cyclopscore.proxy.ClientProxy;
 import org.cyclops.cyclopscore.proxy.CommonProxy;
@@ -124,6 +125,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
 
         // Load core stuff
         NBTClassTypesNeoForge.load();
+        PacketCodecsNeoForge.load();
 
         // Populate registries
         RegistryExportables.load();
