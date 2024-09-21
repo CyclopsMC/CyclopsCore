@@ -7,10 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.Reference;
+import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.network.CodecField;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
@@ -65,10 +63,9 @@ public class PingPongPacketAsync<T extends PingPongPacketAsync<T>> extends Packe
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void actionClient(Level level, Player player) {
         if(remaining > 0) {
-            CyclopsCore._instance.getPacketHandler().sendToServer(newPacket());
+            CyclopsCoreInstance.MOD.getPacketHandlerCommon().sendToServer(newPacket());
         }
         log(player, String.format("[PING %s] Fields: %s", remaining, toString()));
     }
@@ -76,7 +73,7 @@ public class PingPongPacketAsync<T extends PingPongPacketAsync<T>> extends Packe
     @Override
     public void actionServer(Level level, ServerPlayer player) {
         if(remaining > 0) {
-            CyclopsCore._instance.getPacketHandler().sendToPlayer(newPacket(), player);
+            CyclopsCoreInstance.MOD.getPacketHandlerCommon().sendToPlayer(newPacket(), player);
         }
         log(player, String.format("[PONG %s] Fields: %s", remaining, toString()));
     }

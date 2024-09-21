@@ -3,15 +3,15 @@ package org.cyclops.cyclopscore.network.packet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.Reference;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
+import org.cyclops.cyclopscore.init.IModBase;
+import org.cyclops.cyclopscore.network.PacketBase;
 
 /**
  * Packet for sending and showing the ring of fire.
@@ -19,10 +19,10 @@ import org.cyclops.cyclopscore.init.ModBase;
  * @author rubensworks
  *
  */
-public class RingOfFirePacket extends PlayerPositionPacket<RingOfFirePacket> {
+public class RingOfFirePacket extends PlayerPositionPacketCommon<RingOfFirePacket> {
 
-    public static final Type<RingOfFirePacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "ring_of_fire"));
-    public static final StreamCodec<RegistryFriendlyByteBuf, RingOfFirePacket> CODEC = getCodec(RingOfFirePacket::new);
+    public static final CustomPacketPayload.Type<RingOfFirePacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "ring_of_fire"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, RingOfFirePacket> CODEC = PacketBase.getCodec(RingOfFirePacket::new);
     private static final double RING_AREA = 0.9F;
 
     public RingOfFirePacket() {
@@ -33,7 +33,6 @@ public class RingOfFirePacket extends PlayerPositionPacket<RingOfFirePacket> {
         super(TYPE, player);
     }
 
-    @OnlyIn(Dist.CLIENT)
     private static void showFireRing(Level world, Vec3 pos) {
         double area = RING_AREA;
         int points = 40;
@@ -65,13 +64,13 @@ public class RingOfFirePacket extends PlayerPositionPacket<RingOfFirePacket> {
     }
 
     @Override
-    protected PlayerPositionPacket create(Player player, int range) {
+    protected PlayerPositionPacketCommon<RingOfFirePacket> create(Player player, int range) {
         return new RingOfFirePacket(player);
     }
 
     @Override
-    protected ModBase getModInstance() {
-        return CyclopsCore._instance;
+    protected IModBase getModInstance() {
+        return CyclopsCoreInstance.MOD;
     }
 
     @Override

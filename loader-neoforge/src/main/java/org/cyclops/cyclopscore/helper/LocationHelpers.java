@@ -13,7 +13,7 @@ import java.util.Random;
  * @author immortaleeb
  *
  */
-@Deprecated // TODO: remove in next major version, after porting PacketHandler.TargetPoint stuff
+@Deprecated // TODO: remove in next major version
 public class LocationHelpers {
 
     private static final Random random = new Random();

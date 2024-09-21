@@ -4,11 +4,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import org.cyclops.cyclopscore.helper.LocationHelpers;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.IModBase;
 import org.cyclops.cyclopscore.network.CodecField;
+import org.cyclops.cyclopscore.network.IPacketHandler;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
 import java.util.UUID;
@@ -20,8 +18,7 @@ import java.util.UUID;
  *
  * @author immortaleeb
  */
-@Deprecated // TODO: rm in next major
-public abstract class PlayerPositionPacket<T extends PlayerPositionPacket<T>> extends PacketCodec<T> {
+public abstract class PlayerPositionPacketCommon<T extends PlayerPositionPacketCommon<T>> extends PacketCodec<T> {
 
     private static final int DEFAULT_RANGE = 3000;
 
@@ -35,15 +32,15 @@ public abstract class PlayerPositionPacket<T extends PlayerPositionPacket<T>> ex
     /**
      * Creates a packet with no content
      */
-    public PlayerPositionPacket(Type<T> type) {
+    public PlayerPositionPacketCommon(Type<T> type) {
         super(type);
     }
 
-    public PlayerPositionPacket(Type<T> type, Player player) {
+    public PlayerPositionPacketCommon(Type<T> type, Player player) {
         this(type, player, DEFAULT_RANGE);
     }
 
-    public PlayerPositionPacket(Type<T> type, Player player, int range) {
+    public PlayerPositionPacketCommon(Type<T> type, Player player, int range) {
         super(type);
         this.uuid = player.getUUID().toString();
         this.position = player.position();
@@ -56,7 +53,6 @@ public abstract class PlayerPositionPacket<T extends PlayerPositionPacket<T>> ex
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void actionClient(Level level, Player player) {
         if (uuid == null) {
             getModInstance().log(org.apache.logging.log4j.Level.WARN, "Got PlayerPositionPacket with empty uuid");
@@ -81,13 +77,13 @@ public abstract class PlayerPositionPacket<T extends PlayerPositionPacket<T>> ex
 
     @Override
     public void actionServer(Level level, ServerPlayer player) {
-        getModInstance().getPacketHandler().sendToAllAround(create(player, range),
-                LocationHelpers.createTargetPointFromEntity(player, range));
+        getModInstance().getPacketHandlerCommon().sendToAllAroundPoint(create(player, range),
+                IPacketHandler.createTargetPointFromEntity(player, range));
     }
 
-    protected abstract PlayerPositionPacket create(Player player, int range);
+    protected abstract PlayerPositionPacketCommon<?> create(Player player, int range);
 
-    protected abstract ModBase getModInstance();
+    protected abstract IModBase getModInstance();
 
     protected abstract void performClientAction(Level level, Player player);
 }

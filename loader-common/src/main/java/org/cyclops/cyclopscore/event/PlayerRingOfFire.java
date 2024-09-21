@@ -2,10 +2,8 @@ package org.cyclops.cyclopscore.event;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.bus.api.SubscribeEvent;
-import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.helper.LocationHelpers;
+import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
+import org.cyclops.cyclopscore.network.IPacketHandler;
 import org.cyclops.cyclopscore.network.packet.RingOfFirePacket;
 
 import java.util.HashSet;
@@ -17,7 +15,7 @@ import java.util.UUID;
  * @author rubensworks
  *
  */
-public class PlayerRingOfFire {
+public abstract class PlayerRingOfFire {
 
     // List of players that have a ring of fire
     public static final Set<UUID> ALLOW_RING = new HashSet<>();
@@ -29,29 +27,11 @@ public class PlayerRingOfFire {
         ALLOW_RING.add(UUID.fromString("94b8bfe7-9102-405c-ab80-2c4468e918f9")); // JokerReaper
     }
 
-    /**
-     * When a player loggedin event is received.
-     * @param event The received event.
-     */
-    @SubscribeEvent
-    public void onLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        spawnRing(event.getEntity());
-    }
-
-    /**
-     * When a player respawn event is received.
-     * @param event The received event.
-     */
-    @SubscribeEvent
-    public void onRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        spawnRing(event.getEntity());
-    }
-
-    private void spawnRing(Player player) {
+    protected void spawnRing(Player player) {
         if(!player.level().isClientSide() && player.getGameProfile() != null
                 && ALLOW_RING.contains(player.getGameProfile().getId())) {
-            CyclopsCore._instance.getPacketHandler().sendToAllAround(new RingOfFirePacket(player),
-                    LocationHelpers.createTargetPointFromLocation((ServerLevel) player.level(), player.blockPosition(), 50));
+            CyclopsCoreInstance.MOD.getPacketHandlerCommon().sendToAllAroundPoint(new RingOfFirePacket(player),
+                    IPacketHandler.createTargetPointFromLocation((ServerLevel) player.level(), player.blockPosition(), 50));
         }
     }
 

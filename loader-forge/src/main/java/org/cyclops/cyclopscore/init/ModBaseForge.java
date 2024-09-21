@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.init;
 import com.google.common.collect.Lists;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -54,6 +55,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
             getModEventBus().addListener(this::setupClient);
         }
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
+        MinecraftForge.EVENT_BUS.addListener(this::onServerStarting);
 
         // Initialize config handler
         this.onConfigsRegister(getConfigHandler());
@@ -162,6 +164,10 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
 
     protected void onRegisterCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(constructBaseCommand(event.getCommandSelection(), event.getBuildContext()));
+    }
+
+    protected void onServerStarting(ServerStartingEvent event) {
+
     }
 
     /**

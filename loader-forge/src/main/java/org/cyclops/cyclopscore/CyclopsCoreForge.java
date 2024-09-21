@@ -4,6 +4,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerConfig;
@@ -12,8 +13,10 @@ import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerConfig;
 import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerTriggerEventHooksForge;
 import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerConfig;
 import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerEventHooksForge;
+import org.cyclops.cyclopscore.command.CommandDebug;
 import org.cyclops.cyclopscore.command.CommandIgnite;
 import org.cyclops.cyclopscore.command.CommandReloadResources;
+import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacketConfig;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
 import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
@@ -24,6 +27,7 @@ import org.cyclops.cyclopscore.proxy.ClientProxyForge;
 import org.cyclops.cyclopscore.proxy.CommonProxyForge;
 import org.cyclops.cyclopscore.proxy.IClientProxyCommon;
 import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
+import org.cyclops.cyclopscore.tracking.ImportantUsers;
 
 /**
  * The main mod class of CyclopsCore.
@@ -55,6 +59,14 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
     }
 
     @Override
+    protected void onServerStarting(ServerStartingEvent event) {
+        super.onServerStarting(event);
+
+        // Handle metadata
+        ImportantUsers.checkAll();
+    }
+
+    @Override
     protected IClientProxyCommon constructClientProxy() {
         return new ClientProxyForge();
     }
@@ -69,6 +81,7 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
         LiteralArgumentBuilder<CommandSourceStack> root = super.constructBaseCommand(selection, context);
 
         root.then(CommandIgnite.make());
+        root.then(CommandDebug.make());
         root.then(CommandReloadResources.make());
 
         return root;
@@ -81,6 +94,7 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
         configHandler.addConfigurable(new GeneralConfig(this));
 
         // Argument types
+        configHandler.addConfigurable(new ArgumentTypeDebugPacketConfig<>(this));
         configHandler.addConfigurable(new ArgumentTypeEnumConfig<>(this));
 
         // Triggers

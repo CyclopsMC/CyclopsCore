@@ -11,8 +11,10 @@ import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerConfig;
 import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerTriggerEventHooksFabric;
 import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerConfig;
 import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerEventHooksFabric;
+import org.cyclops.cyclopscore.command.CommandDebug;
 import org.cyclops.cyclopscore.command.CommandIgnite;
 import org.cyclops.cyclopscore.command.CommandReloadResources;
+import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacketConfig;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
 import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
@@ -23,6 +25,7 @@ import org.cyclops.cyclopscore.proxy.ClientProxyFabric;
 import org.cyclops.cyclopscore.proxy.CommonProxyFabric;
 import org.cyclops.cyclopscore.proxy.IClientProxyCommon;
 import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
+import org.cyclops.cyclopscore.tracking.ImportantUsers;
 
 /**
  * The main mod class of CyclopsCore.
@@ -49,6 +52,9 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
         new GuiContainerOpenTriggerEventHooksFabric();
         new ItemCraftedTriggerTriggerEventHooksFabric();
         new ModItemObtainedTriggerEventHooksFabric();
+
+        // Handle metadata
+        ImportantUsers.checkAll();
     }
 
     @Override
@@ -66,6 +72,7 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
         LiteralArgumentBuilder<CommandSourceStack> root = super.constructBaseCommand(selection, context);
 
         root.then(CommandIgnite.make());
+        root.then(CommandDebug.make());
         root.then(CommandReloadResources.make());
 
         return root;
@@ -78,6 +85,7 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
         configHandler.addConfigurable(new GeneralConfig(this));
 
         // Argument types
+        configHandler.addConfigurable(new ArgumentTypeDebugPacketConfig<>(this));
         configHandler.addConfigurable(new ArgumentTypeEnumConfig<>(this));
 
         // Triggers

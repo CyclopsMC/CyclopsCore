@@ -3,8 +3,8 @@ package org.cyclops.cyclopscore.tracking;
 import com.google.common.collect.Sets;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.CyclopsCore;
 import org.cyclops.cyclopscore.event.PlayerRingOfFire;
+import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,7 +47,7 @@ public class ImportantUsers {
                         }
                     }
                 } catch (IOException e) {
-                    CyclopsCore.clog(Level.WARN, "Could not get version important users: " + e.toString());
+                    CyclopsCoreInstance.MOD.log(Level.WARN, "Could not get version important users: " + e.toString());
                 }
 
                 PlayerRingOfFire.ALLOW_RING.addAll(uuids);

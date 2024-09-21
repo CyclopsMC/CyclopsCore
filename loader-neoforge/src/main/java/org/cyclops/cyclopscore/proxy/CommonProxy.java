@@ -1,9 +1,19 @@
 package org.cyclops.cyclopscore.proxy;
 
+import net.neoforged.neoforge.common.NeoForge;
 import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.event.PlayerRingOfFireNeoForge;
 import org.cyclops.cyclopscore.init.ModBase;
 import org.cyclops.cyclopscore.network.PacketHandler;
-import org.cyclops.cyclopscore.network.packet.*;
+import org.cyclops.cyclopscore.network.packet.AdvancementRewardsObtainPacket;
+import org.cyclops.cyclopscore.network.packet.ButtonClickPacket;
+import org.cyclops.cyclopscore.network.packet.ReloadResourcesPacket;
+import org.cyclops.cyclopscore.network.packet.RequestPlayerAdvancementUnlockedPacket;
+import org.cyclops.cyclopscore.network.packet.RequestPlayerNbtPacket;
+import org.cyclops.cyclopscore.network.packet.RingOfFirePacket;
+import org.cyclops.cyclopscore.network.packet.SendPlayerAdvancementUnlockedPacket;
+import org.cyclops.cyclopscore.network.packet.SendPlayerNbtPacket;
+import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketAsync;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketComplexAsync;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketComplexSync;
@@ -19,6 +29,13 @@ public class CommonProxy extends CommonProxyComponent {
     @Override
     public ModBase getMod() {
         return CyclopsCore._instance;
+    }
+
+    @Override
+    public void registerEventHooks() {
+        super.registerEventHooks();
+
+        NeoForge.EVENT_BUS.register(new PlayerRingOfFireNeoForge());
     }
 
     @Override
