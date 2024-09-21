@@ -24,6 +24,8 @@ import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseForge;
+import org.cyclops.cyclopscore.inventory.IRegistryInventoryLocation;
+import org.cyclops.cyclopscore.inventory.RegistryInventoryLocation;
 import org.cyclops.cyclopscore.proxy.ClientProxyForge;
 import org.cyclops.cyclopscore.proxy.CommonProxyForge;
 import org.cyclops.cyclopscore.proxy.IClientProxyCommon;
@@ -48,6 +50,8 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
             _instance = instance;
             CyclopsCoreInstance.MOD = instance;
         });
+
+        getRegistryManager().addRegistry(IRegistryInventoryLocation.class, RegistryInventoryLocation.getInstance());
     }
 
     @Override

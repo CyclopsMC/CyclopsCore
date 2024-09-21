@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.inventory;
 import com.google.common.collect.Queues;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Iterator;
@@ -24,7 +23,7 @@ public class PlayerExtendedInventoryIterator implements Iterator<ItemStack> {
     public PlayerExtendedInventoryIterator(Player player) {
         this.iterators = Queues.newArrayDeque();
         for (IInventoryLocation inventoryExtender : InventoryLocations.REGISTRY.values()) {
-            IItemHandlerModifiable inv = inventoryExtender.getInventory(player);
+            IInventoryCommonModifiable inv = inventoryExtender.getInventory(player);
             if (inv != null) {
                 iterators.add(Pair.of(inventoryExtender, new InventoryIterator(inv)));
             }

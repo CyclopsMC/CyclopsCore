@@ -4,8 +4,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import org.cyclops.cyclopscore.Reference;
 
 /**
@@ -28,8 +26,8 @@ public class InventoryLocationPlayer implements IInventoryLocation {
         return ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "player");
     }
     @Override
-    public IItemHandlerModifiable getInventory(Player player) {
-        return new InvWrapper(player.getInventory());
+    public IInventoryCommonModifiable getInventory(Player player) {
+        return new InventoryCommonModifiableContainer(player.getInventory());
     }
 
     @Override

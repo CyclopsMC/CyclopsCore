@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nullable;
 
@@ -15,7 +14,7 @@ public interface IInventoryLocation {
     public ResourceLocation getUniqueName();
 
     @Nullable
-    public IItemHandlerModifiable getInventory(Player player);
+    public IInventoryCommonModifiable getInventory(Player player);
 
     public ItemStack getItemInSlot(Player player, int slot);
 

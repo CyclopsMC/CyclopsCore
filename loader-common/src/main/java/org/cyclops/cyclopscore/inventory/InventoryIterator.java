@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.inventory;
 
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Iterator;
@@ -13,10 +12,10 @@ import java.util.Iterator;
  */
 public class InventoryIterator implements Iterator<ItemStack> {
 
-    private final IItemHandlerModifiable inventory;
+    private final IInventoryCommonModifiable inventory;
     private int i;
 
-    public InventoryIterator(IItemHandlerModifiable inventory) {
+    public InventoryIterator(IInventoryCommonModifiable inventory) {
         this.inventory = inventory;
     }
 
