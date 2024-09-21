@@ -172,7 +172,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         configHandler.addConfigurable(new ContainerInfoBookTestConfig());
 
         // Argument types
-        configHandler.addConfigurable(new ArgumentTypeConfigPropertyConfig());
+        configHandler.addConfigurable(new ArgumentTypeConfigPropertyConfig<>(this));
         configHandler.addConfigurable(new ArgumentTypeDebugPacketConfig<>(this));
         configHandler.addConfigurable(new ArgumentTypeEnumConfig<>(this));
 

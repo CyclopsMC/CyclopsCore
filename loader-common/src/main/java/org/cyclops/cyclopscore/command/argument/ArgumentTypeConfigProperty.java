@@ -11,7 +11,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,13 +23,13 @@ import java.util.concurrent.CompletableFuture;
  */
 public class ArgumentTypeConfigProperty implements ArgumentType<ConfigurablePropertyData> {
 
-    private final ModBase mod;
+    private final IModBase mod;
 
-    public ArgumentTypeConfigProperty(ModBase mod) {
+    public ArgumentTypeConfigProperty(IModBase mod) {
         this.mod = mod;
     }
 
-    public ModBase getMod() {
+    public IModBase getMod() {
         return mod;
     }
 

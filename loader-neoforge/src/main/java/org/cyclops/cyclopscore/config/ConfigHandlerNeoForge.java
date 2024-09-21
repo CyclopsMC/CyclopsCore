@@ -185,7 +185,10 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
                 .comment(configPropertyData.comment)
                 .translation(configPropertyData.getLanguageKey())
                 .define(configPropertyData.name, configPropertyData.defaultValue);
-        configPropertyData.setConfigProperty(configProperty);
+        configPropertyData.setConfigProperty(configProperty, (newValue) -> {
+            configProperty.set(newValue);
+            configProperty.save();
+        });
 
         configBuilder.pop();
     }

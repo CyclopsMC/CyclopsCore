@@ -26,7 +26,6 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
 import org.cyclops.cyclopscore.client.key.KeyRegistry;
-import org.cyclops.cyclopscore.command.CommandConfig;
 import org.cyclops.cyclopscore.command.CommandVersion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
@@ -206,7 +205,6 @@ public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
     protected LiteralArgumentBuilder<CommandSourceStack> constructBaseCommand(Commands.CommandSelection selection, CommandBuildContext context) {
         LiteralArgumentBuilder<CommandSourceStack> root = super.constructBaseCommand(selection, context);
 
-        root.then(CommandConfig.make(this));
         root.then(CommandVersion.make(this));
 
         return root;

@@ -4,6 +4,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.lang.reflect.Field;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -31,6 +32,7 @@ public final class ConfigurablePropertyData<T> {
     public final int maxValue;
 
     private Supplier<T> configProperty;
+    private Consumer<T> configPropertyUpdater;
 
     /**
      * Define a new configurable property.
@@ -66,12 +68,17 @@ public final class ConfigurablePropertyData<T> {
         this.maxValue = maxValue;
     }
 
-    public void setConfigProperty(Supplier<T> configProperty) {
+    public void setConfigProperty(Supplier<T> configProperty, Consumer<T> configPropertyUpdater) {
         this.configProperty = configProperty;
+        this.configPropertyUpdater = configPropertyUpdater;
     }
 
     public Supplier<T> getConfigProperty() {
         return configProperty;
+    }
+
+    public Consumer<T> getConfigPropertyUpdater() {
+        return configPropertyUpdater;
     }
 
     /**

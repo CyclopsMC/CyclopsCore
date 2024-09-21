@@ -8,11 +8,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.common.ModConfigSpec;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigProperty;
 import org.cyclops.cyclopscore.config.ConfigurablePropertyData;
-import org.cyclops.cyclopscore.helper.Helpers;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.IModBase;
 
 /**
  * Command for selecting and defining a {@link ConfigurablePropertyData}.
@@ -21,10 +19,10 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public class CommandConfig implements Command<CommandSourceStack> {
 
-    private final ModBase mod;
+    private final IModBase mod;
     private final boolean valueSet;
 
-    public CommandConfig(ModBase mod, boolean valueSet) {
+    public CommandConfig(IModBase mod, boolean valueSet) {
         this.mod = mod;
         this.valueSet = valueSet;
     }
@@ -36,10 +34,9 @@ public class CommandConfig implements Command<CommandSourceStack> {
             context.getSource().getPlayerOrException().sendSystemMessage(Component.literal(property.getConfigProperty().get().toString()));
         } else {
             String value = context.getArgument("value", String.class);
-            Object newValue = Helpers.tryParse(value, property.getConfigProperty().get());
+            Object newValue = mod.getModHelpers().getBaseHelpers().tryParse(value, property.getConfigProperty().get());
             if(newValue != null) {
-                ((ModConfigSpec.ConfigValue) property.getConfigProperty()).set(newValue);
-                ((ModConfigSpec.ConfigValue) property.getConfigProperty()).save();
+                property.getConfigPropertyUpdater().accept(newValue);
                 context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable("chat.cyclopscore.command.updatedValue",
                         property.getName(), newValue.toString()));
             } else {
@@ -50,7 +47,7 @@ public class CommandConfig implements Command<CommandSourceStack> {
         return 0;
     }
 
-    public static LiteralArgumentBuilder<CommandSourceStack> make(ModBase mod) {
+    public static LiteralArgumentBuilder<CommandSourceStack> make(IModBase mod) {
         return Commands.literal("config")
                 .requires((commandSource) -> commandSource.hasPermission(2))
                 .then(Commands.argument("property", new ArgumentTypeConfigProperty(mod))

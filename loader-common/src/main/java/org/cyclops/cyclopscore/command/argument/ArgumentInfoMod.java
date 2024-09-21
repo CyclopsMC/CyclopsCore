@@ -5,7 +5,8 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.helper.ModBaseCommon;
+import org.cyclops.cyclopscore.init.IModBase;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
 /**
@@ -21,7 +22,7 @@ public class ArgumentInfoMod<T extends ArgumentType<?>> implements ArgumentTypeI
 
     @Override
     public ArgumentInfoMod.Template deserializeFromNetwork(FriendlyByteBuf packetBuffer) {
-        return new Template(ModBase.get(packetBuffer.readUtf(PacketCodec.READ_STRING_MAX_LENGTH)));
+        return new Template(ModBaseCommon.getCommon(packetBuffer.readUtf(PacketCodec.READ_STRING_MAX_LENGTH)));
     }
 
     @Override
@@ -35,9 +36,9 @@ public class ArgumentInfoMod<T extends ArgumentType<?>> implements ArgumentTypeI
     }
 
     public final class Template implements ArgumentTypeInfo.Template<ArgumentTypeConfigProperty> {
-        private final ModBase mod;
+        private final IModBase mod;
 
-        Template(ModBase mod) {
+        Template(IModBase mod) {
             this.mod = mod;
         }
 

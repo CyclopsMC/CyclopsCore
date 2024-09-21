@@ -11,6 +11,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cyclops.cyclopscore.command.CommandConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.CreativeModeTabConfigCommon;
 import org.cyclops.cyclopscore.init.IModBase;
@@ -94,6 +95,8 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
 
     protected LiteralArgumentBuilder<CommandSourceStack> constructBaseCommand(Commands.CommandSelection selection, CommandBuildContext context) {
         LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal(this.getModId());
+
+        root.then(CommandConfig.make(this));
 
         return root;
     }

@@ -16,6 +16,7 @@ import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerEvent
 import org.cyclops.cyclopscore.command.CommandDebug;
 import org.cyclops.cyclopscore.command.CommandIgnite;
 import org.cyclops.cyclopscore.command.CommandReloadResources;
+import org.cyclops.cyclopscore.command.argument.ArgumentTypeConfigPropertyConfig;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeDebugPacketConfig;
 import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
@@ -94,6 +95,7 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
         configHandler.addConfigurable(new GeneralConfig(this));
 
         // Argument types
+        configHandler.addConfigurable(new ArgumentTypeConfigPropertyConfig<>(this));
         configHandler.addConfigurable(new ArgumentTypeDebugPacketConfig<>(this));
         configHandler.addConfigurable(new ArgumentTypeEnumConfig<>(this));
 
