@@ -2,9 +2,9 @@ package org.cyclops.cyclopscore.client.gui.component.input;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.component.button.ButtonArrow;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
 
 /**
  * A number field which by default only accepts positive numbers.
@@ -115,7 +115,7 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     }
 
     protected int getDiffAmount() {
-        return MinecraftHelpers.isShifted() ? 10 : 1;
+        return Screen.hasShiftDown() ? 10 : 1;
     }
 
     protected void increase() {

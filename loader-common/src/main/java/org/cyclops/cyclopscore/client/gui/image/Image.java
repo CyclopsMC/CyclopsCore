@@ -2,20 +2,18 @@ package org.cyclops.cyclopscore.client.gui.image;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import lombok.Data;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
-import org.cyclops.cyclopscore.helper.RenderHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.joml.Matrix4f;
 
 /**
  * A wrapper that contains a reference to a {@link  net.minecraft.resources.ResourceLocation} and its sheet position.
  * @author rubensworks
  */
-@Data
 public class Image implements IImage {
 
     private final ResourceLocation resourceLocation;
@@ -29,6 +27,26 @@ public class Image implements IImage {
         this.sheetHeight = sheetHeight;
     }
 
+    public ResourceLocation getResourceLocation() {
+        return resourceLocation;
+    }
+
+    public int getSheetX() {
+        return sheetX;
+    }
+
+    public int getSheetY() {
+        return sheetY;
+    }
+
+    public int getSheetWidth() {
+        return sheetWidth;
+    }
+
+    public int getSheetHeight() {
+        return sheetHeight;
+    }
+
     @Override
     public void draw(GuiGraphics gui, int x, int y) {
         gui.blit(resourceLocation, x, y, sheetX, sheetY, sheetWidth, sheetHeight);
@@ -36,8 +54,8 @@ public class Image implements IImage {
 
     @Override
     public void drawWithColor(GuiGraphics gui, int x, int y, float r, float g, float b, float a) {
-        RenderHelpers.bindTexture(resourceLocation);
-        RenderHelpers.blitColored(gui, x, y, 0, sheetX, sheetY, sheetWidth, sheetHeight, r, g, b, a);
+        IModHelpers.get().getRenderHelpers().bindTexture(resourceLocation);
+        IModHelpers.get().getRenderHelpers().blitColored(gui, x, y, 0, sheetX, sheetY, sheetWidth, sheetHeight, r, g, b, a);
     }
 
     @Override

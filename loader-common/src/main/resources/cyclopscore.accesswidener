@@ -25,6 +25,9 @@ accessible method net/minecraft/client/renderer/blockentity/BlockEntityRenderers
 # Screens
 accessible class net/minecraft/client/gui/screens/MenuScreens$ScreenConstructor
 
+# Widgets
+accessible field net/minecraft/client/gui/components/AbstractButton SPRITES Lnet/minecraft/client/gui/components/WidgetSprites;
+
 # Slot
 accessible field net/minecraft/world/inventory/Slot x I
 mutable field net/minecraft/world/inventory/Slot x I

@@ -1,8 +1,7 @@
 package org.cyclops.cyclopscore.client.gui.image;
 
 import net.minecraft.resources.ResourceLocation;
-import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 
 /**
  * Default images provided by this mod.
@@ -10,14 +9,14 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public class Images {
 
-    public static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(CyclopsCore._instance.getModId(),
-            CyclopsCore._instance.getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "icons.png");
+    public static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(CyclopsCoreInstance.MOD.getModId(),
+            "textures/gui/icons.png");
 
-    public static final ResourceLocation BUTTONS = ResourceLocation.fromNamespaceAndPath(CyclopsCore._instance.getModId(),
-            CyclopsCore._instance.getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "buttons.png");
+    public static final ResourceLocation BUTTONS = ResourceLocation.fromNamespaceAndPath(CyclopsCoreInstance.MOD.getModId(),
+            "textures/gui/buttons.png");
 
-    public static final ResourceLocation WIDGETS = ResourceLocation.fromNamespaceAndPath(CyclopsCore._instance.getModId(),
-            CyclopsCore._instance.getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "widgets.png");
+    public static final ResourceLocation WIDGETS = ResourceLocation.fromNamespaceAndPath(CyclopsCoreInstance.MOD.getModId(),
+            "textures/gui/widgets.png");
 
     public static final Image ARROW_DOWN = new Image(ICONS, 18, 0, 18, 18);
     public static final Image ARROW_UP = new Image(ICONS, 36, 0, 18, 18);

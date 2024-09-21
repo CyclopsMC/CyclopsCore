@@ -6,7 +6,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import org.cyclops.cyclopscore.helper.RenderHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -65,7 +65,7 @@ public class WidgetScrollBar extends AbstractWidget {
     @Override
     public boolean isMouseOver(double x, double y) {
         if (scollRegion != null) {
-            if (RenderHelpers.isPointInRegion(scollRegion, new Point((int) x, (int) y))) {
+            if (IModHelpers.get().getRenderHelpers().isPointInRegion(scollRegion, new Point((int) x, (int) y))) {
                 return true;
             }
         }

@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.client.gui.component.button;
 
-import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -9,22 +8,22 @@ import org.cyclops.cyclopscore.client.gui.image.Images;
 
 /**
  * A button with an arrow in a certain direction.
- * @author rubensworks
  *
+ * @author rubensworks
  */
 public class ButtonArrow extends ButtonExtended {
 
-    @Getter
     private final ButtonArrow.Direction direction;
     private final Image[] directionImages;
 
     /**
      * Make a new instance.
-     * @param x X
-     * @param y Y
+     *
+     * @param x                X
+     * @param y                Y
      * @param narrationMessage The string to print.
-     * @param pressCallback A callback for when this button was pressed.
-     * @param direction The direction of the arrow to draw.
+     * @param pressCallback    A callback for when this button was pressed.
+     * @param direction        The direction of the arrow to draw.
      */
     public ButtonArrow(int x, int y, Component narrationMessage, Button.OnPress pressCallback, ButtonArrow.Direction direction) {
         super(x, y, direction.width, direction.height, narrationMessage, pressCallback, true);
@@ -33,13 +32,13 @@ public class ButtonArrow extends ButtonExtended {
     }
 
     protected static Image[] getDirectionImage(ButtonArrow.Direction direction) {
-        if(direction == Direction.NORTH) {
+        if (direction == Direction.NORTH) {
             return Images.BUTTON_ARROW_UP;
-        } else if(direction == Direction.EAST) {
+        } else if (direction == Direction.EAST) {
             return Images.BUTTON_ARROW_RIGHT;
-        } else if(direction == Direction.SOUTH) {
+        } else if (direction == Direction.SOUTH) {
             return Images.BUTTON_ARROW_DOWN;
-        } else if(direction == Direction.WEST) {
+        } else if (direction == Direction.WEST) {
             return Images.BUTTON_ARROW_LEFT;
         }
         return null;
@@ -53,6 +52,10 @@ public class ButtonArrow extends ButtonExtended {
     @Override
     protected void drawButtonInner(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 
+    }
+
+    public Direction getDirection() {
+        return this.direction;
     }
 
     public enum Direction {
