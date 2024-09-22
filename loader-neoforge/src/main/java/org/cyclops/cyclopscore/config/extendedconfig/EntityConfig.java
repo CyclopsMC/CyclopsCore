@@ -74,7 +74,7 @@ public abstract class EntityConfig<T extends Entity> extends ExtendedConfigForge
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableTypesNeoForge.ENTITY;
+        return ConfigurableTypesNeoForge.D_ENTITY;
     }
 
     @Override

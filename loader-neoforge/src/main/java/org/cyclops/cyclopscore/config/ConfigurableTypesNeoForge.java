@@ -8,11 +8,14 @@ import org.cyclops.cyclopscore.config.extendedconfig.*;
  */
 public class ConfigurableTypesNeoForge {
 
+    static {
+        ConfigurableTypeCommon.GUI.setAction(new GuiActionNeoForge<>());
+    }
+
     // The following could be generalized to common if needed
     public static final ConfigurableType PARTICLE = new ConfigurableType(true, ParticleConfig.class, new ParticleAction<>(), "particle");
 
     // NeoForge-specific
-    public static final ConfigurableType GUI = new ConfigurableType(true, GuiConfig.class, new ConfigurableTypeActionForge<>(), "gui");
     public static final ConfigurableType FLUID = new ConfigurableType(true, FluidConfig.class, new FluidAction(), "fluid");
     public static final ConfigurableType CONDITION = new ConfigurableType(true, ConditionConfig.class, new ConditionAction<>(), "condition");
     public static final ConfigurableType BIOME_MODIFIER = new ConfigurableType(true, BiomeModifierConfig.class, new BiomeModifierAction<>(), "biome_modifier");
@@ -46,7 +49,8 @@ public class ConfigurableTypesNeoForge {
     public static final ConfigurableType D_WORLD_STRUCTURE_PIECE = new ConfigurableType(true, WorldStructurePieceConfig.class, new ConfigurableTypeActionForge<>(), "world_structure_piece");
     public static final ConfigurableType D_BLOCK = new ConfigurableType(true, BlockConfig.class, new BlockActionNeoForge(), "block");
     public static final ConfigurableType D_ITEM = new ConfigurableType(true, ItemConfig.class, new ItemActionNeoForge(), "item");
-    public static final ConfigurableType ENTITY = new ConfigurableType(true, EntityConfig.class, new EntityAction<>(), "entity");
+    public static final ConfigurableType D_ENTITY = new ConfigurableType(true, EntityConfig.class, new EntityAction<>(), "entity");
+    public static final ConfigurableType D_GUI = new ConfigurableType(true, GuiConfig.class, new ConfigurableTypeActionForge<>(), "gui");
     public static final ConfigurableType D_DUMMY = new ConfigurableType(false, DummyConfig.class, new DummyAction(), "general");
 
 }

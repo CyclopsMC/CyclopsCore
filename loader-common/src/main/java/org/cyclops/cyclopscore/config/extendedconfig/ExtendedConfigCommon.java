@@ -8,6 +8,8 @@ import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.config.CyclopsCoreConfigException;
 import org.cyclops.cyclopscore.init.IModBase;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
@@ -30,6 +32,7 @@ public abstract class ExtendedConfigCommon<C extends ExtendedConfigCommon<C, I, 
     private final M mod;
     private final String namedId;
     private final Function<C, ? extends I> elementConstructor;
+    private final List<Function<I, I>> instanceTransformers;
 
     private I instance;
 
@@ -48,6 +51,7 @@ public abstract class ExtendedConfigCommon<C extends ExtendedConfigCommon<C, I, 
         this.mod = mod;
         this.namedId = namedId.toLowerCase(Locale.ROOT);
         this.elementConstructor = elementConstructor;
+        this.instanceTransformers = new ArrayList<>();
         try {
             mod.getConfigHandler().generateConfigProperties(this);
         } catch (IllegalArgumentException | IllegalAccessException e1) {
@@ -69,6 +73,12 @@ public abstract class ExtendedConfigCommon<C extends ExtendedConfigCommon<C, I, 
 
     protected void initializeInstance() {
         I instance = this.getElementConstructor().apply(this.downCast());
+
+        // Pass instance through transformers
+        for (Function<I, I> instanceTransformer : this.instanceTransformers) {
+            instance = instanceTransformer.apply(instance);
+        }
+
         if (this.instance == null) {
             this.instance = instance;
         } else {
@@ -181,5 +191,13 @@ public abstract class ExtendedConfigCommon<C extends ExtendedConfigCommon<C, I, 
      */
     public String getConfigPropertyPrefix(ConfigurablePropertyCommon annotation) {
         return annotation.namedId().isEmpty() ? this.getNamedId() : annotation.namedId();
+    }
+
+    /**
+     * Add an instance transformer.
+     * @param transformer A transformer that will be invoked once when instantiating the instance.
+     */
+    public void addInstanceTransformer(Function<I, I> transformer) {
+        this.instanceTransformers.add(transformer);
     }
 }

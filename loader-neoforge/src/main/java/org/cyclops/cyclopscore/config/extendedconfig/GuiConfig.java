@@ -49,7 +49,7 @@ public abstract class GuiConfig<T extends AbstractContainerMenu> extends Extende
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableTypesNeoForge.GUI;
+        return ConfigurableTypesNeoForge.D_GUI;
     }
 
     @Override

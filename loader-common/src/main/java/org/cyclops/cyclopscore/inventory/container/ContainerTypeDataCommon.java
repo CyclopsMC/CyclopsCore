@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.inventory.container;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.neoforge.network.IContainerFactory;
 
 /**
  * A {@link MenuType} for a {@link MenuType.MenuSupplier},
@@ -14,9 +13,8 @@ import net.neoforged.neoforge.network.IContainerFactory;
  *
  * @author rubensworks
  */
-@Deprecated // TODO: rm in next major
-public class ContainerTypeData<T extends AbstractContainerMenu> extends MenuType<T> {
-    public ContainerTypeData(IContainerFactory<T> factory, FeatureFlagSet featureFlagSet) {
+public class ContainerTypeDataCommon<T extends AbstractContainerMenu> extends MenuType<T> {
+    public ContainerTypeDataCommon(IContainerFactoryCommon<T> factory, FeatureFlagSet featureFlagSet) {
         super(factory, featureFlagSet);
     }
 }

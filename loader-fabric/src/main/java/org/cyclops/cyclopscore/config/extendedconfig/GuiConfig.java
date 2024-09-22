@@ -20,6 +20,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfigCommon
  */
+@Deprecated // TODO: rm in next major
 public abstract class GuiConfig<T extends AbstractContainerMenu, M extends IModBase> extends ExtendedConfigRegistry<GuiConfig<T, M>, MenuType<T>, M> {
 
     /**
