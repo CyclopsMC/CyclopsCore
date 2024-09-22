@@ -58,4 +58,9 @@ public abstract class ModHelpersCommon implements IModHelpers {
     public IWorldHelpers getWorldHelpers() {
         return new WorldHelpersCommon(this);
     }
+
+    @Override
+    public IGuiHelpers getGuiHelpers() {
+        return new GuiHelpersCommon(this);
+    }
 }

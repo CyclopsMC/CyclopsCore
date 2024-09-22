@@ -39,6 +39,7 @@ import java.util.function.Supplier;
 /**
  * Helpers related to guis.
  */
+@Deprecated // TODO: remove in next major version
 public class GuiHelpers {
 
     /**

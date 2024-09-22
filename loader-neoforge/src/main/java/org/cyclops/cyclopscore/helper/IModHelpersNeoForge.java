@@ -18,4 +18,6 @@ public interface IModHelpersNeoForge extends IModHelpers {
 
     public IRenderHelpersNeoForge getRenderHelpers();
 
+    public IGuiHelpersNeoForge getGuiHelpers();
+
 }

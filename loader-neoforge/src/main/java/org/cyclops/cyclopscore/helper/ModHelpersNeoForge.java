@@ -33,4 +33,9 @@ public class ModHelpersNeoForge extends ModHelpersCommon implements IModHelpersN
     public IRegistrationHelpers getRegistrationHelpers() {
         return new RegistrationHelpersNeoForge();
     }
+
+    @Override
+    public IGuiHelpersNeoForge getGuiHelpers() {
+        return new GuiHelpersNeoForge(this);
+    }
 }

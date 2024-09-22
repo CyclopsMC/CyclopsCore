@@ -38,4 +38,6 @@ public interface IModHelpers {
 
     public IWorldHelpers getWorldHelpers();
 
+    public IGuiHelpers getGuiHelpers();
+
 }
