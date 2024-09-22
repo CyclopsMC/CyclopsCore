@@ -10,10 +10,8 @@ public class ConfigurableTypesNeoForge {
 
     static {
         ConfigurableTypeCommon.GUI.setAction(new GuiActionNeoForge<>());
+        ConfigurableTypeCommon.PARTICLE.setAction(new ParticleActionNeoForge<>());
     }
-
-    // The following could be generalized to common if needed
-    public static final ConfigurableType PARTICLE = new ConfigurableType(true, ParticleConfig.class, new ParticleAction<>(), "particle");
 
     // NeoForge-specific
     public static final ConfigurableType FLUID = new ConfigurableType(true, FluidConfig.class, new FluidAction(), "fluid");
@@ -51,6 +49,7 @@ public class ConfigurableTypesNeoForge {
     public static final ConfigurableType D_ITEM = new ConfigurableType(true, ItemConfig.class, new ItemActionNeoForge(), "item");
     public static final ConfigurableType D_ENTITY = new ConfigurableType(true, EntityConfig.class, new EntityAction<>(), "entity");
     public static final ConfigurableType D_GUI = new ConfigurableType(true, GuiConfig.class, new ConfigurableTypeActionForge<>(), "gui");
+    public static final ConfigurableType D_PARTICLE = new ConfigurableType(true, ParticleConfig.class, new ParticleAction<>(), "particle");
     public static final ConfigurableType D_DUMMY = new ConfigurableType(false, DummyConfig.class, new DummyAction(), "general");
 
 }

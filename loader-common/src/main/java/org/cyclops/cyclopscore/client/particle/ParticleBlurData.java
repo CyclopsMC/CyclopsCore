@@ -8,7 +8,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import org.cyclops.cyclopscore.RegistryEntries;
+import org.cyclops.cyclopscore.RegistryEntriesCommon;
 
 /**
  * Data for {@link ParticleBlur}.
@@ -50,7 +50,7 @@ public class ParticleBlurData implements ParticleOptions {
 
     @Override
     public ParticleType<?> getType() {
-        return RegistryEntries.PARTICLE_BLUR.get();
+        return RegistryEntriesCommon.PARTICLE_BLUR.value();
     }
 
     public float getRed() {

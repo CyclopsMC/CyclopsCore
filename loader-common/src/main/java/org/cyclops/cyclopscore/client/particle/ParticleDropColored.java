@@ -7,14 +7,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 
 /**
  * Particle that appears underneath blocks for simulating drops.
  */
-@OnlyIn(Dist.CLIENT)
 public class ParticleDropColored extends TextureSheetParticle {
 
     /**

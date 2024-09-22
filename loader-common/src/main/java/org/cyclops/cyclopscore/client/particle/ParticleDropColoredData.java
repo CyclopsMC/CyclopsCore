@@ -8,7 +8,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import org.cyclops.cyclopscore.RegistryEntries;
+import org.cyclops.cyclopscore.RegistryEntriesCommon;
 
 /**
  * Data for {@link ParticleDropColored}.
@@ -41,7 +41,7 @@ public class ParticleDropColoredData implements ParticleOptions {
 
     @Override
     public ParticleType<?> getType() {
-        return RegistryEntries.PARTICLE_DROP_COLORED.get();
+        return RegistryEntriesCommon.PARTICLE_DROP_COLORED.value();
     }
 
     public float getRed() {

@@ -165,8 +165,8 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         configHandler.addConfigurable(new FluidHandlerItemCapacityConfig());
 
         // Particles
-        configHandler.addConfigurable(new ParticleBlurConfig());
-        configHandler.addConfigurable(new ParticleDropColoredConfig());
+        configHandler.addConfigurable(new ParticleBlurConfig<>(this));
+        configHandler.addConfigurable(new ParticleDropColoredConfig<>(this));
 
         // Containers
         configHandler.addConfigurable(new ContainerInfoBookTestConfig());

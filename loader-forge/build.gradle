@@ -1,10 +1,18 @@
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.Constants as CFG_Constants
 
+buildscript {
+    dependencies {
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+    }
+}
+
 plugins {
     id 'multiloader-loader-forge'
     id 'net.minecraftforge.gradle' version '[6.0.24,6.2)'
 }
+
+apply plugin: 'org.spongepowered.mixin'
 
 sourceSets {
     api {
@@ -39,6 +47,8 @@ repositories {
 }
 
 dependencies {
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
     // Project lombok
     compileOnly 'org.projectlombok:lombok:1.18.30'
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
@@ -85,6 +95,11 @@ minecraft {
             }
         }
     }
+}
+
+mixin {
+    add sourceSets.main, "mixins.cyclopscore.refmap.json"
+    config 'mixins.cyclopscore.json'
 }
 
 javadoc {

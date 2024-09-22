@@ -9,10 +9,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.world.entity.LivingEntity;
-import org.cyclops.cyclopscore.helper.RenderHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
+import org.cyclops.cyclopscore.helper.IRenderHelpers;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -117,6 +119,9 @@ public class ParticleBlur extends TextureSheetParticle {
 
     public static class RenderType implements ParticleRenderType {
 
+        boolean lastBlur;
+        boolean lastMipmap;
+
         @Override
         public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
             RenderSystem.depthMask(false);
@@ -125,8 +130,12 @@ public class ParticleBlur extends TextureSheetParticle {
             //RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
             //RenderSystem.disableLighting();
 
-            RenderHelpers.bindTexture(TextureAtlas.LOCATION_PARTICLES);
-            textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES).setBlurMipmap(true, false);
+            IRenderHelpers renderHelpers = IModHelpers.get().getRenderHelpers();
+            renderHelpers.bindTexture(TextureAtlas.LOCATION_PARTICLES);
+            AbstractTexture texture = textureManager.getTexture(TextureAtlas.LOCATION_PARTICLES);
+            lastBlur = texture.blur;
+            lastMipmap = texture.mipmap;
+            texture.setFilter(true, false);
 
             BufferBuilder builder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
 
@@ -136,7 +145,7 @@ public class ParticleBlur extends TextureSheetParticle {
         }
 
         public void end() {
-            Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES).restoreLastBlurMipmap();
+            Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES).setFilter(lastBlur, lastMipmap);
             //RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
             RenderSystem.disableBlend();
             RenderSystem.depthMask(true);

@@ -11,6 +11,8 @@ import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerConfig;
 import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerTriggerEventHooksFabric;
 import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerConfig;
 import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerEventHooksFabric;
+import org.cyclops.cyclopscore.client.particle.ParticleBlurConfig;
+import org.cyclops.cyclopscore.client.particle.ParticleDropColoredConfig;
 import org.cyclops.cyclopscore.command.CommandDebug;
 import org.cyclops.cyclopscore.command.CommandIgnite;
 import org.cyclops.cyclopscore.command.CommandReloadResources;
@@ -88,6 +90,10 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
         super.onConfigsRegister(configHandler);
 
         configHandler.addConfigurable(new GeneralConfig(this));
+
+        // Particles
+        configHandler.addConfigurable(new ParticleBlurConfig<>(this));
+        configHandler.addConfigurable(new ParticleDropColoredConfig<>(this));
 
         // Argument types
         configHandler.addConfigurable(new ArgumentTypeConfigPropertyConfig<>(this));

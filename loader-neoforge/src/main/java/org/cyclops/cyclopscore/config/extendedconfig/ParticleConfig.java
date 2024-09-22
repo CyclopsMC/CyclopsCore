@@ -21,6 +21,7 @@ import java.util.function.Function;
  * @author rubensworks
  * @see ExtendedConfigCommon
  */
+@Deprecated // TODO: rm in next major
 public abstract class ParticleConfig<T extends ParticleOptions> extends ExtendedConfigForge<ParticleConfig<T>, ParticleType<T>> {
 
     /**
@@ -50,7 +51,7 @@ public abstract class ParticleConfig<T extends ParticleOptions> extends Extended
 
     @Override
     public ConfigurableType getConfigurableType() {
-        return ConfigurableTypesNeoForge.PARTICLE;
+        return ConfigurableTypesNeoForge.D_PARTICLE;
     }
 
     @Override
