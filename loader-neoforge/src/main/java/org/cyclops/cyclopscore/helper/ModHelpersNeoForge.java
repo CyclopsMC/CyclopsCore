@@ -15,6 +15,11 @@ public class ModHelpersNeoForge extends ModHelpersCommon implements IModHelpersN
     }
 
     @Override
+    public IItemStackHelpers getItemStackHelpers() {
+        return new ItemStackHelpersNeoForge();
+    }
+
+    @Override
     public ICapabilityHelpersNeoForge getCapabilityHelpers() {
         return new CapabilityHelpersNeoForge(this);
     }

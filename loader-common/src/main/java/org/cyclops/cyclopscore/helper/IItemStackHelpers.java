@@ -55,4 +55,16 @@ public interface IItemStackHelpers {
      */
     public int getItemStackHashCode(ItemStack stack);
 
+    /**
+     * @param itemStack An item stack.
+     * @return True if this item has a crafting remaining item
+     */
+    public boolean hasCraftingRemainingItem(ItemStack itemStack);
+
+    /**
+     * @param itemStack An item stack.
+     * @return The resulting item stack.
+     */
+    public ItemStack getCraftingRemainingItem(ItemStack itemStack);
+
 }

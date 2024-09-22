@@ -19,6 +19,11 @@ public class ModHelpersFabric extends ModHelpersCommon implements IModHelpersFab
     }
 
     @Override
+    public IItemStackHelpers getItemStackHelpers() {
+        return new ItemStackHelpersFabric();
+    }
+
+    @Override
     public IFluidHelpersFabric getFluidHelpers() {
         return new FluidHelpersFabric();
     }

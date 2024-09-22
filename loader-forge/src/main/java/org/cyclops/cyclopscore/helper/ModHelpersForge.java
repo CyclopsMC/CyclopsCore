@@ -25,6 +25,11 @@ public class ModHelpersForge extends ModHelpersCommon implements IModHelpersForg
     }
 
     @Override
+    public IItemStackHelpers getItemStackHelpers() {
+        return new ItemStackHelpersForge();
+    }
+
+    @Override
     public ICapabilityHelpersForge getCapabilityHelpers() {
         return new CapabilityHelpersForge(this);
     }

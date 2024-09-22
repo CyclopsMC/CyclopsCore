@@ -35,11 +35,6 @@ public abstract class ModHelpersCommon implements IModHelpers {
     }
 
     @Override
-    public IItemStackHelpers getItemStackHelpers() {
-        return new ItemStackHelpersCommon();
-    }
-
-    @Override
     public IRenderHelpers getRenderHelpers() {
         return new RenderHelpersCommon();
     }

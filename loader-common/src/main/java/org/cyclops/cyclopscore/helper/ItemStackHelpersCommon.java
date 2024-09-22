@@ -14,7 +14,7 @@ import java.util.Random;
 /**
  * @author rubensworks
  */
-public class ItemStackHelpersCommon implements IItemStackHelpers {
+public abstract class ItemStackHelpersCommon implements IItemStackHelpers {
 
     private static final Random RANDOM = new Random();
 
