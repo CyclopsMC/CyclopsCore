@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
@@ -9,6 +10,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
 import org.cyclops.cyclopscore.CyclopsCoreFabric;
 import org.cyclops.cyclopscore.Reference;
 
@@ -72,4 +74,8 @@ public class MinecraftHelpersFabric extends MinecraftHelpersCommon {
         return this.server.get();
     }
 
+    @Override
+    public boolean isFakePlayer(Player player) {
+        return player instanceof FakePlayer;
+    }
 }

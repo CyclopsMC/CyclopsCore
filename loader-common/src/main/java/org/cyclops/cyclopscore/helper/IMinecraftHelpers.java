@@ -131,4 +131,10 @@ public interface IMinecraftHelpers {
      */
     public MinecraftServer getCurrentServer();
 
+    /**
+     * @param player A player
+     * @return If the given player is a fake player.
+     */
+    public boolean isFakePlayer(Player player);
+
 }

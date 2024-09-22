@@ -6,6 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -64,4 +65,8 @@ public class MinecraftHelpersForge extends MinecraftHelpersCommon {
         return ServerLifecycleHooks.getCurrentServer();
     }
 
+    @Override
+    public boolean isFakePlayer(Player player) {
+        return false;
+    }
 }

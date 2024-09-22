@@ -13,7 +13,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.FakePlayer;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.inventory.InventoryLocationPlayer;
 import org.cyclops.cyclopscore.inventory.ItemLocation;
 
@@ -40,17 +40,6 @@ public abstract class ItemGui extends Item {
 
     public abstract Class<? extends AbstractContainerMenu> getContainerClass(Level world, Player player, ItemStack itemStack);
 
-    @Override
-    public boolean onDroppedByPlayer(ItemStack itemstack, Player player) {
-        if(!itemstack.isEmpty()
-                && player instanceof ServerPlayer
-                && player.containerMenu != null
-                && player.containerMenu.getClass() == getContainerClass(player.level(), player, itemstack)) {
-            player.closeContainer();
-        }
-        return super.onDroppedByPlayer(itemstack, player);
-    }
-
     /**
      * Open the gui for a certain item index in the player inventory.
      * @param world The world.
@@ -61,7 +50,7 @@ public abstract class ItemGui extends Item {
         if (!world.isClientSide()) {
             MenuProvider containerProvider = this.getContainer(world, player, itemLocation);
             if (containerProvider != null) {
-                player.openMenu(containerProvider, packetBuffer -> this.writeExtraGuiData(packetBuffer, world, player, itemLocation));
+                IModHelpers.get().getMinecraftHelpers().openMenu(player, containerProvider, packetBuffer -> this.writeExtraGuiData(packetBuffer, world, player, itemLocation));
                 Stat<ResourceLocation> openStat = this.getOpenStat();
                 if (openStat != null) {
                     player.awardStat(openStat);
@@ -93,7 +82,7 @@ public abstract class ItemGui extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
-        if (player instanceof FakePlayer) {
+        if (IModHelpers.get().getMinecraftHelpers().isFakePlayer(player)) {
             return new InteractionResultHolder<>(InteractionResult.FAIL, itemStack);
         }
         if (player instanceof ServerPlayer) {
