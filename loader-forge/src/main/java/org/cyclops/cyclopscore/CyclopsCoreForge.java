@@ -4,9 +4,12 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.Holder;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.registries.ForgeRegistry;
+import net.minecraftforge.registries.RegistryManager;
 import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerConfig;
 import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerEventHooksForge;
 import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerConfig;
@@ -24,6 +27,7 @@ import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
 import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
+import org.cyclops.cyclopscore.config.DeferredHolderCommon;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseForge;
 import org.cyclops.cyclopscore.inventory.IRegistryInventoryLocation;
@@ -54,6 +58,18 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
         });
 
         getRegistryManager().addRegistry(IRegistryInventoryLocation.class, RegistryInventoryLocation.getInstance());
+
+        // Make DeferredHolderCommon compatible with IForgeRegistry's.
+        DeferredHolderCommon.BIND_OVERRIDE = (key) -> {
+            ForgeRegistry<Object> registry = RegistryManager.ACTIVE.getRegistry(key.registry());
+            if (registry != null) {
+                Object value = registry.getValue(key.location());
+                if (value != null) {
+                    return Holder.direct(value);
+                }
+            }
+            return null;
+        };
     }
 
     @Override

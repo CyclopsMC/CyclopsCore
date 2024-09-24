@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -26,6 +27,10 @@ import java.util.stream.Stream;
  * @param <T> The type of object being held by this DeferredHolder.
  */
 public class DeferredHolderCommon<R, T extends R> implements Holder<R> {
+
+    // Modloaders such as Forge override this, to also gain access to IForgeRegistry's.
+    public static Function<ResourceKey<?>, Holder<?>> BIND_OVERRIDE = null;
+
     /**
      * Creates a new DeferredHolder targeting the value with the specified name in the specified registry.
      *
@@ -136,6 +141,14 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R> {
      */
     protected final void bind(boolean throwOnMissingRegistry) {
         if (this.holder != null) return;
+
+        // Check if we have an override for specific mod loaders
+        if (DeferredHolderCommon.BIND_OVERRIDE != null) {
+            this.holder = (Holder<R>) DeferredHolderCommon.BIND_OVERRIDE.apply(this.key);
+            if (this.holder != null) {
+                return;
+            }
+        }
 
         Registry<R> registry = getRegistry();
         if (registry != null) {
