@@ -102,6 +102,21 @@ mixin {
     config 'mixins.cyclopscore.json'
 }
 
+deobfJar {
+    manifest {
+        attributes([
+                "MixinConfigs": "mixins.cyclopscore.json"
+        ])
+    }
+}
+jar {
+    manifest {
+        attributes([
+                "MixinConfigs": "mixins.cyclopscore.json"
+        ])
+    }
+}
+
 javadoc {
     source = [sourceSets.main.allJava, sourceSets.api.allJava]
     exclude 'org/cyclops/cyclopscore/modcompat/curios/*'
