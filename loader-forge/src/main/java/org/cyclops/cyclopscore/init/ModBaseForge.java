@@ -16,6 +16,7 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.ConfigHandlerForge;
+import org.cyclops.cyclopscore.config.ConfigurableTypesForge;
 import org.cyclops.cyclopscore.helper.IModHelpersForge;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersForge;
@@ -31,6 +32,10 @@ import java.util.function.Consumer;
  * @author rubensworks
  */
 public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCommon<T> {
+
+    static {
+        ConfigurableTypesForge.load();
+    }
 
     private final ICommonProxyCommon proxy;
     private final ConfigHandlerCommon configHandler;

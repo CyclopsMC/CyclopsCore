@@ -8,7 +8,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.*;
  */
 public class ConfigurableTypesNeoForge {
 
-    static {
+    public static void load() {
         ConfigurableTypeCommon.GUI.setAction(new GuiActionNeoForge<>());
         ConfigurableTypeCommon.PARTICLE.setAction(new ParticleActionNeoForge<>());
     }

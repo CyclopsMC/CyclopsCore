@@ -9,7 +9,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.GuiConfig;
  */
 public class ConfigurableTypesFabric {
 
-    static {
+    public static void load() {
         ConfigurableTypeCommon.PARTICLE.setAction(new ParticleActionFabric<>());
     }
 

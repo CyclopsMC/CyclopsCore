@@ -7,6 +7,7 @@ import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import org.cyclops.cyclopscore.config.ConfigHandlerFabric;
+import org.cyclops.cyclopscore.config.ConfigurableTypesFabric;
 import org.cyclops.cyclopscore.helper.IModHelpersFabric;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersFabric;
@@ -24,6 +25,10 @@ import java.util.function.Consumer;
  * @author rubensworks
  */
 public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseCommon<T> implements ModInitializer {
+
+    static {
+        ConfigurableTypesFabric.load();
+    }
 
     private boolean loaded = false;
     private final ICommonProxyCommon proxy;

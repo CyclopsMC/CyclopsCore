@@ -30,6 +30,7 @@ import org.cyclops.cyclopscore.command.CommandVersion;
 import org.cyclops.cyclopscore.config.ConfigHandler;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.ConfigHandlerNeoForge;
+import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
 import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
@@ -54,6 +55,10 @@ import java.util.function.Consumer;
  */
 // TODO: rename to ModBaseNeoForge in next major
 public abstract class ModBase<T extends ModBase<T>> extends ModBaseCommon<T> {
+
+    static {
+        ConfigurableTypesNeoForge.load();
+    }
 
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_GUI = EnumReferenceKey.create("texture_path_gui", String.class);
     public static final EnumReferenceKey<String> REFKEY_TEXTURE_PATH_MODELS = EnumReferenceKey.create("texture_path_models", String.class);

@@ -16,7 +16,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.LootModifierConfigForge;
  */
 public class ConfigurableTypesForge {
 
-    static {
+    public static void load() {
         ConfigurableTypeCommon.BLOCK.setAction(new BlockActionForge<>());
         ConfigurableTypeCommon.ITEM.setAction(new ItemActionForge<>());
         ConfigurableTypeCommon.GUI.setAction(new GuiActionForge<>());
