@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.inventory.container;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.MenuType;
  * @author rubensworks
  */
 public interface IContainerFactoryCommon<T extends AbstractContainerMenu> extends MenuType.MenuSupplier<T> {
-    T create(int windowId, Inventory inv, RegistryFriendlyByteBuf data);
+    T create(int windowId, Inventory inv, FriendlyByteBuf data);
 
     @Override
     default T create(int p_create_1_, Inventory p_create_2_) {

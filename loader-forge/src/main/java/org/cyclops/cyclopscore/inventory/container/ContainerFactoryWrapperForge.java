@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.inventory.container;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraftforge.network.IContainerFactory;
@@ -19,7 +18,7 @@ public class ContainerFactoryWrapperForge<T extends AbstractContainerMenu> imple
 
     @Override
     public T create(int windowId, Inventory inv, FriendlyByteBuf data) {
-        return this.containerFactoryCommon.create(windowId, inv, (RegistryFriendlyByteBuf) data);
+        return this.containerFactoryCommon.create(windowId, inv, data);
     }
 
     @Override
