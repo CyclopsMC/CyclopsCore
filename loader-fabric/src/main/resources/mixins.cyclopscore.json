@@ -11,7 +11,8 @@
     "MixinLootTable"
   ],
   "client": [
-    "MixinBufferBuilder"
+    "MixinBufferBuilder",
+    "MixinLivingEntityRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
