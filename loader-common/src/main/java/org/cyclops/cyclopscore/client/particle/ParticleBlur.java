@@ -25,7 +25,7 @@ import org.lwjgl.opengl.GL11;
 public class ParticleBlur extends TextureSheetParticle {
 
     private static final int MAX_VIEW_DISTANCE = 30;
-    private static final RenderType RENDER_TYPE = new RenderType();
+    public static final RenderType RENDER_TYPE = new RenderType();
 
     protected float originalScale;
     protected float scaleLife;
