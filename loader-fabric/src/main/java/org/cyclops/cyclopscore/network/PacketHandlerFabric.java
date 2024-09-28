@@ -1,5 +1,7 @@
 package org.cyclops.cyclopscore.network;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -27,13 +29,7 @@ public class PacketHandlerFabric implements IPacketHandler {
     public <P extends PacketBase> void register(Class<P> clazz, CustomPacketPayload.Type<P> type, StreamCodec<? super RegistryFriendlyByteBuf, P> codec) {
         PayloadTypeRegistry.playS2C().register(type, codec);
         if (this.mod.getModHelpers().getMinecraftHelpers().isClientSide()) {
-            ClientPlayNetworking.registerGlobalReceiver(type, (packet, ctx) -> {
-                if (packet.isAsync()) {
-                    handlePacketClient(ctx, packet);
-                } else {
-                    ctx.client().execute(() -> handlePacketClient(ctx, packet));
-                }
-            });
+            registerClientSide(clazz, type, codec);
         }
 
         PayloadTypeRegistry.playC2S().register(type, codec);
@@ -46,12 +42,24 @@ public class PacketHandlerFabric implements IPacketHandler {
         });
     }
 
-    public void handlePacketClient(ClientPlayNetworking.Context context, PacketBase<?> packet) {
-        packet.actionClient(context.player().level(), context.player());
-    }
-
     public void handlePacketServer(ServerPlayNetworking.Context context, PacketBase<?> packet) {
         packet.actionServer(context.player().level(), context.player());
+    }
+
+    @Environment(EnvType.CLIENT)
+    protected <P extends PacketBase> void registerClientSide(Class<P> clazz, CustomPacketPayload.Type<P> type, StreamCodec<? super RegistryFriendlyByteBuf, P> codec) {
+        ClientPlayNetworking.registerGlobalReceiver(type, (packet, ctx) -> {
+            if (packet.isAsync()) {
+                handlePacketClient(ctx, packet);
+            } else {
+                ctx.client().execute(() -> handlePacketClient(ctx, packet));
+            }
+        });
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void handlePacketClient(ClientPlayNetworking.Context context, PacketBase<?> packet) {
+        packet.actionClient(context.player().level(), context.player());
     }
 
     @Override
