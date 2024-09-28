@@ -11,10 +11,10 @@ import org.cyclops.cyclopscore.inventory.container.IContainerFactoryCommon;
  */
 public class GuiActionForge<T extends AbstractContainerMenu, M extends IModBase> extends GuiActionCommonBase<T, M> {
     @Override
-    protected MenuType.MenuSupplier<T> transformMenuSupplier(MenuType.MenuSupplier<T> menuSupplier) {
-        if (menuSupplier instanceof IContainerFactoryCommon<T> containerFactoryCommon) {
-            return new ContainerFactoryWrapperForge<>(containerFactoryCommon);
+    protected MenuType<T> transformMenuType(MenuType<T> menuType) {
+        if (menuType.constructor instanceof IContainerFactoryCommon<T> containerFactoryCommon) {
+            return new MenuType<>(new ContainerFactoryWrapperForge<>(containerFactoryCommon), menuType.requiredFeatures());
         }
-        return menuSupplier;
+        return menuType;
     }
 }
