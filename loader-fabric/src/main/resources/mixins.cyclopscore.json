@@ -4,14 +4,18 @@
   "compatibilityLevel": "JAVA_17",
   "package": "org.cyclops.cyclopscore.mixin",
   "mixins": [
+    "MixinEntity",
     "MixinFurnaceResultSlot",
     "MixinItemEntity",
+    "MixinLootTable",
+    "MixinPlayerList",
     "MixinResultSlot",
-    "MixinServerPlayer",
-    "MixinLootTable"
+    "MixinServerLevel",
+    "MixinServerPlayer"
   ],
   "client": [
     "MixinBufferBuilder",
+    "MixinClientLevel",
     "MixinLivingEntityRenderer"
   ],
   "injectors": {
