@@ -3,7 +3,6 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-	id 'idea'
 	id 'jacoco'
     id 'com.github.kt3k.coveralls'
     id 'com.diffplug.spotless'
@@ -289,17 +288,6 @@ tasks.configureEach { task ->
     }
     if (task.name.startsWith("testJunit")) {
         task.enabled = false
-    }
-}
-
-idea {
-    module {
-    	downloadSources = true
-        downloadJavadoc = true
-        for (String excludeDirName in ["runs", "out", "logs", "gradle"]) {
-            File excludeDir = new File(projectDir, excludeDirName)
-            excludeDirs.add(excludeDir)
-        }
     }
 }
 
