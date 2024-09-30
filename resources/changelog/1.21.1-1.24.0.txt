@@ -1,0 +1,29 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Improve multiloader support
+  * Support extended screen handlers in Fabric
+  * Add Fabric events for entity join, entity tick, and player join
+  * Add ILivingEntityRendererEvent for Fabric
+  * Add ILootTableModifyEvent for Fabric
+  * Add LootModifierConfigForge
+  * Migrate particles to common
+  * Add getCraftingRemainingItem to ItemStackHelpers
+  * Abstract ContainerTypeData to common
+  * Move NamedContainerProviderItem to common
+  * Move ItemGui to common
+  * Add gui helpers to common
+  * Move gui components to common
+  * Add ItemInventoryContainerCommon to common
+  * Move item location to common
+  * Move config command to common
+  * Migrate ring of fire and debug command to common
+  * Abstract packet handling across mod loaders
+  * Allow commands to be registered in common base mod
+  * Add world helpers to common
+
+Changes:
+* Make DeferredHolderCommon work with IForgeRegistry
+
+Fixes:
+* Fix loader-specific configurable types sometimes not working
