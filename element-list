@@ -18,19 +18,13 @@ org.cyclops.cyclopscore.capability.fluid
 org.cyclops.cyclopscore.capability.item
 org.cyclops.cyclopscore.capability.registrar
 org.cyclops.cyclopscore.client.gui
-org.cyclops.cyclopscore.client.gui.component
-org.cyclops.cyclopscore.client.gui.component.button
-org.cyclops.cyclopscore.client.gui.component.input
 org.cyclops.cyclopscore.client.gui.container
-org.cyclops.cyclopscore.client.gui.image
 org.cyclops.cyclopscore.client.key
 org.cyclops.cyclopscore.client.model
-org.cyclops.cyclopscore.client.particle
 org.cyclops.cyclopscore.client.render.blockentity
 org.cyclops.cyclopscore.client.render.model
 org.cyclops.cyclopscore.codec
 org.cyclops.cyclopscore.command
-org.cyclops.cyclopscore.command.argument
 org.cyclops.cyclopscore.component
 org.cyclops.cyclopscore.config
 org.cyclops.cyclopscore.config.configurabletypeaction
@@ -55,7 +49,6 @@ org.cyclops.cyclopscore.inventory.slot
 org.cyclops.cyclopscore.item
 org.cyclops.cyclopscore.loot.modifier
 org.cyclops.cyclopscore.metadata
-org.cyclops.cyclopscore.mixin
 org.cyclops.cyclopscore.modcompat
 org.cyclops.cyclopscore.modcompat.capabilities
 org.cyclops.cyclopscore.modcompat.jei
@@ -64,7 +57,6 @@ org.cyclops.cyclopscore.nbt.path.navigate
 org.cyclops.cyclopscore.nbt.path.parse
 org.cyclops.cyclopscore.network
 org.cyclops.cyclopscore.network.packet
-org.cyclops.cyclopscore.network.packet.debug
 org.cyclops.cyclopscore.persist.nbt
 org.cyclops.cyclopscore.persist.world
 org.cyclops.cyclopscore.potion
