@@ -9,6 +9,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.cyclops.cyclopscore.datastructure.WrappedIntIterator;
 
 import java.util.Map;
 import java.util.PrimitiveIterator;
@@ -18,8 +19,7 @@ import java.util.PrimitiveIterator;
  * @author rubensworks
  *
  */
-@Deprecated // TODO: rm in next major, after porting IndexedSlotlessItemHandlerWrapper.IInventoryIndexReference
-public class IndexedInventory extends LargeInventory implements IndexedSlotlessItemHandlerWrapper.IInventoryIndexReference {
+public class IndexedInventoryCommon extends LargeInventoryCommon {
 
     private final Map<Item, Int2ObjectMap<ItemStack>> index = Maps.newIdentityHashMap();
     private IntSet emptySlots;
@@ -28,7 +28,7 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
     /**
      * Default constructor for NBT persistence, don't call this yourself.
      */
-    public IndexedInventory() {
+    public IndexedInventoryCommon() {
         this(0, 0);
     }
 
@@ -37,7 +37,7 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
      * @param size The amount of slots in the inventory.
      * @param stackLimit The stack limit for each slot.
      */
-    public IndexedInventory(int size, int stackLimit) {
+    public IndexedInventoryCommon(int size, int stackLimit) {
         super(size, stackLimit);
         this.emptySlots = new IntAVLTreeSet();
         this.nonEmptySlots = new IntAVLTreeSet();
@@ -119,23 +119,19 @@ public class IndexedInventory extends LargeInventory implements IndexedSlotlessI
         index.clear();
     }
 
-    @Override
     public int getInventoryReferenceStackLimit() {
         return getMaxStackSize();
     }
 
-    @Override
     public Map<Item, Int2ObjectMap<ItemStack>> getIndex() {
         return index;
     }
 
-    @Override
     public PrimitiveIterator.OfInt getEmptySlots() {
-        return new IndexedSlotlessItemHandlerWrapper.WrappedIntIterator(this.emptySlots.iterator());
+        return new WrappedIntIterator(this.emptySlots.iterator());
     }
 
-    @Override
     public PrimitiveIterator.OfInt getNonEmptySlots() {
-        return new IndexedSlotlessItemHandlerWrapper.WrappedIntIterator(this.nonEmptySlots.iterator());
+        return new WrappedIntIterator(this.nonEmptySlots.iterator());
     }
 }
