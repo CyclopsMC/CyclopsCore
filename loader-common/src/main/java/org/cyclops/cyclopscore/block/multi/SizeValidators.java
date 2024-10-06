@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.block.multi;
 
 import net.minecraft.core.Vec3i;
-import org.cyclops.cyclopscore.helper.LocationHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
 /**
  * Helpers for size validators.
@@ -19,8 +19,8 @@ public class SizeValidators {
         int i = 0;
         boolean validBuffer = false;
         int buffer = Integer.MAX_VALUE; // This is used to store the minimum compared value > 0
-        int[] v1 = LocationHelpers.toArray(vec1);
-        int[] v2 = LocationHelpers.toArray(vec2);
+        int[] v1 = IModHelpers.get().getLocationHelpers().toArray(vec1);
+        int[] v2 = IModHelpers.get().getLocationHelpers().toArray(vec2);
         while(i < 3) {
             if(v1[i] != v2[i]) {
                 int comp =  v1[i] - v2[i];

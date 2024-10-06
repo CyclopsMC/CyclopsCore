@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.block.multi;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
-import org.cyclops.cyclopscore.helper.LocationHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
 /**
  * A validator to check if all sides have an equal length.
@@ -15,6 +15,6 @@ public class CubeSizeValidator implements ISizeValidator {
             return null;
         }
         return Component.translatable("multiblock.cyclopscore.error.size.cube",
-                LocationHelpers.toCompactString(size.offset(1, 1, 1)));
+                IModHelpers.get().getLocationHelpers().toCompactString(size.offset(1, 1, 1)));
     }
 }

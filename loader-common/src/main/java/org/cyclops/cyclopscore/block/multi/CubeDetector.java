@@ -10,7 +10,8 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.cyclops.cyclopscore.algorithm.Dimension;
-import org.cyclops.cyclopscore.helper.LocationHelpers;
+import org.cyclops.cyclopscore.helper.ILocationHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -99,7 +100,7 @@ public class CubeDetector {
             return error;
         }
         return contains ? null : Component.translatable("multiblock.cyclopscore.error.invalidBlock",
-                LocationHelpers.toCompactString(location), Component.translatable(block.getDescriptionId()));
+                IModHelpers.get().getLocationHelpers().toCompactString(location), Component.translatable(block.getDescriptionId()));
     }
 
     protected Component isValidLocation(LevelReader world, BlockPos location, BlockPos excludeLocation) {
@@ -120,15 +121,16 @@ public class CubeDetector {
      * @return The found border.
      */
     protected BlockPos navigateToBorder(LevelReader world, BlockPos startLocation, int dimension, int direction, BlockPos excludeLocation) {
-        BlockPos loopLocation = LocationHelpers.copyLocation(startLocation);
+        ILocationHelpers locationHelpers = IModHelpers.get().getLocationHelpers();
+        BlockPos loopLocation = locationHelpers.copyLocation(startLocation);
 
         // Loop until we find a non-valid location.
         while(isValidLocation(world, loopLocation, excludeLocation) == null) {
-            loopLocation = LocationHelpers.addToDimension(loopLocation, dimension, direction);
+            loopLocation = locationHelpers.addToDimension(loopLocation, dimension, direction);
         }
 
         // Because we went one increment too far.
-        loopLocation = LocationHelpers.addToDimension(loopLocation, dimension, -direction);
+        loopLocation = locationHelpers.addToDimension(loopLocation, dimension, -direction);
 
         return loopLocation;
     }
@@ -158,7 +160,7 @@ public class CubeDetector {
      * @return The corner location.
      */
     protected BlockPos navigateToCorner(LevelReader world, BlockPos startLocation, int[] dimensions, boolean max, BlockPos excludeLocation) {
-        BlockPos navigateLocation = LocationHelpers.copyLocation(startLocation);
+        BlockPos navigateLocation = IModHelpers.get().getLocationHelpers().copyLocation(startLocation);
         for(int dimension : dimensions) {
             navigateLocation = navigateToBorder(world, navigateLocation, dimension, max, excludeLocation);
         }
@@ -166,7 +168,7 @@ public class CubeDetector {
     }
 
     protected boolean isEdge(LevelReader world, int[][] dimensionEgdes, BlockPos location) {
-        int[] c = LocationHelpers.toArray(location);
+        int[] c = IModHelpers.get().getLocationHelpers().toArray(location);
         for (int i = 0; i < dimensionEgdes.length; i++) {
             for (int j = 0; j < dimensionEgdes[i].length; j++) {
                 if(dimensionEgdes[i][j] == c[i]) {
@@ -216,7 +218,7 @@ public class CubeDetector {
     protected boolean coordinateRecursion(LevelReader world, int[][] dimensionEgdes, int[] accumulatedCoordinates,
                                           BlockPosAction locationAction) {
         if(accumulatedCoordinates.length == dimensionEgdes.length) { // Leaf of recursion
-            BlockPos location = LocationHelpers.fromArray(accumulatedCoordinates);
+            BlockPos location = IModHelpers.get().getLocationHelpers().fromArray(accumulatedCoordinates);
             if(!locationAction.run(world, location)) {
                 return false;
             }
@@ -355,6 +357,8 @@ public class CubeDetector {
      * size of 0 in each dimension.
      */
     public DetectionResult detect(LevelReader world, BlockPos startLocation, BlockPos excludeLocation, IValidationAction action, boolean changeState) {
+        ILocationHelpers locationHelpers = IModHelpers.get().getLocationHelpers();
+
         // Next to the origin, we only need one corner for each dimension,
         // we can easily derive if the structure is valid with these 4 corners.
         Component error;
@@ -381,13 +385,13 @@ public class CubeDetector {
         // we'll use this in the validation of the cube.
         int[] distances = new int[corners.length];
         int[][] dimensionEgdes = new int[corners.length][2]; // [dimension][start | stop]
-        int[] cOriginCorner = LocationHelpers.toArray(originCorner);
+        int[] cOriginCorner = locationHelpers.toArray(originCorner);
         for(int i = 0; i < corners.length; i++) {
-            int[] cCorner = LocationHelpers.toArray(corners[i]);
+            int[] cCorner = locationHelpers.toArray(corners[i]);
 
             // Distance measurement
-            Vec3i sizeDifference = LocationHelpers.subtract(corners[i], originCorner);
-            distances[i] = LocationHelpers.toArray(sizeDifference)[i];
+            Vec3i sizeDifference = locationHelpers.subtract(corners[i], originCorner);
+            distances[i] = locationHelpers.toArray(sizeDifference)[i];
 
             // Start and stop coordinate measurement.
             int addIndex = 0;
@@ -403,7 +407,7 @@ public class CubeDetector {
             return new DetectionResult(error);
         }
 
-        Vec3i size = LocationHelpers.fromArray(distances);
+        Vec3i size = locationHelpers.fromArray(distances);
         for(ISizeValidator validator : getSizeValidators()) {
             // Check if the size iis valid.
             // If it is invalid we immediately return a null-size, but if we are in invalidation-mode,
