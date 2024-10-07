@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import org.cyclops.cyclopscore.client.gui.component.WidgetScrollBar;
 import org.cyclops.cyclopscore.client.gui.component.input.WidgetTextFieldExtended;
-import org.cyclops.cyclopscore.inventory.container.ScrollingInventoryContainer;
+import org.cyclops.cyclopscore.inventory.container.ScrollingInventoryContainerCommon;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -18,15 +18,14 @@ import java.util.List;
  * Gui for an inventory container that has a scrollbar and search field.
  * @author rubensworks
  */
-@Deprecated // TODO: rm in next major
-public abstract class ContainerScreenScrolling<T extends ScrollingInventoryContainer> extends ContainerScreenExtended<T> {
+public abstract class ContainerScreenScrollingCommon<T extends ScrollingInventoryContainerCommon> extends ContainerScreenExtendedCommon<T> {
 
     private static final int SEARCH_WIDTH = 89;
 
     private WidgetTextFieldExtended searchField = null;
     private WidgetScrollBar scrollbar = null;
 
-    public ContainerScreenScrolling(T container, Inventory playerInventory, Component title) {
+    public ContainerScreenScrollingCommon(T container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
     }
 

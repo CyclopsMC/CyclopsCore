@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.inventory.container;
 
 import com.google.common.collect.Lists;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.gui.component.WidgetScrollBar;
@@ -23,8 +23,7 @@ import java.util.regex.PatternSyntaxException;
  *      unfiltered: All items, pattern searching will happen in this list.
  * @author rubensworks
  */
-@Deprecated // TODO: rm in next major
-public abstract class ScrollingInventoryContainer<E> extends InventoryContainer implements WidgetScrollBar.IScrollCallback {
+public abstract class ScrollingInventoryContainerCommon<E> extends InventoryContainerCommon implements WidgetScrollBar.IScrollCallback {
 
     private final List<E> unfilteredItems;
     private List<Pair<Integer, E>> filteredItems; // Pair: original index - item
@@ -34,8 +33,8 @@ public abstract class ScrollingInventoryContainer<E> extends InventoryContainer 
     private int firstElement = 0;
 
     @SuppressWarnings("unchecked")
-    public ScrollingInventoryContainer(@Nullable MenuType<?> type, int id, Inventory playerInventory,
-                                       Container inventory, List<E> items, IItemPredicate<E> filterer) {
+    public ScrollingInventoryContainerCommon(@Nullable MenuType<?> type, int id, Inventory playerInventory,
+                                             Container inventory, List<E> items, IItemPredicate<E> filterer) {
         super(type, id, playerInventory, inventory);
         this.unfilteredItems = Lists.newArrayList(items);
         this.filteredItems = Lists.newLinkedList();
