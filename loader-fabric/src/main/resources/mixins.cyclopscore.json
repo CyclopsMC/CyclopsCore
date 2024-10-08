@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "package": "org.cyclops.cyclopscore.mixin",
   "mixins": [
+    "MixinBlockBehaviour",
     "MixinEntity",
     "MixinFurnaceResultSlot",
     "MixinItemEntity",
