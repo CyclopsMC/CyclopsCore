@@ -12,7 +12,6 @@ org.cyclops.cyclopscore
 org.cyclops.cyclopscore.advancement.criterion
 org.cyclops.cyclopscore.block
 org.cyclops.cyclopscore.block.component
-org.cyclops.cyclopscore.block.multi
 org.cyclops.cyclopscore.blockentity
 org.cyclops.cyclopscore.capability.fluid
 org.cyclops.cyclopscore.capability.item
