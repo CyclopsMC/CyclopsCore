@@ -37,4 +37,9 @@ public class ModHelpersFabric extends ModHelpersCommon implements IModHelpersFab
     public IRegistrationHelpers getRegistrationHelpers() {
         return new RegistrationHelpersFabric();
     }
+
+    @Override
+    public IGuiHelpersFabric getGuiHelpers() {
+        return new GuiHelpersFabric(this);
+    }
 }

@@ -16,4 +16,6 @@ public interface IModHelpersFabric extends IModHelpers {
 
     public IFluidHelpersFabric getFluidHelpers();
 
+    public IGuiHelpersFabric getGuiHelpers();
+
 }

@@ -38,4 +38,9 @@ public class ModHelpersForge extends ModHelpersCommon implements IModHelpersForg
     public IFluidHelpersForge getFluidHelpers() {
         return new FluidHelpersForge();
     }
+
+    @Override
+    public IGuiHelpersForge getGuiHelpers() {
+        return new GuiHelpersForge(this);
+    }
 }

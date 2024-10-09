@@ -18,4 +18,5 @@ public interface IModHelpersForge extends IModHelpers {
 
     public IFluidHelpersForge getFluidHelpers();
 
+    public IGuiHelpersForge getGuiHelpers();
 }
