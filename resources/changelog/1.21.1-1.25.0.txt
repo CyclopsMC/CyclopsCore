@@ -1,0 +1,11 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Improve multiloader support
+  * Add IBlockExplodedEvent
+  * Add ConditionConfigFabric
+  * Move ItemStackBlockEntityRendererBase to common
+  * Add ConditionConfigForge
+  * Port scrolling container to common
+  * Port large and indexed inventory to common
+  * Move multiblock helpers to common
