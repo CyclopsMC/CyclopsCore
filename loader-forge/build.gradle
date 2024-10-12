@@ -82,6 +82,20 @@ minecraft {
             }
         }
 
+        gameTestServer {
+            property 'forge.enableGameTest', 'true'
+            property 'forge.enabledGameTestNamespaces', mod_id
+            workingDirectory file('runs/gametest')
+            ideaModule "${rootProject.name}.${project.name}.main"
+            taskName 'runGameTestServer'
+            mods {
+                modDataRun {
+                    source sourceSets.main
+                    source sourceSets.api
+                }
+            }
+        }
+
         data {
             workingDirectory file('runs/data')
             ideaModule "${rootProject.name}.${project.name}.main"
