@@ -31,6 +31,7 @@ org.cyclops.cyclopscore.config.extendedconfig
 org.cyclops.cyclopscore.datastructure
 org.cyclops.cyclopscore.event
 org.cyclops.cyclopscore.fluid
+org.cyclops.cyclopscore.gametest
 org.cyclops.cyclopscore.helper
 org.cyclops.cyclopscore.infobook
 org.cyclops.cyclopscore.infobook.condition
