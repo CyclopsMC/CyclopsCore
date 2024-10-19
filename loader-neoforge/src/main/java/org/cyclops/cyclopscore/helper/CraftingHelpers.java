@@ -159,8 +159,18 @@ public class CraftingHelpers {
                 return false;
             }
             RecipeInput otherInput = ((CacheableCraftingInventory) obj).getInventoryCrafting();
-            if (getInventoryCrafting().size() != otherInput.size()) {
-                return false;
+            if (getInventoryCrafting() instanceof CraftingInput craftingInputThis) {
+                if (otherInput instanceof CraftingInput craftingInputOther) {
+                    if (craftingInputThis.width() != craftingInputOther.width() || craftingInputThis.height() != craftingInputOther.height()) {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                if (getInventoryCrafting().size() != otherInput.size()) {
+                    return false;
+                }
             }
             for (int i = 0; i < getInventoryCrafting().size(); i++) {
                 if (!ItemStack.isSameItemSameComponents(getInventoryCrafting().getItem(i), otherInput.getItem(i))) {
@@ -173,9 +183,11 @@ public class CraftingHelpers {
         @Override
         public int hashCode() {
             int hash = 11 + getInventoryCrafting().size();
+            if (getInventoryCrafting() instanceof CraftingInput craftingInput) {
+                hash = 23 + 3 * craftingInput.width() + 5 * craftingInput.height();
+            }
             for (int i = 0; i < getInventoryCrafting().size(); i++) {
-                hash = hash << 1;
-                hash |= ItemStackHelpers.getItemStackHashCode(getInventoryCrafting().getItem(i));
+                hash |= ItemStackHelpers.getItemStackHashCode(getInventoryCrafting().getItem(i)) * i;
             }
             return hash;
         }
