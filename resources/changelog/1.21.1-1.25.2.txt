@@ -1,0 +1,4 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix recipe caching not considering different rotations, Closes CyclopsMC/IntegratedTerminals#129
