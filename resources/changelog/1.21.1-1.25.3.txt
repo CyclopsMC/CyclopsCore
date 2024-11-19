@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Invoke Fabric block explode event before block is removed
+  Required for CyclopsMC/ColossalChests#174
