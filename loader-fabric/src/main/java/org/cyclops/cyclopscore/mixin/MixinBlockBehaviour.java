@@ -21,7 +21,7 @@ import java.util.function.BiConsumer;
 @Mixin(BlockBehaviour.class)
 public class MixinBlockBehaviour {
 
-    @Inject(method = "onExplosionHit", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "onExplosionHit", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void onExplosionHit(BlockState state, Level level, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer, CallbackInfo callback) {
         if (!state.isAir() && explosion.getBlockInteraction() != Explosion.BlockInteraction.TRIGGER_BLOCK) {
             IBlockExplodedEvent.EVENT.invoker().onBlockExploded(state, level, pos, explosion, dropConsumer);
