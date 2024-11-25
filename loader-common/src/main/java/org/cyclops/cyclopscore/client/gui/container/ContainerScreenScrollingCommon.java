@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
-import com.google.common.collect.Lists;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -12,7 +12,6 @@ import org.cyclops.cyclopscore.inventory.container.ScrollingInventoryContainerCo
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
-import java.util.List;
 
 /**
  * Gui for an inventory container that has a scrollbar and search field.
@@ -104,17 +103,15 @@ public abstract class ContainerScreenScrollingCommon<T extends ScrollingInventor
     protected void drawCurrentScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (isSubsetRenderSlots()) {
             // Temporarily swap slot list, to avoid rendering all slots (which would include the hidden ones)
-            List<Slot> oldSlots = Lists.newArrayList(this.container.slots);
+            NonNullList<Slot> oldSlots = this.container.slots;
             int startIndex = getMenu().getFirstElement();
-            List<Slot> newSlots = Lists.newArrayList();
+            NonNullList<Slot> newSlots = NonNullList.create();
             newSlots.addAll(oldSlots.subList(startIndex, Math.min(oldSlots.size(), startIndex
                     + (getMenu().getPageSize() * getMenu().getColumns()))));
             newSlots.addAll(oldSlots.subList(getMenu().getUnfilteredItemCount(), oldSlots.size()));
-            this.container.slots.clear();
-            this.container.slots.addAll(newSlots);
+            this.container.slots = newSlots;
             super.drawCurrentScreen(guiGraphics, mouseX, mouseY, partialTicks);
-            this.container.slots.clear();
-            this.container.slots.addAll(oldSlots);
+            this.container.slots = oldSlots;
         } else {
             super.drawCurrentScreen(guiGraphics, mouseX, mouseY, partialTicks);
         }

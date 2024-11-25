@@ -8,6 +8,7 @@ accessible method net/minecraft/client/gui/screens/Screen addRenderableWidget (L
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen leftPos I
 accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScreen topPos I
 accessible field net/minecraft/world/inventory/MenuType constructor Lnet/minecraft/world/inventory/MenuType$MenuSupplier;
+mutable field net/minecraft/world/inventory/AbstractContainerMenu slots Lnet/minecraft/core/NonNullList;
 
 # World
 accessible field net/minecraft/world/level/Level thread Ljava/lang/Thread;
