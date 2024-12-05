@@ -11,6 +11,7 @@ public class ConfigurableTypesNeoForge {
     public static void load() {
         ConfigurableTypeCommon.GUI.setAction(new GuiActionNeoForge<>());
         ConfigurableTypeCommon.PARTICLE.setAction(new ParticleActionNeoForge<>());
+        ConfigurableTypeCommon.BLOCK.setAction(new BlockActionNeoForgeAux());
     }
 
     // NeoForge-specific

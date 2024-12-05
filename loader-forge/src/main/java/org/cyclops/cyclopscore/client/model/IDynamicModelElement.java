@@ -9,6 +9,7 @@ import net.minecraftforge.client.event.ModelEvent;
  * Interface for blocks and items which can have a dynamic model.
  * @author rubensworks
  */
+@Deprecated // TODO: rm in next major
 public interface IDynamicModelElement {
 
     /**

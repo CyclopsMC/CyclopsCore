@@ -1,0 +1,44 @@
+package org.cyclops.cyclopscore.config.configurabletypeaction;
+
+import net.minecraft.client.resources.model.BakedModel;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import org.cyclops.cyclopscore.Reference;
+import org.cyclops.cyclopscore.client.model.IDynamicModelElementCommon;
+import org.cyclops.cyclopscore.config.extendedconfig.BlockConfigCommon;
+import org.cyclops.cyclopscore.init.ModBase;
+
+@EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+public class BlockActionNeoForgeAux extends BlockAction<ModBase<?>> {
+    @Override
+    protected void polish(BlockConfigCommon<ModBase<?>> config) {
+        super.polish(config);
+
+        if(config.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
+            // Handle dynamic models
+            IDynamicModelElementCommon dynamicModelElement = config.getBlockClientConfig().getDynamicModelElement();
+            if (dynamicModelElement != null) {
+                BlockAction.handleDynamicBlockModel(config);
+            }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @SubscribeEvent
+    public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event){
+        for (BlockConfigCommon<?> config : MODEL_ENTRIES) {
+            IDynamicModelElementCommon dynamicModelElement = config.getBlockClientConfig().getDynamicModelElement();
+            BakedModel dynamicModel = dynamicModelElement.createDynamicModel(pair -> event.getModels().put(pair.getLeft(), pair.getRight()));
+
+            if (config.getBlockClientConfig().dynamicBlockVariantLocation != null) {
+                event.getModels().put(config.getBlockClientConfig().dynamicBlockVariantLocation, dynamicModel);
+            }
+            if (config.getBlockClientConfig().dynamicItemVariantLocation != null) {
+                event.getModels().put(config.getBlockClientConfig().dynamicItemVariantLocation, dynamicModel);
+            }
+        }
+    }
+}

@@ -28,6 +28,7 @@ public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConf
 
     @Nullable
     private Item itemInstance;
+    private BlockClientConfig<M> clientConfig;
 
     public BlockConfigCommon(M mod, String namedId, Function<BlockConfigCommon<M>, ? extends Block> blockConstructor,
                              @Nullable BiFunction<BlockConfigCommon<M>, Block, ? extends Item> itemConstructor) {
@@ -97,9 +98,20 @@ public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConf
     }
 
     @Nullable
-    public BlockClientConfig<M> getBlockClientConfig() {
+    public BlockClientConfig<M> constructBlockClientConfig() {
         if (getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
             return new BlockClientConfig<>(this);
+        }
+        return null;
+    }
+
+    @Nullable
+    public final BlockClientConfig<M> getBlockClientConfig() {
+        if (getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
+            if (this.clientConfig == null) {
+                this.clientConfig = constructBlockClientConfig();
+            }
+            return this.clientConfig;
         }
         return null;
     }

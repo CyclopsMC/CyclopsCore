@@ -4,6 +4,7 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
+import org.cyclops.cyclopscore.client.model.IDynamicModelElementCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import javax.annotation.Nullable;
@@ -44,6 +45,14 @@ public class BlockClientConfig<M extends IModBase> {
      */
     @Nullable
     public BlockColor getBlockColorHandler() {
+        return null;
+    }
+
+    /**
+     * @return An optional dynamic model element
+     */
+    @Nullable
+    public IDynamicModelElementCommon getDynamicModelElement() {
         return null;
     }
 }

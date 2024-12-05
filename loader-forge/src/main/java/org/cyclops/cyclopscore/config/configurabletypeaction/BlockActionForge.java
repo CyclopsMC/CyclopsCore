@@ -9,6 +9,7 @@ import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
+import org.cyclops.cyclopscore.client.model.IDynamicModelElementCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfigCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersForge;
 import org.cyclops.cyclopscore.init.ModBaseForge;
@@ -36,6 +37,11 @@ public class BlockActionForge<M extends ModBaseForge<M>> extends BlockAction<M> 
                     ((IDynamicModelElement) config.getInstance()).hasDynamicModel()) {
                 BlockAction.handleDynamicBlockModel(config);
             }
+
+            IDynamicModelElementCommon dynamicModelElement = config.getBlockClientConfig().getDynamicModelElement();
+            if (dynamicModelElement != null) {
+                BlockAction.handleDynamicBlockModel(config);
+            }
         }
     }
 
@@ -51,8 +57,14 @@ public class BlockActionForge<M extends ModBaseForge<M>> extends BlockAction<M> 
     @OnlyIn(Dist.CLIENT)
     public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event){
         for (BlockConfigCommon<?> config : MODEL_ENTRIES) {
-            IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
-            BakedModel dynamicModel = dynamicModelElement.createDynamicModel(event);
+            BakedModel dynamicModel;
+            if (config.getInstance() instanceof IDynamicModelElement) {
+                IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
+                dynamicModel = dynamicModelElement.createDynamicModel(event);
+            } else {
+                IDynamicModelElementCommon dynamicModelElement = config.getBlockClientConfig().getDynamicModelElement();
+                dynamicModel = dynamicModelElement.createDynamicModel(pair -> event.getModels().put(pair.getLeft(), pair.getRight()));
+            }
             if (config.getBlockClientConfig().dynamicBlockVariantLocation != null) {
                 event.getModels().put(config.getBlockClientConfig().dynamicBlockVariantLocation, dynamicModel);
             }
