@@ -1,21 +1,28 @@
 {
-    "_comment": "General",
+    "_comment": "Vanilla additions",
     "itemGroup.cyclopscore": "Cyclops Core",
+    "general.cyclopscore.dev_world": "Dev World",
     "general.cyclopscore.tooltip.info": "<Shift для информации>",
     "general.cyclopscore.info.enabled": "§aВключено",
     "general.cyclopscore.info.disabled": "Выключено",
     "general.cyclopscore.version.updateAvailable": "Доступно обновление",
     "general.cyclopscore.version.download": "Скачать",
     "general.cyclopscore.version.clickToDownload": "Нажми, чтобы загрузить",
-    "gui.waila.cyclopscore.logConfig": "Журнал ошибок",
-
-    "_comment": "Infobook",
+    "gui.cyclopscore.scrollbar": "Scroll",
+    "gui.cyclopscore.search": "Search",
+    "gui.cyclopscore.left": "Left",
+    "gui.cyclopscore.right": "Right",
+    "gui.cyclopscore.up": "Up",
+    "gui.cyclopscore.down": "Down",
+    "gui.cyclopscore.infobook": "Information Book",
     "infobook.cyclopscore.next_page": "Следующая страница",
     "infobook.cyclopscore.previous_page": "Предыдущая страница",
     "infobook.cyclopscore.parent_section": "Родительский раздел",
     "infobook.cyclopscore.last_page": "Последняя посещенная страница",
-
-    "_comment": "Chat messages",
+    "infobook.cyclopscore.keybindings": "Key Bindings",
+    "infobook.cyclopscore.keybinding": "Key Binding",
+    "infobook.cyclopscore.external": "Web version",
+    "gui.cyclopscore.rewards": "Rewards",
     "chat.cyclopscore.command.invalidArguments": "Недопустимый аргумент",
     "chat.cyclopscore.command.invalidSubcommand": "Недопустимая суб-команда",
     "chat.cyclopscore.command.onlyOneValue": "Укажите одно новое значение",
@@ -24,8 +31,6 @@
     "chat.cyclopscore.command.invalidPlayer": "Игрок '%s' не найден",
     "chat.cyclopscore.command.ignitedPlayer": "Игрок '%s' горел %s секунд",
     "chat.cyclopscore.command.noConfigsFound": "Не найдены значения конфигурации, которые могут быть установлены",
-
-    "_comment": "Multiblock",
     "multiblock.cyclopscore.error.invalidBlock": "%s содержит неверный блок %s.",
     "multiblock.cyclopscore.error.size.cube": "Размеры %s не образуют форму куба, тк размеры его сторон не равны.",
     "multiblock.cyclopscore.error.size.exact": "Обнаружены размеры %s, тогда как ожидалось ровно %s.",
@@ -35,7 +40,5 @@
     "multiblock.cyclopscore.error.blockCount.max": "Ожидался как максимум %s из %s, тогда как %s был обнаружен.",
     "multiblock.cyclopscore.error.blockCount.min": "Ожидался как минимум %s из %s, тогда как %s был обнаружен.",
     "multiblock.cyclopscore.error.hollow.air": "Позиция %s должна быть пустой.",
-
-    "_comment": "Vanilla additions",
     "block.air": "Воздух"
 }

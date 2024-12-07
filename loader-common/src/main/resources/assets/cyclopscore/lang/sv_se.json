@@ -1,5 +1,5 @@
 {
-    "_comment": "General",
+    "_comment": "Vanilla additions",
     "itemGroup.cyclopscore": "Cyclops Core",
     "general.cyclopscore.dev_world": "Utvecklarvärld",
     "general.cyclopscore.tooltip.info": "<Shift för information>",
@@ -8,15 +8,21 @@
     "general.cyclopscore.version.updateAvailable": "Uppdatering finns tillgänglig",
     "general.cyclopscore.version.download": "Ladda ned",
     "general.cyclopscore.version.clickToDownload": "Klicka för att ladda ned",
-    "gui.waila.cyclopscore.logConfig": "Loggar",
-
-    "_comment": "Infobook",
+    "gui.cyclopscore.scrollbar": "Scroll",
+    "gui.cyclopscore.search": "Search",
+    "gui.cyclopscore.left": "Left",
+    "gui.cyclopscore.right": "Right",
+    "gui.cyclopscore.up": "Up",
+    "gui.cyclopscore.down": "Down",
+    "gui.cyclopscore.infobook": "Information Book",
     "infobook.cyclopscore.next_page": "Nästa sida",
     "infobook.cyclopscore.previous_page": "Föregående sida",
     "infobook.cyclopscore.parent_section": "Överordnat avsnitt",
     "infobook.cyclopscore.last_page": "Senast besökta sida",
-
-    "_comment": "Chat messages",
+    "infobook.cyclopscore.keybindings": "Key Bindings",
+    "infobook.cyclopscore.keybinding": "Key Binding",
+    "infobook.cyclopscore.external": "Web version",
+    "gui.cyclopscore.rewards": "Rewards",
     "chat.cyclopscore.command.invalidArguments": "Ogiltiga argument",
     "chat.cyclopscore.command.invalidSubcommand": "Ogiltigt underkommando",
     "chat.cyclopscore.command.onlyOneValue": "Definiera ett nytt värde",
@@ -25,8 +31,6 @@
     "chat.cyclopscore.command.invalidPlayer": "Spelaren \"%s\" hittades inte",
     "chat.cyclopscore.command.ignitedPlayer": "Spelaren \"%s\" antändes i %s sekunder",
     "chat.cyclopscore.command.noConfigsFound": "Kunde inte hitta konfigurationsvärden som kan ändras",
-
-    "_comment": "Multiblock",
     "multiblock.cyclopscore.error.invalidBlock": "%s innehåller det ogiltiga blocket %s.",
     "multiblock.cyclopscore.error.size.cube": "Dimensionerna %s bildar inte en kub, dimensionerna stämmer inte överens.",
     "multiblock.cyclopscore.error.size.exact": "Hittade dimensionerna %s, men exakt %s förväntades.",
@@ -36,7 +40,5 @@
     "multiblock.cyclopscore.error.blockCount.max": "Förväntade högst %s %s, men %s hittades.",
     "multiblock.cyclopscore.error.blockCount.min": "Förväntade minst %s %s, men %s hittades.",
     "multiblock.cyclopscore.error.hollow.air": "Positionen %s måste vara ihålig.",
-
-    "_comment": "Vanilla additions",
     "block.air": "Luft"
 }
