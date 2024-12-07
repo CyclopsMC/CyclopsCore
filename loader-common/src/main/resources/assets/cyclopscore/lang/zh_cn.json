@@ -1,21 +1,28 @@
 {
-    "_comment": "General",
+    "_comment": "Vanilla additions",
     "itemGroup.cyclopscore": "Cyclops Core",
+    "general.cyclopscore.dev_world": "Dev World",
     "general.cyclopscore.tooltip.info": "<按下Shift以查看信息>",
     "general.cyclopscore.info.enabled": "§a开启",
     "general.cyclopscore.info.disabled": "关闭",
     "general.cyclopscore.version.updateAvailable": "有可用的更新",
     "general.cyclopscore.version.download": "下载",
     "general.cyclopscore.version.clickToDownload": "点击以下载",
-    "gui.waila.cyclopscore.logConfig": "日志",
-
-    "_comment": "Infobook",
+    "gui.cyclopscore.scrollbar": "Scroll",
+    "gui.cyclopscore.search": "Search",
+    "gui.cyclopscore.left": "Left",
+    "gui.cyclopscore.right": "Right",
+    "gui.cyclopscore.up": "Up",
+    "gui.cyclopscore.down": "Down",
+    "gui.cyclopscore.infobook": "Information Book",
     "infobook.cyclopscore.next_page": "下一页",
     "infobook.cyclopscore.previous_page": "上一页",
     "infobook.cyclopscore.parent_section": "上级目录",
     "infobook.cyclopscore.last_page": "最后浏览页",
-
-    "_comment": "Chat messages",
+    "infobook.cyclopscore.keybindings": "Key Bindings",
+    "infobook.cyclopscore.keybinding": "Key Binding",
+    "infobook.cyclopscore.external": "Web version",
+    "gui.cyclopscore.rewards": "Rewards",
     "chat.cyclopscore.command.invalidArguments": "无效的参数",
     "chat.cyclopscore.command.invalidSubcommand": "无效的子命令",
     "chat.cyclopscore.command.onlyOneValue": "请定义一个新的数值",
@@ -24,8 +31,6 @@
     "chat.cyclopscore.command.invalidPlayer": "玩家“%s”未找到",
     "chat.cyclopscore.command.ignitedPlayer": "玩家“%s”在火中燃烧了%s秒",
     "chat.cyclopscore.command.noConfigsFound": "没有可设置的配置数值",
-
-    "_comment": "Multiblock",
     "multiblock.cyclopscore.error.invalidBlock": "%s包含无效的方块%s。",
     "multiblock.cyclopscore.error.size.cube": "%s的形状不是立方体，棱长不相等。",
     "multiblock.cyclopscore.error.size.exact": "找到尺寸%s，而需求尺寸为%s。",
@@ -35,7 +40,5 @@
     "multiblock.cyclopscore.error.blockCount.max": "最多%s的%s，但只找到了%s。",
     "multiblock.cyclopscore.error.blockCount.min": "至少%s的%s，但只找到了%s。",
     "multiblock.cyclopscore.error.hollow.air": "位置%s必须是空的。",
-
-    "_comment": "Vanilla additions",
     "block.air": "空气"
 }
