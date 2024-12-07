@@ -7,40 +7,65 @@ public class ModHelpersForge extends ModHelpersCommon implements IModHelpersForg
 
     public static final ModHelpersForge INSTANCE = new ModHelpersForge();
 
+    private IMinecraftHelpers minecraftHelpers;
+    private IRenderHelpersForge renderHelpers;
+    private IRegistrationHelpers registrationHelpers;
+    private IItemStackHelpers itemStackHelpers;
+    private ICapabilityHelpersForge capabilityHelpers;
+    private IFluidHelpersForge fluidHelpers;
+    private IGuiHelpersForge guiHelpers;
+
     private ModHelpersForge() {}
 
     @Override
-    public IRenderHelpersForge getRenderHelpers() {
-        return new RenderHelpersForge(this);
-    }
-
-    @Override
-    public IRegistrationHelpers getRegistrationHelpers() {
-        return new RegistrationHelpersForge();
+    protected void initializeHelpers() {
+        this.minecraftHelpers = new MinecraftHelpersForge();
+        super.initializeHelpers();
+        if (this.getMinecraftHelpers().isClientSide()) {
+            this.renderHelpers = new RenderHelpersForge(this);
+            this.guiHelpers = new GuiHelpersForge(this);
+        } else {
+            this.renderHelpers = null;
+            this.guiHelpers = null;
+        }
+        this.registrationHelpers = new RegistrationHelpersForge();
+        this.itemStackHelpers = new ItemStackHelpersForge();
+        this.capabilityHelpers = new CapabilityHelpersForge(this);
+        this.fluidHelpers = new FluidHelpersForge();
     }
 
     @Override
     public IMinecraftHelpers getMinecraftHelpers() {
-        return new MinecraftHelpersForge();
+        return this.minecraftHelpers;
+    }
+
+    @Override
+    public IRenderHelpersForge getRenderHelpers() {
+        return this.renderHelpers;
+    }
+
+    @Override
+    public IRegistrationHelpers getRegistrationHelpers() {
+        return this.registrationHelpers;
     }
 
     @Override
     public IItemStackHelpers getItemStackHelpers() {
-        return new ItemStackHelpersForge();
+        return this.itemStackHelpers;
     }
 
     @Override
     public ICapabilityHelpersForge getCapabilityHelpers() {
-        return new CapabilityHelpersForge(this);
+        return this.capabilityHelpers;
     }
 
     @Override
     public IFluidHelpersForge getFluidHelpers() {
-        return new FluidHelpersForge();
+        return this.fluidHelpers;
     }
 
     @Override
     public IGuiHelpersForge getGuiHelpers() {
-        return new GuiHelpersForge(this);
+        return this.guiHelpers;
     }
 }

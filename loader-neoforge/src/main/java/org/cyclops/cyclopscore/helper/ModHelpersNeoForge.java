@@ -7,40 +7,65 @@ public class ModHelpersNeoForge extends ModHelpersCommon implements IModHelpersN
 
     public static final ModHelpersNeoForge INSTANCE = new ModHelpersNeoForge();
 
+    private IMinecraftHelpers minecraftHelpers;
+    private IItemStackHelpers itemStackHelpers;
+    private ICapabilityHelpersNeoForge capabilityHelpers;
+    private IFluidHelpersNeoForge fluidHelpers;
+    private IRenderHelpersNeoForge renderHelpers;
+    private IRegistrationHelpers registrationHelpers;
+    private IGuiHelpersNeoForge guiHelpers;
+
     private ModHelpersNeoForge() {}
 
     @Override
+    protected void initializeHelpers() {
+        this.minecraftHelpers = new MinecraftHelpersNeoForge();
+        super.initializeHelpers();
+        if (this.getMinecraftHelpers().isClientSide()) {
+            this.renderHelpers = new RenderHelpersNeoForge(this);
+            this.guiHelpers = new GuiHelpersNeoForge(this);
+        } else {
+            this.renderHelpers = null;
+            this.guiHelpers = null;
+        }
+        this.itemStackHelpers = new ItemStackHelpersNeoForge();
+        this.capabilityHelpers = new CapabilityHelpersNeoForge(this);
+        this.fluidHelpers = new FluidHelpersNeoForge();
+        this.registrationHelpers = new RegistrationHelpersNeoForge();
+    }
+
+    @Override
     public IMinecraftHelpers getMinecraftHelpers() {
-        return new MinecraftHelpersNeoForge();
+        return this.minecraftHelpers;
     }
 
     @Override
     public IItemStackHelpers getItemStackHelpers() {
-        return new ItemStackHelpersNeoForge();
+        return this.itemStackHelpers;
     }
 
     @Override
     public ICapabilityHelpersNeoForge getCapabilityHelpers() {
-        return new CapabilityHelpersNeoForge(this);
+        return this.capabilityHelpers;
     }
 
     @Override
     public IFluidHelpersNeoForge getFluidHelpers() {
-        return new FluidHelpersNeoForge();
+        return this.fluidHelpers;
     }
 
     @Override
     public IRenderHelpersNeoForge getRenderHelpers() {
-        return new RenderHelpersNeoForge(this);
+        return this.renderHelpers;
     }
 
     @Override
     public IRegistrationHelpers getRegistrationHelpers() {
-        return new RegistrationHelpersNeoForge();
+        return this.registrationHelpers;
     }
 
     @Override
     public IGuiHelpersNeoForge getGuiHelpers() {
-        return new GuiHelpersNeoForge(this);
+        return this.guiHelpers;
     }
 }
