@@ -1,6 +1,5 @@
 {
-    "_comment": "Genel",
-    "itemGroup.cyclopscore": "Cyclops Core",
+    "_comment": "Vanilla eklentileri",
     "general.cyclopscore.dev_world": "Geliştirici Dünyası",
     "general.cyclopscore.tooltip.info": "<Bilgi için Shift>",
     "general.cyclopscore.info.enabled": "§aEtkin",
@@ -8,8 +7,6 @@
     "general.cyclopscore.version.updateAvailable": "Güncelleme Mevcut",
     "general.cyclopscore.version.download": "[İndir]",
     "general.cyclopscore.version.clickToDownload": "İndirmek için tıkla",
-
-    "_comment": "Gui",
     "gui.cyclopscore.scrollbar": "Kaydır",
     "gui.cyclopscore.search": "Ara",
     "gui.cyclopscore.left": "Sol",
@@ -17,8 +14,6 @@
     "gui.cyclopscore.up": "Yukarı",
     "gui.cyclopscore.down": "Aşağı",
     "gui.cyclopscore.infobook": "Bilgilendirme Kitabı",
-
-    "_comment": "Bilgilendirme Kitabı",
     "infobook.cyclopscore.next_page": "Sonraki sayfa",
     "infobook.cyclopscore.previous_page": "Önceki sayfa",
     "infobook.cyclopscore.parent_section": "Ebeveyn bölümü",
@@ -27,8 +22,6 @@
     "infobook.cyclopscore.keybinding": "Tuş Ataması",
     "infobook.cyclopscore.external": "Web versiyonu",
     "gui.cyclopscore.rewards": "Ödüller",
-
-    "_comment": "Sohbet Mesajları",
     "chat.cyclopscore.command.invalidArguments": "Geçersiz Argüman",
     "chat.cyclopscore.command.invalidSubcommand": "Geçersiz Alt Komut",
     "chat.cyclopscore.command.onlyOneValue": "Lütfen yeni bir değer tanımlayın",
@@ -37,10 +30,6 @@
     "chat.cyclopscore.command.invalidPlayer": "Oyuncu '%s' bulunamadı",
     "chat.cyclopscore.command.ignitedPlayer": "Oyuncu '%s' , %s saniye boyunca ateşe verildi",
     "chat.cyclopscore.command.noConfigsFound": "Ayarlanabilecek hiçbir yapılandırma değeri bulunamadı",
-
-    "_comment": "Multiblok",
-	"multiblock.cyclopscore.error.hollow.air": "%s pozisyonu boş olmalıdır.",
-   
-	"_comment": "Vanilla eklentileri",
+    "multiblock.cyclopscore.error.hollow.air": "%s pozisyonu boş olmalıdır.",
     "block.air": "Hava"
 }
