@@ -10,7 +10,6 @@ org.cyclops.commoncapabilities.api.ingredient.capability
 org.cyclops.commoncapabilities.api.ingredient.storage
 org.cyclops.cyclopscore
 org.cyclops.cyclopscore.advancement.criterion
-org.cyclops.cyclopscore.block
 org.cyclops.cyclopscore.block.component
 org.cyclops.cyclopscore.blockentity
 org.cyclops.cyclopscore.capability.fluid
@@ -63,4 +62,3 @@ org.cyclops.cyclopscore.potion
 org.cyclops.cyclopscore.proxy
 org.cyclops.cyclopscore.recipe
 org.cyclops.cyclopscore.recipe.type
-org.cyclops.cyclopscore.tracking
