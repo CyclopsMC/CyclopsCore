@@ -2,17 +2,21 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.display.FurnaceRecipeDisplay;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
+
+import java.util.function.Supplier;
 
 /**
  * Blood Infuser recipes.
@@ -27,8 +31,8 @@ public class FurnaceRecipeAppendix extends RecipeAppendix<SmeltingRecipe> {
     private static final AdvancedButtonEnum INPUT = AdvancedButtonEnum.create();
     private static final AdvancedButtonEnum RESULT = AdvancedButtonEnum.create();
 
-    public FurnaceRecipeAppendix(IInfoBook infoBook, RecipeHolder<? extends SmeltingRecipe> recipe) {
-        super(infoBook, recipe);
+    public FurnaceRecipeAppendix(IInfoBook infoBook, Supplier<RecipeDisplayEntry> recipeDisplay) {
+        super(infoBook, recipeDisplay);
     }
 
     @Override
@@ -60,9 +64,14 @@ public class FurnaceRecipeAppendix extends RecipeAppendix<SmeltingRecipe> {
         gui.drawArrowRight(guiGraphics, x + middle - 3, y + SLOT_OFFSET_Y + 2);
 
         // Prepare items
+        RecipeDisplayEntry recipeDisplay = getRecipeDisplay();
+        if (recipeDisplay == null) {
+            return;
+        }
         int tick = getTick(gui);
-        ItemStack input = prepareItemStacks(recipe.value().placementInfo().ingredients().get(0).getValues(), tick);
-        ItemStack result = prepareItemStack(IModHelpers.get().getMinecraftHelpers().getRecipeOutput(recipe, Minecraft.getInstance().level), tick);
+        ContextMap contextMap = SlotDisplayContext.fromLevel(Minecraft.getInstance().level);
+        ItemStack input = prepareItemStacks(((FurnaceRecipeDisplay) recipeDisplay.display()).ingredient().resolveForStacks(contextMap), tick);
+        ItemStack result = prepareItemStacks(recipeDisplay.display().result().resolveForStacks(contextMap), tick);
 
         // Items
         renderItem(gui, guiGraphics, x + SLOT_OFFSET_X, y + SLOT_OFFSET_Y, input, mx, my, INPUT);

@@ -3,21 +3,23 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Shaped recipes.
@@ -35,8 +37,8 @@ public class CraftingRecipeAppendix extends RecipeAppendix<CraftingRecipe> {
     }
     private static final AdvancedButtonEnum RESULT = AdvancedButtonEnum.create();
 
-    public CraftingRecipeAppendix(IInfoBook infoBook, RecipeHolder<? extends CraftingRecipe> recipe) {
-        super(infoBook, recipe);
+    public CraftingRecipeAppendix(IInfoBook infoBook, Supplier<RecipeDisplayEntry> recipeDisplay) {
+        super(infoBook, recipeDisplay);
     }
 
     @Override
@@ -67,12 +69,17 @@ public class CraftingRecipeAppendix extends RecipeAppendix<CraftingRecipe> {
         gui.drawArrowRight(guiGraphics, x + (SLOT_SIZE + SLOT_OFFSET_X) * 3 - 3, y + SLOT_OFFSET_Y + SLOT_SIZE + 2);
 
         // Prepare items
+        RecipeDisplayEntry recipeDisplay = getRecipeDisplay();
+        if (recipeDisplay == null) {
+            return;
+        }
         int tick = getTick(gui);
         ItemStack[] grid = new ItemStack[9];
-        ItemStack result = prepareItemStack(IModHelpers.get().getMinecraftHelpers().getRecipeOutput(recipe, Minecraft.getInstance().level), tick);
+        ContextMap contextMap = SlotDisplayContext.fromLevel(Minecraft.getInstance().level);
+        ItemStack result = prepareItemStacks(recipeDisplay.display().result().resolveForStacks(contextMap), tick);
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
-                grid[i + j * 3] = prepareItemStacks(getItemStacks(i + j * 3).getValues(), tick);
+                grid[i + j * 3] = getItemStacks(recipeDisplay, i + j * 3, contextMap, tick);
             }
         }
 
@@ -98,9 +105,9 @@ public class CraftingRecipeAppendix extends RecipeAppendix<CraftingRecipe> {
      * @param height The original recipe height.
      * @return The reformatted object array.
      */
-    private static NonNullList<Ingredient> formatShapedGrid(List<Ingredient> itemStacksRaw, int width, int height) {
+    private static NonNullList<ItemStack> formatShapedGrid(List<ItemStack> itemStacksRaw, int width, int height) {
         int rawIndex = 0;
-        NonNullList<Ingredient> itemStacks = NonNullList.withSize(9, Ingredient.of());
+        NonNullList<ItemStack> itemStacks = NonNullList.withSize(9, ItemStack.EMPTY);
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
                 itemStacks.set(y * 3 + x, itemStacksRaw.get(rawIndex++));
@@ -111,16 +118,22 @@ public class CraftingRecipeAppendix extends RecipeAppendix<CraftingRecipe> {
         return itemStacks;
     }
 
-    protected Ingredient getItemStacks(int index) {
-        List<Ingredient> ingredients;
+    protected ItemStack getItemStacks(RecipeDisplayEntry recipeDisplay, int index, ContextMap contextMap, int tick) {
+        List<ItemStack> ingredients;
 
-        if(recipe.value() instanceof ShapedRecipe shapedRecipe) {
-            ingredients = formatShapedGrid(shapedRecipe.placementInfo().ingredients(),
-                    shapedRecipe.getWidth(), shapedRecipe.getHeight());
+        if (recipeDisplay.display() instanceof ShapedCraftingRecipeDisplay shapedDisplay) {
+            ingredients = formatShapedGrid(shapedDisplay.ingredients().stream()
+                            .map(display -> prepareItemStacks(display.resolveForStacks(contextMap), tick))
+                            .toList(),
+                    shapedDisplay.width(), shapedDisplay.height());
+        } else if (recipeDisplay.display() instanceof ShapelessCraftingRecipeDisplay shapelessDisplay) {
+            ingredients = shapelessDisplay.ingredients().stream()
+                    .map(display -> prepareItemStacks(display.resolveForStacks(contextMap), tick))
+                    .toList();
         } else {
-            ingredients = recipe.value().placementInfo().ingredients();
+            throw new IllegalArgumentException("Unsupported recipe display class: " + recipeDisplay.display());
         }
-        if(ingredients.size() <= index) return Ingredient.of();
+        if(ingredients.size() <= index) return ItemStack.EMPTY;
         return ingredients.get(index);
     }
 

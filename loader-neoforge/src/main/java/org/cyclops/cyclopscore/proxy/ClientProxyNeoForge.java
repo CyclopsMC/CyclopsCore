@@ -11,10 +11,10 @@ import org.cyclops.cyclopscore.item.ItemInformationProviderNeoForge;
  * @author rubensworks
  *
  */
-public class ClientProxy extends ClientProxyComponent {
+public class ClientProxyNeoForge extends ClientProxyComponent {
 
-    public ClientProxy() {
-        super(new CommonProxy());
+    public ClientProxyNeoForge() {
+        super(new CommonProxyNeoForge());
 
         NeoForge.EVENT_BUS.addListener(ItemInformationProviderNeoForge::onTooltip);
     }

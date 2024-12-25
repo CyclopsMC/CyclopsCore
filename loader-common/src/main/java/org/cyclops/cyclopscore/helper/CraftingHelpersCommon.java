@@ -3,19 +3,21 @@ package org.cyclops.cyclopscore.helper;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import net.minecraft.client.Minecraft;
+import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.level.Level;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -41,57 +43,48 @@ public class CraftingHelpersCommon implements ICraftingHelpers {
     }
 
     @Override
-    public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> findRecipes(Level world, RecipeType<? extends T> recipeType) {
-        return world.isClientSide() ? getClientRecipes(recipeType) : findServerRecipes((ServerLevel) world, recipeType);
-    }
-
-    @Override
     public RecipeManager getRecipeManager() {
-        return modHelpers.getMinecraftHelpers().isClientSide()
-                ? (RecipeManager) Minecraft.getInstance().getConnection().recipes()
-                : Objects.requireNonNull(modHelpers.getMinecraftHelpers().getCurrentServer().getLevel(Level.OVERWORLD), "Server is still loading").recipeAccess();
+        return Objects.requireNonNull(modHelpers.getMinecraftHelpers().getCurrentServer().getLevel(Level.OVERWORLD), "Server is still loading").recipeAccess();
     }
 
     @Override
-    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getServerRecipe(RecipeType<T> recipeType, ResourceKey<Recipe<?>> recipeName) {
+    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getRecipe(RecipeType<T> recipeType, ResourceKey<Recipe<?>> recipeName) {
         return Optional.ofNullable(getRecipeManager().byKeyTyped(recipeType, recipeName));
     }
 
     @Override
-    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> findServerRecipe(RecipeType<T> recipeType, C container, Level world) {
+    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> findRecipe(RecipeType<T> recipeType, C container, Level world) {
         return ((RecipeManager) world.recipeAccess()).getRecipeFor(recipeType, container, world);
     }
 
     @Override
-    public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> findServerRecipes(RecipeType<? extends T> recipeType) {
-        return findServerRecipes(Objects.requireNonNull(modHelpers.getMinecraftHelpers().getCurrentServer().getLevel(Level.OVERWORLD)), recipeType);
+    public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> findRecipes(RecipeType<? extends T> recipeType) {
+        return findRecipes(Objects.requireNonNull(modHelpers.getMinecraftHelpers().getCurrentServer().getLevel(Level.OVERWORLD)), recipeType);
     }
 
     @Override
-    public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> findServerRecipes(ServerLevel world, RecipeType<? extends T> recipeType) {
+    public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> findRecipes(ServerLevel world, RecipeType<? extends T> recipeType) {
         return (List<RecipeHolder<T>>) (List) world.recipeAccess().recipes.byType(recipeType);
     }
 
     @Override
-    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getClientRecipe(RecipeType<T> recipeType, ResourceKey<Recipe<?>> recipeName) {
-        return Optional.ofNullable(getRecipeManager().byKeyTyped(recipeType, recipeName));
+    public List<RecipeDisplayEntry> getRecipeDisplays(RecipeType<?> recipeType, ResourceKey<Recipe<?>> recipeName) {
+        List<RecipeDisplayEntry> displays = Lists.newArrayList();
+        modHelpers.getMinecraftHelpers().getCurrentServer().overworld().recipeAccess().listDisplaysForRecipe(recipeName, displays::add);
+        return displays;
     }
 
     @Override
-    public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> getClientRecipes(RecipeType<? extends T> recipeType) {
-        return (List<RecipeHolder<T>>) (List) getRecipeManager().recipes.byType(recipeType);
-    }
-
-    @Override
-    public <C extends RecipeInput, T extends Recipe<C>> RecipeHolder<T> findClientRecipe(RegistryAccess registryAccess, ItemStack itemStack, RecipeType<T> recipeType, C recipeInput, int index) throws IllegalArgumentException {
-        int indexAttempt = index;
-        for(RecipeHolder<T> recipe : getClientRecipes(recipeType)) {
-            if(ItemStack.isSameItemSameComponents(recipe.value().assemble(recipeInput, registryAccess), itemStack) && indexAttempt-- == 0) {
-                return recipe;
+    public List<Pair<ResourceLocation, RecipeDisplayEntry>> getRecipeDisplays(RecipeType<?> recipeType, String recipeNameRegex) {
+        List<Pair<ResourceLocation, RecipeDisplayEntry>> displays = Lists.newArrayList();
+        for (Map.Entry<ResourceKey<Recipe<?>>, List<RecipeManager.ServerDisplayInfo>> entry : modHelpers.getMinecraftHelpers().getCurrentServer().overworld().recipeAccess().recipeToDisplay.entrySet()) {
+            if (recipeNameRegex.isEmpty() || entry.getKey().location().toString().matches(recipeNameRegex)) {
+                for (RecipeManager.ServerDisplayInfo display : entry.getValue()) {
+                    displays.add(Pair.of(display.parent().id().location(), display.display()));
+                }
             }
         }
-        throw new IllegalArgumentException("Could not find recipe for " + itemStack + "::"
-                + itemStack.getComponents() + " with index " + index);
+        return displays;
     }
 
     @Override

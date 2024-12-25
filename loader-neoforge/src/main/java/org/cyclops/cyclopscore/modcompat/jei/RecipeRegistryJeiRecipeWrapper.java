@@ -1,16 +1,12 @@
 package org.cyclops.cyclopscore.modcompat.jei;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
-import org.cyclops.cyclopscore.helper.IModHelpers;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 
@@ -46,17 +42,19 @@ public abstract class RecipeRegistryJeiRecipeWrapper<C extends RecipeInput, R ex
     }
 
     public Collection<J> createAllRecipes() {
-        return Collections2.transform(IModHelpers.get().getCraftingHelpers().getClientRecipes(getRecipeType()), new Function<RecipeHolder<R>, J>() {
-            @Nullable
-            @Override
-            public J apply(RecipeHolder<R> input) {
-                ResourceKey<Recipe<?>> id = input.id();
-                if (!RECIPE_WRAPPERS.containsKey(id)) {
-                    RECIPE_WRAPPERS.put(id, newInstance(input));
-                }
-                return (J) RECIPE_WRAPPERS.get(id);
-            }
-        });
+        // TODO: restore
+//        return Collections2.transform(IModHelpers.get().getCraftingHelpers().getClientRecipes(getRecipeType()), new Function<RecipeHolder<R>, J>() {
+//            @Nullable
+//            @Override
+//            public J apply(RecipeHolder<R> input) {
+//                ResourceKey<Recipe<?>> id = input.id();
+//                if (!RECIPE_WRAPPERS.containsKey(id)) {
+//                    RECIPE_WRAPPERS.put(id, newInstance(input));
+//                }
+//                return (J) RECIPE_WRAPPERS.get(id);
+//            }
+//        });
+        throw new UnsupportedOperationException();
     }
 
 }

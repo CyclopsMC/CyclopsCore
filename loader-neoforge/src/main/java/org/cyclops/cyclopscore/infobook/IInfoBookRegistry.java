@@ -32,4 +32,6 @@ public interface IInfoBookRegistry extends IRegistry {
      */
     public InfoSection getRoot(IInfoBook infoBook);
 
+    public void initializeAllBooks();
+
 }

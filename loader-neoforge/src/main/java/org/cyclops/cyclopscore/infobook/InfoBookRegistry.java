@@ -7,6 +7,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import org.apache.logging.log4j.Level;
+import org.cyclops.cyclopscore.helper.RecipeHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
 import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
@@ -23,7 +24,6 @@ public class InfoBookRegistry implements IInfoBookRegistry {
 
     static {
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onClientTagsLoadedStatic);
-//        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onClientRecipesLoadedStatic); // TODO: somehow get recipes client-side
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onServerStartedStatic);
     }
 
@@ -33,8 +33,6 @@ public class InfoBookRegistry implements IInfoBookRegistry {
 
     public InfoBookRegistry() {
         NeoForge.EVENT_BUS.addListener(this::onPlayerLoggedIn);
-//        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientTagsLoaded);
-//        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientRecipesLoaded); // TODO: somehow get recipes client-side
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
     }
 
@@ -68,14 +66,6 @@ public class InfoBookRegistry implements IInfoBookRegistry {
             AdvancementRewards.reset();
         }
     }
-//    public static void onClientRecipesLoadedStatic(RecipesUpdatedEvent event) { // TODO: somehow get recipes client-side
-//        infobookStageRecipesStatic = true;
-//        if (infobookStageTagsStatic && infobookStageRecipesStatic) {
-//            infobookStageTagsStatic = false;
-//            infobookStageRecipesStatic = false;
-//            AdvancementRewards.reset();
-//        }
-//    }
     public static void onServerStartedStatic(ServerStartedEvent event) {
         if (event.getServer().isDedicatedServer()) {
             infobookStageTagsStatic = false;
@@ -85,35 +75,19 @@ public class InfoBookRegistry implements IInfoBookRegistry {
         }
     }
 
-    // Reload infobooks if BOTH tags and recipes are initialized (can occur out-of-order in SMP)
-    private volatile boolean infobookStageTags = false;
-    private volatile boolean infobookStageRecipes = false;
     public void onPlayerLoggedIn(ClientPlayerNetworkEvent.LoggingIn event) {
-        initialize();
+        RecipeHelpers.reset();
+        initializeAllBooks();
     }
-//    public void onClientTagsLoaded(TagsUpdatedEvent event) {
-//        infobookStageTags = true;
-//        if (infobookStageTags /*&& infobookStageRecipes*/) { // TODO: somehow get recipes client-side
-//            initialize();
-//        }
-//    }
-//    public void onClientRecipesLoaded(RecipesUpdatedEvent event) { // TODO: somehow get recipes client-side
-//        infobookStageRecipes = true;
-//        if (infobookStageTags && infobookStageRecipes) {
-//            initialize();
-//        }
-//    }
+
     public void onServerStarted(ServerStartedEvent event) {
         if (event.getServer().isDedicatedServer()) {
-            // Only call this on dedicated servers, as the RecipesUpdatedEvent won't be emitted there
-            initialize();
+            initializeAllBooks();
         }
     }
 
-    public void initialize() {
-        this.infobookStageTags = false;
-        this.infobookStageRecipes = false;
-
+    @Override
+    public void initializeAllBooks() {
         // Load after recipes are loaded client-side
         for (Map.Entry<IInfoBook, String> entry : bookPaths.entrySet()) {
             entry.getKey().getMod().log(Level.INFO, "Loading infobook " + entry.getValue());

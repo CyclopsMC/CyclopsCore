@@ -17,7 +17,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -27,8 +27,10 @@ import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
 import org.cyclops.cyclopscore.infobook.*;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Recipes that can be added to sections.
@@ -39,7 +41,7 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
     protected static final int SLOT_SIZE = 16;
     protected static final int TICK_DELAY = 30;
 
-    protected RecipeHolder<? extends T> recipe;
+    protected Supplier<RecipeDisplayEntry> recipeDisplaySupplier;
 
     /**
      * This map holds advanced buttons that have a unique identifier.
@@ -48,9 +50,14 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
      */
     protected Map<AdvancedButtonEnum, AdvancedButton> renderItemHolders = Maps.newHashMap();
 
-    public RecipeAppendix(IInfoBook infoBook, RecipeHolder<? extends T> recipe) {
+    public RecipeAppendix(IInfoBook infoBook, Supplier<RecipeDisplayEntry> recipeDisplaySupplier) {
         super(infoBook);
-        this.recipe = recipe;
+        this.recipeDisplaySupplier = recipeDisplaySupplier;
+    }
+
+    @Nullable
+    public RecipeDisplayEntry getRecipeDisplay() {
+        return recipeDisplaySupplier.get();
     }
 
     protected int getTick(ScreenInfoBook gui) {

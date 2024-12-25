@@ -16,7 +16,7 @@ import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketSync;
  * @author rubensworks
  *
  */
-public class CommonProxy extends CommonProxyComponent {
+public class CommonProxyNeoForge extends CommonProxyComponent {
 
     @Override
     public ModBaseNeoForge getMod() {
@@ -44,6 +44,10 @@ public class CommonProxy extends CommonProxyComponent {
         packetHandler.register(SendPlayerNbtPacket.class, SendPlayerNbtPacket.TYPE, SendPlayerNbtPacket.CODEC);
         packetHandler.register(RequestPlayerAdvancementUnlockedPacket.class, RequestPlayerAdvancementUnlockedPacket.TYPE, RequestPlayerAdvancementUnlockedPacket.CODEC);
         packetHandler.register(SendPlayerAdvancementUnlockedPacket.class, SendPlayerAdvancementUnlockedPacket.TYPE, SendPlayerAdvancementUnlockedPacket.CODEC);
+        packetHandler.register(RequestRecipeDisplayPacket.class, RequestRecipeDisplayPacket.TYPE, RequestRecipeDisplayPacket.CODEC);
+        packetHandler.register(RequestRecipeDisplaysRegexPacket.class, RequestRecipeDisplaysRegexPacket.TYPE, RequestRecipeDisplaysRegexPacket.CODEC);
+        packetHandler.register(SendRecipeDisplayPacket.class, SendRecipeDisplayPacket.TYPE, SendRecipeDisplayPacket.CODEC);
+        packetHandler.register(SendRecipeDisplaysRegexDonePacket.class, SendRecipeDisplaysRegexDonePacket.TYPE, SendRecipeDisplaysRegexDonePacket.CODEC);
 
         // Register debug packets
         packetHandler.register(PingPongPacketAsync.class, PingPongPacketAsync.TYPE, PingPongPacketAsync.CODEC);

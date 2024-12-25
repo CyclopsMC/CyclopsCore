@@ -41,8 +41,8 @@ import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
 import org.cyclops.cyclopscore.modcompat.curios.ModCompatCurios;
 import org.cyclops.cyclopscore.network.PacketCodecsNeoForge;
 import org.cyclops.cyclopscore.persist.nbt.NBTClassTypesNeoForge;
-import org.cyclops.cyclopscore.proxy.ClientProxy;
-import org.cyclops.cyclopscore.proxy.CommonProxy;
+import org.cyclops.cyclopscore.proxy.ClientProxyNeoForge;
+import org.cyclops.cyclopscore.proxy.CommonProxyNeoForge;
 import org.cyclops.cyclopscore.proxy.IClientProxy;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 import org.cyclops.cyclopscore.tracking.ImportantUsers;
@@ -78,13 +78,13 @@ public class CyclopsCoreNeoForge extends ModBaseNeoForge<CyclopsCoreNeoForge> {
     @Override
     @OnlyIn(Dist.CLIENT)
     protected IClientProxy constructClientProxy() {
-        return new ClientProxy();
+        return new ClientProxyNeoForge();
     }
 
     @Override
     @OnlyIn(Dist.DEDICATED_SERVER)
     protected ICommonProxy constructCommonProxy() {
-        return new CommonProxy();
+        return new CommonProxyNeoForge();
     }
 
     @Override

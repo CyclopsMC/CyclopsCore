@@ -32,7 +32,7 @@ public abstract class RegistryExportableRecipeAbstract<T extends RecipeType<? ex
         JsonArray elements = new JsonArray();
         element.add("recipes", elements);
 
-        for (RecipeHolder<R> recipeHolder : IModHelpers.get().getCraftingHelpers().findServerRecipes(getRecipeType())) {
+        for (RecipeHolder<R> recipeHolder : IModHelpers.get().getCraftingHelpers().findRecipes(getRecipeType())) {
             JsonObject serializedRecipe = serializeRecipe(recipeHolder);
 
             serializedRecipe.addProperty("id", recipeHolder.toString());

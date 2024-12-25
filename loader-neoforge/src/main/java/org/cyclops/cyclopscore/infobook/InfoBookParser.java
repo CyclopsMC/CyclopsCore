@@ -6,17 +6,20 @@ import com.google.common.collect.Sets;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.util.Strings;
-import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
+import org.cyclops.cyclopscore.helper.RecipeHelpers;
 import org.cyclops.cyclopscore.infobook.condition.*;
 import org.cyclops.cyclopscore.infobook.pageelement.*;
 import org.cyclops.cyclopscore.init.ModBaseNeoForge;
@@ -33,6 +36,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * XML parser which will generate the infobook.
@@ -146,16 +150,11 @@ public class InfoBookParser {
                 if (recipeType == null) {
                     throw new InvalidAppendixException("Could not find a recipe type: " + type);
                 }
-                RecipeManager recipeManager = IModHelpers.get().getCraftingHelpers().getRecipeManager();
-                Collection<RecipeHolder> recipes = recipeManager.recipes.byType((RecipeType) recipeType);
 
                 String idRegexString = node.getTextContent().trim();
-
-                for (RecipeHolder<Recipe<?>> recipeHolder : recipes) {
+                for (RecipeDisplayEntry recipeDisplay : RecipeHelpers.getRecipeDisplays(recipeType, idRegexString)) {
                     try {
-                        if (idRegexString.isEmpty() || recipeHolder.toString().matches(idRegexString)) {
-                            appendixList.add(createAppendix(infoBook, type, recipeHolder));
-                        }
+                        appendixList.add(createAppendix(infoBook, type, () -> recipeDisplay));
                     } catch (InvalidAppendixException e) {
                         // Skip this appendix.
                         e.setState(infoBook, null);
@@ -239,15 +238,9 @@ public class InfoBookParser {
     public static <C extends RecipeInput, R extends Recipe<C>> void registerAppendixRecipeFactories(RecipeType<R> recipeType, IAppendixItemFactory<C, R> factory) {
         String name = BuiltInRegistries.RECIPE_TYPE.getKey(recipeType).toString();
         registerAppendixFactory(name, (infoBook, node) -> {
-            // TODO: rewrite using RecipeDisplayEntry (see ClientRecipeBook)
-            ResourceKey<Recipe<?>> recipeId = ResourceKey.create(ResourceKey.createRegistryKey(BuiltInRegistries.RECIPE_TYPE.getKey(recipeType)), getNodeResourceLocation(node));
-            Optional<RecipeHolder<R>> recipe = infoBook.getMod().getModHelpers().getMinecraftHelpers().isClientSide()
-                    ? IModHelpers.get().getCraftingHelpers().getClientRecipe(recipeType, recipeId)
-                    : IModHelpers.get().getCraftingHelpers().getServerRecipe(recipeType, recipeId);
-            if (!recipe.isPresent()) {
-                throw new InvalidAppendixException("Could not find " + name + " recipe for " + recipeId);
-            }
-            return factory.create(infoBook, recipe.get());
+            ResourceLocation recipe = getNodeResourceLocation(node);
+            RecipeHelpers.requestRecipeDisplay(recipeType, recipe);
+            return factory.create(infoBook, () -> RecipeHelpers.getRecipeDisplay(recipeType, recipe));
         });
         registerAppendixItemFactory(name, factory);
     }
@@ -671,13 +664,13 @@ public class InfoBookParser {
         return factory.create(infoBook, node);
     }
 
-    protected static SectionAppendix createAppendix(IInfoBook infoBook, String type, RecipeHolder<Recipe<?>> recipe) throws InvalidAppendixException {
+    protected static SectionAppendix createAppendix(IInfoBook infoBook, String type, Supplier<RecipeDisplayEntry> recipeDisplay) throws InvalidAppendixException {
         if(type == null) type = "";
         IAppendixItemFactory factory = APPENDIX_RECIPELIST_FACTORIES.get(type);
         if(factory == null) {
             throw new InfoBookException("No appendix list of type '" + type + "' was found.");
         }
-        return factory.create(infoBook, recipe);
+        return factory.create(infoBook, recipeDisplay);
     }
 
     protected static List<SectionAppendix> createAppendixes(IInfoBook infoBook, String factory, Element node) throws InvalidAppendixException {
@@ -720,7 +713,7 @@ public class InfoBookParser {
 
     public static interface IAppendixItemFactory<C extends RecipeInput, R extends Recipe<C>> {
 
-        public SectionAppendix create(IInfoBook infoBook, RecipeHolder<R> recipe) throws InvalidAppendixException;
+        public SectionAppendix create(IInfoBook infoBook, Supplier<RecipeDisplayEntry> recipeDisplay) throws InvalidAppendixException;
 
     }
 

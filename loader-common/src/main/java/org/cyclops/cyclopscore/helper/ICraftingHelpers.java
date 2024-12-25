@@ -1,11 +1,12 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.level.Level;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,23 +16,19 @@ import java.util.Optional;
  */
 public interface ICraftingHelpers {
 
-    public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> findRecipes(Level world, RecipeType<? extends T> recipeType);
-
     public RecipeManager getRecipeManager();
 
-    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getServerRecipe(RecipeType<T> recipeType, ResourceKey<Recipe<?>> recipeName);
+    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getRecipe(RecipeType<T> recipeType, ResourceKey<Recipe<?>> recipeName);
 
-    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> findServerRecipe(RecipeType<T> recipeType, C container, Level world);
+    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> findRecipe(RecipeType<T> recipeType, C container, Level world);
 
-    public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> findServerRecipes(RecipeType<? extends T> recipeType);
+    public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> findRecipes(RecipeType<? extends T> recipeType);
 
-    public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> findServerRecipes(ServerLevel world, RecipeType<? extends T> recipeType);
+    public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> findRecipes(ServerLevel world, RecipeType<? extends T> recipeType);
 
-    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getClientRecipe(RecipeType<T> recipeType, ResourceKey<Recipe<?>> recipeName);
+    public List<RecipeDisplayEntry> getRecipeDisplays(RecipeType<?> recipeType, ResourceKey<Recipe<?>> recipeName);
 
-    public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> getClientRecipes(RecipeType<? extends T> recipeType);
-
-    public <C extends RecipeInput, T extends Recipe<C>> RecipeHolder<T> findClientRecipe(RegistryAccess registryAccess, ItemStack itemStack, RecipeType<T> recipeType, C recipeInput, int index) throws IllegalArgumentException;
+    public List<Pair<ResourceLocation, RecipeDisplayEntry>> getRecipeDisplays(RecipeType<?> recipeType, String recipeNameRegex);
 
     /**
      * A cache-based variant of {@link net.minecraft.world.item.crafting.RecipeManager#getRecipeFor(RecipeType, RecipeInput, Level)}.
