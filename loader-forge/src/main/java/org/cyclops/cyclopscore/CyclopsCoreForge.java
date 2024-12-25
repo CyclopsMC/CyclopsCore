@@ -8,14 +8,10 @@ import net.minecraft.core.Holder;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
-import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerConfig;
-import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerEventHooksForge;
-import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerConfig;
-import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerTriggerEventHooksForge;
-import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerConfig;
-import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerEventHooksForge;
+import org.cyclops.cyclopscore.advancement.criterion.*;
 import org.cyclops.cyclopscore.client.particle.ParticleBlurConfig;
 import org.cyclops.cyclopscore.client.particle.ParticleDropColoredConfig;
 import org.cyclops.cyclopscore.command.CommandDebug;
@@ -51,11 +47,11 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
      */
     public static CyclopsCoreForge _instance;
 
-    public CyclopsCoreForge() {
+    public CyclopsCoreForge(FMLJavaModLoadingContext context) {
         super(Reference.MOD_ID, (instance) -> {
             _instance = instance;
             CyclopsCoreInstance.MOD = instance;
-        });
+        }, context);
 
         getRegistryManager().addRegistry(IRegistryInventoryLocation.class, RegistryInventoryLocation.getInstance());
 

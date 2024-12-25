@@ -11,12 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -37,7 +32,7 @@ public class CraftingHelpersCommon implements ICraftingHelpers {
                 @Override
                 public Optional<RecipeHolder<? extends Recipe>> load(Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation> key) throws Exception {
                     ServerLevel world = modHelpers.getMinecraftHelpers().getCurrentServer().getLevel(ResourceKey.create(Registries.DIMENSION, key.getRight()));
-                    return world.getRecipeManager().getRecipeFor((RecipeType) key.getLeft(), key.getMiddle().getInventoryCrafting(), world);
+                    return world.recipeAccess().getRecipeFor((RecipeType) key.getLeft(), key.getMiddle().getInventoryCrafting(), world);
                 }
             });
 
@@ -53,18 +48,18 @@ public class CraftingHelpersCommon implements ICraftingHelpers {
     @Override
     public RecipeManager getRecipeManager() {
         return modHelpers.getMinecraftHelpers().isClientSide()
-                ? (Minecraft.getInstance().getConnection().getRecipeManager())
-                : Objects.requireNonNull(modHelpers.getMinecraftHelpers().getCurrentServer().getLevel(Level.OVERWORLD), "Server is still loading").getRecipeManager();
+                ? (RecipeManager) Minecraft.getInstance().getConnection().recipes()
+                : Objects.requireNonNull(modHelpers.getMinecraftHelpers().getCurrentServer().getLevel(Level.OVERWORLD), "Server is still loading").recipeAccess();
     }
 
     @Override
-    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getServerRecipe(RecipeType<T> recipeType, ResourceLocation recipeName) {
+    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getServerRecipe(RecipeType<T> recipeType, ResourceKey<Recipe<?>> recipeName) {
         return Optional.ofNullable(getRecipeManager().byKeyTyped(recipeType, recipeName));
     }
 
     @Override
     public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> findServerRecipe(RecipeType<T> recipeType, C container, Level world) {
-        return world.getRecipeManager().getRecipeFor(recipeType, container, world);
+        return ((RecipeManager) world.recipeAccess()).getRecipeFor(recipeType, container, world);
     }
 
     @Override
@@ -74,24 +69,24 @@ public class CraftingHelpersCommon implements ICraftingHelpers {
 
     @Override
     public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> findServerRecipes(ServerLevel world, RecipeType<? extends T> recipeType) {
-        return (List<RecipeHolder<T>>) (List) world.getRecipeManager().getAllRecipesFor(recipeType);
+        return (List<RecipeHolder<T>>) (List) world.recipeAccess().recipes.byType(recipeType);
     }
 
     @Override
-    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getClientRecipe(RecipeType<T> recipeType, ResourceLocation recipeName) {
+    public <C extends RecipeInput, T extends Recipe<C>> Optional<RecipeHolder<T>> getClientRecipe(RecipeType<T> recipeType, ResourceKey<Recipe<?>> recipeName) {
         return Optional.ofNullable(getRecipeManager().byKeyTyped(recipeType, recipeName));
     }
 
     @Override
     public <C extends RecipeInput, T extends Recipe<C>> List<RecipeHolder<T>> getClientRecipes(RecipeType<? extends T> recipeType) {
-        return (List<RecipeHolder<T>>) (List)  getRecipeManager().getAllRecipesFor(recipeType);
+        return (List<RecipeHolder<T>>) (List) getRecipeManager().recipes.byType(recipeType);
     }
 
     @Override
-    public <C extends RecipeInput, T extends Recipe<C>> RecipeHolder<T> findClientRecipe(RegistryAccess registryAccess, ItemStack itemStack, RecipeType<T> recipeType, int index) throws IllegalArgumentException {
+    public <C extends RecipeInput, T extends Recipe<C>> RecipeHolder<T> findClientRecipe(RegistryAccess registryAccess, ItemStack itemStack, RecipeType<T> recipeType, C recipeInput, int index) throws IllegalArgumentException {
         int indexAttempt = index;
         for(RecipeHolder<T> recipe : getClientRecipes(recipeType)) {
-            if(ItemStack.isSameItemSameComponents(recipe.value().getResultItem(registryAccess), itemStack) && indexAttempt-- == 0) {
+            if(ItemStack.isSameItemSameComponents(recipe.value().assemble(recipeInput, registryAccess), itemStack) && indexAttempt-- == 0) {
                 return recipe;
             }
         }

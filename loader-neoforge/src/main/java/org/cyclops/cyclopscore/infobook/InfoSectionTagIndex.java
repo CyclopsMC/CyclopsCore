@@ -6,7 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
 import org.cyclops.cyclopscore.infobook.pageelement.SectionAppendix;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class InfoSectionTagIndex extends InfoSection {
 
-    public InfoSectionTagIndex(IInfoBook infoBook, InfoSection parent, ModBase<?> mod) {
+    public InfoSectionTagIndex(IInfoBook infoBook, InfoSection parent, ModBaseNeoForge<?> mod) {
         super(infoBook, parent, parent.getSubSections(), "info_book." + infoBook.getMod().getModId() + ".tag_index", new ArrayList<String>(),
                 new ArrayList<SectionAppendix>(), new ArrayList<String>(), mod);
 
@@ -50,10 +50,10 @@ public class InfoSectionTagIndex extends InfoSection {
         Map<String, Pair<InfoSection, Integer>> softLinks = getInfoBook().getConfigLinks();
         for(String tag : section.getTags()) {
             // If the tag is of the format "mod:tag", then we scope it at that mod.
-            ModBase mod = getInfoBook().getMod();
+            ModBaseNeoForge mod = getInfoBook().getMod();
             if (tag.contains(":")) {
                 String[] split = tag.split(":");
-                mod = ModBase.get(split[0]);
+                mod = ModBaseNeoForge.get(split[0]);
                 tag = split[1];
             }
 

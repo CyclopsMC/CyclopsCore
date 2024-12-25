@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.proxy;
 
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
-import org.cyclops.cyclopscore.network.PacketHandler;
+import org.cyclops.cyclopscore.network.IPacketHandler;
 
 /**
  * Base proxy for server and client side.
@@ -16,7 +16,7 @@ public abstract class CommonProxyComponent extends CommonProxyComponentCommon im
     }
 
     @Override
-    public void registerPacketHandlers(PacketHandler packetHandler) {
+    public void registerPackets(IPacketHandler packetHandler) {
 
     }
 }

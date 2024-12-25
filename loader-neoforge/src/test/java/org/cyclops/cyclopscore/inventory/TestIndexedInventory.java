@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.minecraft.DetectedVersion;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
@@ -9,6 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.fml.loading.LoadingModList;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -27,8 +30,9 @@ public class TestIndexedInventory {
 
     static {
         SharedConstants.setVersion(DetectedVersion.BUILT_IN);
+        LoadingModList.of(Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Maps.newHashMap());
         Bootstrap.bootStrap();
-        ((MappedRegistry)BuiltInRegistries.ITEM).unfreeze();
+        ((MappedRegistry)BuiltInRegistries.ITEM).unfreeze(true);
     }
 
     private static final Item ITEM1 = new ItemDummy();
@@ -42,9 +46,9 @@ public class TestIndexedInventory {
             Map<Item, Holder.Reference<Item>> delegates = ((Map<Item, Holder.Reference<Item>>) field
                     .get(BuiltInRegistries.ITEM));
 
-            delegates.put(ITEM1, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM.asLookup(), ITEM1));
-            delegates.put(ITEM2, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM.asLookup(), ITEM2));
-            delegates.put(ITEM3, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM.asLookup(), ITEM3));
+            delegates.put(ITEM1, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM, ITEM1));
+            delegates.put(ITEM2, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM, ITEM2));
+            delegates.put(ITEM3, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM, ITEM3));
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
         }

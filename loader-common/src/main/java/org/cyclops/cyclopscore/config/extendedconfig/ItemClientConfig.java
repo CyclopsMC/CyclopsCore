@@ -1,11 +1,8 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import org.cyclops.cyclopscore.init.IModBase;
-
-import javax.annotation.Nullable;
 
 /**
  * @author rubensworks
@@ -33,13 +30,5 @@ public class ItemClientConfig<M extends IModBase> {
     public ModelResourceLocation registerDynamicModel() {
         ResourceLocation itemName = ResourceLocation.fromNamespaceAndPath(getItemConfig().getMod().getModId(), getItemConfig().getNamedId());
         return new ModelResourceLocation(itemName, "inventory");
-    }
-
-    /**
-     * @return An optional color handler for the block instance.
-     */
-    @Nullable
-    public ItemColor getItemColorHandler() {
-        return null;
     }
 }

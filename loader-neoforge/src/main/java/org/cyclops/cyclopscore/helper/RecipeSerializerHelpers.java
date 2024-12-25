@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.helper;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -19,7 +20,6 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 /**
  * Helpers related to recipe serialization.
@@ -33,7 +33,7 @@ public class RecipeSerializerHelpers {
                                 Codec.STRING.fieldOf("tag").forGetter(ItemStackFromIngredient::getTag),
                                 Codec.INT.optionalFieldOf("count").forGetter(i -> Optional.of(i.getCount()))
                         )
-                        .apply(builder, (tag, count) -> new ItemStackFromIngredient(modPriorities.get(), tag, Ingredient.fromValues(Stream.of(new Ingredient.TagValue(TagKey.create(Registries.ITEM, ResourceLocation.parse(tag))))), count.orElse(1)))
+                        .apply(builder, (tag, count) -> new ItemStackFromIngredient(modPriorities.get(), tag, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(TagKey.create(Registries.ITEM, ResourceLocation.parse(tag)))), count.orElse(1)))
         );
     }
 

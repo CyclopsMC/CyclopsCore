@@ -10,7 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.network.packet.RequestPlayerAdvancementUnlockedPacket;
 
 import java.util.Set;
@@ -34,7 +34,7 @@ public class AdvancementHelpers {
     }
 
     public static void requestAdvancementUnlockInfo(ResourceLocation advancementId) {
-        CyclopsCore._instance.getPacketHandler().sendToServer(new RequestPlayerAdvancementUnlockedPacket(advancementId.toString()));
+        CyclopsCoreNeoForge._instance.getPacketHandler().sendToServer(new RequestPlayerAdvancementUnlockedPacket(advancementId.toString()));
     }
 
     public static AdvancementHolder getAdvancement(Dist dist, ResourceLocation resourceLocation) {

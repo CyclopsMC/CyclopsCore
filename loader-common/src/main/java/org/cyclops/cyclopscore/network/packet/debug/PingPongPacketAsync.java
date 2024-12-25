@@ -55,7 +55,7 @@ public class PingPongPacketAsync<T extends PingPongPacketAsync<T>> extends Packe
     }
 
     protected void log(Player player, String message) {
-        player.sendSystemMessage(Component.literal(message));
+        player.displayClientMessage(Component.literal(message), true);
     }
 
     protected PingPongPacketAsync newPacket() {
@@ -65,7 +65,7 @@ public class PingPongPacketAsync<T extends PingPongPacketAsync<T>> extends Packe
     @Override
     public void actionClient(Level level, Player player) {
         if(remaining > 0) {
-            CyclopsCoreInstance.MOD.getPacketHandlerCommon().sendToServer(newPacket());
+            CyclopsCoreInstance.MOD.getPacketHandler().sendToServer(newPacket());
         }
         log(player, String.format("[PING %s] Fields: %s", remaining, toString()));
     }
@@ -73,7 +73,7 @@ public class PingPongPacketAsync<T extends PingPongPacketAsync<T>> extends Packe
     @Override
     public void actionServer(Level level, ServerPlayer player) {
         if(remaining > 0) {
-            CyclopsCoreInstance.MOD.getPacketHandlerCommon().sendToPlayer(newPacket(), player);
+            CyclopsCoreInstance.MOD.getPacketHandler().sendToPlayer(newPacket(), player);
         }
         log(player, String.format("[PONG %s] Fields: %s", remaining, toString()));
     }

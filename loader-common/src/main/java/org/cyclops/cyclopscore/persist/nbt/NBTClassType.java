@@ -24,11 +24,7 @@ import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Types of NBT field classes used for persistence of fields in {@link CyclopsBlockEntityCommon}.
@@ -147,7 +143,7 @@ public abstract class NBTClassType<T> {
             @Override
             public Fluid readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
                 String fluidName = tag.getString(name);
-                return BuiltInRegistries.FLUID.get(ResourceLocation.parse(fluidName));
+                return BuiltInRegistries.FLUID.getValue(ResourceLocation.parse(fluidName));
             }
 
             @Override

@@ -5,11 +5,12 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -38,7 +39,7 @@ public class GuiHelpersNeoForge extends GuiHelpersCommon implements IGuiHelpersN
             GL11.glEnable(GL11.GL_DEPTH_TEST);
 
             int level = (int) (height * (((double) fluidStack.getAmount()) / capacity));
-            TextureAtlasSprite icon = RenderHelpers.getFluidIcon(fluidStack, Direction.UP);
+            TextureAtlasSprite icon = IModHelpersNeoForge.get().getRenderHelpers().getFluidIcon(fluidStack, Direction.UP);
             int verticalOffset = 0;
             while(level > 0) {
                 int textureHeight;
@@ -52,7 +53,7 @@ public class GuiHelpersNeoForge extends GuiHelpersCommon implements IGuiHelpersN
 
                 // Fluids can have a custom overlay color, use this to render.
                 IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid().getFluidType());
-                Triple<Float, Float, Float> colorParts = Helpers.intToRGB(renderProperties.getTintColor(fluidStack));
+                Triple<Float, Float, Float> colorParts = IModHelpers.get().getBaseHelpers().intToRGB(renderProperties.getTintColor(fluidStack));
                 // Override water color, otherwise it's gray, since it depends on world biome.
                 if (fluidStack.getFluid() == Fluids.WATER || fluidStack.getFluid() == Fluids.FLOWING_WATER) {
                     colorParts = Triple.of(0F, 0.335F, 1F);
@@ -60,7 +61,7 @@ public class GuiHelpersNeoForge extends GuiHelpersCommon implements IGuiHelpersN
 
                 Lighting.setupForFlatItems();
                 RenderSystem.setShaderColor(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight(), 1);
-                gui.blit(x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
+                gui.blitSprite(RenderType::guiTextured, icon, x, y - textureHeight - verticalOffset + height, 0, width, textureHeight);
                 Lighting.setupFor3DItems();
                 RenderSystem.setShaderColor(1, 1, 1, 1);
 
@@ -68,8 +69,7 @@ public class GuiHelpersNeoForge extends GuiHelpersCommon implements IGuiHelpersN
             }
 
             TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-            textureManager.bindForSetup(InventoryMenu.BLOCK_ATLAS);
-            textureManager.getTexture(InventoryMenu.BLOCK_ATLAS).restoreLastBlurMipmap();
+            textureManager.getTexture(TextureAtlas.LOCATION_BLOCKS).restoreLastBlurMipmap();
 
             Lighting.setupForFlatItems();
             gui.pose().popPose();
@@ -80,7 +80,7 @@ public class GuiHelpersNeoForge extends GuiHelpersCommon implements IGuiHelpersN
     @Override
     public void renderFluidSlot(GuiGraphics gui, @Nullable FluidStack fluidStack, int x, int y) {
         if (fluidStack != null) {
-            GuiHelpers.renderFluidTank(gui, fluidStack, fluidStack.getAmount(), x, y, getSlotSizeInner(), getSlotSizeInner());
+            IModHelpersNeoForge.get().getGuiHelpers().renderFluidTank(gui, fluidStack, fluidStack.getAmount(), x, y, getSlotSizeInner(), getSlotSizeInner());
         }
     }
 
@@ -91,7 +91,7 @@ public class GuiHelpersNeoForge extends GuiHelpersCommon implements IGuiHelpersN
         renderFluidTank(gui, fluidStack, capacity, x, y, width, height);
         if (fluidStack != null && capacity > 0) {
             GlStateManager._enableBlend();
-            gui.blit(textureOverlay, x, y, overlayTextureX, overlayTextureY, width, height);
+            gui.blit(RenderType::guiTextured, textureOverlay, x, y, overlayTextureX, overlayTextureY, width, height, 256, 256);
         }
     }
 

@@ -9,10 +9,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -20,17 +22,11 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.helper.GuiHelpers;
-import org.cyclops.cyclopscore.helper.Helpers;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
-import org.cyclops.cyclopscore.infobook.AdvancedButton;
-import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
-import org.cyclops.cyclopscore.infobook.IInfoBook;
-import org.cyclops.cyclopscore.infobook.InfoSection;
-import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
+import org.cyclops.cyclopscore.helper.IModHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
+import org.cyclops.cyclopscore.infobook.*;
 import org.lwjgl.opengl.GL11;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -61,8 +57,8 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
         return gui.getTick() / TICK_DELAY;
     }
 
-    protected ItemStack prepareItemStacks(ItemStack[] itemStacks, int tick) {
-        return prepareItemStacks(Arrays.asList(itemStacks), tick);
+    protected ItemStack prepareItemStacks(HolderSet<Item> items, int tick) {
+        return prepareItemStacks(items.stream().map(ItemStack::new).toList(), tick);
     }
 
     protected ItemStack prepareItemStacks(List<ItemStack> itemStacks, int tick) {
@@ -119,7 +115,7 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
 
             if (chance != 1.0F) {
                 String chanceString = chance * 100F + "%";
-                gui.drawScaledCenteredString(guiGraphics, chanceString, x - 4, y + 3, gui.getFont().width(chanceString), 1f, 18, Helpers.RGBToInt(255, 255, 255), true);
+                gui.drawScaledCenteredString(guiGraphics, chanceString, x - 4, y + 3, gui.getFont().width(chanceString), 1f, 18, IModHelpers.get().getBaseHelpers().RGBToInt(255, 255, 255), true);
             }
 
             if (button != null && renderOverlays) button.update(x, y, itemStack, gui);
@@ -141,7 +137,7 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
         if(renderOverlays) gui.drawOuterBorder(guiGraphics, x, y, SLOT_SIZE, SLOT_SIZE, 1, 1, 1, 0.2f);
 
         if (!fluidStack.isEmpty()) {
-            GuiHelpers.renderFluidSlot(guiGraphics, fluidStack, x, y);
+            IModHelpersNeoForge.get().getGuiHelpers().renderFluidSlot(guiGraphics, fluidStack, x, y);
 
             if (button != null && renderOverlays) button.update(x, y, fluidStack, gui);
         }
@@ -203,7 +199,7 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
         int yOffset = getAdditionalHeight();
         gui.drawOuterBorder(guiGraphics, x - 1, y - 1 - yOffset, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
         gui.drawTextBanner(guiGraphics, x + width / 2, y - 2 - yOffset);
-        gui.drawScaledCenteredString(guiGraphics, L10NHelpers.localize(getUnlocalizedTitle()), x, y - 2 - yOffset, width, 0.9f, gui.getBannerWidth() - 6, gui.getTitleColor());
+        gui.drawScaledCenteredString(guiGraphics, IModHelpers.get().getL10NHelpers().localize(getUnlocalizedTitle()), x, y - 2 - yOffset, width, 0.9f, gui.getBannerWidth() - 6, gui.getTitleColor());
 
         drawElementInner(gui, guiGraphics, x, y, width, height, page, mx, my);
     }
@@ -301,7 +297,7 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
 
         @Override
         protected String getTranslationKey(ItemStack element) {
-            return element.getDescriptionId();
+            return element.getItem().getDescriptionId();
         }
     }
 
@@ -314,7 +310,7 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
 
         @Override
         protected String getTranslationKey(FluidStack element) {
-            return element.getTranslationKey();
+            return element.getFluidType().getDescriptionId(element);
         }
 
         @Override

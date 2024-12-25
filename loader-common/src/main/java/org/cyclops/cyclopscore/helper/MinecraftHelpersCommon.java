@@ -3,9 +3,11 @@ package org.cyclops.cyclopscore.helper;
 import net.minecraft.DetectedVersion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ServerLevelData;
 
 import java.util.Arrays;
@@ -83,8 +85,7 @@ public abstract class MinecraftHelpersCommon implements IMinecraftHelpers {
     }
 
     @Override
-    public <T> InteractionResultHolder<T> successAction(T result) {
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, result);
+    public ItemStack getRecipeOutput(RecipeHolder<?> recipe, Level level) {
+        return recipe.value().display().get(0).result().resolveForFirstStack(SlotDisplayContext.fromLevel(level));
     }
-
 }

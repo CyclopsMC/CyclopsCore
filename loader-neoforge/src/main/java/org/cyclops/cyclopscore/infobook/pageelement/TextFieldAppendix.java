@@ -9,8 +9,7 @@ import net.minecraft.network.chat.Style;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.StringUtils;
-import org.cyclops.cyclopscore.helper.Helpers;
-import org.cyclops.cyclopscore.helper.RenderHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
@@ -75,14 +74,14 @@ public class TextFieldAppendix extends SectionAppendix {
     protected void drawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
         int lineId = 0;
         for (String line : lines) {
-            RenderHelpers.drawScaledString(
+            IModHelpers.get().getRenderHelpers().drawScaledString(
                     guiGraphics,
                     gui.getFont(),
                     line,
                     x,
                     (int) (y + (((float) lineId) * gui.getFont().lineHeight * this.scale)),
                     (float) this.scale,
-                    Helpers.RGBToInt(10, 10, 10),
+                    IModHelpers.get().getBaseHelpers().RGBToInt(10, 10, 10),
                     false,
                     Font.DisplayMode.NORMAL
             );

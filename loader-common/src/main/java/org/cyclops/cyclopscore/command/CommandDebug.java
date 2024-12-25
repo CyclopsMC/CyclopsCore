@@ -38,7 +38,7 @@ public class CommandDebug implements Command<CommandSourceStack> {
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         PacketCodec packet = context.getArgument("packet", PacketCodec.class);
         context.getSource().getPlayerOrException().sendSystemMessage(Component.literal(String.format("Sending %s from client to server...", packet.getClass())));
-        CyclopsCoreInstance.MOD.getPacketHandlerCommon().sendToPlayer(packet, context.getSource().getPlayerOrException());
+        CyclopsCoreInstance.MOD.getPacketHandler().sendToPlayer(packet, context.getSource().getPlayerOrException());
         return 0;
     }
 

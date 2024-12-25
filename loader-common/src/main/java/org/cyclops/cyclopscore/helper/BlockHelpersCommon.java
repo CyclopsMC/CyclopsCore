@@ -30,7 +30,7 @@ public class BlockHelpersCommon implements IBlockHelpers {
     private static HolderGetter<Block> HOLDER_GETTER = new HolderGetter<>() {
         @Override
         public Optional<Holder.Reference<Block>> get(ResourceKey<Block> key) {
-            return BuiltInRegistries.BLOCK.getHolder(key);
+            return BuiltInRegistries.BLOCK.get(key);
         }
 
         @Override
@@ -106,6 +106,6 @@ public class BlockHelpersCommon implements IBlockHelpers {
 
     @Override
     public boolean doesBlockHaveSolidTopSurface(LevelReader world, BlockPos blockPos) {
-        return world.getBlockState(blockPos.offset(0, -1, 0)).isSolidRender(world, blockPos);
+        return world.getBlockState(blockPos.offset(0, -1, 0)).isSolidRender();
     }
 }

@@ -7,13 +7,13 @@ import lombok.Data;
 import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import org.cyclops.cyclopscore.helper.MinecraftHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
@@ -57,7 +57,7 @@ public class DimPos implements Comparable<DimPos> {
     @Nullable
     public Level getLevel(boolean forceLoad) {
         if (worldReference == null) {
-            if (MinecraftHelpers.isClientSideThread()) {
+            if (IModHelpers.get().getMinecraftHelpers().isClientSide()) {
                 ClientLevel world = Minecraft.getInstance().level;
                 if (world != null && world.dimension().location().toString().equals(this.getLevel())) {
                     this.worldReference = new WeakReference<>(world);
@@ -85,7 +85,7 @@ public class DimPos implements Comparable<DimPos> {
     public int compareTo(DimPos o) {
         int compareDim = getLevel().compareTo(o.getLevel());
         if(compareDim == 0) {
-            return MinecraftHelpers.compareBlockPos(getBlockPos(), o.getBlockPos());
+            return IModHelpers.get().getMinecraftHelpers().compareBlockPos(getBlockPos(), o.getBlockPos());
         }
         return compareDim;
     }

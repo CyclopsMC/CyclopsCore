@@ -77,7 +77,7 @@ public abstract class PlayerPositionPacketCommon<T extends PlayerPositionPacketC
 
     @Override
     public void actionServer(Level level, ServerPlayer player) {
-        getModInstance().getPacketHandlerCommon().sendToAllAroundPoint(create(player, range),
+        getModInstance().getPacketHandler().sendToAllAroundPoint(create(player, range),
                 IPacketHandler.createTargetPointFromEntity(player, range));
     }
 

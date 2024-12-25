@@ -4,15 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
-import org.cyclops.cyclopscore.CyclopsCore;
-import org.cyclops.cyclopscore.helper.GuiHelpers;
-import org.cyclops.cyclopscore.helper.RenderHelpers;
+import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.inventory.container.ContainerExtended;
 import org.cyclops.cyclopscore.inventory.container.button.IContainerButtonAction;
@@ -80,18 +80,18 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float f, int x, int y) {
-        guiGraphics.blit(getGuiTexture(), leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY);
+        guiGraphics.blit(RenderType::guiTextured, getGuiTexture(), leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY, 256, 256);
     }
 
     @Override
     public boolean isHovering(Slot slotIn, double mouseX, double mouseY) {
         return this.isHovering(slotIn.x - 1, slotIn.y - 1,
-                GuiHelpers.SLOT_SIZE, GuiHelpers.SLOT_SIZE, mouseX, mouseY);
+                IModHelpers.get().getGuiHelpers().getSlotSize(), IModHelpers.get().getGuiHelpers().getSlotSize(), mouseX, mouseY);
     }
 
     @Override
     public boolean isHovering(int left, int top, int right, int bottom, double pointX, double pointY) {
-        return RenderHelpers.isPointInRegion(left, top, right, bottom, pointX - this.leftPos, pointY - this.topPos);
+        return IModHelpers.get().getRenderHelpers().isPointInRegion(left, top, right, bottom, pointX - this.leftPos, pointY - this.topPos);
     }
 
     public boolean isPointInRegion(Rectangle region, Point mouse) {
@@ -99,7 +99,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     public void drawTooltip(List<Component> lines, PoseStack poseStack, int x, int y) {
-        GuiHelpers.drawTooltip(this, poseStack, lines, x, y);
+        IModHelpers.get().getGuiHelpers().drawTooltip(this, poseStack, lines, x, y);
     }
 
     /**
@@ -116,7 +116,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
                 clientPressable.onPress(button);
             }
             if (getMenu().onButtonClick(buttonId)) {
-                CyclopsCore._instance.getPacketHandler().sendToServer(new ButtonClickPacket(buttonId));
+                CyclopsCoreNeoForge._instance.getPacketHandler().sendToServer(new ButtonClickPacket(buttonId));
             }
         };
     }

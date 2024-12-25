@@ -12,7 +12,6 @@ import org.cyclops.commoncapabilities.api.ingredient.IPrototypedIngredient;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.PrototypedIngredient;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,10 +30,11 @@ public class IngredientRecipeHelpers {
         List<IPrototypedIngredient<ItemStack, Integer>> items;
         if (ingredient.isCustom() && ingredient.getCustomIngredient() instanceof CompoundIngredient compoundIngredient) {
             items = Lists.newArrayList(new PrototypedIngredient<>(IngredientComponent.ITEMSTACK,
-                    compoundIngredient.getItems().findFirst().get(), ItemMatch.ITEM | ItemMatch.DATA));
+                    new ItemStack(compoundIngredient.items().findFirst().get()), ItemMatch.ITEM | ItemMatch.DATA));
 
         } else {
-            items = Arrays.stream(ingredient.getItems())
+            items = ingredient.getValues().stream()
+                    .map(ItemStack::new)
                     .map(itemStack -> new PrototypedIngredient<>(IngredientComponent.ITEMSTACK, itemStack, ItemMatch.ITEM))
                     .collect(Collectors.toList());
         }

@@ -2,15 +2,12 @@ package org.cyclops.cyclopscore.metadata;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.Holder;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.minecraft.world.item.crafting.*;
+
+import java.util.List;
 
 /**
  * Crafting recipe exporter.
@@ -25,18 +22,18 @@ public class RegistryExportableCraftingRecipe extends RegistryExportableRecipeAb
     public JsonObject serializeRecipe(RecipeHolder<CraftingRecipe> recipe) {
         JsonObject object = new JsonObject();
 
-        NonNullList<Ingredient> inputs = recipe.value().getIngredients();
+        List<Ingredient> inputs = recipe.value().placementInfo().ingredients();
         JsonArray arrayInputs = new JsonArray();
         for (Ingredient input : inputs) {
             JsonArray arrayInputAlternatives = new JsonArray();
-            for (ItemStack inputAlternative : input.getItems()) {
-                arrayInputAlternatives.add(IRegistryExportable.serializeItemStack(inputAlternative));
+            for (Holder<Item> inputAlternative : input.getValues()) {
+                arrayInputAlternatives.add(IRegistryExportable.serializeItemStack(new ItemStack(inputAlternative.value())));
             }
             arrayInputs.add(arrayInputAlternatives);
         }
         object.addProperty("id", recipe.id().toString());
         object.add("input", arrayInputs);
-        object.add("output", IRegistryExportable.serializeItemStack(recipe.value().getResultItem(ServerLifecycleHooks.getCurrentServer().registryAccess())));
+        object.add("output", IRegistryExportable.serializeItemStack(IRegistryExportable.getRecipeOutput(recipe)));
 
         if(recipe.value() instanceof ShapedRecipe) {
             object.addProperty("width", ((ShapedRecipe) recipe.value()).getWidth());

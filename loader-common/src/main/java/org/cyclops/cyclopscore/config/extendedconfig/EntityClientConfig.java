@@ -28,5 +28,5 @@ public abstract class EntityClientConfig<M extends IModBase, T extends Entity> {
      * @param renderItem The render item instance.
      * @return Get the render.
      */
-    public abstract EntityRenderer<? super T> getRender(EntityRendererProvider.Context renderContext, ItemRenderer renderItem);
+    public abstract EntityRenderer<? super T, ?> getRender(EntityRendererProvider.Context renderContext, ItemRenderer renderItem);
 }

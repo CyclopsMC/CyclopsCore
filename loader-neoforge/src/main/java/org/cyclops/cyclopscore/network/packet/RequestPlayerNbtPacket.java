@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
@@ -39,7 +39,7 @@ public class RequestPlayerNbtPacket extends PacketCodec<RequestPlayerNbtPacket> 
 
     @Override
     public void actionServer(Level level, ServerPlayer player) {
-        CyclopsCore._instance.getPacketHandler().sendToPlayer(new SendPlayerNbtPacket(player), player);
+        CyclopsCoreNeoForge._instance.getPacketHandler().sendToPlayer(new SendPlayerNbtPacket(player), player);
     }
 
 }

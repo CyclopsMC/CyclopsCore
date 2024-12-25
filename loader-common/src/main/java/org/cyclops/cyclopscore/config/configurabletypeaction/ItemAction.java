@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +20,6 @@ import java.util.List;
 public class ItemAction<M extends IModBase> extends ConfigurableTypeActionRegistry<ItemConfigCommon<M>, Item, M> {
 
     protected static final List<ItemConfigCommon<?>> MODEL_ENTRIES = Lists.newArrayList();
-    protected static final List<ItemConfigCommon<?>> COLOR_ENTRIES = Lists.newArrayList();
 
     @Override
     public void onRegisterForgeFilled(ItemConfigCommon<M> eConfig) {
@@ -49,11 +47,7 @@ public class ItemAction<M extends IModBase> extends ConfigurableTypeActionRegist
         if (config.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
             ItemClientConfig<M> clientConfig = config.getItemClientConfig();
             if (clientConfig != null) {
-                // Handle colors
-                ItemColor itemColorHandler = clientConfig.getItemColorHandler();
-                if (itemColorHandler != null) {
-                    COLOR_ENTRIES.add(config);
-                }
+                // Nothing to do yet
             }
         }
     }

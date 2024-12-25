@@ -21,7 +21,7 @@ public class BlockActionForge<M extends ModBaseForge<M>> extends BlockAction<M> 
 
     static {
         if (ModHelpersForge.INSTANCE.getMinecraftHelpers().isClientSide()) {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((ModelEvent.RegisterAdditional event) -> BlockActionForge.onModelRegistryLoad(event));
+            FMLJavaModLoadingContext.get().getModEventBus().addListener((ModelEvent.RegisterModelStateDefinitions event) -> BlockActionForge.onModelRegistryLoad(event));
             FMLJavaModLoadingContext.get().getModEventBus().addListener((ModelEvent.ModifyBakingResult event) -> BlockActionForge.onModelBakeEvent(event));
             FMLJavaModLoadingContext.get().getModEventBus().addListener((RegisterColorHandlersEvent.Block event) -> BlockActionForge.onRegisterColorHandlers(event));
         }
@@ -46,7 +46,7 @@ public class BlockActionForge<M extends ModBaseForge<M>> extends BlockAction<M> 
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void onModelRegistryLoad(ModelEvent.RegisterAdditional event) {
+    public static void onModelRegistryLoad(ModelEvent.RegisterModelStateDefinitions event) {
         for (BlockConfigCommon<?> config : MODEL_ENTRIES) {
             Pair<ModelResourceLocation, ModelResourceLocation> resourceLocations = config.getBlockClientConfig().registerDynamicModel();
             config.getBlockClientConfig().dynamicBlockVariantLocation = resourceLocations.getLeft();
@@ -63,13 +63,13 @@ public class BlockActionForge<M extends ModBaseForge<M>> extends BlockAction<M> 
                 dynamicModel = dynamicModelElement.createDynamicModel(event);
             } else {
                 IDynamicModelElementCommon dynamicModelElement = config.getBlockClientConfig().getDynamicModelElement();
-                dynamicModel = dynamicModelElement.createDynamicModel(pair -> event.getModels().put(pair.getLeft(), pair.getRight()));
+                dynamicModel = dynamicModelElement.createDynamicModel(pair -> event.getResults().blockStateModels().put(pair.getLeft(), pair.getRight()));
             }
             if (config.getBlockClientConfig().dynamicBlockVariantLocation != null) {
-                event.getModels().put(config.getBlockClientConfig().dynamicBlockVariantLocation, dynamicModel);
+                event.getResults().blockStateModels().put(config.getBlockClientConfig().dynamicBlockVariantLocation, dynamicModel);
             }
             if (config.getBlockClientConfig().dynamicItemVariantLocation != null) {
-                event.getModels().put(config.getBlockClientConfig().dynamicItemVariantLocation, dynamicModel);
+                event.getResults().blockStateModels().put(config.getBlockClientConfig().dynamicItemVariantLocation, dynamicModel);
             }
         }
     }

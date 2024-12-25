@@ -13,7 +13,7 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.Reference;
 
 import java.util.function.Consumer;
@@ -29,7 +29,7 @@ public class MinecraftHelpersNeoForge extends MinecraftHelpersCommon implements 
 
     @Override
     public boolean isMinecraftInitialized() {
-        return CyclopsCore._instance.isLoaded();
+        return CyclopsCoreNeoForge._instance.isLoaded();
     }
 
     @Override

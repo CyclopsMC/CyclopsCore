@@ -14,7 +14,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
-import org.cyclops.cyclopscore.helper.FluidHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
 
 import java.util.List;
 import java.util.Locale;
@@ -57,7 +57,7 @@ public class DamageIndicatedItemComponent {
     public void fillDefaultCreativeTabEntries(NonNullList<ItemStack> items, Fluid fluid) {
         // Add the 'full' container.
         ItemStack itemStackFull = new ItemStack(this.item);
-        IFluidHandlerItemCapacity fluidHanderFull = FluidHelpers.getFluidHandlerItemCapacity(itemStackFull).orElse(null);
+        IFluidHandlerItemCapacity fluidHanderFull = IModHelpersNeoForge.get().getFluidHelpers().getFluidHandlerItemCapacity(itemStackFull).orElse(null);
         if (fluidHanderFull != null) {
             fluidHanderFull.fill(new FluidStack(fluid, fluidHanderFull.getCapacity()), IFluidHandler.FluidAction.EXECUTE);
         }
@@ -75,7 +75,7 @@ public class DamageIndicatedItemComponent {
      */
     public MutableComponent getInfo(ItemStack itemStack) {
         int amount = 0;
-        IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack).orElse(null);
+        IFluidHandlerItemCapacity fluidHander = IModHelpersNeoForge.get().getFluidHelpers().getFluidHandlerItemCapacity(itemStack).orElse(null);
         FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(FluidStack.EMPTY);
         if (!fluidStack.isEmpty())
             amount = fluidStack.getAmount();
@@ -120,10 +120,10 @@ public class DamageIndicatedItemComponent {
      * @return The displayed durability.
      */
     public int getDurability(ItemStack itemStack) {
-        IFluidHandlerItemCapacity fluidHander = FluidHelpers.getFluidHandlerItemCapacity(itemStack).orElse(null);
+        IFluidHandlerItemCapacity fluidHander = IModHelpersNeoForge.get().getFluidHelpers().getFluidHandlerItemCapacity(itemStack).orElse(null);
         FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(FluidStack.EMPTY);
         double capacity = fluidHander == null ? 0 : fluidHander.getCapacity();
-        double amount = FluidHelpers.getAmount(fluidStack);
+        double amount = IModHelpersNeoForge.get().getFluidHelpers().getAmount(fluidStack);
         return (int) Math.round(amount * 13 / capacity);
     }
 

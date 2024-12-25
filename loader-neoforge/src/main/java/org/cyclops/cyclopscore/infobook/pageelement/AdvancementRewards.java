@@ -5,7 +5,7 @@ import lombok.Data;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.EntityHelpers;
 import org.cyclops.cyclopscore.network.packet.AdvancementRewardsObtainPacket;
@@ -56,7 +56,7 @@ public class AdvancementRewards {
         if (!isObtained(player)) {
             // If client-side, send packet to server, otherwise, obtain the rewards server-side
             if (player.level().isClientSide()) {
-                CyclopsCore._instance.getPacketHandler().sendToServer(new AdvancementRewardsObtainPacket(id));
+                CyclopsCoreNeoForge._instance.getPacketHandler().sendToServer(new AdvancementRewardsObtainPacket(id));
             } else {
                 for (IReward reward : getRewards()) {
                     reward.obtain(player);

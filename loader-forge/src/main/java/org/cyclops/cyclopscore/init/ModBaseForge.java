@@ -44,9 +44,9 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
 
     private boolean loaded = false;
 
-    public ModBaseForge(String modId, Consumer<T> instanceSetter) {
+    public ModBaseForge(String modId, Consumer<T> instanceSetter, FMLJavaModLoadingContext context) {
         super(modId, instanceSetter);
-        this.modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        this.modEventBus = context.getModEventBus();
         this.proxy = getModHelpers().getMinecraftHelpers().isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
         this.configHandler = constructConfigHandler();
         this.packetHandler = constructPacketHandler();
@@ -109,7 +109,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
     }
 
     @Override
-    public PacketHandlerForge getPacketHandlerCommon() {
+    public PacketHandlerForge getPacketHandler() {
         return this.packetHandler;
     }
 
@@ -131,8 +131,8 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
             if (getModHelpers().getMinecraftHelpers().isClientSide()) {
                 proxy.registerRenderers();
             }
-            proxy.registerPackets(getPacketHandlerCommon());
-            getPacketHandlerCommon().init();
+            proxy.registerPackets(getPacketHandler());
+            getPacketHandler().init();
         }
     }
 

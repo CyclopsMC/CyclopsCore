@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.network.CodecField;
@@ -52,10 +52,10 @@ public class RequestPlayerAdvancementUnlockedPacket extends PacketCodec<RequestP
     public void actionServer(Level level, ServerPlayer player) {
         AdvancementHolder advancement = AdvancementHelpers.getAdvancement(Dist.DEDICATED_SERVER, ResourceLocation.parse(advancementId));
         if (advancement == null) {
-            CyclopsCore.clog(org.apache.logging.log4j.Level.ERROR, "Received an invalid advancement " + advancementId + " from " + player.getName());
+            CyclopsCoreNeoForge.clog(org.apache.logging.log4j.Level.ERROR, "Received an invalid advancement " + advancementId + " from " + player.getName());
             return;
         }
-        CyclopsCore._instance.getPacketHandler().sendToPlayer(
+        CyclopsCoreNeoForge._instance.getPacketHandler().sendToPlayer(
                 new SendPlayerAdvancementUnlockedPacket(advancementId, AdvancementHelpers
                         .hasAdvancementUnlocked(player, advancement)), player);
     }

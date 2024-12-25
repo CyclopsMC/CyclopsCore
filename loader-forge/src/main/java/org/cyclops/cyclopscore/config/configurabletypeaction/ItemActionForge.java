@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfigCommon;
@@ -17,9 +16,8 @@ public class ItemActionForge<M extends ModBaseForge> extends ItemAction<M> {
 
     static {
         if (ModHelpersForge.INSTANCE.getMinecraftHelpers().isClientSide()) {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((ModelEvent.RegisterAdditional event) -> ItemActionForge.onModelRegistryLoad(event));
+            FMLJavaModLoadingContext.get().getModEventBus().addListener((ModelEvent.RegisterModelStateDefinitions event) -> ItemActionForge.onModelRegistryLoad(event));
             FMLJavaModLoadingContext.get().getModEventBus().addListener((ModelEvent.ModifyBakingResult event) -> ItemActionForge.onModelBakeEvent(event));
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((RegisterColorHandlersEvent.Item event) -> ItemActionForge.onRegisterColorHandlers(event));
         }
     }
 
@@ -37,7 +35,7 @@ public class ItemActionForge<M extends ModBaseForge> extends ItemAction<M> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void onModelRegistryLoad(ModelEvent.RegisterAdditional event) {
+    public static void onModelRegistryLoad(ModelEvent.RegisterModelStateDefinitions event) {
         for (ItemConfigCommon<?> config : MODEL_ENTRIES) {
             config.getItemClientConfig().dynamicItemVariantLocation = config.getItemClientConfig().registerDynamicModel();
         }
@@ -48,15 +46,8 @@ public class ItemActionForge<M extends ModBaseForge> extends ItemAction<M> {
         for (ItemConfigCommon<?> config : MODEL_ENTRIES) {
             IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
             if (config.getItemClientConfig().dynamicItemVariantLocation != null) {
-                event.getModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(event));
+                event.getResults().blockStateModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(event));
             }
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void onRegisterColorHandlers(RegisterColorHandlersEvent.Item event){
-        for (ItemConfigCommon<?> itemConfig : COLOR_ENTRIES) {
-            event.register(itemConfig.getItemClientConfig().getItemColorHandler(), itemConfig.getInstance());
         }
     }
 

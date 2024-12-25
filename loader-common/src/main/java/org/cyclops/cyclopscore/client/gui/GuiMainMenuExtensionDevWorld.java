@@ -9,17 +9,13 @@ import net.minecraft.client.gui.screens.GenericMessageScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.level.DataPackConfig;
-import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.GameType;
-import net.minecraft.world.level.LevelSettings;
-import net.minecraft.world.level.WorldDataConfiguration;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.levelgen.WorldDimensions;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
@@ -80,7 +76,7 @@ public class GuiMainMenuExtensionDevWorld {
                         }
 
                         // Set rules
-                        GameRules gameRules = new GameRules();
+                        GameRules gameRules = new GameRules(FeatureFlags.DEFAULT_FLAGS);
                         gameRules.getRule(GameRules.RULE_DAYLIGHT).set(false, null);
                         gameRules.getRule(GameRules.RULE_DO_IMMEDIATE_RESPAWN).set(true, null);
                         gameRules.getRule(GameRules.RULE_DO_PATROL_SPAWNING).set(false, null);
@@ -90,8 +86,8 @@ public class GuiMainMenuExtensionDevWorld {
                                 false, Difficulty.PEACEFUL, true, gameRules, worlddataconfiguration);
 
                         // Create generator settings and world options, based on GameTestServer
-                        Function<RegistryAccess, WorldDimensions> generatorSettings = registryAccess -> registryAccess
-                                .registryOrThrow(Registries.WORLD_PRESET).getHolderOrThrow(WorldPresets.FLAT).value()
+                        Function<HolderLookup.Provider, WorldDimensions> generatorSettings = registryAccess -> registryAccess
+                                .lookupOrThrow(Registries.WORLD_PRESET).getOrThrow(WorldPresets.FLAT).value()
                                 .createWorldDimensions();
                         long seed = new Random().nextLong();
                         WorldOptions worldOptions = new WorldOptions(seed, false, false);

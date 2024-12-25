@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.client.gui.container;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -69,7 +70,7 @@ public abstract class ContainerScreenExtendedCommon<T extends ContainerExtendedC
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float f, int x, int y) {
-        guiGraphics.blit(getGuiTexture(), leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY);
+        guiGraphics.blit(RenderType::guiTextured, getGuiTexture(), leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY, 256, 256);
     }
 
     // @Override // This is an override in Forge and NeoForge, but not in Fabric

@@ -6,7 +6,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -80,15 +79,15 @@ public abstract class ItemGui extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         if (IModHelpers.get().getMinecraftHelpers().isFakePlayer(player)) {
-            return new InteractionResultHolder<>(InteractionResult.FAIL, itemStack);
+            return InteractionResult.FAIL;
         }
         if (player instanceof ServerPlayer) {
             openGuiForItemIndex(world, (ServerPlayer) player, InventoryLocationPlayer.getInstance().handToLocation(player, hand, player.getInventory().selected));
         }
-        return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStack);
+        return InteractionResult.SUCCESS;
     }
 
 }

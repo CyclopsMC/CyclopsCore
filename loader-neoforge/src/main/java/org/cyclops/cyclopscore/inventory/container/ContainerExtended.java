@@ -11,15 +11,11 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
-import net.minecraft.world.inventory.ContainerListener;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.Level;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.inventory.IValueNotifier;
 import org.cyclops.cyclopscore.inventory.container.button.IContainerButtonAction;
@@ -484,13 +480,13 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
         if (!values.containsKey(valueId) || !values.get(valueId).equals(value)) {
             try {
                 if (!player.level().isClientSide()) { // server -> client
-                    CyclopsCore._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getType(), valueId, value), (ServerPlayer) player);
+                    CyclopsCoreNeoForge._instance.getPacketHandler().sendToPlayer(new ValueNotifyPacket(getType(), valueId, value), (ServerPlayer) player);
                 } else { // client -> server
-                    CyclopsCore._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getType(), valueId, value));
+                    CyclopsCoreNeoForge._instance.getPacketHandler().sendToServer(new ValueNotifyPacket(getType(), valueId, value));
                 }
                 values.put(valueId, value);
             } catch (EncoderException e) {
-                CyclopsCore.clog(Level.WARN, e.getMessage());
+                CyclopsCoreNeoForge.clog(Level.WARN, e.getMessage());
             }
         }
     }

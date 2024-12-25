@@ -16,7 +16,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacity;
 
 import java.util.Collection;
@@ -52,7 +52,7 @@ public abstract class DamageIndicatedItemFluidContainer extends Item implements 
         this.fluid = fluid;
         init();
 
-        CyclopsCore._instance.getModEventBus().addListener(this::registerCapability);
+        CyclopsCoreNeoForge._instance.getModEventBus().addListener(this::registerCapability);
     }
 
     private void registerCapability(RegisterCapabilitiesEvent event) {

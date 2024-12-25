@@ -20,7 +20,7 @@ import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 import java.util.Collection;
 import java.util.List;
@@ -48,18 +48,18 @@ public class CapabilityConstructorRegistry {
     private Collection<Pair<Class<?>, ICapabilityConstructor<?, ?, ?, ?>>>
             capabilityConstructorsItemSuper = Sets.newHashSet();
 
-    protected final ModBase mod;
+    protected final ModBaseNeoForge mod;
     protected boolean baked = false;
     protected boolean registeredBlockEntityEventListener = false;
     protected boolean registeredBlockEventListener = false;
     protected boolean registeredEntityEventListener = false;
     protected boolean registeredItemStackEventListener = false;
 
-    public CapabilityConstructorRegistry(ModBase mod) {
+    public CapabilityConstructorRegistry(ModBaseNeoForge mod) {
         this.mod = mod;
     }
 
-    protected ModBase getMod() {
+    protected ModBaseNeoForge getMod() {
         return mod;
     }
 

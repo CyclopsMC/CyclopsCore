@@ -10,7 +10,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import org.cyclops.cyclopscore.config.extendedconfig.EffectConfigCommon;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 /**
  * A configurable potion effect.
@@ -20,11 +20,11 @@ public abstract class CyclopsEffect extends MobEffect {
 
     private final ResourceLocation resource;
 
-    protected EffectConfigCommon<ModBase<?>> eConfig = null;
+    protected EffectConfigCommon<ModBaseNeoForge<?>> eConfig = null;
 
     public CyclopsEffect(MobEffectCategory type, int liquidColor) {
         super(type, liquidColor);
-        this.resource = ResourceLocation.fromNamespaceAndPath(eConfig.getMod().getModId(), eConfig.getMod().getReferenceValue(ModBase.REFKEY_TEXTURE_PATH_GUI) + "potions.png");
+        this.resource = ResourceLocation.fromNamespaceAndPath(eConfig.getMod().getModId(), eConfig.getMod().getReferenceValue(ModBaseNeoForge.REFKEY_TEXTURE_PATH_GUI) + "potions.png");
         NeoForge.EVENT_BUS.register(this);
     }
 

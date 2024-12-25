@@ -1,9 +1,6 @@
 package org.cyclops.cyclopscore.ingredient.recipe;
 
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.IPrototypedIngredientAlternatives;
 import org.cyclops.commoncapabilities.api.capability.recipehandler.IRecipeDefinition;
@@ -11,14 +8,10 @@ import org.cyclops.commoncapabilities.api.capability.recipehandler.IRecipeHandle
 import org.cyclops.commoncapabilities.api.capability.recipehandler.RecipeDefinition;
 import org.cyclops.commoncapabilities.api.ingredient.IMixedIngredients;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
-import org.cyclops.cyclopscore.helper.CraftingHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -54,7 +47,7 @@ public abstract class RecipeHandlerRecipeType<C extends RecipeInput, R extends R
 
     @Override
     public Collection<IRecipeDefinition> getRecipes() {
-        return worldSupplier.get().getRecipeManager().getAllRecipesFor(recipeType).stream()
+        return ((RecipeManager) worldSupplier.get().recipeAccess()).recipes.byType(recipeType).stream()
                 .map(this::getRecipeDefinition)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
@@ -80,7 +73,7 @@ public abstract class RecipeHandlerRecipeType<C extends RecipeInput, R extends R
         if (container == null) {
             return null;
         }
-        RecipeHolder<R> recipeHolder = CraftingHelpers.findRecipeCached(recipeType, container, worldSupplier.get(), true).orElse(null);
+        RecipeHolder<R> recipeHolder = IModHelpers.get().getCraftingHelpers().findRecipeCached(recipeType, container, worldSupplier.get(), true).orElse(null);
         if (recipeHolder == null) {
             return null;
         }

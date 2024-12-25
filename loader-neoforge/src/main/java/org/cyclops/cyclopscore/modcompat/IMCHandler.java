@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.modcompat;
 import com.google.common.collect.Maps;
 import net.neoforged.fml.InterModComms;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 import java.util.Map;
 
@@ -13,10 +13,10 @@ import java.util.Map;
  */
 public class IMCHandler {
 
-    protected final ModBase mod;
+    protected final ModBaseNeoForge mod;
     private Map<String, IIMCAction> actions = Maps.newHashMap();
 
-    public IMCHandler(ModBase mod) {
+    public IMCHandler(ModBaseNeoForge mod) {
         this.mod = mod;
     }
 

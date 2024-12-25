@@ -72,7 +72,7 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
             if (getModHelpers().getMinecraftHelpers().isClientSide()) {
                 proxy.registerRenderers();
             }
-            proxy.registerPackets(getPacketHandlerCommon());
+            proxy.registerPackets(getPacketHandler());
         }
     }
 
@@ -100,7 +100,7 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
     }
 
     @Override
-    public PacketHandlerFabric getPacketHandlerCommon() {
+    public PacketHandlerFabric getPacketHandler() {
         return this.packetHandler;
     }
 

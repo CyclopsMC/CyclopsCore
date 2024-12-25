@@ -2,10 +2,14 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -33,7 +37,7 @@ public abstract class EntityConfigCommon<M extends IModBase, T extends Entity> e
     public EntityConfigCommon(M mod, String namedId, Function<EntityConfigCommon<M, T>, EntityType.Builder<T>> elementConstructor,
                         @Nullable BiFunction<EntityConfigCommon<M, T>, Supplier<EntityType<T>>, ItemConfigCommon<M>> spawnEggItemConstructor) {
         super(mod, namedId, elementConstructor
-                .andThen(builder -> builder.build(mod.getModId() + ":" + namedId)));
+                .andThen(builder -> builder.build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(mod.getModId(), namedId)))));
 
         // Register spawn egg if applicable
         if (spawnEggItemConstructor != null) {
@@ -52,7 +56,7 @@ public abstract class EntityConfigCommon<M extends IModBase, T extends Entity> e
                 itemProperties = itemPropertiesModifier.apply(itemProperties);
             }
             Item.Properties finalItemProperties = itemProperties;
-            ItemConfigCommon<M> itemConfig = new ItemConfigCommon<>(mod, itemName, (itemConfigSub) -> mod.getModHelpers().getRegistrationHelpers().createSpawnEgg(entityType, primaryColorIn, secondaryColorIn, finalItemProperties));
+            ItemConfigCommon<M> itemConfig = new ItemConfigCommon<>(mod, itemName, (itemConfigSub) ->new SpawnEggItem(entityType.get(), finalItemProperties));
             entityConfig.setSpawnEggItemConfig(itemConfig);
             return itemConfig;
         };

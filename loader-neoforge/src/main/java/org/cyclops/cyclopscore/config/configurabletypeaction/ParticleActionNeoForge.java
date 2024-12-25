@@ -8,12 +8,12 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import org.cyclops.cyclopscore.config.extendedconfig.ParticleConfigCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ParticleConfigComponentClient;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 /**
  * @author rubensworks
  */
-public class ParticleActionNeoForge<T extends ParticleOptions, M extends ModBase<?>> extends ParticleActionCommon<T, M> {
+public class ParticleActionNeoForge<T extends ParticleOptions, M extends ModBaseNeoForge<?>> extends ParticleActionCommon<T, M> {
 
     @Override
     public void onRegisterModInit(ParticleConfigCommon<T, M> eConfig) {
@@ -25,7 +25,7 @@ public class ParticleActionNeoForge<T extends ParticleOptions, M extends ModBase
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <T extends ParticleOptions, M extends ModBase<?>> void handleClientSideRegistration(ParticleConfigCommon<T, M> eConfig, RegisterParticleProvidersEvent event) {
+    public static <T extends ParticleOptions, M extends ModBaseNeoForge<?>> void handleClientSideRegistration(ParticleConfigCommon<T, M> eConfig, RegisterParticleProvidersEvent event) {
         ParticleConfigComponentClient<T, M> clientComponent = eConfig.getClientComponent();
         ParticleProvider<T> factory = clientComponent.getParticleFactory();
         if (factory != null) {

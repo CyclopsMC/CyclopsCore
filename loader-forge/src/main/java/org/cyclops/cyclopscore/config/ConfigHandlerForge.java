@@ -1,11 +1,7 @@
 package org.cyclops.cyclopscore.config;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -22,11 +18,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.FluidConfigForge;
 import org.cyclops.cyclopscore.init.ModBaseForge;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 /**

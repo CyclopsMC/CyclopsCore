@@ -15,7 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -50,12 +50,12 @@ public class AchievementCollectButton extends AdvancedButton {
             List<FormattedCharSequence> lines = Lists.newArrayList();
             if (advancementRewards.isObtained(Minecraft.getInstance().player)) {
                 lines.add(FormattedCharSequence.forward(
-                        L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collected"),
+                        IModHelpers.get().getL10NHelpers().localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collected"),
                         Style.EMPTY.withItalic(true)
                 ));
             } else {
                 lines.add(FormattedCharSequence.forward(
-                        L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collect"),
+                        IModHelpers.get().getL10NHelpers().localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collect"),
                         Style.EMPTY.withBold(true)
                 ));
                 boolean canObtain = true;
@@ -66,7 +66,7 @@ public class AchievementCollectButton extends AdvancedButton {
                 }
                 if (!canObtain) {
                     lines.add(FormattedCharSequence.forward(
-                            L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collectFailure"),
+                            IModHelpers.get().getL10NHelpers().localize("gui." + getInfoBook().getMod().getModId() + ".rewards.collectFailure"),
                             Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.RED))
                     ));
                 }

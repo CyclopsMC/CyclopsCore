@@ -7,7 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 /**
  * Command for checking the version.
@@ -16,9 +16,9 @@ import org.cyclops.cyclopscore.init.ModBase;
  */
 public class CommandVersion implements Command<CommandSourceStack> {
 
-    private final ModBase<?> mod;
+    private final ModBaseNeoForge<?> mod;
 
-    public CommandVersion(ModBase<?> mod) {
+    public CommandVersion(ModBaseNeoForge<?> mod) {
         this.mod = mod;
     }
 
@@ -28,7 +28,7 @@ public class CommandVersion implements Command<CommandSourceStack> {
         return 0;
     }
 
-    public static LiteralArgumentBuilder<CommandSourceStack> make(ModBase mod) {
+    public static LiteralArgumentBuilder<CommandSourceStack> make(ModBaseNeoForge mod) {
         return Commands.literal("version")
                 .executes(new CommandVersion(mod));
     }

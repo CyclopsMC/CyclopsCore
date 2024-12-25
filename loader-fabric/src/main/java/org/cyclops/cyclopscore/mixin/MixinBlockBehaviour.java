@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.mixin;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.cyclops.cyclopscore.events.IBlockExplodedEvent;
@@ -22,7 +22,7 @@ import java.util.function.BiConsumer;
 public class MixinBlockBehaviour {
 
     @Inject(method = "onExplosionHit", at = @At(value = "HEAD"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onExplosionHit(BlockState state, Level level, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer, CallbackInfo callback) {
+    private void onExplosionHit(BlockState state, ServerLevel level, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> dropConsumer, CallbackInfo callback) {
         if (!state.isAir() && explosion.getBlockInteraction() != Explosion.BlockInteraction.TRIGGER_BLOCK) {
             IBlockExplodedEvent.EVENT.invoker().onBlockExploded(state, level, pos, explosion, dropConsumer);
         }

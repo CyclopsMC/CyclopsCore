@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.infobook.condition;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 /**
  * Condition handler for checking if a fluid has been registered.
@@ -12,7 +12,7 @@ import org.cyclops.cyclopscore.init.ModBase;
 public class FluidSectionConditionHandler implements ISectionConditionHandler {
 
     @Override
-    public boolean isSatisfied(ModBase<?> mod, String param) {
+    public boolean isSatisfied(ModBaseNeoForge<?> mod, String param) {
         return BuiltInRegistries.FLUID.containsKey(ResourceLocation.parse(param));
     }
 

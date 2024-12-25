@@ -4,7 +4,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.client.key.IKeyRegistry;
-import org.cyclops.cyclopscore.network.PacketHandler;
+import org.cyclops.cyclopscore.network.IPacketHandler;
 
 /**
  * Base proxy for the client side.
@@ -24,8 +24,8 @@ public abstract class ClientProxyComponent extends ClientProxyComponentCommon im
     }
 
     @Override
-    public void registerPacketHandlers(PacketHandler packetHandler) {
-        ((CommonProxyComponent) getCommonProxyComponent()).registerPacketHandlers(packetHandler);
+    public void registerPackets(IPacketHandler packetHandler) {
+        getCommonProxyComponent().registerPackets(packetHandler);
         getMod().getLoggerHelper().log(Level.TRACE, "Registered packet handlers");
     }
 

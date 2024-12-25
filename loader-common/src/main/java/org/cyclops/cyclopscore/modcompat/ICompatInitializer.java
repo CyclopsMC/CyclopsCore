@@ -12,11 +12,6 @@ import org.cyclops.cyclopscore.init.IModBase;
 @FunctionalInterface
 public interface ICompatInitializer {
 
-    @Deprecated // TODO: rm in next major
-    public void initialize();
-
-    public default void initialize(IModBase mod) {
-        this.initialize();
-    }
+    public void initialize(IModBase mod);
 
 }

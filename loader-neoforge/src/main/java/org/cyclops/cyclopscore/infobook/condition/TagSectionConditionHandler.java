@@ -1,12 +1,9 @@
 package org.cyclops.cyclopscore.infobook.condition;
 
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import org.cyclops.cyclopscore.init.ModBase;
-
-import java.util.Optional;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 /**
  * Condition handler for checking if a tag key is present.
@@ -22,9 +19,8 @@ public class TagSectionConditionHandler<T> implements ISectionConditionHandler {
     }
 
     @Override
-    public boolean isSatisfied(ModBase<?> mod, String param) {
-        Optional<HolderSet.Named<T>> collection = this.registry.getTag(TagKey.create(this.registry.key(), ResourceLocation.parse(param)));
-        return collection.isPresent();
+    public boolean isSatisfied(ModBaseNeoForge<?> mod, String param) {
+        return this.registry.getTagOrEmpty(TagKey.create(this.registry.key(), ResourceLocation.parse(param))).iterator().hasNext();
     }
 
 }

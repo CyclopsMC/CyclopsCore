@@ -1,15 +1,13 @@
 package org.cyclops.cyclopscore.infobook;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.cyclops.cyclopscore.helper.Helpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
 /**
  * An advanced button type.
@@ -65,9 +63,7 @@ public class AdvancedButton extends Button {
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(isVisible() && isHover(mouseX, mouseY)) {
             // MCP: drawString
-            Minecraft.getInstance().font.drawInBatch(((MutableComponent) getMessage()).withStyle(ChatFormatting.UNDERLINE), getX(), getY(),
-                    Helpers.RGBToInt(100, 100, 150), false,
-                    guiGraphics.pose().last().pose(), guiGraphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
+            guiGraphics.drawString(Minecraft.getInstance().font, getMessage(), getX(), getY(), IModHelpers.get().getBaseHelpers().RGBToInt(100, 100, 150), false);
         }
     }
 

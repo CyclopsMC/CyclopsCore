@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.persist.world;
 
 import com.google.common.collect.Maps;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 import org.cyclops.cyclopscore.persist.nbt.NBTPersist;
 
 import java.util.Map;
@@ -15,7 +15,7 @@ public class GlobalCounters extends WorldStorage {
     @NBTPersist
     private Map<String, Integer> counters = Maps.newHashMap();
 
-    public GlobalCounters(ModBase mod) {
+    public GlobalCounters(ModBaseNeoForge mod) {
         super(mod);
     }
 

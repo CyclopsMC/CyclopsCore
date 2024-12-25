@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.infobook.condition;
 
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 /**
  * Handler to check a type of section condition, for when section tags are used in infobooks.
@@ -15,6 +15,6 @@ public interface ISectionConditionHandler {
      * @param param The condition parameter.
      * @return If this condition is satisfied.
      */
-    public boolean isSatisfied(ModBase<?> mod, String param);
+    public boolean isSatisfied(ModBaseNeoForge<?> mod, String param);
 
 }

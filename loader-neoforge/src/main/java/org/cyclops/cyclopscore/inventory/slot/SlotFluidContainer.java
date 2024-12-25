@@ -7,7 +7,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import org.cyclops.cyclopscore.helper.FluidHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -41,7 +41,7 @@ public class SlotFluidContainer extends Slot {
                 }
                 for (int i = 0; i < h.getTanks(); i++) {
                     if (h.isFluidValid(0, new FluidStack(fluid, 1))
-                            || h.isFluidValid(0, new FluidStack(fluid, FluidHelpers.BUCKET_VOLUME))) {
+                            || h.isFluidValid(0, new FluidStack(fluid, IModHelpersNeoForge.get().getFluidHelpers().getBucketVolume()))) {
                         return true;
                     }
                 }

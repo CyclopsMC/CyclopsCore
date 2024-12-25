@@ -49,7 +49,7 @@ public class Image implements IImage {
 
     @Override
     public void draw(GuiGraphics gui, int x, int y) {
-        gui.blit(resourceLocation, x, y, sheetX, sheetY, sheetWidth, sheetHeight);
+        gui.blit(RenderType::guiTextured, resourceLocation, x, y, sheetX, sheetY, sheetWidth, sheetHeight, 256, 256);
     }
 
     @Override

@@ -3,11 +3,11 @@ package org.cyclops.cyclopscore.client.key;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.KeyMapping;
-import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
-import org.cyclops.cyclopscore.init.ModBase;
+import net.neoforged.neoforge.client.event.InputEvent;
+import org.cyclops.cyclopscore.helper.IModHelpers;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 /**
  * Enum that contains all custom hotkeys that
@@ -28,9 +28,9 @@ public class KeyRegistry implements IKeyRegistry {
      * @param defaultKey The keycode.
      * @return A new keybinding.
      */
-    public static KeyMapping newKeyMapping(ModBase mod, String name, int defaultKey) {
-        String id = L10NHelpers.localize("key." + mod.getModId() + "." + name);
-        String category = L10NHelpers.localize("key.categories." + mod.getModId());
+    public static KeyMapping newKeyMapping(ModBaseNeoForge mod, String name, int defaultKey) {
+        String id = IModHelpers.get().getL10NHelpers().localize("key." + mod.getModId() + "." + name);
+        String category = IModHelpers.get().getL10NHelpers().localize("key.categories." + mod.getModId());
         return new KeyMapping(id, defaultKey, category);
     }
 

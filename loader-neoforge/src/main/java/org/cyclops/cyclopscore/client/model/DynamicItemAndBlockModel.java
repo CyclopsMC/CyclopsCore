@@ -1,9 +1,7 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -26,14 +24,12 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
 
     private final boolean factory;
     private final boolean item;
-    private final ItemOverrides itemOverrides;
 
     private Direction renderingSide;
 
     public DynamicItemAndBlockModel(boolean factory, boolean item) {
         this.factory = factory;
         this.item = item;
-        this.itemOverrides = new ItemOverridesInner();
     }
 
     protected boolean isItemStack() {
@@ -74,21 +70,8 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
     public abstract BakedModel handleItemState(@Nullable ItemStack stack, @Nullable Level world,
                                                 @Nullable LivingEntity entity);
 
-    @Override
-    public ItemOverrides getOverrides() {
-        return itemOverrides;
-    }
-
     public Direction getRenderingSide() {
         return renderingSide;
-    }
-
-    public class ItemOverridesInner extends ItemOverrides {
-        @Nullable
-        @Override
-        public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int entityId) {
-            return DynamicItemAndBlockModel.this.handleItemState(stack, world, entity);
-        }
     }
 
 }

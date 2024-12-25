@@ -124,12 +124,12 @@ public class FluidHelpersNeoForge implements IFluidHelpersNeoForge {
     @Override
     public void placeOrPickUpFluid(Player player, InteractionHand hand, Level world, BlockPos blockPos, Direction side) {
         ItemStack itemStack = player.getItemInHand(hand);
-        ItemStack itemStackResult = FluidHelpers.getFluidHandlerItemCapacity(itemStack).map(fluidHandler -> {
+        ItemStack itemStackResult = IModHelpersNeoForge.get().getFluidHelpers().getFluidHandlerItemCapacity(itemStack).map(fluidHandler -> {
             FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(FluidStack.EMPTY);
-            FluidStack drained = fluidHandler.drain(FluidHelpers.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
+            FluidStack drained = fluidHandler.drain(IModHelpersNeoForge.get().getFluidHelpers().getBucketVolume(), IFluidHandler.FluidAction.SIMULATE);
 
             // Try picking up a fluid if we have space in the container
-            if (fluidStack.isEmpty() || (fluidStack.getAmount() + FluidHelpers.BUCKET_VOLUME <= fluidHandler.getCapacity())) {
+            if (fluidStack.isEmpty() || (fluidStack.getAmount() + IModHelpersNeoForge.get().getFluidHelpers().getBucketVolume() <= fluidHandler.getCapacity())) {
                 FluidActionResult resultPickUp = FluidUtil.tryPickUpFluid(itemStack, player, world, blockPos, side);
                 if (resultPickUp.isSuccess()) {
                     return resultPickUp.getResult();

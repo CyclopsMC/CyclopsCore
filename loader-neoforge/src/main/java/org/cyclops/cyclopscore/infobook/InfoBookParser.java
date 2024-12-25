@@ -3,31 +3,23 @@ package org.cyclops.cyclopscore.infobook;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.util.Strings;
-import org.cyclops.cyclopscore.helper.CraftingHelpers;
-import org.cyclops.cyclopscore.helper.FluidHelpers;
-import org.cyclops.cyclopscore.infobook.condition.ConfigSectionConditionHandler;
-import org.cyclops.cyclopscore.infobook.condition.FluidSectionConditionHandler;
-import org.cyclops.cyclopscore.infobook.condition.ISectionConditionHandler;
-import org.cyclops.cyclopscore.infobook.condition.ItemSectionConditionHandler;
-import org.cyclops.cyclopscore.infobook.condition.ModSectionConditionHandler;
-import org.cyclops.cyclopscore.infobook.condition.TagSectionConditionHandler;
+import org.cyclops.cyclopscore.helper.IModHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
+import org.cyclops.cyclopscore.infobook.condition.*;
 import org.cyclops.cyclopscore.infobook.pageelement.*;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -40,12 +32,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * XML parser which will generate the infobook.
@@ -75,7 +62,7 @@ public class InfoBookParser {
             @Override
             public InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
                                       ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
-                                      ArrayList<String> tagList, ModBase<?> mod) {
+                                      ArrayList<String> tagList, ModBaseNeoForge<?> mod) {
                 return new InfoSection(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList, mod);
             }
 
@@ -106,7 +93,7 @@ public class InfoBookParser {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InfoBookParser.InvalidAppendixException {
-                if (infoBook.getMod().getReferenceValue(ModBase.REFKEY_INFOBOOK_REWARDS)) {
+                if (infoBook.getMod().getReferenceValue(ModBaseNeoForge.REFKEY_INFOBOOK_REWARDS)) {
                     List<ResourceLocation> advancements = Lists.newArrayList();
                     List<IReward> rewards = Lists.newArrayList();
                     String achievementRewardsId = node.getAttribute("id");
@@ -162,12 +149,12 @@ public class InfoBookParser {
                 List<SectionAppendix> appendixList = Lists.newArrayList();
 
                 String type = node.getAttribute("type");
-                RecipeType<?> recipeType = BuiltInRegistries.RECIPE_TYPE.get(ResourceLocation.parse(type));
+                RecipeType<?> recipeType = BuiltInRegistries.RECIPE_TYPE.getValue(ResourceLocation.parse(type));
                 if (recipeType == null) {
                     throw new InvalidAppendixException("Could not find a recipe type: " + type);
                 }
-                RecipeManager recipeManager = CraftingHelpers.getRecipeManager();
-                List<RecipeHolder> recipes = recipeManager.getAllRecipesFor((RecipeType) recipeType);
+                RecipeManager recipeManager = IModHelpers.get().getCraftingHelpers().getRecipeManager();
+                Collection<RecipeHolder> recipes = recipeManager.recipes.byType((RecipeType) recipeType);
 
                 String idRegexString = node.getTextContent().trim();
 
@@ -259,10 +246,11 @@ public class InfoBookParser {
     public static <C extends RecipeInput, R extends Recipe<C>> void registerAppendixRecipeFactories(RecipeType<R> recipeType, IAppendixItemFactory<C, R> factory) {
         String name = BuiltInRegistries.RECIPE_TYPE.getKey(recipeType).toString();
         registerAppendixFactory(name, (infoBook, node) -> {
-            ResourceLocation recipeId = getNodeResourceLocation(node);
+            // TODO: rewrite using RecipeDisplayEntry (see ClientRecipeBook)
+            ResourceKey<Recipe<?>> recipeId = ResourceKey.create(ResourceKey.createRegistryKey(BuiltInRegistries.RECIPE_TYPE.getKey(recipeType)), getNodeResourceLocation(node));
             Optional<RecipeHolder<R>> recipe = infoBook.getMod().getModHelpers().getMinecraftHelpers().isClientSide()
-                    ? CraftingHelpers.getClientRecipe(recipeType, recipeId)
-                    : CraftingHelpers.getServerRecipe(recipeType, recipeId);
+                    ? IModHelpers.get().getCraftingHelpers().getClientRecipe(recipeType, recipeId)
+                    : IModHelpers.get().getCraftingHelpers().getServerRecipe(recipeType, recipeId);
             if (!recipe.isPresent()) {
                 throw new InvalidAppendixException("Could not find " + name + " recipe for " + recipeId);
             }
@@ -323,10 +311,7 @@ public class InfoBookParser {
             throw new UnsupportedOperationException("Could not find predefined item " + node.getTextContent());
         }
         ResourceLocation itemId = getNodeResourceLocation(node);
-        Item item = BuiltInRegistries.ITEM.get(itemId);
-        if(item == null) {
-            throw new InvalidAppendixException("Invalid item " + itemId);
-        }
+        Holder<Item> item = BuiltInRegistries.ITEM.get(itemId).orElseThrow(() -> new InvalidAppendixException("Invalid item " + itemId));
         return new ItemStack(item, amount);
     }
 
@@ -395,7 +380,7 @@ public class InfoBookParser {
      * @throws InvalidAppendixException If the node was incorrectly structured.
      */
     public static Ingredient createIngredient(Element node) throws InvalidAppendixException {
-        return Ingredient.of(createStack(node));
+        return Ingredient.of(createStack(node).getItem());
     }
 
     /**
@@ -420,7 +405,7 @@ public class InfoBookParser {
      * @return The valid ingredient.
      */
     public static Ingredient createOptionalIngredientFromIngredient(Element ingredientNode) {
-        return invalidAppendixExceptionThrowableOr(() -> createIngredientFromIngredient(ingredientNode), Ingredient.EMPTY);
+        return invalidAppendixExceptionThrowableOr(() -> createIngredientFromIngredient(ingredientNode), Ingredient.of());
     }
 
     /**
@@ -465,12 +450,12 @@ public class InfoBookParser {
      * @throws InvalidAppendixException If the node was incorrectly structured.
      */
     public static FluidStack createFluidStack(Element node) throws InvalidAppendixException {
-        int amount = FluidHelpers.BUCKET_VOLUME;
+        int amount = IModHelpersNeoForge.get().getFluidHelpers().getBucketVolume();
         if(!node.getAttribute("amount").isEmpty()) {
             amount = Integer.parseInt(node.getAttribute("amount"));
         }
         ResourceLocation fluidId = getNodeResourceLocation(node);
-        Fluid fluid = BuiltInRegistries.FLUID.get(fluidId);
+        Fluid fluid = BuiltInRegistries.FLUID.getValue(fluidId);
         if(fluid == null) {
             throw new InvalidAppendixException("Invalid fluid " + fluidId);
         }
@@ -553,7 +538,7 @@ public class InfoBookParser {
      * @param parent The parent section.
      * @return The root of the infobook.
      */
-    public static InfoSection initializeInfoBook(ModBase<?> mod, IInfoBook infoBook, String path, @Nullable InfoSection parent) {
+    public static InfoSection initializeInfoBook(ModBaseNeoForge<?> mod, IInfoBook infoBook, String path, @Nullable InfoSection parent) {
         try {
             InputStream is = mod.getClass().getResourceAsStream(path);
             StreamSource stream = new StreamSource(is);
@@ -577,8 +562,8 @@ public class InfoBookParser {
         throw new InfoBookException("Info Book XML is invalid.");
     }
 
-    protected static InfoSection buildSection(IInfoBook infoBook, InfoSection parent, int childIndex, Element sectionElement, ModBase<?> modSection) {
-        ModBase modBook = infoBook.getMod();
+    protected static InfoSection buildSection(IInfoBook infoBook, InfoSection parent, int childIndex, Element sectionElement, ModBaseNeoForge<?> modSection) {
+        ModBaseNeoForge modBook = infoBook.getMod();
         NodeList sections = sectionElement.getElementsByTagName("section");
         NodeList tags = sectionElement.getElementsByTagName("tag");
         NodeList paragraphs = sectionElement.getElementsByTagName("paragraph");
@@ -613,12 +598,12 @@ public class InfoBookParser {
                     type = tag.getAttribute("type");
                 }
 
-                ModBase modRecipe = modBook;
+                ModBaseNeoForge modRecipe = modBook;
                 if (tagString.contains(":")) {
                     String[] split = tagString.split(":");
-                    modRecipe = ModBase.get(split[0]);
+                    modRecipe = ModBaseNeoForge.get(split[0]);
                     if (modRecipe == null) {
-                        throw new IllegalArgumentException("The mod " + split[0] + " could not be found as ModBase in " + ModBase.getMods().keySet());
+                        throw new IllegalArgumentException("The mod " + split[0] + " could not be found as ModBase in " + ModBaseNeoForge.getMods().keySet());
                     }
                     tagString = split[1];
                 }
@@ -672,7 +657,7 @@ public class InfoBookParser {
 
     protected static InfoSection createSection(IInfoBook infoBook, InfoSection parent, int childIndex, String type, String translationKey,
                                                ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
-                                               ArrayList<String> tagList, ModBase<?> mod) {
+                                               ArrayList<String> tagList, ModBaseNeoForge<?> mod) {
         if(type == null) type = "";
         IInfoSectionFactory factory = SECTION_FACTORIES.get(type);
         if(factory == null) {
@@ -729,7 +714,7 @@ public class InfoBookParser {
 
         public default InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
                                   ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
-                                  ArrayList<String> tagList, ModBase<?> mod) {
+                                  ArrayList<String> tagList, ModBaseNeoForge<?> mod) {
             return this.create(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList);
         }
 

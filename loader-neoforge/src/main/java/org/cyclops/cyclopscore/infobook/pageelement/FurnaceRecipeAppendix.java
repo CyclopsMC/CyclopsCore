@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
@@ -9,6 +8,7 @@ import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -61,8 +61,8 @@ public class FurnaceRecipeAppendix extends RecipeAppendix<SmeltingRecipe> {
 
         // Prepare items
         int tick = getTick(gui);
-        ItemStack input = prepareItemStacks(Lists.newArrayList(recipe.value().getIngredients().get(0).getItems()), tick);
-        ItemStack result = prepareItemStack(recipe.value().getResultItem(Minecraft.getInstance().player.level().registryAccess()), tick);
+        ItemStack input = prepareItemStacks(recipe.value().placementInfo().ingredients().get(0).getValues(), tick);
+        ItemStack result = prepareItemStack(IModHelpers.get().getMinecraftHelpers().getRecipeOutput(recipe, Minecraft.getInstance().level), tick);
 
         // Items
         renderItem(gui, guiGraphics, x + SLOT_OFFSET_X, y + SLOT_OFFSET_Y, input, mx, my, INPUT);

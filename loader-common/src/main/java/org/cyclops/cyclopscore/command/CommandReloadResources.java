@@ -18,7 +18,7 @@ public class CommandReloadResources implements Command<CommandSourceStack> {
 
     @Override
     public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        CyclopsCoreInstance.MOD.getPacketHandlerCommon().sendToPlayer(new ReloadResourcesPacket(), context.getSource().getPlayerOrException());
+        CyclopsCoreInstance.MOD.getPacketHandler().sendToPlayer(new ReloadResourcesPacket(), context.getSource().getPlayerOrException());
         return 0;
     }
 

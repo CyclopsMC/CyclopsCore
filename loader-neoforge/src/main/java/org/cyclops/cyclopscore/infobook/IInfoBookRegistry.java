@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook;
 
 import org.cyclops.cyclopscore.init.IRegistry;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 /**
  * Registry for in-game manuals.
@@ -23,7 +23,7 @@ public interface IInfoBookRegistry extends IRegistry {
      * @param parentSection The section to register this new section to.
      * @param sectionPath The path to the xml file of the section to register.
      */
-    public void registerSection(ModBase<?> mod, IInfoBook infoBook, String parentSection, String sectionPath);
+    public void registerSection(ModBaseNeoForge<?> mod, IInfoBook infoBook, String parentSection, String sectionPath);
 
     /**
      * Get the root of the given book.

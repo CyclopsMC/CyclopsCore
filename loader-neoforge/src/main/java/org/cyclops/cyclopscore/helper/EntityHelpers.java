@@ -4,12 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ExperienceOrb;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -69,11 +64,12 @@ public class EntityHelpers {
      * @param x X coordinate.
      * @param y Y coordinate.
      * @param z Z coordinate.
+     * @param spawnReason The spawn reason
      * @return the entity that was spawned.
      */
-    public static Optional<Entity> spawnEntity(Level world, @Nullable ResourceLocation entityName, double x, double y, double z) {
+    public static Optional<Entity> spawnEntity(Level world, @Nullable ResourceLocation entityName, double x, double y, double z, EntitySpawnReason spawnReason) {
         return EntityType.byString(entityName.toString()).map((type) -> {
-            Entity entity = type.create(world);
+            Entity entity = type.create(world, spawnReason);
             entity.setPos(x, y, z);
             world.addFreshEntity(entity);
             return entity;
@@ -87,7 +83,7 @@ public class EntityHelpers {
      * @param spawnReason The spawn reason.
      * @return If the entity was spawned.
      */
-    public static boolean spawnEntity(ServerLevelAccessor world, Mob entityLiving, MobSpawnType spawnReason) {
+    public static boolean spawnEntity(ServerLevelAccessor world, Mob entityLiving, EntitySpawnReason spawnReason) {
         SpawnGroupData spawnData = EventHooks.finalizeMobSpawn(entityLiving, world, world.getCurrentDifficultyAt(entityLiving.blockPosition()), spawnReason, new SpawnGroupData() {});
         if (spawnData != null) {
             world.addFreshEntity(entityLiving);

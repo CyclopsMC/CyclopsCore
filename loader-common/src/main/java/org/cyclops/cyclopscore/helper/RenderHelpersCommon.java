@@ -2,11 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import com.google.common.base.Function;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,9 +11,10 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.TerrainParticle;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
@@ -25,7 +22,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
@@ -58,7 +54,7 @@ public class RenderHelpersCommon implements IRenderHelpers {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(x, y, 0);
         guiGraphics.pose().scale(scale, scale, 1.0f);
-        fontRenderer.drawInBatch(string, 0, 0, color, shadow, guiGraphics.pose().last().pose(), guiGraphics.bufferSource(), displayMode, 0, 15728880);
+        guiGraphics.drawString(fontRenderer, string, x, y, color, shadow);
         guiGraphics.pose().popPose();
     }
 
@@ -80,7 +76,7 @@ public class RenderHelpersCommon implements IRenderHelpers {
         guiGraphics.pose().scale(scale, scale, 1.0f);
         int titleLength = fontRenderer.width(string);
         int titleHeight = fontRenderer.lineHeight;
-        fontRenderer.drawInBatch(string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color, false, guiGraphics.pose().last().pose(), guiGraphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
+        guiGraphics.drawString(fontRenderer, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color, false);
         guiGraphics.pose().popPose();
     }
 
@@ -122,7 +118,7 @@ public class RenderHelpersCommon implements IRenderHelpers {
     }
 
     private static final Function<ResourceLocation, TextureAtlasSprite> TEXTURE_GETTER =
-            location -> Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(location);
+            location -> Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(location);
     @Override
     public Function<ResourceLocation, TextureAtlasSprite> getBlockTextureGetter() {
         return TEXTURE_GETTER;
@@ -170,7 +166,7 @@ public class RenderHelpersCommon implements IRenderHelpers {
         RenderSystem.setShaderColor(r, g, b, a);
 
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX);
         BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         bufferbuilder.addVertex(matrix4f, (float)x, (float)y + height, (float)z).setUv(u0, v1);
         bufferbuilder.addVertex(matrix4f, (float)x + width, (float)y + height, (float)z).setUv(u1, v1);

@@ -6,9 +6,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.cyclops.cyclopscore.helper.LocationHelpers;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 import org.cyclops.cyclopscore.network.CodecField;
+import org.cyclops.cyclopscore.network.IPacketHandler;
 import org.cyclops.cyclopscore.network.PacketCodec;
 
 import java.util.UUID;
@@ -81,13 +81,13 @@ public abstract class PlayerPositionPacket<T extends PlayerPositionPacket<T>> ex
 
     @Override
     public void actionServer(Level level, ServerPlayer player) {
-        getModInstance().getPacketHandler().sendToAllAround(create(player, range),
-                LocationHelpers.createTargetPointFromEntity(player, range));
+        getModInstance().getPacketHandler().sendToAllAroundPoint(create(player, range),
+                IPacketHandler.createTargetPointFromEntity(player, range));
     }
 
     protected abstract PlayerPositionPacket create(Player player, int range);
 
-    protected abstract ModBase getModInstance();
+    protected abstract ModBaseNeoForge getModInstance();
 
     protected abstract void performClientAction(Level level, Player player);
 }

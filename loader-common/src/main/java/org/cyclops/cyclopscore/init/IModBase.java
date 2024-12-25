@@ -24,8 +24,7 @@ public interface IModBase {
 
     public IModHelpers getModHelpers();
 
-    // TODO: rename to getPacketHandler in next major
-    public IPacketHandler getPacketHandlerCommon();
+    public IPacketHandler getPacketHandler();
 
     public ConfigHandlerCommon getConfigHandler();
 

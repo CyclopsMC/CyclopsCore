@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.client.gui.component.input;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 
@@ -37,10 +38,10 @@ public class WidgetTextFieldExtended extends EditBox {
     protected void drawBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         setX(getX() - 1);
         setY(getY() - 1);
-        guiGraphics.blit(Images.WIDGETS, getX(), getY(), 0, 0, width / 2, height / 2);//top left
-        guiGraphics.blit(Images.WIDGETS, getX() + width / 2, getY(), 200 - width / 2, 0, width / 2, height / 2);//top right
-        guiGraphics.blit(Images.WIDGETS, getX(), getY() + height / 2, 0, 20 - height / 2, width / 2, height / 2);//bottom left
-        guiGraphics.blit(Images.WIDGETS, getX() + width / 2, getY() + height / 2, 200 - width / 2, 20 - height / 2, width / 2, height / 2);//bottom right
+        guiGraphics.blit(RenderType::guiTextured, Images.WIDGETS, getX(), getY(), 0, 0, width / 2, height / 2, 256, 256);//top left
+        guiGraphics.blit(RenderType::guiTextured, Images.WIDGETS, getX() + width / 2, getY(), 200 - width / 2, 0, width / 2, height / 2, 256, 256);//top right
+        guiGraphics.blit(RenderType::guiTextured, Images.WIDGETS, getX(), getY() + height / 2, 0, 20 - height / 2, width / 2, height / 2, 256, 256);//bottom left
+        guiGraphics.blit(RenderType::guiTextured, Images.WIDGETS, getX() + width / 2, getY() + height / 2, 200 - width / 2, 20 - height / 2, width / 2, height / 2, 256, 256);//bottom right
         setX(getX() + 1);
         setY(getY() + 1);
     }

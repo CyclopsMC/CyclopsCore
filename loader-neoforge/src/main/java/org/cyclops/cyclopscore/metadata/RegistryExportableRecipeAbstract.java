@@ -7,7 +7,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
-import org.cyclops.cyclopscore.helper.CraftingHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
 import java.util.function.Supplier;
 
@@ -32,7 +32,7 @@ public abstract class RegistryExportableRecipeAbstract<T extends RecipeType<? ex
         JsonArray elements = new JsonArray();
         element.add("recipes", elements);
 
-        for (RecipeHolder<R> recipeHolder : CraftingHelpers.findServerRecipes(getRecipeType())) {
+        for (RecipeHolder<R> recipeHolder : IModHelpers.get().getCraftingHelpers().findServerRecipes(getRecipeType())) {
             JsonObject serializedRecipe = serializeRecipe(recipeHolder);
 
             serializedRecipe.addProperty("id", recipeHolder.toString());

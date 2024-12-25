@@ -10,14 +10,9 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
-import org.cyclops.cyclopscore.helper.Helpers;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
-import org.cyclops.cyclopscore.infobook.AdvancedButton;
-import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
-import org.cyclops.cyclopscore.infobook.IInfoBook;
-import org.cyclops.cyclopscore.infobook.InfoSection;
-import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.helper.IModHelpers;
+import org.cyclops.cyclopscore.infobook.*;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 import java.awt.*;
 import java.util.Map;
@@ -84,7 +79,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
 
         height = y + Math.max(row_max_y, max_height);
 
-        this.enableRewards = infoBook.getMod().getReferenceValue(ModBase.REFKEY_INFOBOOK_REWARDS);
+        this.enableRewards = infoBook.getMod().getReferenceValue(ModBaseNeoForge.REFKEY_INFOBOOK_REWARDS);
     }
 
     @Override
@@ -118,7 +113,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         int offsetY = 0;
         gui.drawOuterBorder(guiGraphics, x - 1, y - 1, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
         gui.drawTextBanner(guiGraphics, x + width / 2, y - 2);
-        gui.drawScaledCenteredString(guiGraphics, L10NHelpers.localize("gui.advancements"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
+        gui.drawScaledCenteredString(guiGraphics, IModHelpers.get().getL10NHelpers().localize("gui.advancements"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, IModHelpers.get().getBaseHelpers().RGBToInt(30, 20, 120));
 
         // Draw advancements
         offsetY += 10;
@@ -154,7 +149,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         offsetY += SLOT_SIZE + SLOT_PADDING * 2 + 6;
         gui.drawTextBanner(guiGraphics, x + width / 2, y - 2 + offsetY);
         boolean hovering = mx > x && mx < x + getWidth() && my > y + offsetY - 10 && my < y + offsetY + 5;
-        gui.drawScaledCenteredString(guiGraphics, L10NHelpers.localize("gui." + getInfoBook().getMod().getModId() + ".rewards"), x, y - 2 + offsetY, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
+        gui.drawScaledCenteredString(guiGraphics, IModHelpers.get().getL10NHelpers().localize("gui." + getInfoBook().getMod().getModId() + ".rewards"), x, y - 2 + offsetY, width, 0.9f, gui.getBannerWidth() - 6, IModHelpers.get().getBaseHelpers().RGBToInt(30, 20, 120));
         renderButtonHolders.get(COLLECT).update(x, y - 8 + offsetY, Component.literal(""), null, gui);
         if (allAchievementsValid && !taken) {
             float g = hovering ? 1.0F : (((float) (gui.getTick() % 20)) / 20) * 0.4F + 0.6F;

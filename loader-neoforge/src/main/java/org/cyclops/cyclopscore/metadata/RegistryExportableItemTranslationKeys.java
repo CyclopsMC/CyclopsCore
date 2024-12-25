@@ -19,9 +19,9 @@ public class RegistryExportableItemTranslationKeys implements IRegistryExportabl
         JsonArray elements = new JsonArray();
         element.add("items", elements);
         for (ResourceLocation key : BuiltInRegistries.ITEM.keySet()) {
-            Item value = BuiltInRegistries.ITEM.get(key);
+            Item value = BuiltInRegistries.ITEM.getValue(key);
             ItemStack itemStack = new ItemStack(value);
-            String translationKey = itemStack.getDescriptionId();
+            String translationKey = itemStack.getItem().getDescriptionId();
 
             JsonObject object = new JsonObject();
             object.addProperty("translationKey", translationKey);

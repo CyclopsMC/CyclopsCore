@@ -5,11 +5,12 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
@@ -60,7 +61,7 @@ public class GuiHelpersForge extends GuiHelpersCommon implements IGuiHelpersForg
 
                 Lighting.setupForFlatItems();
                 RenderSystem.setShaderColor(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight(), 1);
-                gui.blit(x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
+                gui.blitSprite(RenderType::guiTextured, icon, x, y - textureHeight - verticalOffset + height, 0, width, textureHeight);
                 Lighting.setupFor3DItems();
                 RenderSystem.setShaderColor(1, 1, 1, 1);
 
@@ -68,8 +69,7 @@ public class GuiHelpersForge extends GuiHelpersCommon implements IGuiHelpersForg
             }
 
             TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-            textureManager.bindForSetup(InventoryMenu.BLOCK_ATLAS);
-            textureManager.getTexture(InventoryMenu.BLOCK_ATLAS).restoreLastBlurMipmap();
+            textureManager.getTexture(TextureAtlas.LOCATION_BLOCKS).restoreLastBlurMipmap();
 
             Lighting.setupForFlatItems();
             gui.pose().popPose();
@@ -91,7 +91,7 @@ public class GuiHelpersForge extends GuiHelpersCommon implements IGuiHelpersForg
         renderFluidTank(gui, fluidStack, capacity, x, y, width, height);
         if (fluidStack != null && capacity > 0) {
             GlStateManager._enableBlend();
-            gui.blit(textureOverlay, x, y, overlayTextureX, overlayTextureY, width, height);
+            gui.blit(RenderType::guiTextured, textureOverlay, x, y, overlayTextureX, overlayTextureY, width, height, 256, 256);
         }
     }
 

@@ -9,7 +9,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
 import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
 
@@ -19,11 +19,11 @@ import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
  */
 public abstract class WorldStorage implements INBTProvider {
 
-    protected final ModBase mod;
+    protected final ModBaseNeoForge mod;
     @Delegate
     private INBTProvider nbtProviderComponent = new NBTProviderComponent(this);
 
-    public WorldStorage(ModBase mod) {
+    public WorldStorage(ModBaseNeoForge mod) {
         this.mod = mod;
     }
 

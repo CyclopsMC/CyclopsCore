@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.mixin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import org.cyclops.cyclopscore.events.ILivingEntityRendererEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,9 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class MixinLivingEntityRenderer {
 
     @Inject(method = "render", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void openMenu(LivingEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight, CallbackInfo callback) {
+    private void openMenu(LivingEntityRenderState livingEntityRenderState, PoseStack poseStack, MultiBufferSource buffer, int packedLight, CallbackInfo callback) {
         LivingEntityRenderer renderer = (LivingEntityRenderer) (Object) this;
-        ILivingEntityRendererEvent.EVENT.invoker().onRender(entity, renderer, partialTicks, poseStack, buffer, packedLight);
+        ILivingEntityRendererEvent.EVENT.invoker().onRender(renderer, livingEntityRenderState, poseStack, buffer, packedLight);
     }
 
 }

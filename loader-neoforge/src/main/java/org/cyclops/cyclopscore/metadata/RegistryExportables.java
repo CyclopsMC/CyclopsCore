@@ -1,11 +1,11 @@
 package org.cyclops.cyclopscore.metadata;
 
 import net.minecraft.world.item.crafting.RecipeType;
-import org.cyclops.cyclopscore.CyclopsCore;
+import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 
 public class RegistryExportables {
 
-    public static IRegistryExportableRegistry REGISTRY = CyclopsCore._instance.getRegistryManager()
+    public static IRegistryExportableRegistry REGISTRY = CyclopsCoreNeoForge._instance.getRegistryManager()
             .getRegistry(IRegistryExportableRegistry.class);
 
     public static void load() {

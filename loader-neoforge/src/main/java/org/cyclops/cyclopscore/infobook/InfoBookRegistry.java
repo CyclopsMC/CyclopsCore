@@ -2,13 +2,13 @@ package org.cyclops.cyclopscore.infobook;
 
 import com.google.common.collect.Maps;
 import net.neoforged.bus.api.EventPriority;
-import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 import java.util.Map;
 import java.util.Objects;
@@ -23,7 +23,7 @@ public class InfoBookRegistry implements IInfoBookRegistry {
 
     static {
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onClientTagsLoadedStatic);
-        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onClientRecipesLoadedStatic);
+//        NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onClientRecipesLoadedStatic); // TODO: somehow get recipes client-side
         NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, InfoBookRegistry::onServerStartedStatic);
     }
 
@@ -32,8 +32,9 @@ public class InfoBookRegistry implements IInfoBookRegistry {
     private final Queue<SectionInjection> sectionInjections = new LinkedBlockingQueue<>(); // Thread-safe queue
 
     public InfoBookRegistry() {
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientTagsLoaded);
-        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientRecipesLoaded);
+        NeoForge.EVENT_BUS.addListener(this::onPlayerLoggedIn);
+//        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientTagsLoaded);
+//        NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::onClientRecipesLoaded); // TODO: somehow get recipes client-side
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
     }
 
@@ -43,7 +44,7 @@ public class InfoBookRegistry implements IInfoBookRegistry {
     }
 
     @Override
-    public void registerSection(ModBase<?> mod, IInfoBook infoBook, String parentSection, String sectionPath) {
+    public void registerSection(ModBaseNeoForge<?> mod, IInfoBook infoBook, String parentSection, String sectionPath) {
         synchronized (sectionInjections) {
             sectionInjections.add(new SectionInjection(Objects.requireNonNull(mod), infoBook, parentSection, sectionPath));
         }
@@ -67,14 +68,14 @@ public class InfoBookRegistry implements IInfoBookRegistry {
             AdvancementRewards.reset();
         }
     }
-    public static void onClientRecipesLoadedStatic(RecipesUpdatedEvent event) {
-        infobookStageRecipesStatic = true;
-        if (infobookStageTagsStatic && infobookStageRecipesStatic) {
-            infobookStageTagsStatic = false;
-            infobookStageRecipesStatic = false;
-            AdvancementRewards.reset();
-        }
-    }
+//    public static void onClientRecipesLoadedStatic(RecipesUpdatedEvent event) { // TODO: somehow get recipes client-side
+//        infobookStageRecipesStatic = true;
+//        if (infobookStageTagsStatic && infobookStageRecipesStatic) {
+//            infobookStageTagsStatic = false;
+//            infobookStageRecipesStatic = false;
+//            AdvancementRewards.reset();
+//        }
+//    }
     public static void onServerStartedStatic(ServerStartedEvent event) {
         if (event.getServer().isDedicatedServer()) {
             infobookStageTagsStatic = false;
@@ -87,26 +88,29 @@ public class InfoBookRegistry implements IInfoBookRegistry {
     // Reload infobooks if BOTH tags and recipes are initialized (can occur out-of-order in SMP)
     private volatile boolean infobookStageTags = false;
     private volatile boolean infobookStageRecipes = false;
-    public void onClientTagsLoaded(TagsUpdatedEvent event) {
-        infobookStageTags = true;
-        if (infobookStageTags && infobookStageRecipes) {
-            afterRecipesAndTagsLoaded();
-        }
+    public void onPlayerLoggedIn(ClientPlayerNetworkEvent.LoggingIn event) {
+        initialize();
     }
-    public void onClientRecipesLoaded(RecipesUpdatedEvent event) {
-        infobookStageRecipes = true;
-        if (infobookStageTags && infobookStageRecipes) {
-            afterRecipesAndTagsLoaded();
-        }
-    }
+//    public void onClientTagsLoaded(TagsUpdatedEvent event) {
+//        infobookStageTags = true;
+//        if (infobookStageTags /*&& infobookStageRecipes*/) { // TODO: somehow get recipes client-side
+//            initialize();
+//        }
+//    }
+//    public void onClientRecipesLoaded(RecipesUpdatedEvent event) { // TODO: somehow get recipes client-side
+//        infobookStageRecipes = true;
+//        if (infobookStageTags && infobookStageRecipes) {
+//            initialize();
+//        }
+//    }
     public void onServerStarted(ServerStartedEvent event) {
         if (event.getServer().isDedicatedServer()) {
             // Only call this on dedicated servers, as the RecipesUpdatedEvent won't be emitted there
-            afterRecipesAndTagsLoaded();
+            initialize();
         }
     }
 
-    public void afterRecipesAndTagsLoaded() {
+    public void initialize() {
         this.infobookStageTags = false;
         this.infobookStageRecipes = false;
 
@@ -129,19 +133,19 @@ public class InfoBookRegistry implements IInfoBookRegistry {
     }
 
     private static final class SectionInjection {
-        private final ModBase<?> mod;
+        private final ModBaseNeoForge<?> mod;
         private final IInfoBook infoBook;
         private final String parentSection;
         private final String sectionPath;
 
-        private SectionInjection(ModBase<?> mod, IInfoBook infoBook, String parentSection, String sectionPath) {
+        private SectionInjection(ModBaseNeoForge<?> mod, IInfoBook infoBook, String parentSection, String sectionPath) {
             this.mod = mod;
             this.infoBook = Objects.requireNonNull(infoBook);
             this.parentSection = parentSection;
             this.sectionPath = sectionPath;
         }
 
-        public ModBase<?> getMod() {
+        public ModBaseNeoForge<?> getMod() {
             return mod;
         }
 

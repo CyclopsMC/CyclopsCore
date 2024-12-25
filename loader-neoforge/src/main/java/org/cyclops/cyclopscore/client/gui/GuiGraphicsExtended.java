@@ -9,7 +9,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.cyclops.cyclopscore.helper.GuiHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -43,7 +43,7 @@ public class GuiGraphicsExtended {
         if (!stack.isEmpty()) {
             guiGraphics.pose().pushPose();
             if (stack.getCount() != 1 || text != null) {
-                String s = text == null ? GuiHelpers.quantityToScaledString(stack.getCount()) : text; // This part was changed
+                String s = text == null ? IModHelpers.get().getGuiHelpers().quantityToScaledString(stack.getCount()) : text; // This part was changed
                 drawSlotText(font, s, x, y); // New function
             }
 
@@ -58,7 +58,7 @@ public class GuiGraphicsExtended {
 
             Minecraft minecraft = Minecraft.getInstance();
             LocalPlayer localplayer = minecraft.player;
-            float f = localplayer == null ? 0.0F : localplayer.getCooldowns().getCooldownPercent(stack.getItem(), minecraft.getTimer().getGameTimeDeltaPartialTick(true));
+            float f = localplayer == null ? 0.0F : localplayer.getCooldowns().getCooldownPercent(stack, minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(true));
             if (f > 0.0F) {
                 int i1 = y + Mth.floor(16.0F * (1.0F - f));
                 int j1 = i1 + Mth.ceil(16.0F * f);

@@ -33,7 +33,7 @@ public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends ShapedRecipe> getSerializer() {
         return this.serializer;
     }
 
@@ -44,11 +44,6 @@ public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
             return outputTransformer.transform(inv, this.getResultItem());
         }
         return this.getResultItem().copy();
-    }
-
-    @Override
-    public ItemStack getResultItem(HolderLookup.Provider registryAccess) {
-        return getResultItem();
     }
 
     public ItemStack getResultItem() {
@@ -68,7 +63,7 @@ public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
             this.outputTransformer = outputTransformer;
             this.codec = RecordCodecBuilder.mapCodec(
                     p_311728_ -> p_311728_.group(
-                                    Codec.STRING.optionalFieldOf("group", "").forGetter(p_311729_ -> p_311729_.getGroup()),
+                                    Codec.STRING.optionalFieldOf("group", "").forGetter(p_311729_ -> p_311729_.group()),
                                     CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(p_311732_ -> p_311732_.category()),
                                     ShapedRecipePattern.MAP_CODEC.forGetter(p_311733_ -> p_311733_.shapedRecipePattern),
                                     // ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(p_311730_ -> p_311730_.result), // This is removed
@@ -108,7 +103,7 @@ public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
         }
 
         private void toNetwork(RegistryFriendlyByteBuf p_320738_, RecipeCraftingShapedCustomOutput p_320586_) {
-            p_320738_.writeUtf(p_320586_.getGroup());
+            p_320738_.writeUtf(p_320586_.group());
             p_320738_.writeEnum(p_320586_.category());
             ShapedRecipePattern.STREAM_CODEC.encode(p_320738_, p_320586_.shapedRecipePattern);
             ItemStack.STREAM_CODEC.encode(p_320738_, p_320586_.getResultItem());

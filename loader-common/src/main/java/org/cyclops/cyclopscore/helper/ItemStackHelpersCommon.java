@@ -76,7 +76,7 @@ public abstract class ItemStackHelpersCommon implements IItemStackHelpers {
     public ItemStack parseItemStack(String itemStackString) {
         String[] split = itemStackString.split(":");
         String itemName = split[0] + ":" + split[1];
-        Item item =  BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemName));
+        Item item =  BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(itemName));
         if(item == null) {
             throw new IllegalArgumentException("Invalid ItemStack item: " + itemName);
         }

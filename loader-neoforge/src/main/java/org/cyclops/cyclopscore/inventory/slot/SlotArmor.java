@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.inventory.slot;
 
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.Container;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ArmorItem;
@@ -32,7 +32,7 @@ public class SlotArmor extends Slot {
         super(inventory, index, x, y);
         this.armorType = armorType;
         this.player = player;
-        setBackground(InventoryMenu.BLOCK_ATLAS, InventoryMenu.TEXTURE_EMPTY_SLOTS.get(armorType));
+        setBackground(InventoryMenu.TEXTURE_EMPTY_SLOTS.get(armorType));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class SlotArmor extends Slot {
     @Override
     public boolean mayPlace(ItemStack itemStack) {
         return itemStack.getEquipmentSlot() == armorType
-                || (itemStack.getItem() instanceof ArmorItem && ((ArmorItem) itemStack.getItem()).getEquipmentSlot() == armorType);
+                || (itemStack.getItem() instanceof ArmorItem && ((ArmorItem) itemStack.getItem()).getEquipmentSlot(itemStack) == armorType);
     }
 
 }

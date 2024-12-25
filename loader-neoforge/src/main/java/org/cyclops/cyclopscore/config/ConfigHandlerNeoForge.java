@@ -1,11 +1,7 @@
 package org.cyclops.cyclopscore.config;
 
 import com.google.common.base.Supplier;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.Sets;
+import com.google.common.collect.*;
 import net.minecraft.core.Registry;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
@@ -15,28 +11,19 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.config.extendedconfig.BlockConfig;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfig;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
-import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigForge;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigRegistry;
-import org.cyclops.cyclopscore.config.extendedconfig.FluidConfig;
-import org.cyclops.cyclopscore.config.extendedconfig.ItemConfig;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.config.extendedconfig.FluidConfigNeoForge;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 /**
  * @author rubensworks
  */
-public class ConfigHandlerNeoForge extends ConfigHandler {
+public class ConfigHandlerNeoForge extends ConfigHandlerCommon {
 
     private final Multimap<String, Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<String, Collection<Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>>>newHashMap(), new Supplier<List<Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>>>() {
         // Compiler complains when this is replaced with a lambda :-(
@@ -45,17 +32,9 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
             return Lists.newArrayList();
         }
     });
-    // TODO: rm in next major
-    private final Multimap<String, Pair<ExtendedConfigForge<?, ?>, Callable<?>>> registryEntriesHolderOld = Multimaps.newListMultimap(Maps.<String, Collection<Pair<ExtendedConfigForge<?, ?>, Callable<?>>>>newHashMap(), new Supplier<List<Pair<ExtendedConfigForge<?, ?>, Callable<?>>>>() {
-        // Compiler complains when this is replaced with a lambda :-(
-        @Override
-        public List<Pair<ExtendedConfigForge<?, ?>, Callable<?>>> get() {
-            return Lists.newArrayList();
-        }
-    });
     private Set<String> registryEventPassed = Sets.newHashSet();
 
-    public ConfigHandlerNeoForge(ModBase<?> mod) {
+    public ConfigHandlerNeoForge(ModBaseNeoForge<?> mod) {
         super(mod);
         mod.getModEventBus().register(this);
     }
@@ -79,17 +58,6 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
         registryEntriesHolder.put(registry.key().toString(), Pair.of(config, callback));
     }
 
-    @Deprecated // TODO: rm in next major
-    public <V> void registerToRegistry(Registry<? super V> registry,
-                                       ExtendedConfigForge<?, V> config,
-                                       @Nullable Callable<?> callback) {
-        if (this.registryEventPassed.contains(registry.key().toString())) {
-            throw new IllegalStateException(String.format("Tried registering %s after its registration event.",
-                    config.getNamedId()));
-        }
-        registryEntriesHolderOld.put(registry.key().toString(), Pair.of(config, callback));
-    }
-
     @SubscribeEvent
     public void onLoad(ModConfigEvent.Loading configEvent) {
         this.getMod().log(Level.TRACE, "Load config");
@@ -109,18 +77,6 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
 
         registryEntriesHolder.get(registry.key().toString()).forEach((pair) -> {
             ExtendedConfigRegistry<?, ?, ?> config = pair.getLeft();
-            event.register(registry.key(), getConfigId(config), (Supplier) config::getInstance);
-            try {
-                if (pair.getRight() != null) {
-                    pair.getRight().call();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-        registryEntriesHolderOld.get(registry.key().toString()).forEach((pair) -> {
-            ExtendedConfigForge<?, ?> config = pair.getLeft();
             event.register(registry.key(), getConfigId(config), (Supplier) config::getInstance);
             try {
                 if (pair.getRight() != null) {
@@ -210,24 +166,6 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
         }
     }
 
-    public static ModConfigLocation modConfigTypeToLocation(ModConfig.Type modConfigType) { // TODO: rm in next major version
-        switch (modConfigType) {
-            case COMMON -> {
-                return ModConfigLocation.COMMON;
-            }
-            case CLIENT -> {
-                return ModConfigLocation.CLIENT;
-            }
-            case SERVER -> {
-                return ModConfigLocation.SERVER;
-            }
-            case STARTUP -> {
-                return ModConfigLocation.STARTUP;
-            }
-        }
-        return null;
-    }
-
     public static ModConfig.Type modConfigLocationToType(ModConfigLocation modConfigLocation) {
         switch (modConfigLocation) {
             case COMMON -> {
@@ -247,43 +185,9 @@ public class ConfigHandlerNeoForge extends ConfigHandler {
     }
 
     @Override
-    public void generateConfigProperties(ExtendedConfigCommon<?, ?, ?> config) throws IllegalArgumentException, IllegalAccessException {
-        super.generateConfigProperties(config);
-
-        // TODO: rm in next major version
-        for(Field field : getAllFields(config.getClass())) {
-            if(field.isAnnotationPresent(ConfigurableProperty.class)) {
-                ConfigurableProperty annotation = field.getAnnotation(ConfigurableProperty.class);
-                ConfigurablePropertyData<?> configProperty = new ConfigurablePropertyData<>(
-                        getMod(),
-                        annotation.category(),
-                        (config instanceof ExtendedConfig configLegacy ? configLegacy.getConfigPropertyPrefixPublic(annotation) :
-                                config instanceof BlockConfig blockConfig ? blockConfig.getConfigPropertyPrefixPublic(annotation) :
-                                        config instanceof ItemConfig itemConfig ? itemConfig.getConfigPropertyPrefixPublic(annotation) :
-                                            getConfigPropertyLegacyPrefix(config, annotation)) + "." + field.getName(),
-                        field.get(null),
-                        annotation.comment(),
-                        annotation.isCommandable(),
-                        modConfigTypeToLocation(annotation.configLocation()),
-                        field,
-                        annotation.requiresWorldRestart(),
-                        annotation.requiresMcRestart(),
-                        annotation.showInGui(),
-                        annotation.minimalValue(),
-                        annotation.maximalValue());
-                config.configProperties.put(configProperty.getName(), configProperty);
-            }
-        }
-    }
-
-    protected String getConfigPropertyLegacyPrefix(ExtendedConfigCommon<?, ?, ?> config, ConfigurableProperty annotation) { // TODO: rm in next major version
-        return annotation.namedId().isEmpty() ? config.getNamedId() : annotation.namedId();
-    }
-
-    @Override
     public void addToConfigDictionary(ExtendedConfigCommon<?, ?, ?> e) {
         super.addToConfigDictionary(e);
-        if (e instanceof FluidConfig) {
+        if (e instanceof FluidConfigNeoForge) {
             getConfigDictionary().put(e.getNamedId(), e);
         }
     }

@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.cyclops.cyclopscore.RegistryEntries;
-import org.cyclops.cyclopscore.helper.InventoryHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
 /**
  * A simple inventory for a currently held item by a player that can be stored in NBT.
@@ -50,12 +50,12 @@ public class NBTSimpleInventoryItemHeld extends SimpleInventory {
 
     @Override
     public void readFromNBT(HolderLookup.Provider provider, CompoundTag data, String tagName) {
-        InventoryHelpers.readFromNBT(provider, this, data, tagName);
+        IModHelpers.get().getInventoryHelpers().readFromNBT(provider, this, data, tagName);
     }
 
     @Override
     public void writeToNBT(HolderLookup.Provider provider, CompoundTag data, String tagName) {
-        InventoryHelpers.writeToNBT(provider, this, data, tagName);
+        IModHelpers.get().getInventoryHelpers().writeToNBT(provider, this, data, tagName);
     }
 
 }

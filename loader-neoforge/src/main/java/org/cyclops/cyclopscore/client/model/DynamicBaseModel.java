@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.client.model;
 
 import com.google.common.primitives.Ints;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
@@ -10,7 +9,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.ClientHooks;
-import org.cyclops.cyclopscore.helper.Helpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -139,7 +138,7 @@ public abstract class DynamicBaseModel implements BakedModel {
      */
     protected static void addColoredBakedQuad(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
                                               TextureAtlasSprite texture, Color shadeColor, Direction side) {
-        int color = Helpers.RGBAToInt(shadeColor.getBlue(), shadeColor.getGreen(), shadeColor.getRed(), shadeColor.getAlpha());
+        int color = IModHelpers.get().getBaseHelpers().RGBAToInt(shadeColor.getBlue(), shadeColor.getGreen(), shadeColor.getRed(), shadeColor.getAlpha());
         addColoredBakedQuad(quads, x1, x2, z1, z2, y, texture, color, side);
     }
 
@@ -225,7 +224,7 @@ public abstract class DynamicBaseModel implements BakedModel {
                 vertexToInts((float) v4.x, (float) v4.y, (float) v4.z, shadeColor, texture, uvs[(3 + rotation) % 4][0] * 16, uvs[(3 + rotation) % 4][1] * 16)
         );
         ClientHooks.fillNormal(data, side); // This fixes lighting issues when item is rendered in hand/inventory
-        quads.add(new BakedQuad(data, -1, side, texture, false));
+        quads.add(new BakedQuad(data, -1, side, texture, false, shadeColor));
     }
 
     @Override
@@ -241,15 +240,5 @@ public abstract class DynamicBaseModel implements BakedModel {
     @Override
     public boolean useAmbientOcclusion() {
         return true;
-    }
-
-    @Override
-    public boolean isCustomRenderer() {
-        return false;
-    }
-
-    @Override
-    public ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
     }
 }

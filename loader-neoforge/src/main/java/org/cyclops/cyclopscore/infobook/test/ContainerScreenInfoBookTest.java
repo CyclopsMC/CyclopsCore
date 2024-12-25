@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.infobook.test;
 
 import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import org.cyclops.cyclopscore.helper.Helpers;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
 /**
@@ -64,7 +64,7 @@ public class ContainerScreenInfoBookTest extends ScreenInfoBook<ContainerInfoBoo
 
     @Override
     public int getTitleColor() {
-        return Helpers.RGBToInt(70, 70, 150);
+        return IModHelpers.get().getBaseHelpers().RGBToInt(70, 70, 150);
     }
 
     @Override

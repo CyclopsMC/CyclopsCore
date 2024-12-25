@@ -14,19 +14,12 @@ import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
-import org.cyclops.cyclopscore.helper.Helpers;
-import org.cyclops.cyclopscore.helper.L10NHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.SectionAppendix;
-import org.cyclops.cyclopscore.init.ModBase;
+import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -44,7 +37,7 @@ public class InfoSection {
     @Getter private final IInfoBook infoBook;
     @Getter
     @Nullable
-    private final ModBase<?> mod;
+    private final ModBaseNeoForge<?> mod;
     private InfoSection parent;
     private int childIndex;
     @Getter private String translationKey;
@@ -58,7 +51,7 @@ public class InfoSection {
     private Map<Integer, List<AdvancedButton>> advancedButtons = Maps.newHashMap();
 
     public InfoSection(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
-                       List<String> paragraphs, List<SectionAppendix> appendixes, ArrayList<String> tagList, ModBase<?> mod) {
+                       List<String> paragraphs, List<SectionAppendix> appendixes, ArrayList<String> tagList, ModBaseNeoForge<?> mod) {
         this.infoBook = infoBook;
         this.mod = mod;
         this.parent = parent;
@@ -153,7 +146,7 @@ public class InfoSection {
         String contents = "";
         for(Iterator<String> it = paragraphs.iterator(); it.hasNext();) {
             String paragraph = it.next();
-            contents += formatString(L10NHelpers.localize(paragraph)) + (it.hasNext() ? "\n\n" : "");
+            contents += formatString(IModHelpers.get().getL10NHelpers().localize(paragraph)) + (it.hasNext() ? "\n\n" : "");
         }
 
         // Wrap the text into pages.
@@ -326,7 +319,7 @@ public class InfoSection {
     }
 
     public String getLocalizedTitle() {
-        return formatString(L10NHelpers.localize(translationKey));
+        return formatString(IModHelpers.get().getL10NHelpers().localize(translationKey));
     }
 
     public int getSubSections() {
@@ -379,8 +372,7 @@ public class InfoSection {
             int l = 0;
             if (lines != null) {
                 for (FormattedCharSequence line : lines) {
-                    fontRenderer.drawInBatch(line, mouseX, mouseY + yOffset + l * 9, 0, false,
-                            guiGraphics.pose().last().pose(), guiGraphics.bufferSource(), Font.DisplayMode.NORMAL, 0, 15728880);
+                    guiGraphics.drawString(fontRenderer, line, mouseX, mouseY + yOffset + l * 9, 0, false);
                     l++;
                 }
             }
@@ -393,7 +385,7 @@ public class InfoSection {
             }
 
             // Draw current page/section indication
-            gui.drawScaledCenteredString(guiGraphics, getLocalizedTitle() + " - " + (page + 1) +  "/" + getPages(), mouseX + (((page % 2 == 0) ? 1 : -1) * footnoteOffsetX), mouseY + height + footnoteOffsetY, width, 0.6f, (int) (width * 0.75f), Helpers.RGBToInt(190, 190, 190));
+            gui.drawScaledCenteredString(guiGraphics, getLocalizedTitle() + " - " + (page + 1) +  "/" + getPages(), mouseX + (((page % 2 == 0) ? 1 : -1) * footnoteOffsetX), mouseY + height + footnoteOffsetY, width, 0.6f, (int) (width * 0.75f), IModHelpers.get().getBaseHelpers().RGBToInt(190, 190, 190));
 
             // Draw appendixes
             for (SectionAppendix appendix : appendixes) {

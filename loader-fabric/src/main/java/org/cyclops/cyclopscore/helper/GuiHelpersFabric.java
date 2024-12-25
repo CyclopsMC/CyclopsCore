@@ -6,11 +6,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.material.Fluids;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.opengl.GL11;
@@ -57,7 +58,7 @@ public class GuiHelpersFabric extends GuiHelpersCommon implements IGuiHelpersFab
 
                 Lighting.setupForFlatItems();
                 RenderSystem.setShaderColor(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight(), 1);
-                gui.blit(x, y - textureHeight - verticalOffset + height, 0, width, textureHeight, icon);
+                gui.blitSprite(RenderType::guiTextured, icon, x, y - textureHeight - verticalOffset + height, 0, width, textureHeight);
                 Lighting.setupFor3DItems();
                 RenderSystem.setShaderColor(1, 1, 1, 1);
 
@@ -65,7 +66,7 @@ public class GuiHelpersFabric extends GuiHelpersCommon implements IGuiHelpersFab
             }
 
             TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-            textureManager.bindForSetup(InventoryMenu.BLOCK_ATLAS);
+            textureManager.getTexture(TextureAtlas.LOCATION_BLOCKS);
 //            textureManager.getTexture(InventoryMenu.BLOCK_ATLAS).restoreLastBlurMipmap();
 
             Lighting.setupForFlatItems();
@@ -88,7 +89,7 @@ public class GuiHelpersFabric extends GuiHelpersCommon implements IGuiHelpersFab
         renderFluidTank(gui, fluidStack, amount, capacity, x, y, width, height);
         if (fluidStack != null && capacity > 0) {
             GlStateManager._enableBlend();
-            gui.blit(textureOverlay, x, y, overlayTextureX, overlayTextureY, width, height);
+            gui.blit(RenderType::guiTextured, textureOverlay, x, y, overlayTextureX, overlayTextureY, width, height, 256, 256);
         }
     }
 

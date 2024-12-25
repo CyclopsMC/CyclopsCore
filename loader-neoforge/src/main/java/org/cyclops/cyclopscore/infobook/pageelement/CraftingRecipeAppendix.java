@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
@@ -12,10 +11,13 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButtonEnum;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
+
+import java.util.List;
 
 /**
  * Shaped recipes.
@@ -67,10 +69,10 @@ public class CraftingRecipeAppendix extends RecipeAppendix<CraftingRecipe> {
         // Prepare items
         int tick = getTick(gui);
         ItemStack[] grid = new ItemStack[9];
-        ItemStack result = prepareItemStack(recipe.value().getResultItem(Minecraft.getInstance().player.level().registryAccess()), tick);
+        ItemStack result = prepareItemStack(IModHelpers.get().getMinecraftHelpers().getRecipeOutput(recipe, Minecraft.getInstance().level), tick);
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
-                grid[i + j * 3] = prepareItemStacks(Lists.newArrayList(getItemStacks(i + j * 3).getItems()), tick);
+                grid[i + j * 3] = prepareItemStacks(getItemStacks(i + j * 3).getValues(), tick);
             }
         }
 
@@ -96,9 +98,9 @@ public class CraftingRecipeAppendix extends RecipeAppendix<CraftingRecipe> {
      * @param height The original recipe height.
      * @return The reformatted object array.
      */
-    private static NonNullList<Ingredient> formatShapedGrid(NonNullList<Ingredient> itemStacksRaw, int width, int height) {
+    private static NonNullList<Ingredient> formatShapedGrid(List<Ingredient> itemStacksRaw, int width, int height) {
         int rawIndex = 0;
-        NonNullList<Ingredient> itemStacks = NonNullList.withSize(9, Ingredient.EMPTY);
+        NonNullList<Ingredient> itemStacks = NonNullList.withSize(9, Ingredient.of());
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
                 itemStacks.set(y * 3 + x, itemStacksRaw.get(rawIndex++));
@@ -110,15 +112,15 @@ public class CraftingRecipeAppendix extends RecipeAppendix<CraftingRecipe> {
     }
 
     protected Ingredient getItemStacks(int index) {
-        NonNullList<Ingredient> ingredients;
+        List<Ingredient> ingredients;
 
-        if(recipe.value() instanceof ShapedRecipe) {
-            ingredients = formatShapedGrid(recipe.value().getIngredients(),
-                    ((ShapedRecipe) recipe.value()).getWidth(), ((ShapedRecipe) recipe.value()).getHeight());
+        if(recipe.value() instanceof ShapedRecipe shapedRecipe) {
+            ingredients = formatShapedGrid(shapedRecipe.placementInfo().ingredients(),
+                    shapedRecipe.getWidth(), shapedRecipe.getHeight());
         } else {
-            ingredients = recipe.value().getIngredients();
+            ingredients = recipe.value().placementInfo().ingredients();
         }
-        if(ingredients.size() <= index) return Ingredient.EMPTY;
+        if(ingredients.size() <= index) return Ingredient.of();
         return ingredients.get(index);
     }
 

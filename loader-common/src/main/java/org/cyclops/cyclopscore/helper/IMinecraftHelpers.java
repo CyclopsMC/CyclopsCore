@@ -5,9 +5,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.Level;
 
 import java.util.function.Consumer;
 
@@ -79,14 +81,6 @@ public interface IMinecraftHelpers {
     public int compareBlockPos(BlockPos pos1, BlockPos pos2);
 
     /**
-     * Create a new successfull action result.
-     * @param result The result element.
-     * @param <T> The type.
-     * @return The action result.
-     */
-    public <T> InteractionResultHolder<T> successAction(T result);
-
-    /**
      * @return If we are currently running inside a deobfuscated development environment.
      */
     public boolean isDevEnvironment();
@@ -136,5 +130,13 @@ public interface IMinecraftHelpers {
      * @return If the given player is a fake player.
      */
     public boolean isFakePlayer(Player player);
+
+    /**
+     * Get the output item of a recipe.
+     * @param recipe A recipe.
+     * @param level The world.
+     * @return An output item.
+     */
+    public ItemStack getRecipeOutput(RecipeHolder<?> recipe, Level level);
 
 }
