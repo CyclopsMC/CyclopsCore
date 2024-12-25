@@ -7,7 +7,6 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.network.FriendlyByteBuf;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.init.IModBase;
-import org.cyclops.cyclopscore.network.PacketCodec;
 
 /**
  * A generic argument serializer for argument types with a mod property.
@@ -22,7 +21,7 @@ public class ArgumentInfoMod<T extends ArgumentType<?>> implements ArgumentTypeI
 
     @Override
     public ArgumentInfoMod.Template deserializeFromNetwork(FriendlyByteBuf packetBuffer) {
-        return new Template(ModBaseCommon.getCommon(packetBuffer.readUtf(PacketCodec.READ_STRING_MAX_LENGTH)));
+        return new Template(ModBaseCommon.getCommon(packetBuffer.readUtf()));
     }
 
     @Override

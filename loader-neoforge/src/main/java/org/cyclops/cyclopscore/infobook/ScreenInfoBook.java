@@ -22,7 +22,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.helper.IModHelpers;
-import org.cyclops.cyclopscore.inventory.container.ContainerExtended;
+import org.cyclops.cyclopscore.inventory.container.ContainerExtendedCommon;
 import org.cyclops.cyclopscore.network.packet.RequestPlayerNbtPacket;
 import org.lwjgl.opengl.GL11;
 
@@ -32,7 +32,7 @@ import java.util.List;
  * Base gui for {@link IInfoBook}.
  * @author rubensworks
  */
-public abstract class ScreenInfoBook<T extends ContainerExtended> extends AbstractContainerScreen<T> {
+public abstract class ScreenInfoBook<T extends ContainerExtendedCommon> extends AbstractContainerScreen<T> {
 
     private static final int HR_WIDTH = 88;
     private static final int HR_HEIGHT = 10;

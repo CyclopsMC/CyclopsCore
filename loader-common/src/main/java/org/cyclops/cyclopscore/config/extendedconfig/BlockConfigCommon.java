@@ -84,11 +84,7 @@ public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConf
         return ConfigurableTypeCommon.BLOCK;
     }
 
-    public Collection<ItemStack> getDefaultCreativeTabEntriesPublic() { // TODO: rm in next major, and make other method public
-        return this.defaultCreativeTabEntries();
-    }
-
-    protected Collection<ItemStack> defaultCreativeTabEntries() {
+    public Collection<ItemStack> getDefaultCreativeTabEntries() {
         return Collections.singleton(new ItemStack(getInstance()));
     }
 

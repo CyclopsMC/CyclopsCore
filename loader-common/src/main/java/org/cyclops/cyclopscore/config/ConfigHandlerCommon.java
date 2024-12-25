@@ -83,22 +83,22 @@ public abstract class ConfigHandlerCommon {
     }
 
     /**
-     * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeActionCommon#onRegisterForge(ExtendedConfigCommon)}
+     * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeActionCommon#onRegistriesCreated(ExtendedConfigCommon)}
      * during the net.neoforged.neoforge.registries.NewRegistryEvent event.
      */
-    public void loadForgeRegistries() {
+    public void loadRegistriesCreated() {
         for (ExtendedConfigCommon<?, ?, ?> eConfig : this.configurables) {
-            eConfig.getConfigurableType().getConfigurableTypeAction().onRegisterForge(eConfig);
+            eConfig.getConfigurableType().getConfigurableTypeAction().onRegistriesCreated(eConfig);
         }
     }
 
     /**
-     * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeActionCommon#onRegisterForgeFilled(ExtendedConfigCommon)}
+     * Iterate over the given ExtendedConfigs and call {@link ConfigurableTypeActionCommon#onRegistriesFilled(ExtendedConfigCommon)}
      * during the RegisterEvent event.
      */
-    public void loadForgeRegistriesFilled() {
+    public void loadRegistriesFilled() {
         for (ExtendedConfigCommon<?, ?, ?> eConfig : this.configurables) {
-            eConfig.getConfigurableType().getConfigurableTypeAction().onRegisterForgeFilled(eConfig);
+            eConfig.getConfigurableType().getConfigurableTypeAction().onRegistriesFilled(eConfig);
         }
     }
 

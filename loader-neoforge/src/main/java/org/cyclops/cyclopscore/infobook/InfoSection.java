@@ -62,12 +62,6 @@ public class InfoSection {
         this.tagList = tagList;
     }
 
-    @Deprecated // TODO: RM in next major MC version
-    public InfoSection(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
-                       List<String> paragraphs, List<SectionAppendix> appendixes, ArrayList<String> tagList) {
-        this(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList, null);
-    }
-
     public String getRelativeWebPath() {
         if (isRoot()) {
             return "";

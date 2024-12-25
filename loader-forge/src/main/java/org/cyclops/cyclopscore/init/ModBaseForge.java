@@ -105,7 +105,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
     }
 
     protected PacketHandlerForge constructPacketHandler() {
-        return new PacketHandlerForge(this); // TODO
+        return new PacketHandlerForge(this);
     }
 
     @Override
@@ -153,7 +153,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
      * @param event The Forge registry creation event.
      */
     private void afterRegistriesCreated(NewRegistryEvent event) {
-        getConfigHandler().loadForgeRegistries();
+        getConfigHandler().loadRegistriesCreated();
     }
 
     /**
@@ -163,7 +163,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
     private void beforeRegistriedFilled(RegisterEvent event) {
         if (event.getRegistryKey().equals(ForgeRegistries.SOUND_EVENTS.getRegistryKey())) {
             // We only need to call this once, and the SOUND_EVENTS event is emitted first.
-            getConfigHandler().loadForgeRegistriesFilled();
+            getConfigHandler().loadRegistriesFilled();
         }
     }
 

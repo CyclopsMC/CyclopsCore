@@ -278,7 +278,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
      * @param event The Forge registry creation event.
      */
     private void afterRegistriesCreated(NewRegistryEvent event) {
-        getConfigHandler().loadForgeRegistries();
+        getConfigHandler().loadRegistriesCreated();
     }
 
     /**
@@ -288,7 +288,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
     private void beforeRegistriedFilled(RegisterEvent event) {
         if (event.getRegistryKey().equals(BuiltInRegistries.ATTRIBUTE.key())) {
             // We only need to call this once, and the ATTRIBUTE event is emitted first.
-            getConfigHandler().loadForgeRegistriesFilled();
+            getConfigHandler().loadRegistriesFilled();
         }
     }
 

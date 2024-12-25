@@ -6,7 +6,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import org.cyclops.cyclopscore.Reference;
-import org.cyclops.cyclopscore.client.model.IDynamicModelElement;
+import org.cyclops.cyclopscore.client.model.IDynamicModelElementCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfigCommon;
 import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
@@ -21,9 +21,8 @@ public class ItemActionNeoForge<M extends ModBaseNeoForge<M>> extends ItemAction
         super.polish(config);
 
         if(config.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
-            // Handle dynamic models
-            if(config.getInstance() instanceof IDynamicModelElement &&
-                    ((IDynamicModelElement) config.getInstance()).hasDynamicModel()) {
+            IDynamicModelElementCommon dynamicModelElement = config.getItemClientConfig().getDynamicModelElement();
+            if (dynamicModelElement != null) {
                 ItemAction.handleItemModel(config);
             }
         }
@@ -41,9 +40,9 @@ public class ItemActionNeoForge<M extends ModBaseNeoForge<M>> extends ItemAction
     @SubscribeEvent
     public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event){
         for (ItemConfigCommon<?> config : MODEL_ENTRIES) {
-            IDynamicModelElement dynamicModelElement = (IDynamicModelElement) config.getInstance();
+            IDynamicModelElementCommon dynamicModelElement = config.getItemClientConfig().getDynamicModelElement();
             if (config.getItemClientConfig().dynamicItemVariantLocation != null) {
-                event.getBakingResult().blockStateModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(event));
+                event.getBakingResult().blockStateModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(pair -> event.getBakingResult().blockStateModels().put(pair.getLeft(), pair.getRight())));
             }
         }
     }

@@ -13,7 +13,7 @@ public class ConfigurableTypeActionRegistry<C extends ExtendedConfigRegistry<C, 
         extends ConfigurableTypeActionCommon<C, I, M> {
 
     @Override
-    public void onRegisterForgeFilled(C eConfig) {
+    public void onRegistriesFilled(C eConfig) {
         register(eConfig);
     }
 }

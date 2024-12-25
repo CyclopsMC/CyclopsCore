@@ -55,13 +55,6 @@ public class InfoBookParser {
             @Override
             public InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
                                       ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
-                                      ArrayList<String> tagList) {
-                return this.create(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList, null);
-            }
-
-            @Override
-            public InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
-                                      ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
                                       ArrayList<String> tagList, ModBaseNeoForge<?> mod) {
                 return new InfoSection(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList, mod);
             }
@@ -707,16 +700,9 @@ public class InfoBookParser {
 
     public static interface IInfoSectionFactory {
 
-        @Deprecated // TODO: RM in next major MC version
         public InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
                                   ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
-                                  ArrayList<String> tagList);
-
-        public default InfoSection create(IInfoBook infoBook, InfoSection parent, int childIndex, String translationKey,
-                                  ArrayList<String> paragraphs, List<SectionAppendix> appendixes,
-                                  ArrayList<String> tagList, ModBaseNeoForge<?> mod) {
-            return this.create(infoBook, parent, childIndex, translationKey, paragraphs, appendixes, tagList);
-        }
+                                  ArrayList<String> tagList, ModBaseNeoForge<?> mod);
 
     }
 

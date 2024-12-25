@@ -14,8 +14,8 @@ public class CapabilityAction<T, M extends IModBase> extends ConfigurableTypeAct
     public CapabilityAction() {}
 
     @Override
-    public void onRegisterForge(CapabilityConfigCommon<T, M> config) {
-        super.onRegisterForge(config);
+    public void onRegistriesCreated(CapabilityConfigCommon<T, M> config) {
+        super.onRegistriesCreated(config);
         config.getRegistrar().apply(config);
     }
 }

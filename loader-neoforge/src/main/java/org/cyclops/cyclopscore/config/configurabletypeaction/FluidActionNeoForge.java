@@ -45,7 +45,7 @@ public class FluidActionNeoForge extends ConfigurableTypeActionCommon<FluidConfi
     private boolean registryEventPassed = false;
 
     @Override
-    public void onRegisterForge(FluidConfigNeoForge config) {
+    public void onRegistriesCreated(FluidConfigNeoForge config) {
         if (this.registryEventPassed) {
             throw new IllegalStateException(String.format("Tried registering %s after its registration event.",
                     config.getNamedId()));

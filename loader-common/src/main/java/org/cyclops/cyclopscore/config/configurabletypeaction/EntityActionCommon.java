@@ -17,7 +17,7 @@ import org.cyclops.cyclopscore.init.IModBase;
 public class EntityActionCommon<M extends IModBase, T extends Entity> extends ConfigurableTypeActionRegistry<EntityConfigCommon<M, T>, EntityType<T>, M> {
 
     @Override
-    public void onRegisterForgeFilled(EntityConfigCommon<M, T> eConfig) {
+    public void onRegistriesFilled(EntityConfigCommon<M, T> eConfig) {
         // Register item and set creative tab.
         register(eConfig, () -> {
             this.polish(eConfig);

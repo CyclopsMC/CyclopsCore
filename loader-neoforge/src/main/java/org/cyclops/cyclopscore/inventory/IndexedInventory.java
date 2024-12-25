@@ -19,7 +19,7 @@ import java.util.PrimitiveIterator;
  *
  */
 @Deprecated // TODO: rm in next major, after porting IndexedSlotlessItemHandlerWrapper.IInventoryIndexReference
-public class IndexedInventory extends LargeInventory implements IndexedSlotlessItemHandlerWrapper.IInventoryIndexReference {
+public class IndexedInventory extends LargeInventoryCommon implements IndexedSlotlessItemHandlerWrapper.IInventoryIndexReference {
 
     private final Map<Item, Int2ObjectMap<ItemStack>> index = Maps.newIdentityHashMap();
     private IntSet emptySlots;

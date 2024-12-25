@@ -4,7 +4,7 @@ import net.minecraft.world.flag.FeatureFlags;
 import org.cyclops.cyclopscore.config.extendedconfig.GuiConfigCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.GuiConfigScreenFactoryProvider;
 import org.cyclops.cyclopscore.init.IModBase;
-import org.cyclops.cyclopscore.inventory.container.ContainerTypeData;
+import org.cyclops.cyclopscore.inventory.container.ContainerTypeDataCommon;
 
 /**
  * Config for {@link ContainerInfoBookTest}.
@@ -15,7 +15,7 @@ public class ContainerInfoBookTestConfig<M extends IModBase> extends GuiConfigCo
     public ContainerInfoBookTestConfig(M mod) {
         super(mod,
                 "test_infobook",
-                eConfig -> new ContainerTypeData<>(ContainerInfoBookTest::new, FeatureFlags.VANILLA_SET));
+                eConfig -> new ContainerTypeDataCommon<>(ContainerInfoBookTest::new, FeatureFlags.VANILLA_SET));
     }
 
     @Override

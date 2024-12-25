@@ -17,7 +17,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.init.ModBaseNeoForge;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -92,16 +91,6 @@ public final class PacketHandlerNeoForge implements IPacketHandler {
         PacketDistributor.sendToPlayer(player, packet);
     }
 
-    /**
-     * Send a packet to all in the target range.
-     * @param packet The packet.
-     * @param point The point.
-     */
-    @Deprecated // TODO: rm in next major
-    public void sendToAllAround(PacketBase packet, TargetPoint point) {
-        PacketDistributor.sendToPlayersNear(point.level, point.excluded, point.x, point.y, point.z, point.radius, packet);
-    }
-
     @Override
     public void sendToAllAroundPoint(PacketBase packet, IPacketHandler.TargetPoint point) {
         PacketDistributor.sendToPlayersNear(point.level(), point.excluded(), point.x(), point.y(), point.z(), point.radius(), packet);
@@ -116,15 +105,5 @@ public final class PacketHandlerNeoForge implements IPacketHandler {
     public void sendToAll(PacketBase packet) {
         PacketDistributor.sendToAllPlayers(packet);
     }
-
-    @Deprecated // TODO: rm in next major
-    public static class PacketCodecException extends RuntimeException {
-        public PacketCodecException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
-
-    @Deprecated // TODO: rm in next major
-    public static record TargetPoint(ServerLevel level, double x, double y, double z, double radius, @Nullable ServerPlayer excluded) {}
 
 }

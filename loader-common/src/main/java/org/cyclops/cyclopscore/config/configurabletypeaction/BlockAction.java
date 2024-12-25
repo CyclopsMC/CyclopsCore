@@ -59,7 +59,7 @@ public class BlockAction<M extends IModBase> extends ConfigurableTypeActionRegis
     }
 
     @Override
-    public void onRegisterForgeFilled(BlockConfigCommon<M> eConfig) {
+    public void onRegistriesFilled(BlockConfigCommon<M> eConfig) {
         // Register block and set creative tab.
         register(eConfig.getItemConstructor(), eConfig, () -> {
             eConfig.onForgeRegistered(); // Manually call after item has been registered
@@ -74,7 +74,7 @@ public class BlockAction<M extends IModBase> extends ConfigurableTypeActionRegis
 
     protected void polish(BlockConfigCommon<M> config) {
         // Register creative tab entry
-        for (ItemStack itemStack : config.getDefaultCreativeTabEntriesPublic()) {
+        for (ItemStack itemStack : config.getDefaultCreativeTabEntries()) {
             config.getMod().registerDefaultCreativeTabEntry(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
 

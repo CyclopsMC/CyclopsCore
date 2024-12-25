@@ -14,8 +14,8 @@ import org.cyclops.cyclopscore.init.ModBaseFabric;
 public class ConditionActionFabric<T extends ResourceCondition> extends ConfigurableTypeActionCommon<ConditionConfigFabric<T>, ResourceConditionType<T>, ModBaseFabric<?>> {
 
     @Override
-    public void onRegisterForge(ConditionConfigFabric<T> eConfig) {
-        super.onRegisterForge(eConfig);
+    public void onRegistriesCreated(ConditionConfigFabric<T> eConfig) {
+        super.onRegistriesCreated(eConfig);
         ResourceConditions.register(eConfig.getInstance());
     }
 }

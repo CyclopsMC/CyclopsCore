@@ -60,8 +60,8 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
         this.loaded = true;
 
         getConfigHandler().loadSetup();
-        getConfigHandler().loadForgeRegistries();
-        getConfigHandler().loadForgeRegistriesFilled();
+        getConfigHandler().loadRegistriesCreated();
+        getConfigHandler().loadRegistriesFilled();
         CommandRegistrationCallback.EVENT.register(this::onRegisterCommands);
 
         // Register proxy things

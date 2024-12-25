@@ -8,7 +8,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.cyclops.cyclopscore.infobook.test.ContainerInfoBookTest;
-import org.cyclops.cyclopscore.inventory.SimpleInventory;
+import org.cyclops.cyclopscore.inventory.SimpleInventoryCommon;
 
 /**
  * Referenced registry entries.
@@ -24,6 +24,6 @@ public class RegistryEntries {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> COMPONENT_CAPACITY = DeferredHolder.create(Registries.DATA_COMPONENT_TYPE, ResourceLocation.parse("cyclopscore:capacity"));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> COMPONENT_ENERGY_STORAGE = DeferredHolder.create(Registries.DATA_COMPONENT_TYPE, ResourceLocation.parse("cyclopscore:energy_storage"));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidContent>> COMPONENT_FLUID_CONTENT = DeferredHolder.create(Registries.DATA_COMPONENT_TYPE, ResourceLocation.parse("cyclopscore:fluid_content"));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleInventory>> COMPONENT_INVENTORY = DeferredHolder.create(Registries.DATA_COMPONENT_TYPE, ResourceLocation.parse("cyclopscore:inventory"));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleInventoryCommon>> COMPONENT_INVENTORY = DeferredHolder.create(Registries.DATA_COMPONENT_TYPE, ResourceLocation.parse("cyclopscore:inventory"));
 
 }

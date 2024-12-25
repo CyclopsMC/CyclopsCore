@@ -22,7 +22,7 @@ public class ItemAction<M extends IModBase> extends ConfigurableTypeActionRegist
     protected static final List<ItemConfigCommon<?>> MODEL_ENTRIES = Lists.newArrayList();
 
     @Override
-    public void onRegisterForgeFilled(ItemConfigCommon<M> eConfig) {
+    public void onRegistriesFilled(ItemConfigCommon<M> eConfig) {
         // Register item and set creative tab.
         register(eConfig, () -> {
             this.polish(eConfig);
@@ -37,7 +37,7 @@ public class ItemAction<M extends IModBase> extends ConfigurableTypeActionRegist
 
     protected void polish(ItemConfigCommon<M> config) {
         // Register creative tab entry
-        for (ItemStack itemStack : config.getDefaultCreativeTabEntriesPublic()) {
+        for (ItemStack itemStack : config.getDefaultCreativeTabEntries()) {
             config.getMod().registerDefaultCreativeTabEntry(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
 

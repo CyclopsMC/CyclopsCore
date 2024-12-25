@@ -45,7 +45,7 @@ public class FluidActionForge<M extends ModBaseForge> extends ConfigurableTypeAc
     private boolean registryEventPassed = false;
 
     @Override
-    public void onRegisterForge(FluidConfigForge config) {
+    public void onRegistriesCreated(FluidConfigForge config) {
         if (this.registryEventPassed) {
             throw new IllegalStateException(String.format("Tried registering %s after its registration event.",
                     config.getNamedId()));

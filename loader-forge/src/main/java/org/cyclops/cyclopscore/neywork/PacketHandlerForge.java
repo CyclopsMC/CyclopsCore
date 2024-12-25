@@ -21,7 +21,6 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.cyclops.cyclopscore.init.ModBaseForge;
 import org.cyclops.cyclopscore.network.IPacketHandler;
 import org.cyclops.cyclopscore.network.PacketBase;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -119,15 +118,5 @@ public final class PacketHandlerForge implements IPacketHandler {
     public void sendToAll(PacketBase packet) {
         networkChannel.send(packet, PacketDistributor.ALL.noArg());
     }
-
-    @Deprecated // TODO: rm in next major
-    public static class PacketCodecException extends RuntimeException {
-        public PacketCodecException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
-
-    @Deprecated // TODO: rm in next major
-    public static record TargetPoint(ServerLevel level, double x, double y, double z, double radius, @Nullable ServerPlayer excluded) {}
 
 }

@@ -50,11 +50,7 @@ public class ItemConfigCommon<M extends IModBase> extends ExtendedConfigRegistry
         return ConfigurableTypeCommon.ITEM;
     }
 
-    public Collection<ItemStack> getDefaultCreativeTabEntriesPublic() { // TODO: rm in next major, and make other method public
-        return this.getDefaultCreativeTabEntries();
-    }
-
-    protected Collection<ItemStack> getDefaultCreativeTabEntries() {
+    public Collection<ItemStack> getDefaultCreativeTabEntries() {
         return Collections.singleton(new ItemStack(getInstance()));
     }
 

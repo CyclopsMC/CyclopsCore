@@ -30,18 +30,18 @@ public abstract class ConfigurableTypeActionCommon<C extends ExtendedConfigCommo
     }
 
     /**
-     * Logic to register things right after the Forge registries have been created.
+     * Logic to register things right after the registries have been created.
      * @param eConfig The config to be registered.
      */
-    public void onRegisterForge(C eConfig) { // TODO: rename in next major version
+    public void onRegistriesCreated(C eConfig) {
 
     }
 
     /**
-     * Logic to register things before Forge registries are being filled.
+     * Logic to register things before registries are being filled.
      * @param eConfig The config to be registered.
      */
-    public void onRegisterForgeFilled(C eConfig) { // TODO: rename in next major version
+    public void onRegistriesFilled(C eConfig) {
 
     }
 

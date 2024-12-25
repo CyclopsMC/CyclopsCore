@@ -1,10 +1,10 @@
 package org.cyclops.cyclopscore.item;
 
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -32,7 +32,7 @@ public interface IInformationProvider {
      * A prefix for additional info.
      */
     @Deprecated
-    public static String INFO_PREFIX = ChatFormatting.DARK_PURPLE.toString() + ChatFormatting.ITALIC.toString(); // TODO: remove in next major
+    public static String INFO_PREFIX = ChatFormatting.DARK_PURPLE.toString() + ChatFormatting.ITALIC.toString();
     /**
      * Additional info prefix styles
      */
