@@ -10,6 +10,6 @@ import net.minecraft.world.entity.player.Player;
 public class PlayerInventoryIterator extends InventoryIterator {
 
     public PlayerInventoryIterator(Player player) {
-        super(new InventoryCommonModifiableContainer(player.getInventory()));
+        super(new InventoryModifiableContainer(player.getInventory()));
     }
 }

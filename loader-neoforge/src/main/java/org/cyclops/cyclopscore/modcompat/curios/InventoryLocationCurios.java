@@ -7,7 +7,7 @@ import net.neoforged.neoforge.items.wrapper.EmptyItemHandler;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.inventory.IInventoryCommonModifiable;
 import org.cyclops.cyclopscore.inventory.IInventoryLocation;
-import org.cyclops.cyclopscore.inventory.InventoryCommonModifiableContainerNeoForge;
+import org.cyclops.cyclopscore.inventory.InventoryModifiableContainerNeoForge;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 
@@ -23,7 +23,7 @@ public class InventoryLocationCurios implements IInventoryLocation {
 
     @Override
     public IInventoryCommonModifiable getInventory(Player player) {
-        return new InventoryCommonModifiableContainerNeoForge(CuriosApi.getCuriosInventory(player)
+        return new InventoryModifiableContainerNeoForge(CuriosApi.getCuriosInventory(player)
                 .map(ICuriosItemHandler::getEquippedCurios)
                 .orElseGet(EmptyItemHandler::new));
     }

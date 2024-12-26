@@ -14,7 +14,7 @@ import net.minecraft.world.inventory.Slot;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.inventory.IValueNotifiable;
-import org.cyclops.cyclopscore.inventory.container.ContainerExtendedCommon;
+import org.cyclops.cyclopscore.inventory.container.ContainerExtended;
 import org.cyclops.cyclopscore.network.packet.ButtonClickPacket;
 
 import javax.annotation.Nullable;
@@ -25,7 +25,7 @@ import java.util.List;
  * An extended GUI container.
  * @author rubensworks
  */
-public abstract class ContainerScreenExtendedCommon<T extends ContainerExtendedCommon> extends AbstractContainerScreen<T>
+public abstract class ContainerScreenExtended<T extends ContainerExtended> extends AbstractContainerScreen<T>
         implements IValueNotifiable {
 
     private final IModHelpers modHelpers;
@@ -35,7 +35,7 @@ public abstract class ContainerScreenExtendedCommon<T extends ContainerExtendedC
     protected int offsetX = 0;
     protected int offsetY = 0;
 
-    public ContainerScreenExtendedCommon(T container, Inventory playerInventory, Component title) {
+    public ContainerScreenExtended(T container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
         this.modHelpers = IModHelpers.get();
         this.container = container;

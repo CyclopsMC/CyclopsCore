@@ -19,7 +19,7 @@ import java.util.PrimitiveIterator;
  * @author rubensworks
  *
  */
-public class IndexedInventoryCommon extends LargeInventoryCommon implements IInventoryIndexReference {
+public class IndexedInventory extends LargeInventory implements IInventoryIndexReference {
 
     private final Map<Item, Int2ObjectMap<ItemStack>> index = Maps.newIdentityHashMap();
     private IntSet emptySlots;
@@ -28,7 +28,7 @@ public class IndexedInventoryCommon extends LargeInventoryCommon implements IInv
     /**
      * Default constructor for NBT persistence, don't call this yourself.
      */
-    public IndexedInventoryCommon() {
+    public IndexedInventory() {
         this(0, 0);
     }
 
@@ -37,7 +37,7 @@ public class IndexedInventoryCommon extends LargeInventoryCommon implements IInv
      * @param size The amount of slots in the inventory.
      * @param stackLimit The stack limit for each slot.
      */
-    public IndexedInventoryCommon(int size, int stackLimit) {
+    public IndexedInventory(int size, int stackLimit) {
         super(size, stackLimit);
         this.emptySlots = new IntAVLTreeSet();
         this.nonEmptySlots = new IntAVLTreeSet();

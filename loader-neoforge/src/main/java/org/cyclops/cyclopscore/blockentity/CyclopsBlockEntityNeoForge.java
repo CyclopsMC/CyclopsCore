@@ -13,7 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
  *
  * @author rubensworks
  */
-public class CyclopsBlockEntityNeoForge extends CyclopsBlockEntityCommon {
+public class CyclopsBlockEntityNeoForge extends CyclopsBlockEntity {
 
     public CyclopsBlockEntityNeoForge(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
         super(type, blockPos, blockState);

@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.helper.IModHelpers;
  * @author rubensworks
  *
  */
-public class NBTSimpleInventoryItemStack extends SimpleInventoryCommon {
+public class NBTSimpleInventoryItemStack extends SimpleInventory {
 
     protected final ItemStack itemStack;
     protected final String tagName;
@@ -29,7 +29,7 @@ public class NBTSimpleInventoryItemStack extends SimpleInventoryCommon {
         this.itemStack = itemStack;
         this.tagName = tagName;
 
-        SimpleInventoryCommon contents = itemStack.get(RegistryEntries.COMPONENT_INVENTORY);
+        SimpleInventory contents = itemStack.get(RegistryEntries.COMPONENT_INVENTORY);
         if (contents != null) {
             for (int i = 0; i < contents.getContainerSize(); i++) {
                 setItem(i, contents.getItem(i));

@@ -11,11 +11,11 @@ import javax.annotation.Nullable;
  * A container for an inventory.
  * @author rubensworks
  */
-public abstract class InventoryContainerCommon extends ContainerExtendedCommon {
+public abstract class InventoryContainer extends ContainerExtended {
 
     protected final Container inventory;
 
-    public InventoryContainerCommon(@Nullable MenuType<?> type, int id, Inventory playerInventory, Container inventory) {
+    public InventoryContainer(@Nullable MenuType<?> type, int id, Inventory playerInventory, Container inventory) {
         super(type, id, playerInventory);
         this.inventory = inventory;
         if (isAssertInventorySize()) {

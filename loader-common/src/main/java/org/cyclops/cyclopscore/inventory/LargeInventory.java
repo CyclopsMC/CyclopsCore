@@ -11,12 +11,12 @@ import net.minecraft.world.item.ItemStack;
  * @author rubensworks
  *
  */
-public class LargeInventoryCommon extends SimpleInventoryCommon {
+public class LargeInventory extends SimpleInventory {
 
     /**
      * Default constructor for NBT persistence, don't call this yourself.
      */
-    public LargeInventoryCommon() {
+    public LargeInventory() {
         this(0, 0);
     }
 
@@ -25,7 +25,7 @@ public class LargeInventoryCommon extends SimpleInventoryCommon {
      * @param size The amount of slots in the inventory.
      * @param stackLimit The stack limit for each slot.
      */
-    public LargeInventoryCommon(int size, int stackLimit) {
+    public LargeInventory(int size, int stackLimit) {
         super(size, stackLimit);
     }
 

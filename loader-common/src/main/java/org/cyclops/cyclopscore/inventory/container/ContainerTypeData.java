@@ -13,8 +13,8 @@ import net.minecraft.world.inventory.MenuType;
  *
  * @author rubensworks
  */
-public class ContainerTypeDataCommon<T extends AbstractContainerMenu> extends MenuType<T> {
-    public ContainerTypeDataCommon(IContainerFactoryCommon<T> factory, FeatureFlagSet featureFlagSet) {
+public class ContainerTypeData<T extends AbstractContainerMenu> extends MenuType<T> {
+    public ContainerTypeData(IContainerFactoryCommon<T> factory, FeatureFlagSet featureFlagSet) {
         super(factory, featureFlagSet);
     }
 }

@@ -27,7 +27,7 @@ public class InventoryLocationPlayer implements IInventoryLocation {
     }
     @Override
     public IInventoryCommonModifiable getInventory(Player player) {
-        return new InventoryCommonModifiableContainer(player.getInventory());
+        return new InventoryModifiableContainer(player.getInventory());
     }
 
     @Override

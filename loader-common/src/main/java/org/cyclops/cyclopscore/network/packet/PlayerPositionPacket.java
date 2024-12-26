@@ -18,7 +18,7 @@ import java.util.UUID;
  *
  * @author immortaleeb
  */
-public abstract class PlayerPositionPacketCommon<T extends PlayerPositionPacketCommon<T>> extends PacketCodec<T> {
+public abstract class PlayerPositionPacket<T extends PlayerPositionPacket<T>> extends PacketCodec<T> {
 
     private static final int DEFAULT_RANGE = 3000;
 
@@ -32,15 +32,15 @@ public abstract class PlayerPositionPacketCommon<T extends PlayerPositionPacketC
     /**
      * Creates a packet with no content
      */
-    public PlayerPositionPacketCommon(Type<T> type) {
+    public PlayerPositionPacket(Type<T> type) {
         super(type);
     }
 
-    public PlayerPositionPacketCommon(Type<T> type, Player player) {
+    public PlayerPositionPacket(Type<T> type, Player player) {
         this(type, player, DEFAULT_RANGE);
     }
 
-    public PlayerPositionPacketCommon(Type<T> type, Player player, int range) {
+    public PlayerPositionPacket(Type<T> type, Player player, int range) {
         super(type);
         this.uuid = player.getUUID().toString();
         this.position = player.position();
@@ -81,7 +81,7 @@ public abstract class PlayerPositionPacketCommon<T extends PlayerPositionPacketC
                 IPacketHandler.createTargetPointFromEntity(player, range));
     }
 
-    protected abstract PlayerPositionPacketCommon<?> create(Player player, int range);
+    protected abstract PlayerPositionPacket<?> create(Player player, int range);
 
     protected abstract IModBase getModInstance();
 

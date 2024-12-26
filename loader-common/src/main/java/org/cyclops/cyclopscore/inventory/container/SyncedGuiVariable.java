@@ -13,7 +13,7 @@ import java.util.function.Supplier;
  */
 public class SyncedGuiVariable<T> implements Supplier<T> {
 
-    private final ContainerExtendedCommon gui;
+    private final ContainerExtended gui;
     private final int guiValueId;
     private final NBTClassType<T> nbtClassType;
     private final Supplier<T> serverValueSupplier;
@@ -21,7 +21,7 @@ public class SyncedGuiVariable<T> implements Supplier<T> {
 
     private CompoundTag lastTag;
 
-    SyncedGuiVariable(ContainerExtendedCommon gui, Class<T> clazz, Supplier<T> serverValueSupplier, HolderLookup.Provider holderLookupProvider) {
+    SyncedGuiVariable(ContainerExtended gui, Class<T> clazz, Supplier<T> serverValueSupplier, HolderLookup.Provider holderLookupProvider) {
         this.gui = gui;
         this.guiValueId = gui.getNextValueId();
         this.nbtClassType = NBTClassType.getClassType(clazz);

@@ -6,11 +6,11 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 /**
  * @author rubensworks
  */
-public class InventoryCommonModifiableContainerNeoForge implements IInventoryCommonModifiable {
+public class InventoryModifiableContainerNeoForge implements IInventoryCommonModifiable {
 
     private final IItemHandlerModifiable itemHandler;
 
-    public InventoryCommonModifiableContainerNeoForge(IItemHandlerModifiable itemHandler) {
+    public InventoryModifiableContainerNeoForge(IItemHandlerModifiable itemHandler) {
         this.itemHandler = itemHandler;
     }
 

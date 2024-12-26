@@ -27,18 +27,18 @@ import java.util.stream.IntStream;
  * @author rubensworks
  *
  */
-public class SimpleInventoryCommon implements INBTInventory, WorldlyContainer {
+public class SimpleInventory implements INBTInventory, WorldlyContainer {
 
-    public static final Codec<SimpleInventoryCommon> CODEC = RecordCodecBuilder.create((builder) -> builder
-            .group(Codec.INT.fieldOf("size").forGetter(SimpleInventoryCommon::getContainerSize),
-                    Codec.INT.fieldOf("stackLimit").forGetter(SimpleInventoryCommon::getMaxStackSize),
+    public static final Codec<SimpleInventory> CODEC = RecordCodecBuilder.create((builder) -> builder
+            .group(Codec.INT.fieldOf("size").forGetter(SimpleInventory::getContainerSize),
+                    Codec.INT.fieldOf("stackLimit").forGetter(SimpleInventory::getMaxStackSize),
                     ItemStack.OPTIONAL_CODEC.listOf().fieldOf("contents").forGetter(i -> Arrays.asList(i.getItemStacks())))
-            .apply(builder, SimpleInventoryCommon::new));
-    public static final StreamCodec<RegistryFriendlyByteBuf, SimpleInventoryCommon> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.INT, SimpleInventoryCommon::getContainerSize,
-            ByteBufCodecs.INT, SimpleInventoryCommon::getMaxStackSize,
+            .apply(builder, SimpleInventory::new));
+    public static final StreamCodec<RegistryFriendlyByteBuf, SimpleInventory> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, SimpleInventory::getContainerSize,
+            ByteBufCodecs.INT, SimpleInventory::getMaxStackSize,
             ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()), i -> Arrays.asList(i.getItemStacks()),
-            SimpleInventoryCommon::new
+            SimpleInventory::new
     );
 
     protected final ItemStack[] contents;
@@ -50,7 +50,7 @@ public class SimpleInventoryCommon implements INBTInventory, WorldlyContainer {
     /**
      * Default constructor for NBT persistence, don't call this yourself.
      */
-    public SimpleInventoryCommon() {
+    public SimpleInventory() {
         this(0, 0);
     }
 
@@ -59,7 +59,7 @@ public class SimpleInventoryCommon implements INBTInventory, WorldlyContainer {
      * @param size The amount of slots in the inventory.
      * @param stackLimit The stack limit for each slot.
      */
-    public SimpleInventoryCommon(int size, int stackLimit) {
+    public SimpleInventory(int size, int stackLimit) {
         contents = new ItemStack[size];
         for (int i = 0; i < contents.length; i++) {
             contents[i] = ItemStack.EMPTY;
@@ -67,7 +67,7 @@ public class SimpleInventoryCommon implements INBTInventory, WorldlyContainer {
         this.stackLimit = stackLimit;
     }
 
-    public SimpleInventoryCommon(int size, int stackLimit, List<ItemStack> contents) {
+    public SimpleInventory(int size, int stackLimit, List<ItemStack> contents) {
         this.contents = new ItemStack[size];
         for (int i = 0; i < this.contents.length; i++) {
             this.contents[i] = contents.get(i);
@@ -288,9 +288,9 @@ public class SimpleInventoryCommon implements INBTInventory, WorldlyContainer {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof SimpleInventoryCommon)) return false;
+        if (!(o instanceof SimpleInventory)) return false;
 
-        SimpleInventoryCommon that = (SimpleInventoryCommon) o;
+        SimpleInventory that = (SimpleInventory) o;
 
         if (stackLimit != that.stackLimit) return false;
         if (contents.length != that.contents.length) return false;

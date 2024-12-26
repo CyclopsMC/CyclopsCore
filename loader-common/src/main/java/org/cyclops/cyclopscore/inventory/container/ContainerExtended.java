@@ -32,14 +32,14 @@ import java.util.function.Supplier;
  * A container with inventory.
  * @author rubensworks
  */
-public abstract class ContainerExtendedCommon extends AbstractContainerMenu implements IContainerButtonClickAcceptorServer<ContainerExtendedCommon>,
+public abstract class ContainerExtended extends AbstractContainerMenu implements IContainerButtonClickAcceptorServer<ContainerExtended>,
         IValueNotifier, IValueNotifiable {
 
     private static final EquipmentSlot[] EQUIPMENT_SLOTS = new EquipmentSlot[] {
             EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     protected static final int ITEMBOX = 18;
 
-    private final Map<String, IContainerButtonAction<ContainerExtendedCommon>> buttonActions = Maps.newHashMap();
+    private final Map<String, IContainerButtonAction<ContainerExtended>> buttonActions = Maps.newHashMap();
     private final Map<Integer, CompoundTag> values = Maps.newHashMap();
     private final List<SyncedGuiVariable<?>> syncedGuiVariables = Lists.newArrayList();
     private int nextValueId = 0;
@@ -63,7 +63,7 @@ public abstract class ContainerExtendedCommon extends AbstractContainerMenu impl
      * @param id The container id.
      * @param inventory The player inventory.
      */
-    public ContainerExtendedCommon(@Nullable MenuType<?> type, int id, Inventory inventory) {
+    public ContainerExtended(@Nullable MenuType<?> type, int id, Inventory inventory) {
         super(type, id);
         this.playerIInventory = inventory;
         this.player = inventory.player;
@@ -438,13 +438,13 @@ public abstract class ContainerExtendedCommon extends AbstractContainerMenu impl
     }
 
     @Override
-    public void putButtonAction(String buttonId, IContainerButtonAction<ContainerExtendedCommon> action) {
+    public void putButtonAction(String buttonId, IContainerButtonAction<ContainerExtended> action) {
         buttonActions.put(buttonId, action);
     }
 
     @Override
     public boolean onButtonClick(String buttonId) {
-        IContainerButtonAction<ContainerExtendedCommon> action;
+        IContainerButtonAction<ContainerExtended> action;
         if((action = buttonActions.get(buttonId)) != null) {
             action.onAction(buttonId, this);
             return true;

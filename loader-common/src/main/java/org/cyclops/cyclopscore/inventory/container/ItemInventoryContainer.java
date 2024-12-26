@@ -35,7 +35,7 @@ import javax.annotation.Nullable;
  * @param <I> The item instance.
  * @author rubensworks
  */
-public abstract class ItemInventoryContainerCommon<I extends Item> extends ContainerExtendedCommon {
+public abstract class ItemInventoryContainer<I extends Item> extends ContainerExtended {
 
     protected I item;
     protected ItemLocation itemLocation;
@@ -47,7 +47,7 @@ public abstract class ItemInventoryContainerCommon<I extends Item> extends Conta
      * @param inventory The player inventory.
      * @param itemLocation The item location.
      */
-    public ItemInventoryContainerCommon(@Nullable MenuType<?> type, int id, Inventory inventory, ItemLocation itemLocation) {
+    public ItemInventoryContainer(@Nullable MenuType<?> type, int id, Inventory inventory, ItemLocation itemLocation) {
         super(type, id, inventory);
         this.item = (I) itemLocation.getItemStack(inventory.player).getItem();
         this.itemLocation = itemLocation;

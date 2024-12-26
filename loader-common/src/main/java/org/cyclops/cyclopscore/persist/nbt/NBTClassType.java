@@ -18,7 +18,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
-import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntityCommon;
+import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
 import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.helper.IModHelpers;
@@ -27,7 +27,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 /**
- * Types of NBT field classes used for persistence of fields in {@link CyclopsBlockEntityCommon}.
+ * Types of NBT field classes used for persistence of fields in {@link CyclopsBlockEntity}.
  * @author rubensworks
  *
  * @param <T> The field class type.

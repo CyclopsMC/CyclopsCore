@@ -23,7 +23,7 @@ import java.util.regex.PatternSyntaxException;
  *      unfiltered: All items, pattern searching will happen in this list.
  * @author rubensworks
  */
-public abstract class ScrollingInventoryContainerCommon<E> extends InventoryContainerCommon implements WidgetScrollBar.IScrollCallback {
+public abstract class ScrollingInventoryContainer<E> extends InventoryContainer implements WidgetScrollBar.IScrollCallback {
 
     private final List<E> unfilteredItems;
     private List<Pair<Integer, E>> filteredItems; // Pair: original index - item
@@ -33,8 +33,8 @@ public abstract class ScrollingInventoryContainerCommon<E> extends InventoryCont
     private int firstElement = 0;
 
     @SuppressWarnings("unchecked")
-    public ScrollingInventoryContainerCommon(@Nullable MenuType<?> type, int id, Inventory playerInventory,
-                                             Container inventory, List<E> items, IItemPredicate<E> filterer) {
+    public ScrollingInventoryContainer(@Nullable MenuType<?> type, int id, Inventory playerInventory,
+                                       Container inventory, List<E> items, IItemPredicate<E> filterer) {
         super(type, id, playerInventory, inventory);
         this.unfilteredItems = Lists.newArrayList(items);
         this.filteredItems = Lists.newLinkedList();

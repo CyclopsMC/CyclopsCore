@@ -6,11 +6,11 @@ import net.minecraft.world.item.ItemStack;
 /**
  * @author rubensworks
  */
-public class InventoryCommonModifiableContainer implements IInventoryCommonModifiable {
+public class InventoryModifiableContainer implements IInventoryCommonModifiable {
 
     private final Container container;
 
-    public InventoryCommonModifiableContainer(Container container) {
+    public InventoryModifiableContainer(Container container) {
         this.container = container;
     }
 

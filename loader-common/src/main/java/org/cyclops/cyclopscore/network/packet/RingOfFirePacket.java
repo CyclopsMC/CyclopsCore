@@ -19,7 +19,7 @@ import org.cyclops.cyclopscore.network.PacketBase;
  * @author rubensworks
  *
  */
-public class RingOfFirePacket extends PlayerPositionPacketCommon<RingOfFirePacket> {
+public class RingOfFirePacket extends PlayerPositionPacket<RingOfFirePacket> {
 
     public static final CustomPacketPayload.Type<RingOfFirePacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "ring_of_fire"));
     public static final StreamCodec<RegistryFriendlyByteBuf, RingOfFirePacket> CODEC = PacketBase.getCodec(RingOfFirePacket::new);
@@ -64,7 +64,7 @@ public class RingOfFirePacket extends PlayerPositionPacketCommon<RingOfFirePacke
     }
 
     @Override
-    protected PlayerPositionPacketCommon<RingOfFirePacket> create(Player player, int range) {
+    protected PlayerPositionPacket<RingOfFirePacket> create(Player player, int range) {
         return new RingOfFirePacket(player);
     }
 

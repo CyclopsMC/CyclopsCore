@@ -19,7 +19,7 @@ import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
  *
  * @author rubensworks
  */
-public class CyclopsBlockEntityCommon extends BlockEntity implements INBTProvider, IDirtyMarkListener, IBlockEntityDelayedTickable {
+public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDirtyMarkListener, IBlockEntityDelayedTickable {
 
     private static final int UPDATE_BACKOFF_TICKS = 1;
 
@@ -27,7 +27,7 @@ public class CyclopsBlockEntityCommon extends BlockEntity implements INBTProvide
     private boolean shouldSendUpdate = false;
     private int sendUpdateBackoff = 0;
 
-    public CyclopsBlockEntityCommon(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
+    public CyclopsBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
         super(type, blockPos, blockState);
         // Random backoff so not all block entities will be updated at once.
         sendUpdateBackoff = (int) Math.round(Math.random() * getUpdateBackoffTicks());

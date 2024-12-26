@@ -5,15 +5,15 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.model.Material;
-import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntityCommon;
+import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 
 /**
- * General renderer for {@link CyclopsBlockEntityCommon} with {@link Model} models.
+ * General renderer for {@link CyclopsBlockEntity} with {@link Model} models.
  * @author rubensworks
  *
  */
-public class RenderBlockEntityModelBase<T extends CyclopsBlockEntityCommon, M extends Model> extends RenderBlockEntityModel<T, M> {
+public class RenderBlockEntityModelBase<T extends CyclopsBlockEntity, M extends Model> extends RenderBlockEntityModel<T, M> {
 
     public RenderBlockEntityModelBase(M model, Material material) {
         super(model, material);
