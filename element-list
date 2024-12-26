@@ -16,7 +16,6 @@ org.cyclops.cyclopscore.capability.fluid
 org.cyclops.cyclopscore.capability.item
 org.cyclops.cyclopscore.capability.registrar
 org.cyclops.cyclopscore.client.gui
-org.cyclops.cyclopscore.client.gui.container
 org.cyclops.cyclopscore.client.key
 org.cyclops.cyclopscore.client.model
 org.cyclops.cyclopscore.client.render.blockentity
@@ -43,7 +42,6 @@ org.cyclops.cyclopscore.ingredient.storage
 org.cyclops.cyclopscore.init
 org.cyclops.cyclopscore.inventory
 org.cyclops.cyclopscore.inventory.container
-org.cyclops.cyclopscore.inventory.container.button
 org.cyclops.cyclopscore.inventory.slot
 org.cyclops.cyclopscore.item
 org.cyclops.cyclopscore.loot.modifier
