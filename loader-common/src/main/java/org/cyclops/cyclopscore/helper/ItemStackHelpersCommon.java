@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.cyclops.cyclopscore.inventory.PlayerExtendedInventoryIterator;
 
 import java.util.Random;
 
@@ -70,6 +71,17 @@ public abstract class ItemStackHelpersCommon implements IItemStackHelpers {
             entityitem.setNoPickUpDelay();
             world.addFreshEntity(entityitem);
         }
+    }
+
+    @Override
+    public boolean hasPlayerItem(Player player, Item item) {
+        for (PlayerExtendedInventoryIterator it = new PlayerExtendedInventoryIterator(player); it.hasNext();) {
+            ItemStack itemStack = it.next();
+            if (itemStack != null && itemStack.getItem() == item) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

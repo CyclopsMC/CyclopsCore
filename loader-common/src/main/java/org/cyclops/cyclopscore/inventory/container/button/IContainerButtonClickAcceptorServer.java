@@ -8,7 +8,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
  * Events will be received both server-side and client-side.
  *
  * This will only work if the client-side button's pressable has been generated with
- * {@link org.cyclops.cyclopscore.client.gui.container.ContainerScreenExtended#createServerPressable(String, Button.OnPress)}}.
+ * {@link org.cyclops.cyclopscore.client.gui.container.ContainerScreenExtendedCommon#createServerPressable(String, Button.OnPress)}}.
  *
  * @author rubensworks
  */

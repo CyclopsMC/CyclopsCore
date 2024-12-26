@@ -42,7 +42,7 @@ public final class ListCodecStrict<A> implements Codec<List<A>> {
         return ops.getList(input).setLifecycle(Lifecycle.stable()).flatMap(stream -> {
             final ImmutableList.Builder<A> read = ImmutableList.builder();
             final Stream.Builder<T> failed = Stream.builder();
-            // TODO: AtomicReference.getPlain/setPlain in java9+
+            // AtomicReference.getPlain/setPlain in java9+
             final MutableObject<DataResult<Unit>> result = new MutableObject<>(DataResult.success(Unit.INSTANCE, Lifecycle.stable()));
 
             List<String> errorMessages = Lists.newArrayList(); // ADDED

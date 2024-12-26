@@ -26,7 +26,7 @@ public class ItemAction<M extends IModBase> extends ConfigurableTypeActionRegist
         // Register item and set creative tab.
         register(eConfig, () -> {
             this.polish(eConfig);
-            eConfig.onForgeRegistered();
+            eConfig.onRegistryRegistered();
             return null;
         });
     }

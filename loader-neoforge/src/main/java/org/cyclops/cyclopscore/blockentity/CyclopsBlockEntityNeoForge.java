@@ -13,10 +13,9 @@ import net.minecraft.world.level.block.state.BlockState;
  *
  * @author rubensworks
  */
-@Deprecated // TODO: Use CyclopsBlockEntityCommon instead; remove in next major
-public class CyclopsBlockEntity extends CyclopsBlockEntityCommon {
+public class CyclopsBlockEntityNeoForge extends CyclopsBlockEntityCommon {
 
-    public CyclopsBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
+    public CyclopsBlockEntityNeoForge(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
         super(type, blockPos, blockState);
     }
 

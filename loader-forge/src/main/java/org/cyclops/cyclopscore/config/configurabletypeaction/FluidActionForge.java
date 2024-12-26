@@ -51,7 +51,7 @@ public class FluidActionForge<M extends ModBaseForge> extends ConfigurableTypeAc
                     config.getNamedId()));
         }
         registryEntriesHolder.put(BuiltInRegistries.FLUID.key().toString(), Pair.of(config, () -> {
-            config.onForgeRegistered();
+            config.onRegistryRegistered();
             return null;
         }));
     }

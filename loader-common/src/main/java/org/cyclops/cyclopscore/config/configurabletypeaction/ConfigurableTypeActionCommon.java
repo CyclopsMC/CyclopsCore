@@ -63,7 +63,7 @@ public abstract class ConfigurableTypeActionCommon<C extends ExtendedConfigCommo
      */
     public static <C extends ExtendedConfigRegistry<C, I, M>, I, M extends IModBase> void register(C config) {
         register(config, () -> {
-            config.onForgeRegistered();
+            config.onRegistryRegistered();
             return null;
         });
     }

@@ -146,9 +146,9 @@ public abstract class ExtendedConfigCommon<C extends ExtendedConfigCommon<C, I, 
     }
 
     /**
-     * Overridable method that is immediately called after this element has been registered into a Forge registry.
+     * Overridable method that is immediately called after this element has been registered into a registry.
      */
-    public void onForgeRegistered() {
+    public void onRegistryRegistered() {
 
     }
 

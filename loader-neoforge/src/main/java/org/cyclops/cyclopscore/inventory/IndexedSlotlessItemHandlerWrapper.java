@@ -10,18 +10,13 @@ import org.cyclops.commoncapabilities.api.capability.itemhandler.SlotlessItemHan
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 
 import javax.annotation.Nonnull;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.PrimitiveIterator;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
 
 /**
  * A {@link org.cyclops.commoncapabilities.api.capability.itemhandler.ISlotlessItemHandler}
- * that uses the index from a {@link IndexedInventory}.
+ * that uses the index from a {@link IndexedInventoryCommon}.
  * @author rubensworks
  */
 public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrapper {
@@ -115,15 +110,6 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
 
     public static IntStream intIteratorToStream(PrimitiveIterator.OfInt it) {
         return StreamSupport.intStream(Spliterators.spliteratorUnknownSize(it, Spliterator.ORDERED), false);
-    }
-
-    public static interface IInventoryIndexReference {
-
-        public int getInventoryReferenceStackLimit(); // Named like this due to conflict with obfuscated vanilla method name
-        public Map<Item, Int2ObjectMap<ItemStack>> getIndex();
-        public PrimitiveIterator.OfInt getEmptySlots();
-        public PrimitiveIterator.OfInt getNonEmptySlots();
-
     }
 
     public static class IndexIterator implements IntIterator {

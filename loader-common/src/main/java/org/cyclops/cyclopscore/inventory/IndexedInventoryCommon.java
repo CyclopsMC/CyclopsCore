@@ -19,7 +19,7 @@ import java.util.PrimitiveIterator;
  * @author rubensworks
  *
  */
-public class IndexedInventoryCommon extends LargeInventoryCommon {
+public class IndexedInventoryCommon extends LargeInventoryCommon implements IInventoryIndexReference {
 
     private final Map<Item, Int2ObjectMap<ItemStack>> index = Maps.newIdentityHashMap();
     private IntSet emptySlots;
@@ -119,18 +119,22 @@ public class IndexedInventoryCommon extends LargeInventoryCommon {
         index.clear();
     }
 
+    @Override
     public int getInventoryReferenceStackLimit() {
         return getMaxStackSize();
     }
 
+    @Override
     public Map<Item, Int2ObjectMap<ItemStack>> getIndex() {
         return index;
     }
 
+    @Override
     public PrimitiveIterator.OfInt getEmptySlots() {
         return new WrappedIntIterator(this.emptySlots.iterator());
     }
 
+    @Override
     public PrimitiveIterator.OfInt getNonEmptySlots() {
         return new WrappedIntIterator(this.nonEmptySlots.iterator());
     }

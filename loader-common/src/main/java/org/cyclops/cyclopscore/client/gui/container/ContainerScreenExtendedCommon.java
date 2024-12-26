@@ -1,22 +1,32 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.helper.IModHelpers;
+import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.inventory.container.ContainerExtendedCommon;
+import org.cyclops.cyclopscore.network.packet.ButtonClickPacket;
 
+import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.List;
 
 /**
  * An extended GUI container.
  * @author rubensworks
  */
-public abstract class ContainerScreenExtendedCommon<T extends ContainerExtendedCommon> extends AbstractContainerScreen<T> {
+public abstract class ContainerScreenExtendedCommon<T extends ContainerExtendedCommon> extends AbstractContainerScreen<T>
+        implements IValueNotifiable {
 
     private final IModHelpers modHelpers;
 
@@ -88,6 +98,43 @@ public abstract class ContainerScreenExtendedCommon<T extends ContainerExtendedC
         return isHovering(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
     }
 
+    public void drawTooltip(List<Component> lines, PoseStack poseStack, int x, int y) {
+        IModHelpers.get().getGuiHelpers().drawTooltip(this, poseStack, lines, x, y);
+    }
+
+    /**
+     * Call this to create a button pressable callback so that the container is notified as well,
+     * assuming it has a corresponding registered {@link org.cyclops.cyclopscore.inventory.container.button.IContainerButtonAction} registered in the container
+     * by the same button id.
+     * @param buttonId The button id.
+     * @param clientPressable An optional pressable that should be called client-side.
+     * @return The created pressable.
+     */
+    protected net.minecraft.client.gui.components.Button.OnPress createServerPressable(String buttonId, @Nullable Button.OnPress clientPressable) {
+        return (button) -> {
+            if (clientPressable != null) {
+                clientPressable.onPress(button);
+            }
+            if (getMenu().onButtonClick(buttonId)) {
+                CyclopsCoreInstance.MOD.getPacketHandler().sendToServer(new ButtonClickPacket(buttonId));
+            }
+        };
+    }
+
+    @Override
+    public void onUpdate(int valueId, CompoundTag value) {
+
+    }
+
+    /**
+     * Will send client-side onUpdate events for all stored values
+     */
+    protected void refreshValues() {
+        for (int id : getMenu().getValueIds()) {
+            onUpdate(id, getMenu().getValue(id));
+        }
+    }
+
     /**
      * @return The total gui left offset.
      */
@@ -100,5 +147,10 @@ public abstract class ContainerScreenExtendedCommon<T extends ContainerExtendedC
      */
     public int getGuiTopTotal() {
         return this.topPos + offsetY;
+    }
+
+    @Override
+    public MenuType<?> getValueNotifiableType() {
+        return getMenu().getType();
     }
 }

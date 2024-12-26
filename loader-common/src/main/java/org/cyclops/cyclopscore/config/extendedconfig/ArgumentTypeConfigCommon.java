@@ -49,8 +49,8 @@ public class ArgumentTypeConfigCommon<A extends ArgumentType<?>, T extends Argum
     }
 
     @Override
-    public void onForgeRegistered() {
-        super.onForgeRegistered();
+    public void onRegistryRegistered() {
+        super.onRegistryRegistered();
         ArgumentTypeInfos.BY_CLASS.put(this.getInfoClass(), this.getInstance());
     }
 }

@@ -4,8 +4,10 @@ import org.cyclops.cyclopscore.CyclopsCoreFabric;
 import org.cyclops.cyclopscore.event.PlayerRingOfFireFabric;
 import org.cyclops.cyclopscore.init.ModBaseFabric;
 import org.cyclops.cyclopscore.network.IPacketHandler;
+import org.cyclops.cyclopscore.network.packet.ButtonClickPacket;
 import org.cyclops.cyclopscore.network.packet.ReloadResourcesPacket;
 import org.cyclops.cyclopscore.network.packet.RingOfFirePacket;
+import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketAsync;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketComplexAsync;
 import org.cyclops.cyclopscore.network.packet.debug.PingPongPacketComplexSync;
@@ -36,6 +38,8 @@ public class CommonProxyFabric extends CommonProxyComponentFabric {
 
         // Register packets.
         packetHandler.register(RingOfFirePacket.class, RingOfFirePacket.TYPE, RingOfFirePacket.CODEC);
+        packetHandler.register(ButtonClickPacket.class, ButtonClickPacket.TYPE, ButtonClickPacket.CODEC);
+        packetHandler.register(ValueNotifyPacket.class, ValueNotifyPacket.TYPE, ValueNotifyPacket.CODEC);
         packetHandler.register(ReloadResourcesPacket.class, ReloadResourcesPacket.TYPE, ReloadResourcesPacket.CODEC);
 
         // Register debug packets

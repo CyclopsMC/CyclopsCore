@@ -51,7 +51,7 @@ public class FluidActionNeoForge extends ConfigurableTypeActionCommon<FluidConfi
                     config.getNamedId()));
         }
         registryEntriesHolder.put(BuiltInRegistries.FLUID.key().toString(), Pair.of(config, () -> {
-            config.onForgeRegistered();
+            config.onRegistryRegistered();
             return null;
         }));
     }

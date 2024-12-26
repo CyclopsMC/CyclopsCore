@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -36,6 +37,14 @@ public interface IItemStackHelpers {
      * @param player The player to direct the motion to
      */
     public void spawnItemStackToPlayer(Level world, BlockPos pos, ItemStack stack, Player player);
+
+    /**
+     * Check if the given player has at least one of the given item.
+     * @param player The player.
+     * @param item The item to search in the inventory.
+     * @return If the player has the item.
+     */
+    public boolean hasPlayerItem(Player player, Item item);
 
     /**
      * Parse a string to an itemstack.

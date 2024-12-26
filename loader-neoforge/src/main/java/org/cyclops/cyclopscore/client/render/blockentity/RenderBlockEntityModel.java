@@ -9,16 +9,16 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
+import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntityCommon;
 
 import java.util.function.Function;
 
 /**
- * General renderer for {@link CyclopsBlockEntity} with models.
+ * General renderer for {@link CyclopsBlockEntityCommon} with models.
  * @author rubensworks
  *
  */
-public abstract class RenderBlockEntityModel<T extends CyclopsBlockEntity, M> implements BlockEntityRenderer<T> {
+public abstract class RenderBlockEntityModel<T extends CyclopsBlockEntityCommon, M> implements BlockEntityRenderer<T> {
 
     protected final M model;
     private final Material material;

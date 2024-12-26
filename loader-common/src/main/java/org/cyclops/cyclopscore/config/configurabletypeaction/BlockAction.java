@@ -62,7 +62,7 @@ public class BlockAction<M extends IModBase> extends ConfigurableTypeActionRegis
     public void onRegistriesFilled(BlockConfigCommon<M> eConfig) {
         // Register block and set creative tab.
         register(eConfig.getItemConstructor(), eConfig, () -> {
-            eConfig.onForgeRegistered(); // Manually call after item has been registered
+            eConfig.onRegistryRegistered(); // Manually call after item has been registered
             this.polish(eConfig);
             return null;
         });

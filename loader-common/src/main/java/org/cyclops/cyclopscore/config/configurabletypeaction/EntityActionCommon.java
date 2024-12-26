@@ -21,7 +21,7 @@ public class EntityActionCommon<M extends IModBase, T extends Entity> extends Co
         // Register item and set creative tab.
         register(eConfig, () -> {
             this.polish(eConfig);
-            eConfig.onForgeRegistered();
+            eConfig.onRegistryRegistered();
             return null;
         });
     }

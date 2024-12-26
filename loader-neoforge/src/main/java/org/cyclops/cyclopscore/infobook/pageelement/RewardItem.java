@@ -5,7 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.cyclops.cyclopscore.helper.ItemStackHelpers;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
@@ -32,7 +32,7 @@ public class RewardItem implements IReward {
     @Override
     public void obtain(Player player) {
         if (!player.getInventory().add(itemStack.copy())) {
-            ItemStackHelpers.spawnItemStack(player.getCommandSenderWorld(), player.blockPosition(), itemStack.copy());
+            IModHelpers.get().getItemStackHelpers().spawnItemStack(player.getCommandSenderWorld(), player.blockPosition(), itemStack.copy());
         }
     }
 
