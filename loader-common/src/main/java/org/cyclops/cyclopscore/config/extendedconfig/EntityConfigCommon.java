@@ -51,12 +51,12 @@ public abstract class EntityConfigCommon<M extends IModBase, T extends Entity> e
 
     public static <M extends IModBase, T extends Mob> BiFunction<EntityConfigCommon<M, T>, Supplier<EntityType<T>>, ItemConfigCommon<M>> getDefaultSpawnEggItemConfigConstructor(M mod, String itemName, int primaryColorIn, int secondaryColorIn, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
         return (entityConfig, entityType) -> {
-            Item.Properties itemProperties = new Item.Properties();
-            if (itemPropertiesModifier != null) {
-                itemProperties = itemPropertiesModifier.apply(itemProperties);
-            }
-            Item.Properties finalItemProperties = itemProperties;
-            ItemConfigCommon<M> itemConfig = new ItemConfigCommon<>(mod, itemName, (itemConfigSub) ->new SpawnEggItem(entityType.get(), finalItemProperties));
+            ItemConfigCommon<M> itemConfig = new ItemConfigCommon<>(mod, itemName, (itemConfigSub, properties) -> {
+                if (itemPropertiesModifier != null) {
+                    properties = itemPropertiesModifier.apply(properties);
+                }
+                return new SpawnEggItem(entityType.get(), properties);
+            });
             entityConfig.setSpawnEggItemConfig(itemConfig);
             return itemConfig;
         };

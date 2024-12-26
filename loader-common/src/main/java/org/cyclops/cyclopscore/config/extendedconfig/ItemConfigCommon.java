@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
@@ -10,7 +11,7 @@ import org.cyclops.cyclopscore.init.IModBase;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 /**
  * Config for items.
@@ -26,8 +27,8 @@ public class ItemConfigCommon<M extends IModBase> extends ExtendedConfigRegistry
      * @param namedId The unique name ID for the configurable.
      * @param elementConstructor The element constructor.
      */
-    public ItemConfigCommon(M mod, String namedId, Function<ItemConfigCommon<M>, ? extends Item> elementConstructor) {
-        super(mod, namedId, elementConstructor);
+    public ItemConfigCommon(M mod, String namedId, BiFunction<ItemConfigCommon<M>, Item.Properties, ? extends Item> elementConstructor) {
+        super(mod, namedId, eConfig -> elementConstructor.apply(eConfig, new Item.Properties().setId((ResourceKey<Item>) eConfig.getResourceKey())));
     }
 
     @Override

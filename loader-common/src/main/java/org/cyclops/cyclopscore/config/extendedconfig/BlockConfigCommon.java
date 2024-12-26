@@ -2,6 +2,9 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -30,9 +33,9 @@ public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConf
     private Item itemInstance;
     private BlockClientConfig<M> clientConfig;
 
-    public BlockConfigCommon(M mod, String namedId, Function<BlockConfigCommon<M>, ? extends Block> blockConstructor,
+    public BlockConfigCommon(M mod, String namedId, BiFunction<BlockConfigCommon<M>, Block.Properties, ? extends Block> blockConstructor,
                              @Nullable BiFunction<BlockConfigCommon<M>, Block, ? extends Item> itemConstructor) {
-        super(mod, namedId, blockConstructor);
+        super(mod, namedId, eConfig -> blockConstructor.apply(eConfig, Block.Properties.of().setId((ResourceKey<Block>) eConfig.getResourceKey())));
         this.itemConstructor = itemConstructor;
     }
 
@@ -42,7 +45,10 @@ public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConf
 
     protected static <M extends IModBase> BiFunction<BlockConfigCommon<M>, Block, ? extends BlockItem> getDefaultItemConstructor(M mod, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
         return (eConfig, block) -> {
-            Item.Properties itemProperties = new Item.Properties();
+            Item.Properties itemProperties = new Item.Properties()
+                    .setId(ResourceKey.create(Registries.ITEM,
+                            ResourceLocation.fromNamespaceAndPath(eConfig.getMod().getModId(), eConfig.getNamedId())))
+                    .useBlockDescriptionPrefix();
             if (itemPropertiesModifier != null) {
                 itemProperties = itemPropertiesModifier.apply(itemProperties);
             }

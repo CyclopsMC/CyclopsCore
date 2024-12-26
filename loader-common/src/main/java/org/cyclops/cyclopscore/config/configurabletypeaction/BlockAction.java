@@ -37,9 +37,9 @@ public class BlockAction<M extends IModBase> extends ConfigurableTypeActionRegis
      * @param callback A callback that will be called when the entry is registered.
      */
     public static <M extends IModBase> void register(@Nullable BiFunction<BlockConfigCommon<M>, Block, ? extends Item> itemBlockConstructor, BlockConfigCommon<M> config, @Nullable Callable<?> callback) {
-        register(config, itemBlockConstructor == null ? callback : null); // Delay onForgeRegistered callback until item has been registered if one is applicable
+        register(config, itemBlockConstructor == null ? callback : null); // Delay onRegistryRegistered callback until item has been registered if one is applicable
         if(itemBlockConstructor != null) {
-            ItemConfigCommon<M> itemConfig = new ItemConfigCommon<>(config.getMod(), config.getNamedId(), (iConfig) -> {
+            ItemConfigCommon<M> itemConfig = new ItemConfigCommon<>(config.getMod(), config.getNamedId(), (iConfig, properties) -> {
                 Item itemBlock = itemBlockConstructor.apply(config, config.getInstance());
                 Objects.requireNonNull(itemBlock, "Received a null item for the item block constructor of " + config.getNamedId());
                 return itemBlock;
