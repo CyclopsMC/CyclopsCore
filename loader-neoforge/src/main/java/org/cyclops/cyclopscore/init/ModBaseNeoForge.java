@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.init;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import lombok.Data;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -50,6 +49,7 @@ import java.util.function.Consumer;
 
 /**
  * Base class for mods which adds a few convenience methods.
+ *
  * @author rubensworks
  */
 public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModBaseCommon<T> {
@@ -204,9 +204,10 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
 
     /**
      * Save a mod value.
-     * @param key The key.
+     *
+     * @param key   The key.
      * @param value The value.
-     * @param <T> The value type.
+     * @param <T>   The value type.
      */
     public <T> void putGenericReference(EnumReferenceKey<T> key, T value) {
         genericReference.put(key, value);
@@ -225,18 +226,21 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
     /**
      * Get the value for a generic reference key.
      * The default keys can be found in {@link ModBaseNeoForge}.
+     *
      * @param key The key of a value.
      * @param <T> The type of value.
      * @return The value for the given key.
      */
     @SuppressWarnings("unchecked")
     public <T> T getReferenceValue(EnumReferenceKey<T> key) {
-        if(!genericReference.containsKey(key)) throw new IllegalArgumentException("Could not find " + key + " as generic reference item.");
+        if (!genericReference.containsKey(key))
+            throw new IllegalArgumentException("Could not find " + key + " as generic reference item.");
         return (T) genericReference.get(key);
     }
 
     /**
      * Called on the Forge setup lifecycle event.
+     *
      * @param event The setup event.
      */
     protected void setup(FMLCommonSetupEvent event) {
@@ -247,7 +251,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
 
         // Register proxy things
         ICommonProxy proxy = getProxy();
-        if(proxy != null) {
+        if (proxy != null) {
             proxy.registerEventHooks();
             proxy.registerPackets(getPacketHandler());
             proxy.registerTickHandlers();
@@ -256,25 +260,27 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
 
     /**
      * Called on the Forge client setup lifecycle event.
+     *
      * @param event The setup event.
      */
     protected void setupClient(FMLClientSetupEvent event) {
         // Register proxy things
         ICommonProxy proxy = getProxy();
-        if(proxy != null) {
+        if (proxy != null) {
             proxy.registerRenderers();
         }
     }
 
     protected void onRegisterKeyMappings(RegisterKeyMappingsEvent event) {
         ICommonProxy proxy = getProxy();
-        if(proxy != null) {
+        if (proxy != null) {
             proxy.registerKeyBindings(getKeyRegistry(), event);
         }
     }
 
     /**
      * Load things after Forge registries have been created.
+     *
      * @param event The Forge registry creation event.
      */
     private void afterRegistriesCreated(NewRegistryEvent event) {
@@ -283,6 +289,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
 
     /**
      * Load things before Forge registries are being filled.
+     *
      * @param event The Forge registry filling event.
      */
     private void beforeRegistriedFilled(RegisterEvent event) {
@@ -294,6 +301,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
 
     /**
      * Register the things that are related to when the server is starting.
+     *
      * @param event The Forge server starting event.
      */
     protected void onServerStarting(ServerStartingEvent event) {
@@ -306,30 +314,33 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
 
     /**
      * Register the things that are related to when the server is about to start.
+     *
      * @param event The Forge server about to start event.
      */
     protected void onServerAboutToStart(ServerAboutToStartEvent event) {
-        for(WorldStorage worldStorage : worldStorages) {
+        for (WorldStorage worldStorage : worldStorages) {
             worldStorage.onAboutToStartEvent(event);
         }
     }
 
     /**
      * Register the things that are related to server starting.
+     *
      * @param event The Forge server started event.
      */
     protected void onServerStarted(ServerStartedEvent event) {
-        for(WorldStorage worldStorage : worldStorages) {
+        for (WorldStorage worldStorage : worldStorages) {
             worldStorage.onStartedEvent(event);
         }
     }
 
     /**
      * Register the things that are related to server stopping, like persistent storage.
+     *
      * @param event The Forge server stopping event.
      */
     protected void onServerStopping(ServerStoppingEvent event) {
-        for(WorldStorage worldStorage : worldStorages) {
+        for (WorldStorage worldStorage : worldStorages) {
             worldStorage.onStoppingEvent(event);
         }
     }
@@ -338,6 +349,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
      * Register a new world storage type.
      * Make sure to call this at least before the event
      * {@link net.neoforged.neoforge.event.server.ServerStartedEvent} is called.
+     *
      * @param worldStorage The world storage to register.
      */
     public void registerWorldStorage(WorldStorage worldStorage) {
@@ -346,6 +358,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
 
     /**
      * Get the mod by id.
+     *
      * @param modId The mod id.
      * @return The mod instance or null.
      */
@@ -360,9 +373,9 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
 
     /**
      * Unique references to values that can be registered inside a mod.
+     *
      * @param <T> The type of value.
      */
-    @Data
     public static class EnumReferenceKey<T> {
 
         private final String key;
@@ -377,6 +390,45 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
             return new EnumReferenceKey<>(key, type);
         }
 
+        public String getKey() {
+            return this.key;
+        }
+
+        public Class<T> getType() {
+            return this.type;
+        }
+
+        public boolean equals(final Object o) {
+            if (o == this) return true;
+            if (!(o instanceof ModBaseNeoForge.EnumReferenceKey)) return false;
+            final EnumReferenceKey<?> other = (EnumReferenceKey<?>) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$key = this.getKey();
+            final Object other$key = other.getKey();
+            if (this$key == null ? other$key != null : !this$key.equals(other$key)) return false;
+            final Object this$type = this.getType();
+            final Object other$type = other.getType();
+            if (this$type == null ? other$type != null : !this$type.equals(other$type)) return false;
+            return true;
+        }
+
+        protected boolean canEqual(final Object other) {
+            return other instanceof ModBaseNeoForge.EnumReferenceKey;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $key = this.getKey();
+            result = result * PRIME + ($key == null ? 43 : $key.hashCode());
+            final Object $type = this.getType();
+            result = result * PRIME + ($type == null ? 43 : $type.hashCode());
+            return result;
+        }
+
+        public String toString() {
+            return "ModBaseNeoForge.EnumReferenceKey(key=" + this.getKey() + ", type=" + this.getType() + ")";
+        }
     }
 
 }

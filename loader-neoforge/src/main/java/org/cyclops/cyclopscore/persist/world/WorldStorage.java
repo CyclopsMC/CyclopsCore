@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.persist.world;
 
-import lombok.experimental.Delegate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -15,12 +14,12 @@ import org.cyclops.cyclopscore.persist.nbt.NBTProviderComponent;
 
 /**
  * Instances of this can store data inside the world NBT.
+ *
  * @author rubensworks
  */
 public abstract class WorldStorage implements INBTProvider {
 
     protected final ModBaseNeoForge mod;
-    @Delegate
     private INBTProvider nbtProviderComponent = new NBTProviderComponent(this);
 
     public WorldStorage(ModBaseNeoForge mod) {
@@ -54,6 +53,7 @@ public abstract class WorldStorage implements INBTProvider {
 
     /**
      * When a server is started.
+     *
      * @param event The received event.
      */
     public void onAboutToStartEvent(ServerAboutToStartEvent event) {
@@ -62,6 +62,7 @@ public abstract class WorldStorage implements INBTProvider {
 
     /**
      * When a server is started.
+     *
      * @param event The received event.
      */
     public void onStartedEvent(ServerStartedEvent event) {
@@ -72,6 +73,7 @@ public abstract class WorldStorage implements INBTProvider {
 
     /**
      * When a server is stopping.
+     *
      * @param event The received event.
      */
     public void onStoppingEvent(ServerStoppingEvent event) {
@@ -102,6 +104,16 @@ public abstract class WorldStorage implements INBTProvider {
      */
     public void beforeSave() {
 
+    }
+
+    @Override
+    public void writeGeneratedFieldsToNBT(CompoundTag tag, HolderLookup.Provider holderLookupProvider) {
+        this.nbtProviderComponent.writeGeneratedFieldsToNBT(tag, holderLookupProvider);
+    }
+
+    @Override
+    public void readGeneratedFieldsFromNBT(CompoundTag tag, HolderLookup.Provider holderLookupProvider) {
+        this.nbtProviderComponent.readGeneratedFieldsFromNBT(tag, holderLookupProvider);
     }
 
     /**

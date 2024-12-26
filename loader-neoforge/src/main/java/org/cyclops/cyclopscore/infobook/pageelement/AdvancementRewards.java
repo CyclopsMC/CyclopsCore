@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
-import lombok.Data;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -15,12 +14,13 @@ import java.util.Map;
 
 /**
  * A holder for advancements and rewards.
+ *
  * @author rubensworks
  */
-@Data
 public class AdvancementRewards {
 
     private static final Map<String, AdvancementRewards> ACHIEVEMENT_REWARDS = Maps.newHashMap();
+
     public static void reset() {
         ACHIEVEMENT_REWARDS.clear();
     }
@@ -71,5 +71,55 @@ public class AdvancementRewards {
             CompoundTag persistedTag = tag.getCompound(Player.PERSISTED_NBT_TAG);
             persistedTag.putBoolean(getNbtTagKey(), true);
         }
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public List<ResourceLocation> getAdvancements() {
+        return this.advancements;
+    }
+
+    public List<IReward> getRewards() {
+        return this.rewards;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof AdvancementRewards)) return false;
+        final AdvancementRewards other = (AdvancementRewards) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$id = this.getId();
+        final Object other$id = other.getId();
+        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        final Object this$advancements = this.getAdvancements();
+        final Object other$advancements = other.getAdvancements();
+        if (this$advancements == null ? other$advancements != null : !this$advancements.equals(other$advancements))
+            return false;
+        final Object this$rewards = this.getRewards();
+        final Object other$rewards = other.getRewards();
+        if (this$rewards == null ? other$rewards != null : !this$rewards.equals(other$rewards)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof AdvancementRewards;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $id = this.getId();
+        result = result * PRIME + ($id == null ? 43 : $id.hashCode());
+        final Object $advancements = this.getAdvancements();
+        result = result * PRIME + ($advancements == null ? 43 : $advancements.hashCode());
+        final Object $rewards = this.getRewards();
+        result = result * PRIME + ($rewards == null ? 43 : $rewards.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "AdvancementRewards(id=" + this.getId() + ", advancements=" + this.getAdvancements() + ", rewards=" + this.getRewards() + ")";
     }
 }

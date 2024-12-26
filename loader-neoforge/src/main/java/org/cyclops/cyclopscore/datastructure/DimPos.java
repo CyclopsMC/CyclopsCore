@@ -3,8 +3,6 @@ package org.cyclops.cyclopscore.datastructure;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import lombok.Data;
-import lombok.SneakyThrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -17,13 +15,14 @@ import org.cyclops.cyclopscore.helper.IModHelpers;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
  * A simple data class for a block position inside a world.
+ *
  * @author rubensworks
  */
-@Data(staticConstructor = "of")
 public class DimPos implements Comparable<DimPos> {
 
     private final String level;
@@ -49,9 +48,16 @@ public class DimPos implements Comparable<DimPos> {
         this(world, blockPos, null);
     }
 
-    @SneakyThrows
+    public static DimPos of(String level, BlockPos blockPos) {
+        return new DimPos(level, blockPos);
+    }
+
     public ResourceKey<Level> getLevelKey() {
-        return CACHE_WORLD_KEYS.get(getLevel());
+        try {
+            return CACHE_WORLD_KEYS.get(getLevel());
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Nullable
@@ -84,7 +90,7 @@ public class DimPos implements Comparable<DimPos> {
     @Override
     public int compareTo(DimPos o) {
         int compareDim = getLevel().compareTo(o.getLevel());
-        if(compareDim == 0) {
+        if (compareDim == 0) {
             return IModHelpers.get().getMinecraftHelpers().compareBlockPos(getBlockPos(), o.getBlockPos());
         }
         return compareDim;
@@ -112,4 +118,23 @@ public class DimPos implements Comparable<DimPos> {
         return new DimPos(world.location().toString(), blockPos);
     }
 
+    public String getLevel() {
+        return this.level;
+    }
+
+    public BlockPos getBlockPos() {
+        return this.blockPos;
+    }
+
+    public WeakReference<Level> getWorldReference() {
+        return this.worldReference;
+    }
+
+    public void setWorldReference(WeakReference<Level> worldReference) {
+        this.worldReference = worldReference;
+    }
+
+    public String toString() {
+        return "DimPos(level=" + this.getLevel() + ", blockPos=" + this.getBlockPos() + ", worldReference=" + this.getWorldReference() + ")";
+    }
 }

@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.infobook;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.*;
-import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -30,6 +29,7 @@ import java.util.List;
 
 /**
  * Base gui for {@link IInfoBook}.
+ *
  * @author rubensworks
  */
 public abstract class ScreenInfoBook<T extends ContainerExtended> extends AbstractContainerScreen<T> {
@@ -65,7 +65,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         super(container, playerInventory, title);
         this.infoBook = infoBook;
         this.texture = constructGuiTexture();
-        if(infoBook.getCurrentSection() == null) {
+        if (infoBook.getCurrentSection() == null) {
             InfoSection root = infoBook.getMod().getRegistryManager().getRegistry(IInfoBookRegistry.class).getRoot(infoBook);
             if (root == null) {
                 throw new IllegalStateException("Could not find the root of infobook " + infoBook);
@@ -86,8 +86,11 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
     protected int getPages() {
         return infoBook.getPagesPerView();
     }
+
     protected abstract int getGuiWidth();
+
     protected abstract int getGuiHeight();
+
     protected abstract int getPageWidth();
 
     protected int getPageYOffset() {
@@ -144,9 +147,9 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }, this));
         this.addRenderableWidget(this.buttonParent = new NextPageButton(left + 2, top + 2, 36, 180, 8, 8, (button) -> {
             goToLastPage = false;
-            if(IModHelpers.get().getMinecraftClientHelpers().isShifted()) {
+            if (IModHelpers.get().getMinecraftClientHelpers().isShifted()) {
                 nextSection = infoBook.getCurrentSection().getParent();
-                while(nextSection.getParent() != null) {
+                while (nextSection.getParent() != null) {
                     nextSection = nextSection.getParent();
                 }
             } else {
@@ -175,7 +178,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
 
         int page = infoBook.getCurrentPage();
-        for(int innerPage = page; innerPage <= page + getPages() - 1; innerPage++) {
+        for (int innerPage = page; innerPage <= page + getPages() - 1; innerPage++) {
             for (HyperLink link : infoBook.getCurrentSection().getLinks(innerPage)) {
                 if (link.getTranslationKey().equals(IModHelpers.get().getL10NHelpers().localize(link.getTranslationKey()))) {
                     CyclopsCoreNeoForge.clog(Level.WARN, "Could not find hyperlink localization for " + link.getTranslationKey());
@@ -186,7 +189,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
                     goToLastPage = false;
                     nextSection = ((TextOverlayButton) button).getLink().getTarget();
                     nextPage = 0;
-                    if(nextSection != infoBook.getCurrentSection()) infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
+                    if (nextSection != infoBook.getCurrentSection())
+                        infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
                     applyNavigation();
                 }, this));
             }
@@ -195,7 +199,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
                     goToLastPage = false;
                     nextSection = ((AdvancedButton) button).getTarget();
                     nextPage = 0;
-                    if(nextSection != infoBook.getCurrentSection()) infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
+                    if (nextSection != infoBook.getCurrentSection())
+                        infoBook.getHistory().push(new InfoSection.Location(infoBook.getCurrentPage(), infoBook.getCurrentSection()));
                     applyNavigation();
                 });
                 this.addRenderableWidget(advancedButton);
@@ -211,7 +216,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
     protected int getOffsetXTotal() {
         int total = 0;
-        for(int i = 0; i < getPages(); i++) {
+        for (int i = 0; i < getPages(); i++) {
             total += getOffsetXForPageBase(i);
         }
         return total;
@@ -224,13 +229,13 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         guiGraphics.blit(RenderType::guiTextured, texture, left, top, 0, 0, getPageWidth(), getGuiHeight(), 256, 256);
         blitMirrored(left + getPageWidth() - 1, top, 0, 0, getPageWidth(), getGuiHeight());
         int width = getPageWidth() - getOffsetXTotal();
-        for(int i = 0; i < getPages(); i++) {
+        for (int i = 0; i < getPages(); i++) {
             infoBook.getCurrentSection().drawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top, getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY, getFootnoteOffsetX(), getFootnoteOffsetY());
         }
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        for(int i = 0; i < getPages(); i++) {
+        for (int i = 0; i < getPages(); i++) {
             infoBook.getCurrentSection().postDrawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top + getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY);
         }
 
@@ -315,8 +320,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         infoSectionsToBake.add(infoBook.getCurrentSection());
         getPreviousSections(infoSectionsToBake);
         getNextSections(infoSectionsToBake);
-        for(InfoSection infoSection : infoSectionsToBake) {
-            if(infoSection != null) infoSection.bakeSection(getFont(), width, maxLines, lineHeight, getPageYOffset());
+        for (InfoSection infoSection : infoSectionsToBake) {
+            if (infoSection != null) infoSection.bakeSection(getFont(), width, maxLines, lineHeight, getPageYOffset());
         }
 
         updateButtons();
@@ -324,14 +329,14 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
     protected void getPreviousSections(List<InfoSection> sections) {
         InfoSection.Location location = infoBook.getCurrentSection().getPrevious(infoBook.getCurrentPage(), false);
-        if(location != null) {
+        if (location != null) {
             sections.add(location.getInfoSection());
         }
     }
 
     protected void getNextSections(List<InfoSection> sections) {
         InfoSection.Location location = infoBook.getCurrentSection().getNext(infoBook.getCurrentPage() + getPages() - 1, false);
-        if(location != null) {
+        if (location != null) {
             sections.add(location.getInfoSection());
         }
     }
@@ -347,7 +352,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
     }
 
     protected void applyNavigation() {
-        if(nextSection != null && (nextSection != infoBook.getCurrentSection() || infoBook.getCurrentPage() != nextPage)) {
+        if (nextSection != null && (nextSection != infoBook.getCurrentSection() || infoBook.getCurrentPage() != nextPage)) {
             infoBook.setCurrentSection(nextSection);
             nextSection = null;
             infoBook.setCurrentPage(nextPage);
@@ -417,20 +422,20 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         IModHelpers.get().getRenderHelpers().blitColored(guiGraphics, x + width - BORDER_WIDTH, y + height - BORDER_WIDTH, z, BORDER_X + 2 * BORDER_CORNER, BORDER_Y, BORDER_CORNER, BORDER_CORNER, r, g, b, alpha);
 
         // Sides
-        for(int i = BORDER_WIDTH; i < width - BORDER_WIDTH; i+=BORDER_WIDTH) {
+        for (int i = BORDER_WIDTH; i < width - BORDER_WIDTH; i += BORDER_WIDTH) {
             int drawWidth = BORDER_WIDTH;
-            if(i + BORDER_WIDTH >= width - BORDER_CORNER) {
+            if (i + BORDER_WIDTH >= width - BORDER_CORNER) {
                 drawWidth -= i - (width - BORDER_CORNER);
             }
             IModHelpers.get().getRenderHelpers().blitColored(guiGraphics, x + i, y - BORDER_WIDTH, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH, r, g, b, alpha);
             IModHelpers.get().getRenderHelpers().blitColored(guiGraphics, x + i, y + height, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, drawWidth, BORDER_WIDTH, r, g, b, alpha);
         }
-        for(int i = BORDER_WIDTH; i < height - BORDER_WIDTH; i+=BORDER_WIDTH) {
+        for (int i = BORDER_WIDTH; i < height - BORDER_WIDTH; i += BORDER_WIDTH) {
             int drawHeight = BORDER_WIDTH;
-            if(i + BORDER_WIDTH >= height - BORDER_CORNER) {
+            if (i + BORDER_WIDTH >= height - BORDER_CORNER) {
                 drawHeight -= i - (height - BORDER_CORNER);
             }
-            if(drawHeight > 0) {
+            if (drawHeight > 0) {
                 IModHelpers.get().getRenderHelpers().blitColored(guiGraphics, x - BORDER_WIDTH, y + i, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight, r, g, b, alpha);
                 IModHelpers.get().getRenderHelpers().blitColored(guiGraphics, x + width, y + i, z, BORDER_X + 4 * BORDER_CORNER, BORDER_Y, BORDER_WIDTH, drawHeight, r, g, b, alpha);
             }
@@ -449,12 +454,13 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
     @Override
     public void containerTick() {
         super.containerTick();
-        if(!this.minecraft.player.isAlive()) {
+        if (!this.minecraft.player.isAlive()) {
             this.minecraft.player.closeContainer();
         }
     }
 
     public abstract void playPageFlipSound(SoundManager soundHandler);
+
     public abstract void playPagesFlipSound(SoundManager soundHandler);
 
     @Override
@@ -488,7 +494,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.getX() && mouseY >= this.getY() &&
-                               mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
+                        mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
                 int k = textureX;
                 int l = textureY;
 
@@ -514,7 +520,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
     static class TextOverlayButton extends Button {
 
         private final ScreenInfoBook guiInfoBook;
-        @Getter private HyperLink link;
+        private HyperLink link;
 
         public TextOverlayButton(HyperLink link, int x, int y, int height, int maxWidth, Button.OnPress onPress,
                                  ScreenInfoBook guiInfoBook) {
@@ -554,6 +560,9 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
             guiInfoBook.playPagesFlipSound(soundHandler);
         }
 
+        public HyperLink getLink() {
+            return link;
+        }
     }
 
 }

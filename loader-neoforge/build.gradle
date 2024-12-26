@@ -1,5 +1,5 @@
-import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import net.darkhax.curseforgegradle.Constants as CFG_Constants
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
 plugins {
     id 'multiloader-loader-neoforge'
@@ -42,12 +42,6 @@ dependencies {
 
     //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-neoforge:${curios_version}") // https://maven.theillusivec4.top/top/theillusivec4/curios/curios-neoforge/
     compileOnly "top.theillusivec4.curios:curios-neoforge:${neoforge_curios_version}:api"
-
-    // Project lombok
-    compileOnly 'org.projectlombok:lombok:1.18.30'
-    annotationProcessor 'org.projectlombok:lombok:1.18.30'
-    testCompileOnly 'org.projectlombok:lombok:1.18.30'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
 runs {
