@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 
@@ -138,5 +139,13 @@ public interface IMinecraftHelpers {
      * @return An output item.
      */
     public ItemStack getRecipeOutput(RecipeHolder<?> recipe, Level level);
+
+    /**
+     * Get the output item of a recipe.
+     * @param recipe A recipe.
+     * @param level The world.
+     * @return An output item.
+     */
+    public ItemStack getRecipeOutput(Recipe<?> recipe, Level level);
 
 }

@@ -5,12 +5,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ServerLevelData;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -86,6 +89,15 @@ public abstract class MinecraftHelpersCommon implements IMinecraftHelpers {
 
     @Override
     public ItemStack getRecipeOutput(RecipeHolder<?> recipe, Level level) {
-        return recipe.value().display().get(0).result().resolveForFirstStack(SlotDisplayContext.fromLevel(level));
+        return getRecipeOutput(recipe.value(), level);
+    }
+
+    @Override
+    public ItemStack getRecipeOutput(Recipe<?> recipe, Level level) {
+        List<RecipeDisplay> displays = recipe.display();
+        if (displays.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
+        return displays.getFirst().result().resolveForFirstStack(SlotDisplayContext.fromLevel(level));
     }
 }
