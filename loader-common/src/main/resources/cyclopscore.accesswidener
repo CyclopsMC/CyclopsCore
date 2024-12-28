@@ -53,3 +53,8 @@ accessible class net/minecraft/client/particle/ParticleEngine$SpriteParticleRegi
 accessible method net/minecraft/client/particle/ParticleEngine$SpriteParticleRegistration create (Lnet/minecraft/client/particle/SpriteSet;)Lnet/minecraft/client/particle/ParticleProvider;
 accessible field net/minecraft/client/particle/ParticleEngine particles Ljava/util/Map;
 accessible field net/minecraft/client/particle/ParticleEngine textureManager Lnet/minecraft/client/renderer/texture/TextureManager;
+
+# BlockEntityType
+accessible class net/minecraft/world/level/block/entity/BlockEntityType
+accessible method net/minecraft/world/level/block/entity/BlockEntityType <init> (Lnet/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier;Ljava/util/Set;)V
+accessible class net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier
