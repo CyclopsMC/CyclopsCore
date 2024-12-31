@@ -1,22 +1,18 @@
 package org.cyclops.cyclopscore.client.particle;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Camera;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.world.entity.LivingEntity;
-import org.cyclops.cyclopscore.helper.IModHelpers;
-import org.cyclops.cyclopscore.helper.IRenderHelpers;
-import org.lwjgl.opengl.GL11;
-
-import java.util.Objects;
+import org.cyclops.cyclopscore.Reference;
 
 /**
  * A blurred static fading particle with any possible color.
@@ -24,6 +20,32 @@ import java.util.Objects;
  *
  */
 public class ParticleBlur extends TextureSheetParticle {
+
+    public static final RenderType RENDER_TYPE = new RenderType(
+            Reference.MOD_ID + ":blur",
+            DefaultVertexFormat.PARTICLE,
+            VertexFormat.Mode.QUADS,
+            1536,
+            false,
+            false,
+            () -> {
+                RenderType.translucentParticle(TextureAtlas.LOCATION_PARTICLES).setupRenderState();
+
+                RenderSystem.depthMask(false);
+                RenderSystem.enableBlend();
+                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+
+                AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES);
+                texture.setFilter(true, false);
+            }, () -> {
+                RenderSystem.disableBlend();
+                RenderSystem.defaultBlendFunc();
+                RenderSystem.depthMask(true);
+
+                RenderType.translucentParticle(TextureAtlas.LOCATION_PARTICLES).clearRenderState();
+            }
+            ) {};
+    public static final ParticleRenderType PARTICLE_RENDER_TYPE = new ParticleRenderType(Reference.MOD_ID + ":blur", RENDER_TYPE);
 
     private static final int MAX_VIEW_DISTANCE = 30;
 
@@ -72,7 +94,7 @@ public class ParticleBlur extends TextureSheetParticle {
 
     @Override
     public ParticleRenderType getRenderType() {
-        return ParticleRenderType.CUSTOM;
+        return PARTICLE_RENDER_TYPE;
     }
 
     @Override
@@ -115,33 +137,5 @@ public class ParticleBlur extends TextureSheetParticle {
         }
         quadSize = originalScale * agescale * 0.5F;
         return quadSize;
-    }
-
-    @Override
-    public void renderCustom(PoseStack poseStack, MultiBufferSource bufferSource, Camera camera, float partialTick) {
-        RenderSystem.depthMask(false);
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE);
-        //RenderSystem.alphaFunc(GL11.GL_GREATER, 0.003921569F);
-        //RenderSystem.disableLighting();
-
-        IRenderHelpers renderHelpers = IModHelpers.get().getRenderHelpers();
-        renderHelpers.bindTexture(TextureAtlas.LOCATION_PARTICLES);
-        AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES);
-//            lastBlur = texture.blur;
-//            lastMipmap = texture.mipmap;
-        texture.setFilter(true, false);
-
-//        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-        VertexConsumer buffer = bufferSource.getBuffer(Objects.requireNonNull(getRenderType().renderType()));
-
-//        ((BufferBuilderWrapper) builder).cc$setRunnableOnBuild(this::end); // TODO: rm mixin?
-
-        this.render(buffer, camera, partialTick);
-
-//        Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES).setFilter(lastBlur, lastMipmap);
-        //RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
-        RenderSystem.disableBlend();
-        RenderSystem.depthMask(true);
     }
 }

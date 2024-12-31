@@ -15,7 +15,6 @@
     "MixinServerPlayer"
   ],
   "client": [
-    "MixinBufferBuilder",
     "MixinClientLevel",
     "MixinLivingEntityRenderer",
     "MixinParticleEngine"
