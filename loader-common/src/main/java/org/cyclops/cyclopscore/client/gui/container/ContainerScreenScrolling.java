@@ -140,6 +140,12 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
         return super.mouseDragged(mouseX, mouseY, mouseButton, mouseXPrev, mouseYPrev);
     }
 
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double mouseZ, double scroll) {
+        return (isHovering(getScrollX(), getScrollY(), this.scrollbar.getWidth(), getScrollHeight(), mouseX, mouseY) && this.scrollbar.mouseScrolled(mouseX, mouseY, mouseZ, scroll))
+                || super.mouseScrolled(mouseX, mouseY, mouseZ, scroll);
+    }
+
     protected void updateSearch(String searchString) {
         getMenu().updateFilter(searchString);
         this.scrollbar.setTotalRows(getMenu().getFilteredItemCount() / getMenu().getColumns());
