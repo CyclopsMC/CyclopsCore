@@ -32,6 +32,7 @@ public class ItemStackBlockEntityRendererBase implements NoDataSpecialModelRende
     public void render(ItemDisplayContext itemDisplayContext, PoseStack poseStack, MultiBufferSource multiBufferSource, int combinedLightIn, int combinedOverlayIn, boolean b) {
         if (this.blockEntity == null) {
             this.blockEntity = this.blockEntitySupplier.get();
+            this.blockEntity.setLevel(Minecraft.getInstance().level);
         }
         this.blockEntityRenderDispatcher.render(this.blockEntity, 0, poseStack, multiBufferSource);
     }
