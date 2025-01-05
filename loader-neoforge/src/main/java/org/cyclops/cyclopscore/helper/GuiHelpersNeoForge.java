@@ -30,7 +30,7 @@ public class GuiHelpersNeoForge extends GuiHelpersCommon implements IGuiHelpersN
 
     @Override
     public void renderFluidTank(GuiGraphics gui, @Nullable FluidStack fluidStack, int capacity,
-                                       int x, int y, int width, int height) {
+                                int x, int y, int width, int height) {
         if (fluidStack != null && !fluidStack.isEmpty() && capacity > 0) {
             gui.pose().pushPose();
             GlStateManager._enableBlend();
@@ -61,7 +61,8 @@ public class GuiHelpersNeoForge extends GuiHelpersCommon implements IGuiHelpersN
 
                 Lighting.setupForFlatItems();
                 RenderSystem.setShaderColor(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight(), 1);
-                gui.blitSprite(RenderType::guiTextured, icon, x, y - textureHeight - verticalOffset + height, 0, width, textureHeight);
+                gui.blitSprite(RenderType::guiTextured, icon, x, y - textureHeight - verticalOffset + height, width, textureHeight);
+                gui.flush();
                 Lighting.setupFor3DItems();
                 RenderSystem.setShaderColor(1, 1, 1, 1);
 

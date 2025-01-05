@@ -61,7 +61,8 @@ public class GuiHelpersForge extends GuiHelpersCommon implements IGuiHelpersForg
 
                 Lighting.setupForFlatItems();
                 RenderSystem.setShaderColor(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight(), 1);
-                gui.blitSprite(RenderType::guiTextured, icon, x, y - textureHeight - verticalOffset + height, 0, width, textureHeight);
+                gui.blitSprite(RenderType::guiTextured, icon, x, y - textureHeight - verticalOffset + height, width, textureHeight);
+                gui.flush();
                 Lighting.setupFor3DItems();
                 RenderSystem.setShaderColor(1, 1, 1, 1);
 
