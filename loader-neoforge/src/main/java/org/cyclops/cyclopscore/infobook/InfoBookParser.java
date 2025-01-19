@@ -239,7 +239,9 @@ public class InfoBookParser {
         String name = BuiltInRegistries.RECIPE_TYPE.getKey(recipeType).toString();
         registerAppendixFactory(name, (infoBook, node) -> {
             ResourceLocation recipe = getNodeResourceLocation(node);
-            RecipeHelpers.requestRecipeDisplay(recipeType, recipe);
+            if (infoBook.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
+                RecipeHelpers.requestRecipeDisplay(recipeType, recipe);
+            }
             return factory.create(infoBook, () -> RecipeHelpers.getRecipeDisplay(recipeType, recipe));
         });
         registerAppendixItemFactory(name, factory);
