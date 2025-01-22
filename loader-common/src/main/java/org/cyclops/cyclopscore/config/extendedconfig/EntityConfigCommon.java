@@ -29,6 +29,7 @@ public abstract class EntityConfigCommon<M extends IModBase, T extends Entity> e
 
     @Nullable
     private ItemConfigCommon<M> spawnEggItemConfig;
+    private EntityClientConfig<M, T> clientConfig;
 
     public EntityConfigCommon(M mod, String namedId, Function<EntityConfigCommon<M, T>, EntityType.Builder<T>> elementConstructor) {
         this(mod, namedId, elementConstructor, null);
@@ -72,7 +73,17 @@ public abstract class EntityConfigCommon<M extends IModBase, T extends Entity> e
         return ConfigurableTypeCommon.ENTITY;
     }
 
-    public abstract EntityClientConfig<M, T> getEntityClientConfig();
+    public abstract EntityClientConfig<M, T> constructEntityClientConfig();
+
+    public final EntityClientConfig<M, T> getEntityClientConfig() {
+        if (getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
+            if (this.clientConfig == null) {
+                this.clientConfig = constructEntityClientConfig();
+            }
+            return this.clientConfig;
+        }
+        return null;
+    }
 
     @Override
     public Registry<? super EntityType<T>> getRegistry() {
