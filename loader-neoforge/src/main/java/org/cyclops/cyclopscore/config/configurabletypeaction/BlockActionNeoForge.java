@@ -43,7 +43,7 @@ public class BlockActionNeoForge extends BlockAction<ModBaseNeoForge<?>> {
     public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event){
         for (BlockConfigCommon<?> config : MODEL_ENTRIES) {
             IDynamicModelElementCommon dynamicModelElement = config.getBlockClientConfig().getDynamicModelElement();
-            BakedModel dynamicModel = dynamicModelElement.createDynamicModel(pair -> event.getBakingResult().blockStateModels().put(pair.getLeft(), pair.getRight()));
+            BakedModel dynamicModel = dynamicModelElement.createDynamicModel(pair -> event.getBakingResult().blockStateModels().put(pair.getLeft(), pair.getRight()), key -> event.getBakingResult().blockStateModels().get(key));
 
             if (config.getBlockClientConfig().dynamicBlockVariantLocation != null) {
                 event.getBakingResult().blockStateModels().put(config.getBlockClientConfig().dynamicBlockVariantLocation, dynamicModel);

@@ -45,7 +45,7 @@ public class ItemActionForge<M extends ModBaseForge> extends ItemAction<M> {
         for (ItemConfigCommon<?> config : MODEL_ENTRIES) {
             IDynamicModelElementCommon dynamicModelElement = config.getItemClientConfig().getDynamicModelElement();
             if (config.getItemClientConfig().dynamicItemVariantLocation != null) {
-                event.getResults().blockStateModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(pair -> event.getResults().blockStateModels().put(pair.getLeft(), pair.getRight())));
+                event.getResults().blockStateModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(pair -> event.getResults().blockStateModels().put(pair.getLeft(), pair.getRight()), key -> event.getResults().blockStateModels().get(key)));
             }
         }
     }

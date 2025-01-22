@@ -52,7 +52,7 @@ public class BlockActionForge<M extends ModBaseForge<M>> extends BlockAction<M> 
         for (BlockConfigCommon<?> config : MODEL_ENTRIES) {
             BakedModel dynamicModel;
             IDynamicModelElementCommon dynamicModelElement = config.getBlockClientConfig().getDynamicModelElement();
-            dynamicModel = dynamicModelElement.createDynamicModel(pair -> event.getResults().blockStateModels().put(pair.getLeft(), pair.getRight()));
+            dynamicModel = dynamicModelElement.createDynamicModel(pair -> event.getResults().blockStateModels().put(pair.getLeft(), pair.getRight()), key -> event.getResults().blockStateModels().get(key));
             if (config.getBlockClientConfig().dynamicBlockVariantLocation != null) {
                 event.getResults().blockStateModels().put(config.getBlockClientConfig().dynamicBlockVariantLocation, dynamicModel);
             }

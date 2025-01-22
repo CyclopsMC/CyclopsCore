@@ -42,7 +42,7 @@ public class ItemActionNeoForge<M extends ModBaseNeoForge<M>> extends ItemAction
         for (ItemConfigCommon<?> config : MODEL_ENTRIES) {
             IDynamicModelElementCommon dynamicModelElement = config.getItemClientConfig().getDynamicModelElement();
             if (config.getItemClientConfig().dynamicItemVariantLocation != null) {
-                event.getBakingResult().blockStateModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(pair -> event.getBakingResult().blockStateModels().put(pair.getLeft(), pair.getRight())));
+                event.getBakingResult().blockStateModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(pair -> event.getBakingResult().blockStateModels().put(pair.getLeft(), pair.getRight()), key -> event.getBakingResult().blockStateModels().get(key)));
             }
         }
     }
