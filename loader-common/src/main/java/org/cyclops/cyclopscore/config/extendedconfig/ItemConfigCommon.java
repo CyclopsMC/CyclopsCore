@@ -21,6 +21,8 @@ import java.util.function.BiFunction;
  */
 public class ItemConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<ItemConfigCommon<M>, Item, M> implements IModelProviderConfig {
 
+    private ItemClientConfig<M> clientConfig;
+
     /**
      * Make a new instance.
      * @param mod     The mod instance.
@@ -61,9 +63,20 @@ public class ItemConfigCommon<M extends IModBase> extends ExtendedConfigRegistry
     }
 
     @Nullable
-    public ItemClientConfig<M> getItemClientConfig() {
+    public ItemClientConfig<M> constructItemClientConfig() {
         if (getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
             return new ItemClientConfig<>(this);
+        }
+        return null;
+    }
+
+    @Nullable
+    public final ItemClientConfig<M> getItemClientConfig() {
+        if (getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
+            if (this.clientConfig == null) {
+                this.clientConfig = constructItemClientConfig();
+            }
+            return this.clientConfig;
         }
         return null;
     }
