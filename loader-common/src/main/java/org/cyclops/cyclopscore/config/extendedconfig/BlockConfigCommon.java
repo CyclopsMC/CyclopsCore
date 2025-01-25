@@ -45,15 +45,19 @@ public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConf
 
     protected static <M extends IModBase> BiFunction<BlockConfigCommon<M>, Block, ? extends BlockItem> getDefaultItemConstructor(M mod, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
         return (eConfig, block) -> {
-            Item.Properties itemProperties = new Item.Properties()
-                    .setId(ResourceKey.create(Registries.ITEM,
-                            ResourceLocation.fromNamespaceAndPath(eConfig.getMod().getModId(), eConfig.getNamedId())))
-                    .useBlockDescriptionPrefix();
+            Item.Properties itemProperties = eConfig.createDefaultItemProperties();
             if (itemPropertiesModifier != null) {
                 itemProperties = itemPropertiesModifier.apply(itemProperties);
             }
             return new BlockItem(block, itemProperties);
         };
+    }
+
+    public Item.Properties createDefaultItemProperties() {
+        return new Item.Properties()
+                .setId(ResourceKey.create(Registries.ITEM,
+                        ResourceLocation.fromNamespaceAndPath(this.getMod().getModId(), this.getNamedId())))
+                .useBlockDescriptionPrefix();
     }
 
     @Nullable
