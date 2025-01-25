@@ -17,6 +17,8 @@ public class ConfigurableTypeCommon {
     public static final ConfigurableTypeCommon CAPABILITY = new ConfigurableTypeCommon(false, CapabilityConfigCommon.class, new CapabilityAction<>(), "capability");
     public static final ConfigurableTypeCommon RECIPE = new ConfigurableTypeCommon(true, RecipeConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "recipe");
     public static final ConfigurableTypeCommon RECIPE_TYPE = new ConfigurableTypeCommon(true, RecipeTypeConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "recipe_type");
+    public static final ConfigurableTypeCommon RECIPE_DISPLAY = new ConfigurableTypeCommon(true, RecipeDisplayConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "recipe_display");
+    public static final ConfigurableTypeCommon RECIPE_BOOK_CATEGORY = new ConfigurableTypeCommon(true, RecipeBookCategoryConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "recipe_book_category");
     public static final ConfigurableTypeCommon BLOCK_ENTITY = new ConfigurableTypeCommon(true, BlockEntityConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "block_entity");
     public static final ConfigurableTypeCommon WORLD_FEATURE = new ConfigurableTypeCommon(true, WorldFeatureConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "world_feature");
     public static final ConfigurableTypeCommon WORLD_STRUCTURE = new ConfigurableTypeCommon(true, WorldStructureConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "world_structure");
