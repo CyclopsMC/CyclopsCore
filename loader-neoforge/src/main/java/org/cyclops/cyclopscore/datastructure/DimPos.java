@@ -63,7 +63,7 @@ public class DimPos implements Comparable<DimPos> {
     @Nullable
     public Level getLevel(boolean forceLoad) {
         if (worldReference == null) {
-            if (IModHelpers.get().getMinecraftHelpers().isClientSide()) {
+            if (IModHelpers.get().getMinecraftHelpers().isClientSideThread()) {
                 ClientLevel world = Minecraft.getInstance().level;
                 if (world != null && world.dimension().location().toString().equals(this.getLevel())) {
                     this.worldReference = new WeakReference<>(world);
