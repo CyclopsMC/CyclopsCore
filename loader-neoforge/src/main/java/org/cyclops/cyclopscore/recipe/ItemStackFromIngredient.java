@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -23,25 +25,28 @@ import java.util.Map;
  */
 public class ItemStackFromIngredient {
     private final List<String> modPriorities;
-    private final String tag;
-    private final Ingredient ingredient;
+    private final TagKey<Item> tag;
     private final int count;
 
     @Nullable
+    private Ingredient ingredient;
+    @Nullable
     private ItemStack firstItemStack;
 
-    public ItemStackFromIngredient(List<String> modPriorities, String tag, Ingredient ingredient, int count) {
+    public ItemStackFromIngredient(List<String> modPriorities, TagKey<Item> tag, int count) {
         this.modPriorities = modPriorities;
         this.tag = tag;
-        this.ingredient = ingredient;
         this.count = count;
     }
 
-    public String getTag() {
+    public TagKey<Item> getTag() {
         return tag;
     }
 
     public Ingredient getIngredient() {
+        if (ingredient == null) {
+            ingredient = Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(tag));
+        }
         return ingredient;
     }
 
@@ -55,7 +60,7 @@ public class ItemStackFromIngredient {
         }
 
         // Obtain all stacks for the given tag
-        HolderSet<Item> matchingItems = ingredient.getValues();
+        HolderSet<Item> matchingItems = getIngredient().getValues();
 
         // Create a mod id to order index map
         Map<String, Integer> modPriorityIndex = Maps.newHashMap();
@@ -83,8 +88,7 @@ public class ItemStackFromIngredient {
         for (String modPriority : modPriorities) {
             buf.writeUtf(modPriority);
         }
-        buf.writeUtf(tag);
-        Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient);
+        TagKey.streamCodec(Registries.ITEM).encode(buf, tag);
         buf.writeVarInt(count);
     }
 
@@ -94,10 +98,9 @@ public class ItemStackFromIngredient {
         for (int i = 0; i < modPrioritiesSize; i++) {
             modPriorities.add(buf.readUtf());
         }
-        String key = buf.readUtf();
-        Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
+        TagKey<Item> tag = TagKey.streamCodec(Registries.ITEM).decode(buf);
         int count = buf.readVarInt();
 
-        return new ItemStackFromIngredient(modPriorities, key, ingredient, count);
+        return new ItemStackFromIngredient(modPriorities, tag, count);
     }
 }
