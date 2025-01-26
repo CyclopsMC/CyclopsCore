@@ -1,7 +1,7 @@
 {
     "_comment": "Vanilla toevoegingen",
     "itemGroup.cyclopscore": "Cyclops Core",
-    "general.cyclopscore.dev_world": "Ontwikkelaar wereld",
+    "general.cyclopscore.dev_world": "Ontwikkelaarwereld",
     "general.cyclopscore.tooltip.info": "<Shift voor info>",
     "general.cyclopscore.info.enabled": "§aIngeschakeld",
     "general.cyclopscore.info.disabled": "Uitgeschakeld",
@@ -14,7 +14,7 @@
     "gui.cyclopscore.right": "Rechts",
     "gui.cyclopscore.up": "Omhoog",
     "gui.cyclopscore.down": "Omlaag",
-    "gui.cyclopscore.infobook": "Informatie boek",
+    "gui.cyclopscore.infobook": "Informatieboek",
     "infobook.cyclopscore.next_page": "Volgende pagina",
     "infobook.cyclopscore.previous_page": "Vorige pagina",
     "infobook.cyclopscore.parent_section": "Bovenliggende sectie",
