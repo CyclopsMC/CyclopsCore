@@ -552,7 +552,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
                 if (isHover) {
                     msg = msg.withStyle(ChatFormatting.UNDERLINE);
                 }
-                guiGraphics.drawString(minecraft.font, msg, getX(), getY(), IModHelpers.get().getBaseHelpers().RGBToInt(isHover ? 100 : 0, isHover ? 100 : 0, isHover ? 150 : 125));
+                guiGraphics.drawString(minecraft.font, msg, getX(), getY(), IModHelpers.get().getBaseHelpers().RGBToInt(isHover ? 100 : 0, isHover ? 100 : 0, isHover ? 150 : 125), false);
             }
         }
 
