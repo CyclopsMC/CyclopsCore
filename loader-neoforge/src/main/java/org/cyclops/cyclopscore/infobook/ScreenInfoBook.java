@@ -2,7 +2,8 @@ package org.cyclops.cyclopscore.infobook;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -23,9 +24,11 @@ import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.inventory.container.ContainerExtended;
 import org.cyclops.cyclopscore.network.packet.RequestPlayerNbtPacket;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Base gui for {@link IInfoBook}.
@@ -227,7 +230,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
         guiGraphics.blit(RenderType::guiTextured, texture, left, top, 0, 0, getPageWidth(), getGuiHeight(), 256, 256);
-        blitMirrored(left + getPageWidth() - 1, top, 0, 0, getPageWidth(), getGuiHeight());
+        blitMirrored(guiGraphics, RenderType::guiTextured, texture, left + getPageWidth() - 1, top, 0, 0, getPageWidth(), getGuiHeight(), 256, 256, -1);
         int width = getPageWidth() - getOffsetXTotal();
         for (int i = 0; i < getPages(); i++) {
             infoBook.getCurrentSection().drawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top, getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY, getFootnoteOffsetX(), getFootnoteOffsetY());
@@ -284,17 +287,15 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public void blitMirrored(int x, int y, int u, int v, int width, int height) {
-        float f = 0.00390625F;
-        float f1 = 0.00390625F;
-        Tesselator tessellator = Tesselator.getInstance();
-        BufferBuilder worldRenderer = tessellator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+    public void blitMirrored(GuiGraphics guiGraphics, Function<ResourceLocation, RenderType> renderTypeGetter, ResourceLocation atlasLocation, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight, int color) {
+        RenderType rendertype = renderTypeGetter.apply(atlasLocation);
+        Matrix4f matrix4f = guiGraphics.pose().last().pose();
+        VertexConsumer vertexconsumer = guiGraphics.bufferSource.getBuffer(rendertype);
         int z = 0;
-        worldRenderer.addVertex(x + 0, y + height, z).setUv(((float) (u + width) * f), ((float) (v + height) * f1));
-        worldRenderer.addVertex(x + width, y + height, z).setUv(((float) (u + 0) * f), ((float) (v + height) * f1));
-        worldRenderer.addVertex(x + width, y + 0, z).setUv(((float) (u + 0) * f), ((float) (v + 0) * f1));
-        worldRenderer.addVertex(x + 0, y + 0, z).setUv(((float) (u + width) * f), ((float) (v + 0) * f1));
-        BufferUploader.drawWithShader(worldRenderer.buildOrThrow());
+        vertexconsumer.addVertex(matrix4f, x + 0, y + height, z).setUv(((float) (u + width) / (float) textureWidth), ((float) (v + height) / textureHeight)).setColor(color);
+        vertexconsumer.addVertex(matrix4f, x + width, y + height, z).setUv(((float) (u + 0) / (float) textureWidth), ((float) (v + height) / textureHeight)).setColor(color);
+        vertexconsumer.addVertex(matrix4f, x + width, y + 0, z).setUv(((float) (u + 0) / (float) textureWidth), ((float) (v + 0) / textureHeight)).setColor(color);
+        vertexconsumer.addVertex(matrix4f, x + 0, y + 0, z).setUv(((float) (u + width) / (float) textureWidth), ((float) (v + 0) / textureHeight)).setColor(color);
     }
 
     @Override

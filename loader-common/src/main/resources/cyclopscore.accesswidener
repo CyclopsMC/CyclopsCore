@@ -12,6 +12,9 @@ accessible field net/minecraft/client/gui/screens/inventory/AbstractContainerScr
 accessible field net/minecraft/world/inventory/MenuType constructor Lnet/minecraft/world/inventory/MenuType$MenuSupplier;
 mutable field net/minecraft/world/inventory/AbstractContainerMenu slots Lnet/minecraft/core/NonNullList;
 
+# GuiGraphics
+accessible field net/minecraft/client/gui/GuiGraphics bufferSource L/net/minecraft/client/renderer/MultiBufferSource#BufferSource;
+
 # World
 accessible field net/minecraft/world/level/Level thread Ljava/lang/Thread;
 
