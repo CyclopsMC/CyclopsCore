@@ -134,7 +134,10 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
                 int finalOffsetY = offsetY;
                 advancement.value().display().ifPresent(display -> RecipeAppendix.renderItemForButton(gui, guiGraphics, x + finalOffsetX, y + finalOffsetY, display.getIcon(), mx, my, true, null));
                 if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getInstance().player, advancementId)) {
+                    guiGraphics.pose().pushPose();
+                    guiGraphics.pose().translate(0, 0, 1000);
                     Images.OK.draw(guiGraphics, x + offsetX + 1, y + offsetY + 2);
+                    guiGraphics.pose().popPose();
                 } else {
                     allAchievementsValid = false;
                 }
@@ -164,11 +167,14 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         // Draw rewards
         for (int i = 0; i < advancementRewards.getRewards().size(); i++) {
             advancementRewards.getRewards().get(i).drawElementInner(gui, guiGraphics, x + rewardPositions[i].x, y + rewardPositions[i].y + offsetY, width, height, page, mx, my, renderButtonHolders.get(rewards[i]));
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, 1000);
             if (taken) {
                 Images.OK.draw(guiGraphics, x + rewardPositions[i].x + 1, y + rewardPositions[i].y + offsetY + 2);
             } else if (!allAchievementsValid) {
                 Images.ERROR.draw(guiGraphics, x + rewardPositions[i].x + 1, y + rewardPositions[i].y + offsetY + 2);
             }
+            guiGraphics.pose().popPose();
         }
     }
 
