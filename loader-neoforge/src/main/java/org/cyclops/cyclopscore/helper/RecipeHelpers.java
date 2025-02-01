@@ -9,6 +9,7 @@ import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.infobook.IInfoBookRegistry;
+import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
 import org.cyclops.cyclopscore.network.packet.RequestRecipeDisplayPacket;
 import org.cyclops.cyclopscore.network.packet.RequestRecipeDisplaysRegexPacket;
 
@@ -87,7 +88,13 @@ public class RecipeHelpers {
 
         // Re-initialize all books once all regex requests are done
         if (!RecipeHelpers.areRecipeDisplayRegexRequestsPending()) {
-            CyclopsCoreNeoForge._instance.getRegistryManager().getRegistry(IInfoBookRegistry.class).initializeAllBooks();
+            AdvancementRewards.reset();
+            for (ModBaseCommon<?> modBaseCommon : ModBaseCommon.getCommonMods().values()) {
+                IInfoBookRegistry registry = modBaseCommon.getRegistryManager().getRegistry(IInfoBookRegistry.class);
+                if (registry != null) {
+                    registry.initializeAllBooks(true);
+                }
+            }
         }
     }
 
