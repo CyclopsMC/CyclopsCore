@@ -1,0 +1,10 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix items with empty fluid containers being stored inconsistently
+Items with empty fluid containers could be stored in two different ways.
+This change ensures that there is only a single canonical way to store
+them.
+This could cause issues with items from EvilCraft when attempting to
+autocraft them and getting them recognized by the system.
+Closes CyclopsMC/EvilCraft#1089
