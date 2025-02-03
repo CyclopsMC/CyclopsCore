@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.capability.fluid;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 import org.cyclops.cyclopscore.RegistryEntries;
 
@@ -15,6 +16,7 @@ import javax.annotation.Nullable;
 public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements IFluidHandlerItemCapacity, IFluidHandlerMutable {
 
     private final Fluid fluid;
+    private final int capacityDefault;
 
     /**
      * @param container The container itemStack, data is stored on it directly as NBT.
@@ -32,6 +34,7 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
     public FluidHandlerItemCapacity(ItemStack container, int capacity, Fluid fluid) {
         super(RegistryEntries.COMPONENT_FLUID_CONTENT, container, capacity);
         this.fluid = fluid;
+        this.capacityDefault = capacity;
     }
 
     @Override
@@ -40,8 +43,23 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
     }
 
     @Override
+    protected void setFluid(FluidStack fluid) {
+        // super.setFluid(fluid); // We override the implementation completely to avoid NBT saving for empty fluids
+
+        if (fluid.isEmpty()) {
+            this.container.remove(this.componentType);
+        } else {
+            this.container.set(this.componentType, SimpleFluidContent.copyOf(fluid));
+        }
+    }
+
+    @Override
     public void setCapacity(int capacity) {
-        getContainer().set(RegistryEntries.COMPONENT_CAPACITY, capacity);
+        if (capacity == this.capacityDefault) {
+            getContainer().remove(RegistryEntries.COMPONENT_CAPACITY);
+        } else {
+            getContainer().set(RegistryEntries.COMPONENT_CAPACITY, capacity);
+        }
         this.capacity = capacity;
     }
 
