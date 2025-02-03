@@ -46,10 +46,31 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
     }
 
     @Override
+    protected void setFluid(FluidStack fluid) {
+//        super.setFluid(fluid); // We override the implementation completely to avoid NBT saving for empty fluids
+
+        if (fluid != null && !fluid.isEmpty()) {
+            if (!this.container.hasTag()) {
+                this.container.setTag(new CompoundTag());
+            }
+
+            CompoundTag fluidTag = new CompoundTag();
+            fluid.writeToNBT(fluidTag);
+            this.container.getTag().put("Fluid", fluidTag);
+        } else {
+            this.container.getTag().remove("Fluid");
+        }
+    }
+
+    @Override
     public void setCapacity(int capacity) {
         CompoundTag tag = getContainer().getOrCreateTag();
         this.capacity = capacity;
-        tag.putInt("capacity", capacity);
+        if (this.getCapacity() != this.capacity) {
+            tag.putInt("capacity", capacity);
+        } else {
+            tag.remove("capacity");
+        }
     }
 
     @Override
@@ -82,12 +103,12 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
     public Tag serializeNBT() {
         CompoundTag nbt = new CompoundTag();
         FluidStack fluid = this.getFluid();
-        if (fluid != null) {
+        if (fluid != null && !fluid.isEmpty()) {
             fluid.writeToNBT(nbt);
-        } else {
-            nbt.putString("Empty", "");
         }
-        nbt.putInt("capacity", this.getCapacity());
+        if (this.getCapacity() != this.capacity) {
+            nbt.putInt("capacity", this.getCapacity());
+        }
         return nbt;
     }
 
