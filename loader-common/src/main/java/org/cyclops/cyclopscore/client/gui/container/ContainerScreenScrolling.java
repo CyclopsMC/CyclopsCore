@@ -142,7 +142,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double mouseZ, double scroll) {
-        return (isHovering(getScrollX(), getScrollY(), this.scrollbar.getWidth(), getScrollHeight(), mouseX, mouseY) && this.scrollbar.mouseScrolled(mouseX, mouseY, mouseZ, scroll))
+        return (this.scrollbar.isMouseOver(mouseX, mouseY) && this.scrollbar.mouseScrolled(mouseX, mouseY, mouseZ, scroll))
                 || super.mouseScrolled(mouseX, mouseY, mouseZ, scroll);
     }
 
