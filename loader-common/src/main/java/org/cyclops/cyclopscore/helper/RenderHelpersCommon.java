@@ -54,7 +54,7 @@ public class RenderHelpersCommon implements IRenderHelpers {
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate(x, y, 0);
         guiGraphics.pose().scale(scale, scale, 1.0f);
-        guiGraphics.drawString(fontRenderer, string, x, y, color, shadow);
+        guiGraphics.drawString(fontRenderer, string, 0, 0, color, shadow);
         guiGraphics.pose().popPose();
     }
 
