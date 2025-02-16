@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements IFluidHandlerItemCapacity, IFluidHandlerMutable, INBTSerializable {
 
     private final Fluid fluid;
+    private final int capacityDefault;
 
     /**
      * @param container The container itemStack, data is stored on it directly as NBT.
@@ -38,6 +39,7 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
     public FluidHandlerItemCapacity(ItemStack container, int capacity, Fluid fluid) {
         super(container, capacity);
         this.fluid = fluid;
+        this.capacityDefault = capacity;
     }
 
     @Override
@@ -66,7 +68,7 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
     public void setCapacity(int capacity) {
         CompoundTag tag = getContainer().getOrCreateTag();
         this.capacity = capacity;
-        if (this.getCapacity() != this.capacity) {
+        if (this.getCapacity() != this.capacityDefault) {
             tag.putInt("capacity", capacity);
         } else {
             tag.remove("capacity");
@@ -106,7 +108,7 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
         if (fluid != null && !fluid.isEmpty()) {
             fluid.writeToNBT(nbt);
         }
-        if (this.getCapacity() != this.capacity) {
+        if (this.getCapacity() != this.capacityDefault) {
             nbt.putInt("capacity", this.getCapacity());
         }
         return nbt;
