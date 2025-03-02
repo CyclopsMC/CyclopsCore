@@ -1,12 +1,14 @@
 package org.cyclops.cyclopscore.inventory.slot;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 /**
  * Slot that is used to hold armor.
@@ -32,7 +34,6 @@ public class SlotArmor extends Slot {
         super(inventory, index, x, y);
         this.armorType = armorType;
         this.player = player;
-        setBackground(InventoryMenu.TEXTURE_EMPTY_SLOTS.get(armorType));
     }
 
     @Override
@@ -42,8 +43,17 @@ public class SlotArmor extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack itemStack) {
-        return itemStack.getEquipmentSlot() == armorType
-                || (itemStack.getItem() instanceof ArmorItem && ((ArmorItem) itemStack.getItem()).getEquipmentSlot(itemStack) == armorType);
+        return this.armorType == this.player.getEquipmentSlotForItem(itemStack);
     }
 
+    @Override
+    public boolean mayPickup(Player player) {
+        ItemStack itemstack = this.getItem();
+        return !itemstack.isEmpty() && !player.isCreative() && EnchantmentHelper.has(itemstack, EnchantmentEffectComponents.PREVENT_ARMOR_CHANGE) ? false : super.mayPickup(player);
+    }
+
+    @Override
+    public ResourceLocation getNoItemIcon() {
+        return InventoryMenu.TEXTURE_EMPTY_SLOTS.get(armorType);
+    }
 }

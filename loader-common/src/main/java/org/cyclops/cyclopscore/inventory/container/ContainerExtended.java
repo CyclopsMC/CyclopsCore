@@ -19,6 +19,7 @@ import org.cyclops.cyclopscore.inventory.IValueNotifiable;
 import org.cyclops.cyclopscore.inventory.IValueNotifier;
 import org.cyclops.cyclopscore.inventory.container.button.IContainerButtonAction;
 import org.cyclops.cyclopscore.inventory.container.button.IContainerButtonClickAcceptorServer;
+import org.cyclops.cyclopscore.inventory.slot.SlotArmor;
 import org.cyclops.cyclopscore.inventory.slot.SlotExtended;
 import org.cyclops.cyclopscore.network.packet.ValueNotifyPacket;
 
