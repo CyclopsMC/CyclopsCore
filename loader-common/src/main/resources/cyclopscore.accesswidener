@@ -61,3 +61,6 @@ accessible field net/minecraft/client/particle/ParticleEngine textureManager Lne
 accessible class net/minecraft/world/level/block/entity/BlockEntityType
 accessible method net/minecraft/world/level/block/entity/BlockEntityType <init> (Lnet/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier;Ljava/util/Set;)V
 accessible class net/minecraft/world/level/block/entity/BlockEntityType$BlockEntitySupplier
+
+# ItemTintSources
+accessible field net/minecraft/client/color/item/ItemTintSources ID_MAPPER Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;

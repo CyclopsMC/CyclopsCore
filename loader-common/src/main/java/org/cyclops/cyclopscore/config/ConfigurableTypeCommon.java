@@ -40,6 +40,7 @@ public class ConfigurableTypeCommon {
     public static final ConfigurableTypeCommon GUI = new ConfigurableTypeCommon(true, GuiConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "gui");
     public static final ConfigurableTypeCommon PARTICLE = new ConfigurableTypeCommon(true, GuiConfigCommon.class, new ParticleActionCommon<>(), "particle");
     public static final ConfigurableTypeCommon ENTITY = new ConfigurableTypeCommon(true, EntityConfigCommon.class, new EntityActionCommon<>(), "entity");
+    public static final ConfigurableTypeCommon ITEM_TINT_SOURCE = new ConfigurableTypeCommon(true, ItemTintSourceConfigCommon.class, new ItemTintSourceActionCommon<>(), "item_tint_source");
 
     /**
      * Dummy type, only used for configs that refer to nothing.

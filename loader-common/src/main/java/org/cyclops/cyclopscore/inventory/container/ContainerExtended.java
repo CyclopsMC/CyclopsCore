@@ -155,6 +155,19 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
         addInventory(inventory, cols, offsetX, offsetY, rows, cols);
     }
 
+    /**
+     * Add player armor inventory to the GUI.
+     * @param inventory Inventory of the player
+     * @param offsetX Offset to X
+     * @param offsetY Offset to Y
+     */
+    protected void addPlayerArmorInventory(Inventory inventory, int offsetX, int offsetY) {
+        for (int k = 0; k < 4; ++k) {
+            EquipmentSlot equipmentSlot = EQUIPMENT_SLOTS[k];
+            addSlot(new SlotArmor(inventory, 4 * 9 + (3 - k), offsetX, offsetY + k * ITEMBOX, inventory.player, equipmentSlot));
+        }
+    }
+
     protected abstract int getSizeInventory();
 
     protected int getSlotStart(int originSlot, int slotStart, boolean reverse) {
