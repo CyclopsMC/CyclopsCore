@@ -17,6 +17,16 @@ import org.cyclops.cyclopscore.init.IModBase;
 public class EntityActionCommon<M extends IModBase, T extends Entity> extends ConfigurableTypeActionRegistry<EntityConfigCommon<M, T>, EntityType<T>, M> {
 
     @Override
+    public void onRegistriesCreated(EntityConfigCommon<M, T> eConfig) {
+        super.onRegistriesCreated(eConfig);
+
+        // Create of client config, to force any listeners to be registered
+        if (eConfig.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
+            eConfig.getEntityClientConfig();
+        }
+    }
+
+    @Override
     public void onRegistriesFilled(EntityConfigCommon<M, T> eConfig) {
         // Register item and set creative tab.
         register(eConfig, () -> {
