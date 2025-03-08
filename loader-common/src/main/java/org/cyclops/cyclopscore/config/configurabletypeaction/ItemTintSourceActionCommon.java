@@ -18,6 +18,8 @@ public class ItemTintSourceActionCommon<T extends ItemTintSource, M extends IMod
     @Override
     public void onRegistriesFilled(ItemTintSourceConfigCommon<T, M> eConfig) {
         super.onRegistriesFilled(eConfig);
-        ItemTintSources.ID_MAPPER.put(ConfigHandlerCommon.getConfigId(eConfig), eConfig.getInstance());
+        if (eConfig.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
+            ItemTintSources.ID_MAPPER.put(ConfigHandlerCommon.getConfigId(eConfig), eConfig.getInstance());
+        }
     }
 }
