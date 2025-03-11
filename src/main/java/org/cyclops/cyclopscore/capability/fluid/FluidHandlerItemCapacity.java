@@ -60,7 +60,9 @@ public class FluidHandlerItemCapacity extends FluidHandlerItemStack implements I
             fluid.writeToNBT(fluidTag);
             this.container.getTag().put("Fluid", fluidTag);
         } else {
-            this.container.getTag().remove("Fluid");
+            if (this.container.hasTag()) {
+                this.container.getTag().remove("Fluid");
+            }
         }
     }
 
