@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix not all key combinations working for key bindings
+  Closes CyclopsMC/IntegratedTerminals#166
+

@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.client.key;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
@@ -36,10 +36,12 @@ public class KeyRegistry implements IKeyRegistry {
 
     @Override
     @SubscribeEvent(priority = EventPriority.NORMAL)
-    public void onPlayerKeyInput(InputEvent.Key event) {
-        for (KeyMapping kb : keyHandlerMap.keySet()) {
-            if (kb.isDown()) {
-                fireKeyPressed(kb);
+    public void onPlayerKeyInput(TickEvent.ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            for (KeyMapping kb : keyHandlerMap.keySet()) {
+                while (kb.consumeClick()) {
+                    fireKeyPressed(kb);
+                }
             }
         }
     }
