@@ -3,9 +3,9 @@ package org.cyclops.cyclopscore.client.key;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.KeyMapping;
-import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import org.cyclops.cyclopscore.helper.L10NHelpers;
 import org.cyclops.cyclopscore.init.ModBase;
 
@@ -36,9 +36,9 @@ public class KeyRegistry implements IKeyRegistry {
 
     @Override
     @SubscribeEvent(priority = EventPriority.NORMAL)
-    public void onPlayerKeyInput(InputEvent.Key event) {
+    public void onPlayerKeyInput(ClientTickEvent.Post event) {
         for (KeyMapping kb : keyHandlerMap.keySet()) {
-            if (kb.isDown()) {
+            while (kb.consumeClick()) {
                 fireKeyPressed(kb);
             }
         }
