@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Improve client performance of large scrolling containers
+  This fixes performance issues when having the gui open of a large Colossal Chest.
