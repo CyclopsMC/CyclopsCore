@@ -24,7 +24,7 @@ public class SlotExtended extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        return isActive() && container.canPlaceItem(index, stack);
+        return isActive() && container.canPlaceItem(getContainerSlot(), stack);
     }
 
     @Override
