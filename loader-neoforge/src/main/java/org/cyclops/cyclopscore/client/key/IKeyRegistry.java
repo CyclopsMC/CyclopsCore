@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.client.key;
 
 import net.minecraft.client.KeyMapping;
-import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import org.cyclops.cyclopscore.init.IRegistry;
 
 /**
@@ -16,7 +16,7 @@ public interface IKeyRegistry extends IRegistry {
      * Make sure to annotate this with {@link SubscribeEvent}
      * @param event The input event.
      */
-    public void onPlayerKeyInput(InputEvent.Key event);
+    public void onPlayerKeyInput(ClientTickEvent.Post event);
 
     /**
      * Binds a {@link IKeyHandler} to key presses of the
