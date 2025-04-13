@@ -63,8 +63,7 @@ public class WidgetScrollBar extends AbstractWidget {
         setVisibleRows(visibleRows);
     }
 
-    @Override
-    public boolean isMouseOver(double x, double y) {
+    public boolean isMouseOverRegion(double x, double y) {
         if (scollRegion != null) {
             if (IModHelpers.get().getRenderHelpers().isPointInRegion(scollRegion, new Point((int) x, (int) y))) {
                 return true;
