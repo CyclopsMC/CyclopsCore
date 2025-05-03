@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.proxy;
 import net.neoforged.neoforge.common.NeoForge;
 import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.event.PlayerRingOfFireNeoForge;
+import org.cyclops.cyclopscore.event.LecternInfoBookHandlerNeoForge;
 import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 import org.cyclops.cyclopscore.network.IPacketHandler;
 import org.cyclops.cyclopscore.network.packet.*;
@@ -28,6 +29,7 @@ public class CommonProxyNeoForge extends CommonProxyComponent {
         super.registerEventHooks();
 
         NeoForge.EVENT_BUS.register(new PlayerRingOfFireNeoForge());
+        NeoForge.EVENT_BUS.register(new LecternInfoBookHandlerNeoForge());
     }
 
     @Override

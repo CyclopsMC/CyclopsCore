@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Allow infobooks to be placed in lecterns
+  Required for CyclopsMC/IntegratedDynamics#1496 and CyclopsMC/EvilCraft#1110.

@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.proxy;
 
 import org.cyclops.cyclopscore.CyclopsCoreFabric;
+import org.cyclops.cyclopscore.event.LecternInfoBookHandlerFabric;
 import org.cyclops.cyclopscore.event.PlayerRingOfFireFabric;
 import org.cyclops.cyclopscore.init.ModBaseFabric;
 import org.cyclops.cyclopscore.network.IPacketHandler;
@@ -30,6 +31,7 @@ public class CommonProxyFabric extends CommonProxyComponentFabric {
         super.registerEventHooks();
 
         new PlayerRingOfFireFabric();
+        new LecternInfoBookHandlerFabric();
     }
 
     @Override
