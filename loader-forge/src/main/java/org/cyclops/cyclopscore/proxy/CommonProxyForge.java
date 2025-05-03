@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.proxy;
 
 import net.minecraftforge.common.MinecraftForge;
 import org.cyclops.cyclopscore.CyclopsCoreForge;
+import org.cyclops.cyclopscore.event.LecternInfoBookHandlerForge;
 import org.cyclops.cyclopscore.event.PlayerRingOfFireForge;
 import org.cyclops.cyclopscore.init.ModBaseForge;
 import org.cyclops.cyclopscore.network.IPacketHandler;
@@ -25,6 +26,7 @@ public class CommonProxyForge extends CommonProxyComponentForge {
         super.registerEventHooks();
 
         MinecraftForge.EVENT_BUS.register(new PlayerRingOfFireForge());
+        MinecraftForge.EVENT_BUS.register(new LecternInfoBookHandlerForge());
     }
 
     @Override
