@@ -1,9 +1,11 @@
 package org.cyclops.cyclopscore.item;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -12,7 +14,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LecternBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.network.NetworkHooks;
 import org.cyclops.cyclopscore.inventory.InventoryLocationPlayer;
@@ -103,4 +109,14 @@ public abstract class ItemGui extends Item {
         return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStack);
     }
 
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        BlockState blockState = level.getBlockState(pos);
+        if (context.getItemInHand().is(ItemTags.LECTERN_BOOKS) && blockState.is(Blocks.LECTERN)) {
+            return LecternBlock.tryPlaceBook(context.getPlayer(), level, pos, blockState, context.getItemInHand()) ? InteractionResult.sidedSuccess(level.isClientSide) : InteractionResult.PASS;
+        }
+        return super.useOn(context);
+    }
 }
