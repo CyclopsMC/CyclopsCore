@@ -58,14 +58,6 @@ public class WidgetScrollBar extends AbstractWidget {
         setVisibleRows(visibleRows);
     }
 
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
     public void setScollRegion(@Nullable Rectangle scollRegion) {
         this.scollRegion = scollRegion;
     }
@@ -99,8 +91,8 @@ public class WidgetScrollBar extends AbstractWidget {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double offsetX, double offsetY) {
         boolean flag = mouseButton == 0 || mouseButton == 1;
-        int xMax = x + 14;
-        int yMax = y + height;
+        int xMax = getX() + 14;
+        int yMax = getY() + height;
 
         // Reset scroll if too big for current view
         if (!needsScrollBars()) {
@@ -108,7 +100,7 @@ public class WidgetScrollBar extends AbstractWidget {
             return true;
         }
 
-        if (!this.wasClicking && flag && mouseX >= x && mouseY >= y && mouseX < xMax && mouseY < yMax) {
+        if (!this.wasClicking && flag && mouseX >= getX() && mouseY >= getY() && mouseX < xMax && mouseY < yMax) {
             this.isScrolling = this.needsScrollBars();
         }
 
@@ -119,7 +111,7 @@ public class WidgetScrollBar extends AbstractWidget {
         this.wasClicking = flag;
 
         if (this.isScrolling) {
-            this.currentScroll = ((float)(mouseY - y) - 7.5F) / ((float)(yMax - y) - 15.0F);
+            this.currentScroll = ((float)(mouseY - getY()) - 7.5F) / ((float)(yMax - getY()) - 15.0F);
             this.currentScroll = Mth.clamp(this.currentScroll, 0.0F, 1.0F);
             scrollTo(this.currentScroll);
             return true;
@@ -130,8 +122,8 @@ public class WidgetScrollBar extends AbstractWidget {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        int scrollX = x;
-        int scrollMinY = y;
+        int scrollX = getX();
+        int scrollMinY = getY();
         int scrollMaxY = scrollMinY + height;
         guiGraphics.blitSprite(
                 this.needsScrollBars() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE,
