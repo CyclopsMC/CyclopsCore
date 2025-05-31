@@ -27,13 +27,11 @@ public class WidgetScrollBar extends AbstractWidget {
     private static final int SCROLL_BUTTON_HEIGHT = 15;
     private static final int SCROLL_BUTTON_WIDTH = 12;
 
-    private final int x;
-    private final int y;
     private final int height;
     @Nullable
     private final IScrollCallback scrollCallback;
     @Nullable
-    private final Rectangle scollRegion;
+    private Rectangle scollRegion;
 
     private int totalRows;
     private int visibleRows;
@@ -49,8 +47,6 @@ public class WidgetScrollBar extends AbstractWidget {
     public WidgetScrollBar(int x, int y, int height, Component narrationMessage,
                            @Nullable IScrollCallback scrollCallback, int visibleRows, Rectangle scollRegion) {
         super(x, y, WidgetScrollBar.SCROLL_BUTTON_WIDTH, height, narrationMessage);
-        this.x = x;
-        this.y = y;
         this.height = height;
         this.scrollCallback = scrollCallback;
         this.scollRegion = scollRegion;
@@ -59,6 +55,18 @@ public class WidgetScrollBar extends AbstractWidget {
         this.isScrolling = false;
         this.wasClicking = false;
         setVisibleRows(visibleRows);
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public void setScollRegion(@Nullable Rectangle scollRegion) {
+        this.scollRegion = scollRegion;
     }
 
     @Override
