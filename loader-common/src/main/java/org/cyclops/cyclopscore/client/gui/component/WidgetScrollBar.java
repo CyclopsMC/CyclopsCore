@@ -29,13 +29,11 @@ public class WidgetScrollBar extends AbstractWidget {
     private static final int SCROLL_BUTTON_HEIGHT = 15;
     private static final int SCROLL_BUTTON_WIDTH = 12;
 
-    private final int x;
-    private final int y;
     private final int height;
     @Nullable
     private final IScrollCallback scrollCallback;
     @Nullable
-    private final Rectangle scollRegion;
+    private Rectangle scollRegion;
 
     private int totalRows;
     private int visibleRows;
@@ -51,8 +49,6 @@ public class WidgetScrollBar extends AbstractWidget {
     public WidgetScrollBar(int x, int y, int height, Component narrationMessage,
                            @Nullable IScrollCallback scrollCallback, int visibleRows, Rectangle scollRegion) {
         super(x, y, WidgetScrollBar.SCROLL_BUTTON_WIDTH, height, narrationMessage);
-        this.x = x;
-        this.y = y;
         this.height = height;
         this.scrollCallback = scrollCallback;
         this.scollRegion = scollRegion;
@@ -61,6 +57,10 @@ public class WidgetScrollBar extends AbstractWidget {
         this.isScrolling = false;
         this.wasClicking = false;
         setVisibleRows(visibleRows);
+    }
+
+    public void setScollRegion(@Nullable Rectangle scollRegion) {
+        this.scollRegion = scollRegion;
     }
 
     public boolean isMouseOverRegion(double x, double y) {
@@ -91,8 +91,8 @@ public class WidgetScrollBar extends AbstractWidget {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double offsetX, double offsetY) {
         boolean flag = mouseButton == 0 || mouseButton == 1;
-        int xMax = x + 14;
-        int yMax = y + height;
+        int xMax = getX() + 14;
+        int yMax = getY() + height;
 
         // Reset scroll if too big for current view
         if (!needsScrollBars()) {
@@ -100,7 +100,7 @@ public class WidgetScrollBar extends AbstractWidget {
             return true;
         }
 
-        if (!this.wasClicking && flag && mouseX >= x && mouseY >= y && mouseX < xMax && mouseY < yMax) {
+        if (!this.wasClicking && flag && mouseX >= getX() && mouseY >= getY() && mouseX < xMax && mouseY < yMax) {
             this.isScrolling = this.needsScrollBars();
         }
 
@@ -111,7 +111,7 @@ public class WidgetScrollBar extends AbstractWidget {
         this.wasClicking = flag;
 
         if (this.isScrolling) {
-            this.currentScroll = ((float)(mouseY - y) - 7.5F) / ((float)(yMax - y) - 15.0F);
+            this.currentScroll = ((float)(mouseY - getY()) - 7.5F) / ((float)(yMax - getY()) - 15.0F);
             this.currentScroll = Mth.clamp(this.currentScroll, 0.0F, 1.0F);
             scrollTo(this.currentScroll);
             return true;
@@ -122,8 +122,8 @@ public class WidgetScrollBar extends AbstractWidget {
 
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        int scrollX = x;
-        int scrollMinY = y;
+        int scrollX = getX();
+        int scrollMinY = getY();
         int scrollMaxY = scrollMinY + height;
         guiGraphics.blitSprite(
                 RenderType::guiTextured,
