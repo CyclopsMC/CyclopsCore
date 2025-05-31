@@ -62,6 +62,10 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
                     Component.translatable("gui.cyclopscore.scrollbar"), getMenu(),
                     getMenu().getPageSize(), getScrollRegion());
             this.scrollbar.setTotalRows(getMenu().getFilteredItemCount() / getMenu().getColumns());
+        } else {
+            this.scrollbar.setX(this.leftPos + getScrollX());
+            this.scrollbar.setY(this.topPos + getScrollY());
+            this.scrollbar.setScollRegion(getScrollRegion());
         }
 
         this.addWidget(this.scrollbar);
