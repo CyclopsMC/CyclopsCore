@@ -5,12 +5,7 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerConfig;
-import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerEventHooksFabric;
-import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerConfig;
-import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerTriggerEventHooksFabric;
-import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerConfig;
-import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerEventHooksFabric;
+import org.cyclops.cyclopscore.advancement.criterion.*;
 import org.cyclops.cyclopscore.client.particle.ParticleBlurConfig;
 import org.cyclops.cyclopscore.client.particle.ParticleDropColoredConfig;
 import org.cyclops.cyclopscore.command.CommandDebug;
@@ -22,6 +17,7 @@ import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
 import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
+import org.cyclops.cyclopscore.gametest.StartupTestFabric;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseFabric;
 import org.cyclops.cyclopscore.inventory.IRegistryInventoryLocation;
@@ -59,6 +55,7 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
         new GuiContainerOpenTriggerEventHooksFabric();
         new ItemCraftedTriggerTriggerEventHooksFabric();
         new ModItemObtainedTriggerEventHooksFabric();
+        new StartupTestFabric();
 
         // Handle metadata
         ImportantUsers.checkAll();
