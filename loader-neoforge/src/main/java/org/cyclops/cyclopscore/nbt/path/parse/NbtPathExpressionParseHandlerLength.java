@@ -41,7 +41,7 @@ public class NbtPathExpressionParseHandlerLength implements INbtPathExpressionPa
                             return new NbtPathExpressionExecutionContext(IntTag.valueOf(tag.size()), executionContext);
                         } else if (nbt.getId() == Tag.TAG_COMPOUND) {
                             CompoundTag tag = (CompoundTag) nbt;
-                            return new NbtPathExpressionExecutionContext(IntTag.valueOf(tag.getAllKeys().size()), executionContext);
+                            return new NbtPathExpressionExecutionContext(IntTag.valueOf(tag.keySet().size()), executionContext);
                         }
                         return null;
                     })

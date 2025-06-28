@@ -1,10 +1,9 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -80,7 +79,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
 
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float f, int x, int y) {
-        guiGraphics.blit(RenderType::guiTextured, getGuiTexture(), leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getGuiTexture(), leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY, 256, 256);
     }
 
     // @Override // This is an override in Forge and NeoForge, but not in Fabric
@@ -98,8 +97,8 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
         return isHovering(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
     }
 
-    public void drawTooltip(List<Component> lines, PoseStack poseStack, int x, int y) {
-        IModHelpers.get().getGuiHelpers().drawTooltip(this, poseStack, lines, x, y);
+    public void drawTooltip(List<Component> lines, GuiGraphics guiGraphics, int x, int y) {
+        IModHelpers.get().getGuiHelpers().drawTooltip(this, guiGraphics, lines, x, y);
     }
 
     /**

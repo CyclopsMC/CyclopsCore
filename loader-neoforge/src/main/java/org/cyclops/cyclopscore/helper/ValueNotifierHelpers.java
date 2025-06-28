@@ -3,9 +3,9 @@ package org.cyclops.cyclopscore.helper;
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.MutableComponent;
 import org.cyclops.cyclopscore.inventory.IValueNotifier;
 
@@ -70,15 +70,15 @@ public class ValueNotifierHelpers {
     }
 
     /**
-     * Set the {@link MutableComponent} value
+     * Set the {@link Component} value
      * @param notifier The notifier instance
      * @param valueId The value id
      * @param value The value
      */
-    public static void setValue(IValueNotifier notifier, int valueId, MutableComponent value) {
+    public static void setValue(IValueNotifier notifier, int valueId, Component value) {
         if (value != null) {
             CompoundTag tag = new CompoundTag();
-            tag.putString(KEY, Component.Serializer.toJson(value, notifier.getHolderLookupProvider()));
+            tag.store(KEY, ComponentSerialization.CODEC, value);
             notifier.setValue(valueId, tag);
         }
     }
@@ -89,12 +89,14 @@ public class ValueNotifierHelpers {
      * @param valueId The value id
      * @param values The values
      */
-    public static void setValue(IValueNotifier notifier, int valueId, List<MutableComponent> values) {
+    public static void setValue(IValueNotifier notifier, int valueId, List<Component> values) {
         CompoundTag tag = new CompoundTag();
         ListTag list = new ListTag();
         for (Component value : values) {
             if (value != null) {
-                list.add(StringTag.valueOf(Component.Serializer.toJson(value, notifier.getHolderLookupProvider())));
+                CompoundTag subTag = new CompoundTag();
+                subTag.store(KEY, ComponentSerialization.CODEC, value);
+                list.add(subTag);
             }
         }
         tag.put(KEY, list);
@@ -125,7 +127,7 @@ public class ValueNotifierHelpers {
     public static int getValueInt(IValueNotifier notifier, int valueId) {
         CompoundTag tag = notifier.getValue(valueId);
         if(tag != null) {
-            return tag.getInt(KEY);
+            return tag.getIntOr(KEY, 0);
         }
         return 0;
     }
@@ -139,7 +141,7 @@ public class ValueNotifierHelpers {
     public static boolean getValueBoolean(IValueNotifier notifier, int valueId) {
         CompoundTag tag = notifier.getValue(valueId);
         if(tag != null) {
-            return tag.getBoolean(KEY);
+            return tag.getBooleanOr(KEY, false);
         }
         return false;
     }
@@ -154,40 +156,41 @@ public class ValueNotifierHelpers {
     public static String getValueString(IValueNotifier notifier, int valueId) {
         CompoundTag tag = notifier.getValue(valueId);
         if(tag != null) {
-            return tag.getString(KEY);
+            return tag.getStringOr(KEY, null);
         }
         return null;
     }
 
     /**
-     * Get the {@link MutableComponent} value
+     * Get the {@link Component} value
      * @param notifier The notifier instance
      * @param valueId The value id
      * @return The value
      */
     @Nullable
-    public static MutableComponent getValueTextComponent(IValueNotifier notifier, int valueId) {
+    public static Component getValueTextComponent(IValueNotifier notifier, int valueId) {
         CompoundTag tag = notifier.getValue(valueId);
         if(tag != null) {
-            return Component.Serializer.fromJson(tag.getString(KEY), notifier.getHolderLookupProvider());
+            return tag.read(KEY, ComponentSerialization.CODEC).orElse(null);
         }
         return null;
     }
 
     /**
-     * Get the {@link MutableComponent} list value
+     * Get the {@link Component} list value
      * @param notifier The notifier instance
      * @param valueId The value id
      * @return The value
      */
     @Nullable
-    public static List<MutableComponent> getValueTextComponentList(IValueNotifier notifier, int valueId) {
+    public static List<Component> getValueTextComponentList(IValueNotifier notifier, int valueId) {
         CompoundTag tag = notifier.getValue(valueId);
         if(tag != null) {
-            ListTag listTag = tag.getList(KEY, Tag.TAG_STRING);
-            List<MutableComponent> list = Lists.newArrayList();
+            ListTag listTag = tag.getList(KEY).orElseThrow();
+            List<Component> list = Lists.newArrayList();
             for (int i = 0; i < listTag.size(); i++) {
-                list.add(Component.Serializer.fromJson(listTag.getString(i), notifier.getHolderLookupProvider()));
+                CompoundTag subTag = listTag.getCompound(i).orElseThrow();
+                list.add(subTag.read(KEY, ComponentSerialization.CODEC).orElseThrow());
             }
             return list;
         }

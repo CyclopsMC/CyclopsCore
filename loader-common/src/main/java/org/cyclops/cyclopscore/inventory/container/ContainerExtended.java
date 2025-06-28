@@ -96,7 +96,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
     @Override
     public void addSlotListener(ContainerListener listener) {
         super.addSlotListener(listener);
-        if(!player.getCommandSenderWorld().isClientSide()) {
+        if(!player.level().isClientSide()) {
             initializeValues();
         }
     }

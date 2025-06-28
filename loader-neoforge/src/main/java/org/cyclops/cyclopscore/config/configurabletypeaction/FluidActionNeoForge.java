@@ -32,7 +32,7 @@ import java.util.function.Supplier;
  * @author rubensworks
  * @see ConfigurableTypeActionCommon
  */
-@EventBusSubscriber(modid = Reference.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Reference.MOD_ID)
 public class FluidActionNeoForge extends ConfigurableTypeActionCommon<FluidConfigNeoForge, BaseFlowingFluid.Properties, ModBaseNeoForge<?>> {
 
     private final Multimap<String, Pair<FluidConfigNeoForge, Callable<?>>> registryEntriesHolder = Multimaps.newListMultimap(Maps.<String, Collection<Pair<FluidConfigNeoForge, Callable<?>>>>newHashMap(), new com.google.common.base.Supplier<List<Pair<FluidConfigNeoForge, Callable<?>>>>() {

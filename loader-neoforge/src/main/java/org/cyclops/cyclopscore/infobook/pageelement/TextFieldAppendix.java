@@ -81,7 +81,7 @@ public class TextFieldAppendix extends SectionAppendix {
                     x,
                     (int) (y + (((float) lineId) * gui.getFont().lineHeight * this.scale)),
                     (float) this.scale,
-                    IModHelpers.get().getBaseHelpers().RGBToInt(10, 10, 10),
+                    IModHelpers.get().getBaseHelpers().RGBAToInt(10, 10, 10, 255),
                     false,
                     Font.DisplayMode.NORMAL
             );

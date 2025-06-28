@@ -3,21 +3,19 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElementCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfigCommon;
-import org.cyclops.cyclopscore.helper.ModHelpersForge;
 import org.cyclops.cyclopscore.init.ModBaseForge;
 
 /**
  * @author rubensworks
  */
-public class ItemActionForge<M extends ModBaseForge> extends ItemAction<M> {
+public class ItemActionForge<M extends ModBaseForge<M>> extends ItemAction<M> {
 
-    static {
-        if (ModHelpersForge.INSTANCE.getMinecraftHelpers().isClientSide()) {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((ModelEvent.RegisterModelStateDefinitions event) -> ItemActionForge.onModelRegistryLoad(event));
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((ModelEvent.ModifyBakingResult event) -> ItemActionForge.onModelBakeEvent(event));
+    public ItemActionForge(M mod) {
+        if (mod.getModHelpers().getMinecraftHelpers().isClientSide()) {
+            ModelEvent.RegisterModelStateDefinitions.getBus(mod.getModBusGroup()).addListener(ItemActionForge::onModelRegistryLoad);
+            ModelEvent.ModifyBakingResult.getBus(mod.getModBusGroup()).addListener(ItemActionForge::onModelBakeEvent);
         }
     }
 
@@ -45,7 +43,7 @@ public class ItemActionForge<M extends ModBaseForge> extends ItemAction<M> {
         for (ItemConfigCommon<?> config : MODEL_ENTRIES) {
             IDynamicModelElementCommon dynamicModelElement = config.getItemClientConfig().getDynamicModelElement();
             if (config.getItemClientConfig().dynamicItemVariantLocation != null) {
-                event.getResults().blockStateModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(pair -> event.getResults().blockStateModels().put(pair.getLeft(), pair.getRight()), key -> event.getResults().blockStateModels().get(key)));
+                event.getResults().itemStackModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicItemModel(pair -> event.getResults().itemStackModels().put(pair.getLeft(), pair.getRight()), key -> event.getResults().itemStackModels().get(key)));
             }
         }
     }

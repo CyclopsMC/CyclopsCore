@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -20,7 +19,6 @@ import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
-import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
@@ -45,7 +43,6 @@ public class AchievementCollectButton extends AdvancedButton {
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, Font font, int mx, int my) {
         super.renderTooltip(guiGraphics, font, mx, my);
-        guiGraphics.pose().pushPose();
         if(mx >= getX() && my >= getY() && mx <= getX() + width && my <= getY() + height) {
             List<FormattedCharSequence> lines = Lists.newArrayList();
             if (advancementRewards.isObtained(Minecraft.getInstance().player)) {
@@ -71,12 +68,8 @@ public class AchievementCollectButton extends AdvancedButton {
                     ));
                 }
             }
-            guiGraphics.renderTooltip(font, lines, mx, my);
+            guiGraphics.setTooltipForNextFrame(font, lines, mx, my);
         }
-        guiGraphics.pose().popPose();
-
-        GlStateManager._enableBlend();
-        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     @Override

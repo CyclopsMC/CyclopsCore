@@ -20,7 +20,7 @@ public class ParticleActionForge<T extends ParticleOptions, M extends ModBaseFor
         super.onRegisterModInit(eConfig);
 
         if (eConfig.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
-            eConfig.getMod().getModEventBus().addListener((RegisterParticleProvidersEvent event) -> handleClientSideRegistration(eConfig, event));
+            RegisterParticleProvidersEvent.getBus(eConfig.getMod().getModBusGroup()).addListener((RegisterParticleProvidersEvent event) -> handleClientSideRegistration(eConfig, event));
         }
     }
 

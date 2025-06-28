@@ -1,10 +1,8 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * A large inventory implementation.
@@ -29,37 +27,30 @@ public class LargeInventory extends SimpleInventory {
         super(size, stackLimit);
     }
 
-    public void readFromNBT(HolderLookup.Provider provider, CompoundTag data, String tag) {
-        ListTag nbttaglist = data.getList(tag, Tag.TAG_COMPOUND);
+    public void readFromNBT(ValueInput data, String tag) {
+        ValueInput.ValueInputList nbttaglist = data.childrenList(tag).orElseThrow();
 
         for (int j = 0; j < getContainerSize(); ++j)
             contents[j] = ItemStack.EMPTY;
 
-        for (int j = 0; j < nbttaglist.size(); ++j) {
-            CompoundTag slot = nbttaglist.getCompound(j);
-            int index;
-            if (slot.contains("index")) {
-                index = slot.getInt("index");
-            } else {
-                index = slot.getInt("Slot");
-            }
+        for (ValueInput slot : nbttaglist) {
+            int index = slot.getByteOr("Slot", (byte) 0);
             if (index >= 0 && index < getContainerSize()) {
-                contents[index] = ItemStack.parseOptional(provider, slot);
+                contents[index] = slot.read("Item", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
             }
         }
     }
 
-    public void writeToNBT(HolderLookup.Provider provider, CompoundTag data, String tag) {
-        ListTag slots = new ListTag();
-        for (int index = 0; index < getContainerSize(); ++index) {
+    public void writeToNBT(ValueOutput data, String tag) {
+        ValueOutput.ValueOutputList slots = data.childrenList(tag);
+        for (byte index = 0; index < getContainerSize(); ++index) {
             ItemStack itemStack = getItem(index);
             if (!itemStack.isEmpty() && itemStack.getCount() > 0) {
-                CompoundTag slot = new CompoundTag();
-                slot.putInt("Slot", index);
-                slots.add(itemStack.save(provider, slot));
+                ValueOutput slot = slots.addChild();
+                slot.putByte("Slot", index);
+                slot.store("Item", ItemStack.OPTIONAL_CODEC, itemStack);
             }
         }
-        data.put(tag, slots);
     }
 
 }

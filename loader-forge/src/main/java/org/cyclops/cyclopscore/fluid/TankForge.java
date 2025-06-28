@@ -77,7 +77,7 @@ public class TankForge extends FluidTank {
     }
 
     public FluidTank readFromNBT(CompoundTag data, String tag) {
-        CompoundTag subTag = data.getCompound(tag);
+        CompoundTag subTag = data.getCompound(tag).orElseThrow();
         return readFromNBT(subTag);
     }
 
@@ -94,9 +94,7 @@ public class TankForge extends FluidTank {
      * @param nbt The NBT tag to write from.
      */
     public void readTankFromNBT(CompoundTag nbt) {
-        if(nbt.contains("capacity")) { // Backwards compatibility.
-            setCapacity(nbt.getInt("capacity"));
-        }
+        setCapacity(nbt.getInt("capacity").orElseThrow());
     }
 
     @Override

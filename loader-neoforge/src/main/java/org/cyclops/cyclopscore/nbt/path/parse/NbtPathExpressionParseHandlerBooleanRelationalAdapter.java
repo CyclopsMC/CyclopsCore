@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.nbt.path.parse;
 
 import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.NumericTag;
+import net.minecraft.nbt.Tag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtPathExpressionMatches;
 
@@ -61,7 +61,7 @@ public abstract class NbtPathExpressionParseHandlerBooleanRelationalAdapter impl
                         if (nbt instanceof NumericTag) {
                             NumericTag tag = (NumericTag) nbt;
                             return new NbtPathExpressionExecutionContext(
-                                    ByteTag.valueOf(this.handler.getRelationalValue(tag.getAsDouble(), getTargetDouble())
+                                    ByteTag.valueOf(this.handler.getRelationalValue(tag.doubleValue(), getTargetDouble())
                                             ? (byte) 1 : (byte) 0), executionContext);
                         }
                         return new NbtPathExpressionExecutionContext(ByteTag.valueOf((byte) 0), executionContext);

@@ -49,7 +49,7 @@ public class AdvancementRewards {
     }
 
     public boolean isObtained(Player player) {
-        return EntityHelpers.getPersistedPlayerNbt(player).getBoolean(getNbtTagKey());
+        return EntityHelpers.getPersistedPlayerNbt(player).getBooleanOr(getNbtTagKey(), false);
     }
 
     public void obtain(Player player) {
@@ -68,7 +68,7 @@ public class AdvancementRewards {
             if (!tag.contains(Player.PERSISTED_NBT_TAG)) {
                 tag.put(Player.PERSISTED_NBT_TAG, new CompoundTag());
             }
-            CompoundTag persistedTag = tag.getCompound(Player.PERSISTED_NBT_TAG);
+            CompoundTag persistedTag = tag.getCompound(Player.PERSISTED_NBT_TAG).orElseThrow();
             persistedTag.putBoolean(getNbtTagKey(), true);
         }
     }

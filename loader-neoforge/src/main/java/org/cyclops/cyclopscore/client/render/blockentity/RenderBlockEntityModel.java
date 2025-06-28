@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
 
 import java.util.function.Function;
@@ -58,7 +59,7 @@ public abstract class RenderBlockEntityModel<T extends CyclopsBlockEntity, M> im
     }
 
     @Override
-    public void render(T tile, float partialTick, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+    public void render(T tile, float partialTick, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, Vec3 cameraPos) {
         Direction direction = tile.getRotation();
 
         VertexConsumer vertexBuilder = material.buffer(buffer, getRenderTypeGetter());

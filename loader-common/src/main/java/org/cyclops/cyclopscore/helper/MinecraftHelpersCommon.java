@@ -66,7 +66,7 @@ public abstract class MinecraftHelpersCommon implements IMinecraftHelpers {
 
     @Override
     public String getMinecraftVersion() {
-        return DetectedVersion.BUILT_IN.getName();
+        return DetectedVersion.BUILT_IN.name();
     }
 
     @Override

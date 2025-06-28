@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.persist.nbt;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * Classes tagged with this interface can have their fields persisted to NBT when they are annotated with
@@ -12,14 +12,16 @@ public interface INBTProvider {
 
     /**
      * Write the data in this provider to NBT.
-     * @param tag The tag to write to.
+     *
+     * @param output The tag to write to.
      */
-    public void writeGeneratedFieldsToNBT(CompoundTag tag, HolderLookup.Provider holderLookupProvider);
+    public void writeGeneratedFieldsToNBT(ValueOutput output);
 
     /**
      * Read data from the given tag to this provider.
-     * @param tag The tag to read from.
+     *
+     * @param input The tag to read from.
      */
-    public void readGeneratedFieldsFromNBT(CompoundTag tag, HolderLookup.Provider holderLookupProvider);
+    public void readGeneratedFieldsFromNBT(ValueInput input);
 
 }

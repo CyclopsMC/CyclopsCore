@@ -32,7 +32,7 @@ public class RewardItem implements IReward {
     @Override
     public void obtain(Player player) {
         if (!player.getInventory().add(itemStack.copy())) {
-            IModHelpers.get().getItemStackHelpers().spawnItemStack(player.getCommandSenderWorld(), player.blockPosition(), itemStack.copy());
+            IModHelpers.get().getItemStackHelpers().spawnItemStack(player.level(), player.blockPosition(), itemStack.copy());
         }
     }
 

@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.client.gui.component.button;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -50,7 +50,7 @@ public abstract class ButtonExtended extends Button {
 
     protected void drawBackground(GuiGraphics guiGraphics) {
         ResourceLocation resourceLocation = SPRITES.get(this.active, this.isHoveredOrFocused());
-        guiGraphics.blitSprite(RenderType::guiTextured, resourceLocation, getX(), getY(), getWidth(), getHeight());
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resourceLocation, getX(), getY(), getWidth(), getHeight());
     }
 
     @Override

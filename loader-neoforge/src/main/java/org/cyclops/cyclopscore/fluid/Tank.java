@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.fluid;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerCapacity;
@@ -53,54 +53,46 @@ public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHand
     }
 
     @Override
-    public CompoundTag writeToNBT(HolderLookup.Provider lookupProvider, CompoundTag nbt) {
+    public void serialize(ValueOutput output) {
         if(replaceInnerFluid()) {
-            super.writeToNBT(lookupProvider, nbt);
+            super.serialize(output);
         }
-        writeTankToNBT(nbt);
-        return nbt;
+        serializeTank(output);
     }
 
-    public CompoundTag writeToNBT(HolderLookup.Provider lookupProvider, CompoundTag nbt, String tag) {
-        CompoundTag subTag = new CompoundTag();
-        writeToNBT(lookupProvider, subTag);
-        nbt.put(tag, subTag);
-        return nbt;
+    public void serialize(ValueOutput output, String tag) {
+        serialize(output.child(tag));
     }
 
     @Override
-    public FluidTank readFromNBT(HolderLookup.Provider lookupProvider, CompoundTag nbt) {
+    public void deserialize(ValueInput input) {
         if(replaceInnerFluid()) {
-            if (nbt.contains("Empty")) {
+            if (input.child("Empty").isPresent()) {
                 setFluid(null);
             }
-            super.readFromNBT(lookupProvider, nbt);
+            super.deserialize(input);
         }
-        readTankFromNBT(nbt);
-        return this;
+        deserializeTank(input);
     }
 
-    public FluidTank readFromNBT(HolderLookup.Provider lookupProvider, CompoundTag data, String tag) {
-        CompoundTag subTag = data.getCompound(tag);
-        return readFromNBT(lookupProvider, subTag);
+    public void deserialize(ValueInput input, String tag) {
+        deserialize(input.child(tag).orElseThrow());
     }
 
     /**
      * Write the tank contents to NBT.
-     * @param nbt The NBT tag to write to.
+     * @param output The value tag to write to.
      */
-    public void writeTankToNBT(CompoundTag nbt) {
-        nbt.putInt("capacity", getCapacity());
+    public void serializeTank(ValueOutput output) {
+        output.putInt("capacity", getCapacity());
     }
 
     /**
      * Read the tank contents from NBT.
-     * @param nbt The NBT tag to write from.
+     * @param input The value to write from.
      */
-    public void readTankFromNBT(CompoundTag nbt) {
-        if(nbt.contains("capacity")) { // Backwards compatibility.
-            setCapacity(nbt.getInt("capacity"));
-        }
+    public void deserializeTank(ValueInput input) {
+        setCapacity(input.getInt("capacity").orElseThrow());
     }
 
     @Override

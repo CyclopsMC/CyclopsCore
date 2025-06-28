@@ -1,8 +1,7 @@
 package org.cyclops.cyclopscore.persist.nbt;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -18,19 +17,15 @@ import java.lang.reflect.Method;
 public interface INBTSerializable {
 
     /**
-     * Convert the data to an NBT tag.
-     * @param provider Holder provider.
-     * @return The NBT tag.
+     * Convert the data to an output.
+     * @param valueOutput the output.
      */
-    public CompoundTag toNBT(HolderLookup.Provider provider);
+    public void toValueOutput(ValueOutput valueOutput);
     /**
-     * Read the data from an NBT tag and place it in this object.
-     * The given tag will never be null, so make sure that all fields have a correct default value in case
-     * the received tag would be null anyways.
-     * @param tag The tag to read from.
-     * @param provider Holder provider.
+     * Read the data from an input and place it in this object.
+     * @param valueInput The input.
      */
-    public void fromNBT(HolderLookup.Provider provider, CompoundTag tag);
+    public void fromValueInput(ValueInput valueInput);
 
     public static class SelfNBTClassType extends NBTClassType<INBTSerializable> {
 
@@ -45,45 +40,55 @@ public interface INBTSerializable {
         }
 
         @Override
-        public void writePersistedField(String name, INBTSerializable object, CompoundTag tag, HolderLookup.Provider provider) {
+        public void writePersistedField(String name, INBTSerializable object, ValueOutput tag) {
             try {
-                Method method = fieldType.getMethod("toNBT", HolderLookup.Provider.class);
-                tag.put(name, (Tag) method.invoke(object, provider));
+                Method method = fieldType.getMethod("toValueOutput", ValueOutput.class);
+                method.invoke(object, tag);
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException("No method toNBT for field " + name + " of class " + fieldType + " was found.");
+                throw new RuntimeException("No method toValueOutput for field " + name + " of class " + fieldType + " was found.");
             } catch (InvocationTargetException e) {
                 e.getTargetException().printStackTrace();
-                throw new RuntimeException("Error in toNBT for field " + name + ". Error: " + e.getTargetException().getMessage());
+                throw new RuntimeException("Error in toValueOutput for field " + name + ". Error: " + e.getTargetException().getMessage());
             } catch (IllegalAccessException e) {
-                throw new RuntimeException("Could invoke toNBT for " + name + ".");
+                throw new RuntimeException("Could invoke toValueOutput for " + name + ".");
             }
 
         }
 
         @Override
-        public INBTSerializable readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
+        public INBTSerializable readPersistedField(String name, ValueInput tag) {
             try {
                 Constructor<?> constructor = fieldType.getConstructor();
                 if(constructor == null) {
                     throw new RuntimeException("The NBT serializable " + name + " of class " + fieldType + " must " +
                             "have a constructor without parameters.");
                 }
-                Method method = fieldType.getMethod("fromNBT", HolderLookup.Provider.class, CompoundTag.class);
+                Method method = fieldType.getMethod("fromValueInput", ValueInput.class);
                 INBTSerializable obj = (INBTSerializable) constructor.newInstance();
-                if(tag.contains(name)) {
-                    method.invoke(obj, provider, tag.get(name));
-                } else {
-                    System.out.println(String.format("The tag %s did not contain the key %s, skipping " +
-                            "reading.", tag, name));
-                }
+                tag.child(name).ifPresentOrElse(
+                        child -> {
+                            try {
+                                method.invoke(obj, child);
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException("Could invoke fromValueInput for " + name + ".");
+                            } catch (InvocationTargetException e) {
+                                e.getTargetException().printStackTrace();
+                                throw new RuntimeException("Error in fromValueInput for field " + name + ". Error: " + e.getTargetException().getMessage());
+                            }
+                        },
+                        () -> {
+                            System.out.println(String.format("The tag %s did not contain the key %s, skipping " +
+                                    "reading.", tag, name));
+                        }
+                );
                 return obj;
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException("No method fromNBT for field " + name + " of class " + fieldType + " was found.");
+                throw new RuntimeException("No method fromValueInput for field " + name + " of class " + fieldType + " was found.");
             } catch (InvocationTargetException e) {
                 e.getTargetException().printStackTrace();
-                throw new RuntimeException("Error in fromNBT for field " + name + ". Error: " + e.getTargetException().getMessage());
+                throw new RuntimeException("Error in fromValueInput for field " + name + ". Error: " + e.getTargetException().getMessage());
             } catch (IllegalAccessException e) {
-                throw new RuntimeException("Could invoke fromNBT for " + name + ".");
+                throw new RuntimeException("Could invoke fromValueInput for " + name + ".");
             } catch (InstantiationException e) {
                 e.printStackTrace();
                 throw new RuntimeException("Something went wrong while calling the empty constructor for " + name

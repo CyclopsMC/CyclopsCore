@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.advancement.criterion;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import org.cyclops.cyclopscore.RegistryEntriesCommon;
 
 /**

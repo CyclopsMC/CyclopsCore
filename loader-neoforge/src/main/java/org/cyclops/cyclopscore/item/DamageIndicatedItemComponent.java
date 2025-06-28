@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -16,8 +17,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
 import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
 
-import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 /**
  * A component that has to be added for classes that want to implement the DamageIndicator behaviour.
@@ -104,13 +105,15 @@ public class DamageIndicatedItemComponent {
 
     /**
      * Add information to the given list for the given item.
-     * @param itemStack The {@link ItemStack} to add info for.
-     * @param context The context that will see the info.
-     * @param list The info list where the info will be added.
-     * @param flag the tooltip flag
+     *
+     * @param itemStack      The {@link ItemStack} to add info for.
+     * @param context        The context that will see the info.
+     * @param tooltipDisplay
+     * @param tooltipAdder   The info list where the info will be added.
+     * @param flag           the tooltip flag
      */
-    public void addInformation(ItemStack itemStack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
-        list.add(((IInformationProvider) itemStack.getItem()).getInfo(itemStack)
+    public void addInformation(ItemStack itemStack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        tooltipAdder.accept(((IInformationProvider) itemStack.getItem()).getInfo(itemStack)
                 .setStyle(Style.EMPTY.withColor(IInformationProvider.ITEM_PREFIX)));
     }
 

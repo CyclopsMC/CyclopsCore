@@ -381,7 +381,7 @@ public class InfoSection {
             }
 
             // Draw current page/section indication
-            gui.drawScaledCenteredString(guiGraphics, getLocalizedTitle() + " - " + (page + 1) + "/" + getPages(), mouseX + (((page % 2 == 0) ? 1 : -1) * footnoteOffsetX), mouseY + height + footnoteOffsetY, width, 0.6f, (int) (width * 0.75f), IModHelpers.get().getBaseHelpers().RGBToInt(190, 190, 190));
+            gui.drawScaledCenteredString(guiGraphics, getLocalizedTitle() + " - " + (page + 1) + "/" + getPages(), mouseX + (((page % 2 == 0) ? 1 : -1) * footnoteOffsetX), mouseY + height + footnoteOffsetY, width, 0.6f, (int) (width * 0.75f), IModHelpers.get().getBaseHelpers().RGBAToInt(190, 190, 190, 255));
 
             // Draw appendixes
             for (SectionAppendix appendix : appendixes) {

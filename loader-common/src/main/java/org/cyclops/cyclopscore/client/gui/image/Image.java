@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
@@ -49,13 +50,12 @@ public class Image implements IImage {
 
     @Override
     public void draw(GuiGraphics gui, int x, int y) {
-        gui.blit(RenderType::guiTextured, resourceLocation, x, y, sheetX, sheetY, sheetWidth, sheetHeight, 256, 256);
+        gui.blit(RenderPipelines.GUI_TEXTURED, resourceLocation, x, y, sheetX, sheetY, sheetWidth, sheetHeight, 256, 256);
     }
 
     @Override
     public void drawWithColor(GuiGraphics gui, int x, int y, float r, float g, float b, float a) {
-        IModHelpers.get().getRenderHelpers().bindTexture(resourceLocation);
-        IModHelpers.get().getRenderHelpers().blitColored(gui, x, y, 0, sheetX, sheetY, sheetWidth, sheetHeight, r, g, b, a);
+        IModHelpers.get().getRenderHelpers().blitColored(gui, resourceLocation, x, y, sheetX, sheetY, sheetWidth, sheetHeight, r, g, b, a);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class BiomeModifierActionForge<T extends BiomeModifier> extends Configura
     @Override
     public void onRegisterModInit(BiomeModifierConfigForge<T> eConfig) {
         super.onRegisterModInit(eConfig);
-        eConfig.getMod().getModEventBus().addListener((RegisterEvent event) -> {
+        RegisterEvent.getBus(eConfig.getMod().getModBusGroup()).addListener((RegisterEvent event) -> {
             if (event.getRegistryKey() == ForgeRegistries.BIOME_MODIFIER_SERIALIZERS.getKey()) {
                 eConfig.getRegistryForge().register(ConfigHandlerCommon.getConfigId(eConfig), eConfig.getInstance());
             }

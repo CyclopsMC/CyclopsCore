@@ -1,12 +1,10 @@
 package org.cyclops.cyclopscore.blockentity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 
 /**
  * A base class for all the block entities.
@@ -20,10 +18,9 @@ public class CyclopsBlockEntityNeoForge extends CyclopsBlockEntity {
     }
 
     @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider lookupProvider) {
-        super.onDataPacket(net, packet, lookupProvider);
-        CompoundTag tag = packet.getTag();
-        read(tag, lookupProvider);
+    public void onDataPacket(Connection net, ValueInput valueInput) {
+        super.onDataPacket(net, valueInput);
+        read(valueInput);
         onUpdateReceived();
     }
 

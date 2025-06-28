@@ -7,8 +7,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -35,5 +37,10 @@ public class ItemStackBlockEntityRendererBase implements NoDataSpecialModelRende
             this.blockEntity.setLevel(Minecraft.getInstance().level);
         }
         this.blockEntityRenderDispatcher.render(this.blockEntity, 0, poseStack, multiBufferSource);
+    }
+
+    @Override
+    public void getExtents(Set<Vector3f> set) {
+
     }
 }

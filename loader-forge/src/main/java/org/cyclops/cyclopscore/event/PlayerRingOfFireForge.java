@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.event;
 
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 
 /**
  * Event hook for showing the ring of fire.

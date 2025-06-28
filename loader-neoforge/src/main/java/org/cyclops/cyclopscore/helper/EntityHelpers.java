@@ -128,7 +128,7 @@ public class EntityHelpers {
      */
     public static CompoundTag getPersistedPlayerNbt(Player player) {
         CompoundTag tag = player.getPersistentData();
-        CompoundTag persistedTag = tag.getCompound(Player.PERSISTED_NBT_TAG);
+        CompoundTag persistedTag = tag.getCompound(Player.PERSISTED_NBT_TAG).orElse(null);
         if (persistedTag == null) {
             persistedTag = new CompoundTag();
             tag.put(Player.PERSISTED_NBT_TAG, persistedTag);

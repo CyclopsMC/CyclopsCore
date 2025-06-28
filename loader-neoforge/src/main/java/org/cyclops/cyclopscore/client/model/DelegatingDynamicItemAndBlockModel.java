@@ -7,7 +7,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import javax.annotation.Nullable;
 
@@ -25,10 +25,6 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
     protected final ModelData modelData;
     protected final RenderType renderType;
 
-    protected final ItemStack itemStack;
-    protected final Level world;
-    protected final LivingEntity entity;
-
     public DelegatingDynamicItemAndBlockModel() {
         super(true, false);
         this.blockState = null;
@@ -36,10 +32,6 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.rand = RandomSource.create();
         this.modelData = ModelData.EMPTY;
         this.renderType = RenderType.cutout();
-
-        this.itemStack = null;
-        this.world = null;
-        this.entity = null;
     }
 
     public DelegatingDynamicItemAndBlockModel(BlockState blockState, Direction facing, RandomSource rand, ModelData modelData, RenderType renderType) {
@@ -49,10 +41,6 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.rand = rand;
         this.modelData = modelData;
         this.renderType = renderType;
-
-        this.itemStack = null;
-        this.world = null;
-        this.entity = null;
     }
 
     public DelegatingDynamicItemAndBlockModel(ItemStack itemStack, Level world, LivingEntity entity) {
@@ -62,10 +50,6 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.rand = RandomSource.create();
         this.modelData = ModelData.EMPTY;
         this.renderType = RenderType.cutout();
-
-        this.itemStack = itemStack;
-        this.world = world;
-        this.entity = entity;
     }
 
 }

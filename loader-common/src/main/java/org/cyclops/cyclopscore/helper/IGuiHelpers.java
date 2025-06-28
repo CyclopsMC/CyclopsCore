@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.helper;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -47,42 +46,27 @@ public interface IGuiHelpers {
     /**
      * Draw a tooltip.
      * @param gui The gui to draw in.
-     * @param poseStack The pose stack.
+     * @param guiGraphics The gui graphics.
      * @param lines A list of lines.
      * @param x Tooltip X.
      * @param y Tooltip Y.
      */
-    public void drawTooltip(AbstractContainerScreen gui, PoseStack poseStack, List<Component> lines, int x, int y);
+    public void drawTooltip(AbstractContainerScreen gui, GuiGraphics guiGraphics, List<Component> lines, int x, int y);
 
     /**
      * Draw the background box for a tooltip.
-     * @param poseStack The pose stack.
+     * @param guiGraphics The gui graphics.
      * @param xStart X
      * @param yStart Y
      * @param tooltipWidth Width
      * @param tooltipHeight Height
      */
-    public void drawTooltipBackground(PoseStack poseStack, int xStart, int yStart, int tooltipWidth, int tooltipHeight);
-
-    /**
-     * Render a rectangle.
-     * Public variant of GuiGraphics#fillGradient.
-     *
-     * @param poseStack The pose stack.
-     * @param left Left X.
-     * @param top Top Y.
-     * @param right Right X.
-     * @param bottom Bottom Y.
-     * @param startColor Start gradient color.
-     * @param endColor End gradient color.
-     * @param zLevel The Z level to render at.
-     */
-    public void fillGradient(PoseStack poseStack, int left, int top, int right, int bottom, int startColor, int endColor, float zLevel);
+    public void drawTooltipBackground(GuiGraphics guiGraphics, int xStart, int yStart, int tooltipWidth, int tooltipHeight);
 
     /**
      * Render a tooltip if the mouse if in the bounding box defined by the given position, width and height.
      * The tooltip lines supplier can return an optional list.
-     * @param poseStack The pose stack.
+     * @param guiGraphics The gui graphics.
      * @param gui The gui to render in.
      * @param x The gui x position, excluding gui left.
      * @param y The gui y position, excluding gui top.
@@ -94,13 +78,13 @@ public interface IGuiHelpers {
      *                      No tooltip will be rendered when the optional value is absent.
      *                      This will only be called when needed.
      */
-    public void renderTooltipOptional(AbstractContainerScreen gui, PoseStack poseStack, int x, int y, int width, int height,
+    public void renderTooltipOptional(AbstractContainerScreen gui, GuiGraphics guiGraphics, int x, int y, int width, int height,
                                       int mouseX, int mouseY, Supplier<Optional<List<Component>>> linesSupplier);
 
     /**
      * Render a tooltip if the mouse if in the bounding box defined by the given position, width and height.
      * @param gui The gui to render in.
-     * @param poseStack The pose stack.
+     * @param guiGraphics The gui graphics.
      * @param x The gui x position, excluding gui left.
      * @param y The gui y position, excluding gui top.
      * @param width The area width.
@@ -110,7 +94,7 @@ public interface IGuiHelpers {
      * @param linesSupplier A supplier for the tooltip lines to render.
      *                      This will only be called when needed.
      */
-    public void renderTooltip(AbstractContainerScreen gui, PoseStack poseStack, int x, int y, int width, int height,
+    public void renderTooltip(AbstractContainerScreen gui, GuiGraphics guiGraphics, int x, int y, int width, int height,
                               int mouseX, int mouseY, Supplier<List<Component>> linesSupplier);
 
     /**

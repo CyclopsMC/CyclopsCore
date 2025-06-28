@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import com.google.common.base.Function;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -11,23 +11,23 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.TerrainParticle;
-import net.minecraft.client.renderer.CoreShaders;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import org.joml.Matrix4f;
 
 import java.awt.*;
 import java.util.Random;
@@ -40,7 +40,7 @@ public class RenderHelpersCommon implements IRenderHelpers {
     private static final Random rand = new Random();
 
     @Override
-    public void bindTexture(ResourceLocation texture) {
+    public void bindTexture(GpuTextureView texture) {
         RenderSystem.setShaderTexture(0, texture);
     }
 
@@ -51,11 +51,11 @@ public class RenderHelpersCommon implements IRenderHelpers {
 
     @Override
     public void drawScaledString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, float scale, int color, boolean shadow, Font.DisplayMode displayMode) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(x, y, 0);
-        guiGraphics.pose().scale(scale, scale, 1.0f);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate(x, y, guiGraphics.pose());
+        guiGraphics.pose().scale(scale, scale, guiGraphics.pose());
         guiGraphics.drawString(fontRenderer, string, 0, 0, color, shadow);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 
     @Override
@@ -72,16 +72,16 @@ public class RenderHelpersCommon implements IRenderHelpers {
 
     @Override
     public void drawScaledCenteredString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, int width, float scale, int color, boolean shadow, Font.DisplayMode displayMode) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().scale(scale, scale, 1.0f);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(scale, scale, guiGraphics.pose());
         int titleLength = fontRenderer.width(string);
         int titleHeight = fontRenderer.lineHeight;
         guiGraphics.drawString(fontRenderer, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color, false);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 
     @Override
-    public BakedModel getBakedModel(BlockState blockState) {
+    public BlockStateModel getBakedModel(BlockState blockState) {
         Minecraft mc = Minecraft.getInstance();
         BlockRenderDispatcher blockRendererDispatcher = mc.getBlockRenderer();
         BlockModelShaper blockModelShapes = blockRendererDispatcher.getBlockModelShaper();
@@ -89,7 +89,7 @@ public class RenderHelpersCommon implements IRenderHelpers {
     }
 
     @Override
-    public BakedModel getDynamicBakedModel(Level world, BlockPos pos) {
+    public BlockStateModel getDynamicBakedModel(Level world, BlockPos pos) {
         return getBakedModel(world.getBlockState(pos));
     }
 
@@ -145,35 +145,13 @@ public class RenderHelpersCommon implements IRenderHelpers {
     }
 
     @Override
-    public void blitColored(GuiGraphics guiGraphics, int x, int y, int z, float u, float v, int width, int height, float r, float g, float b, float a) {
-        blitColored(guiGraphics, x, y, z, width, height, u / 256, (u + width) / 256, v / 256, (v + height) / 256, r, g, b, a);
+    public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a) {
+        blitColored(guiGraphics, texture, x, y, width, height, (int) (u / 256), (int) ((u + width) / 256), (int) (v / 256), (int) ((v + height) / 256), r, g, b, a);
     }
 
     @Override
-    public void blitColored(GuiGraphics guiGraphics, int x, int y, int z, int width, int height, float u0, float u1, float v0, float v1, float r, float g, float b, float a) {
-// The following should work, but doesn't, so we just apply a shader color instead.
-        /*Matrix4f matrix4f = poseStack.last().pose();
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR_TEX);
-        bufferbuilder.vertex(matrix4f, (float)x, (float)y + height, (float)z).color(r, g, b, a).uv(u0, v1).endVertex();
-        bufferbuilder.vertex(matrix4f, (float)x + width, (float)y + height, (float)z).color(r, g, b, a).uv(u1, v1).endVertex();
-        bufferbuilder.vertex(matrix4f, (float)x + width, (float)y, (float)z).color(r, g, b, a).uv(u1, v0).endVertex();
-        bufferbuilder.vertex(matrix4f, (float)x, (float)y, (float)z).color(r, g, b, a).uv(u0, v0).endVertex();
-        bufferbuilder.end();
-        BufferUploader.end(bufferbuilder);*/
-
-        RenderSystem.setShaderColor(r, g, b, a);
-
-        Matrix4f matrix4f = guiGraphics.pose().last().pose();
-        RenderSystem.setShader(CoreShaders.POSITION_TEX);
-        BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferbuilder.addVertex(matrix4f, (float)x, (float)y + height, (float)z).setUv(u0, v1);
-        bufferbuilder.addVertex(matrix4f, (float)x + width, (float)y + height, (float)z).setUv(u1, v1);
-        bufferbuilder.addVertex(matrix4f, (float)x + width, (float)y, (float)z).setUv(u1, v0);
-        bufferbuilder.addVertex(matrix4f, (float)x, (float)y, (float)z).setUv(u0, v0);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+    public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int u0, int u1, int v0, int v1, float r, float g, float b, float a) {
+        int color = ARGB.colorFromFloat(a, r, g, b);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED_PREMULTIPLIED_ALPHA, texture, x, y, u0, v0, u1, v1, width, height, color);
     }
 }

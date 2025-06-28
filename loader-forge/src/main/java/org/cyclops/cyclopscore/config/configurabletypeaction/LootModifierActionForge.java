@@ -17,7 +17,7 @@ public class LootModifierActionForge<T extends IGlobalLootModifier> extends Conf
     @Override
     public void onRegisterModInit(LootModifierConfigForge<T> eConfig) {
         super.onRegisterModInit(eConfig);
-        eConfig.getMod().getModEventBus().addListener((RegisterEvent event) -> {
+        RegisterEvent.getBus(eConfig.getMod().getModBusGroup()).addListener((RegisterEvent event) -> {
             if (event.getRegistryKey() == ForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS.getKey()) {
                 eConfig.getRegistryForge().register(ConfigHandlerCommon.getConfigId(eConfig), eConfig.getInstance());
             }

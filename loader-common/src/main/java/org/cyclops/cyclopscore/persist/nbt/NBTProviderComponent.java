@@ -1,7 +1,8 @@
 package org.cyclops.cyclopscore.persist.nbt;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import com.mojang.datafixers.util.Either;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -33,25 +34,25 @@ public class NBTProviderComponent implements INBTProvider {
         }
     }
 
-    private void writePersistedField(Field field, CompoundTag tag, HolderLookup.Provider holderLookupProvider) {
-        NBTClassType.performActionForField(provider, field, tag, true, holderLookupProvider);
+    private void writePersistedField(Field field, ValueOutput output) {
+        NBTClassType.performActionForField(provider, field, Either.right(output));
     }
 
-    private void readPersistedField(Field field, CompoundTag tag, HolderLookup.Provider holderLookupProvider) {
-        NBTClassType.performActionForField(provider, field, tag, false, holderLookupProvider);
+    private void readPersistedField(Field field, ValueInput input) {
+        NBTClassType.performActionForField(provider, field, Either.left(input));
     }
 
     @Override
-    public void writeGeneratedFieldsToNBT(CompoundTag tag, HolderLookup.Provider holderLookupProvider) {
+    public void writeGeneratedFieldsToNBT(ValueOutput output) {
         for(Field field : nbtPersistedFields) {
-            writePersistedField(field, tag, holderLookupProvider);
+            writePersistedField(field, output);
         }
     }
 
     @Override
-    public void readGeneratedFieldsFromNBT(CompoundTag tag, HolderLookup.Provider holderLookupProvider) {
+    public void readGeneratedFieldsFromNBT(ValueInput input) {
         for(Field field : nbtPersistedFields) {
-            readPersistedField(field, tag, holderLookupProvider);
+            readPersistedField(field, input);
         }
     }
 }

@@ -113,7 +113,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         int offsetY = 0;
         gui.drawOuterBorder(guiGraphics, x - 1, y - 1, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
         gui.drawTextBanner(guiGraphics, x + width / 2, y - 2);
-        gui.drawScaledCenteredString(guiGraphics, IModHelpers.get().getL10NHelpers().localize("gui.advancements"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, IModHelpers.get().getBaseHelpers().RGBToInt(30, 20, 120));
+        gui.drawScaledCenteredString(guiGraphics, IModHelpers.get().getL10NHelpers().localize("gui.advancements"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, IModHelpers.get().getBaseHelpers().RGBAToInt(30, 20, 120, 255));
 
         // Draw advancements
         offsetY += 10;
@@ -134,10 +134,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
                 int finalOffsetY = offsetY;
                 advancement.value().display().ifPresent(display -> RecipeAppendix.renderItemForButton(gui, guiGraphics, x + finalOffsetX, y + finalOffsetY, display.getIcon(), mx, my, true, null));
                 if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getInstance().player, advancementId)) {
-                    guiGraphics.pose().pushPose();
-                    guiGraphics.pose().translate(0, 0, 1000);
                     Images.OK.draw(guiGraphics, x + offsetX + 1, y + offsetY + 2);
-                    guiGraphics.pose().popPose();
                 } else {
                     allAchievementsValid = false;
                 }
@@ -152,7 +149,7 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         offsetY += SLOT_SIZE + SLOT_PADDING * 2 + 6;
         gui.drawTextBanner(guiGraphics, x + width / 2, y - 2 + offsetY);
         boolean hovering = mx > x && mx < x + getWidth() && my > y + offsetY - 10 && my < y + offsetY + 5;
-        gui.drawScaledCenteredString(guiGraphics, IModHelpers.get().getL10NHelpers().localize("gui." + getInfoBook().getMod().getModId() + ".rewards"), x, y - 2 + offsetY, width, 0.9f, gui.getBannerWidth() - 6, IModHelpers.get().getBaseHelpers().RGBToInt(30, 20, 120));
+        gui.drawScaledCenteredString(guiGraphics, IModHelpers.get().getL10NHelpers().localize("gui." + getInfoBook().getMod().getModId() + ".rewards"), x, y - 2 + offsetY, width, 0.9f, gui.getBannerWidth() - 6, IModHelpers.get().getBaseHelpers().RGBAToInt(30, 20, 120, 255));
         renderButtonHolders.get(COLLECT).update(x, y - 8 + offsetY, Component.literal(""), null, gui);
         if (allAchievementsValid && !taken) {
             float g = hovering ? 1.0F : (((float) (gui.getTick() % 20)) / 20) * 0.4F + 0.6F;
@@ -167,14 +164,11 @@ public class AdvancementRewardsAppendix extends SectionAppendix {
         // Draw rewards
         for (int i = 0; i < advancementRewards.getRewards().size(); i++) {
             advancementRewards.getRewards().get(i).drawElementInner(gui, guiGraphics, x + rewardPositions[i].x, y + rewardPositions[i].y + offsetY, width, height, page, mx, my, renderButtonHolders.get(rewards[i]));
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(0, 0, 1000);
             if (taken) {
                 Images.OK.draw(guiGraphics, x + rewardPositions[i].x + 1, y + rewardPositions[i].y + offsetY + 2);
             } else if (!allAchievementsValid) {
                 Images.ERROR.draw(guiGraphics, x + rewardPositions[i].x + 1, y + rewardPositions[i].y + offsetY + 2);
             }
-            guiGraphics.pose().popPose();
         }
     }
 

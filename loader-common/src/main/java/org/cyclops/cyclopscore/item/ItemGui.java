@@ -91,7 +91,7 @@ public abstract class ItemGui extends Item {
             return InteractionResult.FAIL;
         }
         if (player instanceof ServerPlayer) {
-            openGuiForItemIndex(world, (ServerPlayer) player, InventoryLocationPlayer.getInstance().handToLocation(player, hand, player.getInventory().selected));
+            openGuiForItemIndex(world, (ServerPlayer) player, InventoryLocationPlayer.getInstance().handToLocation(player, hand, player.getInventory().getSelectedSlot()));
         }
         return InteractionResult.SUCCESS;
     }

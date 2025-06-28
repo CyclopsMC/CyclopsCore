@@ -1,8 +1,14 @@
 package org.cyclops.cyclopscore.inventory.container;
 
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
 import org.cyclops.cyclopscore.persist.nbt.NBTClassType;
+import org.slf4j.Logger;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -12,6 +18,8 @@ import java.util.function.Supplier;
  * @param <T> The type of value.
  */
 public class SyncedGuiVariable<T> implements Supplier<T> {
+
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private final ContainerExtended gui;
     private final int guiValueId;
@@ -34,10 +42,13 @@ public class SyncedGuiVariable<T> implements Supplier<T> {
     public void detectAndSendChanges() {
         T value = this.serverValueSupplier.get();
         CompoundTag tag = new CompoundTag();
-        this.nbtClassType.writePersistedField("v", value, tag, this.holderLookupProvider);
-        if (!Objects.equals(this.lastTag, tag)) {
-            this.gui.setValue(this.guiValueId, tag);
-            this.lastTag = tag;
+        try (ProblemReporter.ScopedCollector problemReporter = new ProblemReporter.ScopedCollector(gui.player.problemPath(), LOGGER)) {
+            TagValueOutput tagValueOutput = TagValueOutput.createWithContext(problemReporter, this.holderLookupProvider);
+            this.nbtClassType.writePersistedField("v", value, tagValueOutput);
+            if (!Objects.equals(this.lastTag, tag)) {
+                this.gui.setValue(this.guiValueId, tag);
+                this.lastTag = tag;
+            }
         }
     }
 
@@ -47,7 +58,14 @@ public class SyncedGuiVariable<T> implements Supplier<T> {
         if (tag == null) {
             return this.nbtClassType.getDefaultValue();
         }
-        return this.nbtClassType.readPersistedField("v", tag, this.holderLookupProvider);
+        try (ProblemReporter.ScopedCollector problemreporter$scopedcollector = new ProblemReporter.ScopedCollector(LOGGER)) {
+            ValueInput input = TagValueInput.create(
+                    problemreporter$scopedcollector.forChild(gui.player.problemPath()),
+                    this.holderLookupProvider,
+                    tag
+            );
+            return this.nbtClassType.readPersistedField("v", input);
+        }
     }
 
 }

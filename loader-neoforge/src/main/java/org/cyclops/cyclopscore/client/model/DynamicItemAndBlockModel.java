@@ -1,15 +1,20 @@
 package org.cyclops.cyclopscore.client.model;
 
+import com.google.common.collect.Lists;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.resources.model.ResolvedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,7 +25,7 @@ import java.util.List;
  * A dynamic model that can be used for items and blocks.
  * @author rubensworks
  */
-public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
+public abstract class DynamicItemAndBlockModel extends DynamicBaseModel implements ResolvedModel {
 
     private final boolean factory;
     private final boolean item;
@@ -28,6 +33,7 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
     private Direction renderingSide;
 
     public DynamicItemAndBlockModel(boolean factory, boolean item) {
+        super(Collections.emptyList());
         this.factory = factory;
         this.item = item;
     }
@@ -36,42 +42,26 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel {
         return item;
     }
 
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-        return this.getQuads(state, side, rand, ModelData.EMPTY, RenderType.cutout());
-    }
-
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side,
-                                    @Nonnull RandomSource rand, @Nonnull ModelData extraData,
-                                    @Nullable RenderType renderType) {
-        this.renderingSide = side;
-        if(factory) {
-            BakedModel bakedModel;
-            if(isItemStack()) {
-                bakedModel = handleItemState(null, null, null);
-            } else {
-                bakedModel = handleBlockState(state, side, rand, extraData, renderType);
-            }
-            if (bakedModel != null) {
-                return bakedModel.getQuads(state, side, rand);
-            }
+    public List<BakedQuad> getBlockStateQuads(BlockAndTintGetter level, BlockPos pos,
+                                              BlockState state, Direction side,
+                                              RandomSource rand, ModelData extraData,
+                                              RenderType renderType) {
+        List<BakedQuad> quads = Lists.newArrayList();
+        BlockStateModel blockModel = handleBlockState(state, side, rand, extraData, renderType);
+        for (BlockModelPart part : blockModel.collectParts(level, pos, state, rand)) {
+            quads.addAll(part.getQuads(side));
         }
-        return getGeneralQuads();
+        return quads;
     }
 
     public List<BakedQuad> getGeneralQuads() {
         return Collections.emptyList();
     }
 
-    public abstract BakedModel handleBlockState(@Nullable BlockState state, @Nullable Direction side,
+    public abstract BlockStateModel handleBlockState(@Nullable BlockState state, @Nullable Direction side,
                                                  @Nonnull RandomSource rand, @Nonnull ModelData extraData,
                                                 @Nullable RenderType renderType);
-    public abstract BakedModel handleItemState(@Nullable ItemStack stack, @Nullable Level world,
-                                                @Nullable LivingEntity entity);
-
-    public Direction getRenderingSide() {
-        return renderingSide;
-    }
+    public abstract List<BakedQuad> handleItemState(@Nullable ItemStack stack, @Nullable Level world,
+                                              @Nullable LivingEntity entity);
 
 }

@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.modcompat.forgeconfig;
 
-import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
-import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeModConfigEvents;
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
+import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.logging.log4j.Level;
@@ -40,8 +40,8 @@ public class ConfigHandlerFabricHandler {
      * @param configInitializers A collection of additional initializers to run the config builders through.
      */
     public void initialize(Collection<IConfigInitializer> configInitializers) {
-        NeoForgeModConfigEvents.loading(this.configHandler.getMod().getModId()).register(this::onLoad);
-        NeoForgeModConfigEvents.reloading(this.configHandler.getMod().getModId()).register(this::onReload);
+        ModConfigEvents.loading(this.configHandler.getMod().getModId()).register(this::onLoad);
+        ModConfigEvents.reloading(this.configHandler.getMod().getModId()).register(this::onReload);
 
         Map<ModConfig.Type, ModConfigSpec.Builder> configBuilders = new EnumMap<>(ModConfig.Type.class);
 
@@ -76,7 +76,7 @@ public class ConfigHandlerFabricHandler {
 
         // Finalize config builders to config specs, and register them
         for (Map.Entry<ModConfig.Type, ModConfigSpec.Builder> entry : configBuilders.entrySet()) {
-            NeoForgeConfigRegistry.INSTANCE.register(configHandler.getMod().getModId(), entry.getKey(), entry.getValue().build());
+            ConfigRegistry.INSTANCE.register(configHandler.getMod().getModId(), entry.getKey(), entry.getValue().build());
         }
     }
 

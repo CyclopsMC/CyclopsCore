@@ -64,7 +64,7 @@ public class ContainerScreenInfoBookTest extends ScreenInfoBook<ContainerInfoBoo
 
     @Override
     public int getTitleColor() {
-        return IModHelpers.get().getBaseHelpers().RGBToInt(70, 70, 150);
+        return IModHelpers.get().getBaseHelpers().RGBAToInt(70, 70, 150, 255);
     }
 
     @Override

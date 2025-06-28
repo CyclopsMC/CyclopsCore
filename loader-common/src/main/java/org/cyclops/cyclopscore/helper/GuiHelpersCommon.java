@@ -1,15 +1,14 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
@@ -68,12 +67,12 @@ public class GuiHelpersCommon implements IGuiHelpers {
                 textureY += offset;
             }
 
-            gui.blit(RenderType::guiTextured, texture, x, y, textureX, textureY, scaledWidth, scaledHeight, 256, 256);
+            gui.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, textureX, textureY, scaledWidth, scaledHeight, 256, 256);
         }
     }
 
     @Override
-    public void drawTooltip(AbstractContainerScreen gui, PoseStack poseStack, List<Component> lines, int x, int y) {
+    public void drawTooltip(AbstractContainerScreen gui, GuiGraphics guiGraphics, List<Component> lines, int x, int y) {
         int guiLeft = gui.leftPos;
         int guiTop = gui.topPos;
         int width = gui.width;
@@ -111,7 +110,7 @@ public class GuiHelpersCommon implements IGuiHelpers {
             yStart = height - tooltipHeight - guiTop - 6;
         }
 
-        drawTooltipBackground(poseStack, xStart, yStart, tooltipWidth, tooltipHeight);
+        drawTooltipBackground(guiGraphics, xStart, yStart, tooltipWidth, tooltipHeight);
 
         PoseStack matrixstack = new PoseStack();
         MultiBufferSource.BufferSource irendertypebuffer$impl = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
@@ -143,59 +142,35 @@ public class GuiHelpersCommon implements IGuiHelpers {
     }
 
     @Override
-    public void drawTooltipBackground(PoseStack poseStack, int xStart, int yStart, int tooltipWidth, int tooltipHeight) {
+    public void drawTooltipBackground(GuiGraphics guiGraphics, int xStart, int yStart, int tooltipWidth, int tooltipHeight) {
         float zLevel = 300.0F;
         int color1 = -267386864;
-        fillGradient(poseStack, xStart - 3, yStart - 4, xStart + tooltipWidth + 3, yStart - 3, color1, color1, zLevel);
-        fillGradient(poseStack, xStart - 3, yStart + tooltipHeight + 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 4, color1, color1, zLevel);
-        fillGradient(poseStack, xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color1, color1, zLevel);
-        fillGradient(poseStack, xStart - 4, yStart - 3, xStart - 3, yStart + tooltipHeight + 3, color1, color1, zLevel);
-        fillGradient(poseStack, xStart + tooltipWidth + 3, yStart - 3, xStart + tooltipWidth + 4, yStart + tooltipHeight + 3, color1, color1, zLevel);
+        guiGraphics.fillGradient(xStart - 3, yStart - 4, xStart + tooltipWidth + 3, yStart - 3, color1, color1);
+        guiGraphics.fillGradient(xStart - 3, yStart + tooltipHeight + 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 4, color1, color1);
+        guiGraphics.fillGradient(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color1, color1);
+        guiGraphics.fillGradient(xStart - 4, yStart - 3, xStart - 3, yStart + tooltipHeight + 3, color1, color1);
+        guiGraphics.fillGradient(xStart + tooltipWidth + 3, yStart - 3, xStart + tooltipWidth + 4, yStart + tooltipHeight + 3, color1, color1);
         int color2 = 1347420415;
         int color3 = (color2 & 16711422) >> 1 | color2 & -16777216;
-        fillGradient(poseStack, xStart - 3, yStart - 3 + 1, xStart - 3 + 1, yStart + tooltipHeight + 3 - 1, color2, color3, zLevel);
-        fillGradient(poseStack, xStart + tooltipWidth + 2, yStart - 3 + 1, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3 - 1, color2, color3, zLevel);
-        fillGradient(poseStack, xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart - 3 + 1, color2, color2, zLevel);
-        fillGradient(poseStack, xStart - 3, yStart + tooltipHeight + 2, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color3, color3, zLevel);
+        guiGraphics.fillGradient(xStart - 3, yStart - 3 + 1, xStart - 3 + 1, yStart + tooltipHeight + 3 - 1, color2, color3);
+        guiGraphics.fillGradient(xStart + tooltipWidth + 2, yStart - 3 + 1, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3 - 1, color2, color3);
+        guiGraphics.fillGradient(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart - 3 + 1, color2, color2);
+        guiGraphics.fillGradient(xStart - 3, yStart + tooltipHeight + 2, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color3, color3);
     }
 
     @Override
-    public void fillGradient(PoseStack poseStack, int left, int top, int right, int bottom, int startColor, int endColor, float zLevel) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(CoreShaders.POSITION_COLOR);
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        float f = (float)(startColor >> 24 & 255) / 255.0F;
-        float f1 = (float)(startColor >> 16 & 255) / 255.0F;
-        float f2 = (float)(startColor >> 8 & 255) / 255.0F;
-        float f3 = (float)(startColor & 255) / 255.0F;
-        float f4 = (float)(endColor >> 24 & 255) / 255.0F;
-        float f5 = (float)(endColor >> 16 & 255) / 255.0F;
-        float f6 = (float)(endColor >> 8 & 255) / 255.0F;
-        float f7 = (float)(endColor & 255) / 255.0F;
-        Matrix4f matrix = poseStack.last().pose();
-        bufferbuilder.addVertex(matrix, (float)right, (float)top, zLevel).setColor(f1, f2, f3, f);
-        bufferbuilder.addVertex(matrix, (float)left, (float)top, zLevel).setColor(f1, f2, f3, f);
-        bufferbuilder.addVertex(matrix, (float)left, (float)bottom, zLevel).setColor(f5, f6, f7, f4);
-        bufferbuilder.addVertex(matrix, (float)right, (float)bottom, zLevel).setColor(f5, f6, f7, f4);
-        BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
-        RenderSystem.disableBlend();
-    }
-
-    @Override
-    public void renderTooltipOptional(AbstractContainerScreen gui, PoseStack poseStack, int x, int y, int width, int height,
+    public void renderTooltipOptional(AbstractContainerScreen gui, GuiGraphics guiGraphics, int x, int y, int width, int height,
                                              int mouseX, int mouseY, Supplier<Optional<List<Component>>> linesSupplier) {
         if (modHelpers.getRenderHelpers().isPointInRegion(x, y, width, height, mouseX - gui.leftPos, mouseY - gui.topPos)) {
             linesSupplier.get().ifPresent(
-                    lines -> drawTooltip(gui, poseStack, lines, mouseX - gui.leftPos, mouseY - gui.topPos));
+                    lines -> drawTooltip(gui, guiGraphics, lines, mouseX - gui.leftPos, mouseY - gui.topPos));
         }
     }
 
     @Override
-    public void renderTooltip(AbstractContainerScreen gui, PoseStack poseStack, int x, int y, int width, int height,
+    public void renderTooltip(AbstractContainerScreen gui, GuiGraphics guiGraphics, int x, int y, int width, int height,
                                      int mouseX, int mouseY, Supplier<List<Component>> linesSupplier) {
-        renderTooltipOptional(gui, poseStack, x, y, width, height, mouseX, mouseY, () -> Optional.of(linesSupplier.get()));
+        renderTooltipOptional(gui, guiGraphics, x, y, width, height, mouseX, mouseY, () -> Optional.of(linesSupplier.get()));
     }
 
     private static final List<Pair<Long, String>> COUNT_SCALES = Lists.newArrayList(

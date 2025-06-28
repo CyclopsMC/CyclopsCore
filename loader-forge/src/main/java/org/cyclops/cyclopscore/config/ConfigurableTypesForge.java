@@ -5,15 +5,16 @@ import org.cyclops.cyclopscore.config.extendedconfig.BiomeModifierConfigForge;
 import org.cyclops.cyclopscore.config.extendedconfig.ConditionConfigForge;
 import org.cyclops.cyclopscore.config.extendedconfig.FluidConfigForge;
 import org.cyclops.cyclopscore.config.extendedconfig.LootModifierConfigForge;
+import org.cyclops.cyclopscore.init.ModBaseForge;
 
 /**
  * @author rubensworks
  */
 public class ConfigurableTypesForge {
 
-    public static void load() {
-        ConfigurableTypeCommon.BLOCK.setAction(new BlockActionForge<>());
-        ConfigurableTypeCommon.ITEM.setAction(new ItemActionForge<>());
+    public static void load(ModBaseForge mod) {
+        ConfigurableTypeCommon.BLOCK.setAction(new BlockActionForge<>(mod));
+        ConfigurableTypeCommon.ITEM.setAction(new ItemActionForge<>(mod));
         ConfigurableTypeCommon.GUI.setAction(new GuiActionForge<>());
         ConfigurableTypeCommon.PARTICLE.setAction(new ParticleActionForge<>());
     }

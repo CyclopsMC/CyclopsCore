@@ -62,8 +62,7 @@ public class AdvancedButton extends Button {
     @Override
     public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(isVisible() && isHover(mouseX, mouseY)) {
-            // MCP: drawString
-            guiGraphics.drawString(Minecraft.getInstance().font, getMessage(), getX(), getY(), IModHelpers.get().getBaseHelpers().RGBToInt(100, 100, 150), false);
+            guiGraphics.drawString(Minecraft.getInstance().font, getMessage(), getX(), getY(), IModHelpers.get().getBaseHelpers().RGBAToInt(100, 100, 150, 255), false);
         }
     }
 

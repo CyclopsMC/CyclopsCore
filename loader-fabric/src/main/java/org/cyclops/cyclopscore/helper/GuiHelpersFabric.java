@@ -1,20 +1,14 @@
 package org.cyclops.cyclopscore.helper;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.material.Fluids;
 import org.apache.commons.lang3.tuple.Triple;
-import org.lwjgl.opengl.GL11;
 
 /**
  * @author rubensworks
@@ -29,11 +23,7 @@ public class GuiHelpersFabric extends GuiHelpersCommon implements IGuiHelpersFab
     public void renderFluidTank(GuiGraphics gui, FluidVariant fluidStack, long amount, long capacity,
                                 int x, int y, int width, int height) {
         if (fluidStack != null && !fluidStack.isBlank() && amount > 0 && capacity > 0) {
-            gui.pose().pushPose();
-            GlStateManager._enableBlend();
-            GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            Lighting.setupFor3DItems();
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            gui.pose().pushMatrix();
 
             int level = (int) (height * (((double) amount) / capacity));
             IRenderHelpersFabric renderHelpers = ((IModHelpersFabric) modHelpers).getRenderHelpers();
@@ -56,23 +46,12 @@ public class GuiHelpersFabric extends GuiHelpersCommon implements IGuiHelpersFab
                     colorParts = Triple.of(0F, 0.335F, 1F);
                 }
 
-                Lighting.setupForFlatItems();
-                RenderSystem.setShaderColor(colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight(), 1);
-                gui.blitSprite(RenderType::guiTextured, icon, x, y - textureHeight - verticalOffset + height, width, textureHeight);
-                gui.flush();
-                Lighting.setupFor3DItems();
-                RenderSystem.setShaderColor(1, 1, 1, 1);
+                gui.blitSprite(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, icon, x, y - textureHeight - verticalOffset + height, width, textureHeight, ARGB.colorFromFloat(1, colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight()));
 
                 verticalOffset = verticalOffset + 16;
             }
 
-            TextureManager textureManager = Minecraft.getInstance().getTextureManager();
-            textureManager.getTexture(TextureAtlas.LOCATION_BLOCKS);
-//            textureManager.getTexture(InventoryMenu.BLOCK_ATLAS).restoreLastBlurMipmap();
-
-            Lighting.setupForFlatItems();
-            gui.pose().popPose();
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            gui.pose().popMatrix();
         }
     }
 
@@ -89,8 +68,7 @@ public class GuiHelpersFabric extends GuiHelpersCommon implements IGuiHelpersFab
                                          ResourceLocation textureOverlay, int overlayTextureX, int overlayTextureY) {
         renderFluidTank(gui, fluidStack, amount, capacity, x, y, width, height);
         if (fluidStack != null && capacity > 0) {
-            GlStateManager._enableBlend();
-            gui.blit(RenderType::guiTextured, textureOverlay, x, y, overlayTextureX, overlayTextureY, width, height, 256, 256);
+            gui.blit(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, textureOverlay, x, y, overlayTextureX, overlayTextureY, width, height, 256, 256);
         }
     }
 

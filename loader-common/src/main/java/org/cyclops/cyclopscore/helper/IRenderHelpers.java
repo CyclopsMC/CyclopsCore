@@ -1,14 +1,15 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.base.Function;
+import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -27,7 +28,7 @@ public interface IRenderHelpers {
      * Bind a texture to the rendering engine.
      * @param texture The texture to bind.
      */
-    public void bindTexture(ResourceLocation texture);
+    public void bindTexture(GpuTextureView texture);
 
     /**
      * Add a particle to the world.
@@ -99,7 +100,7 @@ public interface IRenderHelpers {
      * @param blockState The block state.
      * @return The corresponding baked model.
      */
-    public BakedModel getBakedModel(BlockState blockState);
+    public BlockStateModel getBakedModel(BlockState blockState);
 
     /**
      * Retrieve the potentially dynamic baked model for a position.
@@ -109,7 +110,7 @@ public interface IRenderHelpers {
      * @return The baked model.
      */
 
-    public BakedModel getDynamicBakedModel(Level world, BlockPos pos);
+    public BlockStateModel getDynamicBakedModel(Level world, BlockPos pos);
 
     /**
      * A custom way of spawning block hit effects.
@@ -162,8 +163,8 @@ public interface IRenderHelpers {
      */
     public boolean isPointInButton(Button button, int pointX, int pointY);
 
-    public void blitColored(GuiGraphics guiGraphics, int x, int y, int z, float u, float v, int width, int height, float r, float g, float b, float a);
+    public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a);
 
-    public void blitColored(GuiGraphics guiGraphics, int x, int y, int z, int width, int height, float u0, float u1, float v0, float v1, float r, float g, float b, float a);
+    public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int u0, int u1, int v0, int v1, float r, float g, float b, float a);
 
 }

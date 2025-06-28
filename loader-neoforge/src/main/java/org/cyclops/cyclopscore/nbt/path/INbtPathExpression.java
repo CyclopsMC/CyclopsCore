@@ -40,7 +40,7 @@ public interface INbtPathExpression {
         return this.match(nbts.limit(1))
                 .getMatches()
                 .findAny()
-                .filter(tag -> tag.getId() != Tag.TAG_BYTE || ((ByteTag) tag).getAsByte() == (byte) 1) // Filter truthy values
+                .filter(tag -> tag.getId() != Tag.TAG_BYTE || ((ByteTag) tag).byteValue() == (byte) 1) // Filter truthy values
                 .isPresent();
     }
 

@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.proxy;
 
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.cyclops.cyclopscore.CyclopsCoreForge;
 import org.cyclops.cyclopscore.event.LecternInfoBookHandlerForge;
 import org.cyclops.cyclopscore.event.PlayerRingOfFireForge;
@@ -28,7 +29,7 @@ public class CommonProxyForge extends CommonProxyComponentForge {
         super.registerEventHooks();
 
         MinecraftForge.EVENT_BUS.register(new PlayerRingOfFireForge());
-        MinecraftForge.EVENT_BUS.register(new LecternInfoBookHandlerForge());
+        PlayerInteractEvent.RightClickBlock.BUS.addListener(LecternInfoBookHandlerForge::onRightClickLectern);
     }
 
     @Override

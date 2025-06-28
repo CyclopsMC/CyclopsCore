@@ -1,7 +1,9 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.function.Consumer;
@@ -16,20 +18,15 @@ public interface IDynamicModelElementCommon {
     /**
      * This will only be called once.
      * @param modelConsumer The model bake consumer.
-     * @return A dynamic model instance.
+     * @return A dynamic block model instance.
      */
-    @Deprecated
-    public default BakedModel createDynamicModel(Consumer<Pair<ModelResourceLocation, BakedModel>> modelConsumer) {
-        throw new UnsupportedOperationException("Implement createDynamicModel with two arguments"); // TODO: rm in next MC update
-    }
+    public BlockStateModel createDynamicBlockModel(Consumer<Pair<BlockState, BlockStateModel>> modelConsumer, Function<BlockState, BlockStateModel> modelRetriever);
 
     /**
      * This will only be called once.
      * @param modelConsumer The model bake consumer.
-     * @return A dynamic model instance.
+     * @return A dynamic item model instance.
      */
-    public default BakedModel createDynamicModel(Consumer<Pair<ModelResourceLocation, BakedModel>> modelConsumer, Function<ModelResourceLocation, BakedModel> modelRetriever) {
-        return createDynamicModel(modelConsumer);
-    }
+    public ItemModel createDynamicItemModel(Consumer<Pair<ResourceLocation, ItemModel>> modelConsumer, Function<ResourceLocation, ItemModel> modelRetriever);
 
 }

@@ -26,7 +26,7 @@ public class KeyBindingAppendix extends SectionAppendix {
     public KeyBindingAppendix(IInfoBook infoBook, String keybindingName) throws InfoBookParser.InvalidAppendixException {
         super(infoBook);
         if (infoBook.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
-            this.keyBinding = KeyMapping.ALL.get(keybindingName);
+            this.keyBinding = KeyMapping.get(keybindingName);
             if (this.keyBinding == null) {
                 throw new InfoBookParser.InvalidAppendixException("Could not find a keybinding by name " + keybindingName);
             }
@@ -53,15 +53,15 @@ public class KeyBindingAppendix extends SectionAppendix {
     protected void drawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
         gui.drawOuterBorder(guiGraphics, x - 1, y - 1, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
         gui.drawTextBanner(guiGraphics, x + width / 2, y - 2);
-        gui.drawScaledCenteredString(guiGraphics, IModHelpers.get().getL10NHelpers().localize("gui." + getInfoBook().getMod().getModId() + ".keybinding"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, IModHelpers.get().getBaseHelpers().RGBToInt(30, 20, 120));
+        gui.drawScaledCenteredString(guiGraphics, IModHelpers.get().getL10NHelpers().localize("gui." + getInfoBook().getMod().getModId() + ".keybinding"), x, y - 2, width, 0.9f, gui.getBannerWidth() - 6, IModHelpers.get().getBaseHelpers().RGBAToInt(30, 20, 120, 255));
 
         gui.drawScaledCenteredString(guiGraphics, ChatFormatting.ITALIC.toString() + IModHelpers.get().getL10NHelpers().localize(keyBinding.getName()),
-                x, y - 2 + 12, width, 0.9f, gui.getBannerWidth() + 8, IModHelpers.get().getBaseHelpers().RGBToInt(30, 20, 120));
+                x, y - 2 + 12, width, 0.9f, gui.getBannerWidth() + 8, IModHelpers.get().getBaseHelpers().RGBAToInt(30, 20, 120, 255));
 
         String binding = IModHelpers.get().getL10NHelpers().localize(keyBinding.saveString());
         int bindingWidth = gui.getFont().width(binding) + 2;
         gui.drawOuterBorder(guiGraphics, x + width / 2 - bindingWidth / 2 - 1, y + 17, bindingWidth, 10, 1, 1, 1, 0.2f);
-        gui.drawScaledCenteredString(guiGraphics, binding, x, y + 22, width, 0.9f, gui.getBannerWidth() - 6, IModHelpers.get().getBaseHelpers().RGBToInt(30, 20, 120));
+        gui.drawScaledCenteredString(guiGraphics, binding, x, y + 22, width, 0.9f, gui.getBannerWidth() - 6, IModHelpers.get().getBaseHelpers().RGBAToInt(30, 20, 120, 255));
     }
 
     @Override

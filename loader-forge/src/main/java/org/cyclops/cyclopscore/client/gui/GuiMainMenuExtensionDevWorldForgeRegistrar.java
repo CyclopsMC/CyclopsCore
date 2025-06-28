@@ -5,7 +5,7 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.cyclops.cyclopscore.GeneralConfig;
 import org.cyclops.cyclopscore.helper.IModHelpers;

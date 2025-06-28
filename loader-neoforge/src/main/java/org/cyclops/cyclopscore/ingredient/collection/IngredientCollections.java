@@ -257,16 +257,8 @@ public final class IngredientCollections {
                                                                                CompoundTag tag,
                                                                                IIngredientCollectionConstructor<C>
                                                                                        ingredientCollectionFactory) {
-        // Validate tag
-        if (!tag.contains("component", Tag.TAG_STRING)) {
-            throw new IllegalArgumentException("No component type was found in the given tag");
-        }
-        if (!tag.contains("ingredients", Tag.TAG_LIST)) {
-            throw new IllegalArgumentException("No ingredients list was found in the given tag");
-        }
-
         // Validate component
-        String componentTypeName = tag.getString("component");
+        String componentTypeName = tag.getString("component").orElseThrow(() -> new IllegalArgumentException("No component type was found in the given tag"));
         IngredientComponent<?, ?> component = IngredientComponent.REGISTRY.getValue(ResourceLocation.parse(componentTypeName));
         if (component == null) {
             throw new IllegalArgumentException("No ingredient component with the given name was found: " + component);
@@ -274,7 +266,7 @@ public final class IngredientCollections {
 
         // Actual deserialization of ingredients
         IIngredientSerializer<?, ?> serializer = component.getSerializer();
-        ListTag ingredients = (ListTag) tag.get("ingredients");
+        ListTag ingredients = tag.getList("ingredients").orElseThrow(() -> new IllegalArgumentException("No ingredients list was found in the given tag"));
         C collection = ingredientCollectionFactory.create(component);
         IIngredientCollectionMutable collectionUnsafe = collection;
         for (Tag subTag : ingredients) {

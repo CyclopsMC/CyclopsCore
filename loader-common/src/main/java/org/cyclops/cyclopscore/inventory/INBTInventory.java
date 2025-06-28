@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.Container;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.cyclops.cyclopscore.persist.nbt.INBTSerializable;
 
 /**
@@ -14,16 +14,14 @@ public interface INBTInventory extends Container, INBTSerializable {
     /**
      * Read inventory data from the given NBT.
      * @param data The NBT data containing inventory data.
-     * @param provider Holder provider.
      */
-    public void read(HolderLookup.Provider provider, CompoundTag data);
+    public void read(ValueInput data);
 
     /**
      * Write inventory data to the given NBT.
      * @param data The NBT tag that will receive inventory data.
-     * @param provider Holder provider.
      */
-    public void write(HolderLookup.Provider provider, CompoundTag data);
+    public void write(ValueOutput data);
 
     /**
      * @return If all slots are empty.

@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.gametest;
 
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import org.cyclops.cyclopscore.Reference;
 

@@ -1,8 +1,7 @@
 package org.cyclops.cyclopscore.client.particle;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -23,28 +22,43 @@ public class ParticleBlur extends TextureSheetParticle {
 
     public static final RenderType RENDER_TYPE = new RenderType(
             Reference.MOD_ID + ":blur",
-            DefaultVertexFormat.PARTICLE,
-            VertexFormat.Mode.QUADS,
             1536,
             false,
             false,
             () -> {
                 RenderType.translucentParticle(TextureAtlas.LOCATION_PARTICLES).setupRenderState();
 
-                RenderSystem.depthMask(false);
-                RenderSystem.enableBlend();
-                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
+                // TODO: restore
+//                RenderSystem.depthMask(false);
+//                RenderSystem.enableBlend();
+//                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
 
                 AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES);
                 texture.setFilter(true, false);
             }, () -> {
-                RenderSystem.disableBlend();
-                RenderSystem.defaultBlendFunc();
-                RenderSystem.depthMask(true);
+                // TODO: restore
+//                RenderSystem.disableBlend();
+//                RenderSystem.defaultBlendFunc();
+//                RenderSystem.depthMask(true);
 
                 RenderType.translucentParticle(TextureAtlas.LOCATION_PARTICLES).clearRenderState();
             }
-            ) {};
+            ) {
+        @Override
+        public void draw(MeshData meshData) {
+            // TODO: implement based on CompositeRenderType? (just extend or refer to it?
+        }
+
+        @Override
+        public VertexFormat format() {
+            return DefaultVertexFormat.PARTICLE;
+        }
+
+        @Override
+        public VertexFormat.Mode mode() {
+            return VertexFormat.Mode.QUADS;
+        }
+    };
     public static final ParticleRenderType PARTICLE_RENDER_TYPE = new ParticleRenderType(Reference.MOD_ID + ":blur", RENDER_TYPE);
 
     private static final int MAX_VIEW_DISTANCE = 30;

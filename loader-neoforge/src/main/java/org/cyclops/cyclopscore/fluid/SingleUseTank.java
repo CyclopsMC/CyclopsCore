@@ -2,10 +2,11 @@ package org.cyclops.cyclopscore.fluid;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 
@@ -134,15 +135,15 @@ public class SingleUseTank extends Tank {
     }
 
     @Override
-    public void writeTankToNBT(CompoundTag nbt) {
-        super.writeTankToNBT(nbt);
-        nbt.putString(NBT_ACCEPTED_FLUID, BuiltInRegistries.FLUID.getKey(acceptedFluid).toString());
+    public void serializeTank(ValueOutput output) {
+        super.serializeTank(output);
+        output.putString(NBT_ACCEPTED_FLUID, BuiltInRegistries.FLUID.getKey(acceptedFluid).toString());
     }
 
     @Override
-    public void readTankFromNBT(CompoundTag nbt) {
-        super.readTankFromNBT(nbt);
-        setAcceptedFluid(BuiltInRegistries.FLUID.getValue(ResourceLocation.parse(nbt.getString(NBT_ACCEPTED_FLUID))));
+    public void deserializeTank(ValueInput input) {
+        super.deserializeTank(input);
+        setAcceptedFluid(BuiltInRegistries.FLUID.getValue(ResourceLocation.parse(input.getString(NBT_ACCEPTED_FLUID).orElseThrow())));
     }
 
 }

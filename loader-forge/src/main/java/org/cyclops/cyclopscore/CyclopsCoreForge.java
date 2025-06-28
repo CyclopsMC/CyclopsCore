@@ -23,6 +23,7 @@ import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
 import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
+import org.cyclops.cyclopscore.config.ConfigurableTypesForge;
 import org.cyclops.cyclopscore.config.DeferredHolderCommon;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseForge;
@@ -108,6 +109,8 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
 
     @Override
     protected void onConfigsRegister(ConfigHandlerCommon configHandler) {
+        ConfigurableTypesForge.load(this);
+
         super.onConfigsRegister(configHandler);
 
         configHandler.addConfigurable(new GeneralConfig(this));

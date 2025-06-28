@@ -2,16 +2,11 @@ package org.cyclops.cyclopscore.ingredient.storage;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorageSlotted;
-import org.cyclops.cyclopscore.ingredient.collection.IIngredientCollapsedCollectionMutable;
-import org.cyclops.cyclopscore.ingredient.collection.IIngredientCollection;
-import org.cyclops.cyclopscore.ingredient.collection.IngredientArrayList;
-import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionHelpers;
-import org.cyclops.cyclopscore.ingredient.collection.IngredientCollections;
+import org.cyclops.cyclopscore.ingredient.collection.*;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
@@ -876,14 +871,8 @@ public final class IngredientStorageHelpers {
      * @throws IllegalArgumentException If the tag was invalid.
      */
     public static IIngredientComponentStorage<?, ?> deserialize(HolderLookup.Provider lookupProvider, CompoundTag tag, long rateLimit) {
-        if (!tag.contains("maxQuantity", Tag.TAG_LONG)) {
-            throw new IllegalArgumentException("No maxQuantity was found in the given tag");
-        }
-        if (!tag.contains("slotted", Tag.TAG_BYTE)) {
-            throw new IllegalArgumentException("No slotted was found in the given tag");
-        }
-        long maxQuantity = tag.getLong("maxQuantity");
-        if (tag.getBoolean("slotted")) {
+        long maxQuantity = tag.getLong("maxQuantity").orElseThrow(() -> new IllegalArgumentException("No maxQuantity was found in the given tag"));
+        if (tag.getBoolean("slotted").orElseThrow(() -> new IllegalArgumentException("No slotted was found in the given tag"))) {
             return new IngredientComponentStorageSlottedCollectionWrapper<>(
                     IngredientCollections.deserialize(lookupProvider, tag, IngredientArrayList::new), maxQuantity, rateLimit);
         } else {

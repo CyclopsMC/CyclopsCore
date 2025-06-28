@@ -9,6 +9,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.cyclops.cyclopscore.helper.DirectionHelpers;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 import org.cyclops.cyclopscore.persist.nbt.INBTProvider;
@@ -79,31 +81,29 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     }
 
     @Override
-    public void saveAdditional(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        super.saveAdditional(tag, lookupProvider);
-        writeGeneratedFieldsToNBT(tag, lookupProvider);
+    public void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        writeGeneratedFieldsToNBT(output);
     }
 
     /**
      * Write this block entity to the given NBT tag that will be attached to an item.
-     * By default, {@link #saveAdditional(CompoundTag, HolderLookup.Provider)}  will be called.
+     * By default, {@link #saveAdditional(ValueOutput)} will be called.
      *
-     * @param tag The tag to write to.
-     * @return The written tag.
+     * @param output The tag to write to.
      */
-    public CompoundTag writeToItemStack(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        this.saveAdditional(tag, lookupProvider);
-        return tag;
+    public void writeToItemStack(ValueOutput output) {
+        this.saveAdditional(output);
     }
 
     @Override
-    public final void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
-        super.loadAdditional(tag, provider);
-        read(tag, provider);
+    public final void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        read(input);
     }
 
-    public void read(CompoundTag tag, HolderLookup.Provider provider) {
-        readGeneratedFieldsFromNBT(tag, provider);
+    public void read(ValueInput input) {
+        readGeneratedFieldsFromNBT(input);
     }
 
     @Override
@@ -131,12 +131,12 @@ public class CyclopsBlockEntity extends BlockEntity implements INBTProvider, IDi
     }
 
     @Override
-    public void writeGeneratedFieldsToNBT(CompoundTag tag, HolderLookup.Provider holderLookupProvider) {
-        this.nbtProviderComponent.writeGeneratedFieldsToNBT(tag, holderLookupProvider);
+    public void writeGeneratedFieldsToNBT(ValueOutput output) {
+        this.nbtProviderComponent.writeGeneratedFieldsToNBT(output);
     }
 
     @Override
-    public void readGeneratedFieldsFromNBT(CompoundTag tag, HolderLookup.Provider holderLookupProvider) {
-        this.nbtProviderComponent.readGeneratedFieldsFromNBT(tag, holderLookupProvider);
+    public void readGeneratedFieldsFromNBT(ValueInput input) {
+        this.nbtProviderComponent.readGeneratedFieldsFromNBT(input);
     }
 }

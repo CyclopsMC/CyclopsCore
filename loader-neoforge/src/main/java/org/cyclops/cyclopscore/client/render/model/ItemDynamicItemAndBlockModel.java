@@ -2,12 +2,10 @@ package org.cyclops.cyclopscore.client.render.model;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.item.BlockModelWrapper;
-import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.client.renderer.item.ItemModelResolver;
-import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.block.model.TextureSlots;
+import net.minecraft.client.renderer.item.*;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -20,10 +18,10 @@ import java.util.List;
 /**
  * @author rubensworks
  */
-public record ItemDynamicItemAndBlockModel(DynamicItemAndBlockModel model) implements ItemModel {
+public record ItemDynamicItemAndBlockModel(DynamicItemAndBlockModel resolvedModel, ModelRenderProperties modelRenderProperties) implements ItemModel {
     @Override
     public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
-        new BlockModelWrapper(this.model.handleItemState(stack, level, entity), List.of(new Constant(-1)))
+        new BlockModelWrapper(List.of(), resolvedModel.handleItemState(stack, level, entity), modelRenderProperties)
                 .update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
     }
 
@@ -42,12 +40,17 @@ public record ItemDynamicItemAndBlockModel(DynamicItemAndBlockModel model) imple
 
         @Override
         public ItemModel bake(BakingContext bakingContext) {
-            return new ItemDynamicItemAndBlockModel((DynamicItemAndBlockModel) bakingContext.bake(model));
+            ModelBaker modelbaker = bakingContext.blockModelBaker();
+            DynamicItemAndBlockModel resolvedModel = (DynamicItemAndBlockModel) modelbaker.getModel(this.model);
+            TextureSlots textureslots = resolvedModel.getTopTextureSlots();
+//            List<BakedQuad> quads = resolvedModel.bakeTopGeometry(textureslots, modelbaker, BlockModelRotation.X0_Y0).getAll();
+            ModelRenderProperties modelRenderProperties = ModelRenderProperties.fromResolvedModel(modelbaker, resolvedModel, textureslots);
+            return new ItemDynamicItemAndBlockModel(resolvedModel, modelRenderProperties);
         }
 
         @Override
         public void resolveDependencies(Resolver resolver) {
-            resolver.resolve(model);
+            resolver.markDependency(model);
         }
     }
 }

@@ -3,18 +3,19 @@ package org.cyclops.cyclopscore.persist.nbt;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.mojang.datafixers.util.Either;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
@@ -43,13 +44,13 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(Integer.class, new NBTClassType<Integer>() {
 
             @Override
-            public void writePersistedField(String name, Integer object, CompoundTag tag, HolderLookup.Provider provider) {
+            public void writePersistedField(String name, Integer object, ValueOutput tag) {
                 tag.putInt(name, object);
             }
 
             @Override
-            public Integer readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return tag.getInt(name);
+            public Integer readPersistedField(String name, ValueInput tag) {
+                return tag.getInt(name).orElseThrow();
             }
 
             @Override
@@ -62,13 +63,13 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(Float.class, new NBTClassType<Float>() {
 
             @Override
-            public void writePersistedField(String name, Float object, CompoundTag tag, HolderLookup.Provider provider) {
+            public void writePersistedField(String name, Float object, ValueOutput tag) {
                 tag.putFloat(name, object);
             }
 
             @Override
-            public Float readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return tag.getFloat(name);
+            public Float readPersistedField(String name, ValueInput tag) {
+                return tag.getFloatOr(name, 0);
             }
 
             @Override
@@ -81,13 +82,13 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(Boolean.class, new NBTClassType<Boolean>() {
 
             @Override
-            public void writePersistedField(String name, Boolean object, CompoundTag tag, HolderLookup.Provider provider) {
+            public void writePersistedField(String name, Boolean object, ValueOutput tag) {
                 tag.putBoolean(name, object);
             }
 
             @Override
-            public Boolean readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return tag.getBoolean(name);
+            public Boolean readPersistedField(String name, ValueInput tag) {
+                return tag.getBooleanOr(name, false);
             }
 
             @Override
@@ -100,15 +101,15 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(String.class, new NBTClassType<String>() {
 
             @Override
-            public void writePersistedField(String name, String object, CompoundTag tag, HolderLookup.Provider provider) {
+            public void writePersistedField(String name, String object, ValueOutput tag) {
                 if(object != null && !object.isEmpty()) {
                     tag.putString(name, object);
                 }
             }
 
             @Override
-            public String readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return tag.getString(name);
+            public String readPersistedField(String name, ValueInput tag) {
+                return tag.getString(name).orElseThrow();
             }
 
             @Override
@@ -119,13 +120,13 @@ public abstract class NBTClassType<T> {
 
         NBTYPES.put(Direction.class, new NBTClassType<Direction>() {
             @Override
-            public void writePersistedField(String name, Direction object, CompoundTag tag, HolderLookup.Provider provider) {
+            public void writePersistedField(String name, Direction object, ValueOutput tag) {
                 tag.putInt(name, object.ordinal());
             }
 
             @Override
-            public Direction readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return Direction.values()[tag.getInt(name)];
+            public Direction readPersistedField(String name, ValueInput tag) {
+                return Direction.values()[tag.getInt(name).orElseThrow()];
             }
 
             @Override
@@ -136,13 +137,13 @@ public abstract class NBTClassType<T> {
 
         NBTYPES.put(Fluid.class, new NBTClassType<Fluid>() {
             @Override
-            public void writePersistedField(String name, Fluid object, CompoundTag tag, HolderLookup.Provider provider) {
+            public void writePersistedField(String name, Fluid object, ValueOutput tag) {
                 tag.putString(name, BuiltInRegistries.FLUID.getKey(object).toString());
             }
 
             @Override
-            public Fluid readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                String fluidName = tag.getString(name);
+            public Fluid readPersistedField(String name, ValueInput tag) {
+                String fluidName = tag.getString(name).orElseThrow();
                 return BuiltInRegistries.FLUID.getValue(ResourceLocation.parse(fluidName));
             }
 
@@ -155,13 +156,13 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(Tag.class, new NBTClassType<Tag>() {
 
             @Override
-            public void writePersistedField(String name, Tag object, CompoundTag tag, HolderLookup.Provider provider) {
-                tag.put(name, object);
+            public void writePersistedField(String name, Tag object, ValueOutput tag) {
+                tag.store(name, ExtraCodecs.NBT, object);
             }
 
             @Override
-            public Tag readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return tag.get(name);
+            public Tag readPersistedField(String name, ValueInput tag) {
+                return tag.read(name, ExtraCodecs.NBT).orElseThrow();
             }
 
             @Override
@@ -190,18 +191,17 @@ public abstract class NBTClassType<T> {
 
             @SuppressWarnings("unchecked")
             @Override
-            public void writePersistedField(String name, Map object, CompoundTag tag, HolderLookup.Provider provider) {
-                CompoundTag mapTag = new CompoundTag();
-                ListTag list = new ListTag();
+            public void writePersistedField(String name, Map object, ValueOutput tag) {
+                ValueOutput mapTag = tag.child(name);
+                ValueOutput.ValueOutputList list = mapTag.childrenList("map");
                 boolean setKeyType = false;
                 boolean setValueType = false;
                 for(Map.Entry entry : (Set<Map.Entry>) object.entrySet()) {
-                    CompoundTag entryTag = new CompoundTag();
-                    getType(entry.getKey().getClass(), object).writePersistedField("key", entry.getKey(), entryTag, provider);
+                    ValueOutput entryTag = list.addChild();
+                    getType(entry.getKey().getClass(), object).writePersistedField("key", entry.getKey(), entryTag);
                     if(entry.getValue() != null) {
-                        getType(entry.getValue().getClass(), object).writePersistedField("value", entry.getValue(), entryTag, provider);
+                        getType(entry.getValue().getClass(), object).writePersistedField("value", entry.getValue(), entryTag);
                     }
-                    list.add(entryTag);
 
                     if(!setKeyType) {
                         setKeyType = true;
@@ -212,30 +212,28 @@ public abstract class NBTClassType<T> {
                         mapTag.putString("valueType", entry.getValue().getClass().getName());
                     }
                 }
-                mapTag.put("map", list);
-                tag.put(name, mapTag);
             }
 
             @SuppressWarnings("unchecked")
             @Override
-            public Map readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                CompoundTag mapTag = tag.getCompound(name);
+            public Map readPersistedField(String name, ValueInput tag) {
+                ValueInput mapTag = tag.child(name).orElseThrow();
                 Map map = Maps.newHashMap();
-                ListTag list = mapTag.getList("map", Tag.TAG_COMPOUND);
-                if(list.size() > 0) {
+                ValueInput.ValueInputList list = mapTag.childrenList("map").orElseThrow();
+                if(!list.isEmpty()) {
                     NBTClassType keyNBTClassType;
                     NBTClassType valueNBTClassType = null; // Remains null when all map values are null.
                     try {
-                        Class<?> keyType = Class.forName(mapTag.getString("keyType"));
+                        Class<?> keyType = Class.forName(mapTag.getString("keyType").orElseThrow());
                         keyNBTClassType = getType(keyType, map);
                     } catch (ClassNotFoundException e) {
                         CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type map key '" + mapTag.getString("keyType")
                                 + "', this could be a mod error.");
                         return map;
                     }
-                    if(mapTag.contains("valueType")) {
+                    if(mapTag.child("valueType").isPresent()) {
                         try {
-                            Class<?> valueType = Class.forName(mapTag.getString("valueType"));
+                            Class<?> valueType = Class.forName(mapTag.getString("valueType").orElseThrow());
                             valueNBTClassType = getType(valueType, map);
                         } catch (ClassNotFoundException e) {
                             CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
@@ -243,15 +241,14 @@ public abstract class NBTClassType<T> {
                             return map;
                         }
                     }
-                    for (int i = 0; i < list.size(); i++) {
-                        CompoundTag entryTag = list.getCompound(i);
-                        Object key = keyNBTClassType.readPersistedField("key", entryTag, provider);
+                    for (ValueInput entryTag : list) {
+                        Object key = keyNBTClassType.readPersistedField("key", entryTag);
                         Object value = null;
                         // If the class type is null, this means all map values are null, so
                         // we won't have any problems with just inserting nulls for all values here.
                         // Also check if it has a 'value' tag, since later elements can still be null.
-                        if(valueNBTClassType != null && entryTag.contains("value")) {
-                            value = valueNBTClassType.readPersistedField("value", entryTag, provider);
+                        if(valueNBTClassType != null && entryTag.child("value").isPresent()) {
+                            value = valueNBTClassType.readPersistedField("value", entryTag);
                         }
                         map.put(key, value);
                     }
@@ -268,13 +265,13 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(Vec3i.class, new NBTClassType<Vec3i>() {
 
             @Override
-            public void writePersistedField(String name, Vec3i object, CompoundTag tag, HolderLookup.Provider provider) {
+            public void writePersistedField(String name, Vec3i object, ValueOutput tag) {
                 tag.putIntArray(name, new int[]{object.getX(), object.getY(), object.getZ()});
             }
 
             @Override
-            public Vec3i readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                int[] array = tag.getIntArray(name);
+            public Vec3i readPersistedField(String name, ValueInput tag) {
+                int[] array = tag.getIntArray(name).orElseThrow();
                 return new Vec3i(array[0], array[1], array[2]);
             }
 
@@ -287,18 +284,17 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(Vec3.class, new NBTClassType<Vec3>() {
 
             @Override
-            public void writePersistedField(String name, Vec3 object, CompoundTag tag, HolderLookup.Provider provider) {
-                CompoundTag vec = new CompoundTag();
+            public void writePersistedField(String name, Vec3 object, ValueOutput tag) {
+                ValueOutput vec = tag.child(name);
                 vec.putDouble("x", object.x);
                 vec.putDouble("y", object.y);
                 vec.putDouble("z", object.z);
-                tag.put(name, vec);
             }
 
             @Override
-            public Vec3 readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                CompoundTag vec = tag.getCompound(name);
-                return new Vec3(vec.getDouble("x"), vec.getDouble("y"), vec.getDouble("z"));
+            public Vec3 readPersistedField(String name, ValueInput tag) {
+                ValueInput vec = tag.child(name).orElseThrow();
+                return new Vec3(vec.getDoubleOr("x", 0), vec.getDoubleOr("y", 0), vec.getDoubleOr("z", 0));
             }
 
             @Override
@@ -310,28 +306,25 @@ public abstract class NBTClassType<T> {
         NBTYPES.put(Pair.class, new NBTClassType<Pair>() {
 
             @Override
-            public void writePersistedField(String name, Pair object, CompoundTag tag, HolderLookup.Provider provider) {
-                CompoundTag pairTag = new CompoundTag();
-                CompoundTag leftTag = new CompoundTag();
-                CompoundTag rightTag = new CompoundTag();
-                getType(object.getLeft().getClass(), object).writePersistedField("element", object.getLeft(), leftTag, provider);
-                getType(object.getRight().getClass(), object).writePersistedField("element", object.getRight(), rightTag, provider);
+            public void writePersistedField(String name, Pair object, ValueOutput tag) {
+                ValueOutput pairTag = tag.child(name);
+                ValueOutput leftTag = pairTag.child("left");
+                ValueOutput rightTag = pairTag.child("right");
+                getType(object.getLeft().getClass(), object).writePersistedField("element", object.getLeft(), leftTag);
+                getType(object.getRight().getClass(), object).writePersistedField("element", object.getRight(), rightTag);
                 pairTag.putString("leftType", object.getLeft().getClass().getName());
                 pairTag.putString("rightType", object.getRight().getClass().getName());
-                pairTag.put("left", leftTag);
-                pairTag.put("right", rightTag);
-                tag.put(name, pairTag);
             }
 
             @Override
-            public Pair readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                CompoundTag pairTag = tag.getCompound(name);
-                CompoundTag leftTag = pairTag.getCompound("left");
-                CompoundTag rightTag = pairTag.getCompound("right");
+            public Pair readPersistedField(String name, ValueInput tag) {
+                ValueInput pairTag = tag.child(name).orElseThrow();
+                ValueInput leftTag = pairTag.child("left").orElseThrow();
+                ValueInput rightTag = pairTag.child("right").orElseThrow();
 
                 NBTClassType leftElementNBTClassType;
                 try {
-                    Class<?> elementType = Class.forName(pairTag.getString("leftType"));
+                    Class<?> elementType = Class.forName(pairTag.getString("leftType").orElseThrow());
                     leftElementNBTClassType = getType(elementType, Pair.class);
                 } catch (ClassNotFoundException e) {
                     CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type Pair left element '" + pairTag.getString("leftType")
@@ -341,7 +334,7 @@ public abstract class NBTClassType<T> {
 
                 NBTClassType rightElementNBTClassType;
                 try {
-                    Class<?> elementType = Class.forName(pairTag.getString("rightType"));
+                    Class<?> elementType = Class.forName(pairTag.getString("rightType").orElseThrow());
                     rightElementNBTClassType = getType(elementType, Pair.class);
                 } catch (ClassNotFoundException e) {
                     CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type Pair right element '" + pairTag.getString("rightType")
@@ -349,8 +342,8 @@ public abstract class NBTClassType<T> {
                     return Pair.of(null, null);
                 }
 
-                Object left = leftElementNBTClassType.readPersistedField("element", leftTag, provider);
-                Object right = rightElementNBTClassType.readPersistedField("element", rightTag, provider);
+                Object left = leftElementNBTClassType.readPersistedField("element", leftTag);
+                Object right = rightElementNBTClassType.readPersistedField("element", rightTag);
                 return Pair.of(left, right);
             }
 
@@ -362,15 +355,15 @@ public abstract class NBTClassType<T> {
 
         NBTYPES.put(ItemStack.class, new NBTClassType<ItemStack>() {
             @Override
-            public void writePersistedField(String name, ItemStack object, CompoundTag tag, HolderLookup.Provider provider) {
+            public void writePersistedField(String name, ItemStack object, ValueOutput tag) {
                 if (object != null) {
-                    tag.put(name, object.copy().saveOptional(provider));
+                    tag.store(name, ItemStack.OPTIONAL_CODEC, object);
                 }
             }
 
             @Override
-            public ItemStack readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return ItemStack.parseOptional(provider, tag.getCompound(name));
+            public ItemStack readPersistedField(String name, ValueInput tag) {
+                return tag.read(name, ItemStack.OPTIONAL_CODEC).orElseThrow();
             }
 
             @Override
@@ -378,21 +371,21 @@ public abstract class NBTClassType<T> {
                 return null;
             }
         });
-        NBTYPES.put(MutableComponent.class, new NBTClassType<MutableComponent>() {
+        NBTYPES.put(Component.class, new NBTClassType<Component>() {
             @Override
-            public void writePersistedField(String name, MutableComponent object, CompoundTag tag, HolderLookup.Provider provider) {
+            public void writePersistedField(String name, Component object, ValueOutput tag) {
                 if (object != null) {
-                    tag.putString(name, MutableComponent.Serializer.toJson(object, provider));
+                    tag.store(name, ComponentSerialization.CODEC, object);
                 }
             }
 
             @Override
-            public MutableComponent readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                return Component.Serializer.fromJson(tag.getString(name), provider);
+            public Component readPersistedField(String name, ValueInput tag) {
+                return tag.read(name, ComponentSerialization.CODEC).orElseThrow();
             }
 
             @Override
-            public MutableComponent getDefaultValue() {
+            public Component getDefaultValue() {
                 return null;
             }
         });
@@ -401,38 +394,35 @@ public abstract class NBTClassType<T> {
 
             @SuppressWarnings("unchecked")
             @Override
-            public void writePersistedField(String name, EnumFacingMap object, CompoundTag tag, HolderLookup.Provider provider) {
-                CompoundTag mapTag = new CompoundTag();
-                ListTag list = new ListTag();
+            public void writePersistedField(String name, EnumFacingMap object, ValueOutput tag) {
+                ValueOutput mapTag = tag.child(name);
+                ValueOutput.ValueOutputList list = mapTag.childrenList("map");
                 boolean setValueType = false;
                 for(Map.Entry entry : (Set<Map.Entry>) object.entrySet()) {
-                    CompoundTag entryTag = new CompoundTag();
+                    ValueOutput entryTag = list.addChild();
                     entryTag.putInt("key", ((Direction) entry.getKey()).ordinal());
                     if(entry.getValue() != null) {
-                        getType(entry.getValue().getClass(), object).writePersistedField("value", entry.getValue(), entryTag, provider);
+                        getType(entry.getValue().getClass(), object).writePersistedField("value", entry.getValue(), entryTag);
                     }
-                    list.add(entryTag);
 
                     if(!setValueType && entry.getValue() != null) {
                         setValueType = true;
                         mapTag.putString("valueType", entry.getValue().getClass().getName());
                     }
                 }
-                mapTag.put("map", list);
-                tag.put(name, mapTag);
             }
 
             @SuppressWarnings("unchecked")
             @Override
-            public EnumFacingMap readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-                CompoundTag mapTag = tag.getCompound(name);
+            public EnumFacingMap readPersistedField(String name, ValueInput tag) {
+                ValueInput mapTag = tag.child(name).orElseThrow();
                 EnumFacingMap map = EnumFacingMap.newMap();
-                ListTag list = mapTag.getList("map", Tag.TAG_COMPOUND);
-                if(list.size() > 0) {
+                ValueInput.ValueInputList list = mapTag.childrenList("map").orElseThrow();
+                if(!list.isEmpty()) {
                     NBTClassType valueNBTClassType = null; // Remains null when all map values are null.
-                    if(mapTag.contains("valueType")) {
+                    if(mapTag.child("valueType").isPresent()) {
                         try {
-                            Class<?> valueType = Class.forName(mapTag.getString("valueType"));
+                            Class<?> valueType = Class.forName(mapTag.getString("valueType").orElseThrow());
                             valueNBTClassType = getType(valueType, map);
                         } catch (ClassNotFoundException e) {
                             CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
@@ -440,15 +430,14 @@ public abstract class NBTClassType<T> {
                             return map;
                         }
                     }
-                    for (int i = 0; i < list.size(); i++) {
-                        CompoundTag entryTag = list.getCompound(i);
-                        Direction key = Direction.values()[entryTag.getInt("key")];
+                    for (ValueInput entryTag : list) {
+                        Direction key = Direction.values()[entryTag.getInt("key").orElseThrow()];
                         Object value = null;
                         // If the class type is null, this means all map values are null, so
                         // we won't have any problems with just inserting nulls for all values here.
                         // Also check if it has a 'value' tag, since later elements can still be null.
-                        if(valueNBTClassType != null && entryTag.contains("value")) {
-                            value = valueNBTClassType.readPersistedField("value", entryTag, provider);
+                        if(valueNBTClassType != null && entryTag.child("value").isPresent()) {
+                            value = valueNBTClassType.readPersistedField("value", entryTag);
                         }
                         map.put(key, value);
                     }
@@ -482,14 +471,13 @@ public abstract class NBTClassType<T> {
      * @param name     The NBT key name to write to.
      * @param instance The instance to serialize.
      * @param tag      The NBT tag to write in.
-     * @param provider
      */
-    public static <T, I extends T> void writeNbt(Class<T> clazz, String name, I instance, CompoundTag tag, HolderLookup.Provider provider) {
+    public static <T, I extends T> void writeNbt(Class<T> clazz, String name, I instance, ValueOutput tag) {
         NBTClassType<T> serializationClass = getClassType(clazz);
         if (serializationClass == null) {
             throw new RuntimeException("No valid NBT serialization was found for " + instance + " of type " + clazz);
         }
-        serializationClass.writePersistedField(name, instance, tag, provider);
+        serializationClass.writePersistedField(name, instance, tag);
     }
 
     /**
@@ -499,15 +487,14 @@ public abstract class NBTClassType<T> {
      * @param clazz    The class of the object.
      * @param name     The NBT key name to read from.
      * @param tag      The NBT tag to read in.
-     * @param provider
      * @return The read object.
      */
-    public static <T> T readNbt(Class<T> clazz, String name, CompoundTag tag, HolderLookup.Provider provider) {
+    public static <T> T readNbt(Class<T> clazz, String name, ValueInput tag) {
         NBTClassType<T> serializationClass = getClassType(clazz);
         if (serializationClass == null) {
             throw new RuntimeException("No valid NBT serialization was found type " + clazz);
         }
-        return serializationClass.readPersistedField(name, tag, provider);
+        return serializationClass.readPersistedField(name, tag);
     }
 
     private static boolean isImplementsInterface(Class<?> clazz, Class<?> interfaceClazz) {
@@ -554,10 +541,8 @@ public abstract class NBTClassType<T> {
      * @param provider             The provider that has the field.
      * @param field                The field to persist or read.
      * @param tag                  The tag compound to read or write to.
-     * @param write                If there should be written, otherwise there will be read.
-     * @param holderLookupProvider
      */
-    public static void performActionForField(INBTProvider provider, Field field, CompoundTag tag, boolean write, HolderLookup.Provider holderLookupProvider) {
+    public static void performActionForField(INBTProvider provider, Field field, Either<ValueInput, ValueOutput> tag) {
         Class<?> type = field.getType();
         String fieldName = field.getName();
 
@@ -568,13 +553,7 @@ public abstract class NBTClassType<T> {
         }
 
         // Get a non-null action
-        NBTClassType<?> action = getType(type, provider);
-        try {
-            action.persistedFieldAction(provider, field, tag, write, holderLookupProvider);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Could not access field " + fieldName + " in " + provider.getClass() + " " + e.getMessage());
-        }
+        getType(type, provider).persistedFieldAction(provider, field, tag);
     }
 
     /**
@@ -582,25 +561,23 @@ public abstract class NBTClassType<T> {
      *
      * @param provider             The provider that has the field.
      * @param field                The field to persist or read.
-     * @param tag                  The tag compound to read or write to.
-     * @param write                If there should be written, otherwise there will be read.
-     * @param holderLookupProvider
+     * @param valueIo              The tag compound to read or write to.
      * @throws IllegalArgumentException Argument exception;
-     * @throws IllegalAccessException   Access exception;
      */
     @SuppressWarnings("unchecked")
-    public void persistedFieldAction(INBTProvider provider, Field field, CompoundTag tag, boolean write, HolderLookup.Provider holderLookupProvider) throws IllegalAccessException {
+    public void persistedFieldAction(INBTProvider provider, Field field, Either<ValueInput, ValueOutput> valueIo) {
         String name = field.getName();
         NBTPersist annotation = field.getAnnotation(NBTPersist.class);
         boolean useDefaultValue = annotation.useDefaultValue();
         Object castTile = field.getDeclaringClass().cast(provider);
-        if(write) {
+
+        valueIo.ifRight(output -> {
             try {
                 field.setAccessible(true); // At least one coremod seems to reset this for some reason, so force enable it again.
                 T object = (T) field.get(castTile);
                 if(object != null) {
                     try {
-                        writePersistedField(name, object, tag, holderLookupProvider);
+                        writePersistedField(name, object, output);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw new RuntimeException("Something went from with the field " + field.getName() + " in " + castTile + ": " + e.getMessage());
@@ -608,12 +585,15 @@ public abstract class NBTClassType<T> {
                 }
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException("Can not write the field " + field.getName() + " in " + castTile + " since it does not exist. " + e.getMessage());
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Can not write the field " + field.getName() + " in " + castTile + " since it can not be accessed. " + e.getMessage());
             }
-        } else {
+        });
+        valueIo.ifLeft(input -> {
             T object = null;
             try {
-                if(tag.contains(name)) {
-                    object = readPersistedField(name, tag, holderLookupProvider);
+                if(input.child(name).isPresent()) {
+                    object = readPersistedField(name, input);
                     field.setAccessible(true); // At least one coremod seems to reset this for some reason, so force enable it again.
                     field.set(castTile, object);
                 } else if (useDefaultValue) {
@@ -624,13 +604,15 @@ public abstract class NBTClassType<T> {
             }  catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 throw new RuntimeException("Can not read the field " + field.getName() + " as " + object + " in " + castTile + " since it does not exist OR there is a class mismatch. " + e.getMessage());
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Can not read the field " + field.getName() + " as " + object + " in " + castTile + " since it can not be accessed. " + e.getMessage());
             }
-
-        }
+        });
     }
 
-    public abstract void writePersistedField(String name, T object, CompoundTag tag, HolderLookup.Provider provider);
-    public abstract T readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider);
+    public abstract void writePersistedField(String name, T object, ValueOutput tag);
+    public abstract T readPersistedField(String name, ValueInput tag);
     public abstract T getDefaultValue();
 
     private abstract static class CollectionNBTClassType<C extends Collection> extends NBTClassType<C> {
@@ -644,43 +626,38 @@ public abstract class NBTClassType<T> {
 
         @SuppressWarnings("unchecked")
         @Override
-        public void writePersistedField(String name, C object, CompoundTag tag, HolderLookup.Provider provider) {
-            CompoundTag collectionTag = new CompoundTag();
-            ListTag list = new ListTag();
+        public void writePersistedField(String name, C object, ValueOutput tag) {
+            ValueOutput collectionTag = tag.child(name);
+            ValueOutput.ValueOutputList list = collectionTag.childrenList("collection");
             boolean setTypes = false;
             for(Object element : object) {
-                CompoundTag elementTag = new CompoundTag();
-                getType(element.getClass(), object).writePersistedField("element", element, elementTag, provider);
-                list.add(elementTag);
+                ValueOutput elementTag = list.addChild();
+                getType(element.getClass(), object).writePersistedField("element", element, elementTag);
 
                 if (!setTypes) {
                     setTypes = true;
                     collectionTag.putString("elementType", element.getClass().getName());
                 }
             }
-            collectionTag.put("collection", list);
-            tag.put(name, collectionTag);
         }
 
         @Override
-        public C readPersistedField(String name, CompoundTag tag, HolderLookup.Provider provider) {
-            CompoundTag collectionTag = tag.getCompound(name);
+        public C readPersistedField(String name, ValueInput tag) {
+            ValueInput collectionTag = tag.child(name).orElseThrow();
             C collection = createNewCollection();
-            ListTag list = collectionTag.getList("collection", Tag.TAG_COMPOUND);
-            if(list.size() > 0) {
+            ValueInput.ValueInputList list = collectionTag.childrenList("collection").orElseThrow();
+            if(!list.isEmpty()) {
                 NBTClassType elementNBTClassType;
                 try {
-                    Class<?> elementType = Class.forName(collectionTag.getString("elementType"));
+                    Class<?> elementType = Class.forName(collectionTag.getString("elementType").orElseThrow());
                     elementNBTClassType = getType(elementType, collection);
                 } catch (ClassNotFoundException e) {
                     CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type collection element '" + collectionTag.getString("elementType")
                             + "', this could be a mod error.");
                     return collection;
                 }
-                for (int i = 0; i < list.size(); i++) {
-                    CompoundTag entryTag = list.getCompound(i);
-                    Object element = elementNBTClassType.readPersistedField("element", entryTag, provider);
-                    collection.add(element);
+                for (ValueInput entryTag : list) {
+                    collection.add(elementNBTClassType.readPersistedField("element", entryTag));
                 }
             }
             return collection;

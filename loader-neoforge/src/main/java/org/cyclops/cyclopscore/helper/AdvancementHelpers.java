@@ -25,7 +25,7 @@ public class AdvancementHelpers {
 
     public static boolean hasAdvancementUnlocked(Player player, AdvancementHolder advancement) {
         return player instanceof ServerPlayer
-                && ((ServerPlayer) player).server.getPlayerList()
+                && player.getServer().getPlayerList()
                 .getPlayerAdvancements((ServerPlayer) player).getOrStartProgress(advancement).isDone();
     }
 

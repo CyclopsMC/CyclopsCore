@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.proxy;
 
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import org.cyclops.cyclopscore.CyclopsCoreForge;
 import org.cyclops.cyclopscore.init.ModBaseForge;
 import org.cyclops.cyclopscore.item.ItemInformationProviderForge;
@@ -16,7 +16,7 @@ public class ClientProxyForge extends ClientProxyComponentForge {
     public ClientProxyForge() {
         super(new CommonProxyForge());
 
-        MinecraftForge.EVENT_BUS.addListener(ItemInformationProviderForge::onTooltip);
+        ItemTooltipEvent.BUS.addListener(ItemInformationProviderForge::onTooltip);
     }
 
     @Override

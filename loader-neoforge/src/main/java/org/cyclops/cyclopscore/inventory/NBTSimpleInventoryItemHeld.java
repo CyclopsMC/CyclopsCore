@@ -1,9 +1,9 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.cyclops.cyclopscore.RegistryEntries;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 
@@ -49,13 +49,13 @@ public class NBTSimpleInventoryItemHeld extends SimpleInventory {
     }
 
     @Override
-    public void readFromNBT(HolderLookup.Provider provider, CompoundTag data, String tagName) {
-        IModHelpers.get().getInventoryHelpers().readFromNBT(provider, this, data, tagName);
+    public void readFromNBT(ValueInput data, String tagName) {
+        IModHelpers.get().getInventoryHelpers().readFromNBT(this, data, tagName);
     }
 
     @Override
-    public void writeToNBT(HolderLookup.Provider provider, CompoundTag data, String tagName) {
-        IModHelpers.get().getInventoryHelpers().writeToNBT(provider, this, data, tagName);
+    public void writeToNBT(ValueOutput data, String tagName) {
+        IModHelpers.get().getInventoryHelpers().writeToNBT(this, data, tagName);
     }
 
 }

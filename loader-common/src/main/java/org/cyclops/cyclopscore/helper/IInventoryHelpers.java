@@ -1,14 +1,14 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * @author rubensworks
@@ -43,19 +43,21 @@ public interface IInventoryHelpers {
 
     /**
      * Read an inventory from NBT.
+     *
      * @param inventory The inventory.
-     * @param data The tag to read from.
-     * @param tagName The tag name to read from.
+     * @param data      The tag to read from.
+     * @param tagName   The tag name to read from.
      */
-    public void readFromNBT(HolderLookup.Provider provider, Container inventory, CompoundTag data, String tagName);
+    public void readFromNBT(Container inventory, ValueInput data, String tagName);
 
     /**
      * Write the given inventory to NBT.
+     *
      * @param inventory The inventory.
-     * @param data The tag to write to.
-     * @param tagName The tag name to write into.
+     * @param data      The tag to write to.
+     * @param tagName   The tag name to write into.
      */
-    public void writeToNBT(HolderLookup.Provider provider, Container inventory, CompoundTag data, String tagName);
+    public void writeToNBT(Container inventory, ValueOutput data, String tagName);
 
     /**
      * Try to add the given item to the given slot.

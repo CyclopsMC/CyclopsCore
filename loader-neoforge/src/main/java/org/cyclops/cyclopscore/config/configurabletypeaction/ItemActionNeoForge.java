@@ -13,7 +13,7 @@ import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 /**
  * @author rubensworks
  */
-@EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class ItemActionNeoForge<M extends ModBaseNeoForge<M>> extends ItemAction<M> {
 
     @Override
@@ -30,7 +30,7 @@ public class ItemActionNeoForge<M extends ModBaseNeoForge<M>> extends ItemAction
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public static void onModelRegistryLoad(ModelEvent.RegisterAdditional event) {
+    public static void onModelRegistryLoad(ModelEvent.RegisterStandalone event) {
         for (ItemConfigCommon<?> config : MODEL_ENTRIES) {
             config.getItemClientConfig().dynamicItemVariantLocation = config.getItemClientConfig().registerDynamicModel();
         }
@@ -42,7 +42,7 @@ public class ItemActionNeoForge<M extends ModBaseNeoForge<M>> extends ItemAction
         for (ItemConfigCommon<?> config : MODEL_ENTRIES) {
             IDynamicModelElementCommon dynamicModelElement = config.getItemClientConfig().getDynamicModelElement();
             if (config.getItemClientConfig().dynamicItemVariantLocation != null) {
-                event.getBakingResult().blockStateModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicModel(pair -> event.getBakingResult().blockStateModels().put(pair.getLeft(), pair.getRight()), key -> event.getBakingResult().blockStateModels().get(key)));
+                event.getBakingResult().itemStackModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicItemModel(pair -> event.getBakingResult().itemStackModels().put(pair.getLeft(), pair.getRight()), key -> event.getBakingResult().itemStackModels().get(key)));
             }
         }
     }

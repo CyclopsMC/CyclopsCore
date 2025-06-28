@@ -5,8 +5,7 @@ import com.google.common.collect.*;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.registries.RegisterEvent;
@@ -18,6 +17,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.FluidConfigForge;
 import org.cyclops.cyclopscore.init.ModBaseForge;
 
 import javax.annotation.Nullable;
+import java.lang.invoke.MethodHandles;
 import java.util.*;
 import java.util.concurrent.Callable;
 
@@ -37,7 +37,7 @@ public class ConfigHandlerForge extends ConfigHandlerCommon {
 
     public ConfigHandlerForge(ModBaseForge<?> mod) {
         super(mod);
-        mod.getModEventBus().register(this);
+        mod.getModBusGroup().register(MethodHandles.lookup(), this);
     }
 
     public Multimap<String, Pair<ExtendedConfigRegistry<?, ?, ?>, Callable<?>>> getRegistryEntriesHolder() {
@@ -125,7 +125,7 @@ public class ConfigHandlerForge extends ConfigHandlerCommon {
 
         // Finalize config builders to config specs, and register them
         for (Map.Entry<ModConfig.Type, ForgeConfigSpec.Builder> entry : configBuilders.entrySet()) {
-            ModLoadingContext.get().registerConfig(entry.getKey(), entry.getValue().build());
+            ((ModBaseForge<?>) getMod()).getModLoadingContext().registerConfig(entry.getKey(), entry.getValue().build());
         }
     }
 

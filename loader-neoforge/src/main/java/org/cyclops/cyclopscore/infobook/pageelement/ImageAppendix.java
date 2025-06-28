@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -46,7 +46,7 @@ public class ImageAppendix extends SectionAppendix {
     @Override
     @OnlyIn(Dist.CLIENT)
     protected void drawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
-        guiGraphics.blit(RenderType::guiTextured, resource, x, y, 0, 0, getWidth(), getHeight(), 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, x, y, 0, 0, getWidth(), getHeight(), 256, 256);
         gui.drawOuterBorder(guiGraphics, x, y, getWidth(), getHeight(), 0.5F, 0.5F, 0.5F, 0.4f);
     }
 

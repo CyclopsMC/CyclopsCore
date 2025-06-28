@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.client.gui.component;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -126,7 +126,7 @@ public class WidgetScrollBar extends AbstractWidget {
         int scrollMinY = getY();
         int scrollMaxY = scrollMinY + height;
         guiGraphics.blitSprite(
-                RenderType::guiTextured,
+                RenderPipelines.GUI_TEXTURED,
                 this.needsScrollBars() ? SCROLLER_SPRITE : SCROLLER_DISABLED_SPRITE,
                 scrollX,
                 scrollMinY + (int)((float)(scrollMaxY - scrollMinY - SCROLL_BUTTON_HEIGHT - 2) * this.currentScroll),

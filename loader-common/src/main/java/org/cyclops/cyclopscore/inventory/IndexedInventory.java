@@ -5,10 +5,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntAVLTreeSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
 import org.cyclops.cyclopscore.datastructure.WrappedIntIterator;
 
 import java.util.Map;
@@ -65,8 +64,8 @@ public class IndexedInventory extends LargeInventory implements IInventoryIndexR
     }
 
     @Override
-    public void readFromNBT(HolderLookup.Provider provider, CompoundTag data, String tag) {
-        super.readFromNBT(provider, data, tag);
+    public void readFromNBT(ValueInput data, String tag) {
+        super.readFromNBT(data, tag);
         createIndex();
     }
 

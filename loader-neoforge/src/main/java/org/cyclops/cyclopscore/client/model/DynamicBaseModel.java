@@ -1,26 +1,27 @@
 package org.cyclops.cyclopscore.client.model;
 
 import com.google.common.primitives.Ints;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.model.data.ModelData;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 
-import javax.annotation.Nullable;
 import java.awt.*;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * A model that can be used as a basis for flexible baked models.
  * @author rubensworks
  */
-public abstract class DynamicBaseModel implements BakedModel {
+public abstract class DynamicBaseModel {
 
     // Rotation UV coordinates
     protected static final float[][] ROTATION_UV = {{1, 0}, {1, 1}, {0, 1}, {0, 0}};
@@ -28,6 +29,12 @@ public abstract class DynamicBaseModel implements BakedModel {
     protected static final int[] ROTATION_FIX = {2, 0, 2, 0, 1, 3};
     // u1, v1; u2, v2
     protected static final float[][] UVS = {{0, 0}, {1, 1}};
+
+    private final List<BakedQuad> quads;
+
+    protected DynamicBaseModel(List<BakedQuad> quads) {
+        this.quads = quads;
+    }
 
     /**
      * Rotate a given vector to the given side.
@@ -223,22 +230,14 @@ public abstract class DynamicBaseModel implements BakedModel {
                 vertexToInts((float) v3.x, (float) v3.y, (float) v3.z, shadeColor, texture, uvs[(2 + rotation) % 4][0] * 16, uvs[(2 + rotation) % 4][1] * 16),
                 vertexToInts((float) v4.x, (float) v4.y, (float) v4.z, shadeColor, texture, uvs[(3 + rotation) % 4][0] * 16, uvs[(3 + rotation) % 4][1] * 16)
         );
-        ClientHooks.fillNormal(data, side); // This fixes lighting issues when item is rendered in hand/inventory
+        ClientHooks.fillNormal(data); // This fixes lighting issues when item is rendered in hand/inventory
         quads.add(new BakedQuad(data, -1, side, texture, false, shadeColor));
     }
 
-    @Override
-    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public boolean isGui3d() {
-        return true;
-    }
-
-    @Override
-    public boolean useAmbientOcclusion() {
-        return true;
+    public List<BakedQuad> getBlockStateQuads(BlockAndTintGetter level, BlockPos pos,
+                                              BlockState state, Direction side,
+                                              RandomSource rand, ModelData extraData,
+                                              RenderType renderType) {
+        return this.quads;
     }
 }

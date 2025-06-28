@@ -1,16 +1,14 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -44,7 +42,7 @@ public class InventoryHelpersCommon implements IInventoryHelpers {
     public void tryReAddToStack(Player player, ItemStack originalStack, ItemStack newStackPart, InteractionHand hand) {
         if (!player.isCreative()) {
             if(!originalStack.isEmpty() && originalStack.getCount() == 1) {
-                player.getInventory().setItem(hand == InteractionHand.MAIN_HAND ? player.getInventory().selected : 40, newStackPart);
+                player.getInventory().setItem(hand == InteractionHand.MAIN_HAND ? player.getInventory().getSelectedSlot() : 40, newStackPart);
             } else {
                 if(!originalStack.isEmpty()) {
                     originalStack.shrink(1);
@@ -57,39 +55,32 @@ public class InventoryHelpersCommon implements IInventoryHelpers {
     }
 
     @Override
-    public void readFromNBT(HolderLookup.Provider provider, Container inventory, CompoundTag data, String tagName) {
-        ListTag nbttaglist = data.getList(tagName, Tag.TAG_COMPOUND);
+    public void readFromNBT(Container inventory, ValueInput data, String tagName) {
+        ValueInput.ValueInputList nbttaglist = data.childrenList(tagName).orElseThrow();
 
         for(int j = 0; j < inventory.getContainerSize(); j++) {
             inventory.setItem(j, ItemStack.EMPTY);
         }
 
-        for(int j = 0; j < nbttaglist.size(); j++) {
-            CompoundTag slot = nbttaglist.getCompound(j);
-            int index;
-            if(slot.contains("index")) {
-                index = slot.getInt("index");
-            } else {
-                index = slot.getByte("Slot");
-            }
+        for (ValueInput slot : nbttaglist) {
+            int index = slot.getByteOr("Slot", (byte) 0);
             if(index >= 0 && index < inventory.getContainerSize()) {
-                inventory.setItem(index, ItemStack.parseOptional(provider, slot));
+                inventory.setItem(index, slot.read("Item", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY));
             }
         }
     }
 
     @Override
-    public void writeToNBT(HolderLookup.Provider provider, Container inventory, CompoundTag data, String tagName) {
-        ListTag slots = new ListTag();
+    public void writeToNBT(Container inventory, ValueOutput data, String tagName) {
+        ValueOutput.ValueOutputList slots = data.childrenList(tagName);
         for(byte index = 0; index < inventory.getContainerSize(); ++index) {
             ItemStack itemStack = inventory.getItem(index);
             if(!itemStack.isEmpty() && itemStack.getCount() > 0) {
-                CompoundTag slot = new CompoundTag();
+                ValueOutput slot = slots.addChild();
                 slot.putInt("index", index);
-                slots.add(itemStack.save(provider, slot));
+                slot.store("Item", ItemStack.OPTIONAL_CODEC, itemStack);
             }
         }
-        data.put(tagName, slots);
     }
 
     @Override

@@ -1,13 +1,11 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.GuiGraphics;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoSection;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Separate elements that can be appended to sections.
@@ -55,14 +53,11 @@ public abstract class SectionAppendix {
     public void drawScreen(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
         int xc = x + width / 2 - getWidth() / 2;
         int yc = y + getOffsetY();
-        GlStateManager._enableBlend();
-        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         if (pre) {
             drawElement(gui, guiGraphics, xc, yc, getWidth(), getHeight(), page, mx, my);
         } else {
             postDrawElement(gui, guiGraphics, xc, yc, getWidth(), getHeight(), page, mx, my);
         }
-        GlStateManager._disableBlend();
     }
 
     @OnlyIn(Dist.CLIENT)

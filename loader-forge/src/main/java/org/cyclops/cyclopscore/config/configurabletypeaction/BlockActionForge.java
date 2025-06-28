@@ -1,16 +1,16 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElementCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfigCommon;
-import org.cyclops.cyclopscore.helper.ModHelpersForge;
 import org.cyclops.cyclopscore.init.ModBaseForge;
 
 /**
@@ -18,11 +18,11 @@ import org.cyclops.cyclopscore.init.ModBaseForge;
  */
 public class BlockActionForge<M extends ModBaseForge<M>> extends BlockAction<M> {
 
-    static {
-        if (ModHelpersForge.INSTANCE.getMinecraftHelpers().isClientSide()) {
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((ModelEvent.RegisterModelStateDefinitions event) -> BlockActionForge.onModelRegistryLoad(event));
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((ModelEvent.ModifyBakingResult event) -> BlockActionForge.onModelBakeEvent(event));
-            FMLJavaModLoadingContext.get().getModEventBus().addListener((RegisterColorHandlersEvent.Block event) -> BlockActionForge.onRegisterColorHandlers(event));
+    public BlockActionForge(M mod) {
+        if (mod.getModHelpers().getMinecraftHelpers().isClientSide()) {
+            ModelEvent.RegisterModelStateDefinitions.getBus(mod.getModBusGroup()).addListener(BlockActionForge::onModelRegistryLoad);
+            ModelEvent.ModifyBakingResult.getBus(mod.getModBusGroup()).addListener(BlockActionForge::onModelBakeEvent);
+            RegisterColorHandlersEvent.Block.getBus(mod.getModBusGroup()).addListener(BlockActionForge::onRegisterColorHandlers);
         }
     }
 
@@ -41,7 +41,7 @@ public class BlockActionForge<M extends ModBaseForge<M>> extends BlockAction<M> 
     @OnlyIn(Dist.CLIENT)
     public static void onModelRegistryLoad(ModelEvent.RegisterModelStateDefinitions event) {
         for (BlockConfigCommon<?> config : MODEL_ENTRIES) {
-            Pair<ModelResourceLocation, ModelResourceLocation> resourceLocations = config.getBlockClientConfig().registerDynamicModel();
+            Pair<BlockState, ResourceLocation> resourceLocations = config.getBlockClientConfig().registerDynamicModel();
             config.getBlockClientConfig().dynamicBlockVariantLocation = resourceLocations.getLeft();
             config.getBlockClientConfig().dynamicItemVariantLocation = resourceLocations.getRight();
         }
@@ -50,14 +50,15 @@ public class BlockActionForge<M extends ModBaseForge<M>> extends BlockAction<M> 
     @OnlyIn(Dist.CLIENT)
     public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event){
         for (BlockConfigCommon<?> config : MODEL_ENTRIES) {
-            BakedModel dynamicModel;
             IDynamicModelElementCommon dynamicModelElement = config.getBlockClientConfig().getDynamicModelElement();
-            dynamicModel = dynamicModelElement.createDynamicModel(pair -> event.getResults().blockStateModels().put(pair.getLeft(), pair.getRight()), key -> event.getResults().blockStateModels().get(key));
+            BlockStateModel dynamicBlockModel = dynamicModelElement.createDynamicBlockModel(pair -> event.getResults().blockStateModels().put(pair.getLeft(), pair.getRight()), key -> event.getResults().blockStateModels().get(key));
+            ItemModel dynamicItemModel = dynamicModelElement.createDynamicItemModel(pair -> event.getResults().itemStackModels().put(pair.getLeft(), pair.getRight()), key -> event.getResults().itemStackModels().get(key));
+
             if (config.getBlockClientConfig().dynamicBlockVariantLocation != null) {
-                event.getResults().blockStateModels().put(config.getBlockClientConfig().dynamicBlockVariantLocation, dynamicModel);
+                event.getResults().blockStateModels().put(config.getBlockClientConfig().dynamicBlockVariantLocation, dynamicBlockModel);
             }
             if (config.getBlockClientConfig().dynamicItemVariantLocation != null) {
-                event.getResults().blockStateModels().put(config.getBlockClientConfig().dynamicItemVariantLocation, dynamicModel);
+                event.getResults().itemStackModels().put(config.getBlockClientConfig().dynamicItemVariantLocation, dynamicItemModel);
             }
         }
     }

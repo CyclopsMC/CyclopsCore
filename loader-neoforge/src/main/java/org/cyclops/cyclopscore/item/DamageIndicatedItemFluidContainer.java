@@ -7,6 +7,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
@@ -21,6 +22,7 @@ import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacity;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -83,9 +85,9 @@ public abstract class DamageIndicatedItemFluidContainer extends Item implements 
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack itemStack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
-        component.addInformation(itemStack, context, list, flag);
-        super.appendHoverText(itemStack, context, list, flag);
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
+        component.addInformation(itemStack, context, tooltipDisplay, tooltipAdder, flag);
+        super.appendHoverText(itemStack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override

@@ -1,11 +1,10 @@
 package org.cyclops.cyclopscore.init;
 
 import com.google.common.collect.Lists;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.bus.BusGroup;
+import net.minecraftforge.eventbus.api.listener.Priority;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -16,7 +15,6 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.ConfigHandlerForge;
-import org.cyclops.cyclopscore.config.ConfigurableTypesForge;
 import org.cyclops.cyclopscore.helper.IModHelpersForge;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersForge;
@@ -33,34 +31,32 @@ import java.util.function.Consumer;
  */
 public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCommon<T> {
 
-    static {
-        ConfigurableTypesForge.load();
-    }
-
     private final ICommonProxyCommon proxy;
     private final ConfigHandlerCommon configHandler;
-    private final IEventBus modEventBus;
+    private final FMLJavaModLoadingContext modLoadingContext;
+    private final BusGroup modBusGroup;
     private final PacketHandlerForge packetHandler;
 
     private boolean loaded = false;
 
     public ModBaseForge(String modId, Consumer<T> instanceSetter, FMLJavaModLoadingContext context) {
         super(modId, instanceSetter);
-        this.modEventBus = context.getModEventBus();
+        this.modLoadingContext = context;
+        this.modBusGroup = context.getModBusGroup();
         this.proxy = getModHelpers().getMinecraftHelpers().isClientSide() ? this.constructClientProxy() : this.constructCommonProxy();
         this.configHandler = constructConfigHandler();
         this.packetHandler = constructPacketHandler();
 
         // Register listeners
-        getModEventBus().addListener(this::setup);
-        getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
-        getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
-        getModEventBus().addListener(this::loadComplete);
+        FMLCommonSetupEvent.getBus(getModBusGroup()).addListener(this::setup);
+        NewRegistryEvent.getBus(getModBusGroup()).addListener(Priority.LOWEST, this::afterRegistriesCreated);
+        RegisterEvent.getBus(getModBusGroup()).addListener(Priority.HIGHEST, this::beforeRegistriedFilled);
+        FMLLoadCompleteEvent.getBus(getModBusGroup()).addListener(this::loadComplete);
         if (getModHelpers().getMinecraftHelpers().isClientSide()) {
-            getModEventBus().addListener(this::setupClient);
+            FMLClientSetupEvent.getBus(getModBusGroup()).addListener(this::setupClient);
         }
-        MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
-        MinecraftForge.EVENT_BUS.addListener(this::onServerStarting);
+        RegisterCommandsEvent.BUS.addListener(this::onRegisterCommands);
+        ServerStartingEvent.BUS.addListener(this::onServerStarting);
 
         // Initialize config handler
         this.onConfigsRegister(getConfigHandler());
@@ -100,8 +96,12 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
         return (ConfigHandlerForge) this.configHandler;
     }
 
-    public IEventBus getModEventBus() {
-        return modEventBus;
+    public FMLJavaModLoadingContext getModLoadingContext() {
+        return modLoadingContext;
+    }
+
+    public BusGroup getModBusGroup() {
+        return modBusGroup;
     }
 
     protected PacketHandlerForge constructPacketHandler() {

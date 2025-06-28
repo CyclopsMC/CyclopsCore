@@ -2,8 +2,6 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.Lighting;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -108,21 +106,17 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
 
         if (!itemStack.isEmpty()) {
             ItemRenderer renderItem = Minecraft.getInstance().getItemRenderer();
-            guiGraphics.pose().pushPose();
-            GlStateManager._enableBlend();
-            GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            Lighting.setupFor3DItems();
+            guiGraphics.pose().pushMatrix();
             GL11.glEnable(GL11.GL_DEPTH_TEST);
             guiGraphics.renderItem(itemStack, x, y);
             if (renderOverlays)
                 guiGraphics.renderItemDecorations(Minecraft.getInstance().font, itemStack, x, y);
-            Lighting.setupForFlatItems();
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
             GL11.glDisable(GL11.GL_DEPTH_TEST);
 
             if (chance != 1.0F) {
                 String chanceString = chance * 100F + "%";
-                gui.drawScaledCenteredString(guiGraphics, chanceString, x - 4, y + 3, gui.getFont().width(chanceString), 1f, 18, IModHelpers.get().getBaseHelpers().RGBToInt(255, 255, 255), true);
+                gui.drawScaledCenteredString(guiGraphics, chanceString, x - 4, y + 3, gui.getFont().width(chanceString), 1f, 18, IModHelpers.get().getBaseHelpers().RGBAToInt(255, 255, 255, 255), true);
             }
 
             if (button != null && renderOverlays) button.update(x, y, itemStack, gui);
@@ -152,19 +146,15 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
 
     @OnlyIn(Dist.CLIENT)
     public static void renderItemTooltip(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, ItemStack itemStack, int mx, int my) {
-        guiGraphics.pose().pushPose();
+        guiGraphics.pose().pushMatrix();
         if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && !itemStack.isEmpty() ) {
             gui.renderTooltip(guiGraphics, itemStack, mx, my);
         }
-        guiGraphics.pose().popPose();
-
-        GlStateManager._enableBlend();
-        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        guiGraphics.pose().popMatrix();
     }
 
     @OnlyIn(Dist.CLIENT)
     public static void renderFluidTooltip(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, FluidStack fluidStack, int mx, int my) {
-        guiGraphics.pose().pushPose();
         if(mx >= x && my >= y && mx <= x + SLOT_SIZE && my <= y + SLOT_SIZE && !fluidStack.isEmpty() ) {
             List<FormattedCharSequence> lines = Lists.newArrayList();
             lines.add(fluidStack.getHoverName().copy()
@@ -174,12 +164,8 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
                     fluidStack.getAmount() + " mB",
                     Style.EMPTY.withColor(TextColor.fromLegacyFormat(ChatFormatting.GRAY)))
             );
-            guiGraphics.renderTooltip(gui.getFont(), lines, mx, my);
+            guiGraphics.setTooltipForNextFrame(gui.getFont(), lines, mx, my);
         }
-        guiGraphics.pose().popPose();
-
-        GlStateManager._enableBlend();
-        GlStateManager._blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
     }
 
     @Override
