@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.gametest;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.registries.VanillaRegistries;
 import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
@@ -22,20 +22,20 @@ import java.util.function.BiConsumer;
  */
 public class GameTestLoaderHelpers {
 
-    public static void registerCommonTests(String modId, Class<?>[] testClasses, BiConsumer<ResourceLocation, GameTestInstance> registrar) {
-        for (MethodGameTestInstance testInstance : generateCommonTests(modId, testClasses)) {
+    public static void registerCommonTests(String modId, Class<?>[] testClasses, BiConsumer<ResourceLocation, GameTestInstance> registrar, Registry<TestEnvironmentDefinition> testEnvironmentRegistry) {
+        for (MethodGameTestInstance testInstance : generateCommonTests(modId, testClasses, testEnvironmentRegistry)) {
             registrar.accept(testInstance.getId(), testInstance);
         }
     }
 
-    public static Collection<MethodGameTestInstance> generateCommonTests(String modId, Class<?>[] testClasses) {
+    public static Collection<MethodGameTestInstance> generateCommonTests(String modId, Class<?>[] testClasses, Registry<TestEnvironmentDefinition> testEnvironmentRegistry) {
         List<MethodGameTestInstance> testsList = Lists.newArrayList();
 
         for(Class<?> clazz : testClasses) {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(GameTest.class)) {
                     GameTest gameTest = method.getAnnotation(GameTest.class);
-                    Holder.Reference<TestEnvironmentDefinition> environment = VanillaRegistries.createLookup().getOrThrow(ResourceKey.create(
+                    Holder.Reference<TestEnvironmentDefinition> environment = testEnvironmentRegistry.getOrThrow(ResourceKey.create(
                             Registries.TEST_ENVIRONMENT,
                             ResourceLocation.parse(gameTest.environment())
                     ));

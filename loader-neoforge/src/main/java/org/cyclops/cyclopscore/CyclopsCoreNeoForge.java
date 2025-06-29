@@ -25,6 +25,7 @@ import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.component.DataComponentFluidContentConfig;
 import org.cyclops.cyclopscore.component.DataComponentInventoryConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
+import org.cyclops.cyclopscore.gametest.MethodGameTestInstanceConfig;
 import org.cyclops.cyclopscore.gametest.StartupTestNeoForge;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.infobook.IInfoBookRegistry;
@@ -177,6 +178,9 @@ public class CyclopsCoreNeoForge extends ModBaseNeoForge<CyclopsCoreNeoForge> {
         configHandler.addConfigurable(new DataComponentEnergyStorageConfig(this));
         configHandler.addConfigurable(new DataComponentFluidContentConfig());
         configHandler.addConfigurable(new DataComponentInventoryConfig());
+
+        // Game test instance types
+        configHandler.addConfigurable(new MethodGameTestInstanceConfig(this));
     }
 
     @Override

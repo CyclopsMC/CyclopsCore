@@ -6,7 +6,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -44,6 +46,7 @@ import org.cyclops.cyclopscore.proxy.IClientProxy;
 import org.cyclops.cyclopscore.proxy.ICommonProxy;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -303,7 +306,14 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
     }
 
     protected void registerGameTests(RegisterGameTestsEvent event) {
-        GameTestLoaderHelpers.registerCommonTests(getModId(), getGameTestClasses(), event::registerTest);
+        try {
+            Field field = RegisterGameTestsEvent.class.getDeclaredField("environmentsRegistry");
+            field.setAccessible(true);
+            Registry<TestEnvironmentDefinition> testEnvironmentRegistry = (Registry<TestEnvironmentDefinition>) field.get(event);
+            GameTestLoaderHelpers.registerCommonTests(getModId(), getGameTestClasses(), event::registerTest, testEnvironmentRegistry);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

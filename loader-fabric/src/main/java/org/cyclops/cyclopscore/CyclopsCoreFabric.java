@@ -17,6 +17,7 @@ import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
 import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
+import org.cyclops.cyclopscore.gametest.MethodGameTestInstanceConfig;
 import org.cyclops.cyclopscore.gametest.StartupTestFabric;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseFabric;
@@ -104,6 +105,9 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
         // Data components
         configHandler.addConfigurable(new DataComponentCapacityConfig(this));
         configHandler.addConfigurable(new DataComponentEnergyStorageConfig(this));
+
+        // Game test instance types
+        configHandler.addConfigurable(new MethodGameTestInstanceConfig(this));
     }
 
     @Override

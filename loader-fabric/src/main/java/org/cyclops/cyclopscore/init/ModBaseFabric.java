@@ -6,7 +6,9 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.Registry;
 import net.minecraft.gametest.framework.GameTestInstance;
+import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.ResourceLocation;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.config.ConfigHandlerFabric;
@@ -123,10 +125,10 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
         dispatcher.register(constructBaseCommand(environment, registryAccess));
     }
 
-    protected void registerGameTests(BiConsumer<ResourceLocation, GameTestInstance> registrar) {
+    protected void registerGameTests(Registry<TestEnvironmentDefinition> testEnvironmentRegistry, BiConsumer<ResourceLocation, GameTestInstance> registrar) {
         GameTestLoaderHelpers.registerCommonTests(Reference.MOD_ID, new Class[]{
                 StartupTestFabric.class
-        }, registrar);
+        }, registrar, testEnvironmentRegistry);
     }
 
     /**

@@ -2,7 +2,9 @@ package org.cyclops.cyclopscore.events;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.core.Registry;
 import net.minecraft.gametest.framework.GameTestInstance;
+import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.BiConsumer;
@@ -12,12 +14,12 @@ import java.util.function.BiConsumer;
  */
 public interface IRegisterGameTestsEvent {
     Event<IRegisterGameTestsEvent> EVENT = EventFactory.createArrayBacked(IRegisterGameTestsEvent.class,
-            (listeners) -> (registrar) -> {
+            (listeners) -> (testEnvironmentRegistry, registrar) -> {
                 for (IRegisterGameTestsEvent event : listeners) {
-                    event.registerTest(registrar);
+                    event.registerTest(testEnvironmentRegistry, registrar);
                 }
             }
     );
 
-    void registerTest(BiConsumer<ResourceLocation, GameTestInstance> registrar);
+    void registerTest(Registry<TestEnvironmentDefinition> testEnvironmentRegistry, BiConsumer<ResourceLocation, GameTestInstance> registrar);
 }

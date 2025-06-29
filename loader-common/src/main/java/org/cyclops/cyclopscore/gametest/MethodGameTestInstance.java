@@ -73,6 +73,6 @@ public class MethodGameTestInstance extends GameTestInstance {
     }
 
     public ResourceLocation getId() {
-        return ResourceLocation.fromNamespaceAndPath(this.modId, (this.className + "." + this.methodName).toLowerCase(Locale.ROOT).replace('.', '_'));
+        return ResourceLocation.fromNamespaceAndPath(this.modId, (this.className.replaceAll("org.cyclops\\.[^.]*\\.[^.]*\\.", "") + "." + this.methodName).toLowerCase(Locale.ROOT).replace('.', '_'));
     }
 }
