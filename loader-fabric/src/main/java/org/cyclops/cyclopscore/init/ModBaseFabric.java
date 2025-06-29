@@ -15,7 +15,6 @@ import org.cyclops.cyclopscore.config.ConfigHandlerFabric;
 import org.cyclops.cyclopscore.config.ConfigurableTypesFabric;
 import org.cyclops.cyclopscore.events.IRegisterGameTestsEvent;
 import org.cyclops.cyclopscore.gametest.GameTestLoaderHelpers;
-import org.cyclops.cyclopscore.gametest.StartupTestFabric;
 import org.cyclops.cyclopscore.helper.IModHelpersFabric;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersFabric;
@@ -126,9 +125,7 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
     }
 
     protected void registerGameTests(Registry<TestEnvironmentDefinition> testEnvironmentRegistry, BiConsumer<ResourceLocation, GameTestInstance> registrar) {
-        GameTestLoaderHelpers.registerCommonTests(Reference.MOD_ID, new Class[]{
-                StartupTestFabric.class
-        }, registrar, testEnvironmentRegistry);
+        GameTestLoaderHelpers.registerCommonTests(Reference.MOD_ID, getGameTestClasses(), registrar, testEnvironmentRegistry);
     }
 
     /**
