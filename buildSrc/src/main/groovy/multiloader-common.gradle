@@ -5,6 +5,7 @@ plugins {
     id 'maven-publish'
 	id 'jacoco'
     id 'com.diffplug.spotless'
+    id 'idea'
 }
 
 // Determine build number
@@ -286,6 +287,13 @@ tasks.configureEach { task ->
 javadoc {
     // prevent java 8's strict doclint for javadocs from failing builds
     options.addStringOption('Xdoclint:accessibility,html,reference,syntax', '-quiet')
+}
+
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
 }
 
 jacocoTestReport {
