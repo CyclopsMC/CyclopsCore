@@ -6,8 +6,14 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.gametest.framework.GameTestInstance;
+import net.minecraft.resources.ResourceLocation;
+import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.config.ConfigHandlerFabric;
 import org.cyclops.cyclopscore.config.ConfigurableTypesFabric;
+import org.cyclops.cyclopscore.events.IRegisterGameTestsEvent;
+import org.cyclops.cyclopscore.gametest.GameTestLoaderHelpers;
+import org.cyclops.cyclopscore.gametest.StartupTestFabric;
 import org.cyclops.cyclopscore.helper.IModHelpersFabric;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersFabric;
@@ -18,6 +24,7 @@ import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -63,6 +70,7 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
         getConfigHandler().loadRegistriesCreated();
         getConfigHandler().loadRegistriesFilled();
         CommandRegistrationCallback.EVENT.register(this::onRegisterCommands);
+        IRegisterGameTestsEvent.EVENT.register(this::registerGameTests);
 
         // Register proxy things
         ICommonProxyCommon proxy = getProxy();
@@ -113,6 +121,12 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
 
     protected void onRegisterCommands(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext registryAccess, Commands.CommandSelection environment) {
         dispatcher.register(constructBaseCommand(environment, registryAccess));
+    }
+
+    protected void registerGameTests(BiConsumer<ResourceLocation, GameTestInstance> registrar) {
+        GameTestLoaderHelpers.registerCommonTests(Reference.MOD_ID, new Class[]{
+                StartupTestFabric.class
+        }, registrar);
     }
 
     /**

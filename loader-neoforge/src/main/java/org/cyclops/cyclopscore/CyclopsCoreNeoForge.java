@@ -69,7 +69,6 @@ public class CyclopsCoreNeoForge extends ModBaseNeoForge<CyclopsCoreNeoForge> {
             CyclopsCoreInstance.MOD = instance;
         }, modEventBus);
         modEventBus.addListener(this::loadComplete);
-        modEventBus.addListener(new StartupTestNeoForge()::register);
 
         // Registries
         getRegistryManager().addRegistry(IRegistryExportableRegistry.class, RegistryExportableRegistry.getInstance());
@@ -178,6 +177,11 @@ public class CyclopsCoreNeoForge extends ModBaseNeoForge<CyclopsCoreNeoForge> {
         configHandler.addConfigurable(new DataComponentEnergyStorageConfig(this));
         configHandler.addConfigurable(new DataComponentFluidContentConfig());
         configHandler.addConfigurable(new DataComponentInventoryConfig());
+    }
+
+    @Override
+    public Class<?>[] getGameTestClasses() {
+        return new Class<?>[] { StartupTestNeoForge.class };
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {

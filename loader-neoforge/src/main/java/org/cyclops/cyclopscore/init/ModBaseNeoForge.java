@@ -16,6 +16,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -29,6 +30,7 @@ import org.cyclops.cyclopscore.command.CommandVersion;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.ConfigHandlerNeoForge;
 import org.cyclops.cyclopscore.config.ConfigurableTypesNeoForge;
+import org.cyclops.cyclopscore.gametest.GameTestLoaderHelpers;
 import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
 import org.cyclops.cyclopscore.helper.LoggerHelper;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
@@ -92,6 +94,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
         getModEventBus().addListener(this::setup);
         getModEventBus().addListener(EventPriority.LOWEST, this::afterRegistriesCreated);
         getModEventBus().addListener(EventPriority.HIGHEST, this::beforeRegistriedFilled);
+        getModEventBus().addListener(this::registerGameTests);
         if (getModHelpers().getMinecraftHelpers().isClientSide()) {
             getModEventBus().addListener(this::setupClient);
             getModEventBus().addListener(this::onRegisterKeyMappings);
@@ -297,6 +300,10 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
             // We only need to call this once, and the ATTRIBUTE event is emitted first.
             getConfigHandler().loadRegistriesFilled();
         }
+    }
+
+    protected void registerGameTests(RegisterGameTestsEvent event) {
+        GameTestLoaderHelpers.registerCommonTests(getModId(), getGameTestClasses(), event::registerTest);
     }
 
     /**

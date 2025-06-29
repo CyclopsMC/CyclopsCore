@@ -25,6 +25,7 @@ import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.ConfigurableTypesForge;
 import org.cyclops.cyclopscore.config.DeferredHolderCommon;
+import org.cyclops.cyclopscore.gametest.StartupTestForge;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseForge;
 import org.cyclops.cyclopscore.inventory.IRegistryInventoryLocation;
@@ -132,5 +133,10 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
         // Data components
         configHandler.addConfigurable(new DataComponentCapacityConfig(this));
         configHandler.addConfigurable(new DataComponentEnergyStorageConfig(this));
+    }
+
+    @Override
+    public Class<?>[] getGameTestClasses() {
+        return new Class[]{ StartupTestForge.class };
     }
 }

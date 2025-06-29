@@ -14,6 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.command.CommandConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.CreativeModeTabConfigCommon;
+import org.cyclops.cyclopscore.gametest.GameTest;
 import org.cyclops.cyclopscore.init.IModBase;
 import org.cyclops.cyclopscore.init.RegistryManager;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
@@ -155,6 +156,13 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
         if (this.hasDefaultCreativeModeTab()) {
             this.getConfigHandler().addConfigurable(this.constructDefaultCreativeModeTabConfig());
         }
+    }
+
+    /**
+     * @return Classes from which {@link GameTest} annotations should be consulted to load game tests.
+     */
+    public Class<?>[] getGameTestClasses() {
+        return new Class<?>[]{};
     }
 
     @Override

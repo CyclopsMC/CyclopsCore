@@ -55,7 +55,6 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
         new GuiContainerOpenTriggerEventHooksFabric();
         new ItemCraftedTriggerTriggerEventHooksFabric();
         new ModItemObtainedTriggerEventHooksFabric();
-        new StartupTestFabric();
 
         // Handle metadata
         ImportantUsers.checkAll();
@@ -105,5 +104,10 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
         // Data components
         configHandler.addConfigurable(new DataComponentCapacityConfig(this));
         configHandler.addConfigurable(new DataComponentEnergyStorageConfig(this));
+    }
+
+    @Override
+    public Class<?>[] getGameTestClasses() {
+        return new Class[]{ StartupTestFabric.class };
     }
 }
