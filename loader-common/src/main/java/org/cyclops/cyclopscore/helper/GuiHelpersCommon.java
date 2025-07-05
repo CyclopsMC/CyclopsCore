@@ -1,19 +1,12 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.vertex.ByteBufferBuilder;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
-import org.joml.Matrix4f;
-import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 import java.util.Optional;
@@ -73,89 +66,7 @@ public class GuiHelpersCommon implements IGuiHelpers {
 
     @Override
     public void drawTooltip(AbstractContainerScreen gui, GuiGraphics guiGraphics, List<Component> lines, int x, int y) {
-        int guiLeft = gui.leftPos;
-        int guiTop = gui.topPos;
-        int width = gui.width;
-        int height = gui.height;
-        Minecraft mc = Minecraft.getInstance();
-
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-
-        int tooltipWidth = 0;
-        int tempWidth;
-        int xStart;
-        int yStart;
-
-        for(Component line : lines) {
-            tempWidth = mc.font.width(line.getString());
-
-            if(tempWidth > tooltipWidth) {
-                tooltipWidth = tempWidth;
-            }
-        }
-
-        xStart = x + 12;
-        yStart = y - 12;
-        int tooltipHeight = 8;
-
-        if(lines.size() > 1) {
-            tooltipHeight += 2 + (lines.size() - 1) * 10;
-        }
-
-        if(guiLeft + xStart + tooltipWidth + 6 > width) {
-            xStart = width - tooltipWidth - guiLeft - 6;
-        }
-
-        if(guiTop + yStart + tooltipHeight + 6 > height) {
-            yStart = height - tooltipHeight - guiTop - 6;
-        }
-
-        drawTooltipBackground(guiGraphics, xStart, yStart, tooltipWidth, tooltipHeight);
-
-        PoseStack matrixstack = new PoseStack();
-        MultiBufferSource.BufferSource irendertypebuffer$impl = MultiBufferSource.immediate(new ByteBufferBuilder(1536));
-        matrixstack.translate(0.0D, 0.0D, 300F);
-        Matrix4f matrix4f = matrixstack.last().pose();
-
-        for(int stringIndex = 0; stringIndex < lines.size(); ++stringIndex) {
-            Component line = lines.get(stringIndex);
-
-            if(stringIndex == 0) {
-                line = Component.literal("\u00a7" + Integer.toHexString(15)).append(line);
-            } else {
-                line = Component.literal("\u00a77").append(line);
-            }
-
-            mc.font.drawInBatch(line.getVisualOrderText(), xStart + guiLeft, yStart + guiTop, -1, true, matrix4f,
-                    irendertypebuffer$impl, Font.DisplayMode.NORMAL, 0, 15728880);
-
-            if(stringIndex == 0) {
-                yStart += 2;
-            }
-
-            yStart += 10;
-        }
-
-        irendertypebuffer$impl.endBatch();
-
-        GL11.glEnable(GL11.GL_DEPTH_TEST);
-    }
-
-    @Override
-    public void drawTooltipBackground(GuiGraphics guiGraphics, int xStart, int yStart, int tooltipWidth, int tooltipHeight) {
-        float zLevel = 300.0F;
-        int color1 = -267386864;
-        guiGraphics.fillGradient(xStart - 3, yStart - 4, xStart + tooltipWidth + 3, yStart - 3, color1, color1);
-        guiGraphics.fillGradient(xStart - 3, yStart + tooltipHeight + 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 4, color1, color1);
-        guiGraphics.fillGradient(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color1, color1);
-        guiGraphics.fillGradient(xStart - 4, yStart - 3, xStart - 3, yStart + tooltipHeight + 3, color1, color1);
-        guiGraphics.fillGradient(xStart + tooltipWidth + 3, yStart - 3, xStart + tooltipWidth + 4, yStart + tooltipHeight + 3, color1, color1);
-        int color2 = 1347420415;
-        int color3 = (color2 & 16711422) >> 1 | color2 & -16777216;
-        guiGraphics.fillGradient(xStart - 3, yStart - 3 + 1, xStart - 3 + 1, yStart + tooltipHeight + 3 - 1, color2, color3);
-        guiGraphics.fillGradient(xStart + tooltipWidth + 2, yStart - 3 + 1, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3 - 1, color2, color3);
-        guiGraphics.fillGradient(xStart - 3, yStart - 3, xStart + tooltipWidth + 3, yStart - 3 + 1, color2, color2);
-        guiGraphics.fillGradient(xStart - 3, yStart + tooltipHeight + 2, xStart + tooltipWidth + 3, yStart + tooltipHeight + 3, color3, color3);
+        guiGraphics.setComponentTooltipForNextFrame(gui.getFont(), lines, x, y);
     }
 
     @Override
@@ -163,7 +74,7 @@ public class GuiHelpersCommon implements IGuiHelpers {
                                              int mouseX, int mouseY, Supplier<Optional<List<Component>>> linesSupplier) {
         if (modHelpers.getRenderHelpers().isPointInRegion(x, y, width, height, mouseX - gui.leftPos, mouseY - gui.topPos)) {
             linesSupplier.get().ifPresent(
-                    lines -> drawTooltip(gui, guiGraphics, lines, mouseX - gui.leftPos, mouseY - gui.topPos));
+                    lines -> guiGraphics.setComponentTooltipForNextFrame(gui.getFont(), lines, mouseX - gui.leftPos, mouseY - gui.topPos));
         }
     }
 

@@ -54,16 +54,6 @@ public interface IGuiHelpers {
     public void drawTooltip(AbstractContainerScreen gui, GuiGraphics guiGraphics, List<Component> lines, int x, int y);
 
     /**
-     * Draw the background box for a tooltip.
-     * @param guiGraphics The gui graphics.
-     * @param xStart X
-     * @param yStart Y
-     * @param tooltipWidth Width
-     * @param tooltipHeight Height
-     */
-    public void drawTooltipBackground(GuiGraphics guiGraphics, int xStart, int yStart, int tooltipWidth, int tooltipHeight);
-
-    /**
      * Render a tooltip if the mouse if in the bounding box defined by the given position, width and height.
      * The tooltip lines supplier can return an optional list.
      * @param guiGraphics The gui graphics.
