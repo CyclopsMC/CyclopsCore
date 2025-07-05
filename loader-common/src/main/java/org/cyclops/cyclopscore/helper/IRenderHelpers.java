@@ -165,6 +165,6 @@ public interface IRenderHelpers {
 
     public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a);
 
-    public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int u0, int u1, int v0, int v1, float r, float g, float b, float a);
+    public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, float r, float g, float b, float a);
 
 }

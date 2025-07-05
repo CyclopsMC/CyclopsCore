@@ -146,12 +146,12 @@ public class RenderHelpersCommon implements IRenderHelpers {
 
     @Override
     public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a) {
-        blitColored(guiGraphics, texture, x, y, width, height, (int) (u / 256), (int) ((u + width) / 256), (int) (v / 256), (int) ((v + height) / 256), r, g, b, a);
+        blitColored(guiGraphics, texture, x, y, u, v, width, height, 256, 256, r, g, b, a);
     }
 
     @Override
-    public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int u0, int u1, int v0, int v1, float r, float g, float b, float a) {
+    public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, float r, float g, float b, float a) {
         int color = ARGB.colorFromFloat(a, r, g, b);
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED_PREMULTIPLIED_ALPHA, texture, x, y, u0, v0, u1, v1, width, height, color);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED_PREMULTIPLIED_ALPHA, texture, x, y, u, v, width, height, textureWidth, textureHeight, color);
     }
 }
