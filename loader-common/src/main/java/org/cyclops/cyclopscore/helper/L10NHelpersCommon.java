@@ -8,7 +8,7 @@ import net.minecraft.network.chat.TextColor;
 import org.cyclops.cyclopscore.Reference;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author rubensworks
@@ -34,26 +34,26 @@ public class L10NHelpersCommon implements IL10NHelpers {
     }
 
     @Override
-    public void addStatusInfo(List<Component> infoLines, boolean isEnabled, String statusPrefixKey) {
+    public void addStatusInfo(Consumer<Component> tooltipAdder, boolean isEnabled, String statusPrefixKey) {
         Component autoSupply = Component.translatable(KEY_DISABLED);
         if (isEnabled) {
             autoSupply = Component.translatable(KEY_ENABLED);
         }
-        infoLines.add(Component.translatable(statusPrefixKey, autoSupply));
+        tooltipAdder.accept(Component.translatable(statusPrefixKey, autoSupply));
     }
 
     @Override
-    public void addOptionalInfo(List<Component> list, String prefix) {
+    public void addOptionalInfo(Consumer<Component> tooltipAdder, String prefix) {
         String key = prefix + ".info";
         if (I18n.exists(key)) {
             if (modHelpers.getMinecraftClientHelpers().isShifted()) {
                 String localized = localize(key);
-                list.addAll(StringHelpers.splitLines(localized, getMaxTooltipLineLength(), getInfoPrefix())
+                StringHelpers.splitLines(localized, getMaxTooltipLineLength(), getInfoPrefix())
                         .stream()
                         .map(Component::literal)
-                        .toList());
+                        .forEach(tooltipAdder);
             } else {
-                list.add(Component.translatable("general." + Reference.MOD_ID + ".tooltip.info")
+                tooltipAdder.accept(Component.translatable("general." + Reference.MOD_ID + ".tooltip.info")
                         .setStyle(Style.EMPTY
                                 .withColor(TextColor.fromLegacyFormat(ChatFormatting.GRAY))
                                 .withItalic(true)));

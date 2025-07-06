@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.helper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
-import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author rubensworks
@@ -20,8 +20,8 @@ public interface IL10NHelpers {
 
     public String localize(String key, Object... params);
 
-    public void addStatusInfo(List<Component> infoLines, boolean isEnabled, String statusPrefixKey);
+    public void addStatusInfo(Consumer<Component> tooltipAdder, boolean isEnabled, String statusPrefixKey);
 
-    public void addOptionalInfo(List<Component> list, String prefix);
+    public void addOptionalInfo(Consumer<Component> tooltipAdder, String prefix);
 
 }

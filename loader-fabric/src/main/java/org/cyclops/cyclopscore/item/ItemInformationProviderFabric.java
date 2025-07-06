@@ -15,7 +15,7 @@ import java.util.List;
 public class ItemInformationProviderFabric extends ItemInformationProviderCommon {
     public static void onTooltip(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> lines) {
         if (ITEMS_INFO.contains(itemStack.getItem())) {
-            CyclopsCoreFabric._instance.getModHelpers().getL10NHelpers().addOptionalInfo(lines, itemStack.getItem().getDescriptionId());
+            CyclopsCoreFabric._instance.getModHelpers().getL10NHelpers().addOptionalInfo(lines::add, itemStack.getItem().getDescriptionId());
         }
     }
 }
