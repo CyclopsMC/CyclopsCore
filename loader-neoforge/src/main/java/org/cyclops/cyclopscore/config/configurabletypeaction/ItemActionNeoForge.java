@@ -1,11 +1,5 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElementCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ItemConfigCommon;
 import org.cyclops.cyclopscore.init.ModBaseNeoForge;
@@ -13,7 +7,6 @@ import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 /**
  * @author rubensworks
  */
-@EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class ItemActionNeoForge<M extends ModBaseNeoForge<M>> extends ItemAction<M> {
 
     @Override
@@ -24,25 +17,6 @@ public class ItemActionNeoForge<M extends ModBaseNeoForge<M>> extends ItemAction
             IDynamicModelElementCommon dynamicModelElement = config.getItemClientConfig().getDynamicModelElement();
             if (dynamicModelElement != null) {
                 ItemAction.handleItemModel(config);
-            }
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public static void onModelRegistryLoad(ModelEvent.RegisterStandalone event) {
-        for (ItemConfigCommon<?> config : MODEL_ENTRIES) {
-            config.getItemClientConfig().dynamicItemVariantLocation = config.getItemClientConfig().registerDynamicModel();
-        }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @SubscribeEvent
-    public static void onModelBakeEvent(ModelEvent.ModifyBakingResult event){
-        for (ItemConfigCommon<?> config : MODEL_ENTRIES) {
-            IDynamicModelElementCommon dynamicModelElement = config.getItemClientConfig().getDynamicModelElement();
-            if (config.getItemClientConfig().dynamicItemVariantLocation != null) {
-                event.getBakingResult().itemStackModels().put(config.getItemClientConfig().dynamicItemVariantLocation, dynamicModelElement.createDynamicItemModel(pair -> event.getBakingResult().itemStackModels().put(pair.getLeft(), pair.getRight()), key -> event.getBakingResult().itemStackModels().get(key)));
             }
         }
     }

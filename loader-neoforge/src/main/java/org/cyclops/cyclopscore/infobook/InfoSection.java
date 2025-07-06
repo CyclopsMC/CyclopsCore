@@ -3,13 +3,10 @@ package org.cyclops.cyclopscore.infobook;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.SectionAppendix;
@@ -57,6 +54,10 @@ public class InfoSection {
         this.paragraphs = paragraphs;
         this.appendixes = appendixes;
         this.tagList = tagList;
+    }
+
+    public List<SectionAppendix> getAppendixes() {
+        return appendixes;
     }
 
     public String getRelativeWebPath() {
@@ -342,82 +343,8 @@ public class InfoSection {
         return links.get(page);
     }
 
-    /**
-     * Draw the screen for a given page.
-     *
-     * @param gui             The gui.
-     * @param guiGraphics     The gui graphics object
-     * @param mouseX          X.
-     * @param mouseY          Y.
-     * @param yOffset         The y offset.
-     * @param width           The width of the page.
-     * @param height          The height of the page.
-     * @param page            The page to render.
-     * @param mx              Mouse X.
-     * @param my              Mouse Y.
-     * @param footnoteOffsetX Footnote offset x
-     * @param footnoteOffsetY Footnote offset y
-     */
-    @OnlyIn(Dist.CLIENT)
-    public void drawScreen(ScreenInfoBook gui, GuiGraphics guiGraphics, int mouseX, int mouseY, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
-        if (page < getPages()) {
-            Font fontRenderer = gui.getFont();
-
-            // Draw text content
-            List<FormattedCharSequence> lines = getLocalizedPageLines(page);
-            int l = 0;
-            if (lines != null) {
-                for (FormattedCharSequence line : lines) {
-                    guiGraphics.drawString(fontRenderer, line, mouseX, mouseY + yOffset + l * 9, 0, false);
-                    l++;
-                }
-            }
-
-            // Draw title if on first page
-            if (isTitlePage(page)) {
-                gui.drawScaledCenteredString(guiGraphics, getLocalizedTitle(), mouseX, mouseY + yOffset + 10, width, 1.5f, width, gui.getTitleColor());
-                gui.drawHorizontalRule(guiGraphics, mouseX + width / 2, mouseY + yOffset);
-                gui.drawHorizontalRule(guiGraphics, mouseX + width / 2, mouseY + yOffset + 21);
-            }
-
-            // Draw current page/section indication
-            gui.drawScaledCenteredString(guiGraphics, getLocalizedTitle() + " - " + (page + 1) + "/" + getPages(), mouseX + (((page % 2 == 0) ? 1 : -1) * footnoteOffsetX), mouseY + height + footnoteOffsetY, width, 0.6f, (int) (width * 0.75f), IModHelpers.get().getBaseHelpers().RGBAToInt(190, 190, 190, 255));
-
-            // Draw appendixes
-            for (SectionAppendix appendix : appendixes) {
-                if (appendix.getPage() == page) {
-                    appendix.drawScreen(gui, guiGraphics, mouseX, mouseY + yOffset + getAppendixOffsetLine(fontRenderer, appendix),
-                            width, height, page, mx, my, true);
-                }
-            }
-        }
-    }
-
-    /**
-     * Draw the overlays for the given page, for tooltips and such.
-     *
-     * @param gui         The gui.
-     * @param guiGraphics The gui graphics object.
-     * @param mouseX      X.
-     * @param mouseY      Y.
-     * @param width       The width of the page.
-     * @param height      The height of the page.
-     * @param page        The page to render.
-     * @param mx          Mouse X.
-     * @param my          Mouse Y.
-     */
-    @OnlyIn(Dist.CLIENT)
-    public void postDrawScreen(ScreenInfoBook gui, GuiGraphics guiGraphics, int mouseX, int mouseY, int width, int height, int page, int mx, int my) {
-        if (page < getPages()) {
-            Font fontRenderer = gui.getFont();
-            // Post draw appendixes
-            for (SectionAppendix appendix : appendixes) {
-                if (appendix.getPage() == page) {
-                    appendix.drawScreen(gui, guiGraphics, mouseX, mouseY + getAppendixOffsetLine(fontRenderer, appendix),
-                            width, height, page, mx, my, false);
-                }
-            }
-        }
+    public InfoSectionClient constructInfoSectionClient() {
+        return new InfoSectionClient(this);
     }
 
     /**

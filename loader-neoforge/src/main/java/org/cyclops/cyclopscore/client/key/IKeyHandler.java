@@ -1,8 +1,6 @@
 package org.cyclops.cyclopscore.client.key;
 
 import net.minecraft.client.KeyMapping;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 /**
  * A handler responsible for handling key presses.
@@ -10,7 +8,6 @@ import net.neoforged.api.distmarker.OnlyIn;
  * @author immortaleeb
  *
  */
-@OnlyIn(Dist.CLIENT)
 public interface IKeyHandler {
 
     /**

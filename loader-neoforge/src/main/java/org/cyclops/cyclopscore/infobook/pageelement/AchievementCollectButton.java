@@ -11,8 +11,6 @@ import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
@@ -25,7 +23,6 @@ import java.util.List;
 /**
  * A button that can be clicked for reward collection.
  */
-@OnlyIn(Dist.CLIENT)
 public class AchievementCollectButton extends AdvancedButton {
 
     private final AdvancementRewards advancementRewards;

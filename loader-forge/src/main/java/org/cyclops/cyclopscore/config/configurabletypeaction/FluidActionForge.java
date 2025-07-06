@@ -58,10 +58,10 @@ public class FluidActionForge<M extends ModBaseForge> extends ConfigurableTypeAc
 
     @SubscribeEvent
     public static void onRegistryEvent(RegisterEvent event) {
-        ((FluidActionForge<ModBaseForge>) ConfigurableTypesForge.FLUID.getConfigurableTypeAction()).onRegistryEventInner(event);
+        ((FluidActionForge<ModBaseForge>) ConfigurableTypesForge.FLUID.getConfigurableTypeAction()).onRegistryEventInner(false, event);
     }
 
-    public void onRegistryEventInner(RegisterEvent event) {
+    public void onRegistryEventInner(boolean _ignored, RegisterEvent event) { // _ignored hack required due to Forge weirdness...
         if (event.getRegistryKey() == BuiltInRegistries.FLUID.key()) {
             this.registryEventPassed = true;
             IForgeRegistry<Fluid> registry = event.getForgeRegistry();

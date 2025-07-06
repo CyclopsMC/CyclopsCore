@@ -6,8 +6,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -54,6 +52,5 @@ public interface IInformationProvider {
      * @param list The list of information.
      * @param flag The tooltip flag type.
      */
-    @OnlyIn(Dist.CLIENT)
     public void provideInformation(ItemStack itemStack, Level world, List<Component> list, TooltipFlag flag);
 }

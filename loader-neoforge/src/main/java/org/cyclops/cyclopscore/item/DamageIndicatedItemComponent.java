@@ -9,8 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -90,7 +88,6 @@ public class DamageIndicatedItemComponent {
      * @param capacity The capacity to show.
      * @return The info generated from the given parameters.
      */
-    @OnlyIn(Dist.CLIENT)
     public static MutableComponent getInfo(FluidStack fluidStack, int amount, int capacity) {
         MutableComponent prefix = Component.literal("");
         if (!fluidStack.isEmpty()) {

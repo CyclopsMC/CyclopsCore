@@ -1,25 +1,27 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
+import org.cyclops.cyclopscore.infobook.InfoBookParser;
 import org.cyclops.cyclopscore.infobook.InfoSection;
-import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
 /**
  * Separate elements that can be appended to sections.
  *
  * @author rubensworks
  */
-public abstract class SectionAppendix {
+public abstract class SectionAppendix<C extends SectionAppendixClient<?>> {
 
     private final IInfoBook infoBook;
     private int page;
     private int lineStart;
+    private C sectionAppendixClient;
 
-    public SectionAppendix(IInfoBook infoBook) {
+    public SectionAppendix(IInfoBook infoBook) throws InfoBookParser.InvalidAppendixException {
         this.infoBook = infoBook;
+        if (IModHelpers.get().getMinecraftHelpers().isClientSide()) {
+            this.sectionAppendixClient = constructSectionAppendixClient();
+        }
     }
 
     /**
@@ -35,36 +37,11 @@ public abstract class SectionAppendix {
 
     protected abstract int getHeight();
 
-    /**
-     * Draw the appendix.
-     *
-     * @param gui         The gui.
-     * @param guiGraphics The gui graphics object.
-     * @param x           Start X.
-     * @param y           Start Y.
-     * @param width       Max width.
-     * @param height      Max height.
-     * @param page        Current page.
-     * @param mx          Mouse X.
-     * @param my          Mouse Y.
-     * @param pre         If the normal drawing should occur, otherwise post-drawing: things like tooltips.
-     */
-    @OnlyIn(Dist.CLIENT)
-    public void drawScreen(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
-        int xc = x + width / 2 - getWidth() / 2;
-        int yc = y + getOffsetY();
-        if (pre) {
-            drawElement(gui, guiGraphics, xc, yc, getWidth(), getHeight(), page, mx, my);
-        } else {
-            postDrawElement(gui, guiGraphics, xc, yc, getWidth(), getHeight(), page, mx, my);
-        }
+    public abstract C constructSectionAppendixClient() throws InfoBookParser.InvalidAppendixException;
+
+    public C getSectionAppendixClient() {
+        return sectionAppendixClient;
     }
-
-    @OnlyIn(Dist.CLIENT)
-    protected abstract void drawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my);
-
-    @OnlyIn(Dist.CLIENT)
-    protected abstract void postDrawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my);
 
     public abstract void preBakeElement(InfoSection infoSection);
 

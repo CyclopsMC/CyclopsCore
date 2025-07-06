@@ -6,8 +6,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.infobook.pageelement.AdvancementRewards;
@@ -42,7 +40,6 @@ public class AdvancementRewardsObtainPacket extends PacketCodec<AdvancementRewar
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void actionClient(Level level, Player player) {
 
     }

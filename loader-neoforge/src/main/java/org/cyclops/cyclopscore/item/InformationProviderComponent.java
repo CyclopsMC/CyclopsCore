@@ -6,8 +6,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -36,7 +34,6 @@ public class InformationProviderComponent {
      * @param list The info list where the info will be added.
      * @param flag No idea...
      */
-    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack itemStack, Level world, List<Component> list, TooltipFlag flag) {
         if(hasInfo) {
             if(((IInformationProvider) block).getInfo(itemStack) != null) {

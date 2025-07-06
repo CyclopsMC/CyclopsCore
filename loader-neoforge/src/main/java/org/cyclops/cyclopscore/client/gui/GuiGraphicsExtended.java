@@ -3,8 +3,6 @@ package org.cyclops.cyclopscore.client.gui;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.ItemDecoratorHandler;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.jetbrains.annotations.Nullable;
@@ -13,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
  * Additional helper functions related to {@link GuiGraphics}.
  * @author rubensworks
  */
-@OnlyIn(Dist.CLIENT)
 public class GuiGraphicsExtended {
 
     private final GuiGraphics guiGraphics;

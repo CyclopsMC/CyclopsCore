@@ -17,8 +17,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.helper.IModHelpers;
@@ -230,13 +228,13 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         blitMirrored(guiGraphics, RenderPipelines.GUI_TEXTURED, texture, left + getPageWidth() - 1, top, 0, 0, getPageWidth(), getGuiHeight(), 256, 256, -1);
         int width = getPageWidth() - getOffsetXTotal();
         for (int i = 0; i < getPages(); i++) {
-            infoBook.getCurrentSection().drawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top, getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY, getFootnoteOffsetX(), getFootnoteOffsetY());
+            infoBook.getCurrentSection().constructInfoSectionClient().drawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top, getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY, getFootnoteOffsetX(), getFootnoteOffsetY());
         }
 
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         for (int i = 0; i < getPages(); i++) {
-            infoBook.getCurrentSection().postDrawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top + getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY);
+            infoBook.getCurrentSection().constructInfoSectionClient().postDrawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top + getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY);
         }
 
         if (this.buttonNextPage.visible && IModHelpers.get().getRenderHelpers().isPointInButton(this.buttonNextPage, mouseX, mouseY)) {
@@ -445,7 +443,6 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         return super.mouseScrolled(mouseX, mouseY, mouseZ, scrollDelta);
     }
 
-    @OnlyIn(Dist.CLIENT)
     static class NextPageButton extends Button {
 
         private final ScreenInfoBook guiInfoBook;
@@ -482,7 +479,6 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
     }
 
-    @OnlyIn(Dist.CLIENT)
     static class TextOverlayButton extends Button {
 
         private final ScreenInfoBook guiInfoBook;

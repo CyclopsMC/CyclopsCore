@@ -11,8 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.helper.IModHelpers;
@@ -52,7 +50,6 @@ public class RequestRecipeDisplayPacket extends PacketCodec<RequestRecipeDisplay
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void actionClient(Level level, Player player) {
 
     }

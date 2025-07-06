@@ -9,8 +9,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.Reference;
@@ -51,7 +49,6 @@ public class RequestRecipeDisplaysRegexPacket extends PacketCodec<RequestRecipeD
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void actionClient(Level level, Player player) {
 
     }

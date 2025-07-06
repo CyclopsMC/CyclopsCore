@@ -4,15 +4,11 @@ import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Style;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.StringUtils;
-import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
+import org.cyclops.cyclopscore.infobook.InfoBookParser;
 import org.cyclops.cyclopscore.infobook.InfoSection;
-import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
 import java.util.List;
 
@@ -20,7 +16,7 @@ import java.util.List;
  * Text fields that can be added to sections.
  * @author rubensworks
  */
-public class TextFieldAppendix extends SectionAppendix {
+public class TextFieldAppendix extends SectionAppendix<TextFieldAppendixClient> {
 
     private static final int OFFSET_Y = 0;
 
@@ -30,7 +26,7 @@ public class TextFieldAppendix extends SectionAppendix {
     private int maxWidth;
     private List<String> lines = null;
 
-    public TextFieldAppendix(IInfoBook infoBook, String text, double scale) {
+    public TextFieldAppendix(IInfoBook infoBook, String text, double scale) throws InfoBookParser.InvalidAppendixException {
         super(infoBook);
         this.text = text;
         this.scale = scale;
@@ -56,6 +52,11 @@ public class TextFieldAppendix extends SectionAppendix {
         return height;
     }
 
+    @Override
+    public TextFieldAppendixClient constructSectionAppendixClient() {
+        return new TextFieldAppendixClient(this);
+    }
+
     protected void calculateLines() {
         Font font = Minecraft.getInstance().font;
         StringSplitter stringSplitter = font.getSplitter();
@@ -70,34 +71,6 @@ public class TextFieldAppendix extends SectionAppendix {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    protected void drawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
-        int lineId = 0;
-        for (String line : lines) {
-            IModHelpers.get().getRenderHelpers().drawScaledString(
-                    guiGraphics,
-                    gui.getFont(),
-                    line,
-                    x,
-                    (int) (y + (((float) lineId) * gui.getFont().lineHeight * this.scale)),
-                    (float) this.scale,
-                    IModHelpers.get().getBaseHelpers().RGBAToInt(10, 10, 10, 255),
-                    false,
-                    Font.DisplayMode.NORMAL
-            );
-            lineId++;
-        }
-
-        gui.drawOuterBorder(guiGraphics, x - 1, y - 1, getWidth() + 2, getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    protected void postDrawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
-
-    }
-
-    @Override
     public void preBakeElement(InfoSection infoSection) {
 
     }
@@ -105,5 +78,13 @@ public class TextFieldAppendix extends SectionAppendix {
     @Override
     public void bakeElement(InfoSection infoSection) {
 
+    }
+
+    public List<String> getLines() {
+        return lines;
+    }
+
+    public double getScale() {
+        return scale;
     }
 }

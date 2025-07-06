@@ -2,15 +2,13 @@ package org.cyclops.cyclopscore.network;
 
 import com.google.common.collect.Lists;
 import io.netty.channel.ChannelHandler.Sharable;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -34,6 +32,7 @@ public final class PacketHandlerNeoForge implements IPacketHandler {
         this.mod = mod;
         this.pendingPacketRegistrations = Lists.newArrayList();
         mod.getModEventBus().addListener(this::init);
+        mod.getModEventBus().addListener(this::initClient);
     }
 
     protected void init(RegisterPayloadHandlersEvent event) {
@@ -43,6 +42,12 @@ public final class PacketHandlerNeoForge implements IPacketHandler {
 
         for (Pair<CustomPacketPayload.Type, StreamCodec> pendingPacketRegistration : (List<Pair<CustomPacketPayload.Type, StreamCodec>>) (List) this.pendingPacketRegistrations) {
             this.registerActual(registrar, pendingPacketRegistration.getLeft(), pendingPacketRegistration.getRight());
+        }
+    }
+
+    protected void initClient(RegisterClientPayloadHandlersEvent event) {
+        for (Pair<CustomPacketPayload.Type, StreamCodec> pendingPacketRegistration : (List<Pair<CustomPacketPayload.Type, StreamCodec>>) (List) this.pendingPacketRegistrations) {
+            this.registerActualClient(event, pendingPacketRegistration.getLeft(), pendingPacketRegistration.getRight());
         }
     }
 
@@ -56,25 +61,26 @@ public final class PacketHandlerNeoForge implements IPacketHandler {
                 type,
                 codec,
                 (packet, ctx) -> {
-                    if (ctx.connection().getDirection() == PacketFlow.CLIENTBOUND) {
-                        if (packet.isAsync()) {
-                            handlePacketClient(ctx, packet);
-                        } else {
-                            ctx.enqueueWork(() -> handlePacketClient(ctx, packet));
-                        }
+                    if (packet.isAsync()) {
+                        handlePacketServer(ctx, packet);
                     } else {
-                        if (packet.isAsync()) {
-                            handlePacketServer(ctx, packet);
-                        } else {
-                            ctx.enqueueWork(() -> handlePacketServer(ctx, packet));
-                        }
+                        ctx.enqueueWork(() -> handlePacketServer(ctx, packet));
                     }
                 });
     }
 
-    @OnlyIn(Dist.CLIENT)
+    protected <P extends PacketBase> void registerActualClient(RegisterClientPayloadHandlersEvent event, CustomPacketPayload.Type<P> type, StreamCodec<? super RegistryFriendlyByteBuf, P> codec) {
+        event.register(type, (packet, ctx) -> {
+            if (packet.isAsync()) {
+                handlePacketClient(ctx, packet);
+            } else {
+                ctx.enqueueWork(() -> handlePacketClient(ctx, packet));
+            }
+        });
+    }
+
     public void handlePacketClient(IPayloadContext context, PacketBase packet) {
-        packet.actionClient(Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null, Minecraft.getInstance().player);
+        packet.actionClient(context.player().level(), context.player());
     }
 
     public void handlePacketServer(IPayloadContext context, PacketBase packet) {
@@ -83,7 +89,7 @@ public final class PacketHandlerNeoForge implements IPacketHandler {
 
     @Override
     public void sendToServer(PacketBase packet) {
-        PacketDistributor.sendToServer(packet);
+        ClientPacketDistributor.sendToServer(packet);
     }
 
     @Override

@@ -1,14 +1,8 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.IModHelpers;
-import org.cyclops.cyclopscore.infobook.AdvancedButton;
-import org.cyclops.cyclopscore.infobook.IInfoBook;
-import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
 /**
  * An item reward.
@@ -47,16 +41,11 @@ public class RewardItem implements IReward {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public AdvancedButton createButton(IInfoBook infoBook) {
-        return new RecipeAppendix.ItemButton(infoBook);
+    public IRewardClient constructRewardClient() {
+        return new RewardItemClient(this);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void drawElementInner(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button) {
-        RecipeAppendix.renderItemForButton(gui, guiGraphics, x, y, itemStack, mx, my, true, (RecipeAppendix.ItemButton) button);
+    public ItemStack getItemStack() {
+        return itemStack;
     }
-
-
 }

@@ -4,8 +4,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -78,13 +76,11 @@ public class CyclopsCoreNeoForge extends ModBaseNeoForge<CyclopsCoreNeoForge> {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     protected IClientProxy constructClientProxy() {
         return new ClientProxyNeoForge();
     }
 
     @Override
-    @OnlyIn(Dist.DEDICATED_SERVER)
     protected ICommonProxy constructCommonProxy() {
         return new CommonProxyNeoForge();
     }

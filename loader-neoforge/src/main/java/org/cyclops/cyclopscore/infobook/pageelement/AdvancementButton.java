@@ -7,7 +7,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 
@@ -16,7 +15,6 @@ import java.util.List;
 /**
  * A button for the advancements, so they can be hovered.
  */
-@OnlyIn(Dist.CLIENT)
 public class AdvancementButton extends AdvancedButton {
 
     private final ResourceLocation advancementId;

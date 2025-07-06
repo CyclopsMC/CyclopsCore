@@ -10,8 +10,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -78,12 +76,10 @@ public abstract class DamageIndicatedItemFluidContainer extends Item implements 
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void provideInformation(ItemStack itemStack, Level world, List<Component> list, TooltipFlag flag) {
 
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack itemStack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> tooltipAdder, TooltipFlag flag) {
         component.addInformation(itemStack, context, tooltipDisplay, tooltipAdder, flag);
