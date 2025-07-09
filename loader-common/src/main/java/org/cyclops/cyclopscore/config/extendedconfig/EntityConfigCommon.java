@@ -46,11 +46,11 @@ public abstract class EntityConfigCommon<M extends IModBase, T extends Entity> e
         }
     }
 
-    public static <M extends IModBase, T extends Mob> BiFunction<EntityConfigCommon<M, T>, Supplier<EntityType<T>>, ItemConfigCommon<M>> getDefaultSpawnEggItemConfigConstructor(M mod, String itemName, int primaryColorIn, int secondaryColorIn) {
-        return getDefaultSpawnEggItemConfigConstructor(mod, itemName, primaryColorIn, secondaryColorIn, null);
+    public static <M extends IModBase, T extends Mob> BiFunction<EntityConfigCommon<M, T>, Supplier<EntityType<T>>, ItemConfigCommon<M>> getDefaultSpawnEggItemConfigConstructor(M mod, String itemName) {
+        return getDefaultSpawnEggItemConfigConstructor(mod, itemName, null);
     }
 
-    public static <M extends IModBase, T extends Mob> BiFunction<EntityConfigCommon<M, T>, Supplier<EntityType<T>>, ItemConfigCommon<M>> getDefaultSpawnEggItemConfigConstructor(M mod, String itemName, int primaryColorIn, int secondaryColorIn, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
+    public static <M extends IModBase, T extends Mob> BiFunction<EntityConfigCommon<M, T>, Supplier<EntityType<T>>, ItemConfigCommon<M>> getDefaultSpawnEggItemConfigConstructor(M mod, String itemName, @Nullable Function<Item.Properties, Item.Properties> itemPropertiesModifier) {
         return (entityConfig, entityType) -> {
             ItemConfigCommon<M> itemConfig = new ItemConfigCommon<>(mod, itemName, (itemConfigSub, properties) -> {
                 if (itemPropertiesModifier != null) {
