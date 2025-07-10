@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.HashedStack;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -17,11 +18,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.joml.Vector3d;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author rubensworks
@@ -337,6 +334,19 @@ public class PacketCodecs {
             @Override
             public Object decode(RegistryFriendlyByteBuf input) {
                 return ItemStack.OPTIONAL_STREAM_CODEC.decode(input);
+            }
+        });
+
+        codecActions.put(HashedStack.class, new PacketCodec.ICodecAction() {
+
+            @Override
+            public void encode(Object object, RegistryFriendlyByteBuf output) {
+                HashedStack.STREAM_CODEC.encode(output, (HashedStack) object);
+            }
+
+            @Override
+            public Object decode(RegistryFriendlyByteBuf input) {
+                return HashedStack.STREAM_CODEC.decode(input);
             }
         });
 
