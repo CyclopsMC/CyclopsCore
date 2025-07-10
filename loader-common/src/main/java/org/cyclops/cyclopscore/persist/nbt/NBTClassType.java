@@ -592,14 +592,16 @@ public abstract class NBTClassType<T> {
         valueIo.ifLeft(input -> {
             T object = null;
             try {
-                if(input.child(name).isPresent()) {
+                try {
                     object = readPersistedField(name, input);
                     field.setAccessible(true); // At least one coremod seems to reset this for some reason, so force enable it again.
                     field.set(castTile, object);
-                } else if (useDefaultValue) {
-                    object = getDefaultValue();
-                    field.setAccessible(true); // At least one coremod seems to reset this for some reason, so force enable it again.
-                    field.set(castTile, object);
+                } catch(NoSuchElementException error) {
+                    if (useDefaultValue) {
+                        object = getDefaultValue();
+                        field.setAccessible(true); // At least one coremod seems to reset this for some reason, so force enable it again.
+                        field.set(castTile, object);
+                    }
                 }
             }  catch (IllegalArgumentException e) {
                 e.printStackTrace();
