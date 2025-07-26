@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
+import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoBookParser;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -18,6 +19,9 @@ public class KeyBindingAppendix extends SectionAppendix<KeyBindingAppendixClient
     public KeyBindingAppendix(IInfoBook infoBook, String keybindingName) throws InfoBookParser.InvalidAppendixException {
         super(infoBook);
         this.keybindingName = keybindingName;
+        if (IModHelpers.get().getMinecraftHelpers().isClientSide()) {
+            getSectionAppendixClient().loadKeybinding();
+        }
     }
 
     @Override

@@ -12,13 +12,16 @@ import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
  */
 public class KeyBindingAppendixClient extends SectionAppendixClient<KeyBindingAppendix> {
 
-    private final KeyMapping keyBinding;
+    private KeyMapping keyBinding;
 
     protected KeyBindingAppendixClient(KeyBindingAppendix sectionAppendix) throws InfoBookParser.InvalidAppendixException {
         super(sectionAppendix);
-        this.keyBinding = KeyMapping.get(sectionAppendix.getKeybindingName());
+    }
+
+    public void loadKeybinding() throws InfoBookParser.InvalidAppendixException {
+        this.keyBinding = KeyMapping.get(getSectionAppendix().getKeybindingName());
         if (this.keyBinding == null) {
-            throw new InfoBookParser.InvalidAppendixException("Could not find a keybinding by name " + sectionAppendix.getKeybindingName());
+            throw new InfoBookParser.InvalidAppendixException("Could not find a keybinding by name " + getSectionAppendix().getKeybindingName());
         }
     }
 
