@@ -21,6 +21,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
 import org.cyclops.cyclopscore.datastructure.EnumFacingMap;
+import org.cyclops.cyclopscore.datastructure.Wrapper;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 
@@ -198,9 +199,9 @@ public abstract class NBTClassType<T> {
                 boolean setValueType = false;
                 for(Map.Entry entry : (Set<Map.Entry>) object.entrySet()) {
                     ValueOutput entryTag = list.addChild();
-                    getType(entry.getKey().getClass(), object).writePersistedField("key", entry.getKey(), entryTag);
+                    getType(entry.getKey().getClass(), object).writePersistedField("k", entry.getKey(), entryTag);
                     if(entry.getValue() != null) {
-                        getType(entry.getValue().getClass(), object).writePersistedField("value", entry.getValue(), entryTag);
+                        getType(entry.getValue().getClass(), object).writePersistedField("v", entry.getValue(), entryTag.child("v"));
                     }
 
                     if(!setKeyType) {
@@ -222,7 +223,7 @@ public abstract class NBTClassType<T> {
                 ValueInput.ValueInputList list = mapTag.childrenList("map").orElseThrow();
                 if(!list.isEmpty()) {
                     NBTClassType keyNBTClassType;
-                    NBTClassType valueNBTClassType = null; // Remains null when all map values are null.
+                    Wrapper<NBTClassType> valueNBTClassType = new Wrapper<>(); // Remains null when all map values are null.
                     try {
                         Class<?> keyType = Class.forName(mapTag.getString("keyType").orElseThrow());
                         keyNBTClassType = getType(keyType, map);
@@ -231,24 +232,24 @@ public abstract class NBTClassType<T> {
                                 + "', this could be a mod error.");
                         return map;
                     }
-                    if(mapTag.child("valueType").isPresent()) {
+                    mapTag.getString("valueType").ifPresent(valueTypeString -> {
                         try {
-                            Class<?> valueType = Class.forName(mapTag.getString("valueType").orElseThrow());
-                            valueNBTClassType = getType(valueType, map);
+                            Class<?> valueType = Class.forName(valueTypeString);
+                            valueNBTClassType.set(getType(valueType, map));
                         } catch (ClassNotFoundException e) {
                             CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
                                     + "', this could be a mod error.");
-                            return map;
                         }
-                    }
+                    });
                     for (ValueInput entryTag : list) {
-                        Object key = keyNBTClassType.readPersistedField("key", entryTag);
+                        Object key = keyNBTClassType.readPersistedField("k", entryTag);
                         Object value = null;
                         // If the class type is null, this means all map values are null, so
                         // we won't have any problems with just inserting nulls for all values here.
                         // Also check if it has a 'value' tag, since later elements can still be null.
-                        if(valueNBTClassType != null && entryTag.child("value").isPresent()) {
-                            value = valueNBTClassType.readPersistedField("value", entryTag);
+                        Optional<ValueInput> entryTagChild = entryTag.child("v");
+                        if(valueNBTClassType != null && entryTagChild.isPresent()) {
+                            value = valueNBTClassType.get().readPersistedField("v", entryTagChild.orElseThrow());
                         }
                         map.put(key, value);
                     }
@@ -400,9 +401,9 @@ public abstract class NBTClassType<T> {
                 boolean setValueType = false;
                 for(Map.Entry entry : (Set<Map.Entry>) object.entrySet()) {
                     ValueOutput entryTag = list.addChild();
-                    entryTag.putInt("key", ((Direction) entry.getKey()).ordinal());
+                    entryTag.putInt("k", ((Direction) entry.getKey()).ordinal());
                     if(entry.getValue() != null) {
-                        getType(entry.getValue().getClass(), object).writePersistedField("value", entry.getValue(), entryTag);
+                        getType(entry.getValue().getClass(), object).writePersistedField("v", entry.getValue(), entryTag.child("v"));
                     }
 
                     if(!setValueType && entry.getValue() != null) {
@@ -419,25 +420,25 @@ public abstract class NBTClassType<T> {
                 EnumFacingMap map = EnumFacingMap.newMap();
                 ValueInput.ValueInputList list = mapTag.childrenList("map").orElseThrow();
                 if(!list.isEmpty()) {
-                    NBTClassType valueNBTClassType = null; // Remains null when all map values are null.
-                    if(mapTag.child("valueType").isPresent()) {
+                    Wrapper<NBTClassType> valueNBTClassType = new Wrapper<>(); // Remains null when all map values are null.
+                    mapTag.getString("valueType").ifPresent(valueTypeString -> {
                         try {
-                            Class<?> valueType = Class.forName(mapTag.getString("valueType").orElseThrow());
-                            valueNBTClassType = getType(valueType, map);
+                            Class<?> valueType = Class.forName(valueTypeString);
+                            valueNBTClassType.set(getType(valueType, map));
                         } catch (ClassNotFoundException e) {
                             CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.WARN, "No class found for NBT type map value '" + mapTag.getString("valueType")
                                     + "', this could be a mod error.");
-                            return map;
                         }
-                    }
+                    });
                     for (ValueInput entryTag : list) {
-                        Direction key = Direction.values()[entryTag.getInt("key").orElseThrow()];
+                        Direction key = Direction.values()[entryTag.getInt("k").orElseThrow()];
                         Object value = null;
                         // If the class type is null, this means all map values are null, so
                         // we won't have any problems with just inserting nulls for all values here.
                         // Also check if it has a 'value' tag, since later elements can still be null.
-                        if(valueNBTClassType != null && entryTag.child("value").isPresent()) {
-                            value = valueNBTClassType.readPersistedField("value", entryTag);
+                        Optional<ValueInput> entryTagChild = entryTag.child("v");
+                        if(valueNBTClassType != null && entryTagChild.isPresent()) {
+                            value = valueNBTClassType.get().readPersistedField("v", entryTagChild.orElseThrow());
                         }
                         map.put(key, value);
                     }
