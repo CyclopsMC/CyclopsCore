@@ -1,9 +1,13 @@
 package org.cyclops.cyclopscore.client.model;
 
 import com.google.common.primitives.Ints;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BlockModelPart;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.QuadCollection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -21,7 +25,7 @@ import java.util.List;
  * A model that can be used as a basis for flexible baked models.
  * @author rubensworks
  */
-public abstract class DynamicBaseModel {
+public abstract class DynamicBaseModel implements BlockStateModel {
 
     // Rotation UV coordinates
     protected static final float[][] ROTATION_UV = {{1, 0}, {1, 1}, {0, 1}, {0, 0}};
@@ -237,7 +241,37 @@ public abstract class DynamicBaseModel {
     public List<BakedQuad> getBlockStateQuads(BlockAndTintGetter level, BlockPos pos,
                                               BlockState state, Direction side,
                                               RandomSource rand, ModelData extraData,
-                                              RenderType renderType) {
+                                              ChunkSectionLayer renderType) {
         return this.quads;
     }
+
+    @Override
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
+        ModelData extraData = getModelData(level, pos, state, level.getModelData(pos));
+        for (ChunkSectionLayer renderType : getRenderTypes(state, random, extraData)) {
+            for (Direction side : Direction.values()) {
+                QuadCollection.Builder quadCollectionBuilder = new QuadCollection.Builder();
+                for (BakedQuad blockStateQuad : getBlockStateQuads(level, pos, state, side, random, extraData, renderType)) {
+                    quadCollectionBuilder = quadCollectionBuilder.addCulledFace(side, blockStateQuad);
+                }
+                parts.add(new SimpleModelWrapper(
+                        quadCollectionBuilder.build(),
+                        usesBlockLight(),
+                        particleIcon(level, pos, state),
+                        ChunkSectionLayer.CUTOUT
+                ));
+            }
+        }
+    }
+
+    @Override
+    public void collectParts(RandomSource random, List<BlockModelPart> output) {
+        // Do nothing, as it's should be never called.
+    }
+
+    public abstract ModelData getModelData(BlockAndTintGetter world, BlockPos pos, BlockState state, ModelData tileData);
+
+    public abstract List<ChunkSectionLayer> getRenderTypes(BlockState state, RandomSource rand, ModelData data);
+
+    public abstract boolean usesBlockLight();
 }
