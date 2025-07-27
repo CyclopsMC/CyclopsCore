@@ -74,7 +74,7 @@ public class GuiHelpersCommon implements IGuiHelpers {
                                              int mouseX, int mouseY, Supplier<Optional<List<Component>>> linesSupplier) {
         if (modHelpers.getRenderHelpers().isPointInRegion(x, y, width, height, mouseX - gui.leftPos, mouseY - gui.topPos)) {
             linesSupplier.get().ifPresent(
-                    lines -> guiGraphics.setComponentTooltipForNextFrame(gui.getFont(), lines, mouseX - gui.leftPos, mouseY - gui.topPos));
+                    lines -> guiGraphics.setComponentTooltipForNextFrame(gui.getFont(), lines, mouseX, mouseY));
         }
     }
 
