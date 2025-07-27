@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 
 /**
  * An button with text.
@@ -50,11 +51,11 @@ public class ButtonText extends ButtonExtended {
 
     @Override
     protected void drawButtonInner(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        int color = 0xe0e0e0;
+        int color = ARGB.opaque(0xe0e0e0);
         if (!active) {
-            color = 0xffa0a0a0;
+            color = ARGB.opaque(0xffa0a0a0);
         } else if (isHoveredOrFocused()) {
-            color = 0xffffa0;
+            color = ARGB.opaque(0xffffa0);
         }
 
         guiGraphics.drawCenteredString(Minecraft.getInstance().font, getText(), getX() + width / 2, getY() + (height - 8) / 2, color);

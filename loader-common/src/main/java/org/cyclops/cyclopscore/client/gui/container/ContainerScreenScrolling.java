@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import org.cyclops.cyclopscore.client.gui.component.WidgetScrollBar;
@@ -42,7 +43,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
                 this.searchField.setMaxLength(15);
                 this.searchField.setBordered(false);
                 this.searchField.setVisible(true);
-                this.searchField.setTextColor(16777215);
+                this.searchField.setTextColor(ARGB.opaque(16777215));
                 this.searchField.setCanLoseFocus(true);
                 this.searchField.setValue("");
                 this.searchField.setWidth(searchWidth);
