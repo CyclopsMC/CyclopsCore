@@ -19,7 +19,6 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
-import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -74,7 +73,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
     private final ICommonProxy proxy;
     private final ConfigHandlerCommon configHandler;
     private final Map<EnumReferenceKey<?>, Object> genericReference = Maps.newHashMap();
-    private final List<WorldStorage> worldStorages = Lists.newLinkedList();
+    private final List<WorldStorage.Access<?>> worldStorages = Lists.newLinkedList();
     private final IKeyRegistry keyRegistry;
     private final PacketHandlerNeoForge packetHandler;
     private final CapabilityConstructorRegistry capabilityConstructorRegistry;
@@ -103,7 +102,6 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
             getModEventBus().addListener(this::onRegisterKeyMappings);
         }
         NeoForge.EVENT_BUS.addListener(this::onServerStarting);
-        NeoForge.EVENT_BUS.addListener(this::onServerAboutToStart);
         NeoForge.EVENT_BUS.addListener(this::onServerStarted);
         NeoForge.EVENT_BUS.addListener(this::onServerStopping);
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
@@ -141,7 +139,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
         return genericReference;
     }
 
-    public List<WorldStorage> getWorldStorages() {
+    public List<WorldStorage.Access<?>> getWorldStorages() {
         return worldStorages;
     }
 
@@ -330,23 +328,12 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
     }
 
     /**
-     * Register the things that are related to when the server is about to start.
-     *
-     * @param event The Forge server about to start event.
-     */
-    protected void onServerAboutToStart(ServerAboutToStartEvent event) {
-        for (WorldStorage worldStorage : worldStorages) {
-            worldStorage.onAboutToStartEvent(event);
-        }
-    }
-
-    /**
      * Register the things that are related to server starting.
      *
      * @param event The Forge server started event.
      */
     protected void onServerStarted(ServerStartedEvent event) {
-        for (WorldStorage worldStorage : worldStorages) {
+        for (WorldStorage.Access<?> worldStorage : worldStorages) {
             worldStorage.onStartedEvent(event);
         }
     }
@@ -357,7 +344,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
      * @param event The Forge server stopping event.
      */
     protected void onServerStopping(ServerStoppingEvent event) {
-        for (WorldStorage worldStorage : worldStorages) {
+        for (WorldStorage.Access<?> worldStorage : worldStorages) {
             worldStorage.onStoppingEvent(event);
         }
     }
@@ -369,7 +356,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
      *
      * @param worldStorage The world storage to register.
      */
-    public void registerWorldStorage(WorldStorage worldStorage) {
+    public void registerWorldStorage(WorldStorage.Access<?> worldStorage) {
         worldStorages.add(worldStorage);
     }
 
