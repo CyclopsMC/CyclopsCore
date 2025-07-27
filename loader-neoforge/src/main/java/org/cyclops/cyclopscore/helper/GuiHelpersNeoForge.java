@@ -49,7 +49,7 @@ public class GuiHelpersNeoForge extends GuiHelpersCommon implements IGuiHelpersN
                     colorParts = Triple.of(0F, 0.335F, 1F);
                 }
 
-                gui.blitSprite(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, icon, x, y - textureHeight - verticalOffset + height, width, textureHeight, ARGB.colorFromFloat(1, colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight()));
+                gui.blitSprite(RenderPipelines.GUI_TEXTURED, icon, x, y - textureHeight - verticalOffset + height, width, textureHeight, ARGB.colorFromFloat(1, colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight()));
 
                 verticalOffset = verticalOffset + 16;
             }
@@ -71,7 +71,7 @@ public class GuiHelpersNeoForge extends GuiHelpersCommon implements IGuiHelpersN
                                          ResourceLocation textureOverlay, int overlayTextureX, int overlayTextureY) {
         renderFluidTank(gui, fluidStack, capacity, x, y, width, height);
         if (fluidStack != null && capacity > 0) {
-            gui.blit(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, textureOverlay, x, y, overlayTextureX, overlayTextureY, width, height, 256, 256);
+            gui.blit(RenderPipelines.GUI_TEXTURED, textureOverlay, x, y, overlayTextureX, overlayTextureY, width, height, 256, 256);
         }
     }
 

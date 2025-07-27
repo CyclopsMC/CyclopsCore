@@ -364,15 +364,15 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
     }
 
     public void drawHorizontalRule(GuiGraphics guiGraphics, int x, int y) {
-        guiGraphics.blit(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, texture, x - HR_WIDTH / 2, y - HR_HEIGHT / 2, 52, 180, HR_WIDTH, HR_HEIGHT, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x - HR_WIDTH / 2, y - HR_HEIGHT / 2, 52, 180, HR_WIDTH, HR_HEIGHT, 256, 256);
     }
 
     public void drawTextBanner(GuiGraphics guiGraphics, int x, int y) {
-        guiGraphics.blit(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, texture, x - BANNER_WIDTH / 2, y - BANNER_HEIGHT / 2, 52, 191, BANNER_WIDTH, BANNER_HEIGHT, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x - BANNER_WIDTH / 2, y - BANNER_HEIGHT / 2, 52, 191, BANNER_WIDTH, BANNER_HEIGHT, 256, 256);
     }
 
     public void drawArrowRight(GuiGraphics guiGraphics, int x, int y) {
-        guiGraphics.blit(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, texture, x, y, 0, 210, ARROW_WIDTH, ARROW_HEIGHT, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 210, ARROW_WIDTH, ARROW_HEIGHT, 256, 256);
     }
 
     public void drawOuterBorder(GuiGraphics guiGraphics, int x, int y, int width, int height) {
@@ -468,7 +468,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
                     k += width;
                 }
 
-                guiGraphics.blit(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, guiInfoBook.texture, this.getX(), this.getY(), k, l, width, height, 256, 256);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, guiInfoBook.texture, this.getX(), this.getY(), k, l, width, height, 256, 256);
             }
         }
 

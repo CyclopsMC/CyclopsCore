@@ -44,7 +44,7 @@ public class InfoSectionClient {
             int l = 0;
             if (lines != null) {
                 for (FormattedCharSequence line : lines) {
-                    guiGraphics.drawString(fontRenderer, line, mouseX, mouseY + yOffset + l * 9, 0, false);
+                    guiGraphics.drawString(fontRenderer, line, mouseX, mouseY + yOffset + l * 9, IModHelpers.get().getBaseHelpers().RGBAToInt(0, 0, 0, 255), false);
                     l++;
                 }
             }

@@ -210,7 +210,9 @@ public abstract class RecipeAppendixClient<S extends RecipeAppendix<?>> extends 
 
         @Override
         public void renderTooltip(GuiGraphics guiGraphics, Font font, int mx, int my) {
-            RecipeAppendixClient.renderItemTooltip(gui, guiGraphics, getX(), getY(), getElement(), mx, my);
+            if (getElement() != null) {
+                RecipeAppendixClient.renderItemTooltip(gui, guiGraphics, getX(), getY(), getElement(), mx, my);
+            }
         }
 
         @Override
@@ -232,7 +234,9 @@ public abstract class RecipeAppendixClient<S extends RecipeAppendix<?>> extends 
 
         @Override
         public void renderTooltip(GuiGraphics guiGraphics, Font font, int mx, int my) {
-            RecipeAppendixClient.renderFluidTooltip(gui, guiGraphics, getX(), getY(), getElement(), mx, my);
+            if (getElement() != null) {
+                RecipeAppendixClient.renderFluidTooltip(gui, guiGraphics, getX(), getY(), getElement(), mx, my);
+            }
         }
     }
 
