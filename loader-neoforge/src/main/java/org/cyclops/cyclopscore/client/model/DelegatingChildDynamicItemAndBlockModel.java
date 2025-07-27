@@ -1,10 +1,11 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
@@ -22,9 +23,9 @@ public abstract class DelegatingChildDynamicItemAndBlockModel extends Delegating
         this.baseModel = baseModel;
     }
 
-    public DelegatingChildDynamicItemAndBlockModel(ResolvedModel baseModel, BlockState blockState, Direction facing,
-                                                   RandomSource rand, ModelData modelData, RenderType renderType) {
-        super(blockState, facing, rand, modelData, renderType);
+    public DelegatingChildDynamicItemAndBlockModel(ResolvedModel baseModel, BlockAndTintGetter level, BlockState blockState, Direction facing,
+                                                   RandomSource rand, ModelData modelData, ChunkSectionLayer renderType) {
+        super(level, blockState, facing, rand, modelData, renderType);
         this.baseModel = baseModel;
     }
 

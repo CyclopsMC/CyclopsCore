@@ -34,12 +34,6 @@ public abstract class DynamicBaseModel implements BlockStateModel {
     // u1, v1; u2, v2
     protected static final float[][] UVS = {{0, 0}, {1, 1}};
 
-    private final List<BakedQuad> quads;
-
-    protected DynamicBaseModel(List<BakedQuad> quads) {
-        this.quads = quads;
-    }
-
     /**
      * Rotate a given vector to the given side.
      * @param vec The vector to rotate.
@@ -238,12 +232,10 @@ public abstract class DynamicBaseModel implements BlockStateModel {
         quads.add(new BakedQuad(data, -1, side, texture, false, shadeColor));
     }
 
-    public List<BakedQuad> getBlockStateQuads(BlockAndTintGetter level, BlockPos pos,
-                                              BlockState state, Direction side,
-                                              RandomSource rand, ModelData extraData,
-                                              ChunkSectionLayer renderType) {
-        return this.quads;
-    }
+    public abstract List<BakedQuad> handleBlockState(BlockAndTintGetter level, BlockPos pos,
+                                                     BlockState state, Direction side,
+                                                     RandomSource rand, ModelData extraData,
+                                                     ChunkSectionLayer renderType);
 
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
@@ -251,14 +243,14 @@ public abstract class DynamicBaseModel implements BlockStateModel {
         for (ChunkSectionLayer renderType : getRenderTypes(state, random, extraData)) {
             for (Direction side : Direction.values()) {
                 QuadCollection.Builder quadCollectionBuilder = new QuadCollection.Builder();
-                for (BakedQuad blockStateQuad : getBlockStateQuads(level, pos, state, side, random, extraData, renderType)) {
+                for (BakedQuad blockStateQuad : handleBlockState(level, pos, state, side, random, extraData, renderType)) {
                     quadCollectionBuilder = quadCollectionBuilder.addCulledFace(side, blockStateQuad);
                 }
                 parts.add(new SimpleModelWrapper(
                         quadCollectionBuilder.build(),
                         usesBlockLight(),
                         particleIcon(level, pos, state),
-                        ChunkSectionLayer.CUTOUT
+                        renderType
                 ));
             }
         }
