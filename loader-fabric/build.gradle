@@ -28,7 +28,7 @@ task publishCurseForge(type: TaskPublishCurseForge) {
     mainFile.addModLoader("Fabric")
     mainFile.addModLoader("Quilt")
 
-    mainFile.addOptional("forge-config-api-port")
+    mainFile.addOptional("forge-config-api-port-fabric")
 }
 
 modrinth {
