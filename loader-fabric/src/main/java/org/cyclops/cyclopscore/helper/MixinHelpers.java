@@ -1,12 +1,10 @@
 package org.cyclops.cyclopscore.helper;
 
-import com.google.common.collect.Lists;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.RegistryDataLoader;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
@@ -32,7 +30,6 @@ public class MixinHelpers {
                 testEnvironmentRegistry = (Registry) loader.registry();
             }
         }
-        Registry.register(testEnvironmentRegistry, ResourceLocation.parse("cyclopscore:default"), new TestEnvironmentDefinition.AllOf(Lists.newArrayList())); // TODO...
         return testEnvironmentRegistry;
     }
 
