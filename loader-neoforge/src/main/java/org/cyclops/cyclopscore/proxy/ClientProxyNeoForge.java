@@ -2,9 +2,11 @@ package org.cyclops.cyclopscore.proxy;
 
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.event.RegisterItemModelsEvent;
+import net.neoforged.neoforge.client.event.RegisterRenderPipelinesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.Reference;
+import org.cyclops.cyclopscore.client.particle.ParticleBlur;
 import org.cyclops.cyclopscore.client.render.model.ItemDynamicItemAndBlockModel;
 import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 import org.cyclops.cyclopscore.item.ItemInformationProviderNeoForge;
@@ -22,6 +24,7 @@ public class ClientProxyNeoForge extends ClientProxyComponent {
 
         NeoForge.EVENT_BUS.addListener(ItemInformationProviderNeoForge::onTooltip);
         getMod().getModEventBus().addListener((RegisterItemModelsEvent event) -> event.register(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "dynamic_item_and_block_model"), ItemDynamicItemAndBlockModel.Unbaked.MAP_CODEC));
+        getMod().getModEventBus().addListener((RegisterRenderPipelinesEvent event) -> event.registerPipeline(ParticleBlur.RENDER_PIPELINE));
     }
 
     @Override

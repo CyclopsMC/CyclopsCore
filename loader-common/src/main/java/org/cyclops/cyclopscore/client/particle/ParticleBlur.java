@@ -1,14 +1,16 @@
 package org.cyclops.cyclopscore.client.particle;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.MeshData;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.blaze3d.platform.DestFactor;
+import com.mojang.blaze3d.platform.SourceFactor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.world.entity.LivingEntity;
 import org.cyclops.cyclopscore.Reference;
@@ -20,45 +22,23 @@ import org.cyclops.cyclopscore.Reference;
  */
 public class ParticleBlur extends TextureSheetParticle {
 
-    public static final RenderType RENDER_TYPE = new RenderType(
+    public static final RenderPipeline RENDER_PIPELINE = RenderPipeline.builder(RenderPipelines.PARTICLE_SNIPPET) // Modified from RenderPipelines.TRANSLUCENT_PARTICLE
+            .withLocation("pipeline/translucent_particle_blur")
+            .withBlend(new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE))
+            .build();
+    public static final RenderType RENDER_TYPE = RenderType.create( // Modified from RenderType.TRANSLUCENT_PARTICLE
             Reference.MOD_ID + ":blur",
             1536,
             false,
             false,
-            () -> {
-                RenderType.translucentParticle(TextureAtlas.LOCATION_PARTICLES).setupRenderState();
-
-                // TODO: restore
-//                RenderSystem.depthMask(false);
-//                RenderSystem.enableBlend();
-//                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
-
-                AbstractTexture texture = Minecraft.getInstance().getTextureManager().getTexture(TextureAtlas.LOCATION_PARTICLES);
-                texture.setFilter(true, false);
-            }, () -> {
-                // TODO: restore
-//                RenderSystem.disableBlend();
-//                RenderSystem.defaultBlendFunc();
-//                RenderSystem.depthMask(true);
-
-                RenderType.translucentParticle(TextureAtlas.LOCATION_PARTICLES).clearRenderState();
-            }
-            ) {
-        @Override
-        public void draw(MeshData meshData) {
-            // TODO: implement based on CompositeRenderType? (just extend or refer to it?
-        }
-
-        @Override
-        public VertexFormat format() {
-            return DefaultVertexFormat.PARTICLE;
-        }
-
-        @Override
-        public VertexFormat.Mode mode() {
-            return VertexFormat.Mode.QUADS;
-        }
-    };
+            RENDER_PIPELINE,
+            RenderType.CompositeState.builder()
+                    .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false))
+                    .setTexturingState(new BlurTexturingStateShard(TextureAtlas.LOCATION_PARTICLES))
+                    .setOutputState(RenderType.PARTICLES_TARGET)
+                    .setLightmapState(RenderType.LIGHTMAP)
+                    .createCompositeState(false)
+    );
     public static final ParticleRenderType PARTICLE_RENDER_TYPE = new ParticleRenderType(Reference.MOD_ID + ":blur", RENDER_TYPE);
 
     private static final int MAX_VIEW_DISTANCE = 30;

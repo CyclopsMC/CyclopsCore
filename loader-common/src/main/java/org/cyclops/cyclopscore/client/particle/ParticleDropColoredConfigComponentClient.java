@@ -1,7 +1,5 @@
 package org.cyclops.cyclopscore.client.particle;
 
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
 import org.cyclops.cyclopscore.config.extendedconfig.ParticleConfigComponentClient;
@@ -22,15 +20,10 @@ public class ParticleDropColoredConfigComponentClient<M extends IModBase> extend
     @Nullable
     @Override
     public ParticleEngine.SpriteParticleRegistration<ParticleDropColoredData> getParticleMetaFactory() {
-        return sprite -> new ParticleProvider<ParticleDropColoredData>() {
-            @Nullable
-            @Override
-            public Particle createParticle(ParticleDropColoredData particleDropColoredData, ClientLevel world, double x, double y, double z,
-                                           double motionX, double motionY, double motionZ) {
-                ParticleDropColored particle = new ParticleDropColored(particleDropColoredData, world, x, y, z);
-                particle.pickSprite(sprite);
-                return particle;
-            }
+        return sprite -> (ParticleProvider<ParticleDropColoredData>) (particleDropColoredData, world, x, y, z, motionX, motionY, motionZ) -> {
+            ParticleDropColored particle = new ParticleDropColored(particleDropColoredData, world, x, y, z);
+            particle.pickSprite(sprite);
+            return particle;
         };
     }
 }

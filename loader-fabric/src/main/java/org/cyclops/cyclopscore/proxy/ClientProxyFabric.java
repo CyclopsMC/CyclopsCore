@@ -7,6 +7,7 @@ import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.RenderPipelines;
 import org.cyclops.cyclopscore.CyclopsCoreFabric;
 import org.cyclops.cyclopscore.client.gui.GuiMainMenuExtensionDevWorldFabricRegistrar;
 import org.cyclops.cyclopscore.client.particle.ParticleBlur;
@@ -26,6 +27,8 @@ public class ClientProxyFabric extends ClientProxyComponentFabric {
 
     public ClientProxyFabric() {
         super(new CommonProxyFabric());
+
+        RenderPipelines.register(ParticleBlur.RENDER_PIPELINE);
     }
 
     @Override
