@@ -1,10 +1,8 @@
 package org.cyclops.cyclopscore.ingredient.collection;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientSerializer;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
@@ -220,45 +218,37 @@ public final class IngredientCollections {
      * The type of collection will be lost,
      * only the component type and the ingredients will be saved.
      *
-     * @param <T>            The instance type.
-     * @param <M>            The matching condition parameter.
-     * @param lookupProvider The holder lookup provider.
-     * @param collection     An ingredient collection.
-     * @return An NBT tag.
+     * @param <T>         The instance type.
+     * @param <M>         The matching condition parameter.
+     * @param valueOutput The holder lookup provider.
+     * @param collection  An ingredient collection.
      */
-    public static <T, M> CompoundTag serialize(HolderLookup.Provider lookupProvider, IIngredientCollection<T, M> collection) {
-        CompoundTag tag = new CompoundTag();
-
+    public static <T, M> void serialize(ValueOutput valueOutput, IIngredientCollection<T, M> collection) {
         IngredientComponent<T, M> component = collection.getComponent();
-        tag.putString("component", component.getName().toString());
+        valueOutput.putString("component", component.getName().toString());
 
-        ListTag list = new ListTag();
+        ValueOutput.ValueOutputList list = valueOutput.childrenList("ingredients");
         IIngredientSerializer<T, M> serializer = component.getSerializer();
         for (T ingredient : collection) {
-            list.add(serializer.serializeInstance(lookupProvider, ingredient));
+            serializer.serializeInstance(list.addChild(), ingredient);
         }
-        tag.put("ingredients", list);
-
-        return tag;
     }
 
     /**
      * Deserialize the given NBT tag to an ingredient array list.
      *
      * @param <C>                         The collection type.
-     * @param lookupProvider              The holder lookup provider.
-     * @param tag                         An NBT tag.
+     * @param valueOutput                 An NBT tag.
      * @param ingredientCollectionFactory A function that creates a {@link IIngredientCollectionMutable}
      *                                    from an {@link IngredientComponent}.
      * @return An ingredient collection.
      * @throws IllegalArgumentException If the tag was invalid.
      */
-    public static <C extends IIngredientCollectionMutable<?, ?>> C deserialize(HolderLookup.Provider lookupProvider,
-                                                                               CompoundTag tag,
+    public static <C extends IIngredientCollectionMutable<?, ?>> C deserialize(ValueInput valueOutput,
                                                                                IIngredientCollectionConstructor<C>
                                                                                        ingredientCollectionFactory) {
         // Validate component
-        String componentTypeName = tag.getString("component").orElseThrow(() -> new IllegalArgumentException("No component type was found in the given tag"));
+        String componentTypeName = valueOutput.getString("component").orElseThrow(() -> new IllegalArgumentException("No component type was found in the given tag"));
         IngredientComponent<?, ?> component = IngredientComponent.REGISTRY.getValue(ResourceLocation.parse(componentTypeName));
         if (component == null) {
             throw new IllegalArgumentException("No ingredient component with the given name was found: " + component);
@@ -266,11 +256,11 @@ public final class IngredientCollections {
 
         // Actual deserialization of ingredients
         IIngredientSerializer<?, ?> serializer = component.getSerializer();
-        ListTag ingredients = tag.getList("ingredients").orElseThrow(() -> new IllegalArgumentException("No ingredients list was found in the given tag"));
+        ValueInput.ValueInputList ingredients = valueOutput.childrenList("ingredients").orElseThrow(() -> new IllegalArgumentException("No ingredients list was found in the given tag"));
         C collection = ingredientCollectionFactory.create(component);
         IIngredientCollectionMutable collectionUnsafe = collection;
-        for (Tag subTag : ingredients) {
-            collectionUnsafe.add(serializer.deserializeInstance(lookupProvider, subTag));
+        for (ValueInput subTag : ingredients) {
+            collectionUnsafe.add(serializer.deserializeInstance(subTag));
         }
 
         return collection;
@@ -279,13 +269,12 @@ public final class IngredientCollections {
     /**
      * Deserialize the given NBT tag to an ingredient array list.
      *
-     * @param lookupProvider The holder lookup provider.
-     * @param tag            An NBT tag.
+     * @param valueInput The value input.
      * @return An ingredient array list.
      * @throws IllegalArgumentException If the tag was invalid.
      */
-    public static IngredientArrayList<?, ?> deserialize(HolderLookup.Provider lookupProvider, CompoundTag tag) {
-        return deserialize(lookupProvider, tag, IngredientArrayList::new);
+    public static IngredientArrayList<?, ?> deserialize(ValueInput valueInput) {
+        return deserialize(valueInput, IngredientArrayList::new);
     }
 
     /**

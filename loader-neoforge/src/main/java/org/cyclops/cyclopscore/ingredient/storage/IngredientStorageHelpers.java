@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
@@ -846,17 +846,15 @@ public final class IngredientStorageHelpers {
      * <p>
      * All ingredients, the max quantity, and whether or not it is slotted will be stored.
      *
-     * @param <T>            The instance type.
-     * @param <M>            The matching condition parameter.
-     * @param lookupProvider The holder lookup provider.
-     * @param storage        An ingredient storage.
-     * @return An NBT tag.
+     * @param <T>         The instance type.
+     * @param <M>         The matching condition parameter.
+     * @param valueOutput The holder lookup provider.
+     * @param storage     An ingredient storage.
      */
-    public static <T, M> CompoundTag serialize(HolderLookup.Provider lookupProvider, IIngredientComponentStorage<T, M> storage) {
-        CompoundTag tag = IngredientCollections.serialize(lookupProvider, new IngredientArrayList<>(storage.getComponent(), storage.iterator()));
-        tag.putLong("maxQuantity", storage.getMaxQuantity());
-        tag.putBoolean("slotted", storage instanceof IIngredientComponentStorageSlotted);
-        return tag;
+    public static <T, M> void serialize(ValueOutput valueOutput, IIngredientComponentStorage<T, M> storage) {
+        IngredientCollections.serialize(valueOutput, new IngredientArrayList<>(storage.getComponent(), storage.iterator()));
+        valueOutput.putLong("maxQuantity", storage.getMaxQuantity());
+        valueOutput.putBoolean("slotted", storage instanceof IIngredientComponentStorageSlotted);
     }
 
     /**
@@ -864,20 +862,19 @@ public final class IngredientStorageHelpers {
      * <p>
      * All ingredients, the max quantity, and whether or not it is slotted will be restored.
      *
-     * @param lookupProvider The holder lookup provider.
-     * @param tag            An NBT tag.
-     * @param rateLimit      The rate limit per insertion/extraction.
+     * @param valueInput An NBT tag.
+     * @param rateLimit  The rate limit per insertion/extraction.
      * @return The deserialized storage.
      * @throws IllegalArgumentException If the tag was invalid.
      */
-    public static IIngredientComponentStorage<?, ?> deserialize(HolderLookup.Provider lookupProvider, CompoundTag tag, long rateLimit) {
-        long maxQuantity = tag.getLong("maxQuantity").orElseThrow(() -> new IllegalArgumentException("No maxQuantity was found in the given tag"));
-        if (tag.getBoolean("slotted").orElseThrow(() -> new IllegalArgumentException("No slotted was found in the given tag"))) {
+    public static IIngredientComponentStorage<?, ?> deserialize(ValueInput valueInput, long rateLimit) {
+        long maxQuantity = valueInput.getLong("maxQuantity").orElseThrow(() -> new IllegalArgumentException("No maxQuantity was found in the given tag"));
+        if (valueInput.getBooleanOr("slotted", false)) {
             return new IngredientComponentStorageSlottedCollectionWrapper<>(
-                    IngredientCollections.deserialize(lookupProvider, tag, IngredientArrayList::new), maxQuantity, rateLimit);
+                    IngredientCollections.deserialize(valueInput, IngredientArrayList::new), maxQuantity, rateLimit);
         } else {
             return new IngredientComponentStorageCollectionWrapper<>(
-                    IngredientCollections.deserialize(lookupProvider, tag, (IngredientCollections.IIngredientCollectionConstructor<IIngredientCollapsedCollectionMutable<?, ?>>) IngredientCollectionHelpers::createCollapsedCollection),
+                    IngredientCollections.deserialize(valueInput, (IngredientCollections.IIngredientCollectionConstructor<IIngredientCollapsedCollectionMutable<?, ?>>) IngredientCollectionHelpers::createCollapsedCollection),
                     maxQuantity, rateLimit);
         }
     }
