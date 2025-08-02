@@ -1,8 +1,12 @@
 package org.cyclops.cyclopscore.helper;
 
+import com.mojang.logging.LogUtils;
 import net.minecraft.DetectedVersion;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -10,10 +14,14 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ServerLevelData;
+import net.minecraft.world.level.storage.*;
+import org.slf4j.Logger;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -21,6 +29,8 @@ import java.util.List;
  *
  */
 public abstract class MinecraftHelpersCommon implements IMinecraftHelpers {
+
+    static final Logger LOGGER = LogUtils.getLogger();
 
     @Override
     public int getDayLength() {
@@ -99,5 +109,20 @@ public abstract class MinecraftHelpersCommon implements IMinecraftHelpers {
             return ItemStack.EMPTY;
         }
         return displays.getFirst().result().resolveForFirstStack(SlotDisplayContext.fromLevel(level));
+    }
+
+    public CompoundTag valueOutputToNbt(Consumer<ValueOutput> valueOutputConsumer, @Nullable HolderLookup.Provider lookupProvider) {
+        try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(new DummyPathElement(), LOGGER)) {
+            TagValueOutput valueOutput = lookupProvider == null ? TagValueOutput.createWithoutContext(scopedCollector) : TagValueOutput.createWithContext(scopedCollector, lookupProvider);
+            valueOutputConsumer.accept(valueOutput);
+            return valueOutput.buildResult();
+        }
+    }
+
+    public <T> T valueInputFromNbt(CompoundTag tag, HolderLookup.Provider lookupProvider, Function<ValueInput, T> valueInputConsumer) {
+        try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(new DummyPathElement(), LOGGER)) {
+            ValueInput input = TagValueInput.create(scopedCollector, lookupProvider, tag);
+            return valueInputConsumer.apply(input);
+        }
     }
 }

@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -11,8 +13,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author rubensworks
@@ -147,5 +153,32 @@ public interface IMinecraftHelpers {
      * @return An output item.
      */
     public ItemStack getRecipeOutput(Recipe<?> recipe, Level level);
+
+    /**
+     * Serialize the given value output to an NBT tag.
+     * @param valueOutputConsumer Value output consumer.
+     * @return An NBT tag.
+     */
+    public default CompoundTag valueOutputToNbt(Consumer<ValueOutput> valueOutputConsumer) {
+        return valueOutputToNbt(valueOutputConsumer, null);
+    }
+
+    /**
+     * Serialize the given value output to an NBT tag.
+     * @param valueOutputConsumer Value output consumer.
+     * @param lookupProvider A lookup provider.
+     * @return An NBT tag.
+     */
+    public CompoundTag valueOutputToNbt(Consumer<ValueOutput> valueOutputConsumer, @Nullable HolderLookup.Provider lookupProvider);
+
+    /**
+     * Deserialize something from the given NBT tag as value input.
+     * @param tag An NBT tag.
+     * @param lookupProvider A lookup provider.
+     * @param valueInputConsumer Value input function.
+     * @return The deserialized thing.
+     * @param <T> The thing to deserialize.
+     */
+    public <T> T valueInputFromNbt(CompoundTag tag, HolderLookup.Provider lookupProvider, Function<ValueInput, T> valueInputConsumer);
 
 }
