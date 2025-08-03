@@ -41,10 +41,10 @@ public class SyncedGuiVariable<T> implements Supplier<T> {
 
     public void detectAndSendChanges() {
         T value = this.serverValueSupplier.get();
-        CompoundTag tag = new CompoundTag();
         try (ProblemReporter.ScopedCollector problemReporter = new ProblemReporter.ScopedCollector(gui.player.problemPath(), LOGGER)) {
             TagValueOutput tagValueOutput = TagValueOutput.createWithContext(problemReporter, this.holderLookupProvider);
             this.nbtClassType.writePersistedField("v", value, tagValueOutput);
+            CompoundTag tag = tagValueOutput.buildResult();
             if (!Objects.equals(this.lastTag, tag)) {
                 this.gui.setValue(this.guiValueId, tag);
                 this.lastTag = tag;
