@@ -36,6 +36,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
 
     public ContainerScreenExtended(T container, Inventory playerInventory, Component title) {
         super(container, playerInventory, title);
+        container.setGuiValueListener(this);
         this.modHelpers = IModHelpers.get();
         this.container = container;
         this.texture = constructGuiTexture();
