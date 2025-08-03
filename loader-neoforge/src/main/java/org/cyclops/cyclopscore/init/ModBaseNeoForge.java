@@ -304,6 +304,9 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
     }
 
     protected void registerGameTests(RegisterGameTestsEvent event) {
+        if (!GameTestLoaderHelpers.areGameTestsEnabled(getModId())) {
+            return;
+        }
         try {
             Field field = RegisterGameTestsEvent.class.getDeclaredField("environmentsRegistry");
             field.setAccessible(true);

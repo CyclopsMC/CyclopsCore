@@ -22,6 +22,11 @@ import java.util.function.BiConsumer;
  */
 public class GameTestLoaderHelpers {
 
+    public static boolean areGameTestsEnabled(String modId) {
+        return System.getProperty("neoforge.enabledGameTestNamespaces", "").contains(modId)
+                || System.getProperty("cyclopsmc.enabledGameTestNamespaces", "").contains(modId);
+    }
+
     public static void registerCommonTests(String modId, Class<?>[] testClasses, BiConsumer<ResourceLocation, GameTestInstance> registrar, Registry<TestEnvironmentDefinition> testEnvironmentRegistry) {
         for (MethodGameTestInstance testInstance : generateCommonTests(modId, testClasses, testEnvironmentRegistry)) {
             registrar.accept(testInstance.getId(), testInstance);
