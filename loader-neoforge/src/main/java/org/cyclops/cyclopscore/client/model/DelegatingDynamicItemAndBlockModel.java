@@ -27,6 +27,10 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
     protected final RandomSource rand;
     protected final ModelData modelData;
     protected final ChunkSectionLayer renderType;
+    @Nullable
+    protected final ItemStack itemStack;
+    @Nullable
+    protected final LivingEntity entity;
 
     public DelegatingDynamicItemAndBlockModel() {
         super(true, false);
@@ -36,6 +40,8 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.rand = RandomSource.create();
         this.modelData = ModelData.EMPTY;
         this.renderType = ChunkSectionLayer.CUTOUT;
+        this.itemStack = null;
+        this.entity = null;
     }
 
     public DelegatingDynamicItemAndBlockModel(BlockAndTintGetter level, BlockState blockState, Direction facing, RandomSource rand, ModelData modelData, ChunkSectionLayer renderType) {
@@ -46,6 +52,8 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.rand = rand;
         this.modelData = modelData;
         this.renderType = renderType;
+        this.itemStack = null;
+        this.entity = null;
     }
 
     public DelegatingDynamicItemAndBlockModel(ItemStack itemStack, Level level, LivingEntity entity) {
@@ -56,6 +64,8 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.rand = RandomSource.create();
         this.modelData = ModelData.EMPTY;
         this.renderType = ChunkSectionLayer.CUTOUT;
+        this.itemStack = itemStack;
+        this.entity = entity;
     }
 
 }
