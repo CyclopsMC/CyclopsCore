@@ -176,6 +176,19 @@ public interface IMinecraftHelpers {
      * @param tag An NBT tag.
      * @param lookupProvider A lookup provider.
      * @param valueInputConsumer Value input function.
+     */
+    public default void valueInputFromNbt(CompoundTag tag, HolderLookup.Provider lookupProvider, Consumer<ValueInput> valueInputConsumer) {
+        valueInputFromNbt(tag, lookupProvider, i -> {
+            valueInputConsumer.accept(i);
+            return null;
+        });
+    }
+
+    /**
+     * Deserialize something from the given NBT tag as value input.
+     * @param tag An NBT tag.
+     * @param lookupProvider A lookup provider.
+     * @param valueInputConsumer Value input function.
      * @return The deserialized thing.
      * @param <T> The thing to deserialize.
      */

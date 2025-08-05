@@ -111,6 +111,7 @@ public abstract class MinecraftHelpersCommon implements IMinecraftHelpers {
         return displays.getFirst().result().resolveForFirstStack(SlotDisplayContext.fromLevel(level));
     }
 
+    @Override
     public CompoundTag valueOutputToNbt(Consumer<ValueOutput> valueOutputConsumer, @Nullable HolderLookup.Provider lookupProvider) {
         try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(new DummyPathElement(), LOGGER)) {
             TagValueOutput valueOutput = lookupProvider == null ? TagValueOutput.createWithoutContext(scopedCollector) : TagValueOutput.createWithContext(scopedCollector, lookupProvider);
@@ -119,6 +120,7 @@ public abstract class MinecraftHelpersCommon implements IMinecraftHelpers {
         }
     }
 
+    @Override
     public <T> T valueInputFromNbt(CompoundTag tag, HolderLookup.Provider lookupProvider, Function<ValueInput, T> valueInputConsumer) {
         try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(new DummyPathElement(), LOGGER)) {
             ValueInput input = TagValueInput.create(scopedCollector, lookupProvider, tag);
