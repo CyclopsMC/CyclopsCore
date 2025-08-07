@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.client.render.model;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.item.*;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -18,7 +19,12 @@ import java.util.List;
 /**
  * @author rubensworks
  */
-public record ItemDynamicItemAndBlockModel(DynamicItemAndBlockModel resolvedModel, ModelRenderProperties modelRenderProperties) implements ItemModel {
+public record ItemDynamicItemAndBlockModel(DynamicItemAndBlockModel resolvedModel, ModelRenderProperties modelRenderProperties, @Nullable RenderType renderType) implements ItemModel {
+
+    public ItemDynamicItemAndBlockModel(DynamicItemAndBlockModel resolvedModel, ModelRenderProperties modelRenderProperties) {
+        this(resolvedModel, modelRenderProperties, null);
+    }
+
     @Override
     public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
         new BlockModelWrapper(List.of(), resolvedModel.handleItemState(stack, level, entity), modelRenderProperties)

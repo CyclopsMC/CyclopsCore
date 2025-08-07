@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.block.component;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -61,8 +60,8 @@ public class ParticleDropBlockComponent implements IEntityDropParticleFXBlock {
             double py = (double) blockPos.getY() - 0.05D - offset;
             double pz = (double) ((float) blockPos.getZ() + rand.nextFloat());
 
-            Minecraft.getInstance().levelRenderer.addParticle(
-                    new ParticleDropColoredData(particleRed, particleGreen, particleBlue), false,
+            world.addParticle(
+                    new ParticleDropColoredData(particleRed, particleGreen, particleBlue),
                     px, py, pz, 0, 0, 0);
         }
     }

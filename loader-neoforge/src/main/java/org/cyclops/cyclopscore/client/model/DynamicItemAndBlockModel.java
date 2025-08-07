@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.client.model;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.item.ModelRenderProperties;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,5 +38,9 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel implemen
 
     public abstract List<BakedQuad> handleItemState(@Nullable ItemStack stack, @Nullable Level world,
                                               @Nullable LivingEntity entity);
+
+    public ModelRenderProperties getModelRenderProperties() {
+        return new ModelRenderProperties(false, particleIcon(), getTopTransforms());
+    }
 
 }
