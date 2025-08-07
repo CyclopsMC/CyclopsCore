@@ -3,10 +3,8 @@ package org.cyclops.cyclopscore.helper;
 import com.google.common.collect.Maps;
 import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.block.model.ItemTransform;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -202,5 +200,9 @@ public final class ModelHelpers {
                 (float) Math.toRadians(euler.y()),
                 (float) Math.toRadians(euler.z())
         );
+    }
+
+    public static BlockStateModel bakeSingleBlockStateModel(ModelBaker baker, ResourceLocation id, ModelState modelState) {
+        return new SingleVariant(SimpleModelWrapper.bake(baker, id, modelState));
     }
 }
