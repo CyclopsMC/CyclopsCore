@@ -7,21 +7,27 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.Reference;
 
+import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @author rubensworks
  */
 public class MinecraftHelpersNeoForge extends MinecraftHelpersCommon implements IMinecraftHelpers {
+
     @Override
     public boolean isDevEnvironment() {
         return !FMLLoader.isProduction();
@@ -66,5 +72,10 @@ public class MinecraftHelpersNeoForge extends MinecraftHelpersCommon implements 
     @Override
     public boolean isFakePlayer(Player player) {
         return player instanceof FakePlayer;
+    }
+
+    @Override
+    public void sendRecipesToClients(Supplier<Collection<RecipeType<?>>> recipeTypes) {
+        NeoForge.EVENT_BUS.addListener(false, OnDatapackSyncEvent.class, e -> e.sendRecipes(recipeTypes.get()));
     }
 }

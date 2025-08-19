@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Player;
 /**
  * @author rubensworks
  */
-public class MinecraftClientHelpersCommon implements IMinecraftClientHelpers {
+public abstract class MinecraftClientHelpersCommon implements IMinecraftClientHelpers {
     @Override
     public Player getPlayer() {
         return Minecraft.getInstance().player;

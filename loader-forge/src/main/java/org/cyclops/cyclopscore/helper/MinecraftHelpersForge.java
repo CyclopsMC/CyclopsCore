@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -15,7 +16,9 @@ import net.minecraftforge.server.ServerLifecycleHooks;
 import org.cyclops.cyclopscore.CyclopsCoreForge;
 import org.cyclops.cyclopscore.Reference;
 
+import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -68,5 +71,10 @@ public class MinecraftHelpersForge extends MinecraftHelpersCommon {
     @Override
     public boolean isFakePlayer(Player player) {
         return false;
+    }
+
+    @Override
+    public void sendRecipesToClients(Supplier<Collection<RecipeType<?>>> recipeTypes) {
+        throw new UnsupportedOperationException();
     }
 }

@@ -5,7 +5,6 @@ package org.cyclops.cyclopscore.helper;
  */
 public abstract class ModHelpersCommon implements IModHelpers {
 
-    private IMinecraftClientHelpers minecraftClientHelpers;
     private IL10NHelpers l10nHelpers;
     private IBlockHelpers blockHelpers;
     private ILocationHelpers locationHelpers;
@@ -23,11 +22,9 @@ public abstract class ModHelpersCommon implements IModHelpers {
 
     protected void initializeHelpers() {
         if (this.getMinecraftHelpers().isClientSide()) {
-            this.minecraftClientHelpers = new MinecraftClientHelpersCommon();
             this.renderHelpers = new RenderHelpersCommon();
             this.guiHelpers = new GuiHelpersCommon(this);
         } else {
-            this.minecraftClientHelpers = null;
             this.renderHelpers = null;
             this.guiHelpers = null;
         }
@@ -39,11 +36,6 @@ public abstract class ModHelpersCommon implements IModHelpers {
         this.baseHelpers = new BaseHelpersCommon();
         this.craftingHelpers = new CraftingHelpersCommon(this);
         this.worldHelpers = new WorldHelpersCommon(this);
-    }
-
-    @Override
-    public IMinecraftClientHelpers getMinecraftClientHelpers() {
-        return this.minecraftClientHelpers;
     }
 
     @Override

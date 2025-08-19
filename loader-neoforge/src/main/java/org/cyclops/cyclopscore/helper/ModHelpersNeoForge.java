@@ -8,6 +8,7 @@ public class ModHelpersNeoForge extends ModHelpersCommon implements IModHelpersN
     public static final ModHelpersNeoForge INSTANCE = new ModHelpersNeoForge();
 
     private IMinecraftHelpers minecraftHelpers;
+    private IMinecraftClientHelpers minecraftClientHelpers;
     private IItemStackHelpers itemStackHelpers;
     private ICapabilityHelpersNeoForge capabilityHelpers;
     private IFluidHelpersNeoForge fluidHelpers;
@@ -22,9 +23,11 @@ public class ModHelpersNeoForge extends ModHelpersCommon implements IModHelpersN
         this.minecraftHelpers = new MinecraftHelpersNeoForge();
         super.initializeHelpers();
         if (this.getMinecraftHelpers().isClientSide()) {
+            this.minecraftClientHelpers = new MinecraftClientHelpersNeoForge();
             this.renderHelpers = new RenderHelpersNeoForge(this);
             this.guiHelpers = new GuiHelpersNeoForge(this);
         } else {
+            this.minecraftClientHelpers = null;
             this.renderHelpers = null;
             this.guiHelpers = null;
         }
@@ -37,6 +40,11 @@ public class ModHelpersNeoForge extends ModHelpersCommon implements IModHelpersN
     @Override
     public IMinecraftHelpers getMinecraftHelpers() {
         return this.minecraftHelpers;
+    }
+
+    @Override
+    public IMinecraftClientHelpers getMinecraftClientHelpers() {
+        return this.minecraftClientHelpers;
     }
 
     @Override

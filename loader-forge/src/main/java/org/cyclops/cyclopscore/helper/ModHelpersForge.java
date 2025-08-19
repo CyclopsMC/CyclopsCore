@@ -8,6 +8,7 @@ public class ModHelpersForge extends ModHelpersCommon implements IModHelpersForg
     public static final ModHelpersForge INSTANCE = new ModHelpersForge();
 
     private IMinecraftHelpers minecraftHelpers;
+    private IMinecraftClientHelpers minecraftClientHelpers;
     private IRenderHelpersForge renderHelpers;
     private IRegistrationHelpers registrationHelpers;
     private IItemStackHelpers itemStackHelpers;
@@ -22,9 +23,11 @@ public class ModHelpersForge extends ModHelpersCommon implements IModHelpersForg
         this.minecraftHelpers = new MinecraftHelpersForge();
         super.initializeHelpers();
         if (this.getMinecraftHelpers().isClientSide()) {
+            this.minecraftClientHelpers = new MinecraftClientHelpersForge();
             this.renderHelpers = new RenderHelpersForge(this);
             this.guiHelpers = new GuiHelpersForge(this);
         } else {
+            this.minecraftClientHelpers = null;
             this.renderHelpers = null;
             this.guiHelpers = null;
         }
@@ -37,6 +40,11 @@ public class ModHelpersForge extends ModHelpersCommon implements IModHelpersForg
     @Override
     public IMinecraftHelpers getMinecraftHelpers() {
         return this.minecraftHelpers;
+    }
+
+    @Override
+    public IMinecraftClientHelpers getMinecraftClientHelpers() {
+        return this.minecraftClientHelpers;
     }
 
     @Override

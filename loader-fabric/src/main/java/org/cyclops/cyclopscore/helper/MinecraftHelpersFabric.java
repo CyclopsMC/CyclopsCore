@@ -20,13 +20,16 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.cyclops.cyclopscore.CyclopsCoreFabric;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.config.StreamCodecConsumerHack;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
+import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Contains helper methods for various minecraft specific things.
@@ -117,5 +120,10 @@ public class MinecraftHelpersFabric extends MinecraftHelpersCommon {
     @Override
     public boolean isFakePlayer(Player player) {
         return player instanceof FakePlayer;
+    }
+
+    @Override
+    public void sendRecipesToClients(Supplier<Collection<RecipeType<?>>> recipeTypes) {
+        throw new UnsupportedOperationException();
     }
 }

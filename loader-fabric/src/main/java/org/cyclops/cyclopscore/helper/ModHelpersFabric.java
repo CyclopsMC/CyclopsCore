@@ -8,6 +8,7 @@ public class ModHelpersFabric extends ModHelpersCommon implements IModHelpersFab
     public static final ModHelpersFabric INSTANCE = new ModHelpersFabric();
 
     private IMinecraftHelpers minecraftHelpers;
+    private IMinecraftClientHelpers minecraftClientHelpers;
     private IItemStackHelpers itemStackHelpers;
     private IFluidHelpersFabric fluidHelpers;
     private IRenderHelpersFabric renderHelpers;
@@ -21,9 +22,11 @@ public class ModHelpersFabric extends ModHelpersCommon implements IModHelpersFab
         this.minecraftHelpers = new MinecraftHelpersFabric();
         super.initializeHelpers();
         if (this.getMinecraftHelpers().isClientSide()) {
+            this.minecraftClientHelpers = new MinecraftClientHelpersFabric();
             this.renderHelpers = new RenderHelpersFabric(this);
             this.guiHelpers = new GuiHelpersFabric(this);
         } else {
+            this.minecraftClientHelpers = null;
             this.renderHelpers = null;
             this.guiHelpers = null;
         }
@@ -35,6 +38,11 @@ public class ModHelpersFabric extends ModHelpersCommon implements IModHelpersFab
     @Override
     public IMinecraftHelpers getMinecraftHelpers() {
         return this.minecraftHelpers;
+    }
+
+    @Override
+    public IMinecraftClientHelpers getMinecraftClientHelpers() {
+        return this.minecraftClientHelpers;
     }
 
     @Override

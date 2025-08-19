@@ -12,13 +12,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author rubensworks
@@ -207,5 +210,13 @@ public interface IMinecraftHelpers {
      * @param <T> The thing to deserialize.
      */
     public <T> T valueInputFromNbt(CompoundTag tag, HolderLookup.Provider lookupProvider, Function<ValueInput, T> valueInputConsumer);
+
+    /**
+     * Indicate that the following recipe types should be sent from the server to clients.
+     * After this, clients can safely get {@link IMinecraftClientHelpers#getRecipes} for the given recipe types.
+     *
+     * @param recipeTypes Recipe types.
+     */
+    public void sendRecipesToClients(Supplier<Collection<RecipeType<?>>> recipeTypes);
 
 }
