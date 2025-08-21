@@ -55,7 +55,7 @@ public class SyncedGuiVariable<T> implements Supplier<T> {
     @Override
     public T get() {
         CompoundTag tag = this.gui.getValue(this.guiValueId);
-        if (tag == null) {
+        if (tag == null || !tag.contains("v")) {
             return this.nbtClassType.getDefaultValue();
         }
         try (ProblemReporter.ScopedCollector problemreporter$scopedcollector = new ProblemReporter.ScopedCollector(LOGGER)) {
