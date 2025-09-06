@@ -81,7 +81,7 @@ public final class PacketHandler implements IPacketHandler {
 
     @OnlyIn(Dist.CLIENT)
     public void handlePacketClient(IPayloadContext context, PacketBase packet) {
-        packet.actionClient(Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null, Minecraft.getInstance().player);
+        packet.actionClient(Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : Minecraft.getInstance().level, Minecraft.getInstance().player);
     }
 
     public void handlePacketServer(IPayloadContext context, PacketBase packet) {
