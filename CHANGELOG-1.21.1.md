@@ -1,8 +1,14 @@
 # Changelog for Minecraft 1.21.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.21.1-1.27.0"></a>
+## [1.21.1-1.27.0](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.26.2...1.21.1-1.27.0) - 2025-10-07 07:43:29
+
+### Added
+* Add IngredientComponentStorageComposite (required for Integrated Mekanism)
+
 <a name="1.21.1-1.26.2"></a>
-## [1.21.1-1.26.2](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.26.1...1.21.1-1.26.2) - 2025-08-08 20:10:42
+## [1.21.1-1.26.2](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.26.1...1.21.1-1.26.2) - 2025-08-08 20:10:42 +0200
 
 ### Changed
 * Add translations through Crowdin (#208)
