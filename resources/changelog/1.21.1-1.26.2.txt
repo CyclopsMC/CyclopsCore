@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Add translations through Crowdin (#208)
+* Update PT_BR localization (#206)
