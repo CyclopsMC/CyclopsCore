@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.network;
 import com.google.common.base.Predicates;
 import io.netty.channel.ChannelHandler.Sharable;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -102,7 +103,8 @@ public final class PacketHandler {
 
     @OnlyIn(Dist.CLIENT)
     public void handlePacketClient(NetworkEvent.Context context, PacketBase packet) {
-        packet.actionClient(Minecraft.getInstance().player.level(), Minecraft.getInstance().player);
+        LocalPlayer player = Minecraft.getInstance().player;
+        packet.actionClient(player != null ? player.level() : null, player);
     }
 
     public void handlePacketServer(NetworkEvent.Context context, PacketBase packet) {
