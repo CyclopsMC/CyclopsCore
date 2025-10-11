@@ -1,8 +1,14 @@
 # Changelog for Minecraft 1.20.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.20.1-1.21.1"></a>
+## [1.20.1-1.21.1](/compare/1.20.1-1.21.0...1.20.1-1.21.1) - 2025-10-11 10:52:11
+
+### Fixed
+* Add client-side null player safety check to PacketHandler, Closes #211
+
 <a name="1.20.1-1.21.0"></a>
-## [1.20.1-1.21.0](/compare/1.20.1-1.20.1...1.20.1-1.21.0) - 2025-10-07 07:34:00
+## [1.20.1-1.21.0](/compare/1.20.1-1.20.1...1.20.1-1.21.0) - 2025-10-07 07:34:00 +0200
 
 ### Added
 * Add IngredientComponentStorageComposite (required for Integrated Mekanism)
