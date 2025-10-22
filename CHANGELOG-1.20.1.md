@@ -1,8 +1,15 @@
 # Changelog for Minecraft 1.20.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.20.1-1.21.2"></a>
+## [1.20.1-1.21.2](/compare/1.20.1-1.21.1...1.20.1-1.21.2) - 2025-10-22 16:25:44
+
+### Fixed
+* Fix empty item entities being spawned
+  Closes CyclopsMC/IntegratedTunnels#348
+
 <a name="1.20.1-1.21.1"></a>
-## [1.20.1-1.21.1](/compare/1.20.1-1.21.0...1.20.1-1.21.1) - 2025-10-11 10:52:11
+## [1.20.1-1.21.1](/compare/1.20.1-1.21.0...1.20.1-1.21.1) - 2025-10-11 10:52:11 +0200
 
 ### Fixed
 * Add client-side null player safety check to PacketHandler, Closes #211
