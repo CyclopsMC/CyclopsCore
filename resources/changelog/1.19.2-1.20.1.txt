@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix scrollbar not moving on screen resize
+  Closes CyclopsMC/IntegratedDynamics#1515
