@@ -54,7 +54,7 @@ public abstract class ItemStackHelpersCommon implements IItemStackHelpers {
 
     @Override
     public void spawnItemStackToPlayer(Level world, BlockPos pos, ItemStack stack, Player player) {
-        if (!world.isClientSide()) {
+        if (!world.isClientSide() && !stack.isEmpty()) {
             float f = 0.5F;
 
             double xo = (double)(world.random.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
