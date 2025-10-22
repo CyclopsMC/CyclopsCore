@@ -1,8 +1,15 @@
 # Changelog for Minecraft 1.21.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.21.1-1.27.1"></a>
+## [1.21.1-1.27.1](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.27.0...1.21.1-1.27.1) - 2025-10-22 16:29:42
+
+### Fixed
+* Fix empty item entities being spawned
+  Closes CyclopsMC/IntegratedTunnels#348
+
 <a name="1.21.1-1.27.0"></a>
-## [1.21.1-1.27.0](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.26.2...1.21.1-1.27.0) - 2025-10-07 07:43:29
+## [1.21.1-1.27.0](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.26.2...1.21.1-1.27.0) - 2025-10-07 07:43:29 +0200
 
 ### Added
 * Add IngredientComponentStorageComposite (required for Integrated Mekanism)
