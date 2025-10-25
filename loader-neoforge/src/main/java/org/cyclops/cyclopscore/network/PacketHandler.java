@@ -14,6 +14,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.network.registration.HandlerThread;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.init.ModBase;
@@ -41,6 +42,7 @@ public final class PacketHandler implements IPacketHandler {
     protected void init(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar registrar = event.registrar(mod.getModId())
                 .versioned("1.0.0")
+                .executesOn(HandlerThread.NETWORK)
                 .optional();
 
         for (Pair<CustomPacketPayload.Type, StreamCodec> pendingPacketRegistration : (List<Pair<CustomPacketPayload.Type, StreamCodec>>) (List) this.pendingPacketRegistrations) {
