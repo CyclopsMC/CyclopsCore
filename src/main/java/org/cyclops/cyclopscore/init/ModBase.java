@@ -11,6 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -300,7 +301,12 @@ public abstract class ModBase<T extends ModBase> {
      */
     @SubscribeEvent
     protected void onServerStarting(ServerStartingEvent event) {
-        event.getServer().getCommands().getDispatcher().register(constructBaseCommand());
+
+    }
+
+    @SubscribeEvent
+    protected void onRegisterCommands(RegisterCommandsEvent event) {
+        event.getDispatcher().register(constructBaseCommand());
     }
 
     /**
