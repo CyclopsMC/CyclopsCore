@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix packets always being handled on the main thread
+  Related to CyclopsMC/IntegratedCrafting#156
