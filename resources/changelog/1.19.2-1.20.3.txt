@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix commands not being available after reload command
+  Closes CyclopsMC/IntegratedDynamics#1556
