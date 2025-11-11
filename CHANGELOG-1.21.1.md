@@ -1,8 +1,15 @@
 # Changelog for Minecraft 1.21.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.21.1-1.27.2"></a>
+## [1.21.1-1.27.2](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.27.1...1.21.1-1.27.2) - 2025-11-11 13:52:44
+
+### Fixed
+* Fix packets always being handled on the main thread
+  Related to CyclopsMC/IntegratedCrafting#156
+
 <a name="1.21.1-1.27.1"></a>
-## [1.21.1-1.27.1](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.27.0...1.21.1-1.27.1) - 2025-10-22 16:29:42
+## [1.21.1-1.27.1](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.27.0...1.21.1-1.27.1) - 2025-10-22 16:29:43 +0200
 
 ### Fixed
 * Fix empty item entities being spawned
