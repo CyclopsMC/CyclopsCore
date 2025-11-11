@@ -1,8 +1,15 @@
 # Changelog for Minecraft 1.19.2
 All notable changes to this project will be documented in this file.
 
+<a name="1.19.2-1.20.3"></a>
+## [1.19.2-1.20.3](/compare/1.19.2-1.20.2...1.19.2-1.20.3) - 2025-11-11 13:48:56
+
+### Fixed
+* Fix commands not being available after reload command
+  Closes CyclopsMC/IntegratedDynamics#1556
+
 <a name="1.19.2-1.20.2"></a>
-## [1.19.2-1.20.2](/compare/1.19.2-1.20.1...1.19.2-1.20.2) - 2025-10-22 16:24:44
+## [1.19.2-1.20.2](/compare/1.19.2-1.20.1...1.19.2-1.20.2) - 2025-10-22 16:24:44 +0200
 
 ### Fixed
 * Fix empty item entities being spawned
