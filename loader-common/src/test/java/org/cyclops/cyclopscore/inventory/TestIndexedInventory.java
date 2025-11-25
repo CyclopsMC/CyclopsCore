@@ -1,18 +1,9 @@
 package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Iterators;
-import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.fml.startup.StartupArgs;
 import org.junit.Test;
-
-import java.lang.reflect.Field;
-import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.List;
 
 import static org.cyclops.cyclopscore.helper.CyclopsMatchers.isIterator;
 import static org.hamcrest.CoreMatchers.is;
@@ -26,30 +17,6 @@ import static org.junit.Assert.assertThat;
 public class TestIndexedInventory {
 
     static {
-        FMLLoader.create(new StartupArgs( // TODO: call this in another class, to postpone Item classloading?
-                Paths.get(""),
-                true,
-                Dist.DEDICATED_SERVER,
-                true,
-                new String[]{},
-                new HashSet<>(),
-                List.of(),
-                Thread.currentThread().getContextClassLoader()
-        ));
-
-        try {
-            Field fieldIsBootstrapped = Bootstrap.class.getDeclaredField("isBootstrapped");
-            fieldIsBootstrapped.setAccessible(true);
-            fieldIsBootstrapped.set(null, true);
-
-//            Field fieldCurrentFmlLoader = FMLLoader.class.getDeclaredField("current");
-//            fieldCurrentFmlLoader.setAccessible(true);
-//            fieldCurrentFmlLoader.set(null, new MockedFmlLoader());
-
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-
 //        SharedConstants.setVersion(DetectedVersion.BUILT_IN);
 //        LoadingModList.of(Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Maps.newHashMap());
 //        Bootstrap.bootStrap();

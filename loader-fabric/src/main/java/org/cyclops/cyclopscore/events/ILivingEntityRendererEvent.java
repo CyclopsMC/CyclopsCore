@@ -3,9 +3,10 @@ package org.cyclops.cyclopscore.events;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 
 /**
  * @author rubensworks
@@ -19,5 +20,5 @@ public interface ILivingEntityRendererEvent {
             }
     );
 
-    void onRender(LivingEntityRenderer<?, ?, ?> renderer, LivingEntityRenderState livingEntityRenderState, PoseStack poseStack, MultiBufferSource buffer, int packedLight);
+    void onRender(LivingEntityRenderer<?, ?, ?> renderer, LivingEntityRenderState livingEntityRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState);
 }

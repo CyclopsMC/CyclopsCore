@@ -4,7 +4,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.item.ModelRenderProperties;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -37,7 +37,7 @@ public abstract class DynamicItemAndBlockModel extends DynamicBaseModel implemen
     }
 
     public abstract List<BakedQuad> handleItemState(@Nullable ItemStack stack, @Nullable Level world,
-                                              @Nullable LivingEntity entity);
+                                                    @Nullable ItemOwner entity);
 
     public ModelRenderProperties getModelRenderProperties() {
         return new ModelRenderProperties(false, particleIcon(), getTopTransforms());

@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.helper;
 
-import cpw.mods.modlauncher.TransformingClassLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
@@ -10,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.classloading.transformation.TransformingClassLoader;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.common.NeoForge;
@@ -30,7 +30,7 @@ public class MinecraftHelpersNeoForge extends MinecraftHelpersCommon implements 
 
     @Override
     public boolean isDevEnvironment() {
-        return !FMLLoader.isProduction();
+        return !FMLLoader.getCurrent().isProduction();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class MinecraftHelpersNeoForge extends MinecraftHelpersCommon implements 
 
     @Override
     public boolean isClientSide() {
-        return FMLEnvironment.dist == Dist.CLIENT;
+        return FMLEnvironment.getDist() == Dist.CLIENT;
     }
 
     @Override

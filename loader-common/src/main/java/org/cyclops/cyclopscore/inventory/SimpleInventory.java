@@ -8,6 +8,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.ContainerUser;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
@@ -144,12 +145,12 @@ public class SimpleInventory implements INBTInventory, WorldlyContainer {
     }
 
     @Override
-    public void startOpen(Player playerIn) {
+    public void startOpen(ContainerUser playerIn) {
 
     }
 
     @Override
-    public void stopOpen(Player playerIn) {
+    public void stopOpen(ContainerUser playerIn) {
 
     }
 

@@ -10,7 +10,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.particle.TerrainParticle;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -112,13 +111,12 @@ public class RenderHelpersCommon implements IRenderHelpers {
             if (side == Direction.WEST)  d0 = (double)i + bb.minX - (double)f;
             if (side == Direction.EAST)  d0 = (double)i + bb.maxX + (double)f;
 
-            Particle fx = new TerrainParticle.Provider().createParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockState), world, d0, d1, d2, 0.0D, 0.0D, 0.0D);
-            particleManager.add(fx);
+            particleManager.add(particleManager.createParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockState), d0, d1, d2, 0.0D, 0.0D, 0.0D));
         }
     }
 
     private static final Function<ResourceLocation, TextureAtlasSprite> TEXTURE_GETTER =
-            location -> Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(location);
+            location -> Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS).getSprite(location);
     @Override
     public Function<ResourceLocation, TextureAtlasSprite> getBlockTextureGetter() {
         return TEXTURE_GETTER;

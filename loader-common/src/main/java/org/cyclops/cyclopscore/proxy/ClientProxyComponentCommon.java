@@ -1,8 +1,11 @@
 package org.cyclops.cyclopscore.proxy;
 
 import com.google.common.collect.Maps;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.logging.log4j.Level;
@@ -20,9 +23,11 @@ public abstract class ClientProxyComponentCommon extends CommonProxyComponentCom
 
     private final CommonProxyComponentCommon commonProxyComponent;
     protected final Map<BlockEntityType, BlockEntityRendererProvider> blockEntityRenderers = Maps.newHashMap();
+    private final KeyMapping.Category mainKeyCategory;
 
     public ClientProxyComponentCommon(CommonProxyComponentCommon commonProxyComponent) {
         this.commonProxyComponent = commonProxyComponent;
+        this.mainKeyCategory = new KeyMapping.Category(ResourceLocation.fromNamespaceAndPath(commonProxyComponent.getMod().getModId(), "main"));
     }
 
     public CommonProxyComponentCommon getCommonProxyComponent() {
@@ -34,7 +39,12 @@ public abstract class ClientProxyComponentCommon extends CommonProxyComponentCom
     }
 
     @Override
-    public <T extends BlockEntity> void registerRenderer(BlockEntityType<? extends T> blockEntityType, BlockEntityRendererProvider<T> rendererFactory) {
+    public KeyMapping.Category getMainKeyCategory() {
+        return mainKeyCategory;
+    }
+
+    @Override
+    public <T extends BlockEntity, S extends BlockEntityRenderState> void registerRenderer(BlockEntityType<? extends T> blockEntityType, BlockEntityRendererProvider<T, S> rendererFactory) {
         blockEntityRenderers.put(blockEntityType, rendererFactory);
     }
 

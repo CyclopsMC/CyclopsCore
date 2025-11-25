@@ -1,15 +1,15 @@
 package org.cyclops.cyclopscore.client.render.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
 import org.cyclops.cyclopscore.blockentity.CyclopsBlockEntity;
 
 import java.util.function.Function;
@@ -19,7 +19,7 @@ import java.util.function.Function;
  * @author rubensworks
  *
  */
-public abstract class RenderBlockEntityModel<T extends CyclopsBlockEntity, M> implements BlockEntityRenderer<T> {
+public abstract class RenderBlockEntityModel<T extends CyclopsBlockEntity, S extends BlockEntityRenderState & RenderBlockEntityModel.IRotationRenderState, M> implements BlockEntityRenderer<T, S> {
 
     protected final M model;
     private final Material material;
@@ -50,24 +50,22 @@ public abstract class RenderBlockEntityModel<T extends CyclopsBlockEntity, M> im
         return RenderType::entityCutout;
     }
 
-    protected void preRotate(T tile, PoseStack matrixStack) {
+    protected void preRotate(S renderState, PoseStack matrixStack) {
         matrixStack.translate(0.5F, 0.5F, 0.5F);
     }
 
-    protected void postRotate(T tile, PoseStack matrixStack) {
+    protected void postRotate(S renderState, PoseStack matrixStack) {
         matrixStack.translate(-0.5F, -0.5F, -0.5F);
     }
 
     @Override
-    public void render(T tile, float partialTick, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, Vec3 cameraPos) {
-        Direction direction = tile.getRotation();
-
-        VertexConsumer vertexBuilder = material.buffer(buffer, getRenderTypeGetter());
+    public void submit(S renderState, PoseStack matrixStack, SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState) {
+        Direction direction = renderState.rotation();
 
         matrixStack.pushPose();
         matrixStack.translate(0, 1.0F, 1.0F);
         matrixStack.scale(1.0F, -1.0F, -1.0F);
-        preRotate(tile, matrixStack);
+        preRotate(renderState, matrixStack);
         short rotation = 0;
 
         if (direction == Direction.SOUTH) {
@@ -84,24 +82,24 @@ public abstract class RenderBlockEntityModel<T extends CyclopsBlockEntity, M> im
         }
 
         matrixStack.mulPose(Axis.YP.rotationDegrees(rotation));
-        postRotate(tile, matrixStack);
+        postRotate(renderState, matrixStack);
 
-        renderModel(tile, getModel(), partialTick, matrixStack, vertexBuilder, buffer, combinedLight, combinedOverlay);
+        submitModel(renderState, getModel(), matrixStack, nodeCollector, cameraRenderState);
         matrixStack.popPose();
     }
 
     /**
      * Render the actual model, override this to change the way the model should be rendered.
-     * @param tile The tile entity.
+     * @param renderState The tile entity render state.
      * @param model The base model.
-     * @param partialTick The partial tick value.
      * @param matrixStack The matrix stack.
-     * @param vertexBuilder The vertex builder.
-     * @param buffer The render type buffer.
-     * @param combinedLight The combined light value.
-     * @param combinedOverlay The combined overlay value.
+     * @param nodeCollector The node collector.
+     * @param cameraRenderState The camera.
      */
-    protected abstract void renderModel(T tile, M model, float partialTick, PoseStack matrixStack,
-                                        VertexConsumer vertexBuilder, MultiBufferSource buffer,
-                                        int combinedLight, int combinedOverlay);
+    protected abstract void submitModel(S renderState, M model, PoseStack matrixStack,
+                                        SubmitNodeCollector nodeCollector, CameraRenderState cameraRenderState);
+
+    public static interface IRotationRenderState {
+        public Direction rotation();
+    }
 }

@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.item.*;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.cyclops.cyclopscore.client.model.DynamicItemAndBlockModel;
@@ -26,9 +26,9 @@ public record ItemDynamicItemAndBlockModel(DynamicItemAndBlockModel resolvedMode
     }
 
     @Override
-    public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable LivingEntity entity, int seed) {
-        new BlockModelWrapper(List.of(), resolvedModel.handleItemState(stack, level, entity), modelRenderProperties)
-                .update(renderState, stack, itemModelResolver, displayContext, level, entity, seed);
+    public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
+        new BlockModelWrapper(List.of(), resolvedModel.handleItemState(stack, level, owner), modelRenderProperties)
+                .update(renderState, stack, itemModelResolver, displayContext, level, owner, seed);
     }
 
     public static record Unbaked(ResourceLocation model) implements ItemModel.Unbaked {

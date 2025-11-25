@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.client.gui.component;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +19,7 @@ import java.awt.*;
  * The using screen must add this as a child
  * and call the following method from its respective method:
  * * {@link #renderWidget(GuiGraphics, int, int, float)}
- * * {@link #mouseDragged(double, double, int, double, double)} (@see ContainerScreenScrolling for an example)
+ * * {@link #mouseDragged(MouseButtonEvent, double, double)} (@see ContainerScreenScrolling for an example)
  *
  * @author rubensworks
  */
@@ -89,8 +90,8 @@ public class WidgetScrollBar extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double offsetX, double offsetY) {
-        boolean flag = mouseButton == 0 || mouseButton == 1;
+    public boolean mouseDragged(MouseButtonEvent mouse, double offsetX, double offsetY) {
+        boolean flag = mouse.button() == 0 || mouse.button() == 1;
         int xMax = getX() + 14;
         int yMax = getY() + height;
 
@@ -100,7 +101,7 @@ public class WidgetScrollBar extends AbstractWidget {
             return true;
         }
 
-        if (!this.wasClicking && flag && mouseX >= getX() && mouseY >= getY() && mouseX < xMax && mouseY < yMax) {
+        if (!this.wasClicking && flag && mouse.x() >= getX() && mouse.y() >= getY() && mouse.x() < xMax && mouse.y() < yMax) {
             this.isScrolling = this.needsScrollBars();
         }
 
@@ -111,7 +112,7 @@ public class WidgetScrollBar extends AbstractWidget {
         this.wasClicking = flag;
 
         if (this.isScrolling) {
-            this.currentScroll = ((float)(mouseY - getY()) - 7.5F) / ((float)(yMax - getY()) - 15.0F);
+            this.currentScroll = ((float)(mouse.y() - getY()) - 7.5F) / ((float)(yMax - getY()) - 15.0F);
             this.currentScroll = Mth.clamp(this.currentScroll, 0.0F, 1.0F);
             scrollTo(this.currentScroll);
             return true;

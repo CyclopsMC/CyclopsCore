@@ -21,6 +21,7 @@ public abstract class ClientProxyComponent extends ClientProxyComponentCommon im
     @Override
     public void registerKeyBindings(IKeyRegistry keyRegistry, RegisterKeyMappingsEvent event) {
         getMod().getLoggerHelper().log(Level.TRACE, "Registered key bindings");
+        event.registerCategory(getMainKeyCategory());
     }
 
     @Override

@@ -79,3 +79,11 @@ modrinth {
     changelog = provider { secrets.changelog }
 }
 tasks.modrinth.dependsOn(tasks.jar)
+
+test {
+    jvmArgs('--add-opens', 'java.base/java.lang.invoke=ALL-UNNAMED')
+    jvmArgs('--add-exports', 'jdk.naming.dns/com.sun.jndi.dns=java.naming')
+    jvmArgs('-XstartOnFirstThread')
+    jvmArgs('-Djava.net.preferIPv6Addresses=system')
+    // --add-opens java.base/java.lang.invoke=ALL-UNNAMED --add-exports jdk.naming.dns/com.sun.jndi.dns=java.naming -XstartOnFirstThread -XstartOnFirstThread -Dneoforge.logging.markers=REGISTRIES -Dneoforge.logging.console.level=debug -Dneoforge.enabledGameTestNamespaces=cyclopscore,cyclopscore -Djava.net.preferIPv6Addresses=system -Dfml.junit.argsfile=/Users/kroeser/Documents/Development/mc/21/CyclopsCore/loader-neoforge/runs/junit/junit_test_args.txt @/Users/kroeser/Documents/Development/mc/21/CyclopsCore/loader-neoforge/runs/junit/junit_jvm_args.txt
+}

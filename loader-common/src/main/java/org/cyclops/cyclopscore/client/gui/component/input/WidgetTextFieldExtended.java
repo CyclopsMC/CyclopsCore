@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.client.gui.component.input;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.image.Images;
@@ -61,16 +62,16 @@ public class WidgetTextFieldExtended extends EditBox {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        if (mouseButton == 1 && mouseX >= this.getX() && mouseX < this.getX() + this.width
-                && mouseY >= this.getY() && mouseY < this.getY() + this.height) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
+        if (event.button() == 1 && event.x() >= this.getX() && event.x() < this.getX() + this.width
+                && event.y() >= this.getY() && event.y() < this.getY() + this.height) {
             // Select everything
             this.setFocused(true);
             this.moveCursorTo(0, true);
             this.setHighlightPos(Integer.MAX_VALUE);
             return true;
         }
-        if (super.mouseClicked(mouseX, mouseY, mouseButton)) {
+        if (super.mouseClicked(event, isDoubleClick)) {
             this.setFocused(true);
             return true;
         } else {

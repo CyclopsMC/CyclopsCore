@@ -49,7 +49,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
 
         // Register listeners
         FMLCommonSetupEvent.getBus(getModBusGroup()).addListener(this::setup);
-        NewRegistryEvent.getBus(getModBusGroup()).addListener(Priority.LOWEST, this::afterRegistriesCreated);
+        NewRegistryEvent.BUS.addListener(Priority.LOWEST, this::afterRegistriesCreated);
         RegisterEvent.getBus(getModBusGroup()).addListener(Priority.HIGHEST, this::beforeRegistriedFilled);
         FMLLoadCompleteEvent.getBus(getModBusGroup()).addListener(this::loadComplete);
         if (getModHelpers().getMinecraftHelpers().isClientSide()) {

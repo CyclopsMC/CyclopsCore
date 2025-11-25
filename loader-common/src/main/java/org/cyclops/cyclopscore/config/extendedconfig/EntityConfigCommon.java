@@ -56,7 +56,7 @@ public abstract class EntityConfigCommon<M extends IModBase, T extends Entity> e
                 if (itemPropertiesModifier != null) {
                     properties = itemPropertiesModifier.apply(properties);
                 }
-                return new SpawnEggItem(entityType.get(), properties);
+                return new SpawnEggItem(properties.spawnEgg(entityType.get()));
             });
             entityConfig.setSpawnEggItemConfig(itemConfig);
             return itemConfig;
