@@ -1,13 +1,9 @@
 package org.cyclops.cyclopscore.nbt.path;
 
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.nbt.StringTag;
-import org.junit.Test;
+import net.minecraft.nbt.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,19 +15,19 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestNbtPath {
 
-    @Test(expected = NbtParseException.class)
+    @Test
     public void testParseInvalidUnknownChar() throws NbtParseException {
-        NbtPath.parse("!");
+        Assertions.assertThrows(NbtParseException.class, () -> NbtPath.parse("!"));
     }
 
-    @Test(expected = NbtParseException.class)
+    @Test
     public void testParseInvalidTooShort() throws NbtParseException {
-        NbtPath.parse(".");
+        Assertions.assertThrows(NbtParseException.class, () -> NbtPath.parse("."));
     }
 
-    @Test(expected = NbtParseException.class)
+    @Test
     public void testParseInvalidNoNestedChildName() throws NbtParseException {
-        NbtPath.parse("$.abc.def.");
+        Assertions.assertThrows(NbtParseException.class, () -> NbtPath.parse("$.abc.def."));
     }
 
     @Test

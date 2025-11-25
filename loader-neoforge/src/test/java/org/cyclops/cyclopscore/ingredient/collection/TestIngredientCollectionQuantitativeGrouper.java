@@ -8,9 +8,9 @@ import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
 import org.cyclops.cyclopscore.ingredient.IngredientMatcherComplex;
 import org.cyclops.cyclopscore.ingredient.IngredientSerializerStub;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -29,7 +29,7 @@ public class TestIngredientCollectionQuantitativeGrouper {
 
     private IIngredientCollectionMutable<ComplexStack, Integer> collection;
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         this.collection = new IngredientCollectionQuantitativeGrouper<>(new IngredientArrayList<>(IngredientComponentStubs.COMPLEX));
     }
@@ -39,11 +39,13 @@ public class TestIngredientCollectionQuantitativeGrouper {
         assertThat(new IngredientCollectionQuantitativeGrouper<>(new IngredientArrayList<>(IngredientComponentStubs.COMPLEX)), instanceOf(IngredientCollectionQuantitativeGrouper.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructNonEmpty() {
         IngredientArrayList<ComplexStack, Integer> c = new IngredientArrayList<>(IngredientComponentStubs.COMPLEX);
         c.add(CA01_);
-        new IngredientCollectionQuantitativeGrouper<>(c);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            new IngredientCollectionQuantitativeGrouper<>(c);
+        });
     }
 
     @Test
@@ -53,7 +55,7 @@ public class TestIngredientCollectionQuantitativeGrouper {
         assertThat(new IngredientCollectionQuantitativeGrouper<>(new IngredientArrayList<>(IngredientComponentStubs.COMPLEX), true), instanceOf(IngredientCollectionQuantitativeGrouper.class));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testConstructNoPrimaryQuantifier() {
         IngredientComponent<ComplexStack, Integer> comp =
                 new IngredientComponent<>("cyclopscore:complex", new IngredientMatcherComplex(),
@@ -65,7 +67,9 @@ public class TestIngredientCollectionQuantitativeGrouper {
                         new IngredientComponentCategoryType<>(ResourceLocation.parse("cyclopscore:complex/tag"),
                                 ComplexStack.Tag.class, true, ComplexStack::getTag, ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false)
                 )).setTranslationKey("recipecomponent.cyclopscore.complex");
-        new IngredientCollectionQuantitativeGrouper<>(new IngredientArrayList<>(comp));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            new IngredientCollectionQuantitativeGrouper<>(new IngredientArrayList<>(comp));
+        });
     }
 
     @Test
@@ -281,16 +285,16 @@ public class TestIngredientCollectionQuantitativeGrouper {
         collection.add(CA01_);
         collection.add(CB02_);
         collection.add(CA91B);
-        Assert.assertThat(collection.size(), is(3));
+        assertThat(collection.size(), is(3));
 
         assertThat(collection.removeAll(CA01B, ComplexStack.Match.EXACT), is(0));
-        Assert.assertThat(collection.size(), is(3));
+        assertThat(collection.size(), is(3));
         assertThat(collection.removeAll(CA91B, ComplexStack.Match.EXACT), is(1));
-        Assert.assertThat(collection.size(), is(2));
+        assertThat(collection.size(), is(2));
         assertThat(collection.removeAll(CB02_, ComplexStack.Match.EXACT), is(1));
-        Assert.assertThat(collection.size(), is(1));
+        assertThat(collection.size(), is(1));
         assertThat(collection.removeAll(CA01_, ComplexStack.Match.EXACT), is(1));
-        Assert.assertThat(collection.size(), is(0));
+        assertThat(collection.size(), is(0));
     }
 
     @Test
@@ -298,16 +302,16 @@ public class TestIngredientCollectionQuantitativeGrouper {
         collection.add(CA01_);
         collection.add(CB02_);
         collection.add(CA91B);
-        Assert.assertThat(collection.size(), is(3));
+        assertThat(collection.size(), is(3));
 
         assertThat(collection.removeAll(CA01B, ComplexStack.Match.ANY), is(3));
-        Assert.assertThat(collection.size(), is(0));
+        assertThat(collection.size(), is(0));
         assertThat(collection.removeAll(CA91B, ComplexStack.Match.ANY), is(0));
-        Assert.assertThat(collection.size(), is(0));
+        assertThat(collection.size(), is(0));
         assertThat(collection.removeAll(CB02_, ComplexStack.Match.ANY), is(0));
-        Assert.assertThat(collection.size(), is(0));
+        assertThat(collection.size(), is(0));
         assertThat(collection.removeAll(CA01_, ComplexStack.Match.ANY), is(0));
-        Assert.assertThat(collection.size(), is(0));
+        assertThat(collection.size(), is(0));
     }
 
     @Test
@@ -315,10 +319,10 @@ public class TestIngredientCollectionQuantitativeGrouper {
         collection.add(CA01_);
         collection.add(CB02_);
         collection.add(CA91B);
-        Assert.assertThat(collection.size(), is(3));
+        assertThat(collection.size(), is(3));
 
         assertThat(collection.removeAll(Lists.newArrayList(CA01_, CB02_, CA91B, CA01B)), is(3));
-        Assert.assertThat(collection.size(), is(0));
+        assertThat(collection.size(), is(0));
     }
 
     @Test
@@ -326,10 +330,10 @@ public class TestIngredientCollectionQuantitativeGrouper {
         collection.add(CA01_);
         collection.add(CB02_);
         collection.add(CA91B);
-        Assert.assertThat(collection.size(), is(3));
+        assertThat(collection.size(), is(3));
 
         assertThat(collection.removeAll(Lists.newArrayList(CA01_, CB02_), ComplexStack.Match.ANY), is(3));
-        Assert.assertThat(collection.size(), is(0));
+        assertThat(collection.size(), is(0));
     }
 
     @Test
@@ -337,10 +341,10 @@ public class TestIngredientCollectionQuantitativeGrouper {
         collection.add(CA01_);
         collection.add(CB02_);
         collection.add(CA91B);
-        Assert.assertThat(collection.size(), is(3));
+        assertThat(collection.size(), is(3));
 
         assertThat(collection.removeAll(Lists.newArrayList(CA01_, CB02_), ComplexStack.Match.EXACT), is(2));
-        Assert.assertThat(collection.size(), is(1));
+        assertThat(collection.size(), is(1));
     }
 
 }

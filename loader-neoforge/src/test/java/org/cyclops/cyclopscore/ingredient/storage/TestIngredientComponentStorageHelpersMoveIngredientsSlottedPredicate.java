@@ -9,10 +9,10 @@ import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientArrayList;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionPrototypeMap;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientList;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.suite.api.SelectClasses;
+import org.junit.platform.suite.api.Suite;
 
 import java.util.function.Predicate;
 
@@ -20,8 +20,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
+@Suite
+@SelectClasses({
         TestIngredientComponentStorageHelpersMoveIngredientsSlottedPredicate.SourceSlotless.DestinationSlotless.class,
         TestIngredientComponentStorageHelpersMoveIngredientsSlottedPredicate.SourceSlotless.DestinationSlotted.class,
         TestIngredientComponentStorageHelpersMoveIngredientsSlottedPredicate.SourceSlotted.DestinationSlotless.class,
@@ -89,7 +89,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlottedPredicat
 
         public static class DestinationSlotless {
 
-            @Before
+            @BeforeEach
             public void beforeEach() throws InconsistentIngredientInsertionException {
                 init();
             }
@@ -321,7 +321,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlottedPredicat
 
         public static class DestinationSlotted {
 
-            @Before
+            @BeforeEach
             public void beforeEach() throws InconsistentIngredientInsertionException {
                 init();
             }
@@ -680,7 +680,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlottedPredicat
 
         public static class DestinationSlotless {
 
-            @Before
+            @BeforeEach
             public void beforeEach() throws InconsistentIngredientInsertionException {
                 init();
             }
@@ -1169,7 +1169,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlottedPredicat
 
         public static class DestinationSlotted {
 
-            @Before
+            @BeforeEach
             public void beforeEach() throws InconsistentIngredientInsertionException {
                 init();
             }

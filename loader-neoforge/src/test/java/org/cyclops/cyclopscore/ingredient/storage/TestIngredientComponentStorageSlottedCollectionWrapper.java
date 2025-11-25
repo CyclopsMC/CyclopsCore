@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientArrayList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -16,7 +16,7 @@ public class TestIngredientComponentStorageSlottedCollectionWrapper {
     private IngredientArrayList<Integer, Boolean> innerList;
     private IngredientComponentStorageSlottedCollectionWrapper<Integer, Boolean> storage;
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         innerList = new IngredientArrayList<>(IngredientComponentStubs.SIMPLE);
         storage = new IngredientComponentStorageSlottedCollectionWrapper<>(innerList, 100, Long.MAX_VALUE);

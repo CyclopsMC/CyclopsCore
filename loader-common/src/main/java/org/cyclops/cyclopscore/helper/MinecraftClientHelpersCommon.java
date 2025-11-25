@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.entity.player.Player;
 
 /**
@@ -15,6 +14,6 @@ public abstract class MinecraftClientHelpersCommon implements IMinecraftClientHe
 
     @Override
     public boolean isShifted() {
-        return Screen.hasShiftDown();
+        return Minecraft.getInstance().hasShiftDown();
     }
 }

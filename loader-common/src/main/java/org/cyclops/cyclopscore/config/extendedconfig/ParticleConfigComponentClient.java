@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleResources;
 import net.minecraft.core.particles.ParticleOptions;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -17,6 +17,6 @@ public abstract class ParticleConfigComponentClient<T extends ParticleOptions, M
     public abstract ParticleProvider<T> getParticleFactory();
 
     @Nullable
-    public abstract ParticleEngine.SpriteParticleRegistration<T> getParticleMetaFactory();
+    public abstract ParticleResources.SpriteParticleRegistration<T> getParticleMetaFactory();
 
 }

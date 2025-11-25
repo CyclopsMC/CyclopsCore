@@ -5,23 +5,23 @@ import com.google.common.collect.Sets;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
-@RunWith(Parameterized.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestIngredientCollectionsParameterized<T, M> {
 
     private static final ComplexStack C0 = new ComplexStack(ComplexStack.Group.A, 0, 1, null);
@@ -29,65 +29,54 @@ public class TestIngredientCollectionsParameterized<T, M> {
     private static final ComplexStack C2 = new ComplexStack(ComplexStack.Group.A, 10, 1, ComplexStack.Tag.B);
     private static final ComplexStack C3 = new ComplexStack(ComplexStack.Group.A, 0, 1, ComplexStack.Tag.B);
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                /*  0 */ { new IngredientArrayList<>(IngredientComponentStubs.SIMPLE), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3 },
-                /*  1 */ { new IngredientLinkedList<>(IngredientComponentStubs.SIMPLE), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3 },
-                /*  2 */ { new IngredientTreeSet<>(IngredientComponentStubs.SIMPLE), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3 },
-                /*  3 */ { new IngredientHashSet<>(IngredientComponentStubs.SIMPLE), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3 },
-                /*  4 */ { new IngredientCollectionSingleClassified<>(IngredientComponentStubs.SIMPLE,
+    public Stream<Arguments> data() {
+        return Stream.of(
+                /*  0 */ Arguments.of(new IngredientArrayList<>(IngredientComponentStubs.SIMPLE), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3),
+                /*  1 */ Arguments.of(new IngredientLinkedList<>(IngredientComponentStubs.SIMPLE), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3),
+                /*  2 */ Arguments.of(new IngredientTreeSet<>(IngredientComponentStubs.SIMPLE), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3),
+                /*  3 */ Arguments.of(new IngredientHashSet<>(IngredientComponentStubs.SIMPLE), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3),
+                /*  4 */ Arguments.of(new IngredientCollectionSingleClassified<>(IngredientComponentStubs.SIMPLE,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.SIMPLE),
-                IngredientComponentStubs.SIMPLE.getCategoryTypes().get(0)), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3 },
-                /*  5 */ { new IngredientCollectionMultiClassified<>(IngredientComponentStubs.SIMPLE,
-                () -> new IngredientHashSet<>(IngredientComponentStubs.SIMPLE)), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3 },
+                IngredientComponentStubs.SIMPLE.getCategoryTypes().get(0)), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3),
+                /*  5 */ Arguments.of(new IngredientCollectionMultiClassified<>(IngredientComponentStubs.SIMPLE,
+                () -> new IngredientHashSet<>(IngredientComponentStubs.SIMPLE)), IngredientComponentStubs.SIMPLE, 0, 1, 2, 3),
 
-                /*  6 */ { new IngredientArrayList<>(IngredientComponentStubs.COMPLEX), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3 },
-                /*  7 */ { new IngredientLinkedList<>(IngredientComponentStubs.COMPLEX), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3 },
-                /*  8 */ { new IngredientTreeSet<>(IngredientComponentStubs.COMPLEX), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3 },
-                /*  9 */ { new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3 },
-                /* 10 */ { new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
+                /*  6 */ Arguments.of(new IngredientArrayList<>(IngredientComponentStubs.COMPLEX), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3),
+                /*  7 */ Arguments.of(new IngredientLinkedList<>(IngredientComponentStubs.COMPLEX), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3),
+                /*  8 */ Arguments.of(new IngredientTreeSet<>(IngredientComponentStubs.COMPLEX), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3),
+                /*  9 */ Arguments.of(new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3),
+                /* 10 */ Arguments.of(new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX),
-                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0)), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3 },
-                /* 11 */ { new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
+                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0)), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3),
+                /* 11 */ Arguments.of(new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX),
-                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(1)), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3 },
-                /* 12 */ { new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
+                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(1)), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3),
+                /* 12 */ Arguments.of(new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX),
-                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(2)), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3 },
-                /* 13 */ { new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
+                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(2)), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3),
+                /* 13 */ Arguments.of(new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX),
-                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(3)), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3 },
-                /* 14 */ { new IngredientCollectionMultiClassified<>(IngredientComponentStubs.COMPLEX,
-                () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX)), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3 },
-        });
+                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(3)), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3),
+                /* 14 */ Arguments.of(new IngredientCollectionMultiClassified<>(IngredientComponentStubs.COMPLEX,
+                () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX)), IngredientComponentStubs.COMPLEX, C0, C1, C2, C3)
+        );
     }
 
-    @Parameterized.Parameter(0)
-    public IIngredientCollectionMutable<T, M> collection;
-    @Parameterized.Parameter(1)
-    public IngredientComponent<T, M> component;
-    @Parameterized.Parameter(2)
-    public T a;
-    @Parameterized.Parameter(3)
-    public T b;
-    @Parameterized.Parameter(4)
-    public T c;
-    @Parameterized.Parameter(5)
-    public T d;
-
-    @Before
-    public void beforeEach() {
-        collection.clear();
-    }
-
-    @Test
-    public void testGetComponent() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testGetComponent(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.getComponent(), is(component));
     }
 
-    @Test
-    public void testEmpty() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testEmpty(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.isEmpty(), is(true));
         assertThat(collection.size(), is(0));
         assertThat(collection.count(a, collection.getComponent().getMatcher().getExactMatchCondition()), is(0));
@@ -97,8 +86,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.hashCode(), is(IngredientCollections.emptyCollection(collection.getComponent()).hashCode()));
     }
 
-    @Test
-    public void testAddSingle() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testAddSingle(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.add(b), is(true));
 
         assertThat(collection.isEmpty(), is(false));
@@ -109,8 +102,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection, not(equalTo(IngredientCollections.emptyCollection(collection.getComponent()))));
     }
 
-    @Test
-    public void testRemoveSingle() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testRemoveSingle(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.add(b), is(true));
 
         assertThat(collection.remove(b), is(true));
@@ -121,8 +118,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.count(b, collection.getComponent().getMatcher().getExactMatchCondition()), is(0));
     }
 
-    @Test
-    public void testRemoveRepeatedSingle() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testRemoveRepeatedSingle(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.add(b), is(true));
 
         assertThat(collection.remove(b), is(true));
@@ -134,8 +135,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.count(b, collection.getComponent().getMatcher().getExactMatchCondition()), is(0));
     }
 
-    @Test
-    public void testAddRemoveCycleSingle() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testAddRemoveCycleSingle(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.add(b), is(true));
         assertThat(collection.remove(b), is(true));
         assertThat(collection.remove(b), is(false));
@@ -160,8 +165,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.count(b, collection.getComponent().getMatcher().getExactMatchCondition()), is(0));
     }
 
-    @Test
-    public void testAddMultiple() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testAddMultiple(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.add(a), is(true));
         assertThat(collection.add(b), is(true));
         assertThat(collection.add(c), is(true));
@@ -176,8 +185,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection, not(equalTo(IngredientCollections.emptyCollection(collection.getComponent()))));
     }
 
-    @Test
-    public void testAddAll() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testAddAll(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.addAll(Lists.newArrayList(a, b, c)), is(true));
 
         assertThat(collection.isEmpty(), is(false));
@@ -190,8 +203,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection, not(equalTo(IngredientCollections.emptyCollection(collection.getComponent()))));
     }
 
-    @Test
-    public void testRemoveMultiple() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testRemoveMultiple(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.add(a), is(true));
         assertThat(collection.size(), is(1));
         assertThat(collection.add(b), is(true));
@@ -215,8 +232,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.count(d, collection.getComponent().getMatcher().getExactMatchCondition()), is(0));
     }
 
-    @Test
-    public void testRemoveAllMultiple() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testRemoveAllMultiple(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.add(a), is(true));
         assertThat(collection.add(b), is(true));
         assertThat(collection.add(c), is(true));
@@ -237,8 +258,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.count(d, collection.getComponent().getMatcher().getExactMatchCondition()), is(0));
     }
 
-    @Test
-    public void testRemoveAll() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testRemoveAll(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.addAll(Lists.newArrayList(a, b, c)), is(true));
         assertThat(collection.size(), is(3));
 
@@ -252,8 +277,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.count(d, collection.getComponent().getMatcher().getExactMatchCondition()), is(0));
     }
 
-    @Test
-    public void testRemoveAllMatch() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testRemoveAllMatch(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.addAll(Lists.newArrayList(a, b, c)), is(true));
         assertThat(collection.size(), is(3));
 
@@ -267,8 +296,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.count(d, collection.getComponent().getMatcher().getExactMatchCondition()), is(0));
     }
 
-    @Test
-    public void testRemoveRepeatedMultiple() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testRemoveRepeatedMultiple(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.add(a), is(true));
         assertThat(collection.add(b), is(true));
         assertThat(collection.add(c), is(true));
@@ -294,8 +327,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.count(d, collection.getComponent().getMatcher().getExactMatchCondition()), is(0));
     }
 
-    @Test
-    public void testAddRemoveCycleMultiple() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testAddRemoveCycleMultiple(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.add(a), is(true));
         assertThat(collection.size(), is(1));
         assertThat(collection.add(b), is(true));
@@ -381,8 +418,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.count(d, collection.getComponent().getMatcher().getExactMatchCondition()), is(0));
     }
 
-    @Test
-    public void testClearEmpty() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testClearEmpty(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.isEmpty(), is(true));
         assertThat(collection.size(), is(0));
 
@@ -392,8 +433,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.size(), is(0));
     }
 
-    @Test
-    public void testClearNonEmpty() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testClearNonEmpty(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.add(b), is(true));
         assertThat(collection.add(c), is(true));
         assertThat(collection.add(d), is(true));
@@ -407,8 +452,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.size(), is(0));
     }
 
-    @Test
-    public void testContains() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testContains(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.contains(a), is(false));
         assertThat(collection.contains(b), is(false));
         assertThat(collection.contains(c), is(false));
@@ -436,8 +485,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.contains(d), is(true));
     }
 
-    @Test
-    public void testContainsMatch() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testContainsMatch(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.contains(a, collection.getComponent().getMatcher().getExactMatchCondition()), is(false));
         assertThat(collection.contains(b, collection.getComponent().getMatcher().getExactMatchCondition()), is(false));
         assertThat(collection.contains(c, collection.getComponent().getMatcher().getExactMatchCondition()), is(false));
@@ -465,8 +518,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.contains(d, collection.getComponent().getMatcher().getExactMatchCondition()), is(true));
     }
 
-    @Test
-    public void testContainsMatchAny() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testContainsMatchAny(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.contains(a, collection.getComponent().getMatcher().getAnyMatchCondition()), is(false));
         assertThat(collection.contains(b, collection.getComponent().getMatcher().getAnyMatchCondition()), is(false));
         assertThat(collection.contains(c, collection.getComponent().getMatcher().getAnyMatchCondition()), is(false));
@@ -494,8 +551,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.contains(d, collection.getComponent().getMatcher().getAnyMatchCondition()), is(true));
     }
 
-    @Test
-    public void testContainsAll() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testContainsAll(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.containsAll(Lists.newArrayList(a)), is(false));
         assertThat(collection.containsAll(Lists.newArrayList(b)), is(false));
         assertThat(collection.containsAll(Lists.newArrayList(c)), is(false));
@@ -539,8 +600,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.containsAll(Lists.newArrayList(b, d)), is(true));
     }
 
-    @Test
-    public void testContainsAllMatch() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testContainsAllMatch(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.containsAll(Lists.newArrayList(a), collection.getComponent().getMatcher().getExactMatchCondition()), is(false));
         assertThat(collection.containsAll(Lists.newArrayList(b), collection.getComponent().getMatcher().getExactMatchCondition()), is(false));
         assertThat(collection.containsAll(Lists.newArrayList(c), collection.getComponent().getMatcher().getExactMatchCondition()), is(false));
@@ -584,8 +649,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.containsAll(Lists.newArrayList(b, d), collection.getComponent().getMatcher().getExactMatchCondition()), is(true));
     }
 
-    @Test
-    public void testContainsAllMatchAny() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testContainsAllMatchAny(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.containsAll(Lists.newArrayList(a), collection.getComponent().getMatcher().getAnyMatchCondition()), is(false));
         assertThat(collection.containsAll(Lists.newArrayList(b), collection.getComponent().getMatcher().getAnyMatchCondition()), is(false));
         assertThat(collection.containsAll(Lists.newArrayList(c), collection.getComponent().getMatcher().getAnyMatchCondition()), is(false));
@@ -629,8 +698,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.containsAll(Lists.newArrayList(b, d), collection.getComponent().getMatcher().getAnyMatchCondition()), is(true));
     }
 
-    @Test
-    public void testContainsAllMatchAnyEmpty() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testContainsAllMatchAnyEmpty(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.containsAll(Lists.newArrayList(a), collection.getComponent().getMatcher().getAnyMatchCondition()), is(false));
         assertThat(collection.containsAll(Lists.newArrayList(b), collection.getComponent().getMatcher().getAnyMatchCondition()), is(false));
         assertThat(collection.containsAll(Lists.newArrayList(c), collection.getComponent().getMatcher().getAnyMatchCondition()), is(false));
@@ -643,8 +716,12 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.containsAll(Lists.newArrayList(), collection.getComponent().getMatcher().getAnyMatchCondition()), is(true));
     }
 
-    @Test
-    public void testIterator() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIterator(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         Iterator<T> it0 = collection.iterator();
         assertThat(it0.hasNext(), is(false));
 
@@ -670,14 +747,22 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(c4.containsAll(Lists.newArrayList(a, b, c, d)), is(true));
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorEmptyCollectionNext() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorEmptyCollectionNext(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         Iterator<T> it = collection.iterator();
-        it.next();
+        Assertions.assertThrows(RuntimeException.class, it::next);
     }
 
-    @Test
-    public void testIteratorRemove() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemove(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.add(a), is(true));
         assertThat(collection.size(), is(1));
 
@@ -690,34 +775,56 @@ public class TestIngredientCollectionsParameterized<T, M> {
         assertThat(collection.size(), is(0));
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorRemoveBeforeStart() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemoveBeforeStart(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.add(a), is(true));
         Iterator<T> it = collection.iterator();
-        it.remove();
+        Assertions.assertThrows(RuntimeException.class, it::remove);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorRemoveBeforeStartEmpty() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemoveBeforeStartEmpty(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         Iterator<T> it = collection.iterator();
-        it.remove();
+        Assertions.assertThrows(RuntimeException.class, it::remove);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorRemoveMultiple() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemoveMultiple(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         Iterator<T> it = collection.iterator();
-        it.remove();
-        it.remove();
-        it.remove();
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            it.remove();
+            it.remove();
+            it.remove();
+        });
     }
 
-    @Test
-    public void testStream() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testStream(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.stream().collect(Collectors.toSet()), is(Sets.newHashSet(collection)));
     }
 
-    @Test
-    public void testParallelStream() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testParallelStream(
+            IIngredientCollectionMutable<T, M> collection, IngredientComponent<T, M> component,
+            T a, T b, T c, T d
+    ) {
         assertThat(collection.parallelStream().collect(Collectors.toSet()), is(Sets.newHashSet(collection)));
     }
 

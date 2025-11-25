@@ -54,6 +54,10 @@ public final class ModelHelpers {
             new Vector3f(0, 0, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(0.5f, 0.5f, 0.5f));
+    public static final ItemTransform ON_SHELF = new ItemTransform(
+            new Vector3f(0, 0, 0),
+            new Vector3f(0, 0, 0),
+            new Vector3f(0.5f, 0.5f, 0.5f));
     public static final ItemTransform GUI = new ItemTransform(
             new Vector3f(30, 225, 0),
             new Vector3f(0, 0, 0),
@@ -66,7 +70,8 @@ public final class ModelHelpers {
             HEAD,
             GUI,
             GROUND,
-            FIXED
+            FIXED,
+            ON_SHELF
     );
     public static final Map<ItemDisplayContext, ModelState> DEFAULT_MODEL_STATES = convertModelState(DEFAULT_CAMERA_TRANSFORMS);
 
@@ -95,6 +100,10 @@ public final class ModelHelpers {
             new Vector3f(0, 0, 0),
             new Vector3f(0, 0, 0),
             new Vector3f(1f, 1f, 1f));
+    public static final ItemTransform ON_SHELF_ITEM = new ItemTransform(
+            new Vector3f(0, 0, 0),
+            new Vector3f(0, 0, 0),
+            new Vector3f(1f, 1f, 1f));
     public static final ItemTransform GUI_ITEM = new ItemTransform(
             new Vector3f(0, 0, 0),
             new Vector3f(0, 0, 0),
@@ -107,7 +116,8 @@ public final class ModelHelpers {
             HEAD_ITEM,
             GUI_ITEM,
             GROUND_ITEM,
-            FIXED_ITEM
+            FIXED_ITEM,
+            ON_SHELF_ITEM
     );
 
     // An empty list^2 for quads.
@@ -169,7 +179,8 @@ public final class ModelHelpers {
                 overrides.getOrDefault(ItemDisplayContext.HEAD, HEAD),
                 overrides.getOrDefault(ItemDisplayContext.GUI, GUI),
                 overrides.getOrDefault(ItemDisplayContext.GROUND, GROUND),
-                overrides.getOrDefault(ItemDisplayContext.FIXED, FIXED)
+                overrides.getOrDefault(ItemDisplayContext.FIXED, FIXED),
+                overrides.getOrDefault(ItemDisplayContext.ON_SHELF, ON_SHELF)
         );
 
     }

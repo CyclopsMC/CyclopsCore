@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.client.gui.component.button;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.image.Image;
 import org.cyclops.cyclopscore.client.gui.image.Images;
@@ -27,9 +28,9 @@ public class ButtonCheckbox extends Button {
     }
 
     @Override
-    public void onPress() {
+    public void onPress(InputWithModifiers input) {
         setChecked(!isChecked());
-        super.onPress();
+        super.onPress(input);
     }
 
     @Override

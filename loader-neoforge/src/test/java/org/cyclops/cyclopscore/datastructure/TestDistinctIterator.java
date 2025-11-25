@@ -2,12 +2,13 @@ package org.cyclops.cyclopscore.datastructure;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
 
 public class TestDistinctIterator {
 
@@ -64,13 +65,13 @@ public class TestDistinctIterator {
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void testNoNext() {
-        new DistinctIterator<>(Iterators.forArray()).next();
+        Assertions.assertThrows(NoSuchElementException.class, () -> new DistinctIterator<>(Iterators.forArray()).next());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testNoRemove() {
-        new DistinctIterator<>(Iterators.forArray()).remove();
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> new DistinctIterator<>(Iterators.forArray()).remove());
     }
 }

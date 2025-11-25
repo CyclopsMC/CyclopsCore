@@ -3,19 +3,18 @@ package org.cyclops.cyclopscore.ingredient.collection;
 import com.google.common.collect.Lists;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(Parameterized.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestIngredientCollectionSetComplex {
 
     private static final ComplexStack CA01_ = new ComplexStack(ComplexStack.Group.A, 0, 1, null);
@@ -23,30 +22,25 @@ public class TestIngredientCollectionSetComplex {
     private static final ComplexStack CA91B = new ComplexStack(ComplexStack.Group.A, 9, 1, ComplexStack.Tag.B);
     private static final ComplexStack CA01B = new ComplexStack(ComplexStack.Group.A, 0, 1, ComplexStack.Tag.B);
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { new IngredientHashSet<>(IngredientComponentStubs.COMPLEX) },
-                { new IngredientHashSet<>(IngredientComponentStubs.COMPLEX, 3) },
-                { new IngredientHashSet<>(IngredientComponentStubs.COMPLEX, Lists.newArrayList()) },
-                { new IngredientTreeSet<>(IngredientComponentStubs.COMPLEX) },
-                { new IngredientTreeSet<>(IngredientComponentStubs.COMPLEX, Lists.newArrayList()) },
-        });
+    public Stream<Arguments> data() {
+        return Stream.of(
+                new IngredientHashSet<>(IngredientComponentStubs.COMPLEX),
+                new IngredientHashSet<>(IngredientComponentStubs.COMPLEX, 3),
+                new IngredientHashSet<>(IngredientComponentStubs.COMPLEX, Lists.newArrayList()),
+                new IngredientTreeSet<>(IngredientComponentStubs.COMPLEX),
+                new IngredientTreeSet<>(IngredientComponentStubs.COMPLEX, Lists.newArrayList())
+                ).map(collection -> {
+            collection.clear();
+            collection.add(CA01_);
+            collection.add(CB02_);
+            collection.add(CA91B);
+            return collection;
+        }).map(Arguments::of);
     }
 
-    @Parameterized.Parameter
-    public IngredientSet<ComplexStack, Integer> collection;
-
-    @Before
-    public void beforeEach() {
-        collection.clear();
-        collection.add(CA01_);
-        collection.add(CB02_);
-        collection.add(CA91B);
-    }
-
-    @Test
-    public void testEquals() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testEquals(IngredientSet<ComplexStack, Integer> collection) {
         assertThat(collection.equals(collection), is(true));
         assertThat(collection.equals("abc"), is(false));
         assertThat(collection.equals(new IngredientCollectionEmpty<>(IngredientComponentStubs.SIMPLE)), is(false));
@@ -56,8 +50,9 @@ public class TestIngredientCollectionSetComplex {
         assertThat(collection.equals(new IngredientLinkedList<>(IngredientComponentStubs.SIMPLE, Lists.newArrayList(0, 1, 2))), is(false));
     }
 
-    @Test
-    public void testHashCode() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testHashCode(IngredientSet<ComplexStack, Integer> collection) {
         assertThat(collection.hashCode(), is(collection.hashCode()));
         assertThat(collection.hashCode(), not(is(new IngredientCollectionEmpty<>(IngredientComponentStubs.SIMPLE).hashCode())));
         assertThat(collection.hashCode(), is(new IngredientArrayList<>(IngredientComponentStubs.COMPLEX, CA01_, CB02_, CA91B).hashCode()));

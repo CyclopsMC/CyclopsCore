@@ -8,8 +8,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -22,7 +22,7 @@ public class TestNbtPathExpressionHandlerLength {
 
     private NbtPathExpressionParseHandlerLength handler;
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         handler = new NbtPathExpressionParseHandlerLength();
     }

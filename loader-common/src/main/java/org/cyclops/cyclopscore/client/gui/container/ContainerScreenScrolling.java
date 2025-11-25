@@ -2,6 +2,9 @@ package org.cyclops.cyclopscore.client.gui.container;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
@@ -81,26 +84,26 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
-    public boolean charTyped(char typedChar, int keyCode) {
+    public boolean charTyped(CharacterEvent character) {
         if (isSearchEnabled() && this.searchField.isFocused()) {
-            if (this.searchField.charTyped(typedChar, keyCode)) {
+            if (this.searchField.charTyped(character)) {
                 this.updateSearch(searchField.getValue());
             }
             return true;
         } else {
-            return super.charTyped(typedChar, keyCode);
+            return super.charTyped(character);
         }
     }
 
     @Override
-    public boolean keyPressed(int typedChar, int keyCode, int modifiers) {
-        if (isSearchEnabled() && this.searchField.isFocused() && typedChar != GLFW.GLFW_KEY_ESCAPE) {
-            if (this.searchField.keyPressed(typedChar, keyCode, modifiers)) {
+    public boolean keyPressed(KeyEvent key) {
+        if (isSearchEnabled() && this.searchField.isFocused() && key.key() != GLFW.GLFW_KEY_ESCAPE) {
+            if (this.searchField.keyPressed(key)) {
                 this.updateSearch(searchField.getValue());
             }
             return true;
         } else {
-            return super.keyPressed(typedChar, keyCode, modifiers);
+            return super.keyPressed(key);
         }
     }
 
@@ -137,12 +140,12 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int mouseButton, double mouseXPrev, double mouseYPrev) {
-        if (this.getFocused() != null && this.isDragging() && mouseButton == 0
-                && this.getFocused().mouseDragged(mouseX, mouseY, mouseButton, mouseXPrev, mouseYPrev)) {
+    public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
+        if (this.getFocused() != null && this.isDragging() && event.button() == 0
+                && this.getFocused().mouseDragged(event, mouseX, mouseY)) {
             return true;
         }
-        return super.mouseDragged(mouseX, mouseY, mouseButton, mouseXPrev, mouseYPrev);
+        return super.mouseDragged(event, mouseX, mouseY);
     }
 
     @Override

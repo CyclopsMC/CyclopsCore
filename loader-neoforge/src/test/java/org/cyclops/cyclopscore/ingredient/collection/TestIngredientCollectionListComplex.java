@@ -3,20 +3,20 @@ package org.cyclops.cyclopscore.ingredient.collection;
 import com.google.common.collect.Lists;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.ListIterator;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(Parameterized.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestIngredientCollectionListComplex {
 
     private static final ComplexStack CA01_ = new ComplexStack(ComplexStack.Group.A, 0, 1, null);
@@ -24,31 +24,26 @@ public class TestIngredientCollectionListComplex {
     private static final ComplexStack CA91B = new ComplexStack(ComplexStack.Group.A, 9, 1, ComplexStack.Tag.B);
     private static final ComplexStack CA01B = new ComplexStack(ComplexStack.Group.A, 0, 1, ComplexStack.Tag.B);
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { new IngredientArrayList<>(IngredientComponentStubs.COMPLEX) },
-                { new IngredientArrayList<>(IngredientComponentStubs.COMPLEX, 3) },
-                { new IngredientArrayList<>(IngredientComponentStubs.COMPLEX, Lists.newArrayList()) },
-                { new IngredientArrayList<>(IngredientComponentStubs.COMPLEX, new ComplexStack[0]) },
-                { new IngredientLinkedList<>(IngredientComponentStubs.COMPLEX) },
-                { new IngredientLinkedList<>(IngredientComponentStubs.COMPLEX, Lists.newArrayList()) },
-        });
+    public Stream<Arguments> data() {
+        return Stream.of(
+                new IngredientArrayList<>(IngredientComponentStubs.COMPLEX),
+                new IngredientArrayList<>(IngredientComponentStubs.COMPLEX, 3),
+                new IngredientArrayList<>(IngredientComponentStubs.COMPLEX, Lists.newArrayList()),
+                new IngredientArrayList<>(IngredientComponentStubs.COMPLEX, new ComplexStack[0]),
+                new IngredientLinkedList<>(IngredientComponentStubs.COMPLEX),
+                new IngredientLinkedList<>(IngredientComponentStubs.COMPLEX, Lists.newArrayList())
+                ).map(collection -> {
+            collection.clear();
+            collection.add(CA01_);
+            collection.add(CB02_);
+            collection.add(CA91B);
+            return collection;
+        }).map(Arguments::of);
     }
 
-    @Parameterized.Parameter
-    public IngredientList<ComplexStack, Integer> collection;
-
-    @Before
-    public void beforeEach() {
-        collection.clear();
-        collection.add(CA01_);
-        collection.add(CB02_);
-        collection.add(CA91B);
-    }
-
-    @Test
-    public void testEquals() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testEquals(IngredientList<ComplexStack, Integer> collection) {
         assertThat(collection.equals(collection), is(true));
         assertThat(collection.equals("abc"), is(false));
         assertThat(collection.equals(new IngredientCollectionEmpty<>(IngredientComponentStubs.SIMPLE)), is(false));
@@ -58,33 +53,38 @@ public class TestIngredientCollectionListComplex {
         assertThat(collection.equals(new IngredientHashSet<>(IngredientComponentStubs.SIMPLE, Lists.newArrayList(0, 1, 2))), is(false));
     }
 
-    @Test
-    public void testHashCode() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testHashCode(IngredientList<ComplexStack, Integer> collection) {
         assertThat(collection.hashCode(), is(collection.hashCode()));
         assertThat(collection.hashCode(), not(is(new IngredientCollectionEmpty<>(IngredientComponentStubs.SIMPLE).hashCode())));
         assertThat(collection.hashCode(), is(new IngredientArrayList<>(IngredientComponentStubs.COMPLEX, CA01_, CB02_, CA91B).hashCode()));
         assertThat(collection.hashCode(), not(is(new IngredientArrayList<>(IngredientComponentStubs.SIMPLE).hashCode())));
     }
 
-    @Test
-    public void testGet() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testGet(IngredientList<ComplexStack, Integer> collection) {
         assertThat(collection.get(0), is(CA01_));
         assertThat(collection.get(1), is(CB02_));
         assertThat(collection.get(2), is(CA91B));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testGetOutOfBoundsSmall() {
-        collection.get(-1);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testGetOutOfBoundsSmall(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () ->collection.get(-1));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testGetOutOfBoundsLarge() {
-        collection.get(3);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testGetOutOfBoundsLarge(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> collection.get(3));
     }
 
-    @Test
-    public void testSet() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSet(IngredientList<ComplexStack, Integer> collection) {
         assertThat(collection.set(0, CA01B), is(CA01_));
 
         assertThat(collection.get(0), is(CA01B));
@@ -92,18 +92,21 @@ public class TestIngredientCollectionListComplex {
         assertThat(collection.get(2), is(CA91B));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testSetOutOfBoundsSmall() {
-        collection.set(-1, CA01B);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSetOutOfBoundsSmall(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> collection.set(-1, CA01B));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testSetOutOfBoundsLarge() {
-        collection.set(3, CA01B);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSetOutOfBoundsLarge(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> collection.set(3, CA01B));
     }
 
-    @Test
-    public void testAdd() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testAdd(IngredientList<ComplexStack, Integer> collection) {
         collection.add(0, CA01B);
 
         assertThat(collection.get(0), is(CA01B));
@@ -112,8 +115,9 @@ public class TestIngredientCollectionListComplex {
         assertThat(collection.get(3), is(CA91B));
     }
 
-    @Test
-    public void testAddEnd() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testAddEnd(IngredientList<ComplexStack, Integer> collection) {
         collection.add(3, CA01B);
 
         assertThat(collection.get(0), is(CA01_));
@@ -122,36 +126,42 @@ public class TestIngredientCollectionListComplex {
         assertThat(collection.get(3), is(CA01B));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testAddOutOfBoundsSmall() {
-        collection.add(-1, CA01B);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testAddOutOfBoundsSmall(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> collection.add(-1, CA01B));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testAddOutOfBoundsLarge() {
-        collection.add(4, CA01B);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testAddOutOfBoundsLarge(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () ->collection.add(4, CA01B));
     }
 
-    @Test
-    public void testRemove() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testRemove(IngredientList<ComplexStack, Integer> collection) {
         collection.remove(0);
 
         assertThat(collection.get(0), is(CB02_));
         assertThat(collection.get(1), is(CA91B));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testRemoveOutOfBoundsSmall() {
-        collection.remove(-1);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testRemoveOutOfBoundsSmall(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> collection.remove(-1));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testRemoveOutOfBoundsLarge() {
-        collection.remove(3);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testRemoveOutOfBoundsLarge(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> collection.remove(3));
     }
 
-    @Test
-    public void testFirstIndexOf() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testFirstIndexOf(IngredientList<ComplexStack, Integer> collection) {
         collection.add(CA01_);
 
         assertThat(collection.firstIndexOf(CA01_), is(0));
@@ -159,8 +169,9 @@ public class TestIngredientCollectionListComplex {
         assertThat(collection.firstIndexOf(CA01B), is(-1));
     }
 
-    @Test
-    public void testLastIndexOf() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testLastIndexOf(IngredientList<ComplexStack, Integer> collection) {
         collection.add(CA01_);
 
         assertThat(collection.lastIndexOf(CA01_), is(3));
@@ -168,8 +179,9 @@ public class TestIngredientCollectionListComplex {
         assertThat(collection.firstIndexOf(CA01B), is(-1));
     }
 
-    @Test
-    public void testListIterator() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testListIterator(IngredientList<ComplexStack, Integer> collection) {
         ListIterator<ComplexStack> it = collection.listIterator();
 
         assertThat(it.hasNext(), is(true));
@@ -206,8 +218,9 @@ public class TestIngredientCollectionListComplex {
         assertThat(it.hasPrevious(), is(false));
     }
 
-    @Test
-    public void testListIteratorOffset() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testListIteratorOffset(IngredientList<ComplexStack, Integer> collection) {
         ListIterator<ComplexStack> it = collection.listIterator(1);
 
         assertThat(it.hasNext(), is(true));
@@ -239,18 +252,21 @@ public class TestIngredientCollectionListComplex {
         assertThat(it.hasPrevious(), is(false));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testListIteratorOutOfBoundsSmall() {
-        collection.listIterator(-1);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testListIteratorOutOfBoundsSmall(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> collection.listIterator(-1));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testListIteratorOutOfBoundsLarge() {
-        collection.listIterator(4);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testListIteratorOutOfBoundsLarge(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> collection.listIterator(4));
     }
 
-    @Test
-    public void testSubList() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSubList(IngredientList<ComplexStack, Integer> collection) {
         assertThat(collection.subList(0, 3), is(collection));
 
         assertThat(collection.subList(2, 3), is(new IngredientArrayList<>(collection.getComponent(), Lists.newArrayList(CA91B))));
@@ -258,23 +274,27 @@ public class TestIngredientCollectionListComplex {
         assertThat(collection.subList(1, 2), is(new IngredientArrayList<>(collection.getComponent(), Lists.newArrayList(CB02_))));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testSubListOutOfBoundsSmall() {
-        collection.subList(-1, 3);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSubListOutOfBoundsSmall(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> collection.subList(-1, 3));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void testSubListOutOfBoundsLarge() {
-        collection.subList(0, 4);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSubListOutOfBoundsLarge(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> collection.subList(0, 4));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testSubListOutOfBoundsRange() {
-        collection.subList(1, 0);
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSubListOutOfBoundsRange(IngredientList<ComplexStack, Integer> collection) {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> collection.subList(1, 0));
     }
 
-    @Test
-    public void testSort() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSort(IngredientList<ComplexStack, Integer> collection) {
         collection.add(CA01B);
 
         collection.sort(collection.getComponent().getMatcher());
@@ -282,8 +302,9 @@ public class TestIngredientCollectionListComplex {
         assertThat(Lists.newArrayList(collection), is(Lists.newArrayList(CA01_, CA01B, CA91B, CB02_)));
     }
 
-    @Test
-    public void testSortReverse() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testSortReverse(IngredientList<ComplexStack, Integer> collection) {
         collection.sort(collection.getComponent().getMatcher().reversed());
 
         assertThat(Lists.newArrayList(collection), is(Lists.newArrayList(CB02_, CA91B, CA01_)));

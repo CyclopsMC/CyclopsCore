@@ -1,8 +1,11 @@
 package org.cyclops.cyclopscore.client.gui.component.input;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.component.button.ButtonArrow;
 
@@ -115,7 +118,7 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     }
 
     protected int getDiffAmount() {
-        return Screen.hasShiftDown() ? 10 : 1;
+        return Minecraft.getInstance().hasShiftDown() ? 10 : 1;
     }
 
     protected void increase() {
@@ -143,24 +146,24 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     }
 
     @Override
-    public boolean charTyped(char typedChar, int keyCode) {
-        boolean ret = super.charTyped(typedChar, keyCode);
+    public boolean charTyped(CharacterEvent character) {
+        boolean ret = super.charTyped(character);
         updateArrowsState();
         return ret;
     }
 
     @Override
-    public boolean keyPressed(int typedChar, int keyCode, int modifiers) {
-        boolean ret = super.keyPressed(typedChar, keyCode, modifiers);
+    public boolean keyPressed(KeyEvent key) {
+        boolean ret = super.keyPressed(key);
         updateArrowsState();
         return ret;
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        boolean ret = arrowUp.mouseClicked(mouseX, mouseY, mouseButton)
-                || arrowDown.mouseClicked(mouseX, mouseY, mouseButton)
-                || super.mouseClicked(mouseX, mouseY, mouseButton);
+    public boolean mouseClicked(MouseButtonEvent mouse, boolean isDoubleClick) {
+        boolean ret = arrowUp.mouseClicked(mouse, isDoubleClick)
+                || arrowDown.mouseClicked(mouse, isDoubleClick)
+                || super.mouseClicked(mouse, isDoubleClick);
         updateArrowsState();
         return ret;
     }

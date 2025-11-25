@@ -3,7 +3,8 @@ package org.cyclops.cyclopscore.ingredient.collection;
 import com.google.common.collect.Lists;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.NoSuchElementException;
@@ -26,11 +27,11 @@ public class TestFilteredIngredientCollectionIterator {
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void testEmptyNext() {
         FilteredIngredientCollectionIterator<ComplexStack, Integer> it = new FilteredIngredientCollectionIterator<>(
                 Collections.emptyList(), IngredientComponentStubs.COMPLEX.getMatcher(), C0, ComplexStack.Match.ANY);
-        it.next();
+        Assertions.assertThrows(NoSuchElementException.class, () -> it.next());
     }
 
     @Test
@@ -50,14 +51,14 @@ public class TestFilteredIngredientCollectionIterator {
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void testNonEmptyAnyNextAtEnd() {
         FilteredIngredientCollectionIterator<ComplexStack, Integer> it = new FilteredIngredientCollectionIterator<>(
                 Lists.newArrayList(C0, C1, C2), IngredientComponentStubs.COMPLEX.getMatcher(), C0, ComplexStack.Match.ANY);
         assertThat(it.next(), is(C0));
         assertThat(it.next(), is(C1));
         assertThat(it.next(), is(C2));
-        it.next();
+        Assertions.assertThrows(NoSuchElementException.class, () -> it.next());
     }
 
     @Test
@@ -71,12 +72,12 @@ public class TestFilteredIngredientCollectionIterator {
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void testNonEmptyExactNextAtEnd() {
         FilteredIngredientCollectionIterator<ComplexStack, Integer> it = new FilteredIngredientCollectionIterator<>(
                 Lists.newArrayList(C0, C1, C2), IngredientComponentStubs.COMPLEX.getMatcher(), C0, ComplexStack.Match.EXACT);
         assertThat(it.next(), is(C0));
-        it.next();
+        Assertions.assertThrows(NoSuchElementException.class, () -> it.next());
     }
 
     @Test
@@ -93,13 +94,13 @@ public class TestFilteredIngredientCollectionIterator {
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void testNonEmptyMeta1NextAtEnd() {
         FilteredIngredientCollectionIterator<ComplexStack, Integer> it = new FilteredIngredientCollectionIterator<>(
                 Lists.newArrayList(C0, C1, C2), IngredientComponentStubs.COMPLEX.getMatcher(), C3, ComplexStack.Match.META);
         assertThat(it.next(), is(C0));
         assertThat(it.next(), is(C1));
-        it.next();
+        Assertions.assertThrows(NoSuchElementException.class, () -> it.next());
     }
 
     @Test
@@ -116,13 +117,13 @@ public class TestFilteredIngredientCollectionIterator {
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void testNonEmptyMeta2NextAtEnd() {
         FilteredIngredientCollectionIterator<ComplexStack, Integer> it = new FilteredIngredientCollectionIterator<>(
                 Lists.newArrayList(C0, C1, C2), IngredientComponentStubs.COMPLEX.getMatcher(), C1, ComplexStack.Match.META);
         assertThat(it.next(), is(C0));
         assertThat(it.next(), is(C1));
-        it.next();
+        Assertions.assertThrows(NoSuchElementException.class, () -> it.next());
     }
 
     @Test
@@ -144,13 +145,15 @@ public class TestFilteredIngredientCollectionIterator {
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testRemoveMultiple() {
         FilteredIngredientCollectionIterator<ComplexStack, Integer> it = new FilteredIngredientCollectionIterator<>(
                 Lists.newArrayList(C0, C1, C2), IngredientComponentStubs.COMPLEX.getMatcher(), C1, ComplexStack.Match.META);
-        it.next();
-        it.remove();
-        it.remove();
+        Assertions.assertThrows(IllegalStateException.class, () -> {
+            it.next();
+            it.remove();
+            it.remove();
+        });
     }
 
 }

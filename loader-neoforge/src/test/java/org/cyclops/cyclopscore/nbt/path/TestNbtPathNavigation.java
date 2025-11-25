@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.nbt.path;
 
 import org.cyclops.cyclopscore.nbt.path.navigate.INbtPathNavigation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;

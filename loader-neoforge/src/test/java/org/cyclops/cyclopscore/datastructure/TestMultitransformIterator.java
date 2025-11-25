@@ -2,14 +2,15 @@ package org.cyclops.cyclopscore.datastructure;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestMultitransformIterator {
 
@@ -53,9 +54,9 @@ public class TestMultitransformIterator {
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = NoSuchElementException.class)
+    @Test
     public void testNoNext() {
-        new MultitransformIterator<>(Iterators.forArray(), o -> null).next();
+        Assertions.assertThrows(NoSuchElementException.class, () -> new MultitransformIterator<>(Iterators.forArray(), o -> null).next());
     }
 
     @Test
@@ -79,12 +80,12 @@ public class TestMultitransformIterator {
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testNoRemove() {
         ArrayList<Integer> list = Lists.newArrayList(1, 2, 3);
         MultitransformIterator<Integer, Integer> it = new MultitransformIterator<>(Iterators.forArray(1),
                 o -> list.iterator());
-        it.remove();
+        Assertions.assertThrows(IllegalStateException.class, () -> it.remove());
     }
 
     @Test

@@ -3,8 +3,8 @@ package org.cyclops.cyclopscore.ingredient.collection;
 import com.google.common.collect.Lists;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 
 import static org.hamcrest.CoreMatchers.is;
@@ -36,7 +36,7 @@ public class TestIngredientCollectionSingleClassifiedCollapsedComplex {
 
     private IngredientCollectionSingleClassifiedCollapsed<ComplexStack, Integer, ?> collection;
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         collection = new IngredientCollectionSingleClassifiedCollapsed<>(
                 IngredientComponentStubs.COMPLEX,

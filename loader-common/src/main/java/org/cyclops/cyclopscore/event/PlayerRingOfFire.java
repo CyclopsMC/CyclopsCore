@@ -29,7 +29,7 @@ public abstract class PlayerRingOfFire {
 
     protected void spawnRing(Player player) {
         if(!player.level().isClientSide() && player.getGameProfile() != null
-                && ALLOW_RING.contains(player.getGameProfile().getId())) {
+                && ALLOW_RING.contains(player.getGameProfile().id())) {
             CyclopsCoreInstance.MOD.getPacketHandler().sendToAllAroundPoint(new RingOfFirePacket(player),
                     IPacketHandler.createTargetPointFromLocation((ServerLevel) player.level(), player.blockPosition(), 50));
         }

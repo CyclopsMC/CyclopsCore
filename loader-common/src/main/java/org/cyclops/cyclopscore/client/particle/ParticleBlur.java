@@ -6,40 +6,39 @@ import com.mojang.blaze3d.platform.DestFactor;
 import com.mojang.blaze3d.platform.SourceFactor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.entity.LivingEntity;
-import org.cyclops.cyclopscore.Reference;
 
 /**
  * A blurred static fading particle with any possible color.
  * @author rubensworks
  *
  */
-public class ParticleBlur extends TextureSheetParticle {
+public class ParticleBlur extends SingleQuadParticle {
 
     public static final RenderPipeline RENDER_PIPELINE = RenderPipeline.builder(RenderPipelines.PARTICLE_SNIPPET) // Modified from RenderPipelines.TRANSLUCENT_PARTICLE
             .withLocation("pipeline/translucent_particle_blur")
             .withBlend(new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE))
             .build();
-    public static final RenderType RENDER_TYPE = RenderType.create( // Modified from RenderType.TRANSLUCENT_PARTICLE
-            Reference.MOD_ID + ":blur",
-            1536,
-            false,
-            false,
-            RENDER_PIPELINE,
-            RenderType.CompositeState.builder()
-                    .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false))
-                    .setTexturingState(new BlurTexturingStateShard(TextureAtlas.LOCATION_PARTICLES))
-                    .setOutputState(RenderType.PARTICLES_TARGET)
-                    .setLightmapState(RenderType.LIGHTMAP)
-                    .createCompositeState(false)
-    );
-    public static final ParticleRenderType PARTICLE_RENDER_TYPE = new ParticleRenderType(Reference.MOD_ID + ":blur", RENDER_TYPE);
+    // TODO: make the particle blurry again. The key here is in BlurTexturingStateShard. May work using a new ParticleGroup.
+//    public static final RenderType RENDER_TYPE = RenderType.create( // Modified from RenderType.TRANSLUCENT_PARTICLE
+//            Reference.MOD_ID + ":blur",
+//            1536,
+//            false,
+//            false,
+//            RENDER_PIPELINE,
+//            RenderType.CompositeState.builder()
+//                    .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false))
+//                    .setTexturingState(new BlurTexturingStateShard(TextureAtlas.LOCATION_PARTICLES))
+//                    .setOutputState(RenderType.PARTICLES_TARGET)
+//                    .setLightmapState(RenderType.LIGHTMAP)
+//                    .createCompositeState(false)
+//    );
+//    public static final ParticleRenderType PARTICLE_RENDER_TYPE = new ParticleRenderType(Reference.MOD_ID + ":blur");
+    public static final SingleQuadParticle.Layer LAYER = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, RENDER_PIPELINE);
 
     private static final int MAX_VIEW_DISTANCE = 30;
 
@@ -47,8 +46,8 @@ public class ParticleBlur extends TextureSheetParticle {
     protected float scaleLife;
 
     public ParticleBlur(ParticleBlurData data, ClientLevel world, double x, double y, double z,
-                        double motionX, double motionY, double motionZ) {
-        super(world, x, y, z, motionX, motionY, motionZ);
+                        double motionX, double motionY, double motionZ, TextureAtlasSprite sprite) {
+        super(world, x, y, z, motionX, motionY, motionZ, sprite);
         this.xd = motionX;
         this.yd = motionY;
         this.zd = motionZ;
@@ -87,8 +86,8 @@ public class ParticleBlur extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return PARTICLE_RENDER_TYPE;
+    protected Layer getLayer() {
+        return LAYER;
     }
 
     @Override

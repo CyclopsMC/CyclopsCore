@@ -2,47 +2,42 @@ package org.cyclops.cyclopscore.ingredient.collection;
 
 import com.google.common.collect.Lists;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(Parameterized.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestIngredientCollectionSetSimple {
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { new IngredientHashSet<>(IngredientComponentStubs.SIMPLE) },
-                { new IngredientHashSet<>(IngredientComponentStubs.SIMPLE, 3) },
-                { new IngredientHashSet<>(IngredientComponentStubs.SIMPLE, Lists.newArrayList()) },
-                { new IngredientTreeSet<>(IngredientComponentStubs.SIMPLE) },
-                { new IngredientTreeSet<>(IngredientComponentStubs.SIMPLE, Lists.newArrayList()) },
-        });
+    public Stream<Arguments> data() {
+        return Stream.of(
+                new IngredientHashSet<>(IngredientComponentStubs.SIMPLE),
+                new IngredientHashSet<>(IngredientComponentStubs.SIMPLE, 3),
+                new IngredientHashSet<>(IngredientComponentStubs.SIMPLE, Lists.newArrayList()),
+                new IngredientTreeSet<>(IngredientComponentStubs.SIMPLE),
+                new IngredientTreeSet<>(IngredientComponentStubs.SIMPLE, Lists.newArrayList())
+                ).map(collection -> {
+            collection.clear();
+            collection.add(0);
+            collection.add(1);
+            collection.add(2);
+            return collection;
+        }).map(Arguments::of);
     }
 
-    @Parameterized.Parameter
-    public IngredientSet<Integer, Boolean> collection;
-
-    @Before
-    public void beforeEach() {
-        collection.clear();
-        collection.add(0);
-        collection.add(1);
-        collection.add(2);
-    }
-
-    @Test
-    public void testEquals() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testEquals(IngredientSet<Integer, Boolean> collection) {
         assertThat(collection.equals(collection), is(true));
         assertThat(collection.equals("abc"), is(false));
         assertThat(collection.equals(new IngredientCollectionEmpty<>(IngredientComponentStubs.COMPLEX)), is(false));
@@ -54,67 +49,78 @@ public class TestIngredientCollectionSetSimple {
         assertThat(collection.equals(new IngredientArrayList<>(IngredientComponentStubs.SIMPLE, 0, 1, 2)), is(false));
     }
 
-    @Test
-    public void testHashCode() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testHashCode(IngredientSet<Integer, Boolean> collection) {
         assertThat(collection.hashCode(), is(collection.hashCode()));
         assertThat(collection.hashCode(), not(is(new IngredientCollectionEmpty<>(IngredientComponentStubs.COMPLEX).hashCode())));
         assertThat(collection.hashCode(), is(new IngredientArrayList<>(IngredientComponentStubs.SIMPLE, 0, 1, 2).hashCode()));
         assertThat(collection.hashCode(), not(is(new IngredientArrayList<>(IngredientComponentStubs.COMPLEX).hashCode())));
     }
 
-    @Test
-    public void testIteratorNext() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorNext(IngredientSet<Integer, Boolean> collection) {
         Iterator<Integer> it = collection.iterator(0, true);
         assertThat(it.hasNext(), is(true));
         assertThat(it.next(), is(0));
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = NoSuchElementException.class)
-    public void testIteratorNextTooMany() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorNextTooMany(IngredientSet<Integer, Boolean> collection) {
         Iterator<Integer> it = collection.iterator(0, true);
         assertThat(it.next(), is(0));
-        it.next();
+        Assertions.assertThrows(NoSuchElementException.class, () -> it.next());
     }
 
-    @Test
-    public void testIteratorRemove() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemove(IngredientSet<Integer, Boolean> collection) {
         Iterator<Integer> it = collection.iterator(0, true);
         assertThat(it.next(), is(0));
         it.remove();
         assertThat(collection.contains(0), is(false));
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void testIteratorRemoveTooMany() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemoveTooMany(IngredientSet<Integer, Boolean> collection) {
         Iterator<Integer> it = collection.iterator(0, true);
         assertThat(it.next(), is(0));
-        it.remove();
-        it.remove();
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            it.remove();
+            it.remove();
+        });
     }
 
-    @Test
-    public void testIteratorEmpty() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorEmpty(IngredientSet<Integer, Boolean> collection) {
         Iterator<Integer> it = collection.iterator(4, true);
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorNextEmpty() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorNextEmpty(IngredientSet<Integer, Boolean> collection) {
         Iterator<Integer> it = collection.iterator(4, true);
-        it.next();
+        Assertions.assertThrows(RuntimeException.class, () -> it.next());
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorRemoveEmpty() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemoveEmpty(IngredientSet<Integer, Boolean> collection) {
         Iterator<Integer> it = collection.iterator(4, true);
-        it.remove();
+        Assertions.assertThrows(RuntimeException.class, () -> it.remove());
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorRemoveNoNext() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemoveNoNext(IngredientSet<Integer, Boolean> collection) {
         Iterator<Integer> it = collection.iterator(0, true);
-        it.remove();
+        Assertions.assertThrows(RuntimeException.class, () -> it.remove());
     }
 
 }

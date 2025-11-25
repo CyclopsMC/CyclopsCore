@@ -4,20 +4,19 @@ import com.google.common.collect.Maps;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientInstanceWrapper;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(Parameterized.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestIngredientMapComplex {
 
     private static final ComplexStack CA01_ = new ComplexStack(ComplexStack.Group.A, 0, 1, null);
@@ -25,32 +24,27 @@ public class TestIngredientMapComplex {
     private static final ComplexStack CA91B = new ComplexStack(ComplexStack.Group.A, 9, 1, ComplexStack.Tag.B);
     private static final ComplexStack CA01B = new ComplexStack(ComplexStack.Group.A, 0, 1, ComplexStack.Tag.B);
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { new IngredientHashMap<>(IngredientComponentStubs.COMPLEX) },
-                { new IngredientHashMap<>(IngredientComponentStubs.COMPLEX, 3) },
-                { new IngredientHashMap<>(IngredientComponentStubs.COMPLEX, new IngredientHashMap<>(IngredientComponentStubs.COMPLEX)) },
-                { new IngredientHashMap<>(IngredientComponentStubs.COMPLEX, Maps.newHashMap()) },
-                { new IngredientTreeMap<>(IngredientComponentStubs.COMPLEX) },
-                { new IngredientTreeMap<>(IngredientComponentStubs.COMPLEX, new IngredientTreeMap<>(IngredientComponentStubs.COMPLEX)) },
-                { new IngredientTreeMap<>(IngredientComponentStubs.COMPLEX, Maps.newTreeMap()) },
-        });
+    public Stream<Arguments> data() {
+        return Stream.of(
+                new IngredientHashMap<>(IngredientComponentStubs.COMPLEX),
+                new IngredientHashMap<>(IngredientComponentStubs.COMPLEX, 3),
+                new IngredientHashMap<>(IngredientComponentStubs.COMPLEX, new IngredientHashMap<>(IngredientComponentStubs.COMPLEX)),
+                new IngredientHashMap<>(IngredientComponentStubs.COMPLEX, Maps.newHashMap()),
+                new IngredientTreeMap<>(IngredientComponentStubs.COMPLEX),
+                new IngredientTreeMap<>(IngredientComponentStubs.COMPLEX, new IngredientTreeMap<>(IngredientComponentStubs.COMPLEX)),
+                new IngredientTreeMap<>(IngredientComponentStubs.COMPLEX, Maps.newTreeMap())
+                ).map(collection -> {
+            collection.clear();
+            collection.put(CA01_, 0);
+            collection.put(CB02_, 0);
+            collection.put(CA91B, 9);
+            return collection;
+        }).map(Arguments::of);
     }
 
-    @Parameterized.Parameter
-    public IIngredientMapMutable<ComplexStack, Boolean, Integer> collection;
-
-    @Before
-    public void beforeEach() {
-        collection.clear();
-        collection.put(CA01_, 0);
-        collection.put(CB02_, 0);
-        collection.put(CA91B, 9);
-    }
-
-    @Test
-    public void testEquals() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testEquals(IIngredientMapMutable<ComplexStack, Boolean, Integer> collection) {
         assertThat(collection.equals(collection), is(true));
         assertThat(collection.equals("abc"), is(false));
         assertThat(collection.equals(new IngredientHashMap<>(IngredientComponentStubs.SIMPLE)), is(false));
@@ -63,8 +57,9 @@ public class TestIngredientMapComplex {
         assertThat(collection.equals(new IngredientHashMap<>(IngredientComponentStubs.SIMPLE)), is(false));
     }
 
-    @Test
-    public void testHashCode() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testHashCode(IIngredientMapMutable<ComplexStack, Boolean, Integer> collection) {
         assertThat(collection.hashCode(), is(collection.hashCode()));
         assertThat(collection.hashCode(), not(is(new IngredientHashMap<>(IngredientComponentStubs.SIMPLE).hashCode())));
         HashMap<IngredientInstanceWrapper<ComplexStack, Integer>, Integer> subMap0 = Maps.newHashMap();

@@ -14,8 +14,8 @@ public class ItemActionForge<M extends ModBaseForge<M>> extends ItemAction<M> {
 
     public ItemActionForge(M mod) {
         if (mod.getModHelpers().getMinecraftHelpers().isClientSide()) {
-            ModelEvent.RegisterModelStateDefinitions.getBus(mod.getModBusGroup()).addListener(ItemActionForge::onModelRegistryLoad);
-            ModelEvent.ModifyBakingResult.getBus(mod.getModBusGroup()).addListener(ItemActionForge::onModelBakeEvent);
+            ModelEvent.RegisterModelStateDefinitions.BUS.addListener(ItemActionForge::onModelRegistryLoad);
+            ModelEvent.ModifyBakingResult.BUS.addListener(ItemActionForge::onModelBakeEvent);
         }
     }
 

@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.ingredient.collection;
 
 import com.google.common.collect.Lists;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -13,7 +13,7 @@ public class TestIngredientCollectionMutableWrapper {
     private IIngredientCollectionMutable<Integer, Boolean> collection;
     private IIngredientCollectionMutable<Integer, Boolean> innerCollection;
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         IngredientHashSet<Integer, Boolean> innerCollection = new IngredientHashSet<>(IngredientComponentStubs.SIMPLE);
         innerCollection.add(0);

@@ -4,20 +4,20 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(Parameterized.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestIngredientCollectionMultiClassified {
 
     private static final ComplexStack CA01_ = new ComplexStack(ComplexStack.Group.A, 0, 1, null);
@@ -25,27 +25,22 @@ public class TestIngredientCollectionMultiClassified {
     private static final ComplexStack CA91B = new ComplexStack(ComplexStack.Group.A, 9, 1, ComplexStack.Tag.B);
     private static final ComplexStack CA01B = new ComplexStack(ComplexStack.Group.A, 0, 1, ComplexStack.Tag.B);
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { new IngredientCollectionMultiClassified<>(IngredientComponentStubs.COMPLEX,
-                () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX)) }
-        });
+    public Stream<Arguments> data() {
+        return Stream.of(
+                new IngredientCollectionMultiClassified<>(IngredientComponentStubs.COMPLEX,
+                () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX))
+        ).map(collection -> {
+            collection.clear();
+            collection.add(CA01_);
+            collection.add(CB02_);
+            collection.add(CA91B);
+            return collection;
+        }).map(Arguments::of);
     }
 
-    @Parameterized.Parameter(0)
-    public IngredientCollectionMultiClassified<ComplexStack, Integer> collection;
-
-    @Before
-    public void beforeEach() {
-        collection.clear();
-        collection.add(CA01_);
-        collection.add(CB02_);
-        collection.add(CA91B);
-    }
-
-    @Test
-    public void testAddMultiple() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testAddMultiple(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         assertThat(collection.add(CA01_), is(false));
         assertThat(collection.size(), is(3));
         assertThat(collection.add(CB02_), is(false));
@@ -56,8 +51,9 @@ public class TestIngredientCollectionMultiClassified {
         assertThat(collection.size(), is(4));
     }
 
-    @Test
-    public void testEquals() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testEquals(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         assertThat(collection.equals(collection), is(true));
         assertThat(collection.equals(new IngredientCollectionEmpty<>(IngredientComponentStubs.SIMPLE)), is(false));
         assertThat(collection.equals(null), is(false));
@@ -73,16 +69,18 @@ public class TestIngredientCollectionMultiClassified {
         assertThat(collection.equals(new IngredientHashSet<>(IngredientComponentStubs.SIMPLE, Lists.newArrayList(0, 1, 2))), is(false));
     }
 
-    @Test
-    public void testHashCode() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testHashCode(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         assertThat(collection.hashCode(), is(collection.hashCode()));
         assertThat(collection.hashCode(), not(is(new IngredientCollectionEmpty<>(IngredientComponentStubs.SIMPLE).hashCode())));
         assertThat(collection.hashCode(), is(new IngredientArrayList<>(IngredientComponentStubs.COMPLEX, CA01_, CB02_, CA91B).hashCode()));
         assertThat(collection.hashCode(), not(is(new IngredientArrayList<>(IngredientComponentStubs.SIMPLE).hashCode())));
     }
 
-    @Test
-    public void testIterator() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIterator(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.GROUP);
         HashSet<ComplexStack> results = Sets.newHashSet();
         assertThat(it.hasNext(), is(true));
@@ -96,44 +94,50 @@ public class TestIngredientCollectionMultiClassified {
         assertThat(results, equalTo(Sets.newHashSet(CA01_, CA91B)));
     }
 
-    @Test
-    public void testIteratorEmpty() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorEmpty(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         Iterator<ComplexStack> it = collection.iterator(CA01B, ComplexStack.Match.EXACT);
         assertThat(it.hasNext(), is(false));
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test
-    public void testIteratorEmptyCollection() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorEmptyCollection(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         collection.clear();
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.EXACT);
         assertThat(it.hasNext(), is(false));
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorEmptyCollectionNextExact() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorEmptyCollectionNextExact(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         collection.clear();
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.EXACT);
-        it.next();
+        Assertions.assertThrows(RuntimeException.class, it::next);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorEmptyCollectionNextAny() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorEmptyCollectionNextAny(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         collection.clear();
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.ANY);
-        it.next();
+        Assertions.assertThrows(RuntimeException.class, it::next);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorEmptyCollectionNextGroup() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorEmptyCollectionNextGroup(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         collection.clear();
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.GROUP);
-        it.next();
+        Assertions.assertThrows(RuntimeException.class, it::next);
     }
 
-    @Test
-    public void testIteratorRemove() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemove(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.GROUP);
         HashSet<ComplexStack> results = Sets.newHashSet();
         assertThat(it.hasNext(), is(true));
@@ -152,24 +156,29 @@ public class TestIngredientCollectionMultiClassified {
         assertThat(results, equalTo(Sets.newHashSet(CA01_, CA91B)));
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorRemoveBeforeStart() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemoveBeforeStart(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.GROUP);
-        it.remove();
+        Assertions.assertThrows(RuntimeException.class, it::remove);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorRemoveBeforeStartEmpty() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemoveBeforeStartEmpty(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         Iterator<ComplexStack> it = collection.iterator(CA01B, ComplexStack.Match.EXACT);
-        it.remove();
+        Assertions.assertThrows(RuntimeException.class, it::remove);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorRemoveMultiple() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemoveMultiple(IngredientCollectionMultiClassified<ComplexStack, Integer> collection) {
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.GROUP);
-        it.remove();
-        it.remove();
-        it.remove();
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            it.remove();
+            it.remove();
+            it.remove();
+        });
     }
 
 }

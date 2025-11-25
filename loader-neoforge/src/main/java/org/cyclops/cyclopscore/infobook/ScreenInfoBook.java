@@ -10,6 +10,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
@@ -433,11 +435,11 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double mouseZ, double scrollDelta) {
         if (scrollDelta < 0) {
-            this.buttonNextPage.onClick(mouseX, mouseY);
+            this.buttonNextPage.onClick(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(0, 0)), false);
             return true;
         }
         if (scrollDelta > 0) {
-            this.buttonPreviousPage.onClick(mouseX, mouseY);
+            this.buttonPreviousPage.onClick(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(0, 0)), false);
             return true;
         }
         return super.mouseScrolled(mouseX, mouseY, mouseZ, scrollDelta);

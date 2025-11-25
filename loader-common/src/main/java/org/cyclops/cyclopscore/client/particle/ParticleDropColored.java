@@ -1,8 +1,10 @@
 package org.cyclops.cyclopscore.client.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
@@ -12,15 +14,17 @@ import net.minecraft.world.level.material.FluidState;
 /**
  * Particle that appears underneath blocks for simulating drops.
  */
-public class ParticleDropColored extends TextureSheetParticle {
+public class ParticleDropColored extends SingleQuadParticle {
+
+    public static final SingleQuadParticle.Layer LAYER = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, RenderPipelines.TRANSLUCENT_PARTICLE);
 
     /**
      * The height of the current bob
      */
     private int bobTimer;
 
-    public ParticleDropColored(ParticleDropColoredData data, ClientLevel world, double x, double y, double z) {
-        super(world, x, y, z);
+    public ParticleDropColored(ParticleDropColoredData data, ClientLevel world, double x, double y, double z, TextureAtlasSprite sprite) {
+        super(world, x, y, z, sprite);
         this.xd = this.yd = this.zd= 0.0D;
 
         this.rCol = data.getRed();
@@ -35,8 +39,8 @@ public class ParticleDropColored extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected Layer getLayer() {
+        return LAYER;
     }
 
     @Override

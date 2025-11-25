@@ -3,8 +3,8 @@ package org.cyclops.cyclopscore.ingredient.storage;
 import com.google.common.collect.Lists;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionPrototypeMap;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -13,7 +13,7 @@ public class TestIngredientComponentStorageCollectionWrapper {
 
     private IngredientComponentStorageCollectionWrapper<Integer, Boolean> storage;
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         storage = new IngredientComponentStorageCollectionWrapper<>(
                 new IngredientCollectionPrototypeMap<>(IngredientComponentStubs.SIMPLE));

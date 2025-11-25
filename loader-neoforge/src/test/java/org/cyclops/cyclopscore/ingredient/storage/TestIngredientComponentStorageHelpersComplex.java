@@ -9,8 +9,8 @@ import org.cyclops.cyclopscore.ingredient.collection.IIngredientListMutable;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientArrayList;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionQuantitativeGrouper;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientList;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -27,7 +27,7 @@ public class TestIngredientComponentStorageHelpersComplex {
     private static final ComplexStack CB01_ = new ComplexStack(ComplexStack.Group.B, 0, 1, null);
     private static final ComplexStack CB02_ = new ComplexStack(ComplexStack.Group.B, 0, 2, null);
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         sourceInnerStorage = new IngredientCollectionQuantitativeGrouper<>(new IngredientArrayList<>(IngredientComponentStubs.COMPLEX));
         sourceStorage = new IngredientComponentStorageCollectionWrapper<>(sourceInnerStorage, 100, 10);

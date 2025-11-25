@@ -10,8 +10,8 @@ import org.cyclops.cyclopscore.ingredient.collection.IIngredientCollapsedCollect
 import org.cyclops.cyclopscore.ingredient.collection.IngredientArrayList;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionHelpers;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionPrototypeMap;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -30,7 +30,7 @@ public class TestIngredientCollectionDiffHelpers {
 
     private IngredientCollectionPrototypeMap<ComplexStack, Integer> newInstancesCache;
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         newInstancesCache = new IngredientCollectionPrototypeMap<>(COMP, true);
     }

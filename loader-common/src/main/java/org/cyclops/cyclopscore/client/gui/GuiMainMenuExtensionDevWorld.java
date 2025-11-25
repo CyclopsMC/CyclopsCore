@@ -44,7 +44,7 @@ public class GuiMainMenuExtensionDevWorld {
 
                         // Open the last played dev world
                         // If shift is held, create a new world.
-                        if (!Screen.hasShiftDown()) {
+                        if (!Minecraft.getInstance().hasShiftDown()) {
                             LevelSummary devWorldSummary = null;
                             mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                             try {
@@ -69,7 +69,7 @@ public class GuiMainMenuExtensionDevWorld {
                             }
 
                             if (devWorldSummary != null && mc.getLevelSource().levelExists(devWorldSummary.getLevelId())) {
-                                mc.forceSetScreen(new GenericMessageScreen(Component.translatable("selectWorld.data_read")));
+                                mc.setScreenAndShow(new GenericMessageScreen(Component.translatable("selectWorld.data_read")));
                                 mc.createWorldOpenFlows().openWorld(devWorldSummary.getLevelId(), () -> minecraft.setScreen(screen));
                                 return;
                             }

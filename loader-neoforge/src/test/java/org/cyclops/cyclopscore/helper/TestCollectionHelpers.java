@@ -2,14 +2,14 @@ package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.Comparator;
 
 import static org.cyclops.cyclopscore.helper.CollectionHelpers.compareCollection;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TestCollectionHelpers {
 

@@ -1,26 +1,16 @@
 package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import net.minecraft.DetectedVersion;
-import net.minecraft.SharedConstants;
-import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.server.Bootstrap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.fml.loading.LoadingModList;
-import org.junit.Test;
-
-import java.lang.reflect.Field;
-import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 import static org.cyclops.cyclopscore.helper.CyclopsMatchers.isIterator;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Unit tests for {@link IndexedInventory}.
@@ -29,30 +19,12 @@ import static org.junit.Assert.assertThat;
 public class TestIndexedInventory {
 
     static {
-        SharedConstants.setVersion(DetectedVersion.BUILT_IN);
-        LoadingModList.of(Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Maps.newHashMap());
-        Bootstrap.bootStrap();
-        ((MappedRegistry)BuiltInRegistries.ITEM).unfreeze(true);
+        ((MappedRegistry) BuiltInRegistries.ITEM).unfreeze(true);
     }
 
     private static final Item ITEM1 = new ItemDummy();
     private static final Item ITEM2 = new ItemDummy();
     private static final Item ITEM3 = new ItemDummy();
-
-    static {
-        try {
-            Field field = MappedRegistry.class.getDeclaredField("unregisteredIntrusiveHolders");
-            field.setAccessible(true);
-            Map<Item, Holder.Reference<Item>> delegates = ((Map<Item, Holder.Reference<Item>>) field
-                    .get(BuiltInRegistries.ITEM));
-
-            delegates.put(ITEM1, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM, ITEM1));
-            delegates.put(ITEM2, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM, ITEM2));
-            delegates.put(ITEM3, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM, ITEM3));
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
-        }
-    }
 
     private static final ItemStack STACK1 = new ItemStack(ITEM1);
     private static final ItemStack STACK2 = new ItemStack(ITEM2);

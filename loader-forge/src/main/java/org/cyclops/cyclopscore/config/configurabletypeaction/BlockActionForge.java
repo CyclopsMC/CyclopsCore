@@ -20,9 +20,9 @@ public class BlockActionForge<M extends ModBaseForge<M>> extends BlockAction<M> 
 
     public BlockActionForge(M mod) {
         if (mod.getModHelpers().getMinecraftHelpers().isClientSide()) {
-            ModelEvent.RegisterModelStateDefinitions.getBus(mod.getModBusGroup()).addListener(BlockActionForge::onModelRegistryLoad);
-            ModelEvent.ModifyBakingResult.getBus(mod.getModBusGroup()).addListener(BlockActionForge::onModelBakeEvent);
-            RegisterColorHandlersEvent.Block.getBus(mod.getModBusGroup()).addListener(BlockActionForge::onRegisterColorHandlers);
+            ModelEvent.RegisterModelStateDefinitions.BUS.addListener(BlockActionForge::onModelRegistryLoad);
+            ModelEvent.ModifyBakingResult.BUS.addListener(BlockActionForge::onModelBakeEvent);
+            RegisterColorHandlersEvent.Block.BUS.addListener(BlockActionForge::onRegisterColorHandlers);
         }
     }
 

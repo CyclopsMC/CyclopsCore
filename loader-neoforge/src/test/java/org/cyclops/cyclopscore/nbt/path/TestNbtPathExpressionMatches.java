@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.nbt.path;
 
 import net.minecraft.nbt.StringTag;
 import org.cyclops.cyclopscore.nbt.path.parse.NbtPathExpressionExecutionContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,7 +17,7 @@ public class TestNbtPathExpressionMatches {
     private Stream<NbtPathExpressionExecutionContext> stream;
     private NbtPathExpressionMatches matches;
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         stream = Stream.of(
                 new NbtPathExpressionExecutionContext(StringTag.valueOf("a")),

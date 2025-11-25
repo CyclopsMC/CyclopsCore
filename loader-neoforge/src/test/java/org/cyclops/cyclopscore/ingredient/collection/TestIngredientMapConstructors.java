@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientInstanceWrapper;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.TreeMap;

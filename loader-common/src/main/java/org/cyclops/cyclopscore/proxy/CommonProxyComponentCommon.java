@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.proxy;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.cyclops.cyclopscore.network.IPacketHandler;
@@ -12,7 +13,7 @@ import org.cyclops.cyclopscore.network.IPacketHandler;
  */
 public abstract class CommonProxyComponentCommon implements ICommonProxyCommon {
     @Override
-    public <T extends BlockEntity> void registerRenderer(BlockEntityType<? extends T> blockEntityType, BlockEntityRendererProvider<T> rendererFactory) {
+    public <T extends BlockEntity, S extends BlockEntityRenderState> void registerRenderer(BlockEntityType<? extends T> blockEntityType, BlockEntityRendererProvider<T, S> rendererFactory) {
         throw new IllegalArgumentException("Registration of renderers should not be called server side!");
     }
 

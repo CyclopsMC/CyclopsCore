@@ -8,6 +8,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.init.ModBaseNeoForge;
+import org.cyclops.cyclopscore.proxy.IClientProxy;
 
 /**
  * Enum that contains all custom hotkeys that
@@ -30,8 +31,7 @@ public class KeyRegistry implements IKeyRegistry {
      */
     public static KeyMapping newKeyMapping(ModBaseNeoForge mod, String name, int defaultKey) {
         String id = IModHelpers.get().getL10NHelpers().localize("key." + mod.getModId() + "." + name);
-        String category = IModHelpers.get().getL10NHelpers().localize("key.categories." + mod.getModId());
-        return new KeyMapping(id, defaultKey, category);
+        return new KeyMapping(id, defaultKey, ((IClientProxy) mod.getProxy()).getMainKeyCategory());
     }
 
     @Override

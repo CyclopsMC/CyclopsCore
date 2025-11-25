@@ -5,6 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -75,8 +76,8 @@ public class AchievementCollectButton extends AdvancedButton {
     }
 
     @Override
-    public void onPress() {
-        super.onPress();
+    public void onPress(InputWithModifiers input) {
+        super.onPress(input);
         Player player = Minecraft.getInstance().player;
         boolean canObtain = true;
         for (ResourceLocation advancement : advancementRewards.getAdvancements()) {

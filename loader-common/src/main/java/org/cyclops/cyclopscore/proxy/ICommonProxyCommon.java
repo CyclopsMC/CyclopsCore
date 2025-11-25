@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.proxy;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.cyclops.cyclopscore.init.IModBase;
@@ -24,7 +25,7 @@ public interface ICommonProxyCommon {
      * @param rendererFactory The block entity render factory.
      * @param <T> The block entity type.
      */
-    public <T extends BlockEntity> void registerRenderer(BlockEntityType<? extends T> blockEntityType, BlockEntityRendererProvider<T> rendererFactory);
+    public <T extends BlockEntity, S extends BlockEntityRenderState> void registerRenderer(BlockEntityType<? extends T> blockEntityType, BlockEntityRendererProvider<T, S> rendererFactory);
 
     /**
      * Register renderers.

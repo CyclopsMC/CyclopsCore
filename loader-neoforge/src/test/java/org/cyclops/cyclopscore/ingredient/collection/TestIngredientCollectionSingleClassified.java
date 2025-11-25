@@ -3,23 +3,24 @@ package org.cyclops.cyclopscore.ingredient.collection;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponentCategoryType;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(Parameterized.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TestIngredientCollectionSingleClassified {
 
     private static final ComplexStack CA01_ = new ComplexStack(ComplexStack.Group.A, 0, 1, null);
@@ -27,44 +28,44 @@ public class TestIngredientCollectionSingleClassified {
     private static final ComplexStack CA91B = new ComplexStack(ComplexStack.Group.A, 9, 1, ComplexStack.Tag.B);
     private static final ComplexStack CA01B = new ComplexStack(ComplexStack.Group.A, 0, 1, ComplexStack.Tag.B);
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
+    public Stream<Arguments> data() {
+        return Stream.<Pair<IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?>, IngredientComponentCategoryType<ComplexStack, Integer, ?>>>of(
+                Pair.of(new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX),
-                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0)), IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0) },
-                { new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
+                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0)), IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0)),
+                Pair.of(new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX),
-                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(1)), IngredientComponentStubs.COMPLEX.getCategoryTypes().get(1) },
-                { new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
+                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(1)), IngredientComponentStubs.COMPLEX.getCategoryTypes().get(1)),
+                Pair.of(new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX),
-                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(2)), IngredientComponentStubs.COMPLEX.getCategoryTypes().get(2) },
-                { new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
+                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(2)), IngredientComponentStubs.COMPLEX.getCategoryTypes().get(2)),
+                Pair.of(new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX),
-                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(3)), IngredientComponentStubs.COMPLEX.getCategoryTypes().get(3) },
+                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(3)), IngredientComponentStubs.COMPLEX.getCategoryTypes().get(3))
+                ).map(pair -> {
+            pair.getLeft().clear();
+            pair.getLeft().add(CA01_);
+            pair.getLeft().add(CB02_);
+            pair.getLeft().add(CA91B);
+            return Arguments.of(pair.getLeft(), pair.getRight());
         });
     }
 
-    @Parameterized.Parameter(0)
-    public IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection;
-    @Parameterized.Parameter(1)
-    public IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType;
-
-    @Before
-    public void beforeEach() {
-        collection.clear();
-        collection.add(CA01_);
-        collection.add(CB02_);
-        collection.add(CA91B);
-    }
-
-    @Test
-    public void testGetCategoryType() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testGetCategoryType(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         assertThat(collection.getCategoryType(), is(categoryType));
     }
 
-    @Test
-    public void testAddMultiple() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testAddMultiple(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         assertThat(collection.add(CA01_), is(false));
         assertThat(collection.size(), is(3));
         assertThat(collection.add(CB02_), is(false));
@@ -75,18 +76,22 @@ public class TestIngredientCollectionSingleClassified {
         assertThat(collection.size(), is(4));
     }
 
-    @Test
-    public void testEquals() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testEquals(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         assertThat(collection.equals(collection), is(true));
         assertThat(collection.equals(new IngredientCollectionEmpty<>(IngredientComponentStubs.SIMPLE)), is(false));
         assertThat(collection.equals(null), is(false));
         IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> c0 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
-                () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), this.categoryType);
+                () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), categoryType);
         IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> c1 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), new IngredientComponentCategoryType<>(
                         ResourceLocation.parse("dummy"), ComplexStack.Group.class, true, ComplexStack::getGroup, ComplexStack.Match.GROUP, false));
         IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> c2 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
-                () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), this.categoryType);
+                () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), categoryType);
         c0.addAll(Lists.newArrayList(CA01_, CB02_, CA91B));
         c2.add(CA01B);
         assertThat(collection.equals(c0), is(true));
@@ -96,16 +101,24 @@ public class TestIngredientCollectionSingleClassified {
         assertThat(collection.equals(new IngredientHashSet<>(IngredientComponentStubs.SIMPLE, Lists.newArrayList(0, 1, 2))), is(false));
     }
 
-    @Test
-    public void testHashCode() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testHashCode(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         assertThat(collection.hashCode(), is(collection.hashCode()));
         assertThat(collection.hashCode(), not(is(new IngredientCollectionEmpty<>(IngredientComponentStubs.SIMPLE).hashCode())));
         assertThat(collection.hashCode(), is(new IngredientArrayList<>(IngredientComponentStubs.COMPLEX, CA01_, CB02_, CA91B).hashCode()));
         assertThat(collection.hashCode(), not(is(new IngredientArrayList<>(IngredientComponentStubs.SIMPLE).hashCode())));
     }
 
-    @Test
-    public void testIterator() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIterator(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.GROUP);
         HashSet<ComplexStack> results = Sets.newHashSet();
         assertThat(it.hasNext(), is(true));
@@ -119,44 +132,68 @@ public class TestIngredientCollectionSingleClassified {
         assertThat(results, equalTo(Sets.newHashSet(CA01_, CA91B)));
     }
 
-    @Test
-    public void testIteratorEmpty() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorEmpty(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         Iterator<ComplexStack> it = collection.iterator(CA01B, ComplexStack.Match.EXACT);
         assertThat(it.hasNext(), is(false));
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test
-    public void testIteratorEmptyCollection() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorEmptyCollection(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         collection.clear();
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.EXACT);
         assertThat(it.hasNext(), is(false));
         assertThat(it.hasNext(), is(false));
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorEmptyCollectionNextExact() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorEmptyCollectionNextExact(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         collection.clear();
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.EXACT);
-        it.next();
+        Assertions.assertThrows(RuntimeException.class, it::next);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorEmptyCollectionNextAny() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorEmptyCollectionNextAny(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         collection.clear();
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.ANY);
-        it.next();
+        Assertions.assertThrows(RuntimeException.class, it::next);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorEmptyCollectionNextGroup() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorEmptyCollectionNextGroup(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         collection.clear();
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.GROUP);
-        it.next();
+        Assertions.assertThrows(RuntimeException.class, it::next);
     }
 
-    @Test
-    public void testIteratorRemove() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemove(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.GROUP);
         HashSet<ComplexStack> results = Sets.newHashSet();
         assertThat(it.hasNext(), is(true));
@@ -175,24 +212,38 @@ public class TestIngredientCollectionSingleClassified {
         assertThat(results, equalTo(Sets.newHashSet(CA01_, CA91B)));
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorRemoveBeforeStart() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemoveBeforeStart(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.GROUP);
-        it.remove();
+        Assertions.assertThrows(RuntimeException.class, it::remove);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorRemoveBeforeStartEmpty() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemoveBeforeStartEmpty(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         Iterator<ComplexStack> it = collection.iterator(CA01B, ComplexStack.Match.EXACT);
-        it.remove();
+        Assertions.assertThrows(RuntimeException.class, it::remove);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testIteratorRemoveMultiple() {
+    @ParameterizedTest
+    @MethodSource("data")
+    public void testIteratorRemoveMultiple(
+            IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> collection,
+            IngredientComponentCategoryType<ComplexStack, Integer, ?> categoryType
+    ) {
         Iterator<ComplexStack> it = collection.iterator(CA01_, ComplexStack.Match.GROUP);
-        it.remove();
-        it.remove();
-        it.remove();
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            it.remove();
+            it.remove();
+            it.remove();
+        });
     }
 
 }

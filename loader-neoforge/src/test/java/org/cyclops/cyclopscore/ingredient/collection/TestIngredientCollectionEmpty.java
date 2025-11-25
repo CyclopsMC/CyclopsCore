@@ -1,8 +1,8 @@
 package org.cyclops.cyclopscore.ingredient.collection;
 
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
@@ -13,7 +13,7 @@ public class TestIngredientCollectionEmpty {
 
     public IngredientCollectionEmpty<Integer, Boolean> collection;
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         collection = new IngredientCollectionEmpty<>(IngredientComponentStubs.SIMPLE);
     }

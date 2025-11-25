@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleResources;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -20,7 +20,7 @@ public class ParticleActionForge<T extends ParticleOptions, M extends ModBaseFor
         super.onRegisterModInit(eConfig);
 
         if (eConfig.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
-            RegisterParticleProvidersEvent.getBus(eConfig.getMod().getModBusGroup()).addListener((RegisterParticleProvidersEvent event) -> handleClientSideRegistration(eConfig, event));
+            RegisterParticleProvidersEvent.BUS.addListener((RegisterParticleProvidersEvent event) -> handleClientSideRegistration(eConfig, event));
         }
     }
 
@@ -31,7 +31,7 @@ public class ParticleActionForge<T extends ParticleOptions, M extends ModBaseFor
         if (factory != null) {
             event.registerSpecial(eConfig.getInstance(), factory);
         }
-        ParticleEngine.SpriteParticleRegistration<T> metaFactory = clientComponent.getParticleMetaFactory();
+        ParticleResources.SpriteParticleRegistration<T> metaFactory = clientComponent.getParticleMetaFactory();
         if (metaFactory != null) {
             event.registerSpriteSet(eConfig.getInstance(), metaFactory);
         }

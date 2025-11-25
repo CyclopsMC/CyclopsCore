@@ -4,14 +4,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.cyclops.cyclopscore.nbt.path.NbtParseException;
 import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationAdapter;
 import org.cyclops.cyclopscore.nbt.path.navigate.NbtPathNavigationLeafWildcard;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ public class TestNbtPathExpressionHandlerUnion {
 
     private NbtPathExpressionParseHandlerUnion handler;
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         handler = new NbtPathExpressionParseHandlerUnion();
     }
@@ -109,10 +110,10 @@ public class TestNbtPathExpressionHandlerUnion {
         assertThat(expression.asNavigation(NbtPathNavigationLeafWildcard.INSTANCE), instanceOf(NbtPathNavigationAdapter.class));
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testMatchNavigationList() throws NbtParseException {
         INbtPathExpression expression = handler.handlePrefixOf("[0,1]", 0).getPrefixExpression();
-        expression.asNavigation(NbtPathNavigationLeafWildcard.INSTANCE);
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> expression.asNavigation(NbtPathNavigationLeafWildcard.INSTANCE));
     }
 
     @Test

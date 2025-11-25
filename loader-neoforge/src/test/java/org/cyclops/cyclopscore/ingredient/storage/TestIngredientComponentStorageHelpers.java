@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
 import org.cyclops.cyclopscore.ingredient.collection.IngredientCollectionPrototypeMap;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
@@ -19,7 +19,7 @@ public class TestIngredientComponentStorageHelpers {
     private IngredientCollectionPrototypeMap<Integer, Boolean> destinationInnerStorage;
     private IIngredientComponentStorage<Integer, Boolean> destinationStorage;
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         sourceInnerStorage = new IngredientCollectionPrototypeMap<>(IngredientComponentStubs.SIMPLE);
         sourceStorage = new IngredientComponentStorageCollectionWrapper<>(sourceInnerStorage, 100, 10);

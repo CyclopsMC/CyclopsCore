@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.client.gui.component.input;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.component.button.ButtonArrow;
 
@@ -106,9 +107,9 @@ public class WidgetArrowedListField<E> extends WidgetTextFieldExtended {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton) {
-        return arrowLeft.mouseClicked(mouseX, mouseY, mouseButton)
-                || arrowRight.mouseClicked(mouseX, mouseY, mouseButton)
-                || super.mouseClicked(mouseX, mouseY, mouseButton);
+    public boolean mouseClicked(MouseButtonEvent mouse, boolean isDoubleClick) {
+        return arrowLeft.mouseClicked(mouse, isDoubleClick)
+                || arrowRight.mouseClicked(mouse, isDoubleClick)
+                || super.mouseClicked(mouse, isDoubleClick);
     }
 }

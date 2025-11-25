@@ -4,8 +4,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleResources;
 import net.minecraft.core.particles.ParticleOptions;
 import org.cyclops.cyclopscore.config.extendedconfig.ParticleConfigCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.ParticleConfigComponentClient;
@@ -32,7 +32,7 @@ public class ParticleActionFabric<T extends ParticleOptions, M extends ModBaseFa
         if (factory != null) {
             ParticleFactoryRegistry.getInstance().register(eConfig.getInstance(), factory);
         }
-        ParticleEngine.SpriteParticleRegistration<T> metaFactory = clientComponent.getParticleMetaFactory();
+        ParticleResources.SpriteParticleRegistration<T> metaFactory = clientComponent.getParticleMetaFactory();
         if (metaFactory != null) {
             ParticleFactoryRegistry.getInstance().register(eConfig.getInstance(), new ParticleFactoryRegistry.PendingParticleFactory<T>() {
                 @Override

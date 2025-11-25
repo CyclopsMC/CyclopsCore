@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.client.particle;
 
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleResources;
 import org.cyclops.cyclopscore.config.extendedconfig.ParticleConfigComponentClient;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -19,11 +19,7 @@ public class ParticleBlurConfigComponentClient<M extends IModBase> extends Parti
 
     @Nullable
     @Override
-    public ParticleEngine.SpriteParticleRegistration<ParticleBlurData> getParticleMetaFactory() {
-        return sprite -> (ParticleProvider<ParticleBlurData>) (particleBlurData, world, x, y, z, motionX, motionY, motionZ) -> {
-            ParticleBlur particle = new ParticleBlur(particleBlurData, world, x, y, z, motionX, motionY, motionZ);
-            particle.pickSprite(sprite);
-            return particle;
-        };
+    public ParticleResources.SpriteParticleRegistration<ParticleBlurData> getParticleMetaFactory() {
+        return sprite -> (particleBlurData, world, x, y, z, motionX, motionY, motionZ, randomSource) -> new ParticleBlur(particleBlurData, world, x, y, z, motionX, motionY, motionZ, sprite.first());
     }
 }
