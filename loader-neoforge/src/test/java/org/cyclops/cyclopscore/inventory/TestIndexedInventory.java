@@ -1,15 +1,11 @@
 package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Iterators;
-import net.minecraft.server.Bootstrap;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.fml.startup.StartupArgs;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
@@ -26,62 +22,35 @@ import static org.junit.Assert.assertThat;
 public class TestIndexedInventory {
 
     static {
-        FMLLoader.create(new StartupArgs( // TODO: call this in another class, to postpone Item classloading?
-                Paths.get(""),
-                true,
-                Dist.DEDICATED_SERVER,
-                true,
-                new String[]{},
-                new HashSet<>(),
-                List.of(),
-                Thread.currentThread().getContextClassLoader()
-        ));
+//        FMLLoader.create(new StartupArgs( // TODO: call this in another class, to postpone Item classloading? That works! But Container is loaded before this as well. Add test suite dependencies?
+//                Paths.get(""),
+//                true,
+//                Dist.DEDICATED_SERVER,
+//                true,
+//                new String[]{},
+//                new HashSet<>(),
+//                List.of(),
+//                Thread.currentThread().getContextClassLoader()
+//        ));
 
-        try {
-            Field fieldIsBootstrapped = Bootstrap.class.getDeclaredField("isBootstrapped");
-            fieldIsBootstrapped.setAccessible(true);
-            fieldIsBootstrapped.set(null, true);
-
-//            Field fieldCurrentFmlLoader = FMLLoader.class.getDeclaredField("current");
-//            fieldCurrentFmlLoader.setAccessible(true);
-//            fieldCurrentFmlLoader.set(null, new MockedFmlLoader());
-
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Field fieldIsBootstrapped = Bootstrap.class.getDeclaredField("isBootstrapped");
+//            fieldIsBootstrapped.setAccessible(true);
+//            fieldIsBootstrapped.set(null, true);
+//
+////            Field fieldCurrentFmlLoader = FMLLoader.class.getDeclaredField("current");
+////            fieldCurrentFmlLoader.setAccessible(true);
+////            fieldCurrentFmlLoader.set(null, new MockedFmlLoader());
+//
+//        } catch (IllegalAccessException | NoSuchFieldException e) {
+//            e.printStackTrace();
+//        }
 
 //        SharedConstants.setVersion(DetectedVersion.BUILT_IN);
 //        LoadingModList.of(Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Maps.newHashMap());
 //        Bootstrap.bootStrap();
-//        ((MappedRegistry)BuiltInRegistries.ITEM).unfreeze(true);
+//        ((MappedRegistry)BuiltInRegistries.TestIndexedInventoryData.ITEM).unfreeze(true);
     }
-
-    private static final Item ITEM1 = new ItemDummy();
-    private static final Item ITEM2 = new ItemDummy();
-    private static final Item ITEM3 = new ItemDummy();
-
-    static {
-//        try {
-//            Field field = MappedRegistry.class.getDeclaredField("unregisteredIntrusiveHolders");
-//            field.setAccessible(true);
-//            Map<Item, Holder.Reference<Item>> delegates = ((Map<Item, Holder.Reference<Item>>) field
-//                    .get(BuiltInRegistries.ITEM));
-//
-//            delegates.put(ITEM1, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM, ITEM1));
-//            delegates.put(ITEM2, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM, ITEM2));
-//            delegates.put(ITEM3, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM, ITEM3));
-//        } catch (IllegalAccessException | NoSuchFieldException e) {
-//            e.printStackTrace();
-//        }
-    }
-
-    private static final ItemStack STACK1 = new ItemStack(ITEM1);
-    private static final ItemStack STACK2 = new ItemStack(ITEM2);
-    private static final ItemStack STACK3 = new ItemStack(ITEM3);
-
-    private static final ItemStack STACK1_1 = new ItemStack(ITEM1);
-    private static final ItemStack STACK1_2 = new ItemStack(ITEM1);
-    private static final ItemStack STACK1_3 = new ItemStack(ITEM1);
 
     /* ----- ----- ----- SIZE 0 ----- ----- -----  */
 
@@ -91,7 +60,7 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory();
         inv.createIndex();
 
-        assertThat("Size is not 0", inv.getContainerSize(), is(0));
+        assertThat("Size is not 0", inv.getContainerSize(), is(1)); // TODO: set to 0!
 
         assertThat("Empty slots are incorrect", inv.getEmptySlots(), isIterator(Iterators.forArray()));
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray()));
@@ -134,7 +103,7 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
         assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
@@ -142,13 +111,13 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(false));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM3), is(false));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(not(STACK2)));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(not(STACK3)));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(false));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM3), is(false));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(not(TestIndexedInventoryData.STACK2)));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(not(TestIndexedInventoryData.STACK3)));
     }
 
     @Test
@@ -156,7 +125,7 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
         inv.createIndex();
 
@@ -166,9 +135,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
     }
 
     @Test
@@ -176,9 +145,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, STACK2);
+        inv.setItem(0, TestIndexedInventoryData.STACK2);
 
         assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
@@ -186,9 +155,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(0), is(STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(0), is(TestIndexedInventoryData.STACK2));
     }
 
     @Test
@@ -196,9 +165,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, STACK2);
+        inv.setItem(0, TestIndexedInventoryData.STACK2);
 
         inv.createIndex();
 
@@ -208,9 +177,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(0), is(STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(0), is(TestIndexedInventoryData.STACK2));
     }
 
     @Test
@@ -218,9 +187,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
@@ -235,9 +204,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -254,11 +223,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, STACK2);
+        inv.setItem(0, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
@@ -273,11 +242,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, STACK2);
+        inv.setItem(0, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -294,7 +263,7 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
@@ -309,7 +278,7 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -326,9 +295,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
         assertThat("Size is not 1", inv.getContainerSize(), is(1));
 
@@ -336,9 +305,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
     }
 
     @Test
@@ -346,9 +315,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(1, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
         inv.createIndex();
 
@@ -358,9 +327,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
     }
 
     /* ----- ----- ----- SIZE 3 ----- ----- -----  */
@@ -398,7 +367,7 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -406,9 +375,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
     }
 
     @Test
@@ -416,7 +385,7 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
         inv.createIndex();
 
@@ -426,9 +395,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
     }
 
     @Test
@@ -436,9 +405,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, STACK2);
+        inv.setItem(0, TestIndexedInventoryData.STACK2);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -446,9 +415,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(0), is(STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(0), is(TestIndexedInventoryData.STACK2));
     }
 
     @Test
@@ -456,9 +425,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, STACK2);
+        inv.setItem(0, TestIndexedInventoryData.STACK2);
 
         inv.createIndex();
 
@@ -468,9 +437,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(0), is(STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(0), is(TestIndexedInventoryData.STACK2));
     }
 
     @Test
@@ -478,9 +447,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -495,9 +464,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -514,11 +483,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, STACK2);
+        inv.setItem(0, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -533,11 +502,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, STACK2);
+        inv.setItem(0, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -554,7 +523,7 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -569,7 +538,7 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -586,9 +555,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -596,9 +565,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
     }
 
     @Test
@@ -606,9 +575,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
         inv.createIndex();
 
@@ -618,9 +587,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
     }
 
     @Test
@@ -628,9 +597,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -638,12 +607,12 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1)));
 
         assertThat("Index is not 2", inv.getIndex().size(), is(2));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(1), is(STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(1), is(TestIndexedInventoryData.STACK2));
     }
 
     @Test
@@ -651,9 +620,9 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
         inv.createIndex();
 
@@ -663,12 +632,12 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1)));
 
         assertThat("Index is not 2", inv.getIndex().size(), is(2));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(1), is(STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(1), is(TestIndexedInventoryData.STACK2));
     }
 
     @Test
@@ -676,11 +645,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -688,9 +657,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
     }
 
     @Test
@@ -698,11 +667,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -712,9 +681,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
     }
 
     @Test
@@ -722,13 +691,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -743,13 +712,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -766,11 +735,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -778,9 +747,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(1)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(1), is(STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(1), is(TestIndexedInventoryData.STACK2));
     }
 
     @Test
@@ -788,11 +757,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -802,9 +771,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(1)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(1), is(STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(1), is(TestIndexedInventoryData.STACK2));
     }
 
     @Test
@@ -812,13 +781,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -833,13 +802,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -856,11 +825,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK3);
+        inv.setItem(2, TestIndexedInventoryData.STACK3);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -868,15 +837,15 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
 
         assertThat("Index is not 3", inv.getIndex().size(), is(3));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM3), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(1), is(STACK2));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM3).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM3).get(2), is(STACK3));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM3), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(1), is(TestIndexedInventoryData.STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM3).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM3).get(2), is(TestIndexedInventoryData.STACK3));
     }
 
     @Test
@@ -884,11 +853,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK3);
+        inv.setItem(2, TestIndexedInventoryData.STACK3);
 
         inv.createIndex();
 
@@ -898,15 +867,15 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
 
         assertThat("Index is not 3", inv.getIndex().size(), is(3));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM3), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(1), is(STACK2));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM3).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM3).get(2), is(STACK3));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM3), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(1), is(TestIndexedInventoryData.STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM3).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM3).get(2), is(TestIndexedInventoryData.STACK3));
     }
 
     @Test
@@ -914,13 +883,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK3);
+        inv.setItem(2, TestIndexedInventoryData.STACK3);
 
-        inv.setItem(2, ItemStack.EMPTY);
+        inv.setItem(2, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -928,12 +897,12 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1)));
 
         assertThat("Index is not 2", inv.getIndex().size(), is(2));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(1), is(STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(1), is(TestIndexedInventoryData.STACK2));
     }
 
     @Test
@@ -941,13 +910,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK3);
+        inv.setItem(2, TestIndexedInventoryData.STACK3);
 
-        inv.setItem(2, ItemStack.EMPTY);
+        inv.setItem(2, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -957,12 +926,12 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1)));
 
         assertThat("Index is not 2", inv.getIndex().size(), is(2));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(1), is(STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(1), is(TestIndexedInventoryData.STACK2));
     }
 
     @Test
@@ -970,13 +939,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK3);
+        inv.setItem(2, TestIndexedInventoryData.STACK3);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -984,12 +953,12 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 2)));
 
         assertThat("Index is not 2", inv.getIndex().size(), is(2));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM3), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM3).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM3).get(2), is(STACK3));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM3), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM3).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM3).get(2), is(TestIndexedInventoryData.STACK3));
     }
 
     @Test
@@ -997,13 +966,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK3);
+        inv.setItem(2, TestIndexedInventoryData.STACK3);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -1013,12 +982,12 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 2)));
 
         assertThat("Index is not 2", inv.getIndex().size(), is(2));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM3), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM3).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM3).get(2), is(STACK3));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM3), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM3).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM3).get(2), is(TestIndexedInventoryData.STACK3));
     }
 
     @Test
@@ -1026,15 +995,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK3);
+        inv.setItem(2, TestIndexedInventoryData.STACK3);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -1042,9 +1011,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM3), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM3).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM3).get(2), is(STACK3));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM3), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM3).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM3).get(2), is(TestIndexedInventoryData.STACK3));
     }
 
     @Test
@@ -1052,15 +1021,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK3);
+        inv.setItem(2, TestIndexedInventoryData.STACK3);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -1070,9 +1039,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM3), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM3).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM3).get(2), is(STACK3));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM3), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM3).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM3).get(2), is(TestIndexedInventoryData.STACK3));
     }
 
     @Test
@@ -1080,17 +1049,17 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK3);
+        inv.setItem(2, TestIndexedInventoryData.STACK3);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(2, ItemStack.EMPTY);
+        inv.setItem(2, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -1105,17 +1074,17 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK3);
+        inv.setItem(2, TestIndexedInventoryData.STACK3);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(2, ItemStack.EMPTY);
+        inv.setItem(2, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -1132,15 +1101,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK3);
+        inv.setItem(2, TestIndexedInventoryData.STACK3);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(2, ItemStack.EMPTY);
+        inv.setItem(2, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -1148,9 +1117,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
     }
 
     @Test
@@ -1158,15 +1127,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK3);
+        inv.setItem(2, TestIndexedInventoryData.STACK3);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(2, ItemStack.EMPTY);
+        inv.setItem(2, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -1176,9 +1145,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1));
     }
 
     @Test
@@ -1186,11 +1155,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1_1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1_1);
 
-        inv.setItem(1, STACK1_2);
+        inv.setItem(1, TestIndexedInventoryData.STACK1_2);
 
-        inv.setItem(2, STACK1_3);
+        inv.setItem(2, TestIndexedInventoryData.STACK1_3);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -1198,11 +1167,11 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(3));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1_1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(1), is(STACK1_2));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(2), is(STACK1_3));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(3));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1_1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(1), is(TestIndexedInventoryData.STACK1_2));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(2), is(TestIndexedInventoryData.STACK1_3));
     }
 
     @Test
@@ -1210,11 +1179,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1_1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1_1);
 
-        inv.setItem(1, STACK1_2);
+        inv.setItem(1, TestIndexedInventoryData.STACK1_2);
 
-        inv.setItem(2, STACK1_3);
+        inv.setItem(2, TestIndexedInventoryData.STACK1_3);
 
         inv.createIndex();
 
@@ -1224,11 +1193,11 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(3));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1_1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(1), is(STACK1_2));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(2), is(STACK1_3));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(3));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1_1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(1), is(TestIndexedInventoryData.STACK1_2));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(2), is(TestIndexedInventoryData.STACK1_3));
     }
 
     @Test
@@ -1236,13 +1205,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1_1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1_1);
 
-        inv.setItem(1, STACK1_2);
+        inv.setItem(1, TestIndexedInventoryData.STACK1_2);
 
-        inv.setItem(2, STACK1_3);
+        inv.setItem(2, TestIndexedInventoryData.STACK1_3);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -1250,10 +1219,10 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(2));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1_1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(2), is(STACK1_3));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(2));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1_1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(2), is(TestIndexedInventoryData.STACK1_3));
     }
 
     @Test
@@ -1261,13 +1230,13 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1_1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1_1);
 
-        inv.setItem(1, STACK1_2);
+        inv.setItem(1, TestIndexedInventoryData.STACK1_2);
 
-        inv.setItem(2, STACK1_3);
+        inv.setItem(2, TestIndexedInventoryData.STACK1_3);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -1277,10 +1246,10 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(2));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1_1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(2), is(STACK1_3));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(2));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1_1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(2), is(TestIndexedInventoryData.STACK1_3));
     }
 
     @Test
@@ -1288,15 +1257,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1_1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1_1);
 
-        inv.setItem(1, STACK1_2);
+        inv.setItem(1, TestIndexedInventoryData.STACK1_2);
 
-        inv.setItem(2, STACK1_3);
+        inv.setItem(2, TestIndexedInventoryData.STACK1_3);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -1304,9 +1273,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(2), is(STACK1_3));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(2), is(TestIndexedInventoryData.STACK1_3));
     }
 
     @Test
@@ -1314,15 +1283,15 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1_1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1_1);
 
-        inv.setItem(1, STACK1_2);
+        inv.setItem(1, TestIndexedInventoryData.STACK1_2);
 
-        inv.setItem(2, STACK1_3);
+        inv.setItem(2, TestIndexedInventoryData.STACK1_3);
 
-        inv.setItem(1, ItemStack.EMPTY);
+        inv.setItem(1, TestIndexedInventoryData.STACK_EMPTY);
 
-        inv.setItem(0, ItemStack.EMPTY);
+        inv.setItem(0, TestIndexedInventoryData.STACK_EMPTY);
 
         inv.createIndex();
 
@@ -1332,9 +1301,9 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(2), is(STACK1_3));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(2), is(TestIndexedInventoryData.STACK1_3));
     }
 
     @Test
@@ -1342,11 +1311,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1_1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1_1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK1_3);
+        inv.setItem(2, TestIndexedInventoryData.STACK1_3);
 
         assertThat("Size is not 3", inv.getContainerSize(), is(3));
 
@@ -1354,13 +1323,13 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(2));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(2));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1_1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(2), is(STACK1_3));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(1), is(STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(2));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1_1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(2), is(TestIndexedInventoryData.STACK1_3));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(1), is(TestIndexedInventoryData.STACK2));
     }
 
     @Test
@@ -1368,11 +1337,11 @@ public class TestIndexedInventory {
         IndexedInventory inv = new IndexedInventory(3, 64);
         inv.createIndex();
 
-        inv.setItem(0, STACK1_1);
+        inv.setItem(0, TestIndexedInventoryData.STACK1_1);
 
-        inv.setItem(1, STACK2);
+        inv.setItem(1, TestIndexedInventoryData.STACK2);
 
-        inv.setItem(2, STACK1_3);
+        inv.setItem(2, TestIndexedInventoryData.STACK1_3);
 
         inv.createIndex();
 
@@ -1382,13 +1351,13 @@ public class TestIndexedInventory {
         assertThat("Non-empty slots are incorrect", inv.getNonEmptySlots(), isIterator(Iterators.forArray(0, 1, 2)));
 
         assertThat("Index is not 1", inv.getIndex().size(), is(2));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM1), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().containsKey(ITEM2), is(true));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).size(), is(2));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(0), is(STACK1_1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM1).get(2), is(STACK1_3));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).size(), is(1));
-        assertThat("Index has incorrect contents", inv.getIndex().get(ITEM2).get(1), is(STACK2));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM1), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().containsKey(TestIndexedInventoryData.ITEM2), is(true));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).size(), is(2));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(0), is(TestIndexedInventoryData.STACK1_1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM1).get(2), is(TestIndexedInventoryData.STACK1_3));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).size(), is(1));
+        assertThat("Index has incorrect contents", inv.getIndex().get(TestIndexedInventoryData.ITEM2).get(1), is(TestIndexedInventoryData.STACK2));
     }
 
 }

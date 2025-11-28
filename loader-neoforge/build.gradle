@@ -49,6 +49,7 @@ runs {
         modSource project.sourceSets.main
         modSource project.sourceSets.api
     }
+    junit {}
 }
 
 javadoc {
