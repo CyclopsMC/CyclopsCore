@@ -9,8 +9,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerCapacity;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -37,39 +40,31 @@ public interface IFluidHelpersNeoForge {
     public FluidStack copy(FluidStack fluidStack);
 
     /**
-     * If this destination can completely contain the given fluid in the given source.
-     * @param source The source of the fluid that has to be moved.
-     * @param destination The target of the fluid that has to be moved.
-     * @return If the destination can completely contain the fluid of the source.
-     */
-    public boolean canCompletelyFill(IFluidHandler source, IFluidHandler destination);
-
-    /**
      * Get the fluid contained in a fluid handler.
      * @param fluidHandler The fluid handler.
      * @return The fluid.
      */
-    public FluidStack getFluid(@Nullable IFluidHandler fluidHandler);
+    public FluidStack getFluid(@Nullable ResourceHandler<FluidResource> fluidHandler);
 
     /**
      * Check if the fluid handler is not empty.
      * @param fluidHandler The fluid handler.
      * @return If it is not empty.
      */
-    public boolean hasFluid(@Nullable IFluidHandler fluidHandler);
+    public boolean hasFluid(@Nullable ResourceHandler<FluidResource> fluidHandler);
 
     /**
      * Get the capacity of a fluid handler.
      * @param fluidHandler The fluid handler.
      * @return The capacity.
      */
-    public int getCapacity(@Nullable IFluidHandler fluidHandler);
+    public long getCapacity(@Nullable ResourceHandler<FluidResource> fluidHandler);
 
     /**
-     * @param itemStack The itemstack
+     * @param itemAccess The item access
      * @return The item capacity fluid handler.
      */
-    public Optional<IFluidHandlerItemCapacity> getFluidHandlerItemCapacity(ItemStack itemStack);
+    public Optional<IFluidHandlerCapacity> getFluidHandlerItemCapacity(ItemAccess itemAccess);
 
     /**
      * Extract the given fluid amount from any item inside the player's inventory.
@@ -77,24 +72,24 @@ public interface IFluidHelpersNeoForge {
      * @param blacklistedStack The itemstack to skip. Useful if this is the stack that you are inserting to.
      * @param fluidWhitelist A fluid to transfer, can be null to allow any fluid to be transferred.
      * @param player The player to scan the inventory from.
-     * @param action The fluid action.
+     * @param transaction The transaction.
      * @return The extracted fluidstack.
      */
     public FluidStack extractFromInventory(int amount, @Nullable ItemStack blacklistedStack,
-                                                  @Nullable Fluid fluidWhitelist, Player player,
-                                                  IFluidHandler.FluidAction action);
+                                           @Nullable Fluid fluidWhitelist, Player player,
+                                           Transaction transaction);
 
     /**
      * Extract the given fluid amount from the given item, or from the player's inventory if that fails.
      * @param amount A fluid amount to extract.
      * @param itemStack The item to extract from first.
      * @param player The player to scan the inventory from.
-     * @param action The fluid action.
+     * @param transaction The transaction.
      * @return The extracted fluidstack.
      */
     public FluidStack extractFromItemOrInventory(int amount, ItemStack itemStack,
-                                                        @Nullable Player player,
-                                                        IFluidHandler.FluidAction action);
+                                                 @Nullable Player player,
+                                                 Transaction transaction);
 
     /**
      * Try placing or picking up fluids from the held item.
@@ -104,14 +99,8 @@ public interface IFluidHelpersNeoForge {
      * @param world The world.
      * @param blockPos The target position.
      * @param side The target side.
+     * @return The moved fluid.
      */
-    public void placeOrPickUpFluid(Player player, InteractionHand hand, Level world, BlockPos blockPos, Direction side);
-
-    /**
-     * Convert a boolean-based simulate to a fluid action enum value.
-     * @param simulate If in simulation mode.
-     * @return The fluid action.
-     */
-    public IFluidHandler.FluidAction simulateBooleanToAction(boolean simulate);
+    public FluidStack placeOrPickUpFluid(Player player, InteractionHand hand, Level world, BlockPos blockPos, Direction side);
 
 }

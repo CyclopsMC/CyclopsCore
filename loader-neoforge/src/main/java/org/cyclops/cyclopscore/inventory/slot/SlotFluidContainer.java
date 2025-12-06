@@ -4,13 +4,12 @@ import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 /**
  * Slots that will accept buckets and fluid containers.
@@ -34,19 +33,19 @@ public class SlotFluidContainer extends Slot {
 
     public static boolean checkIsItemValid(ItemStack itemStack, @Nullable Fluid fluid) {
         if (!itemStack.isEmpty()) {
-            Optional<IFluidHandlerItem> fluidHandler = FluidUtil.getFluidHandler(itemStack);
-            return fluidHandler.map(h -> {
-                if (fluid == null) {
+            ItemAccess itemAccess = ItemAccess.forStack(itemStack);
+            ResourceHandler<FluidResource> fluidHandler = itemAccess.getCapability(Capabilities.Fluid.ITEM);
+            if (fluidHandler == null) {
+                return false;
+            }
+            if (fluid == null) {
+                return true;
+            }
+            for (int i = 0; i < fluidHandler.size(); i++) {
+                if (fluidHandler.isValid(0, FluidResource.of(fluid))) {
                     return true;
                 }
-                for (int i = 0; i < h.getTanks(); i++) {
-                    if (h.isFluidValid(0, new FluidStack(fluid, 1))
-                            || h.isFluidValid(0, new FluidStack(fluid, IModHelpersNeoForge.get().getFluidHelpers().getBucketVolume()))) {
-                        return true;
-                    }
-                }
-                return false;
-            }).orElse(false);
+            }
         }
 
         return false;

@@ -11,7 +11,6 @@ import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.advancement.criterion.*;
-import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacityConfig;
 import org.cyclops.cyclopscore.client.particle.ParticleBlurConfig;
 import org.cyclops.cyclopscore.client.particle.ParticleDropColoredConfig;
 import org.cyclops.cyclopscore.command.*;
@@ -145,9 +144,6 @@ public class CyclopsCoreNeoForge extends ModBaseNeoForge<CyclopsCoreNeoForge> {
         super.onConfigsRegister(configHandler);
 
         configHandler.addConfigurable(new GeneralConfig(this));
-
-        // Capabilities
-        configHandler.addConfigurable(new FluidHandlerItemCapacityConfig());
 
         // Particles
         configHandler.addConfigurable(new ParticleBlurConfig<>(this));

@@ -4,9 +4,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerCapacity;
-import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerMutable;
 
 /**
  * A simple fluid tank.
@@ -14,14 +13,34 @@ import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerMutable;
  * @author rubensworks
  *
  */
-public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHandlerMutable {
+public class Tank extends FluidStacksResourceHandler implements IFluidHandlerCapacity {
 
     /**
      * Make a new fluid tank.
      * @param capacity The capacity (mB) for the tank.
      */
     public Tank(int capacity) {
-        super(capacity);
+        super(1, capacity);
+    }
+
+    public FluidStack getFluid() {
+        return size() == 0 ? FluidStack.EMPTY : this.stacks.get(0);
+    }
+
+    public int getFluidAmount() {
+        return getFluid().getAmount();
+    }
+
+    public void setFluid(FluidStack fluid) {
+        this.stacks.set(0, fluid);
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     /**
@@ -95,7 +114,6 @@ public class Tank extends FluidTank implements IFluidHandlerCapacity, IFluidHand
         setCapacity(input.getInt("capacity").orElseThrow());
     }
 
-    @Override
     public void setFluidInTank(int tank, FluidStack fluidStack) {
         if (tank == 0) {
             setFluid(fluidStack);

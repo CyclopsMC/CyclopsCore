@@ -8,6 +8,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.cyclops.cyclopscore.persist.IDirtyMarkListener;
 
 import java.util.List;
@@ -58,41 +60,19 @@ public class SingleUseTank extends Tank {
     }
 
     @Override
-    public int fill(FluidStack resource, FluidAction action) {
-        Fluid acceptedFluid = getAcceptedFluid();
-        int filled = 0;
-        if (resource.isEmpty()) {
-            filled = 0;
-        } else {
-            if (action.execute() && acceptedFluid == Fluids.EMPTY) {
-                acceptedFluid = resource.getFluid();
-            }
-            if (acceptedFluid == Fluids.EMPTY || acceptedFluid == resource.getFluid()) {
-                filled = super.fill(resource, action);
-            }
+    public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        if (acceptedFluid != Fluids.EMPTY && !resource.is(acceptedFluid)) {
+            return 0;
         }
-        if(action.execute() && filled > 0) {
-            sendUpdate();
-        }
-        return filled;
+        return super.insert(index, resource, amount, transaction);
     }
 
     @Override
-    public FluidStack drain(int maxDrain, FluidAction action) {
-        FluidStack drained = super.drain(maxDrain, action);
-        if (action.execute() && !drained.isEmpty()) {
+    protected void onContentsChanged(int index, FluidStack previousContents) {
+        super.onContentsChanged(index, previousContents);
+        if (getFluid() != previousContents) {
             sendUpdate();
         }
-        return drained;
-    }
-
-    @Override
-    public FluidStack drain(FluidStack resource, FluidAction action) {
-        FluidStack drained = super.drain(resource, action);
-        if (action.execute() && !drained.isEmpty()) {
-            sendUpdate();
-        }
-        return drained;
     }
 
     protected void sendUpdate() {
@@ -110,7 +90,6 @@ public class SingleUseTank extends Tank {
      */
     public void reset() {
         acceptedFluid = Fluids.EMPTY;
-        setValidator(fluidStack -> true);
     }
 
     /**
@@ -119,11 +98,6 @@ public class SingleUseTank extends Tank {
      */
     public void setAcceptedFluid(Fluid fluid) {
         this.acceptedFluid = Objects.requireNonNull(fluid);
-        if (fluid == Fluids.EMPTY) {
-            setValidator(fluidStack -> true);
-        } else {
-            setValidator(fluidStack -> fluidStack.getFluid() == fluid);
-        }
     }
 
     /**

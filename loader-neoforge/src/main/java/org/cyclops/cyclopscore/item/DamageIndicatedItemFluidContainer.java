@@ -10,10 +10,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.capability.fluid.FluidHandlerItemCapacity;
 
@@ -55,9 +57,8 @@ public abstract class DamageIndicatedItemFluidContainer extends Item implements 
     }
 
     private void registerCapability(RegisterCapabilitiesEvent event) {
-        // TODO: restore
-//        event.registerItem(Capabilities.FluidHandler.ITEM, (itemStack, context) -> new FluidHandlerItemCapacity(itemStack, capacity, getFluid()), this);
-        event.registerItem(org.cyclops.cyclopscore.Capabilities.Item.FLUID_HANDLER_CAPACITY, (itemStack, context) -> new FluidHandlerItemCapacity(itemStack, capacity, getFluid()), this);
+        event.registerItem(Capabilities.Fluid.ITEM, (itemStack, context) -> new FluidHandlerItemCapacity(context, capacity, getFluid()), this);
+        event.registerItem(org.cyclops.cyclopscore.Capabilities.Item.FLUID_HANDLER_CAPACITY, (itemStack, context) -> new FluidHandlerItemCapacity(context, capacity, getFluid()), this);
     }
 
     private void init() {
@@ -116,9 +117,12 @@ public abstract class DamageIndicatedItemFluidContainer extends Item implements 
      * @return If it could be drained.
      */
     public boolean canDrain(int amount, ItemStack itemStack) {
-        IFluidHandler fluidHandler = FluidUtil.getFluidHandler(itemStack).orElse(null);
+        ItemAccess itemAccess = ItemAccess.forStack(itemStack);
+        ResourceHandler<FluidResource> fluidHandler = itemAccess.getCapability(Capabilities.Fluid.ITEM);
         if (fluidHandler == null) return false;
-        FluidStack simulatedDrain = fluidHandler.drain(amount, IFluidHandler.FluidAction.SIMULATE);
-        return simulatedDrain != null && simulatedDrain.getAmount() == amount;
+        try (var tx = Transaction.openRoot()) {
+            int simulatedDrain = fluidHandler.extract(fluidHandler.getResource(0), amount, tx);
+            return simulatedDrain == amount;
+        }
     }
 }

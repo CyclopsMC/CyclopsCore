@@ -14,7 +14,6 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -116,7 +115,7 @@ public class RenderHelpersCommon implements IRenderHelpers {
     }
 
     private static final Function<ResourceLocation, TextureAtlasSprite> TEXTURE_GETTER =
-            location -> Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS).getSprite(location);
+            location -> Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(ResourceLocation.fromNamespaceAndPath("minecraft", "blocks")).getSprite(location);
     @Override
     public Function<ResourceLocation, TextureAtlasSprite> getBlockTextureGetter() {
         return TEXTURE_GETTER;

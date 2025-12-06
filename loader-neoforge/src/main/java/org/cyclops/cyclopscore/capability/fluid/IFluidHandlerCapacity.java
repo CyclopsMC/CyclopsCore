@@ -1,12 +1,13 @@
 package org.cyclops.cyclopscore.capability.fluid;
 
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 /**
  * A fluid handler with a mutable capacity.
  * @author rubensworks
  */
-public interface IFluidHandlerCapacity extends IFluidHandler {
+public interface IFluidHandlerCapacity extends ResourceHandler<FluidResource> {
 
     public void setTankCapacity(int tank, int capacity);
     public int getTankCapacity(int tank);

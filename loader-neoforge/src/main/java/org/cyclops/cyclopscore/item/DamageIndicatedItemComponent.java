@@ -10,9 +10,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidUtil;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerItemCapacity;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerCapacity;
 import org.cyclops.cyclopscore.helper.IModHelpersNeoForge;
 
 import java.util.Locale;
@@ -55,12 +56,15 @@ public class DamageIndicatedItemComponent {
      */
     public void fillDefaultCreativeTabEntries(NonNullList<ItemStack> items, Fluid fluid) {
         // Add the 'full' container.
-        ItemStack itemStackFull = new ItemStack(this.item);
-        IFluidHandlerItemCapacity fluidHanderFull = IModHelpersNeoForge.get().getFluidHelpers().getFluidHandlerItemCapacity(itemStackFull).orElse(null);
+        ItemAccess itemStackFullAccess = ItemAccess.forStack(new ItemStack(this.item));
+        IFluidHandlerCapacity fluidHanderFull = IModHelpersNeoForge.get().getFluidHelpers().getFluidHandlerItemCapacity(itemStackFullAccess).orElse(null);
         if (fluidHanderFull != null) {
-            fluidHanderFull.fill(new FluidStack(fluid, fluidHanderFull.getCapacity()), IFluidHandler.FluidAction.EXECUTE);
+            try (var tx = Transaction.openRoot()) {
+                fluidHanderFull.insert(FluidResource.of(fluid), fluidHanderFull.getTankCapacity(0), tx);
+                tx.commit();
+            }
         }
-        items.add(itemStackFull);
+        items.add(itemStackFullAccess.getResource().toStack());
 
         // Add the 'empty' container.
         ItemStack itemStackEmpty = new ItemStack(item);
@@ -74,11 +78,11 @@ public class DamageIndicatedItemComponent {
      */
     public MutableComponent getInfo(ItemStack itemStack) {
         int amount = 0;
-        IFluidHandlerItemCapacity fluidHander = IModHelpersNeoForge.get().getFluidHelpers().getFluidHandlerItemCapacity(itemStack).orElse(null);
-        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(FluidStack.EMPTY);
+        FluidStack fluidStack = net.neoforged.neoforge.transfer.fluid.FluidUtil.getFirstStackContained(itemStack);
         if (!fluidStack.isEmpty())
             amount = fluidStack.getAmount();
-        return getInfo(fluidStack, amount, fluidHander == null ? 0 : fluidHander.getCapacity());
+        IFluidHandlerCapacity fluidHander = IModHelpersNeoForge.get().getFluidHelpers().getFluidHandlerItemCapacity(ItemAccess.forStack(itemStack)).orElse(null);
+        return getInfo(fluidStack, amount, fluidHander == null ? 0 : fluidHander.getTankCapacity(0));
     }
 
     /**
@@ -120,9 +124,9 @@ public class DamageIndicatedItemComponent {
      * @return The displayed durability.
      */
     public int getDurability(ItemStack itemStack) {
-        IFluidHandlerItemCapacity fluidHander = IModHelpersNeoForge.get().getFluidHelpers().getFluidHandlerItemCapacity(itemStack).orElse(null);
-        FluidStack fluidStack = FluidUtil.getFluidContained(itemStack).orElse(FluidStack.EMPTY);
-        double capacity = fluidHander == null ? 0 : fluidHander.getCapacity();
+        FluidStack fluidStack = net.neoforged.neoforge.transfer.fluid.FluidUtil.getFirstStackContained(itemStack);
+        IFluidHandlerCapacity fluidHander = IModHelpersNeoForge.get().getFluidHelpers().getFluidHandlerItemCapacity(ItemAccess.forStack(itemStack)).orElse(null);
+        double capacity = fluidHander == null ? 0 : fluidHander.getTankCapacity(0);
         double amount = IModHelpersNeoForge.get().getFluidHelpers().getAmount(fluidStack);
         return (int) Math.round(amount * 13 / capacity);
     }
