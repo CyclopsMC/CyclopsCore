@@ -18,6 +18,7 @@ import java.util.stream.StreamSupport;
 /**
  * A {@link org.cyclops.commoncapabilities.api.capability.itemhandler.ISlotlessItemHandler}
  * that uses the index from a {@link IndexedInventory}.
+ * @see IndexedItemResourceHandler
  * @author rubensworks
  */
 public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrapper {
