@@ -4,7 +4,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.ItemMatch;
 import org.cyclops.commoncapabilities.api.capability.itemhandler.SlotlessItemHandlerWrapper;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
@@ -23,7 +24,7 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
 
     private final IInventoryIndexReference inventory;
 
-    public IndexedSlotlessItemHandlerWrapper(IItemHandler itemHandler, IInventoryIndexReference inventory) {
+    public IndexedSlotlessItemHandlerWrapper(ResourceHandler<ItemResource> itemHandler, IInventoryIndexReference inventory) {
         super(itemHandler);
         this.inventory = inventory;
     }
@@ -31,11 +32,11 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
     @Override
     protected PrimitiveIterator.OfInt getNonFullSlotsWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
         if (!IngredientComponent.ITEMSTACK.getMatcher().hasCondition(matchFlags, ItemMatch.ITEM)) {
-            return IntStream.range(0, itemHandler.getSlots())
+            return IntStream.range(0, itemHandler.size())
                     .filter(slot -> {
-                        ItemStack slotStack = itemHandler.getStackInSlot(slot);
+                        ItemStack slotStack = IngredientComponent.ITEMSTACK_CONVERTER.fromResource(itemHandler.getResource(slot), itemHandler.getAmountAsInt(slot));
                         return ItemMatch.areItemStacksEqual(slotStack, itemStack, matchFlags)
-                                && slotStack.getCount() < itemHandler.getSlotLimit(slot)
+                                && slotStack.getCount() < itemHandler.getCapacityAsInt(slot, IngredientComponent.ITEMSTACK_CONVERTER.toResource(slotStack))
                                 && slotStack.getCount() < slotStack.getMaxStackSize();
                     })
                     .iterator();
@@ -60,7 +61,7 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
         if (!IngredientComponent.ITEMSTACK.getMatcher().hasCondition(matchFlags, ItemMatch.ITEM)) {
             return intIteratorToStream(getNonEmptySlots())
                     .filter(slot -> {
-                        ItemStack slotStack = itemHandler.getStackInSlot(slot);
+                        ItemStack slotStack = IngredientComponent.ITEMSTACK_CONVERTER.fromResource(itemHandler.getResource(slot), itemHandler.getAmountAsInt(slot));
                         return !slotStack.isEmpty() && ItemMatch.areItemStacksEqual(slotStack, itemStack, matchFlags);
                     })
                     .iterator();
@@ -81,8 +82,8 @@ public class IndexedSlotlessItemHandlerWrapper extends SlotlessItemHandlerWrappe
     @Override
     protected PrimitiveIterator.OfInt getSlotsWithItemStack(@Nonnull ItemStack itemStack, int matchFlags) {
         if (!IngredientComponent.ITEMSTACK.getMatcher().hasCondition(matchFlags, ItemMatch.ITEM)) {
-            return IntStream.range(0, itemHandler.getSlots())
-                    .filter(slot -> ItemMatch.areItemStacksEqual(itemHandler.getStackInSlot(slot), itemStack, matchFlags))
+            return IntStream.range(0, itemHandler.size())
+                    .filter(slot -> ItemMatch.areItemStacksEqual(IngredientComponent.ITEMSTACK_CONVERTER.fromResource(itemHandler.getResource(slot), itemHandler.getAmountAsInt(slot)), itemStack, matchFlags))
                     .iterator();
         }
         Map<Item, Int2ObjectMap<ItemStack>> items = inventory.getIndex();

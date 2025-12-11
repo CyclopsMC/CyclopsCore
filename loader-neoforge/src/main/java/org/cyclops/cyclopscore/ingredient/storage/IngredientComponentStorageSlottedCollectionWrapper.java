@@ -1,5 +1,10 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorageSlotted;
@@ -19,6 +24,7 @@ public class IngredientComponentStorageSlottedCollectionWrapper<T, M> implements
     private final IIngredientListMutable<T, M> ingredientCollection;
     private final long maxSlotQuantity;
     private final long rateLimit;
+    private final Int2ObjectMap<SlotJournal> snapshotJournals;
 
     private long quantity;
 
@@ -27,6 +33,7 @@ public class IngredientComponentStorageSlottedCollectionWrapper<T, M> implements
         this.ingredientCollection = ingredientCollection;
         this.maxSlotQuantity = maxSlotQuantity;
         this.rateLimit = rateLimit;
+        this.snapshotJournals = new Int2ObjectOpenHashMap<>();
 
         this.quantity = 0;
     }
@@ -56,8 +63,17 @@ public class IngredientComponentStorageSlottedCollectionWrapper<T, M> implements
         return matcher.withQuantity(instance, actualQuantity);
     }
 
+    SlotJournal getSnapshotJournal(int slot) {
+        SlotJournal snapshotJournal = snapshotJournals.get(slot);
+        if (snapshotJournal == null) {
+            snapshotJournal = new SlotJournal(slot);
+            snapshotJournals.put(slot, snapshotJournal);
+        }
+        return snapshotJournal;
+    }
+
     @Override
-    public T insert(int slot, @Nonnull T ingredient, boolean simulate) {
+    public T insert(int slot, @Nonnull T ingredient, TransactionContext transaction) {
         T insertingIngredient = rateLimit(ingredient, getMaxQuantity() - this.quantity);
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
         if (!matcher.isEmpty(insertingIngredient)) {
@@ -66,11 +82,10 @@ public class IngredientComponentStorageSlottedCollectionWrapper<T, M> implements
                     || matcher.matches(ingredient, contained, matcher.getExactMatchNoQuantityCondition())) {
                 long addQuantity = Math.min(getMaxQuantity(slot) - matcher.getQuantity(contained),
                         matcher.getQuantity(insertingIngredient));
-                if (!simulate) {
-                    ingredientCollection.set(slot, matcher.withQuantity(ingredient,
-                            matcher.getQuantity(contained) + addQuantity));
-                    this.quantity += addQuantity;
-                }
+                getSnapshotJournal(slot).updateSnapshots(transaction);
+                ingredientCollection.set(slot, matcher.withQuantity(ingredient,
+                        matcher.getQuantity(contained) + addQuantity));
+                this.quantity += addQuantity;
                 return matcher.withQuantity(insertingIngredient, matcher.getQuantity(ingredient) - addQuantity);
             }
         }
@@ -78,17 +93,16 @@ public class IngredientComponentStorageSlottedCollectionWrapper<T, M> implements
     }
 
     @Override
-    public T extract(int slot, long maxQuantity, boolean simulate) {
+    public T extract(int slot, long maxQuantity, TransactionContext transaction) {
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
         T contained = ingredientCollection.get(slot);
         if (!matcher.isEmpty(contained)) {
             T extractingIngredient = rateLimit(contained, maxQuantity);
-            if (!simulate) {
-                long removeQuantity = matcher.getQuantity(extractingIngredient);
-                ingredientCollection.set(slot, matcher.withQuantity(contained,
-                        matcher.getQuantity(contained) - removeQuantity));
-                this.quantity -= removeQuantity;
-            }
+            getSnapshotJournal(slot).updateSnapshots(transaction);
+            long removeQuantity = matcher.getQuantity(extractingIngredient);
+            ingredientCollection.set(slot, matcher.withQuantity(contained,
+                    matcher.getQuantity(contained) - removeQuantity));
+            this.quantity -= removeQuantity;
             return extractingIngredient;
         }
         return matcher.getEmptyInstance();
@@ -115,32 +129,35 @@ public class IngredientComponentStorageSlottedCollectionWrapper<T, M> implements
     }
 
     @Override
-    public T insert(@Nonnull T ingredient, boolean simulate) {
+    public T insert(@Nonnull T ingredient, TransactionContext transaction) {
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
         long givenQuantity = matcher.getQuantity(ingredient);
         for (int slot = 0; slot < getSlots(); slot++) {
-            T insertRemaining = this.insert(slot, ingredient, true);
-            if (matcher.getQuantity(insertRemaining) != givenQuantity) {
-                return simulate ? insertRemaining : this.insert(slot, ingredient, false);
+            getSnapshotJournal(slot).updateSnapshots(transaction);
+            try (var tx = Transaction.open(transaction)) {
+                T insertRemaining = this.insert(slot, ingredient, tx);
+                if (matcher.getQuantity(insertRemaining) != givenQuantity) {
+                    tx.commit();
+                    return insertRemaining;
+                }
             }
         }
         return ingredient;
     }
 
     @Override
-    public T extract(@Nonnull T prototype, M matchCondition, boolean simulate) {
+    public T extract(@Nonnull T prototype, M matchCondition, TransactionContext transaction) {
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
         for (int slot = 0; slot < getSlots(); slot++) {
             T contained = ingredientCollection.get(slot);
             if (!matcher.isEmpty(contained) && matcher.matches(contained, prototype, matchCondition)) {
                 T extractingIngredient = rateLimit(contained, matcher.getQuantity(prototype));
                 if (matcher.matches(prototype, extractingIngredient, matchCondition)) {
-                    if (!simulate) {
-                        long removeQuantity = matcher.getQuantity(extractingIngredient);
-                        ingredientCollection.set(slot, matcher.withQuantity(contained,
-                                matcher.getQuantity(contained) - removeQuantity));
-                        this.quantity -= removeQuantity;
-                    }
+                    getSnapshotJournal(slot).updateSnapshots(transaction);
+                    long removeQuantity = matcher.getQuantity(extractingIngredient);
+                    ingredientCollection.set(slot, matcher.withQuantity(contained,
+                            matcher.getQuantity(contained) - removeQuantity));
+                    this.quantity -= removeQuantity;
                     return extractingIngredient;
                 }
             }
@@ -149,14 +166,48 @@ public class IngredientComponentStorageSlottedCollectionWrapper<T, M> implements
     }
 
     @Override
-    public T extract(long maxQuantity, boolean simulate) {
+    public T extract(long maxQuantity, TransactionContext transaction) {
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
         for (int slot = 0; slot < getSlots(); slot++) {
-            T extracted = this.extract(slot, maxQuantity, true);
-            if (!matcher.isEmpty(extracted)) {
-                return simulate ? extracted : this.extract(slot, maxQuantity, false);
+            getSnapshotJournal(slot).updateSnapshots(transaction);
+            try (var tx = Transaction.open(transaction)) {
+                T extracted = this.extract(slot, maxQuantity, tx);
+                if (!matcher.isEmpty(extracted)) {
+                    tx.commit();
+                    return extracted;
+                }
             }
         }
         return matcher.getEmptyInstance();
+    }
+
+    private class SlotJournal extends SnapshotJournal<T> {
+        private final int index;
+
+        private SlotJournal(int index) {
+            this.index = index;
+        }
+
+        @Override
+        protected T createSnapshot() {
+            return getComponent().getMatcher().copy(ingredientCollection.get(index));
+        }
+
+        @Override
+        protected void revertToSnapshot(T snapshot) {
+            T oldStack = ingredientCollection.get(index);
+            ingredientCollection.set(index, snapshot);
+
+            // Fix quantity
+            long oldQuantity = getComponent().getMatcher().getQuantity(oldStack);
+            quantity += getComponent().getMatcher().getQuantity(snapshot) - oldQuantity;
+        }
+
+        @Override
+        protected void onRootCommit(T originalState) {
+            super.onRootCommit(originalState);
+            // Clear journal to avoid memory leaks
+            snapshotJournals.remove(index);
+        }
     }
 }

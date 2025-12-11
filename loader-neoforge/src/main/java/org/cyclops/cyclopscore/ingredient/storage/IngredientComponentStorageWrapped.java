@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
 import com.google.common.collect.Iterators;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
 
@@ -73,26 +74,26 @@ public class IngredientComponentStorageWrapped<T, M> implements IIngredientCompo
     }
 
     @Override
-    public T insert(@Nonnull T ingredient, boolean simulate) {
+    public T insert(@Nonnull T ingredient, TransactionContext transaction) {
         if (!isInsert()) {
             return ingredient;
         }
-        return getIngredientComponentStorage().insert(ingredient, simulate);
+        return getIngredientComponentStorage().insert(ingredient, transaction);
     }
 
     @Override
-    public T extract(@Nonnull T prototype, M matchCondition, boolean simulate) {
+    public T extract(@Nonnull T prototype, M matchCondition, TransactionContext transaction) {
         if (!isExtract()) {
             return getComponent().getMatcher().getEmptyInstance();
         }
-        return getIngredientComponentStorage().extract(prototype, matchCondition, simulate);
+        return getIngredientComponentStorage().extract(prototype, matchCondition, transaction);
     }
 
     @Override
-    public T extract(long maxQuantity, boolean simulate) {
+    public T extract(long maxQuantity, TransactionContext transaction) {
         if (!isExtract()) {
             return getComponent().getMatcher().getEmptyInstance();
         }
-        return getIngredientComponentStorage().extract(maxQuantity, simulate);
+        return getIngredientComponentStorage().extract(maxQuantity, transaction);
     }
 }

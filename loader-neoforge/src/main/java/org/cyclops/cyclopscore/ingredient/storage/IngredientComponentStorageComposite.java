@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
 import com.google.common.collect.Iterators;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorage;
@@ -55,10 +56,10 @@ public class IngredientComponentStorageComposite<T, M> implements IIngredientCom
     }
 
     @Override
-    public T insert(@NotNull T ingredient, boolean simulate) {
+    public T insert(@NotNull T ingredient, TransactionContext transaction) {
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
         for (IIngredientComponentStorage<T, M> storage : this.storages) {
-            ingredient = storage.insert(ingredient, simulate);
+            ingredient = storage.insert(ingredient, transaction);
             if (matcher.isEmpty(ingredient)) {
                 break;
             }
@@ -67,10 +68,10 @@ public class IngredientComponentStorageComposite<T, M> implements IIngredientCom
     }
 
     @Override
-    public T extract(@NotNull T prototype, M matchCondition, boolean simulate) {
+    public T extract(@NotNull T prototype, M matchCondition, TransactionContext transaction) {
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
         for (IIngredientComponentStorage<T, M> storage : this.storages) {
-            T extracted = storage.extract(prototype, matchCondition, simulate);
+            T extracted = storage.extract(prototype, matchCondition, transaction);
             if (!matcher.isEmpty(extracted)) {
                 return extracted;
             }
@@ -79,10 +80,10 @@ public class IngredientComponentStorageComposite<T, M> implements IIngredientCom
     }
 
     @Override
-    public T extract(long maxQuantity, boolean simulate) {
+    public T extract(long maxQuantity, TransactionContext transaction) {
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
         for (IIngredientComponentStorage<T, M> storage : this.storages) {
-            T extracted = storage.extract(maxQuantity, simulate);
+            T extracted = storage.extract(maxQuantity, transaction);
             if (!matcher.isEmpty(extracted)) {
                 return extracted;
             }

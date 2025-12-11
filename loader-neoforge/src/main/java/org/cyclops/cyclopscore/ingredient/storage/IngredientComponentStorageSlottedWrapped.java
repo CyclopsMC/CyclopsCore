@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.cyclops.commoncapabilities.api.ingredient.storage.IIngredientComponentStorageSlotted;
 
 import javax.annotation.Nonnull;
@@ -50,18 +51,18 @@ public class IngredientComponentStorageSlottedWrapped<T, M> extends IngredientCo
     }
 
     @Override
-    public T insert(int slot, @Nonnull T ingredient, boolean simulate) {
+    public T insert(int slot, @Nonnull T ingredient, TransactionContext transaction) {
         if (!isInsert()) {
             return ingredient;
         }
-        return getIngredientComponentStorage().insert(slot, ingredient, simulate);
+        return getIngredientComponentStorage().insert(slot, ingredient, transaction);
     }
 
     @Override
-    public T extract(int slot, long maxQuantity, boolean simulate) {
+    public T extract(int slot, long maxQuantity, TransactionContext transaction) {
         if (!isExtract()) {
             return getComponent().getMatcher().getEmptyInstance();
         }
-        return getIngredientComponentStorage().extract(slot, maxQuantity, simulate);
+        return getIngredientComponentStorage().extract(slot, maxQuantity, transaction);
     }
 }

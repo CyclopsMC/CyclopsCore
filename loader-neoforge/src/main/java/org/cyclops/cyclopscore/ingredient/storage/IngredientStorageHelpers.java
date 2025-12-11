@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.ingredient.storage;
 
+import com.google.common.collect.Lists;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
@@ -171,6 +172,9 @@ public final class IngredientStorageHelpers {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
         Iterator<T> it = source.iterator(instance, matcher.withoutCondition(matchCondition,
                 source.getComponent().getPrimaryQuantifier().getMatchCondition()));
+        if (source instanceof IngredientComponentStorageCollectionWrapper) {
+            it = Lists.newArrayList(it).iterator();
+        }
         M matchConditionExact;
         if (matcher.hasCondition(matchCondition, source.getComponent().getPrimaryQuantifier().getMatchCondition())) {
             matchConditionExact = matcher.getExactMatchCondition();
@@ -192,6 +196,23 @@ public final class IngredientStorageHelpers {
     }
 
     /**
+     * Convert sources to an iterable.
+     * This is to handle storages that are unsafe wrt to mutations of the underlying storage
+     * while an iterator over it is being iterated.
+     * @param source The source instance.
+     * @return An iterable.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     */
+    protected static <T, M> Iterable<T> storageToIterable(IIngredientComponentStorage<T, M> source) {
+        if (source instanceof IngredientComponentStorageCollectionWrapper) {
+            return Lists.newArrayList(source);
+        } else {
+            return source;
+        }
+    }
+
+    /**
      * Move the first instance that matches the given predicate from source to destination.
      * @param source A source storage to extract from.
      * @param destination A destination storage to insert to.
@@ -210,7 +231,7 @@ public final class IngredientStorageHelpers {
                                            boolean simulate)
             throws InconsistentIngredientInsertionException{
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
-        for (T extractedSimulated : source) {
+        for (T extractedSimulated : storageToIterable(source)) {
             if (predicate.test(extractedSimulated)) {
                 if (matcher.getQuantity(extractedSimulated) > maxQuantity) {
                     extractedSimulated = matcher.withQuantity(extractedSimulated, maxQuantity);
@@ -343,7 +364,7 @@ public final class IngredientStorageHelpers {
                         return matcher.getEmptyInstance();
                     }
 
-                    for (T sourceInstance : source) {
+                    for (T sourceInstance : storageToIterable(source)) {
                         if (matcher.matches(instance, sourceInstance, matcher.withoutCondition(matchCondition,
                                 source.getComponent().getPrimaryQuantifier().getMatchCondition()))) {
                             if (matcher.getQuantity(sourceInstance) != prototypeQuantity) {
@@ -509,7 +530,7 @@ public final class IngredientStorageHelpers {
                         return matcher.getEmptyInstance();
                     }
 
-                    for (T sourceInstance : source) {
+                    for (T sourceInstance : storageToIterable(source)) {
                         if (predicate.test(sourceInstance)) {
                             if (matcher.getQuantity(sourceInstance) != maxQuantity) {
                                 sourceInstance = matcher.withQuantity(sourceInstance, maxQuantity);

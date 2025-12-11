@@ -164,51 +164,67 @@ public class TestIngredientComponentStorageCollectionWrapper {
     @Test
     public void testExtractMatch() {
         assertThat(storage.insert(100, false), is(0));
+        assertThat(storage.getQuantity(), is(100L));
 
         assertThat(storage.extract(10, true, true), is(10));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(100)));
+        assertThat(storage.getQuantity(), is(100L));
 
         assertThat(storage.extract(10, true, false), is(10));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(90)));
+        assertThat(storage.getQuantity(), is(90L));
 
         assertThat(storage.extract(1, true, true), is(1));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(90)));
+        assertThat(storage.getQuantity(), is(90L));
 
         assertThat(storage.extract(1, true, false), is(1));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(89)));
+        assertThat(storage.getQuantity(), is(89L));
 
         assertThat(storage.extract(100, true, true), is(0));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(89)));
+        assertThat(storage.getQuantity(), is(89L));
 
         assertThat(storage.extract(100, true, false), is(0));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(89)));
+        assertThat(storage.getQuantity(), is(89L));
 
         assertThat(storage.extract(89, true, true), is(89));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(89)));
+        assertThat(storage.getQuantity(), is(89L));
 
         assertThat(storage.extract(89, true, false), is(89));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList()));
+        assertThat(storage.getQuantity(), is(0L));
 
 
         assertThat(storage.insert(100, false), is(0));
+        assertThat(storage.getQuantity(), is(100L));
 
         assertThat(storage.extract(10, false, true), is(10));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(100)));
+        assertThat(storage.getQuantity(), is(100L));
 
         assertThat(storage.extract(10, false, false), is(10));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(90)));
+        assertThat(storage.getQuantity(), is(90L));
 
         assertThat(storage.extract(1, false, true), is(1));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(90)));
+        assertThat(storage.getQuantity(), is(90L));
 
         assertThat(storage.extract(1, false, false), is(1));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(89)));
+        assertThat(storage.getQuantity(), is(89L));
 
         assertThat(storage.extract(100, false, true), is(89));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList(89)));
+        assertThat(storage.getQuantity(), is(89L));
 
         assertThat(storage.extract(100, false, false), is(89));
         assertThat(Lists.newArrayList(storage), is(Lists.newArrayList()));
+        assertThat(storage.getQuantity(), is(0L));
     }
 
     @Test
