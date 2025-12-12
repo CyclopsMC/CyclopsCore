@@ -1,11 +1,10 @@
 package org.cyclops.cyclopscore.client.gui.image;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import org.cyclops.cyclopscore.helper.IModHelpers;
@@ -59,10 +58,9 @@ public class Image implements IImage {
     }
 
     @Override
-    public void drawWorldWithAlpha(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
+    public void drawWorldWithAlpha(TextureManager textureManager, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector,
                                    int combinedLight, int combinedOverlay, float x1, float x2, float y1, float y2, float z, float alpha) {
         matrixStack.pushPose();
-        VertexConsumer vb = renderTypeBuffer.getBuffer(RenderType.text(getResourceLocation()));
         float u1, u2, v1, v2;
         u1 = (float) (getSheetX()) / 256F;
         u2 = (float) (getSheetX() + getSheetWidth()) / 256F;
@@ -70,10 +68,12 @@ public class Image implements IImage {
         v2 = (float) (getSheetY() + getSheetHeight()) / 256F;
         int a = Math.round(alpha * 255F);
         Matrix4f matrix = matrixStack.last().pose();
-        vb.addVertex(matrix, x2, y2, z).setColor(255, 255, 255, a).setUv(u2, v2).setLight(combinedLight);
-        vb.addVertex(matrix, x2, y1, z).setColor(255, 255, 255, a).setUv(u2, v1).setLight(combinedLight);
-        vb.addVertex(matrix, x1, y1, z).setColor(255, 255, 255, a).setUv(u1, v1).setLight(combinedLight);
-        vb.addVertex(matrix, x1, y2, z).setColor(255, 255, 255, a).setUv(u1, v2).setLight(combinedLight);
+        submitNodeCollector.submitCustomGeometry(matrixStack, RenderType.text(getResourceLocation()), (pose, vb) -> {
+            vb.addVertex(matrix, x2, y2, z).setColor(255, 255, 255, a).setUv(u2, v2).setLight(combinedLight);
+            vb.addVertex(matrix, x2, y1, z).setColor(255, 255, 255, a).setUv(u2, v1).setLight(combinedLight);
+            vb.addVertex(matrix, x1, y1, z).setColor(255, 255, 255, a).setUv(u1, v1).setLight(combinedLight);
+            vb.addVertex(matrix, x1, y2, z).setColor(255, 255, 255, a).setUv(u1, v2).setLight(combinedLight);
+        });
         matrixStack.popPose();
     }
 

@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.client.gui.image;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.TextureManager;
 
 /**
@@ -35,7 +35,7 @@ public interface IImage {
      * Draw the image in the world.
      * @param textureManager The texture manager.
      * @param matrixStack The matrix stack
-     * @param renderTypeBuffer The render type buffer
+     * @param submitNodeCollector The node collector
      * @param combinedLight The combined light
      * @param combinedOverlay The combined overlay
      * @param x1 Start X
@@ -44,16 +44,16 @@ public interface IImage {
      * @param y2 End Y
      * @param z Z
      */
-    public default void drawWorld(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
+    public default void drawWorld(TextureManager textureManager, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector,
                                   int combinedLight, int combinedOverlay, float x1, float x2, float y1, float y2, float z) {
-        drawWorldWithAlpha(textureManager, matrixStack, renderTypeBuffer, combinedLight, combinedOverlay, x1, x2, y1, y2, z, 1);
+        drawWorldWithAlpha(textureManager, matrixStack, submitNodeCollector, combinedLight, combinedOverlay, x1, x2, y1, y2, z, 1);
     }
 
     /**
      * Draw the image in the world.
      * @param textureManager The texture manager.
      * @param matrixStack The matrix stack
-     * @param renderTypeBuffer The render type buffer
+     * @param submitNodeCollector The node collector
      * @param combinedLight The combined light
      * @param combinedOverlay The combined overlay
      * @param x1 Start X
@@ -61,31 +61,31 @@ public interface IImage {
      * @param y1 Start Y
      * @param y2 End Y
      */
-    public default void drawWorld(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
+    public default void drawWorld(TextureManager textureManager, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector,
                                   int combinedLight, int combinedOverlay, float x1, float x2, float y1, float y2) {
-        drawWorldWithAlpha(textureManager, matrixStack, renderTypeBuffer, combinedLight, combinedOverlay, x1, x2, y1, y2, 1);
+        drawWorldWithAlpha(textureManager, matrixStack, submitNodeCollector, combinedLight, combinedOverlay, x1, x2, y1, y2, 1);
     }
 
     /**
      * Draw the image in the world.
      * @param textureManager The texture manager.
      * @param matrixStack The matrix stack
-     * @param renderTypeBuffer The render type buffer
+     * @param submitNodeCollector The node collector
      * @param combinedLight The combined light
      * @param combinedOverlay The combined overlay
      * @param x2 End X
      * @param y2 End Y
      */
-    public default void drawWorld(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
+    public default void drawWorld(TextureManager textureManager, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector,
                                   int combinedLight, int combinedOverlay, float x2, float y2) {
-        drawWorldWithAlpha(textureManager, matrixStack, renderTypeBuffer, combinedLight, combinedOverlay, x2, y2, 1);
+        drawWorldWithAlpha(textureManager, matrixStack, submitNodeCollector, combinedLight, combinedOverlay, x2, y2, 1);
     }
 
     /**
      * Draw the image in the world.
      * @param textureManager The texture manager.
      * @param matrixStack The matrix stack
-     * @param renderTypeBuffer The render type buffer
+     * @param submitNodeCollector The node collector
      * @param combinedLight The combined light
      * @param combinedOverlay The combined overlay
      * @param x1 Start X
@@ -94,31 +94,31 @@ public interface IImage {
      * @param y2 End Y
      * @param alpha The alpha to render with
      */
-    public default void drawWorldWithAlpha(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
+    public default void drawWorldWithAlpha(TextureManager textureManager, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector,
                                            int combinedLight, int combinedOverlay, float x1, float x2, float y1, float y2, float alpha) {
-        this.drawWorldWithAlpha(textureManager, matrixStack, renderTypeBuffer, combinedLight, combinedOverlay, x1, x2, y1, y2, 0, alpha);
+        this.drawWorldWithAlpha(textureManager, matrixStack, submitNodeCollector, combinedLight, combinedOverlay, x1, x2, y1, y2, 0, alpha);
     }
 
     /**
      * Draw the image in the world.
      * @param textureManager The texture manager.
      * @param matrixStack The matrix stack
-     * @param renderTypeBuffer The render type buffer
+     * @param submitNodeCollector The node collector
      * @param combinedLight The combined light
      * @param combinedOverlay The combined overlay
      * @param x2 End X
      * @param y2 End Y
      * @param alpha The alpha to render with
      */
-    public default void drawWorldWithAlpha(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
+    public default void drawWorldWithAlpha(TextureManager textureManager, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector,
                                            int combinedLight, int combinedOverlay, float x2, float y2, float alpha) {
-        this.drawWorldWithAlpha(textureManager, matrixStack, renderTypeBuffer, combinedLight, combinedOverlay, 0, x2, 0, y2, alpha);
+        this.drawWorldWithAlpha(textureManager, matrixStack, submitNodeCollector, combinedLight, combinedOverlay, 0, x2, 0, y2, alpha);
     }
     /**
      * Draw the image in the world.
      * @param textureManager The texture manager.
      * @param matrixStack The matrix stack
-     * @param renderTypeBuffer The render type buffer
+     * @param submitNodeCollector The node collector
      * @param combinedLight The combined light
      * @param combinedOverlay The combined overlay
      * @param x1 Start X
@@ -128,7 +128,7 @@ public interface IImage {
      * @param z Z
      * @param alpha The alpha to render with
      */
-    public void drawWorldWithAlpha(TextureManager textureManager, PoseStack matrixStack, MultiBufferSource renderTypeBuffer,
+    public void drawWorldWithAlpha(TextureManager textureManager, PoseStack matrixStack, SubmitNodeCollector submitNodeCollector,
                                    int combinedLight, int combinedOverlay, float x1, float x2, float y1, float y2, float z, float alpha);
 
     /**
