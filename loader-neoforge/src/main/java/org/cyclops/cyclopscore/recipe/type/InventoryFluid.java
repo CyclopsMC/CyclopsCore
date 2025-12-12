@@ -6,8 +6,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
 
 /**
  * Default implementation of {@link IInventoryFluid}.
@@ -15,7 +16,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
  */
 public class InventoryFluid extends TransientCraftingContainer implements IInventoryFluid {
 
-    private final IFluidHandler fluidHandler;
+    private final ResourceHandler<FluidResource> fluidHandler;
 
     public InventoryFluid(NonNullList<ItemStack> itemStacks, NonNullList<FluidStack> fluidStacks) {
         super(new AbstractContainerMenu(null, 0) {
@@ -33,18 +34,13 @@ public class InventoryFluid extends TransientCraftingContainer implements IInven
         for (ItemStack itemStack : itemStacks) {
             setItem(slot++, itemStack);
         }
-        if (fluidStacks.size() == 1) {
-            this.fluidHandler = new FluidTank(Integer.MAX_VALUE);
-            this.fluidHandler.fill(fluidStacks.get(0), IFluidHandler.FluidAction.EXECUTE);
-        } else {
-            this.fluidHandler = new FluidHandlerListReadOnly(fluidStacks);
-        }
+        this.fluidHandler = new FluidStacksResourceHandler(fluidStacks, Integer.MAX_VALUE);
     }
 
     @Override
     public boolean isEmpty() {
-        for (int i = 0; i < getFluidHandler().getTanks(); i++) {
-            if (!getFluidHandler().getFluidInTank(i).isEmpty()) {
+        for (int i = 0; i < getFluidHandler().size(); i++) {
+            if (!getFluidHandler().getResource(i).isEmpty()) {
                 return false;
             }
         }
@@ -52,7 +48,7 @@ public class InventoryFluid extends TransientCraftingContainer implements IInven
     }
 
     @Override
-    public IFluidHandler getFluidHandler() {
+    public ResourceHandler<FluidResource> getFluidHandler() {
         return this.fluidHandler;
     }
 

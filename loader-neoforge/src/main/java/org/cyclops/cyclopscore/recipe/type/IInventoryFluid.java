@@ -1,7 +1,8 @@
 package org.cyclops.cyclopscore.recipe.type;
 
 import net.minecraft.world.item.crafting.RecipeInput;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 /**
  * An inventory that can also contain fluids.
@@ -9,6 +10,6 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
  */
 public interface IInventoryFluid extends RecipeInput {
 
-    public IFluidHandler getFluidHandler();
+    public ResourceHandler<FluidResource> getFluidHandler();
 
 }

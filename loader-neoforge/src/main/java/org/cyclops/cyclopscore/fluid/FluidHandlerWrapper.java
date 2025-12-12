@@ -1,58 +1,72 @@
 package org.cyclops.cyclopscore.fluid;
 
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-
-import javax.annotation.Nonnull;
-
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * @author rubensworks
  */
-public class FluidHandlerWrapper implements IFluidHandler {
+public class FluidHandlerWrapper implements ResourceHandler<FluidResource> {
 
-    private final IFluidHandler fluidHandler;
+    private final ResourceHandler<FluidResource> fluidHandler;
 
-    public FluidHandlerWrapper(IFluidHandler fluidHandler) {
+    public FluidHandlerWrapper(ResourceHandler<FluidResource> fluidHandler) {
         this.fluidHandler = fluidHandler;
     }
 
     @Override
-    public int getTanks() {
-        return this.fluidHandler.getTanks();
-    }
-
-    @Nonnull
-    @Override
-    public FluidStack getFluidInTank(int tank) {
-        return this.fluidHandler.getFluidInTank(tank);
+    public int size() {
+        return fluidHandler.size();
     }
 
     @Override
-    public int getTankCapacity(int tank) {
-        return this.fluidHandler.getTankCapacity(tank);
+    public FluidResource getResource(int i) {
+        return fluidHandler.getResource(i);
     }
 
     @Override
-    public boolean isFluidValid(int tank, @Nonnull FluidStack stack) {
-        return this.fluidHandler.isFluidValid(tank, stack);
+    public long getAmountAsLong(int i) {
+        return fluidHandler.getAmountAsLong(i);
     }
 
     @Override
-    public int fill(FluidStack resource, FluidAction action) {
-        return this.fluidHandler.fill(resource, action);
+    public int getAmountAsInt(int index) {
+        return fluidHandler.getAmountAsInt(index);
     }
 
-    @Nonnull
     @Override
-    public FluidStack drain(FluidStack resource, FluidAction action) {
-        return this.fluidHandler.drain(resource, action);
+    public long getCapacityAsLong(int i, FluidResource fluidResource) {
+        return fluidHandler.getCapacityAsLong(i, fluidResource);
     }
 
-    @Nonnull
     @Override
-    public FluidStack drain(int maxDrain, FluidAction action) {
-        return this.fluidHandler.drain(maxDrain, action);
+    public int getCapacityAsInt(int index, FluidResource resource) {
+        return fluidHandler.getCapacityAsInt(index, resource);
+    }
+
+    @Override
+    public boolean isValid(int i, FluidResource fluidResource) {
+        return fluidHandler.isValid(i, fluidResource);
+    }
+
+    @Override
+    public int insert(int i, FluidResource fluidResource, int i1, TransactionContext transactionContext) {
+        return fluidHandler.insert(i, fluidResource, i1, transactionContext);
+    }
+
+    @Override
+    public int insert(FluidResource resource, int amount, TransactionContext transaction) {
+        return fluidHandler.insert(resource, amount, transaction);
+    }
+
+    @Override
+    public int extract(int i, FluidResource fluidResource, int i1, TransactionContext transactionContext) {
+        return fluidHandler.extract(i, fluidResource, i1, transactionContext);
+    }
+
+    @Override
+    public int extract(FluidResource resource, int amount, TransactionContext transaction) {
+        return fluidHandler.extract(resource, amount, transaction);
     }
 }
