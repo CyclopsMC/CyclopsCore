@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.client.model;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.Level;
@@ -30,7 +30,7 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
     @Nullable
     protected final ItemStack itemStack;
     @Nullable
-    protected final LivingEntity entity;
+    protected final ItemOwner entity;
 
     public DelegatingDynamicItemAndBlockModel() {
         super(true, false);
@@ -56,7 +56,7 @@ public abstract class DelegatingDynamicItemAndBlockModel extends DynamicItemAndB
         this.entity = null;
     }
 
-    public DelegatingDynamicItemAndBlockModel(ItemStack itemStack, Level level, LivingEntity entity) {
+    public DelegatingDynamicItemAndBlockModel(ItemStack itemStack, Level level, ItemOwner entity) {
         super(false, true);
         this.level = level;
         this.blockState = null;
