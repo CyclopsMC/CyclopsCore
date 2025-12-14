@@ -1,17 +1,23 @@
 package org.cyclops.cyclopscore.helper;
 
+import com.google.common.base.Predicates;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.cyclops.cyclopscore.Capabilities;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerCapacity;
@@ -144,5 +150,54 @@ public class FluidHelpersNeoForge implements IFluidHelpersNeoForge {
 
             return FluidStack.EMPTY;
         }).orElse(FluidStack.EMPTY);
+    }
+
+    @Override
+    public boolean canExtract(ResourceHandler<FluidResource> fluidHandler) {
+        for(int index = 0; index < fluidHandler.size(); ++index) {
+            try (var tx = Transaction.openRoot()) {
+                if (fluidHandler.extract(index, fluidHandler.getResource(index), Integer.MAX_VALUE, tx) > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean canInsert(ResourceHandler<FluidResource> fluidHandler, FluidStack fluidStack) {
+        FluidResource resource = FluidResource.of(fluidStack);
+        for(int index = 0; index < fluidHandler.size(); ++index) {
+            try (var tx = Transaction.openRoot()) {
+                if (fluidHandler.insert(index, resource, fluidStack.getAmount(), tx) > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public FluidStack move(ResourceHandler<FluidResource> source, ResourceHandler<FluidResource> destination, int maxAmount, @Nullable Player player, boolean emptySound, boolean simulate) {
+        ResourceStack<FluidResource> moved;
+        try (var tx = Transaction.openRoot()) {
+            moved = ResourceHandlerUtil.moveFirst(source, destination, Predicates.alwaysTrue(), maxAmount, tx);
+            if (!simulate) {
+                tx.commit();
+            }
+        }
+        if (moved == null) {
+            return FluidStack.EMPTY;
+        } else {
+            FluidStack movedStack = moved.resource().toStack(moved.amount());
+            if (!simulate && player != null) {
+                SoundEvent soundevent = moved.resource().getFluidType().getSound(movedStack, emptySound ? SoundActions.BUCKET_EMPTY : SoundActions.BUCKET_FILL);
+                if (soundevent != null) {
+                    player.level().playSound(null, player.getX(), player.getY() + (double)0.5F, player.getZ(), soundevent, SoundSource.BLOCKS, 1.0F, 1.0F);
+                }
+            }
+
+            return movedStack;
+        }
     }
 }

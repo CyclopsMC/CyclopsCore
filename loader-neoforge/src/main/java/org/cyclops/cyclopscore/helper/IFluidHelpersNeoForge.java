@@ -103,4 +103,32 @@ public interface IFluidHelpersNeoForge {
      */
     public FluidStack placeOrPickUpFluid(Player player, InteractionHand hand, Level world, BlockPos blockPos, Direction side);
 
+    /**
+     * If something can be extracted from the given handler.
+     * @param fluidHandler A fluid handler.
+     * @return If something can be extracted.
+     */
+    public boolean canExtract(ResourceHandler<FluidResource> fluidHandler);
+
+    /**
+     * If at least a part of the given fluid stack can be inserted into the given handler.
+     * @param fluidHandler A fluid handler.
+     * @param fluidStack A fluid stack.
+     * @return If insertion is possible.
+     */
+    public boolean canInsert(ResourceHandler<FluidResource> fluidHandler, FluidStack fluidStack);
+
+    /**
+     * Move fluids from the given source and destination.
+     * If player is not null, a sound will be played.
+     * @param source A source handler.
+     * @param destination A destination handler.
+     * @param maxAmount The maximum amount to move.
+     * @param player A player to play a sound for.
+     * @param emptySound If the empty sound should be played, or otherwise the fill sound.
+     * @param simulate If the movement must be simulated.
+     * @return The moved fluid.
+     */
+    public FluidStack move(ResourceHandler<FluidResource> source, ResourceHandler<FluidResource> destination, int maxAmount, @org.jetbrains.annotations.Nullable Player player, boolean emptySound, boolean simulate);
+
 }
