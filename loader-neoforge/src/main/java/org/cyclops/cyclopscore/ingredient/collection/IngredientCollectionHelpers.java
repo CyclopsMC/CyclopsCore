@@ -26,4 +26,20 @@ public class IngredientCollectionHelpers {
                 ingredientComponent.getCategoryTypes().get(0));
     }
 
+    /**
+     * Create a new collapsed map for the given ingredient component.
+     *
+     * @param ingredientComponent An ingredient component.
+     * @param <T> The instance type.
+     * @param <M> The matching condition parameter.
+     * @param <V> The map's value.
+     * @return A mutable collapsed ingredient map.
+     */
+    public static <T, M, V> IIngredientMapMutable<T, M, V> createCollapsedMap(IngredientComponent<T, M> ingredientComponent) {
+        if (ingredientComponent.getCategoryTypes().size() == 1) {
+            return new IngredientHashMap<>(ingredientComponent);
+        }
+        return new IngredientMapSingleClassified<>(ingredientComponent, () -> new IngredientHashMap<>(ingredientComponent), ingredientComponent.getCategoryTypes().get(0));
+    }
+
 }
