@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.DetectedVersion;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -76,7 +76,7 @@ public abstract class MinecraftHelpersCommon implements IMinecraftHelpers {
 
     @Override
     public String getMinecraftVersion() {
-        return DetectedVersion.BUILT_IN.name();
+        return SharedConstants.getCurrentVersion().name();
     }
 
     @Override
