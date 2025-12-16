@@ -1,4 +1,6 @@
 {
+    "_comment": "Vanilla additions",
+    "itemGroup.cyclopscore": "Cyclops Core",
     "general.cyclopscore.dev_world": "Mundo de Desenvolvimento",
     "general.cyclopscore.tooltip.info": "<Shift para informações>",
     "general.cyclopscore.info.enabled": "§aAtivado",
