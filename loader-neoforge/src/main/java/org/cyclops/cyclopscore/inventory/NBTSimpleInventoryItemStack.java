@@ -1,8 +1,9 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.cyclops.cyclopscore.RegistryEntries;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 
@@ -13,23 +14,23 @@ import org.cyclops.cyclopscore.helper.IModHelpers;
  */
 public class NBTSimpleInventoryItemStack extends SimpleInventory {
 
-    protected final ItemStack itemStack;
+    protected final ItemAccess itemAccess;
     protected final String tagName;
 
     /**
      * Make a new instance.
-     * @param itemStack The item stack.
+     * @param itemAccess The item access.
      * @param size The amount of slots in the inventory.
      * @param stackLimit The stack limit for each slot.
      * @param tagName The NBT tag name to store this inventory in.
      *                This should be the same tag name that is used to call the NBT read/write methods.
      */
-    public NBTSimpleInventoryItemStack(ItemStack itemStack, int size, int stackLimit, String tagName) {
+    public NBTSimpleInventoryItemStack(ItemAccess itemAccess, int size, int stackLimit, String tagName) {
         super(size, stackLimit);
-        this.itemStack = itemStack;
+        this.itemAccess = itemAccess;
         this.tagName = tagName;
 
-        SimpleInventory contents = itemStack.get(RegistryEntries.COMPONENT_INVENTORY);
+        SimpleInventory contents = itemAccess.getResource().get(RegistryEntries.COMPONENT_INVENTORY);
         if (contents != null) {
             for (int i = 0; i < contents.getContainerSize(); i++) {
                 setItem(i, contents.getItem(i));
@@ -39,7 +40,14 @@ public class NBTSimpleInventoryItemStack extends SimpleInventory {
 
     @Override
     public void setChanged() {
-        itemStack.set(RegistryEntries.COMPONENT_INVENTORY, this);
+        try (var tx = Transaction.openRoot()) {
+            itemAccess.exchange(
+                    itemAccess.getResource().with(RegistryEntries.COMPONENT_INVENTORY, this),
+                    itemAccess.getAmount(),
+                    tx
+            );
+            tx.commit();
+        }
     }
 
     @Override
