@@ -65,4 +65,14 @@ public class FluidHandlerItemCapacity extends ItemAccessFluidHandler implements 
     public int getTankCapacity(int tank) {
         return itemAccess.getResource().getOrDefault(RegistryEntries.COMPONENT_CAPACITY, this.capacity);
     }
+
+    @Override
+    public long getCapacityAsLong(int index, FluidResource resource) {
+        return getTankCapacity(index);
+    }
+
+    @Override
+    public int getCapacityAsInt(int index, FluidResource resource) {
+        return getTankCapacity(index);
+    }
 }

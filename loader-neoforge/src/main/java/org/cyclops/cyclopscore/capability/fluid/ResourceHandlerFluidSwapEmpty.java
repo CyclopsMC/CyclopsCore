@@ -2,11 +2,14 @@ package org.cyclops.cyclopscore.capability.fluid;
 
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ItemAccessResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.BucketResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 /**
@@ -41,12 +44,13 @@ public class ResourceHandlerFluidSwapEmpty extends ItemAccessResourceHandler<Flu
         return resource.isEmpty() ? 0 : fluid.getAmount();
     }
 
+    @Nullable
     @Override
     protected ItemResource update(ItemResource accessResource, int index, FluidResource newResource, int newAmount) {
         if (newAmount == 0) {
             return itemResourceEmpty;
         } else if (newAmount != fluid.getAmount()) {
-            return ItemResource.EMPTY;
+            return null;
         } else {
             return this.itemResourceFull;
         }
@@ -56,6 +60,37 @@ public class ResourceHandlerFluidSwapEmpty extends ItemAccessResourceHandler<Flu
     protected int getCapacity(int index, FluidResource resource) {
         Objects.checkIndex(index, size());
         return fluid.getAmount();
+    }
+
+    // A copy of ItemAccessResourceHandler#extract modified to support empty result stacks.
+    @Override
+    public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
+        Objects.checkIndex(index, this.size());
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        int accessAmount = this.itemAccess.getAmount();
+        if (accessAmount == 0) {
+            return 0;
+        } else {
+            ItemResource accessResource = this.itemAccess.getResource();
+            FluidResource currentResource = this.getResourceFrom(accessResource, index);
+            if (resource.equals(currentResource)) {
+                int currentAmountPerItem = this.getAmountFrom(accessResource, index);
+                int extractedPerItem = Math.min(amount / accessAmount, currentAmountPerItem);
+                if (extractedPerItem > 0) {
+                    ItemResource emptiedResource = this.update(accessResource, index, resource, currentAmountPerItem - extractedPerItem);
+                    if (emptiedResource != null) { // This is added!
+                        if (!emptiedResource.isEmpty()) {
+                            return extractedPerItem * this.itemAccess.exchange(emptiedResource, accessAmount, transaction);
+                        } else {
+                            // This is added!
+                            return extractedPerItem * this.itemAccess.extract(accessResource, accessAmount, transaction);
+                        }
+                    }
+                }
+            }
+
+            return 0;
+        }
     }
 
 }
