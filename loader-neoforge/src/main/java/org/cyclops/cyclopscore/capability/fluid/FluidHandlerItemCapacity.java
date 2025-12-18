@@ -5,7 +5,7 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.fluid.ItemAccessFluidHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.cyclops.cyclopscore.RegistryEntries;
 
 /**
@@ -52,11 +52,11 @@ public class FluidHandlerItemCapacity extends ItemAccessFluidHandler implements 
     }
 
     @Override
-    public void setTankCapacity(int tank, int capacity) {
+    public void setTankCapacity(int tank, int capacity, TransactionContext transaction) {
         if (capacity == this.capacityDefault) {
-            itemAccess.exchange(itemAccess.getResource().without(RegistryEntries.COMPONENT_CAPACITY.get()), itemAccess.getAmount(), Transaction.openRoot());
+            itemAccess.exchange(itemAccess.getResource().without(RegistryEntries.COMPONENT_CAPACITY.get()), itemAccess.getAmount(), transaction);
         } else {
-            itemAccess.exchange(itemAccess.getResource().with(RegistryEntries.COMPONENT_CAPACITY.get(), capacity), itemAccess.getAmount(), Transaction.openRoot());
+            itemAccess.exchange(itemAccess.getResource().with(RegistryEntries.COMPONENT_CAPACITY.get(), capacity), itemAccess.getAmount(), transaction);
         }
         this.capacity = capacity;
     }

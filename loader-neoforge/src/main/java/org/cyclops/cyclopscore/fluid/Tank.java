@@ -5,6 +5,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerCapacity;
 
 /**
@@ -121,7 +122,7 @@ public class Tank extends FluidStacksResourceHandler implements IFluidHandlerCap
     }
 
     @Override
-    public void setTankCapacity(int tank, int capacity) {
+    public void setTankCapacity(int tank, int capacity, TransactionContext transaction) {
         if (tank == 0) {
             setCapacity(capacity);
         }
