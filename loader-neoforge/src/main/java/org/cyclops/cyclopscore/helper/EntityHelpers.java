@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.helper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -67,7 +67,7 @@ public class EntityHelpers {
      * @param spawnReason The spawn reason
      * @return the entity that was spawned.
      */
-    public static Optional<Entity> spawnEntity(Level world, @Nullable ResourceLocation entityName, double x, double y, double z, EntitySpawnReason spawnReason) {
+    public static Optional<Entity> spawnEntity(Level world, @Nullable Identifier entityName, double x, double y, double z, EntitySpawnReason spawnReason) {
         return EntityType.byString(entityName.toString()).map((type) -> {
             Entity entity = type.create(world, spawnReason);
             entity.setPos(x, y, z);

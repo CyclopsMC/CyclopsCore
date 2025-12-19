@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.npc.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 

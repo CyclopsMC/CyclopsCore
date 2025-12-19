@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * @author rubensworks
@@ -52,6 +52,6 @@ public interface IGuiHelpersFabric extends IGuiHelpers {
      */
     public void renderOverlayedFluidTank(GuiGraphics gui, FluidVariant fluidStack, long amount, long capacity,
                                          int x, int y, int width, int height,
-                                         ResourceLocation textureOverlay, int overlayTextureX, int overlayTextureY);
+                                         Identifier textureOverlay, int overlayTextureX, int overlayTextureY);
 
 }

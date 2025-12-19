@@ -4,7 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -68,7 +68,7 @@ public class GuiHelpersForge extends GuiHelpersCommon implements IGuiHelpersForg
     @Override
     public void renderOverlayedFluidTank(GuiGraphics gui, @Nullable FluidStack fluidStack, int capacity,
                                          int x, int y, int width, int height,
-                                         ResourceLocation textureOverlay, int overlayTextureX, int overlayTextureY) {
+                                         Identifier textureOverlay, int overlayTextureX, int overlayTextureY) {
         renderFluidTank(gui, fluidStack, capacity, x, y, width, height);
         if (fluidStack != null && capacity > 0) {
             gui.blit(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, textureOverlay, x, y, overlayTextureX, overlayTextureY, width, height, 256, 256);

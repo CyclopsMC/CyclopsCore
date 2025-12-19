@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.Level;
 

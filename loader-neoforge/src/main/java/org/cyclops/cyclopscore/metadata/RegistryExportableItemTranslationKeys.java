@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.metadata;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -18,7 +18,7 @@ public class RegistryExportableItemTranslationKeys implements IRegistryExportabl
 
         JsonArray elements = new JsonArray();
         element.add("items", elements);
-        for (ResourceLocation key : BuiltInRegistries.ITEM.keySet()) {
+        for (Identifier key : BuiltInRegistries.ITEM.keySet()) {
             Item value = BuiltInRegistries.ITEM.getValue(key);
             ItemStack itemStack = new ItemStack(value);
             String translationKey = itemStack.getItem().getDescriptionId();

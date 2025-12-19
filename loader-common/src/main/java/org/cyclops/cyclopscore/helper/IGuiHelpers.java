@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.helper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +40,7 @@ public interface IGuiHelpers {
      * @param progress The current progress.
      * @param progressMax The maximum progress.
      */
-    public void renderProgressBar(GuiGraphics gui, ResourceLocation texture, int x, int y, int width, int height, int textureX, int textureY,
+    public void renderProgressBar(GuiGraphics gui, Identifier texture, int x, int y, int width, int height, int textureX, int textureY,
                                   ProgressDirection direction, int progress, int progressMax);
 
     /**

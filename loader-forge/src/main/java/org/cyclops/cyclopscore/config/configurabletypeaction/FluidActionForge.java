@@ -6,7 +6,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
 import net.minecraftforge.fluids.FluidType;
@@ -70,8 +70,8 @@ public class FluidActionForge<M extends ModBaseForge> extends ConfigurableTypeAc
                 ForgeFlowingFluid.Properties instance = config.getInstance();
                 Supplier<Fluid> still = ObfuscationReflectionHelper.getPrivateValue(ForgeFlowingFluid.Properties.class, instance, "still");
                 Supplier<Fluid> flowing = ObfuscationReflectionHelper.getPrivateValue(ForgeFlowingFluid.Properties.class, instance, "flowing");
-                registerFluid(registry, event, still, ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()));
-                registerFluid(registry, event, flowing, ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId() + "_flowing"));
+                registerFluid(registry, event, still, Identifier.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()));
+                registerFluid(registry, event, flowing, Identifier.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId() + "_flowing"));
                 try {
                     if (pair.getRight() != null) {
                         pair.getRight().call();
@@ -85,12 +85,12 @@ public class FluidActionForge<M extends ModBaseForge> extends ConfigurableTypeAc
                 FluidConfigForge<M> config = pair.getLeft();
                 ForgeFlowingFluid.Properties instance = config.getInstance();
                 Supplier<FluidType> fluidType = ObfuscationReflectionHelper.getPrivateValue(ForgeFlowingFluid.Properties.class, instance, "fluidType");
-                event.register((ResourceKey) event.getForgeRegistry().getRegistryKey(), ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()), fluidType);
+                event.register((ResourceKey) event.getForgeRegistry().getRegistryKey(), Identifier.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()), fluidType);
             });
         }
     }
 
-    protected void registerFluid(IForgeRegistry<Fluid> registry, RegisterEvent event, Supplier<Fluid> fluidSupplier, ResourceLocation name) {
+    protected void registerFluid(IForgeRegistry<Fluid> registry, RegisterEvent event, Supplier<Fluid> fluidSupplier, Identifier name) {
         registry.register(name, fluidSupplier.get());
     }
 

@@ -18,12 +18,12 @@ public record ItemLocation(IInventoryLocation inventoryLocation, int slot) {
     }
 
     public static void writeToPacketBuffer(FriendlyByteBuf packetBuffer, ItemLocation location) {
-        packetBuffer.writeResourceLocation(location.inventoryLocation().getUniqueName());
+        packetBuffer.writeIdentifier(location.inventoryLocation().getUniqueName());
         packetBuffer.writeInt(location.slot());
     }
 
     public static ItemLocation readFromPacketBuffer(FriendlyByteBuf packetBuffer) {
-        IInventoryLocation inventoryLocation = InventoryLocations.REGISTRY.get(packetBuffer.readResourceLocation());
+        IInventoryLocation inventoryLocation = InventoryLocations.REGISTRY.get(packetBuffer.readIdentifier());
         int slot = packetBuffer.readInt();
         return new ItemLocation(inventoryLocation, slot);
     }

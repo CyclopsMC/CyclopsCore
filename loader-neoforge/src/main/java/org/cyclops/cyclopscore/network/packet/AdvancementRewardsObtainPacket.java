@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.network.packet;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -19,7 +19,7 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class AdvancementRewardsObtainPacket extends PacketCodec<AdvancementRewardsObtainPacket> {
 
-    public static final Type<AdvancementRewardsObtainPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "advancement_rewards_obtain_packet"));
+    public static final Type<AdvancementRewardsObtainPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "advancement_rewards_obtain_packet"));
     public static final StreamCodec<RegistryFriendlyByteBuf, AdvancementRewardsObtainPacket> CODEC = getCodec(AdvancementRewardsObtainPacket::new);
 
     @CodecField

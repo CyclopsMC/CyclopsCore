@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElementCommon;
@@ -18,7 +18,7 @@ public class BlockClientConfig<M extends IModBase> {
     private final BlockConfigCommon<M> blockConfig;
 
     public BlockState dynamicBlockVariantLocation;
-    public ResourceLocation dynamicItemVariantLocation;
+    public Identifier dynamicItemVariantLocation;
 
     public BlockClientConfig(BlockConfigCommon<M> blockConfig) {
         this.blockConfig = blockConfig;
@@ -33,8 +33,8 @@ public class BlockClientConfig<M extends IModBase> {
      * This should only be used when registering dynamic models.
      * @return The pair of block resource location and item resource location.
      */
-    public Pair<BlockState, ResourceLocation> registerDynamicModel() {
-        ResourceLocation blockName = ResourceLocation.fromNamespaceAndPath(getBlockConfig().getMod().getModId(), getBlockConfig().getNamedId());
+    public Pair<BlockState, Identifier> registerDynamicModel() {
+        Identifier blockName = Identifier.fromNamespaceAndPath(getBlockConfig().getMod().getModId(), getBlockConfig().getNamedId());
         return Pair.of(getBlockConfig().getInstance().defaultBlockState(), blockName);
     }
 

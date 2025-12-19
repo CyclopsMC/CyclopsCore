@@ -44,7 +44,7 @@ public class CommandDebug implements Command<CommandSourceStack> {
 
     public static LiteralArgumentBuilder<CommandSourceStack> make() {
         return Commands.literal("debug")
-                .requires((commandSource) -> commandSource.hasPermission(2))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.argument("packet", ArgumentTypeDebugPacket.INSTANCE)
                         .executes(new CommandDebug()));
     }

@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
 import net.minecraft.world.InteractionResult;
@@ -34,7 +34,7 @@ public interface IBlockGui {
      * @return An optional gui opening statistic.
      */
     @Nullable
-    public default Stat<ResourceLocation> getOpenStat() {
+    public default Stat<Identifier> getOpenStat() {
         return null;
     }
 
@@ -50,7 +50,7 @@ public interface IBlockGui {
 
                 IModHelpers.get().getMinecraftHelpers().openMenu((ServerPlayer) player, containerProvider,
                         packetBuffer -> block.writeExtraGuiData(packetBuffer, world, player, blockPos, rayTraceResult));
-                Stat<ResourceLocation> openStat = block.getOpenStat();
+                Stat<Identifier> openStat = block.getOpenStat();
                 if (openStat != null) {
                     player.awardStat(openStat);
                 }

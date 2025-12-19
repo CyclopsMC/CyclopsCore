@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
@@ -24,7 +24,7 @@ public abstract class RecipeTypeConfigCommon<T extends Recipe<?>, M extends IMod
      * @param namedId            A unique name id
      */
     public RecipeTypeConfigCommon(M mod, String namedId) {
-        super(mod, namedId, (eConfig) -> simpleRecipeType(ResourceLocation.fromNamespaceAndPath(mod.getModId(), namedId)));
+        super(mod, namedId, (eConfig) -> simpleRecipeType(Identifier.fromNamespaceAndPath(mod.getModId(), namedId)));
     }
 
     @Override
@@ -48,7 +48,7 @@ public abstract class RecipeTypeConfigCommon<T extends Recipe<?>, M extends IMod
         return BuiltInRegistries.RECIPE_TYPE;
     }
 
-    public static <T extends Recipe<?>> RecipeType<T> simpleRecipeType(final ResourceLocation name) {
+    public static <T extends Recipe<?>> RecipeType<T> simpleRecipeType(final Identifier name) {
         final String toString = name.toString();
         return new RecipeType<T>() {
             @Override

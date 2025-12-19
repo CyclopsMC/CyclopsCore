@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -43,7 +43,7 @@ public final class PacketHandlerForge implements IPacketHandler {
     public void init() {
         if(networkChannel == null) {
             SimpleFlow<RegistryFriendlyByteBuf, Object> channelBuilder = ChannelBuilder
-                    .named(ResourceLocation.fromNamespaceAndPath(mod.getModId(), "channel_main"))
+                    .named(Identifier.fromNamespaceAndPath(mod.getModId(), "channel_main"))
                     .clientAcceptedVersions(Channel.VersionTest.exact(1))
                     .serverAcceptedVersions(Channel.VersionTest.exact(1))
                     .networkProtocolVersion(1)

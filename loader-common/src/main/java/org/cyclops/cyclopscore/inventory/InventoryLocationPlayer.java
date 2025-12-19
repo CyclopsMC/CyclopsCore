@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.inventory;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -22,8 +22,8 @@ public class InventoryLocationPlayer implements IInventoryLocation {
     }
 
     @Override
-    public ResourceLocation getUniqueName() {
-        return ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "player");
+    public Identifier getUniqueName() {
+        return Identifier.fromNamespaceAndPath(Reference.MOD_ID, "player");
     }
     @Override
     public IInventoryCommonModifiable getInventory(Player player) {

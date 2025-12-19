@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook.condition;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
@@ -20,7 +20,7 @@ public class TagSectionConditionHandler<T> implements ISectionConditionHandler {
 
     @Override
     public boolean isSatisfied(ModBaseNeoForge<?> mod, String param) {
-        return this.registry.getTagOrEmpty(TagKey.create(this.registry.key(), ResourceLocation.parse(param))).iterator().hasNext();
+        return this.registry.getTagOrEmpty(TagKey.create(this.registry.key(), Identifier.parse(param))).iterator().hasNext();
     }
 
 }

@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -30,7 +30,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     private final IModHelpers modHelpers;
 
     protected T container;
-    protected ResourceLocation texture;
+    protected Identifier texture;
     protected int offsetX = 0;
     protected int offsetY = 0;
 
@@ -42,13 +42,13 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
         this.texture = constructGuiTexture();
     }
 
-    protected abstract ResourceLocation constructGuiTexture();
+    protected abstract Identifier constructGuiTexture();
 
     /**
      * Get the texture path of the GUI.
      * @return The path of the GUI for this block.
      */
-    public ResourceLocation getGuiTexture() {
+    public Identifier getGuiTexture() {
         return this.texture;
     }
 

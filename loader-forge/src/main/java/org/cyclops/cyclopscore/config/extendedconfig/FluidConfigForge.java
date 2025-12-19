@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidType;
@@ -40,17 +40,17 @@ public abstract class FluidConfigForge<M extends ModBaseForge> extends ExtendedC
             public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
                 consumer.accept(new IClientFluidTypeExtensions()
                 {
-                    private final ResourceLocation STILL = ResourceLocation.fromNamespaceAndPath(mod.getModId(), texturePrefixPath + "_still");
-                    private final ResourceLocation FLOW = ResourceLocation.fromNamespaceAndPath(mod.getModId(), texturePrefixPath + "_flow");
+                    private final Identifier STILL = Identifier.fromNamespaceAndPath(mod.getModId(), texturePrefixPath + "_still");
+                    private final Identifier FLOW = Identifier.fromNamespaceAndPath(mod.getModId(), texturePrefixPath + "_flow");
 
                     @Override
-                    public ResourceLocation getStillTexture()
+                    public Identifier getStillTexture()
                     {
                         return STILL;
                     }
 
                     @Override
-                    public ResourceLocation getFlowingTexture()
+                    public Identifier getFlowingTexture()
                     {
                         return FLOW;
                     }
@@ -93,16 +93,16 @@ public abstract class FluidConfigForge<M extends ModBaseForge> extends ExtendedC
      * Get the still icon location.
      * @return The icon location.
      */
-    public ResourceLocation getIconLocationStill() {
-        return ResourceLocation.fromNamespaceAndPath(getMod().getModId(), "blocks/" + getNamedId() + "_still");
+    public Identifier getIconLocationStill() {
+        return Identifier.fromNamespaceAndPath(getMod().getModId(), "blocks/" + getNamedId() + "_still");
     }
 
     /**
      * Get the flow icon location.
      * @return The icon location.
      */
-    public ResourceLocation getIconLocationFlow() {
-        return ResourceLocation.fromNamespaceAndPath(getMod().getModId(), "blocks/" + getNamedId() + "_flow");
+    public Identifier getIconLocationFlow() {
+        return Identifier.fromNamespaceAndPath(getMod().getModId(), "blocks/" + getNamedId() + "_flow");
     }
 
 }

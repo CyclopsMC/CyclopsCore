@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.InfoBookParser;
 import org.cyclops.cyclopscore.infobook.InfoSection;
@@ -13,11 +13,11 @@ public class ImageAppendix extends SectionAppendix<ImageAppendixClient> {
 
     private static final int OFFSET_Y = 0;
 
-    private ResourceLocation resource;
+    private Identifier resource;
     private int width;
     private int height;
 
-    public ImageAppendix(IInfoBook infoBook, ResourceLocation resource, int width, int height) throws InfoBookParser.InvalidAppendixException {
+    public ImageAppendix(IInfoBook infoBook, Identifier resource, int width, int height) throws InfoBookParser.InvalidAppendixException {
         super(infoBook);
         this.resource = resource;
         this.width = width;
@@ -54,7 +54,7 @@ public class ImageAppendix extends SectionAppendix<ImageAppendixClient> {
 
     }
 
-    public ResourceLocation getResource() {
+    public Identifier getResource() {
         return resource;
     }
 }

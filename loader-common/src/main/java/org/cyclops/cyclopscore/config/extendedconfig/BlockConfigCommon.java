@@ -4,7 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -56,7 +56,7 @@ public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConf
     public Item.Properties createDefaultItemProperties() {
         return new Item.Properties()
                 .setId(ResourceKey.create(Registries.ITEM,
-                        ResourceLocation.fromNamespaceAndPath(this.getMod().getModId(), this.getNamedId())))
+                        Identifier.fromNamespaceAndPath(this.getMod().getModId(), this.getNamedId())))
                 .useBlockDescriptionPrefix();
     }
 

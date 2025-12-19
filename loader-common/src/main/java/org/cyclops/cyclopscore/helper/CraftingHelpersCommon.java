@@ -7,7 +7,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -28,11 +28,11 @@ import java.util.concurrent.TimeUnit;
 public class CraftingHelpersCommon implements ICraftingHelpers {
 
     private final IModHelpers modHelpers;
-    private final LoadingCache<Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<RecipeHolder<? extends Recipe>>> CACHE_RECIPES = CacheBuilder.newBuilder()
+    private final LoadingCache<Triple<RecipeType<?>, CacheableCraftingInventory, Identifier>, Optional<RecipeHolder<? extends Recipe>>> CACHE_RECIPES = CacheBuilder.newBuilder()
             .expireAfterWrite(1, TimeUnit.MINUTES)
-            .build(new CacheLoader<Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation>, Optional<RecipeHolder<? extends Recipe>>>() {
+            .build(new CacheLoader<Triple<RecipeType<?>, CacheableCraftingInventory, Identifier>, Optional<RecipeHolder<? extends Recipe>>>() {
                 @Override
-                public Optional<RecipeHolder<? extends Recipe>> load(Triple<RecipeType<?>, CacheableCraftingInventory, ResourceLocation> key) throws Exception {
+                public Optional<RecipeHolder<? extends Recipe>> load(Triple<RecipeType<?>, CacheableCraftingInventory, Identifier> key) throws Exception {
                     ServerLevel world = modHelpers.getMinecraftHelpers().getCurrentServer().getLevel(ResourceKey.create(Registries.DIMENSION, key.getRight()));
                     return world.recipeAccess().getRecipeFor((RecipeType) key.getLeft(), key.getMiddle().getInventoryCrafting(), world);
                 }
@@ -75,12 +75,12 @@ public class CraftingHelpersCommon implements ICraftingHelpers {
     }
 
     @Override
-    public List<Pair<ResourceLocation, RecipeDisplayEntry>> getRecipeDisplays(RecipeType<?> recipeType, String recipeNameRegex) {
-        List<Pair<ResourceLocation, RecipeDisplayEntry>> displays = Lists.newArrayList();
+    public List<Pair<Identifier, RecipeDisplayEntry>> getRecipeDisplays(RecipeType<?> recipeType, String recipeNameRegex) {
+        List<Pair<Identifier, RecipeDisplayEntry>> displays = Lists.newArrayList();
         for (Map.Entry<ResourceKey<Recipe<?>>, List<RecipeManager.ServerDisplayInfo>> entry : modHelpers.getMinecraftHelpers().getCurrentServer().overworld().recipeAccess().recipeToDisplay.entrySet()) {
-            if (recipeNameRegex.isEmpty() || entry.getKey().location().toString().matches(recipeNameRegex)) {
+            if (recipeNameRegex.isEmpty() || entry.getKey().identifier().toString().matches(recipeNameRegex)) {
                 for (RecipeManager.ServerDisplayInfo display : entry.getValue()) {
-                    displays.add(Pair.of(display.parent().id().location(), display.display()));
+                    displays.add(Pair.of(display.parent().id().identifier(), display.display()));
                 }
             }
         }
@@ -92,7 +92,7 @@ public class CraftingHelpersCommon implements ICraftingHelpers {
                                                                                                           C inventoryCrafting,
                                                                                                           Level world, boolean uniqueInventory) {
         return (Optional) CACHE_RECIPES.getUnchecked(Triple.of(recipeType,
-                new CacheableCraftingInventory(inventoryCrafting, !uniqueInventory), world.dimension().location()));
+                new CacheableCraftingInventory(inventoryCrafting, !uniqueInventory), world.dimension().identifier()));
     }
 
     public class CacheableCraftingInventory {

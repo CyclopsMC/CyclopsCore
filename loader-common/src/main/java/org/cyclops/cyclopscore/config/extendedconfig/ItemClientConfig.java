@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.cyclops.cyclopscore.client.model.IDynamicModelElementCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -14,7 +14,7 @@ public class ItemClientConfig<M extends IModBase> {
 
     private final ItemConfigCommon<M> itemConfig;
 
-    public ResourceLocation dynamicItemVariantLocation;
+    public Identifier dynamicItemVariantLocation;
 
     public ItemClientConfig(ItemConfigCommon<M> itemConfig) {
         this.itemConfig = itemConfig;
@@ -29,8 +29,8 @@ public class ItemClientConfig<M extends IModBase> {
      * This should only be used when registering dynamic models.
      * @return The pair of block resource location and item resource location.
      */
-    public ResourceLocation registerDynamicModel() {
-        return ResourceLocation.fromNamespaceAndPath(getItemConfig().getMod().getModId(), getItemConfig().getNamedId());
+    public Identifier registerDynamicModel() {
+        return Identifier.fromNamespaceAndPath(getItemConfig().getMod().getModId(), getItemConfig().getNamedId());
     }
 
     /**

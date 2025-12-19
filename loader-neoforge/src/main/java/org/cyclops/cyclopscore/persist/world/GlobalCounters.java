@@ -53,7 +53,7 @@ public class GlobalCounters extends WorldStorage<GlobalCounters> {
                     mod.getModId() + "_globalcounters",
                     (ctx) -> new GlobalCounters(Maps.newHashMap()),
                     ctx -> RecordCodecBuilder.create(instance -> instance.group(
-                            RecordCodecBuilder.point(ctx.levelOrThrow()),
+                            RecordCodecBuilder.point(ctx.getLevel()),
                             Codec.dispatchedMap(Codec.STRING, (key) -> Codec.INT).fieldOf("counters").forGetter(data -> data.counters)
                     ).apply(instance, (level, counters) -> new GlobalCounters(counters)))
             ), mod);

@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.config;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeActionCommon;
 import org.cyclops.cyclopscore.config.extendedconfig.BlockConfigCommon;
@@ -141,8 +141,8 @@ public abstract class ConfigHandlerCommon {
                                        ExtendedConfigRegistry<?, V, ?> config,
                                        @Nullable Callable<?> callback);
 
-    public static ResourceLocation getConfigId(ExtendedConfigCommon<?, ?, ?> config) {
-        return ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId());
+    public static Identifier getConfigId(ExtendedConfigCommon<?, ?, ?> config) {
+        return Identifier.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId());
     }
 
     public void generateConfigProperties(ExtendedConfigCommon<?, ?, ?> config) throws IllegalArgumentException, IllegalAccessException {

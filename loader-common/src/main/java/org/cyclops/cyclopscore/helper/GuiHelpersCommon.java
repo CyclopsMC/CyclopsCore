@@ -5,7 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class GuiHelpersCommon implements IGuiHelpers {
     }
 
     @Override
-    public void renderProgressBar(GuiGraphics gui, ResourceLocation texture, int x, int y, int width, int height, int textureX, int textureY,
+    public void renderProgressBar(GuiGraphics gui, Identifier texture, int x, int y, int width, int height, int textureX, int textureY,
                                   ProgressDirection direction, int progress, int progressMax) {
         if (progressMax > 0 && progress > 0) {
             int scaledWidth = width;

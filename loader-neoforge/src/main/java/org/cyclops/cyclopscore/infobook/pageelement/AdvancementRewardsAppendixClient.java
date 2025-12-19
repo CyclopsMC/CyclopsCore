@@ -4,7 +4,7 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import org.cyclops.cyclopscore.client.gui.image.Images;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
@@ -40,7 +40,7 @@ public class AdvancementRewardsAppendixClient extends SectionAppendixClient<Adva
         Map<AdvancedButtonEnum, AdvancedButton> renderButtonHolders = getSectionAppendix().getRenderButtonHolders();
         AdvancedButtonEnum[] advancements = getSectionAppendix().getAdvancements();
         for (int i = 0; i < getSectionAppendix().getAdvancementRewards().getAdvancements().size(); i++) {
-            ResourceLocation advancementId = getSectionAppendix().getAdvancementRewards().getAdvancements().get(i);
+            Identifier advancementId = getSectionAppendix().getAdvancementRewards().getAdvancements().get(i);
             AdvancementHolder advancement = AdvancementHelpers.getAdvancement(Dist.CLIENT, advancementId);
             if (offsetX + AdvancementRewardsAppendix.SLOT_SIZE > AdvancementRewardsAppendix.MAX_WIDTH) {
                 offsetY += AdvancementRewardsAppendix.SLOT_SIZE + AdvancementRewardsAppendix.SLOT_PADDING * 2;

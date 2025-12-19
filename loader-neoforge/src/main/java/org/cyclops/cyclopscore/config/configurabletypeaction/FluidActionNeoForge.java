@@ -7,7 +7,7 @@ import com.google.common.collect.Multimaps;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -70,8 +70,8 @@ public class FluidActionNeoForge extends ConfigurableTypeActionCommon<FluidConfi
                 BaseFlowingFluid.Properties instance = config.getInstance();
                 Supplier<Fluid> still = ObfuscationReflectionHelper.getPrivateValue(BaseFlowingFluid.Properties.class, instance, "still");
                 Supplier<Fluid> flowing = ObfuscationReflectionHelper.getPrivateValue(BaseFlowingFluid.Properties.class, instance, "flowing");
-                registerFluid(registry, event, still, ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()));
-                registerFluid(registry, event, flowing, ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId() + "_flowing"));
+                registerFluid(registry, event, still, Identifier.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()));
+                registerFluid(registry, event, flowing, Identifier.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId() + "_flowing"));
                 try {
                     if (pair.getRight() != null) {
                         pair.getRight().call();
@@ -85,12 +85,12 @@ public class FluidActionNeoForge extends ConfigurableTypeActionCommon<FluidConfi
                 FluidConfigNeoForge config = pair.getLeft();
                 BaseFlowingFluid.Properties instance = config.getInstance();
                 Supplier<FluidType> fluidType = ObfuscationReflectionHelper.getPrivateValue(BaseFlowingFluid.Properties.class, instance, "fluidType");
-                event.register((ResourceKey) event.getRegistry().key(), ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()), fluidType);
+                event.register((ResourceKey) event.getRegistry().key(), Identifier.fromNamespaceAndPath(config.getMod().getModId(), config.getNamedId()), fluidType);
             });
         }
     }
 
-    protected void registerFluid(Registry<Fluid> registry, RegisterEvent event, Supplier<Fluid> fluidSupplier, ResourceLocation name) {
+    protected void registerFluid(Registry<Fluid> registry, RegisterEvent event, Supplier<Fluid> fluidSupplier, Identifier name) {
         event.register(registry.key(), name, fluidSupplier);
     }
 

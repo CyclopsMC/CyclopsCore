@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.client.model;
 
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -27,6 +27,6 @@ public interface IDynamicModelElementCommon {
      * @param modelConsumer The model bake consumer.
      * @return A dynamic item model instance.
      */
-    public ItemModel createDynamicItemModel(Consumer<Pair<ResourceLocation, ItemModel>> modelConsumer, Function<ResourceLocation, ItemModel> modelRetriever);
+    public ItemModel createDynamicItemModel(Consumer<Pair<Identifier, ItemModel>> modelConsumer, Function<Identifier, ItemModel> modelRetriever);
 
 }

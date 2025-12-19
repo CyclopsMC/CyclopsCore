@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.item;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
 import net.minecraft.tags.ItemTags;
@@ -56,7 +56,7 @@ public abstract class ItemGui extends Item {
             MenuProvider containerProvider = this.getContainer(world, player, itemLocation);
             if (containerProvider != null) {
                 IModHelpers.get().getMinecraftHelpers().openMenu(player, containerProvider, packetBuffer -> this.writeExtraGuiData(packetBuffer, world, player, itemLocation));
-                Stat<ResourceLocation> openStat = this.getOpenStat();
+                Stat<Identifier> openStat = this.getOpenStat();
                 if (openStat != null) {
                     player.awardStat(openStat);
                 }
@@ -80,7 +80,7 @@ public abstract class ItemGui extends Item {
      * @return An optional gui opening statistic.
      */
     @Nullable
-    protected Stat<ResourceLocation> getOpenStat() {
+    protected Stat<Identifier> getOpenStat() {
         return null;
     }
 

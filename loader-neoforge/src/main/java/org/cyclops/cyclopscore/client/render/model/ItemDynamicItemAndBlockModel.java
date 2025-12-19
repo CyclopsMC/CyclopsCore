@@ -3,11 +3,12 @@ package org.cyclops.cyclopscore.client.render.model;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.TextureSlots;
 import net.minecraft.client.renderer.item.*;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -27,14 +28,15 @@ public record ItemDynamicItemAndBlockModel(DynamicItemAndBlockModel resolvedMode
 
     @Override
     public void update(ItemStackRenderState renderState, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel level, @Nullable ItemOwner owner, int seed) {
-        new BlockModelWrapper(List.of(), resolvedModel.handleItemState(stack, level, owner), modelRenderProperties)
+        List<BakedQuad> quads = resolvedModel.handleItemState(stack, level, owner);
+        new BlockModelWrapper(List.of(), quads, modelRenderProperties, BlockModelWrapper.detectRenderType(quads))
                 .update(renderState, stack, itemModelResolver, displayContext, level, owner, seed);
     }
 
-    public static record Unbaked(ResourceLocation model) implements ItemModel.Unbaked {
+    public static record Unbaked(Identifier model) implements ItemModel.Unbaked {
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(
                 instance -> instance.group(
-                                ResourceLocation.CODEC.fieldOf("model").forGetter(Unbaked::model)
+                                Identifier.CODEC.fieldOf("model").forGetter(Unbaked::model)
                         )
                         .apply(instance, Unbaked::new)
         );

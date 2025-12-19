@@ -75,7 +75,7 @@ public class ParticleBlur extends SingleQuadParticle {
         LivingEntity renderentity = Minecraft.getInstance().player;
         int visibleDistance = MAX_VIEW_DISTANCE;
 
-        if(Minecraft.getInstance().options.graphicsMode().get().getId() == 0) {
+        if(Minecraft.getInstance().options.graphicsPreset().get().ordinal() == 0) {
             visibleDistance = visibleDistance / 2;
         }
 

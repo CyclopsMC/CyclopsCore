@@ -7,7 +7,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 
@@ -53,7 +53,7 @@ public class RecipeCraftingShapelessCustomOutput extends ShapelessRecipe {
 
     // Partially copied from ShapelessRecipe.Serializer
     public static class Serializer implements RecipeSerializer<RecipeCraftingShapelessCustomOutput> {
-        private static final net.minecraft.resources.ResourceLocation NAME = ResourceLocation.fromNamespaceAndPath("minecraft", "crafting_shapeless");
+        private static final net.minecraft.resources.Identifier NAME = Identifier.fromNamespaceAndPath("minecraft", "crafting_shapeless");
 
         private final Supplier<ItemStack> outputProvider;
         @Nullable

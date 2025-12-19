@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.network.packet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
@@ -20,7 +20,7 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class SendRecipeDisplayPacket extends PacketCodec<SendRecipeDisplayPacket> {
 
-    public static final Type<SendRecipeDisplayPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "send_recipe_display_packet"));
+    public static final Type<SendRecipeDisplayPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "send_recipe_display_packet"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SendRecipeDisplayPacket> CODEC = getCodec(SendRecipeDisplayPacket::new);
 
     @CodecField
@@ -60,8 +60,8 @@ public class SendRecipeDisplayPacket extends PacketCodec<SendRecipeDisplayPacket
     @Override
     public void actionClient(Level level, Player player) {
         RecipeHelpers.setRecipeDisplay(
-                BuiltInRegistries.RECIPE_TYPE.getValue(ResourceLocation.parse(this.recipeType)),
-                ResourceLocation.parse(this.recipe),
+                BuiltInRegistries.RECIPE_TYPE.getValue(Identifier.parse(this.recipeType)),
+                Identifier.parse(this.recipe),
                 recipeDisplay
         );
     }

@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import org.cyclops.cyclopscore.CyclopsCoreNeoForge;
 import org.cyclops.cyclopscore.Reference;
@@ -28,10 +28,10 @@ public class AdvancementRewards {
     public static String NBT_KEY_OBTAINED_PREFIX = Reference.MOD_ID + ":" + "obtainedAdvancements:";
 
     private final String id;
-    private final List<ResourceLocation> advancements;
+    private final List<Identifier> advancements;
     private final List<IReward> rewards;
 
-    public AdvancementRewards(String id, List<ResourceLocation> advancements, List<IReward> rewards) {
+    public AdvancementRewards(String id, List<Identifier> advancements, List<IReward> rewards) {
         this.id = id;
         this.advancements = advancements;
         this.rewards = rewards;
@@ -77,7 +77,7 @@ public class AdvancementRewards {
         return this.id;
     }
 
-    public List<ResourceLocation> getAdvancements() {
+    public List<Identifier> getAdvancements() {
         return this.advancements;
     }
 

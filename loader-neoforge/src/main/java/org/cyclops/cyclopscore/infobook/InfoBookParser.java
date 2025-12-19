@@ -6,7 +6,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -70,7 +70,7 @@ public class InfoBookParser {
 
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InvalidAppendixException {
-                return new ImageAppendix(infoBook, getNodeResourceLocation(node),
+                return new ImageAppendix(infoBook, getNodeIdentifier(node),
                         Integer.parseInt(node.getAttribute("width")), Integer.parseInt(node.getAttribute("height")));
             }
 
@@ -91,7 +91,7 @@ public class InfoBookParser {
             @Override
             public SectionAppendix create(IInfoBook infoBook, Element node) throws InfoBookParser.InvalidAppendixException {
                 if (infoBook.getMod().getReferenceValue(ModBaseNeoForge.REFKEY_INFOBOOK_REWARDS)) {
-                    List<ResourceLocation> advancements = Lists.newArrayList();
+                    List<Identifier> advancements = Lists.newArrayList();
                     List<IReward> rewards = Lists.newArrayList();
                     String achievementRewardsId = node.getAttribute("id");
 
@@ -106,7 +106,7 @@ public class InfoBookParser {
                                         Element advancementNode = (Element) subChildren.item(j);
                                         String advancementId = advancementNode.getAttribute("id");
                                         if (!advancementId.isEmpty()) {
-                                            advancements.add(ResourceLocation.parse(advancementId));
+                                            advancements.add(Identifier.parse(advancementId));
                                         }
                                     }
                                 }
@@ -146,7 +146,7 @@ public class InfoBookParser {
                 List<SectionAppendix> appendixList = Lists.newArrayList();
 
                 String type = node.getAttribute("type");
-                RecipeType<?> recipeType = BuiltInRegistries.RECIPE_TYPE.getValue(ResourceLocation.parse(type));
+                RecipeType<?> recipeType = BuiltInRegistries.RECIPE_TYPE.getValue(Identifier.parse(type));
                 if (recipeType == null) {
                     throw new InvalidAppendixException("Could not find a recipe type: " + type);
                 }
@@ -182,8 +182,8 @@ public class InfoBookParser {
         RECIPE_CONDITION_HANDLERS.put("item", new ItemSectionConditionHandler());
     }
 
-    protected static ResourceLocation getNodeResourceLocation(Element node) {
-        return ResourceLocation.parse(node.getTextContent().trim());
+    protected static Identifier getNodeIdentifier(Element node) {
+        return Identifier.parse(node.getTextContent().trim());
     }
 
     /**
@@ -238,7 +238,7 @@ public class InfoBookParser {
     public static <C extends RecipeInput, R extends Recipe<C>> void registerAppendixRecipeFactories(RecipeType<R> recipeType, IAppendixItemFactory<C, R> factory) {
         String name = BuiltInRegistries.RECIPE_TYPE.getKey(recipeType).toString();
         registerAppendixFactory(name, (infoBook, node) -> {
-            ResourceLocation recipe = getNodeResourceLocation(node);
+            Identifier recipe = getNodeIdentifier(node);
             if (infoBook.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
                 RecipeHelpers.requestRecipeDisplay(recipeType, recipe);
             }
@@ -298,7 +298,7 @@ public class InfoBookParser {
         if("true".equals(node.getAttribute("predefined"))) {
             throw new UnsupportedOperationException("Could not find predefined item " + node.getTextContent());
         }
-        ResourceLocation itemId = getNodeResourceLocation(node);
+        Identifier itemId = getNodeIdentifier(node);
         Holder<Item> item = BuiltInRegistries.ITEM.get(itemId).orElseThrow(() -> new InvalidAppendixException("Invalid item " + itemId));
         return new ItemStack(item, amount);
     }
@@ -442,7 +442,7 @@ public class InfoBookParser {
         if(!node.getAttribute("amount").isEmpty()) {
             amount = Integer.parseInt(node.getAttribute("amount"));
         }
-        ResourceLocation fluidId = getNodeResourceLocation(node);
+        Identifier fluidId = getNodeIdentifier(node);
         Fluid fluid = BuiltInRegistries.FLUID.getValue(fluidId);
         if(fluid == null) {
             throw new InvalidAppendixException("Invalid fluid " + fluidId);

@@ -4,7 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -38,7 +38,7 @@ public abstract class EntityConfigCommon<M extends IModBase, T extends Entity> e
     public EntityConfigCommon(M mod, String namedId, Function<EntityConfigCommon<M, T>, EntityType.Builder<T>> elementConstructor,
                         @Nullable BiFunction<EntityConfigCommon<M, T>, Supplier<EntityType<T>>, ItemConfigCommon<M>> spawnEggItemConstructor) {
         super(mod, namedId, elementConstructor
-                .andThen(builder -> builder.build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(mod.getModId(), namedId)))));
+                .andThen(builder -> builder.build(ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(mod.getModId(), namedId)))));
 
         // Register spawn egg if applicable
         if (spawnEggItemConstructor != null) {

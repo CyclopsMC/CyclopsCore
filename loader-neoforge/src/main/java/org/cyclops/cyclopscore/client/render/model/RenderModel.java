@@ -4,7 +4,7 @@ import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import org.cyclops.cyclopscore.config.extendedconfig.ExtendedConfigCommon;
 import org.cyclops.cyclopscore.init.ModBaseNeoForge;
@@ -19,7 +19,7 @@ import org.cyclops.cyclopscore.init.ModBaseNeoForge;
  */
 public abstract class RenderModel<T extends Entity, M extends Model, S extends EntityRenderState> extends EntityRenderer<T, S> {
 
-    private ResourceLocation texture;
+    private Identifier texture;
 
     protected M model;
 
@@ -30,12 +30,12 @@ public abstract class RenderModel<T extends Entity, M extends Model, S extends E
      */
     public RenderModel(EntityRendererProvider.Context renderContext, ExtendedConfigCommon<?, ?, ModBaseNeoForge<?>> config) {
         super(renderContext);
-        texture = createResourceLocation(config);
+        texture = createIdentifier(config);
         model = constructModel();
     }
 
-    protected ResourceLocation createResourceLocation(ExtendedConfigCommon<?, ?, ModBaseNeoForge<?>> config) {
-        return ResourceLocation.fromNamespaceAndPath(config.getMod().getModId(), config.getMod().getReferenceValue(ModBaseNeoForge.REFKEY_TEXTURE_PATH_MODELS) + config.getNamedId() + ".png");
+    protected Identifier createIdentifier(ExtendedConfigCommon<?, ?, ModBaseNeoForge<?>> config) {
+        return Identifier.fromNamespaceAndPath(config.getMod().getModId(), config.getMod().getReferenceValue(ModBaseNeoForge.REFKEY_TEXTURE_PATH_MODELS) + config.getNamedId() + ".png");
     }
 
     protected abstract M constructModel();

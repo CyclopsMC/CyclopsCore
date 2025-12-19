@@ -4,7 +4,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -23,7 +23,7 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class ValueNotifyPacket extends PacketCodec<ValueNotifyPacket> {
 
-    public static final Type<ValueNotifyPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "value_notify"));
+    public static final Type<ValueNotifyPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "value_notify"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ValueNotifyPacket> CODEC = getCodec(ValueNotifyPacket::new);
 
     @CodecField

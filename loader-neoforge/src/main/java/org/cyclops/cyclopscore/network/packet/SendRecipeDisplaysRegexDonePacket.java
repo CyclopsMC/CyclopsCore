@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.network.packet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -19,7 +19,7 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class SendRecipeDisplaysRegexDonePacket extends PacketCodec<SendRecipeDisplaysRegexDonePacket> {
 
-    public static final Type<SendRecipeDisplaysRegexDonePacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "send_recipe_displays_regex_done_packet"));
+    public static final Type<SendRecipeDisplaysRegexDonePacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "send_recipe_displays_regex_done_packet"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SendRecipeDisplaysRegexDonePacket> CODEC = getCodec(SendRecipeDisplaysRegexDonePacket::new);
 
     @CodecField
@@ -45,7 +45,7 @@ public class SendRecipeDisplaysRegexDonePacket extends PacketCodec<SendRecipeDis
     @Override
     public void actionClient(Level level, Player player) {
         RecipeHelpers.setRecipeDisplaysRegexDone(
-                BuiltInRegistries.RECIPE_TYPE.getValue(ResourceLocation.parse(this.recipeType)),
+                BuiltInRegistries.RECIPE_TYPE.getValue(Identifier.parse(this.recipeType)),
                 this.regex
         );
     }

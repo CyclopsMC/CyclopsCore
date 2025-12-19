@@ -3,23 +3,23 @@ package org.cyclops.cyclopscore.client.gui.image;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.joml.Matrix4f;
 
 /**
- * A wrapper that contains a reference to a {@link  net.minecraft.resources.ResourceLocation} and its sheet position.
+ * A wrapper that contains a reference to a {@link  net.minecraft.resources.Identifier} and its sheet position.
  * @author rubensworks
  */
 public class Image implements IImage {
 
-    private final ResourceLocation resourceLocation;
+    private final Identifier resourceLocation;
     private final int sheetX, sheetY, sheetWidth, sheetHeight;
 
-    public Image(ResourceLocation resourceLocation, int sheetX, int sheetY, int sheetWidth, int sheetHeight) {
+    public Image(Identifier resourceLocation, int sheetX, int sheetY, int sheetWidth, int sheetHeight) {
         this.resourceLocation = resourceLocation;
         this.sheetX = sheetX;
         this.sheetY = sheetY;
@@ -27,7 +27,7 @@ public class Image implements IImage {
         this.sheetHeight = sheetHeight;
     }
 
-    public ResourceLocation getResourceLocation() {
+    public Identifier getIdentifier() {
         return resourceLocation;
     }
 
@@ -68,7 +68,7 @@ public class Image implements IImage {
         v2 = (float) (getSheetY() + getSheetHeight()) / 256F;
         int a = Math.round(alpha * 255F);
         Matrix4f matrix = matrixStack.last().pose();
-        submitNodeCollector.submitCustomGeometry(matrixStack, RenderType.text(getResourceLocation()), (pose, vb) -> {
+        submitNodeCollector.submitCustomGeometry(matrixStack, RenderTypes.text(getIdentifier()), (pose, vb) -> {
             vb.addVertex(matrix, x2, y2, z).setColor(255, 255, 255, a).setUv(u2, v2).setLight(combinedLight);
             vb.addVertex(matrix, x2, y1, z).setColor(255, 255, 255, a).setUv(u2, v1).setLight(combinedLight);
             vb.addVertex(matrix, x1, y1, z).setColor(255, 255, 255, a).setUv(u1, v1).setLight(combinedLight);

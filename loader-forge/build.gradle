@@ -1,36 +1,8 @@
 import net.darkhax.curseforgegradle.Constants as CFG_Constants
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
-buildscript {
-    dependencies {
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
-}
-
 plugins {
     id 'multiloader-loader-forge'
-}
-
-apply plugin: 'org.spongepowered.mixin'
-
-sourceSets {
-    api {
-        resources.srcDirs = []
-    }
-    main {
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
-    }
-    test {
-        compileClasspath += sourceSets.api.output
-        runtimeClasspath += sourceSets.api.output
-    }
-}
-
-configurations {
-    apiImplementation.extendsFrom(implementation)
-    apiRuntimeOnly.extendsFrom(runtimeOnly)
-    javadoc.classpath += sourceSets.api.output
 }
 
 repositories {
@@ -43,90 +15,6 @@ repositories {
         name "Curios"
         url "https://maven.theillusivec4.top/"
     }
-}
-
-dependencies {
-    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-}
-
-minecraft {
-    runs {
-        client {
-            workingDirectory file('runs/client')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName 'Client'
-            mods {
-                modClientRun {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
-            }
-        }
-
-        server {
-            workingDirectory file('runs/server')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName 'Server'
-            mods {
-                modServerRun {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
-            }
-        }
-
-        gameTestServer {
-            property 'forge.enableGameTest', 'true'
-            property 'forge.enabledGameTestNamespaces', mod_id
-            workingDirectory file('runs/gametest')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            taskName 'runGameTestServer'
-            mods {
-                modDataRun {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
-            }
-        }
-
-        data {
-            workingDirectory file('runs/data')
-            ideaModule "${rootProject.name}.${project.name}.main"
-            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-            taskName 'Data'
-            mods {
-                modDataRun {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
-            }
-        }
-    }
-}
-
-mixin {
-    add sourceSets.main, "mixins.cyclopscore.refmap.json"
-    config 'mixins.cyclopscore.json'
-}
-
-deobfJar {
-    manifest {
-        attributes([
-                "MixinConfigs": "mixins.cyclopscore.json"
-        ])
-    }
-}
-jar {
-    manifest {
-        attributes([
-                "MixinConfigs": "mixins.cyclopscore.json"
-        ])
-    }
-}
-
-javadoc {
-    source = [sourceSets.main.allJava, sourceSets.api.allJava]
-    exclude 'org/cyclops/cyclopscore/modcompat/curios/*'
 }
 
 task publishCurseForge(type: TaskPublishCurseForge) {

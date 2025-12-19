@@ -49,7 +49,7 @@ public class CommandConfig implements Command<CommandSourceStack> {
 
     public static LiteralArgumentBuilder<CommandSourceStack> make(IModBase mod) {
         return Commands.literal("config")
-                .requires((commandSource) -> commandSource.hasPermission(2))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.argument("property", new ArgumentTypeConfigProperty(mod))
                         .executes(new CommandConfig(mod, false))
                         .then(Commands.argument("value", StringArgumentType.string())

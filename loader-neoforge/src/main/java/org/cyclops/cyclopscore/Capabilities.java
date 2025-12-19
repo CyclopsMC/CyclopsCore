@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerCapacity;
@@ -11,6 +11,6 @@ import org.cyclops.cyclopscore.capability.fluid.IFluidHandlerCapacity;
  */
 public class Capabilities {
     public static class Item {
-        public static ItemCapability<IFluidHandlerCapacity, ItemAccess> FLUID_HANDLER_CAPACITY = ItemCapability.create(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "fluid_handler_capacity"), IFluidHandlerCapacity.class, ItemAccess.class);
+        public static ItemCapability<IFluidHandlerCapacity, ItemAccess> FLUID_HANDLER_CAPACITY = ItemCapability.create(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "fluid_handler_capacity"), IFluidHandlerCapacity.class, ItemAccess.class);
     }
 }

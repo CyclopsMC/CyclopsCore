@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.network.packet.debug;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class PingPongPacketAsync<T extends PingPongPacketAsync<T>> extends PacketCodec<T> {
 
-    public static final Type<PingPongPacketAsync> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "ping_pong_async"));
+    public static final Type<PingPongPacketAsync> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "ping_pong_async"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PingPongPacketAsync> CODEC = getCodec(PingPongPacketAsync::new);
 
     @CodecField

@@ -5,7 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class RequestRecipeDisplayPacket extends PacketCodec<RequestRecipeDisplayPacket> {
 
-    public static final Type<RequestRecipeDisplayPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "request_recipe_display_packet"));
+    public static final Type<RequestRecipeDisplayPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "request_recipe_display_packet"));
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestRecipeDisplayPacket> CODEC = getCodec(RequestRecipeDisplayPacket::new);
 
     @CodecField
@@ -38,7 +38,7 @@ public class RequestRecipeDisplayPacket extends PacketCodec<RequestRecipeDisplay
         super(TYPE);
     }
 
-    public RequestRecipeDisplayPacket(RecipeType<?> recipeType, ResourceLocation recipe) {
+    public RequestRecipeDisplayPacket(RecipeType<?> recipeType, Identifier recipe) {
         this();
         this.recipeType = recipeType.toString();
         this.recipe = recipe.toString();
@@ -57,8 +57,8 @@ public class RequestRecipeDisplayPacket extends PacketCodec<RequestRecipeDisplay
     @Override
     public void actionServer(Level level, ServerPlayer player) {
         List<RecipeDisplayEntry> recipeDisplays = IModHelpers.get().getCraftingHelpers().getRecipeDisplays(
-                BuiltInRegistries.RECIPE_TYPE.getValue(ResourceLocation.parse(this.recipeType)),
-                ResourceKey.create(Registries.RECIPE, ResourceLocation.parse(this.recipe))
+                BuiltInRegistries.RECIPE_TYPE.getValue(Identifier.parse(this.recipeType)),
+                ResourceKey.create(Registries.RECIPE, Identifier.parse(this.recipe))
         );
         if (recipeDisplays.isEmpty()) {
             CyclopsCoreNeoForge.clog(org.apache.logging.log4j.Level.ERROR, "Received an invalid recipe request for recipe type " + recipeType.toString() + " with recipe id " + recipe + " from " + player.getName());

@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.fluid;
 
 import com.google.common.collect.Lists;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
@@ -117,7 +117,7 @@ public class SingleUseTank extends Tank {
     @Override
     public void deserializeTank(ValueInput input) {
         super.deserializeTank(input);
-        setAcceptedFluid(BuiltInRegistries.FLUID.getValue(ResourceLocation.parse(input.getString(NBT_ACCEPTED_FLUID).orElseThrow())));
+        setAcceptedFluid(BuiltInRegistries.FLUID.getValue(Identifier.parse(input.getString(NBT_ACCEPTED_FLUID).orElseThrow())));
     }
 
 }

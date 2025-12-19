@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.image;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 
 /**
@@ -9,13 +9,13 @@ import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
  */
 public class Images {
 
-    public static final ResourceLocation ICONS = ResourceLocation.fromNamespaceAndPath(CyclopsCoreInstance.MOD.getModId(),
+    public static final Identifier ICONS = Identifier.fromNamespaceAndPath(CyclopsCoreInstance.MOD.getModId(),
             "textures/gui/icons.png");
 
-    public static final ResourceLocation BUTTONS = ResourceLocation.fromNamespaceAndPath(CyclopsCoreInstance.MOD.getModId(),
+    public static final Identifier BUTTONS = Identifier.fromNamespaceAndPath(CyclopsCoreInstance.MOD.getModId(),
             "textures/gui/buttons.png");
 
-    public static final ResourceLocation WIDGETS = ResourceLocation.fromNamespaceAndPath(CyclopsCoreInstance.MOD.getModId(),
+    public static final Identifier WIDGETS = Identifier.fromNamespaceAndPath(CyclopsCoreInstance.MOD.getModId(),
             "textures/gui/widgets.png");
 
     public static final Image ARROW_DOWN = new Image(ICONS, 18, 0, 18, 18);

@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -88,7 +88,7 @@ public abstract class ItemStackHelpersCommon implements IItemStackHelpers {
     public ItemStack parseItemStack(String itemStackString) {
         String[] split = itemStackString.split(":");
         String itemName = split[0] + ":" + split[1];
-        Item item =  BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(itemName));
+        Item item =  BuiltInRegistries.ITEM.getValue(Identifier.parse(itemName));
         if(item == null) {
             throw new IllegalArgumentException("Invalid ItemStack item: " + itemName);
         }

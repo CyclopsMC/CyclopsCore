@@ -10,7 +10,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.HashedStack;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.ClassUtils;
@@ -381,14 +381,14 @@ public class PacketCodecs {
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
                 output.writeUtf(((ResourceKey) object).registry().toString());
-                output.writeUtf(((ResourceKey) object).location().toString());
+                output.writeUtf(((ResourceKey) object).identifier().toString());
             }
 
             @Override
             public Object decode(RegistryFriendlyByteBuf input) {
                 return ResourceKey.create(
-                        ResourceKey.createRegistryKey(ResourceLocation.parse(input.readUtf(READ_STRING_MAX_LENGTH))),
-                        ResourceLocation.parse(input.readUtf(READ_STRING_MAX_LENGTH)));
+                        ResourceKey.createRegistryKey(Identifier.parse(input.readUtf(READ_STRING_MAX_LENGTH))),
+                        Identifier.parse(input.readUtf(READ_STRING_MAX_LENGTH)));
             }
         });
 

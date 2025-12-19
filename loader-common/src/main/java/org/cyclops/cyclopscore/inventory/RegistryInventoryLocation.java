@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Maps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -34,7 +34,7 @@ public class RegistryInventoryLocation implements IRegistryInventoryLocation {
 
     @Nullable
     @Override
-    public IInventoryLocation get(ResourceLocation uniqueName) {
+    public IInventoryLocation get(Identifier uniqueName) {
         return registry.get(uniqueName.toString());
     }
 

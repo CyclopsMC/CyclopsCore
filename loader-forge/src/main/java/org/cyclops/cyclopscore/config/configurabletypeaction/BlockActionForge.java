@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.item.ItemModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,7 +41,7 @@ public class BlockActionForge<M extends ModBaseForge<M>> extends BlockAction<M> 
     @OnlyIn(Dist.CLIENT)
     public static void onModelRegistryLoad(ModelEvent.RegisterModelStateDefinitions event) {
         for (BlockConfigCommon<?> config : MODEL_ENTRIES) {
-            Pair<BlockState, ResourceLocation> resourceLocations = config.getBlockClientConfig().registerDynamicModel();
+            Pair<BlockState, Identifier> resourceLocations = config.getBlockClientConfig().registerDynamicModel();
             config.getBlockClientConfig().dynamicBlockVariantLocation = resourceLocations.getLeft();
             config.getBlockClientConfig().dynamicItemVariantLocation = resourceLocations.getRight();
         }

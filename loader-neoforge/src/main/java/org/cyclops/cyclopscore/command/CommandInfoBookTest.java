@@ -42,7 +42,7 @@ public class CommandInfoBookTest implements Command<CommandSourceStack> {
 
     public static LiteralArgumentBuilder<CommandSourceStack> make() {
         return Commands.literal("infobooktest")
-                .requires((commandSource) -> commandSource.hasPermission(2))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .executes(new CommandInfoBookTest());
     }
 

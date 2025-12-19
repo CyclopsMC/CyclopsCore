@@ -8,7 +8,7 @@ import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -27,7 +27,7 @@ public class GameTestLoaderHelpers {
                 || System.getProperty("cyclopsmc.enabledGameTestNamespaces", "").contains(modId);
     }
 
-    public static void registerCommonTests(String modId, Class<?>[] testClasses, BiConsumer<ResourceLocation, GameTestInstance> registrar, Registry<TestEnvironmentDefinition> testEnvironmentRegistry) {
+    public static void registerCommonTests(String modId, Class<?>[] testClasses, BiConsumer<Identifier, GameTestInstance> registrar, Registry<TestEnvironmentDefinition> testEnvironmentRegistry) {
         for (MethodGameTestInstance testInstance : generateCommonTests(modId, testClasses, testEnvironmentRegistry)) {
             registrar.accept(testInstance.getId(), testInstance);
         }
@@ -42,12 +42,12 @@ public class GameTestLoaderHelpers {
                     GameTest gameTest = method.getAnnotation(GameTest.class);
                     Holder.Reference<TestEnvironmentDefinition> environment = testEnvironmentRegistry.getOrThrow(ResourceKey.create(
                             Registries.TEST_ENVIRONMENT,
-                            ResourceLocation.parse(gameTest.environment())
+                            Identifier.parse(gameTest.environment())
                     ));
                     testsList.add(new MethodGameTestInstance(
                             new TestData<>(
                                     environment,
-                                    ResourceLocation.parse(gameTest.template()),
+                                    Identifier.parse(gameTest.template()),
                                     gameTest.timeoutTicks(),
                                     gameTest.setupTicks(),
                                     gameTest.required(),

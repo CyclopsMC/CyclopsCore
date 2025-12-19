@@ -9,7 +9,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
 import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.cyclops.cyclopscore.config.ConfigHandlerFabric;
 import org.cyclops.cyclopscore.config.ConfigurableTypesFabric;
 import org.cyclops.cyclopscore.events.IRegisterGameTestsEvent;
@@ -123,7 +123,7 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
         dispatcher.register(constructBaseCommand(environment, registryAccess));
     }
 
-    protected void registerGameTests(Registry<TestEnvironmentDefinition> testEnvironmentRegistry, BiConsumer<ResourceLocation, GameTestInstance> registrar) {
+    protected void registerGameTests(Registry<TestEnvironmentDefinition> testEnvironmentRegistry, BiConsumer<Identifier, GameTestInstance> registrar) {
         GameTestLoaderHelpers.registerCommonTests(getModId(), getGameTestClasses(), registrar, testEnvironmentRegistry);
     }
 

@@ -185,7 +185,7 @@ public abstract class RecipeAppendixClient<S extends RecipeAppendix<?>> extends 
         protected abstract String getTranslationKey(E element);
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if(isVisible() && isHover(mouseX, mouseY)) {
                 gui.drawOuterBorder(guiGraphics, getX(), getY(), 16, 16, 0.392f, 0.392f, 0.6f, 0.9f);
             }

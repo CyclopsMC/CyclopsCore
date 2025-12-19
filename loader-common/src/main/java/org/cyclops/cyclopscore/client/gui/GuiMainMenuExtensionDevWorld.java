@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.client.gui;
 
 import net.minecraft.CrashReport;
-import net.minecraft.FileUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ErrorScreen;
@@ -13,9 +12,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.FileUtil;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.level.*;
+import net.minecraft.world.level.DataPackConfig;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.LevelSettings;
+import net.minecraft.world.level.WorldDataConfiguration;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.WorldDimensions;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
@@ -77,10 +81,11 @@ public class GuiMainMenuExtensionDevWorld {
 
                         // Set rules
                         GameRules gameRules = new GameRules(FeatureFlags.DEFAULT_FLAGS);
-                        gameRules.getRule(GameRules.RULE_DAYLIGHT).set(false, null);
-                        gameRules.getRule(GameRules.RULE_DO_IMMEDIATE_RESPAWN).set(true, null);
-                        gameRules.getRule(GameRules.RULE_DO_PATROL_SPAWNING).set(false, null);
-                        gameRules.getRule(GameRules.RULE_DO_TRADER_SPAWNING).set(false, null);
+                        gameRules.set(GameRules.ADVANCE_TIME, false, null);
+                        gameRules.set(GameRules.ADVANCE_WEATHER, false, null);
+                        gameRules.set(GameRules.IMMEDIATE_RESPAWN, true, null);
+                        gameRules.set(GameRules.SPAWN_PATROLS, false, null);
+                        gameRules.set(GameRules.SPAWN_WANDERING_TRADERS, false, null);
                         WorldDataConfiguration worlddataconfiguration = new WorldDataConfiguration(new DataPackConfig(new ArrayList<>(Minecraft.getInstance().getResourcePackRepository().getAvailableIds()), List.of()), FeatureFlags.REGISTRY.allFlags());
                         LevelSettings worldsettings = new LevelSettings(WORLD_NAME_PREFIX, GameType.CREATIVE,
                                 false, Difficulty.PEACEFUL, true, gameRules, worlddataconfiguration);

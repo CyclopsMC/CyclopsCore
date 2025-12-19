@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.core.Registry;
 import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.BiConsumer;
 
@@ -21,5 +21,5 @@ public interface IRegisterGameTestsEvent {
             }
     );
 
-    void registerTest(Registry<TestEnvironmentDefinition> testEnvironmentRegistry, BiConsumer<ResourceLocation, GameTestInstance> registrar);
+    void registerTest(Registry<TestEnvironmentDefinition> testEnvironmentRegistry, BiConsumer<Identifier, GameTestInstance> registrar);
 }

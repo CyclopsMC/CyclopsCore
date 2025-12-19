@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.api.distmarker.Dist;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
@@ -17,9 +17,9 @@ import java.util.List;
  */
 public class AdvancementButton extends AdvancedButton {
 
-    private final ResourceLocation advancementId;
+    private final Identifier advancementId;
 
-    public AdvancementButton(ResourceLocation advancementId) {
+    public AdvancementButton(Identifier advancementId) {
         this.advancementId = advancementId;
     }
 

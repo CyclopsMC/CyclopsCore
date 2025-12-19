@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -47,7 +47,7 @@ public abstract class CapabilityConfigCommon<T, M extends IModBase> extends Exte
         return registrar;
     }
 
-    public ResourceLocation getId() {
-        return ResourceLocation.fromNamespaceAndPath(getMod().getModId(), getNamedId());
+    public Identifier getId() {
+        return Identifier.fromNamespaceAndPath(getMod().getModId(), getNamedId());
     }
 }

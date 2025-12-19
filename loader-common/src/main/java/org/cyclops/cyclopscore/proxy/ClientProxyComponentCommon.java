@@ -5,7 +5,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.apache.logging.log4j.Level;
@@ -27,7 +27,7 @@ public abstract class ClientProxyComponentCommon extends CommonProxyComponentCom
 
     public ClientProxyComponentCommon(CommonProxyComponentCommon commonProxyComponent) {
         this.commonProxyComponent = commonProxyComponent;
-        this.mainKeyCategory = new KeyMapping.Category(ResourceLocation.fromNamespaceAndPath(commonProxyComponent.getMod().getModId(), "main"));
+        this.mainKeyCategory = new KeyMapping.Category(Identifier.fromNamespaceAndPath(commonProxyComponent.getMod().getModId(), "main"));
     }
 
     public CommonProxyComponentCommon getCommonProxyComponent() {

@@ -1,8 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.base.Function;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,7 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -36,11 +34,6 @@ import java.util.Random;
 public class RenderHelpersCommon implements IRenderHelpers {
 
     private static final Random rand = new Random();
-
-    @Override
-    public void bindTexture(GpuTextureView texture) {
-        RenderSystem.setShaderTexture(0, texture);
-    }
 
     @Override
     public void emitParticle(Particle particle) {
@@ -114,10 +107,10 @@ public class RenderHelpersCommon implements IRenderHelpers {
         }
     }
 
-    private static final Function<ResourceLocation, TextureAtlasSprite> TEXTURE_GETTER =
-            location -> Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(ResourceLocation.fromNamespaceAndPath("minecraft", "blocks")).getSprite(location);
+    private static final Function<Identifier, TextureAtlasSprite> TEXTURE_GETTER =
+            location -> Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(Identifier.fromNamespaceAndPath("minecraft", "blocks")).getSprite(location);
     @Override
-    public Function<ResourceLocation, TextureAtlasSprite> getBlockTextureGetter() {
+    public Function<Identifier, TextureAtlasSprite> getBlockTextureGetter() {
         return TEXTURE_GETTER;
     }
 
@@ -142,12 +135,12 @@ public class RenderHelpersCommon implements IRenderHelpers {
     }
 
     @Override
-    public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a) {
+    public void blitColored(GuiGraphics guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a) {
         blitColored(guiGraphics, texture, x, y, u, v, width, height, 256, 256, r, g, b, a);
     }
 
     @Override
-    public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, float r, float g, float b, float a) {
+    public void blitColored(GuiGraphics guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, float r, float g, float b, float a) {
         int color = ARGB.colorFromFloat(a, r, g, b);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, u, v, width, height, textureWidth, textureHeight, color);
     }

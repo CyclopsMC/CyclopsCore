@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.modcompat.capabilities;
 
 import net.neoforged.neoforge.capabilities.IBlockCapabilityProvider;
-import org.checkerframework.checker.units.qual.C;
 
 import javax.annotation.Nullable;
 

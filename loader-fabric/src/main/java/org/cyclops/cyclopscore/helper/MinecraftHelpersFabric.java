@@ -13,7 +13,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.MenuProvider;
@@ -84,7 +84,7 @@ public class MinecraftHelpersFabric extends MinecraftHelpersCommon {
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                 AbstractContainerMenu menu = containerSupplier.createMenu(i, inventory, player);
-                ResourceLocation typeId = BuiltInRegistries.MENU.getKey(menu.getType());
+                Identifier typeId = BuiltInRegistries.MENU.getKey(menu.getType());
 
                 // Hack to pass our extraDataWriter to the gui without requiring a custom codec
                 StreamCodec<RegistryFriendlyByteBuf, ?> codec = (StreamCodec<RegistryFriendlyByteBuf, Object>) Networking.CODEC_BY_ID.get(typeId);

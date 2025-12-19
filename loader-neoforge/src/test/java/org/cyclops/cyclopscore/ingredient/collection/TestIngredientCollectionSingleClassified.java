@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.ingredient.collection;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.commoncapabilities.api.ingredient.IngredientComponentCategoryType;
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
@@ -89,7 +89,7 @@ public class TestIngredientCollectionSingleClassified {
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), categoryType);
         IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> c1 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), new IngredientComponentCategoryType<>(
-                        ResourceLocation.parse("dummy"), ComplexStack.Group.class, true, ComplexStack::getGroup, ComplexStack.Match.GROUP, false));
+                        Identifier.parse("dummy"), ComplexStack.Group.class, true, ComplexStack::getGroup, ComplexStack.Match.GROUP, false));
         IngredientCollectionSingleClassified<ComplexStack, Integer, ?, ?> c2 = new IngredientCollectionSingleClassified<>(IngredientComponentStubs.COMPLEX,
                 () -> new IngredientHashSet<>(IngredientComponentStubs.COMPLEX), categoryType);
         c0.addAll(Lists.newArrayList(CA01_, CB02_, CA91B));

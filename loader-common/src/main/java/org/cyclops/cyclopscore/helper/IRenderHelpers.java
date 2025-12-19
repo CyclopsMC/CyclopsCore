@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.base.Function;
-import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -12,7 +11,7 @@ import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,12 +22,6 @@ import java.awt.*;
  * @author rubensworks
  */
 public interface IRenderHelpers {
-
-    /**
-     * Bind a texture to the rendering engine.
-     * @param texture The texture to bind.
-     */
-    public void bindTexture(GpuTextureView texture);
 
     /**
      * Add a particle to the world.
@@ -125,7 +118,7 @@ public interface IRenderHelpers {
     /**
      * @return Texture getter for the block atlas
      */
-    public Function<ResourceLocation, TextureAtlasSprite> getBlockTextureGetter();
+    public Function<Identifier, TextureAtlasSprite> getBlockTextureGetter();
 
     /**
      * Get the default icon from a block.
@@ -163,8 +156,8 @@ public interface IRenderHelpers {
      */
     public boolean isPointInButton(Button button, int pointX, int pointY);
 
-    public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a);
+    public void blitColored(GuiGraphics guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a);
 
-    public void blitColored(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, float r, float g, float b, float a);
+    public void blitColored(GuiGraphics guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, float r, float g, float b, float a);
 
 }

@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.model;
 
-import com.google.common.primitives.Ints;
+import net.minecraft.client.model.geom.builders.UVPair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModelPart;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
@@ -14,9 +14,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.model.quad.BakedColors;
+import net.neoforged.neoforge.client.model.quad.BakedNormals;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.cyclops.cyclopscore.helper.IModHelpers;
+import org.joml.Vector3f;
 
 import java.awt.*;
 import java.util.List;
@@ -40,14 +42,14 @@ public abstract class DynamicBaseModel implements BlockStateModel {
      * @param side The side to rotate by.
      * @return The rotated vector.
      */
-    protected static Vec3 rotate(Vec3 vec, Direction side) {
+    protected static Vector3f rotate(Vector3f vec, Direction side) {
         switch(side) {
-            case DOWN:  return new Vec3( vec.x, -vec.y, -vec.z);
-            case UP:    return new Vec3( vec.x,  vec.y,  vec.z);
-            case NORTH: return new Vec3( vec.x,  vec.z, -vec.y);
-            case SOUTH: return new Vec3( vec.x, -vec.z,  vec.y);
-            case WEST:  return new Vec3(-vec.y,  vec.x,  vec.z);
-            case EAST:  return new Vec3( vec.y, -vec.x,  vec.z);
+            case DOWN:  return new Vector3f( vec.x, -vec.y, -vec.z);
+            case UP:    return new Vector3f( vec.x,  vec.y,  vec.z);
+            case NORTH: return new Vector3f( vec.x,  vec.z, -vec.y);
+            case SOUTH: return new Vector3f( vec.x, -vec.z,  vec.y);
+            case WEST:  return new Vector3f(-vec.y,  vec.x,  vec.z);
+            case EAST:  return new Vector3f( vec.y, -vec.x,  vec.z);
         }
         return vec;
     }
@@ -218,18 +220,30 @@ public abstract class DynamicBaseModel implements BlockStateModel {
     protected static void addBakedQuadRotated(List<BakedQuad> quads, float x1, float x2, float z1, float z2, float y,
                                               TextureAtlasSprite texture, Direction side, int rotation,
                                               boolean isColored, int shadeColor, float[][] uvs) {
-        Vec3 v1 = rotate(new Vec3(x1 - .5, y - .5, z1 - .5), side).add(.5, .5, .5);
-        Vec3 v2 = rotate(new Vec3(x1 - .5, y - .5, z2 - .5), side).add(.5, .5, .5);
-        Vec3 v3 = rotate(new Vec3(x2 - .5, y - .5, z2 - .5), side).add(.5, .5, .5);
-        Vec3 v4 = rotate(new Vec3(x2 - .5, y - .5, z1 - .5), side).add(.5, .5, .5);
-        int[] data =  Ints.concat(
-                vertexToInts((float) v1.x, (float) v1.y, (float) v1.z, shadeColor, texture, uvs[(0 + rotation) % 4][0] * 16, uvs[(0 + rotation) % 4][1] * 16),
-                vertexToInts((float) v2.x, (float) v2.y, (float) v2.z, shadeColor, texture, uvs[(1 + rotation) % 4][0] * 16, uvs[(1 + rotation) % 4][1] * 16),
-                vertexToInts((float) v3.x, (float) v3.y, (float) v3.z, shadeColor, texture, uvs[(2 + rotation) % 4][0] * 16, uvs[(2 + rotation) % 4][1] * 16),
-                vertexToInts((float) v4.x, (float) v4.y, (float) v4.z, shadeColor, texture, uvs[(3 + rotation) % 4][0] * 16, uvs[(3 + rotation) % 4][1] * 16)
-        );
-        ClientHooks.fillNormal(data); // This fixes lighting issues when item is rendered in hand/inventory
-        quads.add(new BakedQuad(data, -1, side, texture, false, shadeColor));
+        // If needed, these Vector3fc's could be cached using ModelBaker: modelBaker.parts().vector(...)
+        Vector3f v1 = rotate(new Vector3f(x1 - .5f, y - .5f, z1 - .5f), side).add(.5f, .5f, .5f);
+        Vector3f v2 = rotate(new Vector3f(x1 - .5f, y - .5f, z2 - .5f), side).add(.5f, .5f, .5f);
+        Vector3f v3 = rotate(new Vector3f(x2 - .5f, y - .5f, z2 - .5f), side).add(.5f, .5f, .5f);
+        Vector3f v4 = rotate(new Vector3f(x2 - .5f, y - .5f, z1 - .5f), side).add(.5f, .5f, .5f);
+        // See QuadBakingVertexConsumer for examples on how BakedQuad is constructed
+        quads.add(new BakedQuad(
+                v1,
+                v2,
+                v3,
+                v4,
+                UVPair.pack(uvs[(0 + rotation) % 4][0], uvs[(0 + rotation) % 4][1]),
+                UVPair.pack(uvs[(1 + rotation) % 4][0], uvs[(1 + rotation) % 4][1]),
+                UVPair.pack(uvs[(2 + rotation) % 4][0], uvs[(2 + rotation) % 4][1]),
+                UVPair.pack(uvs[(3 + rotation) % 4][0], uvs[(3 + rotation) % 4][1]),
+                -1,
+                side,
+                texture,
+                false,
+                0,
+                BakedNormals.UNSPECIFIED,
+                isColored ? BakedColors.of(shadeColor) : BakedColors.DEFAULT,
+                true
+        ));
     }
 
     public abstract List<BakedQuad> handleBlockState(BlockAndTintGetter level, BlockPos pos,

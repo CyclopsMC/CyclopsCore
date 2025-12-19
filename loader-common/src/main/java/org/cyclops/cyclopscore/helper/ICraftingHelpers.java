@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.display.RecipeDisplayEntry;
@@ -28,7 +28,7 @@ public interface ICraftingHelpers {
 
     public List<RecipeDisplayEntry> getRecipeDisplays(RecipeType<?> recipeType, ResourceKey<Recipe<?>> recipeName);
 
-    public List<Pair<ResourceLocation, RecipeDisplayEntry>> getRecipeDisplays(RecipeType<?> recipeType, String recipeNameRegex);
+    public List<Pair<Identifier, RecipeDisplayEntry>> getRecipeDisplays(RecipeType<?> recipeType, String recipeNameRegex);
 
     /**
      * A cache-based variant of {@link net.minecraft.world.item.crafting.RecipeManager#getRecipeFor(RecipeType, RecipeInput, Level)}.

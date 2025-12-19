@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -18,7 +18,7 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class ReloadResourcesPacket extends PacketCodec<ReloadResourcesPacket> {
 
-    public static final Type<ReloadResourcesPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "reload_resources"));
+    public static final Type<ReloadResourcesPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "reload_resources"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ReloadResourcesPacket> CODEC = getCodec(ReloadResourcesPacket::new);
 
     /**

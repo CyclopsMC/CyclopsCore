@@ -8,7 +8,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.cyclops.cyclopscore.helper.IModHelpers;
@@ -34,7 +34,7 @@ public class DimPos implements Comparable<DimPos> {
             .build(new CacheLoader<String, ResourceKey<Level>>() {
                 @Override
                 public ResourceKey<Level> load(String key) {
-                    return ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(key));
+                    return ResourceKey.create(Registries.DIMENSION, Identifier.parse(key));
                 }
             });
 
@@ -65,7 +65,7 @@ public class DimPos implements Comparable<DimPos> {
         if (worldReference == null) {
             if (IModHelpers.get().getMinecraftHelpers().isClientSideThread()) {
                 ClientLevel world = Minecraft.getInstance().level;
-                if (world != null && world.dimension().location().toString().equals(this.getLevel())) {
+                if (world != null && world.dimension().identifier().toString().equals(this.getLevel())) {
                     this.worldReference = new WeakReference<>(world);
                     return this.worldReference.get();
                 }
@@ -115,7 +115,7 @@ public class DimPos implements Comparable<DimPos> {
     }
 
     public static DimPos of(ResourceKey<Level> world, BlockPos blockPos) {
-        return new DimPos(world.location().toString(), blockPos);
+        return new DimPos(world.identifier().toString(), blockPos);
     }
 
     public String getLevel() {

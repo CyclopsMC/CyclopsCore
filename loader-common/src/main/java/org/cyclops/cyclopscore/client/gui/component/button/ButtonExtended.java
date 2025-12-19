@@ -4,7 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * An extended {@link Button} that is better resizable.
@@ -49,12 +49,12 @@ public abstract class ButtonExtended extends Button {
     }
 
     protected void drawBackground(GuiGraphics guiGraphics) {
-        ResourceLocation resourceLocation = SPRITES.get(this.active, this.isHoveredOrFocused());
+        Identifier resourceLocation = SPRITES.get(this.active, this.isHoveredOrFocused());
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resourceLocation, getX(), getY(), getWidth(), getHeight());
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(visible) {
             if(background) {
                 drawBackground(guiGraphics);

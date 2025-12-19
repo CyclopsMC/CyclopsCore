@@ -4,7 +4,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -21,7 +21,7 @@ import org.cyclops.cyclopscore.network.PacketBase;
  */
 public class RingOfFirePacket extends PlayerPositionPacket<RingOfFirePacket> {
 
-    public static final CustomPacketPayload.Type<RingOfFirePacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "ring_of_fire"));
+    public static final CustomPacketPayload.Type<RingOfFirePacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "ring_of_fire"));
     public static final StreamCodec<RegistryFriendlyByteBuf, RingOfFirePacket> CODEC = PacketBase.getCodec(RingOfFirePacket::new);
     private static final double RING_AREA = 0.9F;
 

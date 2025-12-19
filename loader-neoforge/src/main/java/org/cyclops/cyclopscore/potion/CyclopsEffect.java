@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.potion;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
@@ -18,13 +18,13 @@ import org.cyclops.cyclopscore.init.ModBaseNeoForge;
  */
 public abstract class CyclopsEffect extends MobEffect {
 
-    private final ResourceLocation resource;
+    private final Identifier resource;
 
     protected EffectConfigCommon<ModBaseNeoForge<?>> eConfig = null;
 
     public CyclopsEffect(MobEffectCategory type, int liquidColor) {
         super(type, liquidColor);
-        this.resource = ResourceLocation.fromNamespaceAndPath(eConfig.getMod().getModId(), eConfig.getMod().getReferenceValue(ModBaseNeoForge.REFKEY_TEXTURE_PATH_GUI) + "potions.png");
+        this.resource = Identifier.fromNamespaceAndPath(eConfig.getMod().getModId(), eConfig.getMod().getReferenceValue(ModBaseNeoForge.REFKEY_TEXTURE_PATH_GUI) + "potions.png");
         NeoForge.EVENT_BUS.register(this);
     }
 

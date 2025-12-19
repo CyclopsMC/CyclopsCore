@@ -11,10 +11,10 @@ import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 import javax.annotation.Nullable;
-import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -35,7 +35,7 @@ public class ItemStackBlockEntityRendererBase implements NoDataSpecialModelRende
     }
 
     @Override
-    public void getExtents(Set<Vector3f> set) {
+    public void getExtents(Consumer<Vector3fc> consumer) {
 
     }
 

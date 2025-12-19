@@ -10,7 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
@@ -145,7 +145,7 @@ public abstract class NBTClassType<T> {
             @Override
             public Fluid readPersistedField(String name, ValueInput tag) {
                 String fluidName = tag.getString(name).orElseThrow();
-                return BuiltInRegistries.FLUID.getValue(ResourceLocation.parse(fluidName));
+                return BuiltInRegistries.FLUID.getValue(Identifier.parse(fluidName));
             }
 
             @Override

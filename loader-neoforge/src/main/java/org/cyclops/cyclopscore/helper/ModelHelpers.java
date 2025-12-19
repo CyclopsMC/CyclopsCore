@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.neoforged.neoforge.model.data.ModelData;
@@ -135,9 +135,9 @@ public final class ModelHelpers {
      * @return The corresponding model.
      * @throws IOException If the model file was invalid.
      */
-    public static BlockModel loadModelBlock(ResourceLocation modelLocation) throws IOException {
+    public static BlockModel loadModelBlock(Identifier modelLocation) throws IOException {
         Resource resource = Minecraft.getInstance().getResourceManager().getResource(
-                ResourceLocation.fromNamespaceAndPath(modelLocation.getNamespace(), modelLocation.getPath() + ".json")).get();
+                Identifier.fromNamespaceAndPath(modelLocation.getNamespace(), modelLocation.getPath() + ".json")).get();
         return BlockModel.fromStream(resource.openAsReader());
     }
 
@@ -213,7 +213,7 @@ public final class ModelHelpers {
         );
     }
 
-    public static BlockStateModel bakeSingleBlockStateModel(ModelBaker baker, ResourceLocation id, ModelState modelState) {
+    public static BlockStateModel bakeSingleBlockStateModel(ModelBaker baker, Identifier id, ModelState modelState) {
         return new SingleVariant(SimpleModelWrapper.bake(baker, id, modelState));
     }
 }

@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.cyclops.cyclopscore.init.IModBase;
 
 import java.util.function.Function;
@@ -34,7 +34,7 @@ public abstract class ExtendedConfigRegistry<C extends ExtendedConfigCommon<C, I
 
     public ResourceKey<? super I> getResourceKey() {
         return ResourceKey.create(getRegistry().key(),
-                ResourceLocation.fromNamespaceAndPath(getMod().getModId(), getNamedId()));
+                Identifier.fromNamespaceAndPath(getMod().getModId(), getNamedId()));
     }
 
 }

@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.network.packet;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -18,7 +18,7 @@ import org.cyclops.cyclopscore.network.PacketCodec;
  */
 public class SendPlayerAdvancementUnlockedPacket extends PacketCodec<SendPlayerAdvancementUnlockedPacket> {
 
-    public static final Type<SendPlayerAdvancementUnlockedPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "send_player_advancement_unlocked"));
+    public static final Type<SendPlayerAdvancementUnlockedPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "send_player_advancement_unlocked"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SendPlayerAdvancementUnlockedPacket> CODEC = getCodec(SendPlayerAdvancementUnlockedPacket::new);
 
     @CodecField
@@ -43,7 +43,7 @@ public class SendPlayerAdvancementUnlockedPacket extends PacketCodec<SendPlayerA
 
     @Override
     public void actionClient(Level level, Player player) {
-        ResourceLocation id = ResourceLocation.parse(advancementId);
+        Identifier id = Identifier.parse(advancementId);
         if (unlocked) {
             AdvancementHelpers.ACHIEVED_ADVANCEMENTS.add(id);
         } else {

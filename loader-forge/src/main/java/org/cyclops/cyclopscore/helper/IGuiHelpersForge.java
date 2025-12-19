@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
@@ -51,6 +51,6 @@ public interface IGuiHelpersForge extends IGuiHelpers {
      */
     public void renderOverlayedFluidTank(GuiGraphics gui, @Nullable FluidStack fluidStack, int capacity,
                                          int x, int y, int width, int height,
-                                         ResourceLocation textureOverlay, int overlayTextureX, int overlayTextureY);
+                                         Identifier textureOverlay, int overlayTextureX, int overlayTextureY);
 
 }

@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.network.packet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class RequestRecipeDisplaysRegexPacket extends PacketCodec<RequestRecipeDisplaysRegexPacket> {
 
-    public static final Type<RequestRecipeDisplaysRegexPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(Reference.MOD_ID, "request_recipe_displays_regex_packet"));
+    public static final Type<RequestRecipeDisplaysRegexPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "request_recipe_displays_regex_packet"));
     public static final StreamCodec<RegistryFriendlyByteBuf, RequestRecipeDisplaysRegexPacket> CODEC = getCodec(RequestRecipeDisplaysRegexPacket::new);
 
     @CodecField
@@ -55,11 +55,11 @@ public class RequestRecipeDisplaysRegexPacket extends PacketCodec<RequestRecipeD
 
     @Override
     public void actionServer(Level level, ServerPlayer player) {
-        List<Pair<ResourceLocation, RecipeDisplayEntry>> recipeDisplays = IModHelpers.get().getCraftingHelpers().getRecipeDisplays(
-                BuiltInRegistries.RECIPE_TYPE.getValue(ResourceLocation.parse(this.recipeType)),
+        List<Pair<Identifier, RecipeDisplayEntry>> recipeDisplays = IModHelpers.get().getCraftingHelpers().getRecipeDisplays(
+                BuiltInRegistries.RECIPE_TYPE.getValue(Identifier.parse(this.recipeType)),
                 recipeRegex
         );
-        for (Pair<ResourceLocation, RecipeDisplayEntry> entry : recipeDisplays) {
+        for (Pair<Identifier, RecipeDisplayEntry> entry : recipeDisplays) {
             CyclopsCoreNeoForge._instance.getPacketHandler().sendToPlayer(
                     new SendRecipeDisplayPacket(recipeType, entry.getLeft().toString(), entry.getRight()), player);
         }

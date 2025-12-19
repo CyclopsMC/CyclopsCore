@@ -9,7 +9,7 @@ import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
 import org.cyclops.cyclopscore.helper.AdvancementHelpers;
@@ -80,7 +80,7 @@ public class AchievementCollectButton extends AdvancedButton {
         super.onPress(input);
         Player player = Minecraft.getInstance().player;
         boolean canObtain = true;
-        for (ResourceLocation advancement : advancementRewards.getAdvancements()) {
+        for (Identifier advancement : advancementRewards.getAdvancements()) {
             if (!AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getInstance().player, advancement)) {
                 canObtain = false;
             }

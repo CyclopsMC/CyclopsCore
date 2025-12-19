@@ -39,7 +39,7 @@ public class CommandIgnite implements Command<CommandSourceStack> {
 
     public static LiteralArgumentBuilder<CommandSourceStack> make() {
         return Commands.literal("ignite")
-                .requires((commandSource) -> commandSource.hasPermission(2))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.argument("targets", EntityArgument.entities())
                         .executes(new CommandIgnite(false))
                         .then(Commands.argument("duration", IntegerArgumentType.integer())

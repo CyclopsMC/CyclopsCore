@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.inventory.slot;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -53,7 +53,7 @@ public class SlotArmor extends Slot {
     }
 
     @Override
-    public ResourceLocation getNoItemIcon() {
+    public Identifier getNoItemIcon() {
         return InventoryMenu.TEXTURE_EMPTY_SLOTS.get(armorType);
     }
 }

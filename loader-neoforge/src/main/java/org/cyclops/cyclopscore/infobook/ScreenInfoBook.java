@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.apache.logging.log4j.Level;
@@ -47,7 +47,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
     private static final int BORDER_Y = 206;
 
     protected final IInfoBook infoBook;
-    protected final ResourceLocation texture;
+    protected final Identifier texture;
 
     protected NextPageButton buttonNextPage;
     protected NextPageButton buttonPreviousPage;
@@ -78,7 +78,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         CyclopsCoreNeoForge._instance.getPacketHandler().sendToServer(new RequestPlayerNbtPacket());
     }
 
-    protected abstract ResourceLocation constructGuiTexture();
+    protected abstract Identifier constructGuiTexture();
 
     /**
      * @return The amount of pages to show at once.
@@ -280,7 +280,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         guiGraphics.renderTooltip(getFont(), List.of(clientTooltipComponent), mx, my, DefaultTooltipPositioner.INSTANCE, null);
     }
 
-    public void blitMirrored(GuiGraphics guiGraphics, RenderPipeline renderPipeline, ResourceLocation atlasLocation, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight, int color) {
+    public void blitMirrored(GuiGraphics guiGraphics, RenderPipeline renderPipeline, Identifier atlasLocation, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight, int color) {
         guiGraphics.innerBlit(renderPipeline, atlasLocation, x, x + width, y, y + height, (u + width) / (float) textureWidth, u / (float) textureWidth, v / (float) textureHeight, (v + height)/ (float) textureHeight, color);
     }
 
@@ -459,7 +459,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.getX() && mouseY >= this.getY() &&
                         mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
@@ -506,7 +506,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.getX() && mouseY >= this.getY() &&
                         mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;

@@ -62,7 +62,7 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
         DeferredHolderCommon.BIND_OVERRIDE = (key) -> {
             ForgeRegistry<Object> registry = RegistryManager.ACTIVE.getRegistry(key.registry());
             if (registry != null) {
-                Object value = registry.getValue(key.location());
+                Object value = registry.getValue(key.identifier());
                 if (value != null) {
                     return Holder.direct(value);
                 }

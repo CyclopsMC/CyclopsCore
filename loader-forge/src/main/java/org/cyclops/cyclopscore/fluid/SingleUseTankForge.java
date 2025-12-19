@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.fluid;
 import com.google.common.collect.Lists;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
@@ -142,7 +142,7 @@ public class SingleUseTankForge extends TankForge {
     @Override
     public void readTankFromNBT(CompoundTag nbt) {
         super.readTankFromNBT(nbt);
-        setAcceptedFluid(BuiltInRegistries.FLUID.getValue(ResourceLocation.parse(nbt.getString(NBT_ACCEPTED_FLUID).orElseThrow())));
+        setAcceptedFluid(BuiltInRegistries.FLUID.getValue(Identifier.parse(nbt.getString(NBT_ACCEPTED_FLUID).orElseThrow())));
     }
 
 }

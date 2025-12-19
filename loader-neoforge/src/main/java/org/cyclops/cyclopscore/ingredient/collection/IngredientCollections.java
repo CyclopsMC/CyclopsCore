@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.ingredient.collection;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.cyclops.commoncapabilities.api.ingredient.IIngredientMatcher;
@@ -249,7 +249,7 @@ public final class IngredientCollections {
                                                                                        ingredientCollectionFactory) {
         // Validate component
         String componentTypeName = valueOutput.getString("component").orElseThrow(() -> new IllegalArgumentException("No component type was found in the given tag"));
-        IngredientComponent<?, ?> component = IngredientComponent.REGISTRY.getValue(ResourceLocation.parse(componentTypeName));
+        IngredientComponent<?, ?> component = IngredientComponent.REGISTRY.getValue(Identifier.parse(componentTypeName));
         if (component == null) {
             throw new IllegalArgumentException("No ingredient component with the given name was found: " + component);
         }
