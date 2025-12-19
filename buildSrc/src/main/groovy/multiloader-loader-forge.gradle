@@ -57,11 +57,11 @@ minecraft {
             //systemProperty 'forge.logging.markers', 'REGISTRIES'
             systemProperty 'forge.logging.console.level', 'debug'
             systemProperty 'eventbus.api.strictRuntimeChecks', 'true'
-            jvmArgs "-XstartOnFirstThread" // Fixes startup error
         }
 
         register('client') {
             systemProperty 'forge.enabledGameTestNamespaces', "cyclopscore,${mod_id}"
+            jvmArgs "-XstartOnFirstThread" // Fixes startup error
         }
 
         register('server') {
