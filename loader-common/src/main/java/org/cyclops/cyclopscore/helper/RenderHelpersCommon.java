@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.base.Function;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -143,5 +145,79 @@ public class RenderHelpersCommon implements IRenderHelpers {
     public void blitColored(GuiGraphics guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, float r, float g, float b, float a) {
         int color = ARGB.colorFromFloat(a, r, g, b);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, u, v, width, height, textureWidth, textureHeight, color);
+    }
+
+    // Derived from LeverRenderer#renderLineBox
+    @Override
+    public void renderLineBox(PoseStack poseStack, VertexConsumer buffer, AABB box, float red, float green, float blue, float alpha, float width) {
+        renderLineBox(
+                poseStack,
+                buffer,
+                box.minX,
+                box.minY,
+                box.minZ,
+                box.maxX,
+                box.maxY,
+                box.maxZ,
+                red,
+                green,
+                blue,
+                alpha,
+                red,
+                green,
+                blue,
+                width
+        );
+    }
+
+    @Override
+    public void renderLineBox(
+            PoseStack poseStack,
+            VertexConsumer consumer,
+            double minX,
+            double minY,
+            double minZ,
+            double maxX,
+            double maxY,
+            double maxZ,
+            float red,
+            float green,
+            float blue,
+            float alpha,
+            float red2,
+            float green2,
+            float blue2,
+            float width) {
+        PoseStack.Pose posestack$pose = poseStack.last();
+        float f = (float)minX;
+        float f1 = (float)minY;
+        float f2 = (float)minZ;
+        float f3 = (float)maxX;
+        float f4 = (float)maxY;
+        float f5 = (float)maxZ;
+        consumer.addVertex(posestack$pose, f, f1, f2).setColor(red, green2, blue2, alpha).setLineWidth(width).setNormal(posestack$pose, 1.0F, 0.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f3, f1, f2).setColor(red, green2, blue2, alpha).setLineWidth(width).setNormal(posestack$pose, 1.0F, 0.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f, f1, f2).setColor(red2, green, blue2, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 1.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f, f4, f2).setColor(red2, green, blue2, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 1.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f, f1, f2).setColor(red2, green2, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 0.0F, 1.0F);
+        consumer.addVertex(posestack$pose, f, f1, f5).setColor(red2, green2, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 0.0F, 1.0F);
+        consumer.addVertex(posestack$pose, f3, f1, f2).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 1.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f3, f4, f2).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 1.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f3, f4, f2).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, -1.0F, 0.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f, f4, f2).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, -1.0F, 0.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f, f4, f2).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 0.0F, 1.0F);
+        consumer.addVertex(posestack$pose, f, f4, f5).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 0.0F, 1.0F);
+        consumer.addVertex(posestack$pose, f, f4, f5).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, -1.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f, f1, f5).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, -1.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f, f1, f5).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 1.0F, 0.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f3, f1, f5).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 1.0F, 0.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f3, f1, f5).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 0.0F, -1.0F);
+        consumer.addVertex(posestack$pose, f3, f1, f2).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 0.0F, -1.0F);
+        consumer.addVertex(posestack$pose, f, f4, f5).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 1.0F, 0.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f3, f4, f5).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 1.0F, 0.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f3, f1, f5).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 1.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f3, f4, f5).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 1.0F, 0.0F);
+        consumer.addVertex(posestack$pose, f3, f4, f2).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 0.0F, 1.0F);
+        consumer.addVertex(posestack$pose, f3, f4, f5).setColor(red, green, blue, alpha).setLineWidth(width).setNormal(posestack$pose, 0.0F, 0.0F, 1.0F);
     }
 }

@@ -1,6 +1,8 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.base.Function;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -15,6 +17,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 
 import java.awt.*;
 
@@ -159,5 +162,25 @@ public interface IRenderHelpers {
     public void blitColored(GuiGraphics guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a);
 
     public void blitColored(GuiGraphics guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, float r, float g, float b, float a);
+
+    public void renderLineBox(PoseStack poseStack, VertexConsumer buffer, AABB box, float red, float green, float blue, float alpha, float width);
+
+    public void renderLineBox(
+            PoseStack poseStack,
+            VertexConsumer consumer,
+            double minX,
+            double minY,
+            double minZ,
+            double maxX,
+            double maxY,
+            double maxZ,
+            float red,
+            float green,
+            float blue,
+            float alpha,
+            float red2,
+            float green2,
+            float blue2,
+            float width);
 
 }
