@@ -73,32 +73,6 @@ public abstract class DynamicBaseModel implements BlockStateModel {
     }
 
     /**
-     * Make an int array of the given information so that it can be fed into a
-     * {@link BakedQuad}.
-     * @param x X
-     * @param y Y
-     * @param z Z
-     * @param color Color
-     * @param texture Texture
-     * @param u Icon U
-     * @param v Icon V
-     * @return The assembled int array.
-     */
-    protected static int[] vertexToInts(float x, float y, float z, int color, TextureAtlasSprite texture, float u,
-                                        float v) { // See FaceBakery#fillVertex for inspiration in case this would break.
-        return new int[] {
-                Float.floatToRawIntBits(x),
-                Float.floatToRawIntBits(y),
-                Float.floatToRawIntBits(z),
-                color,
-                Float.floatToRawIntBits(texture.getU(u / 16F)),
-                Float.floatToRawIntBits(texture.getV(v / 16F)),
-                0,
-                0
-        };
-    }
-
-    /**
      * Add a given quad to a list of quads.
      * @param quads The quads to append to.
      * @param x1 Start X
@@ -231,10 +205,10 @@ public abstract class DynamicBaseModel implements BlockStateModel {
                 v2,
                 v3,
                 v4,
-                UVPair.pack(uvs[(0 + rotation) % 4][0], uvs[(0 + rotation) % 4][1]),
-                UVPair.pack(uvs[(1 + rotation) % 4][0], uvs[(1 + rotation) % 4][1]),
-                UVPair.pack(uvs[(2 + rotation) % 4][0], uvs[(2 + rotation) % 4][1]),
-                UVPair.pack(uvs[(3 + rotation) % 4][0], uvs[(3 + rotation) % 4][1]),
+                UVPair.pack(texture.getU(uvs[(0 + rotation) % 4][0]), texture.getV(uvs[(0 + rotation) % 4][1])),
+                UVPair.pack(texture.getU(uvs[(1 + rotation) % 4][0]), texture.getV(uvs[(1 + rotation) % 4][1])),
+                UVPair.pack(texture.getU(uvs[(2 + rotation) % 4][0]), texture.getV(uvs[(2 + rotation) % 4][1])),
+                UVPair.pack(texture.getU(uvs[(3 + rotation) % 4][0]), texture.getV(uvs[(3 + rotation) % 4][1])),
                 -1,
                 side,
                 texture,
