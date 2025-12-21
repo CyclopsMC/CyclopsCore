@@ -4,13 +4,17 @@ import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DestFactor;
 import com.mojang.blaze3d.platform.SourceFactor;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
+import org.cyclops.cyclopscore.Reference;
 
 /**
  * A blurred static fading particle with any possible color.
@@ -19,25 +23,18 @@ import net.minecraft.world.entity.LivingEntity;
  */
 public class ParticleBlur extends SingleQuadParticle {
 
-    public static final RenderPipeline RENDER_PIPELINE = RenderPipeline.builder(RenderPipelines.PARTICLE_SNIPPET) // Modified from RenderPipelines.TRANSLUCENT_PARTICLE
-            .withLocation("pipeline/translucent_particle_blur")
+    public static final RenderPipeline.Snippet PARTICLE_SNIPPET_BLUR = RenderPipeline.builder(RenderPipelines.MATRICES_FOG_SNIPPET) // Modified from RenderPipelines.PARTICLE_SNIPPET
+            .withVertexShader("core/particle")
+//            .withFragmentShader("core/particle") // Was this
+            .withFragmentShader(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "core/particle_blur"))
+            .withSampler("Sampler0")
+            .withSampler("Sampler2")
+            .withVertexFormat(DefaultVertexFormat.PARTICLE, VertexFormat.Mode.QUADS)
+            .buildSnippet();
+    public static final RenderPipeline RENDER_PIPELINE = RenderPipeline.builder(PARTICLE_SNIPPET_BLUR) // Modified from RenderPipelines.TRANSLUCENT_PARTICLE
+            .withLocation(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "pipeline/translucent_particle_blur"))
             .withBlend(new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE))
             .build();
-    // TODO: make the particle blurry again. The key here is in BlurTexturingStateShard. May work using a new ParticleGroup.
-//    public static final RenderType RENDER_TYPE = RenderType.create( // Modified from RenderType.TRANSLUCENT_PARTICLE
-//            Reference.MOD_ID + ":blur",
-//            1536,
-//            false,
-//            false,
-//            RENDER_PIPELINE,
-//            RenderType.CompositeState.builder()
-//                    .setTextureState(new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_PARTICLES, false))
-//                    .setTexturingState(new BlurTexturingStateShard(TextureAtlas.LOCATION_PARTICLES))
-//                    .setOutputState(RenderType.PARTICLES_TARGET)
-//                    .setLightmapState(RenderType.LIGHTMAP)
-//                    .createCompositeState(false)
-//    );
-//    public static final ParticleRenderType PARTICLE_RENDER_TYPE = new ParticleRenderType(Reference.MOD_ID + ":blur");
     public static final SingleQuadParticle.Layer LAYER = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, RENDER_PIPELINE);
 
     private static final int MAX_VIEW_DISTANCE = 30;

@@ -34,26 +34,5 @@ public class ClientProxyFabric extends ClientProxyComponentFabric {
 
         ItemTooltipCallback.EVENT.register(ItemInformationProviderFabric::onTooltip);
         ScreenEvents.AFTER_INIT.register(GuiMainMenuExtensionDevWorldFabricRegistrar::afterInit);
-        // TODO: restore
-//        IParticleEngineRenderEvent.EVENT.register((particleEngine, camera, partialTick, bufferSource) -> {
-//            Queue<Particle> queue = particleEngine.particles.get(ParticleBlur.PARTICLE_RENDER_TYPE);
-//            if (queue != null && !queue.isEmpty()) {
-//                /* Below is copied and adapted from ParticleEngine */
-//                VertexConsumer vertexConsumer = bufferSource.getBuffer(ParticleBlur.PARTICLE_RENDER_TYPE.renderType());
-//                for (Particle particle : queue) {
-//                    try {
-//                        particle.render(vertexConsumer, camera, partialTick);
-//                    } catch (Throwable throwable) {
-//                        CrashReport crashreport = CrashReport.forThrowable(throwable, "Rendering Cyclops Core Particle");
-//                        CrashReportCategory crashreportcategory = crashreport.addCategory("Particle being rendered");
-//                        crashreportcategory.setDetail("Particle", particle::toString);
-//                        crashreportcategory.setDetail("Particle Type", ParticleBlur.PARTICLE_RENDER_TYPE.renderType()::toString);
-//                        throw new ReportedException(crashreport);
-//                    }
-//                }
-//
-//                bufferSource.endBatch();
-//            }
-//        });
     }
 }

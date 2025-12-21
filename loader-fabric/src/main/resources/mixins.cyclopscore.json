@@ -17,8 +17,7 @@
   ],
   "client": [
     "MixinClientLevel",
-    "MixinLivingEntityRenderer",
-    "MixinParticleEngine"
+    "MixinLivingEntityRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
