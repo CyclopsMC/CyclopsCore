@@ -16,6 +16,7 @@ public abstract class ModHelpersCommon implements IModHelpers {
     private ICraftingHelpers craftingHelpers;
     private IWorldHelpers worldHelpers;
     private IGuiHelpers guiHelpers;
+    private IStructureHelpers structureHelpers;
 
     protected ModHelpersCommon() {
         this.initializeHelpers();
@@ -39,6 +40,7 @@ public abstract class ModHelpersCommon implements IModHelpers {
         this.baseHelpers = new BaseHelpersCommon();
         this.craftingHelpers = new CraftingHelpersCommon(this);
         this.worldHelpers = new WorldHelpersCommon(this);
+        this.structureHelpers = new StructureHelpersCommon();
     }
 
     @Override
@@ -94,5 +96,10 @@ public abstract class ModHelpersCommon implements IModHelpers {
     @Override
     public IGuiHelpers getGuiHelpers() {
         return this.guiHelpers;
+    }
+
+    @Override
+    public IStructureHelpers getStructureHelpers() {
+        return this.structureHelpers;
     }
 }

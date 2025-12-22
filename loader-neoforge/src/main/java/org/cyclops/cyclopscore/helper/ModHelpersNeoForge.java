@@ -14,6 +14,7 @@ public class ModHelpersNeoForge extends ModHelpersCommon implements IModHelpersN
     private IRenderHelpersNeoForge renderHelpers;
     private IRegistrationHelpers registrationHelpers;
     private IGuiHelpersNeoForge guiHelpers;
+    private IStructureHelpersNeoForge structureHelpers;
 
     private ModHelpersNeoForge() {}
 
@@ -32,6 +33,7 @@ public class ModHelpersNeoForge extends ModHelpersCommon implements IModHelpersN
         this.capabilityHelpers = new CapabilityHelpersNeoForge(this);
         this.fluidHelpers = new FluidHelpersNeoForge();
         this.registrationHelpers = new RegistrationHelpersNeoForge();
+        this.structureHelpers = new StructureHelpersNeoForge();
     }
 
     @Override
@@ -67,5 +69,10 @@ public class ModHelpersNeoForge extends ModHelpersCommon implements IModHelpersN
     @Override
     public IGuiHelpersNeoForge getGuiHelpers() {
         return this.guiHelpers;
+    }
+
+    @Override
+    public IStructureHelpersNeoForge getStructureHelpers() {
+        return this.structureHelpers;
     }
 }

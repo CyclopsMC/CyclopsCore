@@ -55,3 +55,8 @@ accessible field net/minecraft/client/particle/ParticleEngine textureManager Lne
 # Rendering
 accessible field net/minecraft/client/renderer/texture/AbstractTexture blur Z
 accessible field net/minecraft/client/renderer/texture/AbstractTexture mipmap Z
+
+# Structures
+accessible field net/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool rawTemplates Ljava/util/List;
+mutable field net/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool rawTemplates Ljava/util/List;
+accessible field net/minecraft/world/level/levelgen/structure/pools/StructureTemplatePool templates Lit/unimi/dsi/fastutil/objects/ObjectArrayList;
