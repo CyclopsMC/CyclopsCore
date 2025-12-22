@@ -42,6 +42,7 @@ public class ConfigurableTypeCommon {
     public static final ConfigurableTypeCommon ENTITY = new ConfigurableTypeCommon(true, EntityConfigCommon.class, new EntityActionCommon<>(), "entity");
     public static final ConfigurableTypeCommon ITEM_TINT_SOURCE = new ConfigurableTypeCommon(true, ItemTintSourceConfigCommon.class, new ItemTintSourceActionCommon<>(), "item_tint_source");
     public static final ConfigurableTypeCommon GAME_TEST_INSTANCE_TYPE = new ConfigurableTypeCommon(true, GameTestInstanceTypeConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "game_test_instance_type");
+    public static final ConfigurableTypeCommon POI = new ConfigurableTypeCommon(true, PoiConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "poi");
 
     /**
      * Dummy type, only used for configs that refer to nothing.

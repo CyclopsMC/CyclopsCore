@@ -1,0 +1,7 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add helpers for registering to structure template pools
+  Required for CyclopsMC/EvilCraft#1146
+* Add PoiConfigCommon
+* Add translations through Crowdin (#213)

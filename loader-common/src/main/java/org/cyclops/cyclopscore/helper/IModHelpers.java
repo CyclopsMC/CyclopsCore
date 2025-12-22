@@ -40,4 +40,6 @@ public interface IModHelpers {
 
     public IGuiHelpers getGuiHelpers();
 
+    public IStructureHelpers getStructureHelpers();
+
 }
