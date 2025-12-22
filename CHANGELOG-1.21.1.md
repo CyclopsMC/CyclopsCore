@@ -1,8 +1,17 @@
 # Changelog for Minecraft 1.21.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.21.1-1.28.0"></a>
+## [1.21.1-1.28.0](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.27.2...1.21.1-1.28.0) - 2025-12-22 13:54:29
+
+### Added
+* Add helpers for registering to structure template pools
+  Required for CyclopsMC/EvilCraft#1146
+* Add PoiConfigCommon
+* Add translations through Crowdin (#213)
+
 <a name="1.21.1-1.27.2"></a>
-## [1.21.1-1.27.2](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.27.1...1.21.1-1.27.2) - 2025-11-11 13:52:44
+## [1.21.1-1.27.2](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.27.1...1.21.1-1.27.2) - 2025-11-11 13:52:44 +0100
 
 ### Fixed
 * Fix packets always being handled on the main thread
