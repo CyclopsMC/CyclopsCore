@@ -1,13 +1,6 @@
 package org.cyclops.cyclopscore.config;
 
-import org.cyclops.cyclopscore.config.configurabletypeaction.BlockAction;
-import org.cyclops.cyclopscore.config.configurabletypeaction.CapabilityAction;
-import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeActionCommon;
-import org.cyclops.cyclopscore.config.configurabletypeaction.ConfigurableTypeActionRegistry;
-import org.cyclops.cyclopscore.config.configurabletypeaction.DummyActionCommon;
-import org.cyclops.cyclopscore.config.configurabletypeaction.EntityActionCommon;
-import org.cyclops.cyclopscore.config.configurabletypeaction.ItemAction;
-import org.cyclops.cyclopscore.config.configurabletypeaction.ParticleActionCommon;
+import org.cyclops.cyclopscore.config.configurabletypeaction.*;
 import org.cyclops.cyclopscore.config.extendedconfig.*;
 
 /**
@@ -45,6 +38,7 @@ public class ConfigurableTypeCommon {
     public static final ConfigurableTypeCommon GUI = new ConfigurableTypeCommon(true, GuiConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "gui");
     public static final ConfigurableTypeCommon PARTICLE = new ConfigurableTypeCommon(true, GuiConfigCommon.class, new ParticleActionCommon<>(), "particle");
     public static final ConfigurableTypeCommon ENTITY = new ConfigurableTypeCommon(true, EntityConfigCommon.class, new EntityActionCommon<>(), "entity");
+    public static final ConfigurableTypeCommon POI = new ConfigurableTypeCommon(true, PoiConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "poi");
 
     /**
      * Dummy type, only used for configs that refer to nothing.
