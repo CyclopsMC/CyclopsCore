@@ -67,6 +67,11 @@ public class FluidHandlerItemCapacity extends ItemAccessFluidHandler implements 
     }
 
     @Override
+    protected int getCapacity(int index, FluidResource resource) {
+        return getTankCapacity(index);
+    }
+
+    @Override
     public long getCapacityAsLong(int index, FluidResource resource) {
         return getTankCapacity(index);
     }
