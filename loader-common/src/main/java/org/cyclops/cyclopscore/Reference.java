@@ -17,6 +17,7 @@ public final class Reference {
     public static final String MOD_CURIOS = "curios";
     public static final String MOD_JEI = "jei";
     public static final String MOD_COMMONCAPABILITIES = "commoncapabilities";
+    public static final String MOD_ALMOSTUNIFIED = "almostunified";
 
     // Paths
     public static final String TEXTURE_PATH_PARTICLES = "textures/particle/";

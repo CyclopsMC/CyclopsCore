@@ -48,6 +48,7 @@ import org.cyclops.cyclopscore.metadata.IRegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportables;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
+import org.cyclops.cyclopscore.modcompat.almostunified.ModCompatAlmostUnified;
 import org.cyclops.cyclopscore.modcompat.curios.ModCompatCurios;
 import org.cyclops.cyclopscore.network.PacketCodecsNeoForge;
 import org.cyclops.cyclopscore.persist.nbt.NBTClassTypesNeoForge;
@@ -102,6 +103,7 @@ public class CyclopsCore extends ModBaseVersionable<CyclopsCore> {
         ModCompatLoader modCompatLoader = super.constructModCompatLoader();
 
         modCompatLoader.addModCompat(new ModCompatCurios());
+        modCompatLoader.addModCompat(new ModCompatAlmostUnified());
 
         return modCompatLoader;
     }
