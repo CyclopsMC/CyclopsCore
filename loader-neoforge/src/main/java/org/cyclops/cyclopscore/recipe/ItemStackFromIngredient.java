@@ -3,9 +3,14 @@ package org.cyclops.cyclopscore.recipe;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.cyclops.cyclopscore.modcompat.almostunified.AlmostUnifiedAdapter;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -51,6 +56,12 @@ public class ItemStackFromIngredient {
     public ItemStack getFirstItemStack() {
         if (firstItemStack != null) {
             return firstItemStack;
+        }
+
+        TagKey<Item> tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(tag));
+        Item almostUnifiedTarget = AlmostUnifiedAdapter.getTagTargetItem(tagKey);
+        if (almostUnifiedTarget != null) {
+            return new ItemStack(almostUnifiedTarget, count);
         }
 
         // Obtain all stacks for the given tag
