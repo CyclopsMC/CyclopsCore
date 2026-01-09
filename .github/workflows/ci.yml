@@ -61,6 +61,16 @@ jobs:
         with:
           if-no-files-found: error
           path: loader-*/build/libs/*
+      - name: 'Copy mods to runtime client'
+        run: mkdir -p run/mods && cp $(find loader-neoforge/build/libs -regex '.*[0-9]\.jar') run/mods
+      - name: 'Test in runtime client'
+        uses: headlesshq/mc-runtime-test@4.1.0
+        with:
+          mc: 1.21.1
+          modloader: neoforge
+          regex: .*neoforge.*
+          mc-runtime-test: neoforge
+          java: ${{ env.java_version }}
       - name: 'Deploy to CurseForge'
         if: startsWith(github.ref, 'refs/tags/') || (!startsWith(github.event.head_commit.message, 'Bump mod version') && startsWith(github.ref, 'refs/heads/master'))
         env:
