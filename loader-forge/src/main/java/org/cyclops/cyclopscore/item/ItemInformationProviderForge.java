@@ -13,7 +13,7 @@ public class ItemInformationProviderForge extends ItemInformationProviderCommon 
     public static void onTooltip(ItemTooltipEvent event) {
         ItemStack itemStack = event.getItemStack();
         if (ITEMS_INFO.contains(itemStack.getItem())) {
-            ModHelpersForge.INSTANCE.getL10NHelpers().addOptionalInfo(event.getToolTip()::add, itemStack.getItem().getDescriptionId());
+            ModHelpersForge.INSTANCE.getL10NHelpers().addOptionalInfo(event.getToolTip()::add, itemStack.getItem().getDescriptionId(), event.getFlags());
         }
     }
 

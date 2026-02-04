@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.TooltipFlag;
 
 import java.util.function.Consumer;
 
@@ -22,6 +23,11 @@ public interface IL10NHelpers {
 
     public void addStatusInfo(Consumer<Component> tooltipAdder, boolean isEnabled, String statusPrefixKey);
 
-    public void addOptionalInfo(Consumer<Component> tooltipAdder, String prefix);
+    @Deprecated // TODO: rm in next major
+    public default void addOptionalInfo(Consumer<Component> tooltipAdder, String prefix) {
+        addOptionalInfo(tooltipAdder, prefix, TooltipFlag.NORMAL);
+    }
+
+    public void addOptionalInfo(Consumer<Component> tooltipAdder, String prefix, TooltipFlag tooltipFlag);
 
 }

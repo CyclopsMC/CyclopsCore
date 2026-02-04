@@ -13,7 +13,7 @@ public class ItemInformationProviderNeoForge extends ItemInformationProviderComm
     public static void onTooltip(ItemTooltipEvent event) {
         ItemStack itemStack = event.getItemStack();
         if (ITEMS_INFO.contains(itemStack.getItem())) {
-            ModHelpersNeoForge.INSTANCE.getL10NHelpers().addOptionalInfo(event.getToolTip()::add, itemStack.getItem().getDescriptionId());
+            ModHelpersNeoForge.INSTANCE.getL10NHelpers().addOptionalInfo(event.getToolTip()::add, itemStack.getItem().getDescriptionId(), event.getFlags());
         }
     }
 

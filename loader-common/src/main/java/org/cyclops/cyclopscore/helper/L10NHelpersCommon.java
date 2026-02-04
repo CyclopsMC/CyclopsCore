@@ -5,6 +5,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.world.item.TooltipFlag;
 import org.cyclops.cyclopscore.Reference;
 
 import java.util.Arrays;
@@ -43,10 +44,10 @@ public class L10NHelpersCommon implements IL10NHelpers {
     }
 
     @Override
-    public void addOptionalInfo(Consumer<Component> tooltipAdder, String prefix) {
+    public void addOptionalInfo(Consumer<Component> tooltipAdder, String prefix, TooltipFlag tooltipFlag) {
         String key = prefix + ".info";
         if (I18n.exists(key)) {
-            if (modHelpers.getMinecraftClientHelpers().isShifted()) {
+            if (tooltipFlag.isAdvanced() || modHelpers.getMinecraftClientHelpers().isShifted()) {
                 String localized = localize(key);
                 StringHelpers.splitLines(localized, getMaxTooltipLineLength(), getInfoPrefix())
                         .stream()
