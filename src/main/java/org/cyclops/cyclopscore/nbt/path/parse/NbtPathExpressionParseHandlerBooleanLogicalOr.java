@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 /**
- * A handler that handles boolean OR expressions in the form of "expression1 || expression2".
+ * A handler that handles boolean OR expressions in the form of "expression1 {@literal ||} expression2".
  */
 public class NbtPathExpressionParseHandlerBooleanLogicalOr implements INbtPathExpressionParseHandler {
 
