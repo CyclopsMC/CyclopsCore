@@ -115,4 +115,96 @@ public class TestNbtPathLogicalOperators {
         )));
         assertThat(expression.test(tag1), is(true));
     }
+
+    @Test
+    public void testParseLogicalWithFilterExpression() throws NbtParseException {
+        // Test filter expression with OR: [?(@.value < 5 || > 10)]
+        INbtPathExpression expression = NbtPath.parse("$.items[?(@.value < 5 || > 10)]");
+
+        CompoundTag root = new CompoundTag();
+        ListTag items = new ListTag();
+        
+        CompoundTag item1 = new CompoundTag();
+        item1.putInt("value", 3);  // 3 < 5 is true, should match
+        
+        CompoundTag item2 = new CompoundTag();
+        item2.putInt("value", 7);  // 7 < 5 is false, 7 > 10 is false, should not match
+        
+        CompoundTag item3 = new CompoundTag();
+        item3.putInt("value", 15);  // 15 < 5 is false, 15 > 10 is true, should match
+        
+        items.add(item1);
+        items.add(item2);
+        items.add(item3);
+        root.put("items", items);
+        
+        ListTag expectedFiltered = new ListTag();
+        expectedFiltered.add(item1);
+        expectedFiltered.add(item3);
+        
+        List<Tag> expected = Lists.newArrayList(expectedFiltered);
+        assertThat(expression.match(Stream.of(root)).getMatches().collect(Collectors.toList()), equalTo(expected));
+        assertThat(expression.test(root), is(true));
+    }
+
+    @Test
+    public void testParseLogicalWithFilterExpressionAnd() throws NbtParseException {
+        // Test filter expression with AND: [?(@.min < 10 && > 5)]
+        INbtPathExpression expression = NbtPath.parse("$.items[?(@.min < 10 && > 5)]");
+
+        CompoundTag root = new CompoundTag();
+        ListTag items = new ListTag();
+        
+        CompoundTag item1 = new CompoundTag();
+        item1.putInt("min", 7);  // 7 < 10 is true, 7 > 5 is true, should match
+        
+        CompoundTag item2 = new CompoundTag();
+        item2.putInt("min", 3);  // 3 < 10 is true, 3 > 5 is false, should not match
+        
+        CompoundTag item3 = new CompoundTag();
+        item3.putInt("min", 12);  // 12 < 10 is false, should not match
+        
+        items.add(item1);
+        items.add(item2);
+        items.add(item3);
+        root.put("items", items);
+        
+        ListTag expectedFiltered = new ListTag();
+        expectedFiltered.add(item1);
+        
+        List<Tag> expected = Lists.newArrayList(expectedFiltered);
+        assertThat(expression.match(Stream.of(root)).getMatches().collect(Collectors.toList()), equalTo(expected));
+        assertThat(expression.test(root), is(true));
+    }
+
+    @Test
+    public void testParseLogicalNotWithFilterExpression() throws NbtParseException {
+        // Test filter expression with NOT: [?(!(@.active == 1))]
+        INbtPathExpression expression = NbtPath.parse("$.items[?(!(@.active == 1))]");
+
+        CompoundTag root = new CompoundTag();
+        ListTag items = new ListTag();
+        
+        CompoundTag item1 = new CompoundTag();
+        item1.putInt("active", 0);  // 0 == 1 is false, !(false) is true, should match
+        
+        CompoundTag item2 = new CompoundTag();
+        item2.putInt("active", 1);  // 1 == 1 is true, !(true) is false, should not match
+        
+        CompoundTag item3 = new CompoundTag();
+        item3.putInt("active", 0);  // 0 == 1 is false, !(false) is true, should match
+        
+        items.add(item1);
+        items.add(item2);
+        items.add(item3);
+        root.put("items", items);
+        
+        ListTag expectedFiltered = new ListTag();
+        expectedFiltered.add(item1);
+        expectedFiltered.add(item3);
+        
+        List<Tag> expected = Lists.newArrayList(expectedFiltered);
+        assertThat(expression.match(Stream.of(root)).getMatches().collect(Collectors.toList()), equalTo(expected));
+        assertThat(expression.test(root), is(true));
+    }
 }
