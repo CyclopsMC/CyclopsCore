@@ -105,8 +105,11 @@ public class NbtPathExpressionParseHandlerBooleanLogicalAnd implements INbtPathE
                         // The left side is the current tag (should be a boolean result from previous expression)
                         boolean leftValue = isTruthy(currentTag);
                         
-                        // Evaluate the right expression
-                        boolean rightValue = rightExpression.test(currentTag);
+                        // Evaluate the right expression against the parent context (original tag before boolean conversion)
+                        Tag originalTag = executionContext.getParentContext() != null 
+                                ? executionContext.getParentContext().getCurrentTag() 
+                                : currentTag;
+                        boolean rightValue = rightExpression.test(originalTag);
                         
                         // AND operation
                         boolean result = leftValue && rightValue;
