@@ -102,7 +102,7 @@ public class NbtPathExpressionParseHandlerBooleanLogicalOr implements INbtPathEx
                         Tag currentTag = executionContext.getCurrentTag();
                         
                         // The left side is the current tag (should be a boolean result from previous expression)
-                        boolean leftValue = isTruthy(currentTag);
+                        boolean leftValue = NbtPathExpressionHelpers.isTruthy(currentTag);
                         
                         // Evaluate the right expression against the parent context (original tag before boolean conversion)
                         Tag originalTag = executionContext.getParentContext() != null 
@@ -117,22 +117,6 @@ public class NbtPathExpressionParseHandlerBooleanLogicalOr implements INbtPathEx
                                 ByteTag.valueOf(result ? (byte) 1 : (byte) 0), executionContext);
                     })
             );
-        }
-
-        /**
-         * Determine if a tag is truthy.
-         * ByteTag with value 1 is true, 0 is false.
-         * Any other non-null tag is considered true.
-         */
-        private boolean isTruthy(Tag tag) {
-            if (tag == null) {
-                return false;
-            }
-            if (tag.getId() == Tag.TAG_BYTE) {
-                return ((ByteTag) tag).getAsByte() == (byte) 1;
-            }
-            // Non-null tags are truthy
-            return true;
         }
     }
 }
