@@ -266,4 +266,28 @@ public class TestNbtPathLogicalOperators {
         assertThat(expression.match(Stream.of(root)).getMatches().collect(Collectors.toList()), equalTo(expected));
         assertThat(expression.test(root), is(true));
     }
+
+    @Test
+    public void testParseLogicalAndDifferentFields() throws NbtParseException {
+        // Test: (@.a > 10) && (@.b < 5) with different fields
+        INbtPathExpression expression = NbtPath.parse("@.a > 10 && @.b < 5");
+
+        CompoundTag tag1 = new CompoundTag();
+        tag1.putInt("a", 15);
+        tag1.putInt("b", 3);  // 15 > 10 is true, 3 < 5 is true, so true && true = true
+
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 1)
+        )));
+        assertThat(expression.test(tag1), is(true));
+
+        CompoundTag tag2 = new CompoundTag();
+        tag2.putInt("a", 15);
+        tag2.putInt("b", 8);  // 15 > 10 is true, 8 < 5 is false, so true && false = false
+
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 0)
+        )));
+        assertThat(expression.test(tag2), is(false));
+    }
 }
