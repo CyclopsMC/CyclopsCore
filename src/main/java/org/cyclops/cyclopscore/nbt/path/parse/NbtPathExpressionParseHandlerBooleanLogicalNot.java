@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  */
 public class NbtPathExpressionParseHandlerBooleanLogicalNot implements INbtPathExpressionParseHandler {
 
-    private static final Pattern REGEX_EXPRESSION = Pattern.compile("^ *! *");
+    private static final Pattern REGEX_EXPRESSION = Pattern.compile("^ *!(?!=) *");
 
     @Nullable
     @Override
