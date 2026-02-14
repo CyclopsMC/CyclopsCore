@@ -67,8 +67,8 @@ public class TestNbtPathExpressionHandlerBooleanLogicalNot {
 
     @Test
     public void testExpressionStreamNegateByteTagTrue() {
-        // Create an expression that evaluates "!== 1"
-        INbtPathExpression expression = handler.handlePrefixOf("!== 1", 0).getPrefixExpression();
+        // Create an expression that evaluates "! == 1" (with space to avoid != operator)
+        INbtPathExpression expression = handler.handlePrefixOf("! == 1", 0).getPrefixExpression();
 
         // 1 == 1 is true, so !(true) should be false
         assertThat(expression.match(Stream.of(ByteTag.valueOf((byte) 1))).getMatches().collect(Collectors.toList()),
@@ -77,8 +77,8 @@ public class TestNbtPathExpressionHandlerBooleanLogicalNot {
 
     @Test
     public void testExpressionStreamNegateByteTagFalse() {
-        // Create an expression that evaluates "!== 1"
-        INbtPathExpression expression = handler.handlePrefixOf("!== 1", 0).getPrefixExpression();
+        // Create an expression that evaluates "! == 1" (with space to avoid != operator)
+        INbtPathExpression expression = handler.handlePrefixOf("! == 1", 0).getPrefixExpression();
 
         // 0 == 1 is false, so !(false) should be true
         assertThat(expression.match(Stream.of(ByteTag.valueOf((byte) 0))).getMatches().collect(Collectors.toList()),

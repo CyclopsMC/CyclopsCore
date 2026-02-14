@@ -69,7 +69,7 @@ public class NbtPathExpressionParseHandlerBooleanLogicalOr implements INbtPathEx
                         boolean leftValue = NbtPathExpressionHelpers.isTruthy(currentTag);
 
                         // Evaluate the right expression against the root context
-                        // This ensures both sides explicitly reference NBT paths
+                        // This ensures both sides of the expression are evaluated against the same base context
                         Tag rootTag = executionContext.getRootContext().getCurrentTag();
                         boolean rightValue = expression.test(rootTag);
 

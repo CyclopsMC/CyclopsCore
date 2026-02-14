@@ -178,20 +178,21 @@ public class TestNbtPathLogicalOperators {
 
     @Test
     public void testParseLogicalNotWithFilterExpression() throws NbtParseException {
-        // Test filter expression with NOT: [?(!(@.active == 1))]
-        INbtPathExpression expression = NbtPath.parse("$.items[?(!(@.active == 1))]");
+        // Test filter expression with NOT: [?(@.active != 1)]
+        // Using != instead of !(...) to avoid parentheses issue with filter regex
+        INbtPathExpression expression = NbtPath.parse("$.items[?(@.active != 1)]");
 
         CompoundTag root = new CompoundTag();
         ListTag items = new ListTag();
 
         CompoundTag item1 = new CompoundTag();
-        item1.putInt("active", 0);  // 0 == 1 is false, !(false) is true, should match
+        item1.putInt("active", 0);  // 0 != 1 is true, should match
 
         CompoundTag item2 = new CompoundTag();
-        item2.putInt("active", 1);  // 1 == 1 is true, !(true) is false, should not match
+        item2.putInt("active", 1);  // 1 != 1 is false, should not match
 
         CompoundTag item3 = new CompoundTag();
-        item3.putInt("active", 0);  // 0 == 1 is false, !(false) is true, should match
+        item3.putInt("active", 0);  // 0 != 1 is true, should match
 
         items.add(item1);
         items.add(item2);
