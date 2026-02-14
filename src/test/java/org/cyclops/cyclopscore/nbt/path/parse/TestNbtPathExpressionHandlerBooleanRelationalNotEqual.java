@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.IntTag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.junit.Before;
