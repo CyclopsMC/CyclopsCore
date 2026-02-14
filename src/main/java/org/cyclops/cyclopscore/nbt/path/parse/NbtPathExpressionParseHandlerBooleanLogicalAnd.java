@@ -53,14 +53,10 @@ public class NbtPathExpressionParseHandlerBooleanLogicalAnd implements INbtPathE
 
     public static class Expression implements INbtPathExpression {
 
-        private final INbtPathExpression rightExpression;
+        protected final INbtPathExpression expression;
 
-        public Expression(INbtPathExpression rightExpression) {
-            this.rightExpression = rightExpression;
-        }
-
-        public INbtPathExpression getRightExpression() {
-            return rightExpression;
+        public Expression(INbtPathExpression expression) {
+            this.expression = expression;
         }
 
         @Override
@@ -76,7 +72,7 @@ public class NbtPathExpressionParseHandlerBooleanLogicalAnd implements INbtPathE
                         Tag originalTag = executionContext.getParentContext() != null
                                 ? executionContext.getParentContext().getCurrentTag()
                                 : currentTag;
-                        boolean rightValue = rightExpression.test(originalTag);
+                        boolean rightValue = expression.test(originalTag);
 
                         // AND operation
                         boolean result = leftValue && rightValue;

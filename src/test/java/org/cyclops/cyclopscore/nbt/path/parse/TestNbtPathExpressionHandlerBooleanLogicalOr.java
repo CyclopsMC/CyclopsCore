@@ -63,7 +63,6 @@ public class TestNbtPathExpressionHandlerBooleanLogicalOr {
 
         // true || true should be true
         assertThat(expression.match(Stream.of(context.getCurrentTag()))
-                        .matchContexts(Stream.of(context))
                         .getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(ByteTag.valueOf((byte) 1))));
     }
@@ -80,7 +79,6 @@ public class TestNbtPathExpressionHandlerBooleanLogicalOr {
 
         // true || false should be true
         assertThat(expression.match(Stream.of(context.getCurrentTag()))
-                        .matchContexts(Stream.of(context))
                         .getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(ByteTag.valueOf((byte) 1))));
     }
@@ -97,7 +95,6 @@ public class TestNbtPathExpressionHandlerBooleanLogicalOr {
 
         // false || false should be false
         assertThat(expression.match(Stream.of(context.getCurrentTag()))
-                        .matchContexts(Stream.of(context))
                         .getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(ByteTag.valueOf((byte) 0))));
     }

@@ -53,14 +53,10 @@ public class NbtPathExpressionParseHandlerBooleanLogicalNot implements INbtPathE
 
     public static class Expression implements INbtPathExpression {
 
-        private final INbtPathExpression expression;
+        protected final INbtPathExpression expression;
 
         public Expression(INbtPathExpression expression) {
             this.expression = expression;
-        }
-
-        public INbtPathExpression getExpression() {
-            return expression;
         }
 
         @Override
