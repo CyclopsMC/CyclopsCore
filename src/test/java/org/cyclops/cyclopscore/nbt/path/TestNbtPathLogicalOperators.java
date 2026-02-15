@@ -141,7 +141,7 @@ public class TestNbtPathLogicalOperators {
         expectedFiltered.add(item1);
         expectedFiltered.add(item3);
 
-        List<Tag> expected = List.of(expectedFiltered);
+        List<Tag> expected = Lists.newArrayList(expectedFiltered);
         assertThat(expression.match(Stream.of(root)).getMatches().collect(Collectors.toList()), equalTo(expected));
         assertThat(expression.test(root), is(true));
     }
@@ -171,7 +171,7 @@ public class TestNbtPathLogicalOperators {
         ListTag expectedFiltered = new ListTag();
         expectedFiltered.add(item1);
 
-        List<Tag> expected = List.of(expectedFiltered);
+        List<Tag> expected = Lists.newArrayList(expectedFiltered);
         assertThat(expression.match(Stream.of(root)).getMatches().collect(Collectors.toList()), equalTo(expected));
         assertThat(expression.test(root), is(true));
     }
@@ -203,7 +203,7 @@ public class TestNbtPathLogicalOperators {
         expectedFiltered.add(item1);
         expectedFiltered.add(item3);
 
-        List<Tag> expected = List.of(expectedFiltered);
+        List<Tag> expected = Lists.newArrayList(expectedFiltered);
         assertThat(expression.match(Stream.of(root)).getMatches().collect(Collectors.toList()), equalTo(expected));
         assertThat(expression.test(root), is(true));
     }
@@ -262,8 +262,8 @@ public class TestNbtPathLogicalOperators {
         expectedFiltered.add(item1);
         expectedFiltered.add(item3);
 
-        List<Tag> expected = List.of(expectedFiltered);
-        assertThat(expression.match(Stream.of(root)).getMatches().toList(), equalTo(expected));
+        List<Tag> expected = Lists.newArrayList(expectedFiltered);
+        assertThat(expression.match(Stream.of(root)).getMatches().collect(Collectors.toList()), equalTo(expected));
         assertThat(expression.test(root), is(true));
     }
 
