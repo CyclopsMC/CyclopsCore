@@ -62,6 +62,13 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
      */
     public void setMinValue(int minValue) {
         this.minValue = minValue;
+        try {
+            if (this.minValue > Integer.parseInt(getValue())) {
+                setValue(Integer.toString(this.minValue));
+            }
+        } catch (NumberFormatException e) {
+            setValue(Integer.toString(this.minValue));
+        }
         updateArrowsState();
     }
 
