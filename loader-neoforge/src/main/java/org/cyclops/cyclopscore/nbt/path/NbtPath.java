@@ -21,12 +21,17 @@ public class NbtPath {
             new NbtPathExpressionParseHandlerListElement(),
             new NbtPathExpressionParseHandlerListSlice(),
             new NbtPathExpressionParseHandlerUnion(),
+            new NbtPathExpressionParseHandlerGrouping(),
             new NbtPathExpressionParseHandlerBooleanRelationalLessThan(),
             new NbtPathExpressionParseHandlerBooleanRelationalLessThanOrEqual(),
             new NbtPathExpressionParseHandlerBooleanRelationalGreaterThan(),
             new NbtPathExpressionParseHandlerBooleanRelationalGreaterThanOrEqual(),
+            new NbtPathExpressionParseHandlerBooleanRelationalNotEqual(),
             new NbtPathExpressionParseHandlerBooleanRelationalEqual(),
             new NbtPathExpressionParseHandlerStringEqual(),
+            new NbtPathExpressionParseHandlerBooleanLogicalAnd(),
+            new NbtPathExpressionParseHandlerBooleanLogicalOr(),
+            new NbtPathExpressionParseHandlerBooleanLogicalNot(),
             new NbtPathExpressionParseHandlerFilterExpression()
     );
 
