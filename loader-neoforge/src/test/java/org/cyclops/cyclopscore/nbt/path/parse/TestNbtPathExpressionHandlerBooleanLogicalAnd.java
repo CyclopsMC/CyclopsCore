@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.IntTag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,7 +18,7 @@ public class TestNbtPathExpressionHandlerBooleanLogicalAnd {
 
     private NbtPathExpressionParseHandlerBooleanLogicalAnd handler;
 
-    @Before
+    @BeforeEach
     public void beforeEach() {
         handler = new NbtPathExpressionParseHandlerBooleanLogicalAnd();
     }

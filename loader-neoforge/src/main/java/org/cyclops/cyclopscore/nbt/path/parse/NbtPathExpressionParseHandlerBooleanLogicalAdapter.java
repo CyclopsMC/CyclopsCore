@@ -40,7 +40,7 @@ public abstract class NbtPathExpressionParseHandlerBooleanLogicalAdapter impleme
             return false;
         }
         if (tag.getId() == Tag.TAG_BYTE) {
-            return ((ByteTag) tag).getAsByte() == (byte) 1;
+            return tag.asBoolean().orElse(false);
         }
         // Non-null non-ByteTags are truthy
         return true;
