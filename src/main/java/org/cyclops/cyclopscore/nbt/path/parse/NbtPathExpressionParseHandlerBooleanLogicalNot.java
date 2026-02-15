@@ -43,7 +43,7 @@ public class NbtPathExpressionParseHandlerBooleanLogicalNot implements INbtPathE
 
         String expressionString = nbtPathExpression.substring(exprPos, endPos);
         try {
-            INbtPathExpression expression = NbtPath.parse(expressionString);
+            INbtPathExpression expression = NbtPath.parse(expressionString.trim());
             return new HandleResult(new Expression(expression),
                     matcher.group().length() + expressionString.length());
         } catch (NbtParseException e) {
