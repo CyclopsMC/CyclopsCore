@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 /**
  * A handler that handles boolean NOT expressions in the form of "!expression".
- * Only accepts full expressions like "!(@.a < 15)" or "!@.a", not partial expressions like "!< 10".
+ * Only accepts full expressions like "!(@.a {@literal <} 15)" or "!@.a", not partial expressions like "!{@literal <} 10".
  */
 public class NbtPathExpressionParseHandlerBooleanLogicalNot implements INbtPathExpressionParseHandler {
 
