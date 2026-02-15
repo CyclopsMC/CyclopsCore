@@ -40,7 +40,7 @@ public class NbtPathExpressionParseHandlerBooleanLogicalNot implements INbtPathE
         // Check if expression starts with parenthesis
         boolean hasParenthesis = nbtPathExpression.charAt(exprPos) == '(';
         int endPos;
-        
+
         if (hasParenthesis) {
             // Find matching closing parenthesis
             endPos = findMatchingClosingParenthesis(nbtPathExpression, exprPos);
