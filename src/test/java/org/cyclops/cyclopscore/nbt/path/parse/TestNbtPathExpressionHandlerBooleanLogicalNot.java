@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.nbt.path.parse;
 
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import org.cyclops.cyclopscore.nbt.path.INbtPathExpression;
 import org.junit.Before;
@@ -30,58 +31,78 @@ public class TestNbtPathExpressionHandlerBooleanLogicalNot {
     }
 
     @Test
-    public void testMatchExpressionSimple() {
-        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("!< 10", 0);
+    public void testNonMatchPartialExpression() {
+        // Should not match partial expressions like "!< 10"
+        assertThat(handler.handlePrefixOf("!< 10", 0),
+                is(INbtPathExpressionParseHandler.HandleResult.INVALID));
+    }
+
+    @Test
+    public void testMatchExpressionWithParentheses() {
+        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("!(@.a < 10)", 0);
         assertThat(result.isValid(), is(true));
-        assertThat(result.getConsumedExpressionLength(), is(5));
+        assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerBooleanLogicalNot.Expression.class));
+    }
+
+    @Test
+    public void testMatchExpressionWithPath() {
+        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("!@.a == 5", 0);
+        assertThat(result.isValid(), is(true));
         assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerBooleanLogicalNot.Expression.class));
     }
 
     @Test
     public void testMatchExpressionWithSpaces() {
-        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("  !  > 5", 0);
+        INbtPathExpressionParseHandler.HandleResult result = handler.handlePrefixOf("  !  (@.a > 5)", 0);
         assertThat(result.isValid(), is(true));
-        assertThat(result.getConsumedExpressionLength(), is(8));
         assertThat(result.getPrefixExpression(), instanceOf(NbtPathExpressionParseHandlerBooleanLogicalNot.Expression.class));
     }
 
     @Test
     public void testExpressionStreamNegateTrue() {
-        // Create an expression that evaluates "!< 10"
-        INbtPathExpression expression = handler.handlePrefixOf("!< 10", 0).getPrefixExpression();
+        // Create an expression that evaluates "!(@.a < 10)"
+        INbtPathExpression expression = handler.handlePrefixOf("!(@.a < 10)", 0).getPrefixExpression();
 
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("a", 5);
         // 5 < 10 is true, so !(true) should be false
-        assertThat(expression.match(Stream.of(IntTag.valueOf(5))).getMatches().collect(Collectors.toList()),
+        assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(ByteTag.valueOf((byte) 0))));
     }
 
     @Test
     public void testExpressionStreamNegateFalse() {
-        // Create an expression that evaluates "!< 10"
-        INbtPathExpression expression = handler.handlePrefixOf("!< 10", 0).getPrefixExpression();
+        // Create an expression that evaluates "!(@.a < 10)"
+        INbtPathExpression expression = handler.handlePrefixOf("!(@.a < 10)", 0).getPrefixExpression();
 
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("a", 15);
         // 15 < 10 is false, so !(false) should be true
-        assertThat(expression.match(Stream.of(IntTag.valueOf(15))).getMatches().collect(Collectors.toList()),
+        assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(ByteTag.valueOf((byte) 1))));
     }
 
     @Test
-    public void testExpressionStreamNegateByteTagTrue() {
-        // Create an expression that evaluates "! == 1" (with space to avoid != operator)
-        INbtPathExpression expression = handler.handlePrefixOf("! == 1", 0).getPrefixExpression();
+    public void testExpressionStreamNegatePathTrue() {
+        // Create an expression that evaluates "!@.a == 1"
+        INbtPathExpression expression = handler.handlePrefixOf("!@.a == 1", 0).getPrefixExpression();
 
-        // 1 == 1 is true, so !(true) should be false
-        assertThat(expression.match(Stream.of(ByteTag.valueOf((byte) 1))).getMatches().collect(Collectors.toList()),
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("a", 1);
+        // @.a == 1 evaluates to: get a (=1), then == 1, result is true, so !(true) should be false
+        assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(ByteTag.valueOf((byte) 0))));
     }
 
     @Test
-    public void testExpressionStreamNegateByteTagFalse() {
-        // Create an expression that evaluates "! == 1" (with space to avoid != operator)
-        INbtPathExpression expression = handler.handlePrefixOf("! == 1", 0).getPrefixExpression();
+    public void testExpressionStreamNegatePathFalse() {
+        // Create an expression that evaluates "!@.a == 1"
+        INbtPathExpression expression = handler.handlePrefixOf("!@.a == 1", 0).getPrefixExpression();
 
-        // 0 == 1 is false, so !(false) should be true
-        assertThat(expression.match(Stream.of(ByteTag.valueOf((byte) 0))).getMatches().collect(Collectors.toList()),
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("a", 0);
+        // @.a == 1 evaluates to: get a (=0), then == 1, result is false, so !(false) should be true
+        assertThat(expression.match(Stream.of(tag)).getMatches().collect(Collectors.toList()),
                 is(Lists.newArrayList(ByteTag.valueOf((byte) 1))));
     }
 }

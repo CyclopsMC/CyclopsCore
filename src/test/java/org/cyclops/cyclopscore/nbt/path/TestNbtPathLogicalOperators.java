@@ -290,4 +290,124 @@ public class TestNbtPathLogicalOperators {
         )));
         assertThat(expression.test(tag2), is(false));
     }
+
+    @Test
+    public void testParseParenthesesWithOr() throws NbtParseException {
+        // Test: @.a > 5 && (@.a < 15 || @.a == 20)
+        // This should evaluate as: (a > 5) AND ((a < 15) OR (a == 20))
+        INbtPathExpression expression = NbtPath.parse("@.a > 5 && (@.a < 15 || @.a == 20)");
+
+        // Test with a=10: 10 > 5 is true, (10 < 15 is true || 10 == 20 is false) = true, so true && true = true
+        CompoundTag tag1 = new CompoundTag();
+        tag1.putInt("a", 10);
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 1)
+        )));
+        assertThat(expression.test(tag1), is(true));
+
+        // Test with a=20: 20 > 5 is true, (20 < 15 is false || 20 == 20 is true) = true, so true && true = true
+        CompoundTag tag2 = new CompoundTag();
+        tag2.putInt("a", 20);
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 1)
+        )));
+        assertThat(expression.test(tag2), is(true));
+
+        // Test with a=3: 3 > 5 is false, doesn't matter what's in parentheses, false && anything = false
+        CompoundTag tag3 = new CompoundTag();
+        tag3.putInt("a", 3);
+        assertThat(expression.match(Stream.of(tag3)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 0)
+        )));
+        assertThat(expression.test(tag3), is(false));
+
+        // Test with a=17: 17 > 5 is true, (17 < 15 is false || 17 == 20 is false) = false, so true && false = false
+        CompoundTag tag4 = new CompoundTag();
+        tag4.putInt("a", 17);
+        assertThat(expression.match(Stream.of(tag4)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 0)
+        )));
+        assertThat(expression.test(tag4), is(false));
+    }
+
+    @Test
+    public void testParseParenthesesWithAnd() throws NbtParseException {
+        // Test: (@.a > 5 && @.a < 15) || @.a == 20
+        // This should evaluate as: ((a > 5) AND (a < 15)) OR (a == 20)
+        INbtPathExpression expression = NbtPath.parse("(@.a > 5 && @.a < 15) || @.a == 20");
+
+        // Test with a=10: (10 > 5 is true && 10 < 15 is true) = true, 10 == 20 is false, so true || false = true
+        CompoundTag tag1 = new CompoundTag();
+        tag1.putInt("a", 10);
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 1)
+        )));
+        assertThat(expression.test(tag1), is(true));
+
+        // Test with a=20: (20 > 5 is true && 20 < 15 is false) = false, 20 == 20 is true, so false || true = true
+        CompoundTag tag2 = new CompoundTag();
+        tag2.putInt("a", 20);
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 1)
+        )));
+        assertThat(expression.test(tag2), is(true));
+
+        // Test with a=3: (3 > 5 is false && anything) = false, 3 == 20 is false, so false || false = false
+        CompoundTag tag3 = new CompoundTag();
+        tag3.putInt("a", 3);
+        assertThat(expression.match(Stream.of(tag3)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 0)
+        )));
+        assertThat(expression.test(tag3), is(false));
+    }
+
+    @Test
+    public void testParseNestedParentheses() throws NbtParseException {
+        // Test: ((@.a > 5 && @.a < 15) || @.a == 20) && @.b != 0
+        // This tests nested parentheses with multiple levels
+        INbtPathExpression expression = NbtPath.parse("((@.a > 5 && @.a < 15) || @.a == 20) && @.b != 0");
+
+        // Test with a=10, b=1: inner AND is true, OR with false is true, outer AND with true is true
+        CompoundTag tag1 = new CompoundTag();
+        tag1.putInt("a", 10);
+        tag1.putInt("b", 1);
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 1)
+        )));
+        assertThat(expression.test(tag1), is(true));
+
+        // Test with a=10, b=0: left side is true but b != 0 is false, so true && false = false
+        CompoundTag tag2 = new CompoundTag();
+        tag2.putInt("a", 10);
+        tag2.putInt("b", 0);
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 0)
+        )));
+        assertThat(expression.test(tag2), is(false));
+    }
+
+    @Test
+    public void testParseParenthesesWithNot() throws NbtParseException {
+        // Test: !(@.a > 10) && @.b < 5
+        // This tests NOT with parentheses combined with AND
+        INbtPathExpression expression = NbtPath.parse("!(@.a > 10) && @.b < 5");
+
+        // Test with a=5, b=3: !(5 > 10) = !false = true, 3 < 5 = true, so true && true = true
+        CompoundTag tag1 = new CompoundTag();
+        tag1.putInt("a", 5);
+        tag1.putInt("b", 3);
+        assertThat(expression.match(Stream.of(tag1)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 1)
+        )));
+        assertThat(expression.test(tag1), is(true));
+
+        // Test with a=15, b=3: !(15 > 10) = !true = false, 3 < 5 = true, so false && true = false
+        CompoundTag tag2 = new CompoundTag();
+        tag2.putInt("a", 15);
+        tag2.putInt("b", 3);
+        assertThat(expression.match(Stream.of(tag2)).getMatches().collect(Collectors.toList()), equalTo(Lists.newArrayList(
+                ByteTag.valueOf((byte) 0)
+        )));
+        assertThat(expression.test(tag2), is(false));
+    }
 }
