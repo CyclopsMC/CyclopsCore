@@ -1,0 +1,41 @@
+name: "Copilot Setup Steps"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    # Steps that will run before the agent starts
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: 'Cache'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2
+            ~/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('build.gradle') }}
+      - name: 'Setup Java'
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+          java-package: jdk
+      - name: 'Build'
+        run: ./gradlew build --max-workers 1
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_KEY: ${{ secrets.MAVEN_KEY }}
