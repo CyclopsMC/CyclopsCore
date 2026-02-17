@@ -1,8 +1,20 @@
 # Changelog for Minecraft 1.21.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.21.1-1.29.0"></a>
+## [1.21.1-1.29.0](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.28.0...1.21.1-1.29.0) - 2026-02-17 10:55:45
+
+### Added
+* Add AND, OR, and NOT logical expression support to NBT path
+  Expression such as `(@.a > 5 && @.a < 15) || @.a == 20` or
+  `$.items[?(@.min < 10 && @.min > 5)]` can not be executed.
+  Closes #210
+
+### Changed
+* Modify value if needed when setting minValue in WidgetNumberField
+
 <a name="1.21.1-1.28.0"></a>
-## [1.21.1-1.28.0](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.27.2...1.21.1-1.28.0) - 2025-12-22 13:54:29
+## [1.21.1-1.28.0](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.27.2...1.21.1-1.28.0) - 2025-12-22 13:54:29 +0100
 
 ### Added
 * Add helpers for registering to structure template pools
