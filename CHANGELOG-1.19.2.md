@@ -1,8 +1,19 @@
 # Changelog for Minecraft 1.19.2
 All notable changes to this project will be documented in this file.
 
+<a name="1.19.2-1.21.0"></a>
+## [1.19.2-1.21.0](/compare/1.19.2-1.20.3...1.19.2-1.21.0) - 2026-02-17 10:54:32
+
+### Added
+* Add AND, OR, and NOT logical expression support to NBT path
+  Expression such as `(@.a > 5 && @.a < 15) || @.a == 20` or
+  `$.items[?(@.min < 10 && @.min > 5)]` can not be executed.
+  Closes #210
+### Changed
+* Modify value if needed when setting minValue in WidgetNumberField
+
 <a name="1.19.2-1.20.3"></a>
-## [1.19.2-1.20.3](/compare/1.19.2-1.20.2...1.19.2-1.20.3) - 2025-11-11 13:48:56
+## [1.19.2-1.20.3](/compare/1.19.2-1.20.2...1.19.2-1.20.3) - 2025-11-11 13:48:56 +0100
 
 ### Fixed
 * Fix commands not being available after reload command

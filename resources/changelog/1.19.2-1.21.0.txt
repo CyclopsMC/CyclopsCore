@@ -1,0 +1,9 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add AND, OR, and NOT logical expression support to NBT path
+  Expression such as `(@.a > 5 && @.a < 15) || @.a == 20` or
+  `$.items[?(@.min < 10 && @.min > 5)]` can not be executed.
+  Closes #210
+Changes:
+* Modify value if needed when setting minValue in WidgetNumberField
