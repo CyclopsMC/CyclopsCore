@@ -120,8 +120,11 @@ public abstract class DamageIndicatedItemFluidContainer extends Item implements 
         ItemAccess itemAccess = ItemAccess.forStack(itemStack);
         ResourceHandler<FluidResource> fluidHandler = itemAccess.getCapability(Capabilities.Fluid.ITEM);
         if (fluidHandler == null) return false;
+        FluidResource resource = fluidHandler.getResource(0);
+        // Avoid IllegalArgumentException when the fluid handler has no fluid (empty resource is not allowed in NeoForge extract calls)
+        if (resource.isEmpty()) return false;
         try (var tx = Transaction.openRoot()) {
-            int simulatedDrain = fluidHandler.extract(fluidHandler.getResource(0), amount, tx);
+            int simulatedDrain = fluidHandler.extract(resource, amount, tx);
             return simulatedDrain == amount;
         }
     }
