@@ -1,8 +1,20 @@
 # Changelog for Minecraft 1.20.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.20.1-1.22.0"></a>
+## [1.20.1-1.22.0](/compare/1.20.1-1.21.3...1.20.1-1.22.0) - 2026-02-17 10:55:10
+
+### Added
+* Add AND, OR, and NOT logical expression support to NBT path
+  Expression such as `(@.a > 5 && @.a < 15) || @.a == 20` or
+  `$.items[?(@.min < 10 && @.min > 5)]` can not be executed.
+  Closes #210
+
+### Changed
+* Modify value if needed when setting minValue in WidgetNumberField
+
 <a name="1.20.1-1.21.3"></a>
-## [1.20.1-1.21.3](/compare/1.20.1-1.21.2...1.20.1-1.21.3) - 2025-11-11 13:50:02
+## [1.20.1-1.21.3](/compare/1.20.1-1.21.2...1.20.1-1.21.3) - 2025-11-11 13:50:02 +0100
 
 ### Fixed
 * Fix commands not being available after reload command
