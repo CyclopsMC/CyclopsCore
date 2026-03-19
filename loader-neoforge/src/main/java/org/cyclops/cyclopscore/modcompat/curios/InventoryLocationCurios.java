@@ -30,15 +30,15 @@ public class InventoryLocationCurios implements IInventoryLocation {
 
     @Override
     public ItemStack getItemInSlot(Player player, int slot) {
-        return CuriosApi.getCuriosHelper().getEquippedCurios(player)
-                .map(handler -> handler.getStackInSlot(slot))
+        return CuriosApi.getCuriosInventory(player)
+                .map(handler -> handler.getEquippedCurios().getStackInSlot(slot))
                 .orElse(ItemStack.EMPTY);
     }
 
     @Override
     public void setItemInSlot(Player player, int slot, ItemStack itemStack) {
-        CuriosApi.getCuriosHelper().getEquippedCurios(player)
-                .ifPresent(handler -> handler.setStackInSlot(slot, itemStack));
+        CuriosApi.getCuriosInventory(player)
+                .ifPresent(handler -> handler.getEquippedCurios().setStackInSlot(slot, itemStack));
     }
 
 }
