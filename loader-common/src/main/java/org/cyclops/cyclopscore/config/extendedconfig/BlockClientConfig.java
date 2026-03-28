@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.tuple.Pair;
@@ -42,7 +42,7 @@ public class BlockClientConfig<M extends IModBase> {
      * @return An optional color handler for the block instance.
      */
     @Nullable
-    public BlockColor getBlockColorHandler() {
+    public BlockTintSource getBlockColorHandler() {
         return null;
     }
 

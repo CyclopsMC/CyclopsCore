@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.client.gui;
 
 import net.minecraft.CrashReport;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ErrorScreen;
@@ -8,9 +9,15 @@ import net.minecraft.client.gui.screens.GenericMessageScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.commands.Commands;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.WorldLoader;
+import net.minecraft.server.WorldStem;
+import net.minecraft.server.packs.repository.PackRepository;
+import net.minecraft.server.packs.repository.ServerPacksSource;
+import net.minecraft.server.permissions.LevelBasedPermissionSet;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FileUtil;
 import net.minecraft.world.Difficulty;
@@ -21,17 +28,23 @@ import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.levelgen.WorldDimensions;
+import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
+import net.minecraft.world.level.storage.LevelDataAndDimensions;
 import net.minecraft.world.level.storage.LevelStorageException;
+import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.LevelSummary;
+import net.minecraft.world.level.storage.PrimaryLevelData;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -88,7 +101,7 @@ public class GuiMainMenuExtensionDevWorld {
                         gameRules.set(GameRules.SPAWN_WANDERING_TRADERS, false, null);
                         WorldDataConfiguration worlddataconfiguration = new WorldDataConfiguration(new DataPackConfig(new ArrayList<>(Minecraft.getInstance().getResourcePackRepository().getAvailableIds()), List.of()), FeatureFlags.REGISTRY.allFlags());
                         LevelSettings worldsettings = new LevelSettings(WORLD_NAME_PREFIX, GameType.CREATIVE,
-                                false, Difficulty.PEACEFUL, true, gameRules, worlddataconfiguration);
+                                new LevelSettings.DifficultySettings(Difficulty.PEACEFUL, false, false), true, worlddataconfiguration);
 
                         // Create generator settings and world options, based on GameTestServer
                         Function<HolderLookup.Provider, WorldDimensions> generatorSettings = registryAccess -> registryAccess
@@ -105,8 +118,42 @@ public class GuiMainMenuExtensionDevWorld {
                             saveName = "World";
                         }
 
-                        // Create the world
-                        mc.createWorldOpenFlows().createFreshLevel(saveName, worldsettings, worldOptions, generatorSettings, screen);
+                        // Create the world with custom game rules via doWorldLoad
+                        mc.setScreenAndShow(new GenericMessageScreen(Component.translatable("selectWorld.data_read")));
+                        LevelStorageSource.LevelStorageAccess levelSourceAccess;
+                        try {
+                            levelSourceAccess = mc.getLevelSource().validateAndCreateAccess(saveName);
+                        } catch (Exception e) {
+                            CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.ERROR, "Failed to access world storage: " + e.getMessage());
+                            mc.setScreen(screen);
+                            return;
+                        }
+                        PackRepository packRepository = ServerPacksSource.createPackRepository(levelSourceAccess);
+                        try {
+                            WorldLoader.PackConfig packConfig = new WorldLoader.PackConfig(packRepository, worldsettings.dataConfiguration(), false, false);
+                            WorldLoader.InitConfig initConfig = new WorldLoader.InitConfig(packConfig, Commands.CommandSelection.INTEGRATED, LevelBasedPermissionSet.GAMEMASTER);
+                            LevelSettings worldsettingsFinal = worldsettings;
+                            WorldOptions worldOptionsFinal = worldOptions;
+                            Function<HolderLookup.Provider, WorldDimensions> generatorSettingsFinal = generatorSettings;
+                            CompletableFuture<WorldStem> resourceLoad = WorldLoader.load(initConfig, context -> {
+                                WorldDimensions dimensions = generatorSettingsFinal.apply(context.datapackWorldgen());
+                                WorldDimensions.Complete completeDimensions = dimensions.bake(context.datapackDimensions().lookupOrThrow(Registries.LEVEL_STEM));
+                                return new WorldLoader.DataLoadOutput<>(
+                                        new LevelDataAndDimensions.WorldDataAndGenSettings(
+                                                new PrimaryLevelData(worldsettingsFinal, completeDimensions.specialWorldProperty(), completeDimensions.lifecycle()),
+                                                new WorldGenSettings(worldOptionsFinal, dimensions)
+                                        ),
+                                        completeDimensions.dimensionsRegistryAccess()
+                                );
+                            }, WorldStem::new, Util.backgroundExecutor(), mc);
+                            mc.managedBlock(resourceLoad::isDone);
+                            WorldStem worldStem = resourceLoad.get();
+                            mc.doWorldLoad(levelSourceAccess, packRepository, worldStem, Optional.of(gameRules), true);
+                        } catch (Exception e) {
+                            CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.ERROR, "Failed to create world: " + e.getMessage());
+                            levelSourceAccess.safeClose();
+                            mc.setScreen(screen);
+                        }
                     })
                     .pos(screen.width / 2 + 102, screen.height / 4 + 48)
                     .size(58, 20)

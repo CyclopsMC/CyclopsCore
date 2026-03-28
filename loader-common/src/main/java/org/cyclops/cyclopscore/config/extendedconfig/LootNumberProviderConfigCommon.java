@@ -2,7 +2,8 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.storage.loot.providers.number.LootNumberProviderType;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -12,9 +13,9 @@ import org.cyclops.cyclopscore.init.IModBase;
  * @param <M> The mod type
  * @see ExtendedConfigCommon
  */
-public abstract class LootNumberProviderConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<LootNumberProviderConfigCommon<M>, LootNumberProviderType, M> {
+public abstract class LootNumberProviderConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<LootNumberProviderConfigCommon<M>, MapCodec<? extends NumberProvider>, M> {
 
-    public LootNumberProviderConfigCommon(M mod, String namedId, LootNumberProviderType lootItemFunctionType) {
+    public LootNumberProviderConfigCommon(M mod, String namedId, MapCodec<? extends NumberProvider> lootItemFunctionType) {
         super(mod, namedId, (eConfig) -> lootItemFunctionType);
     }
 
@@ -35,7 +36,7 @@ public abstract class LootNumberProviderConfigCommon<M extends IModBase> extends
     }
 
     @Override
-    public Registry<LootNumberProviderType> getRegistry() {
+    public Registry<MapCodec<? extends NumberProvider>> getRegistry() {
         return BuiltInRegistries.LOOT_NUMBER_PROVIDER_TYPE;
     }
 }

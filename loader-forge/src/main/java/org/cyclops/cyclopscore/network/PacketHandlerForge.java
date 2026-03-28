@@ -1,16 +1,13 @@
-package org.cyclops.cyclopscore.neywork;
+package org.cyclops.cyclopscore.network;
 
 import com.google.common.collect.Lists;
 import io.netty.channel.ChannelHandler.Sharable;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.network.Channel;
 import net.minecraftforge.network.ChannelBuilder;
@@ -19,8 +16,6 @@ import net.minecraftforge.network.SimpleChannel;
 import net.minecraftforge.network.simple.SimpleFlow;
 import org.apache.commons.lang3.tuple.Triple;
 import org.cyclops.cyclopscore.init.ModBaseForge;
-import org.cyclops.cyclopscore.network.IPacketHandler;
-import org.cyclops.cyclopscore.network.PacketBase;
 
 import java.util.List;
 
@@ -80,9 +75,10 @@ public final class PacketHandlerForge implements IPacketHandler {
                 });
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void handlePacketClient(CustomPayloadEvent.Context context, PacketBase<?> packet) {
-        packet.actionClient(Minecraft.getInstance().player != null ? Minecraft.getInstance().player.level() : null, Minecraft.getInstance().player);
+        if (mod.getModHelpers().getMinecraftHelpers().isClientSide()) {
+            PacketHandlerForgeClient.handlePacketClient(context, packet);
+        }
     }
 
     public void handlePacketServer(CustomPayloadEvent.Context context, PacketBase<?> packet) {

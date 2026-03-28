@@ -310,7 +310,7 @@ public abstract class ModBaseNeoForge<T extends ModBaseNeoForge<T>> extends ModB
         try {
             Field field = RegisterGameTestsEvent.class.getDeclaredField("environmentsRegistry");
             field.setAccessible(true);
-            Registry<TestEnvironmentDefinition> testEnvironmentRegistry = (Registry<TestEnvironmentDefinition>) field.get(event);
+            Registry<TestEnvironmentDefinition<?>> testEnvironmentRegistry = (Registry<TestEnvironmentDefinition<?>>) field.get(event);
             GameTestLoaderHelpers.registerCommonTests(getModId(), getGameTestClasses(), event::registerTest, testEnvironmentRegistry);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);

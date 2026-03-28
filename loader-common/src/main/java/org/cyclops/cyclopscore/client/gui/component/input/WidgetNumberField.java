@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.client.gui.component.input;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -96,16 +96,16 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         int offsetX = 0;
         if(arrows) {
-            arrowUp.render(guiGraphics, mouseX, mouseY, partialTicks);
-            arrowDown.render(guiGraphics, mouseX, mouseY, partialTicks);
+            arrowUp.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+            arrowDown.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
             offsetX = arrowUp.getWidth();
             setX(getX() + offsetX);
             width -= offsetX;
         }
-        super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
+        super.extractWidgetRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         if(arrows) {
             setX(getX() - offsetX);
             width += offsetX;

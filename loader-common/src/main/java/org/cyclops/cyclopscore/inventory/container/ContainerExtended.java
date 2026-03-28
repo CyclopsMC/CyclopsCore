@@ -295,11 +295,11 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
     }
 
     @Override
-    public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
+    public void clicked(int slotId, int dragType, ContainerInput clickType, Player player) {
         Slot slot = slotId < 0 ? null : this.slots.get(slotId);
         // Copied and adjusted from net.minecraft.world.inventory.AbstractContainerMenu
         Inventory inventory = player.getInventory();
-        if (clickType == ClickType.QUICK_CRAFT) {
+        if (clickType == ContainerInput.QUICK_CRAFT) {
             int i = this.quickcraftStatus;
             this.quickcraftStatus = getQuickcraftHeader(dragType);
             if ((i != 1 || this.quickcraftStatus != 2) && i != this.quickcraftStatus) {
@@ -327,7 +327,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                     if (this.quickcraftSlots.size() == 1) {
                         int l = (this.quickcraftSlots.iterator().next()).index;
                         this.resetQuickCraft();
-                        this.clicked(l, this.quickcraftType, ClickType.PICKUP, player); // changed from doClick to clicked
+                        this.clicked(l, this.quickcraftType, ContainerInput.PICKUP, player); // changed from doClick to clicked
                         return;
                     }
 
@@ -344,7 +344,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
                         if (slot1 != null && canItemQuickReplace(slot1, itemstack1, true) && slot1.mayPlace(itemstack1) && (this.quickcraftType == 2 || itemstack1.getCount() >= this.quickcraftSlots.size()) && this.canDragTo(slot1)) {
                             int j = slot1.hasItem() ? slot1.getItem().getCount() : 0;
                             int k = Math.min(itemstack2.getMaxStackSize(), slot1.getMaxStackSize(itemstack2));
-                            int l = Math.min(getQuickCraftPlaceCount(this.quickcraftSlots, this.quickcraftType, itemstack2) + j, k);
+                            int l = Math.min(getQuickCraftPlaceCount(this.quickcraftSlots.size(), this.quickcraftType, itemstack2) + j, k);
                             k1 -= l - j;
                             slot1.setByPlayer(itemstack2.copyWithCount(l));
 
@@ -380,7 +380,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
         this.quickcraftSlots.clear();
     }
 
-    private ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickType, Player player) {
+    private ItemStack slotClickPhantom(Slot slot, int mouseButton, ContainerInput clickType, Player player) {
         ItemStack stack = ItemStack.EMPTY;
 
         if (mouseButton == 2) {
@@ -414,13 +414,13 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
         return stack;
     }
 
-    protected void adjustPhantomSlot(Slot slot, int mouseButton, ClickType clickType) {
+    protected void adjustPhantomSlot(Slot slot, int mouseButton, ContainerInput clickType) {
         if (!((SlotExtended) slot).isAdjustable()) {
             return;
         }
         ItemStack stackSlot = slot.getItem();
         int stackSize;
-        if (clickType == ClickType.QUICK_MOVE) {
+        if (clickType == ContainerInput.QUICK_MOVE) {
             stackSize = mouseButton == 0 ? (stackSlot.getCount() + 1) / 2 : stackSlot.getCount() * 2;
         } else {
             stackSize = mouseButton == 0 ? stackSlot.getCount() - 1 : stackSlot.getCount() + 1;
@@ -437,7 +437,7 @@ public abstract class ContainerExtended extends AbstractContainerMenu implements
         }
     }
 
-    protected void fillPhantomSlot(Slot slot, ItemStack stackHeld, int mouseButton, ClickType clickType) {
+    protected void fillPhantomSlot(Slot slot, ItemStack stackHeld, int mouseButton, ContainerInput clickType) {
         if (!((SlotExtended) slot).isAdjustable()) {
             return;
         }

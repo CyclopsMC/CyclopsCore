@@ -5,11 +5,9 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -125,8 +123,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
 
         left = (width - getGuiWidth()) / 2;
         top = (height - getGuiHeight()) / 2;
-        imageWidth = getGuiWidth();
-        imageHeight = getGuiHeight();
+        this.leftPos = left;
+        this.topPos = top;
 
         this.addRenderableWidget(this.buttonNextPage = new NextPageButton(left + getPageWidth() + 100 + getPrevNextOffsetX(), top + 156 + getPrevNextOffsetY(), 0, 180, 18, 10, (button) -> {
             InfoSection.Location location = infoBook.getCurrentSection().getNext(infoBook.getCurrentPage() + getPages() - 1, IModHelpers.get().getMinecraftClientHelpers().isShifted());
@@ -223,8 +221,8 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
 
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, left, top, 0, 0, getPageWidth(), getGuiHeight(), 256, 256);
         blitMirrored(guiGraphics, RenderPipelines.GUI_TEXTURED, texture, left + getPageWidth() - 1, top, 0, 0, getPageWidth(), getGuiHeight(), 256, 256, -1);
@@ -233,7 +231,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
             infoBook.getCurrentSection().constructInfoSectionClient().drawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top, getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY, getFootnoteOffsetX(), getFootnoteOffsetY());
         }
 
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
 
         for (int i = 0; i < getPages(); i++) {
             infoBook.getCurrentSection().constructInfoSectionClient().postDrawScreen(this, guiGraphics, left + getOffsetXForPageWithWidths(i), top + getPageYOffset(), width, getGuiHeight(), infoBook.getCurrentPage() + i, mouseX, mouseY);
@@ -256,32 +254,29 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
     }
 
-    protected void renderBackgroundSuper(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+    protected void extractBackgroundSuper(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public void renderBackground(GuiGraphics p_295206_, int p_295457_, int p_294596_, float p_296351_) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         // Do nothing
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
+    protected void extractLabels(GuiGraphicsExtractor guiGraphics, int x, int y) {
         // Do nothing
     }
 
-    @Override
-    protected void renderLabels(GuiGraphics guiGraphics, int x, int y) {
-        // Do nothing
+    public void drawTooltip(GuiGraphicsExtractor guiGraphics, int mx, int my, Component component) {
+        guiGraphics.setTooltipForNextFrame(getFont(), component, mx, my);
     }
 
-    public void drawTooltip(GuiGraphics guiGraphics, int mx, int my, Component component) {
-        ClientTooltipComponent clientTooltipComponent = ClientTooltipComponent.create(component.getVisualOrderText());
-        guiGraphics.renderTooltip(getFont(), List.of(clientTooltipComponent), mx, my, DefaultTooltipPositioner.INSTANCE, null);
-    }
-
-    public void blitMirrored(GuiGraphics guiGraphics, RenderPipeline renderPipeline, Identifier atlasLocation, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight, int color) {
-        guiGraphics.innerBlit(renderPipeline, atlasLocation, x, x + width, y, y + height, (u + width) / (float) textureWidth, u / (float) textureWidth, v / (float) textureHeight, (v + height)/ (float) textureHeight, color);
+    public void blitMirrored(GuiGraphicsExtractor guiGraphics, RenderPipeline renderPipeline, Identifier atlasLocation, int x, int y, int u, int v, int width, int height, int textureWidth, int textureHeight, int color) {
+        // Use blit with swapped U coordinates to achieve horizontal mirroring
+        guiGraphics.blit(atlasLocation, x, y, x + width, y + height,
+                (u + width) / (float) textureWidth, u / (float) textureWidth,
+                v / (float) textureHeight, (v + height) / (float) textureHeight);
     }
 
     @Override
@@ -347,41 +342,41 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
     }
 
-    public void drawScaledCenteredString(GuiGraphics guiGraphics, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
+    public void drawScaledCenteredString(GuiGraphicsExtractor guiGraphics, String string, int x, int y, int width, float originalScale, int maxWidth, int color) {
         drawScaledCenteredString(guiGraphics, string, x, y, width, originalScale, maxWidth, color, false);
     }
 
-    public void drawScaledCenteredString(GuiGraphics guiGraphics, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow) {
+    public void drawScaledCenteredString(GuiGraphicsExtractor guiGraphics, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow) {
         float originalWidth = getFont().width(string) * originalScale;
         float scale = Math.min(originalScale, maxWidth / originalWidth * originalScale);
         drawScaledCenteredString(guiGraphics, string, x, y, width, scale, color, shadow);
     }
 
-    public void drawScaledCenteredString(GuiGraphics guiGraphics, String string, int x, int y, int width, float scale, int color) {
+    public void drawScaledCenteredString(GuiGraphicsExtractor guiGraphics, String string, int x, int y, int width, float scale, int color) {
         drawScaledCenteredString(guiGraphics, string, x, y, width, scale, color, false);
     }
 
-    public void drawScaledCenteredString(GuiGraphics guiGraphics, String string, int x, int y, int width, float scale, int color, boolean shadow) {
+    public void drawScaledCenteredString(GuiGraphicsExtractor guiGraphics, String string, int x, int y, int width, float scale, int color, boolean shadow) {
         IModHelpers.get().getRenderHelpers().drawScaledCenteredString(guiGraphics, getFont(), string, x, y, width, scale, color, shadow, Font.DisplayMode.NORMAL);
     }
 
-    public void drawHorizontalRule(GuiGraphics guiGraphics, int x, int y) {
+    public void drawHorizontalRule(GuiGraphicsExtractor guiGraphics, int x, int y) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x - HR_WIDTH / 2, y - HR_HEIGHT / 2, 52, 180, HR_WIDTH, HR_HEIGHT, 256, 256);
     }
 
-    public void drawTextBanner(GuiGraphics guiGraphics, int x, int y) {
+    public void drawTextBanner(GuiGraphicsExtractor guiGraphics, int x, int y) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x - BANNER_WIDTH / 2, y - BANNER_HEIGHT / 2, 52, 191, BANNER_WIDTH, BANNER_HEIGHT, 256, 256);
     }
 
-    public void drawArrowRight(GuiGraphics guiGraphics, int x, int y) {
+    public void drawArrowRight(GuiGraphicsExtractor guiGraphics, int x, int y) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 210, ARROW_WIDTH, ARROW_HEIGHT, 256, 256);
     }
 
-    public void drawOuterBorder(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+    public void drawOuterBorder(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
         drawOuterBorder(guiGraphics, x, y, width, height, 1, 1, 1, 1);
     }
 
-    public void drawOuterBorder(GuiGraphics guiGraphics, int x, int y, int width, int height, float r, float g, float b, float alpha) {
+    public void drawOuterBorder(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, float r, float g, float b, float alpha) {
         int z = 0; // Was blitOffset
 
         // Corners
@@ -411,7 +406,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
     }
 
-    public void renderTooltip(GuiGraphics guiGraphics, ItemStack itemStack, int x, int y) {
+    public void extractTooltip(GuiGraphicsExtractor guiGraphics, ItemStack itemStack, int x, int y) {
         guiGraphics.setTooltipForNextFrame(getFont(), itemStack, x, y);
     }
 
@@ -459,7 +454,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
 
         @Override
-        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.getX() && mouseY >= this.getY() &&
                         mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
@@ -506,7 +501,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
         }
 
         @Override
-        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 boolean isHover = mouseX >= this.getX() && mouseY >= this.getY() &&
                         mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
@@ -515,7 +510,7 @@ public abstract class ScreenInfoBook<T extends ContainerExtended> extends Abstra
                 if (isHover) {
                     msg = msg.withStyle(ChatFormatting.UNDERLINE);
                 }
-                guiGraphics.drawString(minecraft.font, msg, getX(), getY(), IModHelpers.get().getBaseHelpers().RGBAToInt(isHover ? 100 : 0, isHover ? 100 : 0, isHover ? 150 : 125, 255), false);
+                guiGraphics.text(minecraft.font, msg, getX(), getY(), IModHelpers.get().getBaseHelpers().RGBAToInt(isHover ? 100 : 0, isHover ? 100 : 0, isHover ? 150 : 125, 255), false);
             }
         }
 

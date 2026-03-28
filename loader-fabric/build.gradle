@@ -13,13 +13,13 @@ repositories {
 }
 
 dependencies {
-    modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${fabric_forgeconfigapiport_version}"
+    api "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${fabric_forgeconfigapiport_version}"
 }
 
 task publishCurseForge(type: TaskPublishCurseForge) {
-    dependsOn(tasks.remapJar)
+    dependsOn(tasks.jar)
     apiToken = secrets.curseforgeKey;
-    def mainFile = upload(project.curseforge_project_id, remapJar)
+    def mainFile = upload(project.curseforge_project_id, jar)
     mainFile.releaseType = secrets.build_number.equals("RELEASE") ? CFG_Constants.RELEASE_TYPE_RELEASE : CFG_Constants.RELEASE_TYPE_BETA
     mainFile.changelogType = "text"
     mainFile.changelog = secrets.changelog
@@ -37,7 +37,7 @@ modrinth {
     versionNumber = project.minecraft_version + '-' + project.version
     versionName = "${project.version} for Forge ${project.minecraft_version}"
     versionType = secrets.build_number.equals("RELEASE") ? "release" : "beta"
-    uploadFile = remapJar
+    uploadFile = jar
     gameVersions = [ project.minecraft_version ]
     loaders = ["fabric", "quilt"]
     changelog = provider { secrets.changelog }
@@ -46,4 +46,4 @@ modrinth {
         optional.project "ohNO6lps" // forge-config-api-port-fabric
     }
 }
-tasks.modrinth.dependsOn(tasks.remapJar)
+tasks.modrinth.dependsOn(tasks.jar)

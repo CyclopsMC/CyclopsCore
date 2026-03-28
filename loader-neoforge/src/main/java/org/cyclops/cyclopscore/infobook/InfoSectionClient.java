@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.FormattedCharSequence;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.pageelement.SectionAppendix;
@@ -35,7 +35,7 @@ public class InfoSectionClient {
      * @param footnoteOffsetX Footnote offset x
      * @param footnoteOffsetY Footnote offset y
      */
-    public void drawScreen(ScreenInfoBook gui, GuiGraphics guiGraphics, int mouseX, int mouseY, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
+    public void drawScreen(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int yOffset, int width, int height, int page, int mx, int my, int footnoteOffsetX, int footnoteOffsetY) {
         if (page < this.infoSection.getPages()) {
             Font fontRenderer = gui.getFont();
 
@@ -44,7 +44,7 @@ public class InfoSectionClient {
             int l = 0;
             if (lines != null) {
                 for (FormattedCharSequence line : lines) {
-                    guiGraphics.drawString(fontRenderer, line, mouseX, mouseY + yOffset + l * 9, IModHelpers.get().getBaseHelpers().RGBAToInt(0, 0, 0, 255), false);
+                    guiGraphics.text(fontRenderer, line, mouseX, mouseY + yOffset + l * 9, IModHelpers.get().getBaseHelpers().RGBAToInt(0, 0, 0, 255), false);
                     l++;
                 }
             }
@@ -82,7 +82,7 @@ public class InfoSectionClient {
      * @param mx          Mouse X.
      * @param my          Mouse Y.
      */
-    public void postDrawScreen(ScreenInfoBook gui, GuiGraphics guiGraphics, int mouseX, int mouseY, int width, int height, int page, int mx, int my) {
+    public void postDrawScreen(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int width, int height, int page, int mx, int my) {
         if (page < this.infoSection.getPages()) {
             Font fontRenderer = gui.getFont();
             // Post draw appendixes

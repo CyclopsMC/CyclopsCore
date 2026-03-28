@@ -57,9 +57,9 @@ public abstract class ItemStackHelpersCommon implements IItemStackHelpers {
         if (!world.isClientSide() && !stack.isEmpty()) {
             float f = 0.5F;
 
-            double xo = (double)(world.random.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-            double yo = (double)(world.random.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-            double zo = (double)(world.random.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+            double xo = (double)(world.getRandom().nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+            double yo = (double)(world.getRandom().nextFloat() * f) + (double)(1.0F - f) * 0.5D;
+            double zo = (double)(world.getRandom().nextFloat() * f) + (double)(1.0F - f) * 0.5D;
             ItemEntity entityitem = new ItemEntity(world, (double)pos.getX() + xo, (double)pos.getY() + yo, (double)pos.getZ() + zo, stack);
 
             double d0 = 8.0D;

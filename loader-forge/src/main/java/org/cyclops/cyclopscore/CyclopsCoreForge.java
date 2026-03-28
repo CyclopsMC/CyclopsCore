@@ -111,7 +111,7 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
 
     @Override
     protected void onConfigsRegister(ConfigHandlerCommon configHandler) {
-        ConfigurableTypesForge.load(this);
+        ConfigurableTypesForge.load();
 
         super.onConfigsRegister(configHandler);
 

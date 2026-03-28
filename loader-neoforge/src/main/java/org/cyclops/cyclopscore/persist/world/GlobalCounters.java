@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.persist.world;
 import com.google.common.collect.Maps;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.saveddata.SavedDataType;
 import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
@@ -50,12 +51,11 @@ public class GlobalCounters extends WorldStorage<GlobalCounters> {
 
         public Access(ModBaseNeoForge<?> mod) {
             super(new SavedDataType<>(
-                    mod.getModId() + "_globalcounters",
+                    Identifier.fromNamespaceAndPath(mod.getModId(), "globalcounters"),
                     (ctx) -> new GlobalCounters(Maps.newHashMap()),
                     ctx -> RecordCodecBuilder.create(instance -> instance.group(
-                            RecordCodecBuilder.point(ctx.getLevel()),
                             Codec.dispatchedMap(Codec.STRING, (key) -> Codec.INT).fieldOf("counters").forGetter(data -> data.counters)
-                    ).apply(instance, (level, counters) -> new GlobalCounters(counters)))
+                    ).apply(instance, GlobalCounters::new))
             ), mod);
         }
     }

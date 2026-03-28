@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.world.entity.Entity;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -25,8 +24,7 @@ public abstract class EntityClientConfig<M extends IModBase, T extends Entity> {
     /**
      * Get the render for this configurable.
      * @param renderContext The render context.
-     * @param renderItem The render item instance.
      * @return Get the render.
      */
-    public abstract EntityRenderer<? super T, ?> getRender(EntityRendererProvider.Context renderContext, ItemRenderer renderItem);
+    public abstract EntityRenderer<? super T, ?> getRender(EntityRendererProvider.Context renderContext);
 }

@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 
 /**
@@ -21,7 +21,7 @@ public interface IGuiHelpersFabric extends IGuiHelpers {
      * @param width The tank width.
      * @param height The tank height.
      */
-    public void renderFluidTank(GuiGraphics gui, FluidVariant fluidStack, long amount, long capacity,
+    public void renderFluidTank(GuiGraphicsExtractor gui, FluidVariant fluidStack, long amount, long capacity,
                                 int x, int y, int width, int height);
 
     /**
@@ -32,7 +32,7 @@ public interface IGuiHelpersFabric extends IGuiHelpers {
      * @param x The slot X position.
      * @param y The slot Y position.
      */
-    public void renderFluidSlot(GuiGraphics gui, FluidVariant fluidStack, long amount, int x, int y);
+    public void renderFluidSlot(GuiGraphicsExtractor gui, FluidVariant fluidStack, long amount, int x, int y);
 
     /**
      * Render a fluid tank in a gui with a tank overlay.
@@ -50,7 +50,7 @@ public interface IGuiHelpersFabric extends IGuiHelpers {
      * @param overlayTextureX The overlay x texture position.
      * @param overlayTextureY The overlay y texture position.
      */
-    public void renderOverlayedFluidTank(GuiGraphics gui, FluidVariant fluidStack, long amount, long capacity,
+    public void renderOverlayedFluidTank(GuiGraphicsExtractor gui, FluidVariant fluidStack, long amount, long capacity,
                                          int x, int y, int width, int height,
                                          Identifier textureOverlay, int overlayTextureX, int overlayTextureY);
 

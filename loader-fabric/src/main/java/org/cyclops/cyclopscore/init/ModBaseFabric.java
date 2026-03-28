@@ -123,7 +123,7 @@ public abstract class ModBaseFabric<T extends ModBaseFabric<T>> extends ModBaseC
         dispatcher.register(constructBaseCommand(environment, registryAccess));
     }
 
-    protected void registerGameTests(Registry<TestEnvironmentDefinition> testEnvironmentRegistry, BiConsumer<Identifier, GameTestInstance> registrar) {
+    protected void registerGameTests(Registry<TestEnvironmentDefinition<?>> testEnvironmentRegistry, BiConsumer<Identifier, GameTestInstance> registrar) {
         GameTestLoaderHelpers.registerCommonTests(getModId(), getGameTestClasses(), registrar, testEnvironmentRegistry);
     }
 

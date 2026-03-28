@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.client.gui.image;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.texture.TextureManager;
 
@@ -17,7 +17,7 @@ public interface IImage {
      * @param x The x position.
      * @param y The y position.
      */
-    public void draw(GuiGraphics gui, int x, int y);
+    public void draw(GuiGraphicsExtractor gui, int x, int y);
 
     /**
      * Draw this image.
@@ -29,7 +29,7 @@ public interface IImage {
      * @param b Blue
      * @param a Alpha
      */
-    public void drawWithColor(GuiGraphics gui, int x, int y, float r, float g, float b, float a);
+    public void drawWithColor(GuiGraphicsExtractor gui, int x, int y, float r, float g, float b, float a);
 
     /**
      * Draw the image in the world.

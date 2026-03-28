@@ -55,7 +55,7 @@ public class PingPongPacketAsync<T extends PingPongPacketAsync<T>> extends Packe
     }
 
     protected void log(Player player, String message) {
-        player.displayClientMessage(Component.literal(message), true);
+        player.sendSystemMessage(Component.literal(message));
     }
 
     protected PingPongPacketAsync newPacket() {

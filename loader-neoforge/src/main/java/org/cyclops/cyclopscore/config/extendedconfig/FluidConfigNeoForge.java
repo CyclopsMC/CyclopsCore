@@ -2,8 +2,6 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
@@ -31,29 +29,10 @@ public abstract class FluidConfigNeoForge extends ExtendedConfigCommon<FluidConf
         super(mod, namedId, elementConstructor);
     }
 
-    protected static BaseFlowingFluid.Properties getDefaultFluidProperties(ModBaseNeoForge<?> mod, String texturePrefixPath,
-                                                                           Consumer<FluidType.Properties> fluidAttributesConsumer) {
+    protected static BaseFlowingFluid.Properties getDefaultFluidProperties(Consumer<FluidType.Properties> fluidAttributesConsumer) {
         FluidType.Properties fluidAttributes = FluidType.Properties.create();
         fluidAttributesConsumer.accept(fluidAttributes);
         FluidType fluidType = new FluidType(fluidAttributes);
-        mod.getModEventBus().addListener((RegisterClientExtensionsEvent event) -> {
-            event.registerFluidType(new IClientFluidTypeExtensions() {
-                private final Identifier STILL = Identifier.fromNamespaceAndPath(mod.getModId(), texturePrefixPath + "_still");
-                private final Identifier FLOW = Identifier.fromNamespaceAndPath(mod.getModId(), texturePrefixPath + "_flow");
-
-                @Override
-                public Identifier getStillTexture()
-                {
-                    return STILL;
-                }
-
-                @Override
-                public Identifier getFlowingTexture()
-                {
-                    return FLOW;
-                }
-            }, fluidType);
-        });
 
         Wrapper<BaseFlowingFluid.Properties> properties = new Wrapper<>();
         final Wrapper<Fluid> source = new Wrapper<>();

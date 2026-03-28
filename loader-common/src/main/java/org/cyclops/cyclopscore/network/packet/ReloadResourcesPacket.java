@@ -38,7 +38,7 @@ public class ReloadResourcesPacket extends PacketCodec<ReloadResourcesPacket> {
         long start = System.currentTimeMillis();
         Minecraft.getInstance().reloadResourcePacks();
         long end = System.currentTimeMillis();
-        player.displayClientMessage(Component.literal(String.format("Reloaded all resources in %s ms", end - start)), true);
+        player.sendSystemMessage(Component.literal(String.format("Reloaded all resources in %s ms", end - start)));
     }
 
     @Override

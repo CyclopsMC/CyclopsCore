@@ -30,4 +30,6 @@ public @interface GameTest {
     int attempts() default 1;
 
     int requiredSuccesses() default 1;
+
+    int padding() default 0;
 }

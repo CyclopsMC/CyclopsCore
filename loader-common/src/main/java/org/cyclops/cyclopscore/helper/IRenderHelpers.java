@@ -4,12 +4,12 @@ import com.google.common.base.Function;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,7 +44,7 @@ public interface IRenderHelpers {
      * @param shadow If a shadow should be drawn
      * @param displayMode The display mode
      */
-    public void drawScaledString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, float scale, int color, boolean shadow, Font.DisplayMode displayMode);
+    public void drawScaledString(GuiGraphicsExtractor guiGraphics, Font fontRenderer, String string, int x, int y, float scale, int color, boolean shadow, Font.DisplayMode displayMode);
 
     /**
      * Draw the given text and scale it to the max width.
@@ -58,7 +58,7 @@ public interface IRenderHelpers {
      * @param shadow If a shadow should be drawn
      * @param displayMode The display mode
      */
-    public void drawScaledCenteredString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, int maxWidth, int color, boolean shadow, Font.DisplayMode displayMode);
+    public void drawScaledCenteredString(GuiGraphicsExtractor guiGraphics, Font fontRenderer, String string, int x, int y, int maxWidth, int color, boolean shadow, Font.DisplayMode displayMode);
 
     /**
      * Draw the given text and scale it to the max width.
@@ -74,7 +74,7 @@ public interface IRenderHelpers {
      * @param shadow If a shadow should be drawn
      * @param displayMode The display mode
      */
-    public void drawScaledCenteredString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow, Font.DisplayMode displayMode);
+    public void drawScaledCenteredString(GuiGraphicsExtractor guiGraphics, Font fontRenderer, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow, Font.DisplayMode displayMode);
 
     /**
      * Draw the given text with the given width and desired scale.
@@ -89,7 +89,7 @@ public interface IRenderHelpers {
      * @param shadow If a shadow should be drawn
      * @param displayMode The font display mode
      */
-    public void drawScaledCenteredString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, int width, float scale, int color, boolean shadow, Font.DisplayMode displayMode);
+    public void drawScaledCenteredString(GuiGraphicsExtractor guiGraphics, Font fontRenderer, String string, int x, int y, int width, float scale, int color, boolean shadow, Font.DisplayMode displayMode);
 
     /**
      * Retrieve the baked model from a given block state.
@@ -159,9 +159,9 @@ public interface IRenderHelpers {
      */
     public boolean isPointInButton(Button button, int pointX, int pointY);
 
-    public void blitColored(GuiGraphics guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a);
+    public void blitColored(GuiGraphicsExtractor guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a);
 
-    public void blitColored(GuiGraphics guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, float r, float g, float b, float a);
+    public void blitColored(GuiGraphicsExtractor guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, float r, float g, float b, float a);
 
     public void renderLineBox(PoseStack poseStack, VertexConsumer buffer, AABB box, float red, float green, float blue, float alpha, float width);
 

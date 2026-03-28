@@ -2,7 +2,8 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.storage.loot.providers.nbt.LootNbtProviderType;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.loot.providers.nbt.NbtProvider;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -12,9 +13,9 @@ import org.cyclops.cyclopscore.init.IModBase;
  * @param <M> The mod type
  * @see ExtendedConfigCommon
  */
-public abstract class LootNbtProviderConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<LootNbtProviderConfigCommon<M>, LootNbtProviderType, M> {
+public abstract class LootNbtProviderConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<LootNbtProviderConfigCommon<M>, MapCodec<? extends NbtProvider>, M> {
 
-    public LootNbtProviderConfigCommon(M mod, String namedId, LootNbtProviderType lootItemFunctionType) {
+    public LootNbtProviderConfigCommon(M mod, String namedId, MapCodec<? extends NbtProvider> lootItemFunctionType) {
         super(mod, namedId, (eConfig) -> lootItemFunctionType);
     }
 
@@ -35,7 +36,7 @@ public abstract class LootNbtProviderConfigCommon<M extends IModBase> extends Ex
     }
 
     @Override
-    public Registry<LootNbtProviderType> getRegistry() {
+    public Registry<MapCodec<? extends NbtProvider>> getRegistry() {
         return BuiltInRegistries.LOOT_NBT_PROVIDER_TYPE;
     }
 }

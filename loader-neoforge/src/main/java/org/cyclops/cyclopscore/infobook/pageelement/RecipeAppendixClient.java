@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -48,34 +48,34 @@ public abstract class RecipeAppendixClient<S extends RecipeAppendix<?>> extends 
         return itemStack;
     }
 
-    protected void renderItem(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButtonEnum buttonEnum) {
+    protected void renderItem(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButtonEnum buttonEnum) {
         renderItem(gui, guiGraphics, x, y, itemStack, mx, my, buttonEnum, 1.0F);
     }
 
-    protected void renderItem(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum) {
+    protected void renderItem(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum) {
         renderItem(gui, guiGraphics, x, y, itemStack, mx, my, renderOverlays, buttonEnum, 1.0F);
     }
 
-    protected void renderItem(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButtonEnum buttonEnum, float chance) {
+    protected void renderItem(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, ItemStack itemStack, int mx, int my, AdvancedButtonEnum buttonEnum, float chance) {
         renderItem(gui, guiGraphics, x, y, itemStack, mx, my, true, buttonEnum, chance);
     }
 
-    protected void renderItem(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum, float chance) {
+    protected void renderItem(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum, float chance) {
         renderItemForButton(gui, guiGraphics, x, y, itemStack, mx, my, renderOverlays, buttonEnum != null ? (RecipeAppendixClient.ItemButton) getSectionAppendix().getRenderItemHolders().get(buttonEnum) : null, chance);
     }
 
-    public static void renderItemForButton(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, RecipeAppendixClient.ItemButton button) {
+    public static void renderItemForButton(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, RecipeAppendixClient.ItemButton button) {
         renderItemForButton(gui, guiGraphics, x, y, itemStack, mx, my, renderOverlays, button, 1.0F);
     }
 
-    public static void renderItemForButton(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, RecipeAppendixClient.ItemButton button, float chance) {
+    public static void renderItemForButton(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, ItemStack itemStack, int mx, int my, boolean renderOverlays, RecipeAppendixClient.ItemButton button, float chance) {
         if(renderOverlays) gui.drawOuterBorder(guiGraphics, x, y, RecipeAppendix.SLOT_SIZE, RecipeAppendix.SLOT_SIZE, 1, 1, 1, 0.2f);
 
         if (!itemStack.isEmpty()) {
             guiGraphics.pose().pushMatrix();
-            guiGraphics.renderItem(itemStack, x, y);
+            guiGraphics.item(itemStack, x, y);
             if (renderOverlays)
-                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, itemStack, x, y);
+                guiGraphics.itemDecorations(Minecraft.getInstance().font, itemStack, x, y);
             guiGraphics.pose().popMatrix();
 
             if (chance != 1.0F) {
@@ -87,15 +87,15 @@ public abstract class RecipeAppendixClient<S extends RecipeAppendix<?>> extends 
         }
     }
 
-    protected void renderFluid(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, FluidStack fluidStack, int mx, int my, AdvancedButtonEnum buttonEnum) {
+    protected void renderFluid(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, FluidStack fluidStack, int mx, int my, AdvancedButtonEnum buttonEnum) {
         renderFluid(gui, guiGraphics, x, y, fluidStack, mx, my, true, buttonEnum);
     }
 
-    protected void renderFluid(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, FluidStack fluidStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum) {
+    protected void renderFluid(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, FluidStack fluidStack, int mx, int my, boolean renderOverlays, AdvancedButtonEnum buttonEnum) {
         renderFluidForButton(gui, guiGraphics, x, y, fluidStack, mx, my, renderOverlays, buttonEnum != null ? (RecipeAppendixClient.FluidButton) getSectionAppendix().getRenderItemHolders().get(buttonEnum) : null);
     }
 
-    public static void renderFluidForButton(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, FluidStack fluidStack, int mx, int my, boolean renderOverlays, RecipeAppendixClient.FluidButton button) {
+    public static void renderFluidForButton(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, FluidStack fluidStack, int mx, int my, boolean renderOverlays, RecipeAppendixClient.FluidButton button) {
         if(renderOverlays) gui.drawOuterBorder(guiGraphics, x, y, RecipeAppendix.SLOT_SIZE, RecipeAppendix.SLOT_SIZE, 1, 1, 1, 0.2f);
 
         if (!fluidStack.isEmpty()) {
@@ -105,15 +105,15 @@ public abstract class RecipeAppendixClient<S extends RecipeAppendix<?>> extends 
         }
     }
 
-    public static void renderItemTooltip(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, ItemStack itemStack, int mx, int my) {
+    public static void renderItemTooltip(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, ItemStack itemStack, int mx, int my) {
         guiGraphics.pose().pushMatrix();
         if(mx >= x && my >= y && mx <= x + RecipeAppendix.SLOT_SIZE && my <= y + RecipeAppendix.SLOT_SIZE && !itemStack.isEmpty() ) {
-            gui.renderTooltip(guiGraphics, itemStack, mx, my);
+            guiGraphics.setTooltipForNextFrame(gui.getFont(), itemStack, mx, my);
         }
         guiGraphics.pose().popMatrix();
     }
 
-    public static void renderFluidTooltip(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, FluidStack fluidStack, int mx, int my) {
+    public static void renderFluidTooltip(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, FluidStack fluidStack, int mx, int my) {
         if(mx >= x && my >= y && mx <= x + RecipeAppendix.SLOT_SIZE && my <= y + RecipeAppendix.SLOT_SIZE && !fluidStack.isEmpty() ) {
             List<FormattedCharSequence> lines = Lists.newArrayList();
             lines.add(fluidStack.getHoverName().copy()
@@ -128,7 +128,7 @@ public abstract class RecipeAppendixClient<S extends RecipeAppendix<?>> extends 
     }
 
     @Override
-    public final void drawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
+    public final void drawElement(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
         int yOffset = getSectionAppendix().getAdditionalHeight();
         gui.drawOuterBorder(guiGraphics, x - 1, y - 1 - yOffset, getSectionAppendix().getWidth() + 2, getSectionAppendix().getHeight() + 2, 0.5F, 0.5F, 0.5F, 0.4f);
         gui.drawTextBanner(guiGraphics, x + width / 2, y - 2 - yOffset);
@@ -137,13 +137,13 @@ public abstract class RecipeAppendixClient<S extends RecipeAppendix<?>> extends 
         drawElementInner(gui, guiGraphics, x, y, width, height, page, mx, my);
     }
 
-    protected abstract void drawElementInner(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my);
+    protected abstract void drawElementInner(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int page, int mx, int my);
 
-    protected void postDrawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
+    protected void postDrawElement(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
         renderToolTips(guiGraphics, gui.getFont(), mx, my);
     }
 
-    protected void renderToolTips(GuiGraphics guiGraphics, Font font, int mx, int my) {
+    protected void renderToolTips(GuiGraphicsExtractor guiGraphics, Font font, int mx, int my) {
         for(AdvancedButton renderItemHolder : getSectionAppendix().getRenderItemHolders().values()) {
             renderItemHolder.renderTooltip(guiGraphics, font, mx, my);
         }
@@ -185,7 +185,7 @@ public abstract class RecipeAppendixClient<S extends RecipeAppendix<?>> extends 
         protected abstract String getTranslationKey(E element);
 
         @Override
-        public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
             if(isVisible() && isHover(mouseX, mouseY)) {
                 gui.drawOuterBorder(guiGraphics, getX(), getY(), 16, 16, 0.392f, 0.392f, 0.6f, 0.9f);
             }
@@ -209,7 +209,7 @@ public abstract class RecipeAppendixClient<S extends RecipeAppendix<?>> extends 
         }
 
         @Override
-        public void renderTooltip(GuiGraphics guiGraphics, Font font, int mx, int my) {
+        public void renderTooltip(GuiGraphicsExtractor guiGraphics, Font font, int mx, int my) {
             if (getElement() != null) {
                 RecipeAppendixClient.renderItemTooltip(gui, guiGraphics, getX(), getY(), getElement(), mx, my);
             }
@@ -233,7 +233,7 @@ public abstract class RecipeAppendixClient<S extends RecipeAppendix<?>> extends 
         }
 
         @Override
-        public void renderTooltip(GuiGraphics guiGraphics, Font font, int mx, int my) {
+        public void renderTooltip(GuiGraphicsExtractor guiGraphics, Font font, int mx, int my) {
             if (getElement() != null) {
                 RecipeAppendixClient.renderFluidTooltip(gui, guiGraphics, getX(), getY(), getElement(), mx, my);
             }

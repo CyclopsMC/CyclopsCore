@@ -3,9 +3,15 @@ package org.cyclops.cyclopscore.helper;
 import com.google.common.collect.Maps;
 import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
+import net.minecraft.client.renderer.block.dispatch.SingleVariant;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.cuboid.CuboidModel;
+import net.minecraft.client.resources.model.cuboid.ItemTransform;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
@@ -130,15 +136,15 @@ public final class ModelHelpers {
     }
 
     /**
-     * Read the given model location to a {@link BlockModel}.
+     * Read the given model location to a {@link CuboidModel}.
      * @param modelLocation A model location (without .json suffix)
      * @return The corresponding model.
      * @throws IOException If the model file was invalid.
      */
-    public static BlockModel loadModelBlock(Identifier modelLocation) throws IOException {
+    public static CuboidModel loadModelBlock(Identifier modelLocation) throws IOException {
         Resource resource = Minecraft.getInstance().getResourceManager().getResource(
                 Identifier.fromNamespaceAndPath(modelLocation.getNamespace(), modelLocation.getPath() + ".json")).get();
-        return BlockModel.fromStream(resource.openAsReader());
+        return CuboidModel.fromStream(resource.openAsReader());
     }
 
     /**

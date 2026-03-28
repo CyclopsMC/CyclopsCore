@@ -3,7 +3,7 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 import com.google.common.collect.Lists;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.api.distmarker.Dist;
@@ -29,7 +29,7 @@ public class AdvancementButton extends AdvancedButton {
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, Font font, int mx, int my) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, Font font, int mx, int my) {
         super.renderTooltip(guiGraphics, font, mx, my);
         if(mx >= getX() && my >= getY() && mx <= getX() + AdvancementRewardsAppendix.SLOT_SIZE && my <= getY() + AdvancementRewardsAppendix.SLOT_SIZE) {
             List<FormattedCharSequence> lines = Lists.newArrayList();

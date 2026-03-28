@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
@@ -14,7 +14,7 @@ public class TextFieldAppendixClient extends SectionAppendixClient<TextFieldAppe
     }
 
     @Override
-    protected void drawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
+    protected void drawElement(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
         int lineId = 0;
         for (String line : getSectionAppendix().getLines()) {
             IModHelpers.get().getRenderHelpers().drawScaledString(
@@ -35,7 +35,7 @@ public class TextFieldAppendixClient extends SectionAppendixClient<TextFieldAppe
     }
 
     @Override
-    protected void postDrawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
+    protected void postDrawElement(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
 
     }
 }

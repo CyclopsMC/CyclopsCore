@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -39,7 +39,7 @@ public class AchievementCollectButton extends AdvancedButton {
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, Font font, int mx, int my) {
+    public void renderTooltip(GuiGraphicsExtractor guiGraphics, Font font, int mx, int my) {
         super.renderTooltip(guiGraphics, font, mx, my);
         if(mx >= getX() && my >= getY() && mx <= getX() + width && my <= getY() + height) {
             List<FormattedCharSequence> lines = Lists.newArrayList();

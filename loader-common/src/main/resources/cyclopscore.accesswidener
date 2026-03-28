@@ -1,4 +1,4 @@
-accessWidener v1 named
+accessWidener v1 official
 
 # Recipes
 accessible method net/minecraft/world/item/crafting/RecipeManager byKeyTyped (Lnet/minecraft/world/item/crafting/RecipeType;Lnet/minecraft/resources/ResourceKey;)Lnet/minecraft/world/item/crafting/RecipeHolder;
@@ -16,9 +16,9 @@ accessible field net/minecraft/world/inventory/MenuType constructor Lnet/minecra
 mutable field net/minecraft/world/inventory/AbstractContainerMenu slots Lnet/minecraft/core/NonNullList;
 
 # GuiGraphics
-accessible method net/minecraft/client/gui/GuiGraphics innerBlit (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIIFFFFI)V
-accessible method net/minecraft/client/gui/GuiGraphics renderItemBar (Lnet/minecraft/world/item/ItemStack;II)V
-accessible method net/minecraft/client/gui/GuiGraphics renderItemCooldown (Lnet/minecraft/world/item/ItemStack;II)V
+accessible method net/minecraft/client/gui/GuiGraphicsExtractor innerBlit (Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIIFFFFI)V
+accessible method net/minecraft/client/gui/GuiGraphicsExtractor itemBar (Lnet/minecraft/world/item/ItemStack;II)V
+accessible method net/minecraft/client/gui/GuiGraphicsExtractor itemCooldown (Lnet/minecraft/world/item/ItemStack;II)V
 
 # World
 accessible field net/minecraft/world/level/Level thread Ljava/lang/Thread;
@@ -69,8 +69,8 @@ accessible class net/minecraft/world/level/block/entity/BlockEntityType$BlockEnt
 # ItemTintSources
 accessible field net/minecraft/client/color/item/ItemTintSources ID_MAPPER Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;
 
-# RegistryDataLoader
-accessible class net/minecraft/resources/RegistryDataLoader$Loader
+# RegistryLoadTask
+accessible field net/minecraft/resources/RegistryLoadTask registry Lnet/minecraft/core/WritableRegistry;
 
 # RenderPipelines
 accessible field net/minecraft/client/renderer/RenderPipelines PARTICLE_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;

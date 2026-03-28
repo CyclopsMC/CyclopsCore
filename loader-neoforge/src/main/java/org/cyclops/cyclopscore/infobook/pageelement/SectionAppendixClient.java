@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
 
 /**
@@ -32,7 +32,7 @@ public abstract class SectionAppendixClient<A extends SectionAppendix<?>> {
      * @param my          Mouse Y.
      * @param pre         If the normal drawing should occur, otherwise post-drawing: things like tooltips.
      */
-    public void drawScreen(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
+    public void drawScreen(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int page, int mx, int my, boolean pre) {
         int xc = x + width / 2 - getSectionAppendix().getWidth() / 2;
         int yc = y + getSectionAppendix().getOffsetY();
         if (pre) {
@@ -42,8 +42,8 @@ public abstract class SectionAppendixClient<A extends SectionAppendix<?>> {
         }
     }
 
-    protected abstract void drawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my);
+    protected abstract void drawElement(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int page, int mx, int my);
 
-    protected abstract void postDrawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my);
+    protected abstract void postDrawElement(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int page, int mx, int my);
 
 }

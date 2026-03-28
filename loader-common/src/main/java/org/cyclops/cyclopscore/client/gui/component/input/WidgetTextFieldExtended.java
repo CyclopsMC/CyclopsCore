@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.client.gui.component.input;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -36,7 +36,7 @@ public class WidgetTextFieldExtended extends EditBox {
         return this.width - 7;
     }
 
-    protected void drawBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    protected void drawBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         setX(getX() - 1);
         setY(getY() - 1);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Images.WIDGETS, getX(), getY(), 0, 0, width / 2, height / 2, 256, 256);//top left
@@ -54,11 +54,11 @@ public class WidgetTextFieldExtended extends EditBox {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(background) {
             drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         }
-        super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
+        super.extractWidgetRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

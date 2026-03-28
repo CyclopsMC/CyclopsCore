@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
@@ -23,7 +23,7 @@ public class GuiHelpersForge extends GuiHelpersCommon implements IGuiHelpersForg
     }
 
     @Override
-    public void renderFluidTank(GuiGraphics gui, @Nullable FluidStack fluidStack, int capacity,
+    public void renderFluidTank(GuiGraphicsExtractor gui, @Nullable FluidStack fluidStack, int capacity,
                                 int x, int y, int width, int height) {
         if (fluidStack != null && !fluidStack.isEmpty() && capacity > 0) {
             gui.pose().pushMatrix();
@@ -59,14 +59,14 @@ public class GuiHelpersForge extends GuiHelpersCommon implements IGuiHelpersForg
     }
 
     @Override
-    public void renderFluidSlot(GuiGraphics gui, @Nullable FluidStack fluidStack, int x, int y) {
+    public void renderFluidSlot(GuiGraphicsExtractor gui, @Nullable FluidStack fluidStack, int x, int y) {
         if (fluidStack != null) {
             this.renderFluidTank(gui, fluidStack, fluidStack.getAmount(), x, y, getSlotSizeInner(), getSlotSizeInner());
         }
     }
 
     @Override
-    public void renderOverlayedFluidTank(GuiGraphics gui, @Nullable FluidStack fluidStack, int capacity,
+    public void renderOverlayedFluidTank(GuiGraphicsExtractor gui, @Nullable FluidStack fluidStack, int capacity,
                                          int x, int y, int width, int height,
                                          Identifier textureOverlay, int overlayTextureX, int overlayTextureY) {
         renderFluidTank(gui, fluidStack, capacity, x, y, width, height);

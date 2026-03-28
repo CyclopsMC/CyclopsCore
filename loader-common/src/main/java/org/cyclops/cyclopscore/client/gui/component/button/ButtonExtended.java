@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.component.button;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -48,13 +48,13 @@ public abstract class ButtonExtended extends Button {
         return 46 + i * 20;
     }
 
-    protected void drawBackground(GuiGraphics guiGraphics) {
+    protected void drawBackground(GuiGraphicsExtractor guiGraphics) {
         Identifier resourceLocation = SPRITES.get(this.active, this.isHoveredOrFocused());
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, resourceLocation, getX(), getY(), getWidth(), getHeight());
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(visible) {
             if(background) {
                 drawBackground(guiGraphics);
@@ -63,6 +63,6 @@ public abstract class ButtonExtended extends Button {
         }
     }
 
-    protected abstract void drawButtonInner(GuiGraphics guiGraphics, int mouseX, int mouseY);
+    protected abstract void drawButtonInner(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY);
 
 }

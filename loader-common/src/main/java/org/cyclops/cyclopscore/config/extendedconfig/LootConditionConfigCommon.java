@@ -2,7 +2,8 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -12,9 +13,9 @@ import org.cyclops.cyclopscore.init.IModBase;
  * @param <M> The mod type
  * @see ExtendedConfigCommon
  */
-public abstract class LootConditionConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<LootConditionConfigCommon<M>, LootItemConditionType, M> {
+public abstract class LootConditionConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<LootConditionConfigCommon<M>, MapCodec<? extends LootItemCondition>, M> {
 
-    public LootConditionConfigCommon(M mod, String namedId, LootItemConditionType lootItemFunctionType) {
+    public LootConditionConfigCommon(M mod, String namedId, MapCodec<? extends LootItemCondition> lootItemFunctionType) {
         super(mod, namedId, (eConfig) -> lootItemFunctionType);
     }
 
@@ -35,7 +36,7 @@ public abstract class LootConditionConfigCommon<M extends IModBase> extends Exte
     }
 
     @Override
-    public Registry<LootItemConditionType> getRegistry() {
+    public Registry<MapCodec<? extends LootItemCondition>> getRegistry() {
         return BuiltInRegistries.LOOT_CONDITION_TYPE;
     }
 }

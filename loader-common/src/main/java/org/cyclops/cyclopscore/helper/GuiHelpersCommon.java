@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -34,7 +34,7 @@ public class GuiHelpersCommon implements IGuiHelpers {
     }
 
     @Override
-    public void renderProgressBar(GuiGraphics gui, Identifier texture, int x, int y, int width, int height, int textureX, int textureY,
+    public void renderProgressBar(GuiGraphicsExtractor gui, Identifier texture, int x, int y, int width, int height, int textureX, int textureY,
                                   ProgressDirection direction, int progress, int progressMax) {
         if (progressMax > 0 && progress > 0) {
             int scaledWidth = width;
@@ -65,12 +65,12 @@ public class GuiHelpersCommon implements IGuiHelpers {
     }
 
     @Override
-    public void drawTooltip(AbstractContainerScreen gui, GuiGraphics guiGraphics, List<Component> lines, int x, int y) {
+    public void drawTooltip(AbstractContainerScreen gui, GuiGraphicsExtractor guiGraphics, List<Component> lines, int x, int y) {
         guiGraphics.setComponentTooltipForNextFrame(gui.getFont(), lines, x, y);
     }
 
     @Override
-    public void renderTooltipOptional(AbstractContainerScreen gui, GuiGraphics guiGraphics, int x, int y, int width, int height,
+    public void renderTooltipOptional(AbstractContainerScreen gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height,
                                              int mouseX, int mouseY, Supplier<Optional<List<Component>>> linesSupplier) {
         if (modHelpers.getRenderHelpers().isPointInRegion(x, y, width, height, mouseX - gui.leftPos, mouseY - gui.topPos)) {
             linesSupplier.get().ifPresent(
@@ -79,7 +79,7 @@ public class GuiHelpersCommon implements IGuiHelpers {
     }
 
     @Override
-    public void renderTooltip(AbstractContainerScreen gui, GuiGraphics guiGraphics, int x, int y, int width, int height,
+    public void renderTooltip(AbstractContainerScreen gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height,
                                      int mouseX, int mouseY, Supplier<List<Component>> linesSupplier) {
         renderTooltipOptional(gui, guiGraphics, x, y, width, height, mouseX, mouseY, () -> Optional.of(linesSupplier.get()));
     }

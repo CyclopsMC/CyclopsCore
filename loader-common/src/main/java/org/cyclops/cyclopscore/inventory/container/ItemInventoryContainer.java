@@ -5,7 +5,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -92,8 +92,8 @@ public abstract class ItemInventoryContainer<I extends Item> extends ContainerEx
     }
 
     @Override
-    public void clicked(int slotId, int arg, ClickType clickType, Player player) {
-        if (clickType == ClickType.SWAP && itemLocation.inventoryLocation() == InventoryLocationPlayer.getInstance() && arg == itemLocation.slot()) {
+    public void clicked(int slotId, int arg, ContainerInput clickType, Player player) {
+        if (clickType == ContainerInput.SWAP && itemLocation.inventoryLocation() == InventoryLocationPlayer.getInstance() && arg == itemLocation.slot()) {
             // Don't allow swapping with the slot of the active item.
             return;
         }

@@ -27,12 +27,12 @@ public class PacketHandlerFabric implements IPacketHandler {
 
     @Override
     public <P extends PacketBase> void register(Class<P> clazz, CustomPacketPayload.Type<P> type, StreamCodec<? super RegistryFriendlyByteBuf, P> codec) {
-        PayloadTypeRegistry.playS2C().register(type, codec);
+        PayloadTypeRegistry.clientboundPlay().register(type, codec);
         if (this.mod.getModHelpers().getMinecraftHelpers().isClientSide()) {
             registerClientSide(clazz, type, codec);
         }
 
-        PayloadTypeRegistry.playC2S().register(type, codec);
+        PayloadTypeRegistry.serverboundPlay().register(type, codec);
         ServerPlayNetworking.registerGlobalReceiver(type, (packet, ctx) -> {
             if (packet.isAsync()) {
                 handlePacketServer(ctx, packet);

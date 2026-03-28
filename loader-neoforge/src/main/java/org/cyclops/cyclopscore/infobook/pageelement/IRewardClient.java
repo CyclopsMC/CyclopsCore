@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.cyclops.cyclopscore.infobook.AdvancedButton;
 import org.cyclops.cyclopscore.infobook.IInfoBook;
 import org.cyclops.cyclopscore.infobook.ScreenInfoBook;
@@ -28,5 +28,5 @@ public interface IRewardClient {
      * @param my Mouse Y.
      * @param button The button of this reward.
      */
-    public void drawElementInner(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button);
+    public void drawElementInner(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int page, int mx, int my, AdvancedButton button);
 }

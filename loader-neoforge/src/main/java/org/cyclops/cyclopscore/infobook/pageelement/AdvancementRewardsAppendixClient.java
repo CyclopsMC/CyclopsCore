@@ -2,7 +2,7 @@ package org.cyclops.cyclopscore.infobook.pageelement;
 
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
@@ -25,7 +25,7 @@ public class AdvancementRewardsAppendixClient extends SectionAppendixClient<Adva
     }
 
     @Override
-    protected void drawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
+    protected void drawElement(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
         requestAdvancementInfo();
 
         int offsetX = 0;
@@ -53,7 +53,7 @@ public class AdvancementRewardsAppendixClient extends SectionAppendixClient<Adva
             } else {
                 int finalOffsetX = offsetX;
                 int finalOffsetY = offsetY;
-                advancement.value().display().ifPresent(display -> RecipeAppendixClient.renderItemForButton(gui, guiGraphics, x + finalOffsetX, y + finalOffsetY, display.getIcon(), mx, my, true, null));
+                advancement.value().display().ifPresent(display -> RecipeAppendixClient.renderItemForButton(gui, guiGraphics, x + finalOffsetX, y + finalOffsetY, display.getIcon().create(), mx, my, true, null));
                 if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getInstance().player, advancementId)) {
                     Images.OK.draw(guiGraphics, x + offsetX + 1, y + offsetY + 2);
                 } else {
@@ -95,7 +95,7 @@ public class AdvancementRewardsAppendixClient extends SectionAppendixClient<Adva
     }
 
     @Override
-    protected void postDrawElement(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
+    protected void postDrawElement(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
         renderToolTips(gui, guiGraphics, mx, my);
     }
 
@@ -106,7 +106,7 @@ public class AdvancementRewardsAppendixClient extends SectionAppendixClient<Adva
         }
     }
 
-    protected void renderToolTips(ScreenInfoBook gui, GuiGraphics guiGraphics, int mx, int my) {
+    protected void renderToolTips(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int mx, int my) {
         for(AdvancedButton button : getSectionAppendix().getRenderButtonHolders().values()) {
             button.renderTooltip(guiGraphics, gui.getFont(), mx, my);
         }

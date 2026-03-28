@@ -1,17 +1,18 @@
 package org.cyclops.cyclopscore.client.model;
 
 import net.minecraft.client.model.geom.builders.UVPair;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.QuadCollection;
+import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.quad.BakedColors;
@@ -209,14 +210,10 @@ public abstract class DynamicBaseModel implements BlockStateModel {
                 UVPair.pack(texture.getU(uvs[(1 + rotation) % 4][0]), texture.getV(uvs[(1 + rotation) % 4][1])),
                 UVPair.pack(texture.getU(uvs[(2 + rotation) % 4][0]), texture.getV(uvs[(2 + rotation) % 4][1])),
                 UVPair.pack(texture.getU(uvs[(3 + rotation) % 4][0]), texture.getV(uvs[(3 + rotation) % 4][1])),
-                -1,
                 side,
-                texture,
-                false,
-                0,
+                new BakedQuad.MaterialInfo(texture, ChunkSectionLayer.CUTOUT, RenderTypes.entityCutout(texture.atlasLocation()), -1, false, 0, true),
                 BakedNormals.UNSPECIFIED,
-                isColored ? BakedColors.of(shadeColor) : BakedColors.DEFAULT,
-                true
+                isColored ? BakedColors.of(shadeColor) : BakedColors.DEFAULT
         ));
     }
 
@@ -226,7 +223,7 @@ public abstract class DynamicBaseModel implements BlockStateModel {
                                                      ChunkSectionLayer renderType);
 
     @Override
-    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
+    public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
         ModelData extraData = getModelData(level, pos, state, level.getModelData(pos));
         for (ChunkSectionLayer renderType : getRenderTypes(state, random, extraData)) {
             for (Direction side : Direction.values()) {
@@ -237,15 +234,14 @@ public abstract class DynamicBaseModel implements BlockStateModel {
                 parts.add(new SimpleModelWrapper(
                         quadCollectionBuilder.build(),
                         usesBlockLight(),
-                        particleIcon(level, pos, state),
-                        renderType
+                        particleMaterial(level, pos, state)
                 ));
             }
         }
     }
 
     @Override
-    public void collectParts(RandomSource random, List<BlockModelPart> output) {
+    public void collectParts(RandomSource random, List<BlockStateModelPart> output) {
         // Do nothing, as it's should be never called.
     }
 

@@ -29,7 +29,7 @@ public class MethodGameTestInstance extends GameTestInstance {
     private final String className;
     private final String methodName;
 
-    public MethodGameTestInstance(TestData<Holder<TestEnvironmentDefinition>> info, String modId, String className, String methodName) {
+    public MethodGameTestInstance(TestData<Holder<TestEnvironmentDefinition<?>>> info, String modId, String className, String methodName) {
         super(info);
         this.modId = modId;
         this.className = className;

@@ -3,8 +3,8 @@ package org.cyclops.cyclopscore.helper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.impl.screenhandler.Networking;
+import net.fabricmc.fabric.api.menu.v1.ExtendedMenuProvider;
+import net.fabricmc.fabric.impl.menu.Networking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.impl.FabricLoaderImpl;
 import net.minecraft.client.Minecraft;
@@ -25,7 +25,6 @@ import org.cyclops.cyclopscore.CyclopsCoreFabric;
 import org.cyclops.cyclopscore.Reference;
 import org.cyclops.cyclopscore.config.StreamCodecConsumerHack;
 
-import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -79,8 +78,7 @@ public class MinecraftHelpersFabric extends MinecraftHelpersCommon {
 
     @Override
     public void openMenu(ServerPlayer player, MenuProvider containerSupplier, Consumer<FriendlyByteBuf> extraDataWriter) {
-        player.openMenu(new ExtendedScreenHandlerFactory<Boolean>() {
-            @Nullable
+        player.openMenu(new ExtendedMenuProvider<Boolean>() {
             @Override
             public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                 AbstractContainerMenu menu = containerSupplier.createMenu(i, inventory, player);

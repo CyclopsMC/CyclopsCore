@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.component;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -18,7 +18,7 @@ import java.awt.*;
  *
  * The using screen must add this as a child
  * and call the following method from its respective method:
- * * {@link #renderWidget(GuiGraphics, int, int, float)}
+ * * {@link #extractWidgetRenderState(GuiGraphicsExtractor, int, int, float)}
  * * {@link #mouseDragged(MouseButtonEvent, double, double)} (@see ContainerScreenScrolling for an example)
  *
  * @author rubensworks
@@ -122,7 +122,7 @@ public class WidgetScrollBar extends AbstractWidget {
     }
 
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         int scrollX = getX();
         int scrollMinY = getY();
         int scrollMaxY = scrollMinY + height;

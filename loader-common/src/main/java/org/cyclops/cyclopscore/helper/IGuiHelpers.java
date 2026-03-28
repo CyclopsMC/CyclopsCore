@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -40,7 +40,7 @@ public interface IGuiHelpers {
      * @param progress The current progress.
      * @param progressMax The maximum progress.
      */
-    public void renderProgressBar(GuiGraphics gui, Identifier texture, int x, int y, int width, int height, int textureX, int textureY,
+    public void renderProgressBar(GuiGraphicsExtractor gui, Identifier texture, int x, int y, int width, int height, int textureX, int textureY,
                                   ProgressDirection direction, int progress, int progressMax);
 
     /**
@@ -51,7 +51,7 @@ public interface IGuiHelpers {
      * @param x Tooltip X.
      * @param y Tooltip Y.
      */
-    public void drawTooltip(AbstractContainerScreen gui, GuiGraphics guiGraphics, List<Component> lines, int x, int y);
+    public void drawTooltip(AbstractContainerScreen gui, GuiGraphicsExtractor guiGraphics, List<Component> lines, int x, int y);
 
     /**
      * Render a tooltip if the mouse if in the bounding box defined by the given position, width and height.
@@ -68,7 +68,7 @@ public interface IGuiHelpers {
      *                      No tooltip will be rendered when the optional value is absent.
      *                      This will only be called when needed.
      */
-    public void renderTooltipOptional(AbstractContainerScreen gui, GuiGraphics guiGraphics, int x, int y, int width, int height,
+    public void renderTooltipOptional(AbstractContainerScreen gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height,
                                       int mouseX, int mouseY, Supplier<Optional<List<Component>>> linesSupplier);
 
     /**
@@ -84,7 +84,7 @@ public interface IGuiHelpers {
      * @param linesSupplier A supplier for the tooltip lines to render.
      *                      This will only be called when needed.
      */
-    public void renderTooltip(AbstractContainerScreen gui, GuiGraphics guiGraphics, int x, int y, int width, int height,
+    public void renderTooltip(AbstractContainerScreen gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height,
                               int mouseX, int mouseY, Supplier<List<Component>> linesSupplier);
 
     /**

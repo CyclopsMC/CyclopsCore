@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.component.button;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import org.cyclops.cyclopscore.client.gui.image.Image;
@@ -45,12 +45,12 @@ public class ButtonArrow extends ButtonExtended {
     }
 
     @Override
-    protected void drawBackground(GuiGraphics guiGraphics) {
+    protected void drawBackground(GuiGraphicsExtractor guiGraphics) {
         directionImages[getYImage()].draw(guiGraphics, getX(), getY());
     }
 
     @Override
-    protected void drawButtonInner(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawButtonInner(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
 
     }
 

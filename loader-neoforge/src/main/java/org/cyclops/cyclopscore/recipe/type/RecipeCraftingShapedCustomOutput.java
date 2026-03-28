@@ -3,12 +3,14 @@ package org.cyclops.cyclopscore.recipe.type;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
@@ -23,22 +25,24 @@ public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
 
     private final RecipeCraftingShapedCustomOutput.Serializer serializer;
     private final ItemStack recipeOutput;
-    private final ShapedRecipePattern shapedRecipePattern;
+    public final ShapedRecipePattern shapedRecipePattern;
 
     public RecipeCraftingShapedCustomOutput(RecipeCraftingShapedCustomOutput.Serializer serializer, String groupIn, CraftingBookCategory category, ShapedRecipePattern shapedRecipePattern, ItemStack recipeOutputIn, boolean showNotification) {
-        super(groupIn, category, shapedRecipePattern, recipeOutputIn, showNotification);
+        super(new Recipe.CommonInfo(showNotification), new CraftingRecipe.CraftingBookInfo(category, groupIn),
+                shapedRecipePattern, new ItemStackTemplate(recipeOutputIn.typeHolder(), recipeOutputIn.getCount(), recipeOutputIn.getComponentsPatch()));
         this.serializer = serializer;
         this.recipeOutput = recipeOutputIn;
         this.shapedRecipePattern = shapedRecipePattern;
     }
 
     @Override
-    public RecipeSerializer<? extends ShapedRecipe> getSerializer() {
-        return this.serializer;
+    @SuppressWarnings("unchecked")
+    public RecipeSerializer<ShapedRecipe> getSerializer() {
+        return (RecipeSerializer<ShapedRecipe>)(Object) this.serializer.getRecipeSerializer();
     }
 
     @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registryAccess) {
+    public ItemStack assemble(CraftingInput inv) {
         RecipeCraftingShapelessCustomOutput.Serializer.IOutputTransformer outputTransformer = serializer.getOutputTransformer();
         if (outputTransformer != null) {
             return outputTransformer.transform(inv, this.getResultItem());
@@ -51,27 +55,26 @@ public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
     }
 
     // Partially copied from ShapedRecipe.Serializer
-    public static class Serializer implements RecipeSerializer<RecipeCraftingShapedCustomOutput> {
+    public static class Serializer {
         private final Supplier<ItemStack> outputProvider;
         @Nullable
         private final RecipeCraftingShapelessCustomOutput.Serializer.IOutputTransformer outputTransformer;
-        public final MapCodec<RecipeCraftingShapedCustomOutput> codec;
-        public final StreamCodec<RegistryFriendlyByteBuf, RecipeCraftingShapedCustomOutput> streamCodec;
+        private final RecipeSerializer<RecipeCraftingShapedCustomOutput> recipeSerializer;
 
         public Serializer(Supplier<ItemStack> outputProvider, @Nullable RecipeCraftingShapelessCustomOutput.Serializer.IOutputTransformer outputTransformer) {
             this.outputProvider = outputProvider;
             this.outputTransformer = outputTransformer;
-            this.codec = RecordCodecBuilder.mapCodec(
+            MapCodec<RecipeCraftingShapedCustomOutput> codec = RecordCodecBuilder.mapCodec(
                     p_311728_ -> p_311728_.group(
                                     Codec.STRING.optionalFieldOf("group", "").forGetter(p_311729_ -> p_311729_.group()),
                                     CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(p_311732_ -> p_311732_.category()),
                                     ShapedRecipePattern.MAP_CODEC.forGetter(p_311733_ -> p_311733_.shapedRecipePattern),
-                                    // ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(p_311730_ -> p_311730_.result), // This is removed
                                     Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(p_311731_ -> p_311731_.showNotification())
                             )
-                            .apply(p_311728_, (group, category, shapedRecipePattern, showNotification) -> new RecipeCraftingShapedCustomOutput(this, group, category, shapedRecipePattern, this.outputProvider.get(), showNotification)) // This line is different
+                            .apply(p_311728_, (group, category, shapedRecipePattern, showNotification) -> new RecipeCraftingShapedCustomOutput(this, group, category, shapedRecipePattern, this.outputProvider.get(), showNotification))
             );
-            this.streamCodec = StreamCodec.of(this::toNetwork, this::fromNetwork);
+            StreamCodec<RegistryFriendlyByteBuf, RecipeCraftingShapedCustomOutput> streamCodec = StreamCodec.of(this::toNetwork, this::fromNetwork);
+            this.recipeSerializer = new RecipeSerializer<>(codec, streamCodec);
         }
 
         public Serializer(Supplier<ItemStack> outputProvider) {
@@ -83,14 +86,8 @@ public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
             return outputTransformer;
         }
 
-        @Override
-        public MapCodec<RecipeCraftingShapedCustomOutput> codec() {
-            return codec;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, RecipeCraftingShapedCustomOutput> streamCodec() {
-            return streamCodec;
+        public RecipeSerializer<RecipeCraftingShapedCustomOutput> getRecipeSerializer() {
+            return recipeSerializer;
         }
 
         private RecipeCraftingShapedCustomOutput fromNetwork(RegistryFriendlyByteBuf p_319998_) {

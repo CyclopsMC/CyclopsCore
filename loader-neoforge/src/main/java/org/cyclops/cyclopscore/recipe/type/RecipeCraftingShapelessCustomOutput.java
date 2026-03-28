@@ -3,12 +3,12 @@ package org.cyclops.cyclopscore.recipe.type;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 
 import javax.annotation.Nullable;
@@ -24,7 +24,8 @@ public class RecipeCraftingShapelessCustomOutput extends ShapelessRecipe {
     private final ItemStack recipeOutput;
 
     public RecipeCraftingShapelessCustomOutput(RecipeCraftingShapelessCustomOutput.Serializer serializer, String groupIn, CraftingBookCategory category, ItemStack recipeOutputIn, List<Ingredient> recipeItemsIn) {
-        super(groupIn, category, recipeOutputIn, recipeItemsIn);
+        super(new Recipe.CommonInfo(true), new CraftingRecipe.CraftingBookInfo(category, groupIn),
+                new ItemStackTemplate(recipeOutputIn.typeHolder(), recipeOutputIn.getCount(), recipeOutputIn.getComponentsPatch()), recipeItemsIn);
         this.serializer = serializer;
         this.recipeOutput = recipeOutputIn;
     }
@@ -34,12 +35,13 @@ public class RecipeCraftingShapelessCustomOutput extends ShapelessRecipe {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public RecipeSerializer<ShapelessRecipe> getSerializer() {
-        return (RecipeSerializer) this.serializer;
+        return (RecipeSerializer<ShapelessRecipe>)(Object) this.serializer.getRecipeSerializer();
     }
 
     @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider registryAccess) {
+    public ItemStack assemble(CraftingInput inv) {
         Serializer.IOutputTransformer outputTransformer = serializer.getOutputTransformer();
         if (outputTransformer != null) {
             return outputTransformer.transform(inv, this.getResultItem());
@@ -52,28 +54,26 @@ public class RecipeCraftingShapelessCustomOutput extends ShapelessRecipe {
     }
 
     // Partially copied from ShapelessRecipe.Serializer
-    public static class Serializer implements RecipeSerializer<RecipeCraftingShapelessCustomOutput> {
-        private static final net.minecraft.resources.Identifier NAME = Identifier.fromNamespaceAndPath("minecraft", "crafting_shapeless");
+    public static class Serializer {
+        private static final Identifier NAME = Identifier.fromNamespaceAndPath("minecraft", "crafting_shapeless");
 
         private final Supplier<ItemStack> outputProvider;
         @Nullable
         private final Serializer.IOutputTransformer outputTransformer;
-        private final MapCodec<RecipeCraftingShapelessCustomOutput> codec;
-        private final StreamCodec<RegistryFriendlyByteBuf, RecipeCraftingShapelessCustomOutput> streamCodec;
+        private final RecipeSerializer<RecipeCraftingShapelessCustomOutput> recipeSerializer;
 
         public Serializer(Supplier<ItemStack> outputProvider, @Nullable Serializer.IOutputTransformer outputTransformer) {
             this.outputProvider = outputProvider;
             this.outputTransformer = outputTransformer;
-            this.codec = RecordCodecBuilder.mapCodec(
+            MapCodec<RecipeCraftingShapelessCustomOutput> codec = RecordCodecBuilder.mapCodec(
                     p_311734_ -> p_311734_.group(
                                     Codec.STRING.optionalFieldOf("group", "").forGetter(p_301127_ -> p_301127_.group()),
                                     CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(p_301133_ -> p_301133_.category()),
-//                                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(p_301142_ -> p_301142_.getRecipeOutput()), // This is removed
                                     Codec.lazyInitialized(() -> Ingredient.CODEC.listOf(1, ShapedRecipePattern.getMaxHeight() * ShapedRecipePattern.getMaxWidth())).fieldOf("ingredients").forGetter((p_360071_) -> p_360071_.placementInfo().ingredients())
                             )
-                            .apply(p_311734_, (group, category, ingredients) -> new RecipeCraftingShapelessCustomOutput(this, group, category, this.outputProvider.get(), ingredients)) // This line is different
+                            .apply(p_311734_, (group, category, ingredients) -> new RecipeCraftingShapelessCustomOutput(this, group, category, this.outputProvider.get(), ingredients))
             );
-            this.streamCodec = StreamCodec.composite(
+            StreamCodec<RegistryFriendlyByteBuf, RecipeCraftingShapelessCustomOutput> streamCodec = StreamCodec.composite(
                     ByteBufCodecs.STRING_UTF8,
                     (p_360074_) -> p_360074_.group(),
                     CraftingBookCategory.STREAM_CODEC,
@@ -82,8 +82,9 @@ public class RecipeCraftingShapelessCustomOutput extends ShapelessRecipe {
                     (p_360070_) -> p_360070_.getResultItem(),
                     Ingredient.CONTENTS_STREAM_CODEC.apply(ByteBufCodecs.list()),
                     (p_360069_) -> p_360069_.placementInfo().ingredients(),
-                    (group, category, result, ingredients) -> new RecipeCraftingShapelessCustomOutput(this, group, category, this.outputProvider.get(), ingredients) // This line is different
+                    (group, category, result, ingredients) -> new RecipeCraftingShapelessCustomOutput(this, group, category, this.outputProvider.get(), ingredients)
             );
+            this.recipeSerializer = new RecipeSerializer<>(codec, streamCodec);
         }
 
         public Serializer(Supplier<ItemStack> outputProvider) {
@@ -95,14 +96,8 @@ public class RecipeCraftingShapelessCustomOutput extends ShapelessRecipe {
             return outputTransformer;
         }
 
-        @Override
-        public MapCodec<RecipeCraftingShapelessCustomOutput> codec() {
-            return codec;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, RecipeCraftingShapelessCustomOutput> streamCodec() {
-            return streamCodec;
+        public RecipeSerializer<RecipeCraftingShapelessCustomOutput> getRecipeSerializer() {
+            return recipeSerializer;
         }
 
         public static interface IOutputTransformer {

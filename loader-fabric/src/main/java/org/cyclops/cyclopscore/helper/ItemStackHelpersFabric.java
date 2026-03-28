@@ -8,6 +8,6 @@ import net.minecraft.world.item.ItemStack;
 public class ItemStackHelpersFabric extends ItemStackHelpersCommon {
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        return itemStack.getRecipeRemainder();
+        return itemStack.getItem().getCraftingRemainder().create();
     }
 }

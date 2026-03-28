@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -108,7 +108,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
-    protected void drawCurrentScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    protected void drawCurrentScreen(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (isSubsetRenderSlots()) {
             // Temporarily swap slot list, to avoid rendering all slots (which would include the hidden ones)
             NonNullList<Slot> oldSlots = this.container.slots;
@@ -133,10 +133,10 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-        super.renderBg(guiGraphics, partialTicks, mouseX, mouseY);
-        if(isSearchEnabled()) this.searchField.render(guiGraphics, mouseX, mouseY, partialTicks);
-        this.scrollbar.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, partialTicks);
+        if(isSearchEnabled()) this.searchField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+        this.scrollbar.extractWidgetRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override

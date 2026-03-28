@@ -21,5 +21,5 @@ public interface IRegisterGameTestsEvent {
             }
     );
 
-    void registerTest(Registry<TestEnvironmentDefinition> testEnvironmentRegistry, BiConsumer<Identifier, GameTestInstance> registrar);
+    void registerTest(Registry<TestEnvironmentDefinition<?>> testEnvironmentRegistry, BiConsumer<Identifier, GameTestInstance> registrar);
 }

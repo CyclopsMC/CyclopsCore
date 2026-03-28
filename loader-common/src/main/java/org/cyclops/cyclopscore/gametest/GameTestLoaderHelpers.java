@@ -7,8 +7,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.GameTestInstance;
 import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -27,23 +27,24 @@ public class GameTestLoaderHelpers {
                 || System.getProperty("cyclopsmc.enabledGameTestNamespaces", "").contains(modId);
     }
 
-    public static void registerCommonTests(String modId, Class<?>[] testClasses, BiConsumer<Identifier, GameTestInstance> registrar, Registry<TestEnvironmentDefinition> testEnvironmentRegistry) {
+    public static void registerCommonTests(String modId, Class<?>[] testClasses, BiConsumer<Identifier, GameTestInstance> registrar, Registry<TestEnvironmentDefinition<?>> testEnvironmentRegistry) {
         for (MethodGameTestInstance testInstance : generateCommonTests(modId, testClasses, testEnvironmentRegistry)) {
             registrar.accept(testInstance.getId(), testInstance);
         }
     }
 
-    public static Collection<MethodGameTestInstance> generateCommonTests(String modId, Class<?>[] testClasses, Registry<TestEnvironmentDefinition> testEnvironmentRegistry) {
+    public static Collection<MethodGameTestInstance> generateCommonTests(String modId, Class<?>[] testClasses, Registry<TestEnvironmentDefinition<?>> testEnvironmentRegistry) {
         List<MethodGameTestInstance> testsList = Lists.newArrayList();
 
         for(Class<?> clazz : testClasses) {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(GameTest.class)) {
                     GameTest gameTest = method.getAnnotation(GameTest.class);
-                    Holder.Reference<TestEnvironmentDefinition> environment = testEnvironmentRegistry.getOrThrow(ResourceKey.create(
-                            Registries.TEST_ENVIRONMENT,
-                            Identifier.parse(gameTest.environment())
-                    ));
+                    Identifier envId = Identifier.parse(gameTest.environment());
+                    @SuppressWarnings({"unchecked", "rawtypes"})
+                    Holder.Reference<TestEnvironmentDefinition<?>> environment =
+                        (Holder.Reference<TestEnvironmentDefinition<?>>) ((net.minecraft.core.HolderGetter) testEnvironmentRegistry)
+                            .getOrThrow(ResourceKey.create(Registries.TEST_ENVIRONMENT, envId));
                     testsList.add(new MethodGameTestInstance(
                             new TestData<>(
                                     environment,
@@ -55,7 +56,8 @@ public class GameTestLoaderHelpers {
                                     gameTest.manualOnly(),
                                     gameTest.attempts(),
                                     gameTest.requiredSuccesses(),
-                                    gameTest.skyAccess()
+                                    gameTest.skyAccess(),
+                                    gameTest.padding()
                             ),
                             modId,
                             clazz.getName(),

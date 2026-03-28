@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -22,7 +22,7 @@ public interface IGuiHelpersForge extends IGuiHelpers {
      * @param width The tank width.
      * @param height The tank height.
      */
-    public void renderFluidTank(GuiGraphics gui, @Nullable FluidStack fluidStack, int capacity,
+    public void renderFluidTank(GuiGraphicsExtractor gui, @Nullable FluidStack fluidStack, int capacity,
                                 int x, int y, int width, int height);
 
     /**
@@ -32,7 +32,7 @@ public interface IGuiHelpersForge extends IGuiHelpers {
      * @param x The slot X position.
      * @param y The slot Y position.
      */
-    public void renderFluidSlot(GuiGraphics gui, @Nullable FluidStack fluidStack, int x, int y);
+    public void renderFluidSlot(GuiGraphicsExtractor gui, @Nullable FluidStack fluidStack, int x, int y);
 
     /**
      * Render a fluid tank in a gui with a tank overlay.
@@ -49,7 +49,7 @@ public interface IGuiHelpersForge extends IGuiHelpers {
      * @param overlayTextureX The overlay x texture position.
      * @param overlayTextureY The overlay y texture position.
      */
-    public void renderOverlayedFluidTank(GuiGraphics gui, @Nullable FluidStack fluidStack, int capacity,
+    public void renderOverlayedFluidTank(GuiGraphicsExtractor gui, @Nullable FluidStack fluidStack, int capacity,
                                          int x, int y, int width, int height,
                                          Identifier textureOverlay, int overlayTextureX, int overlayTextureY);
 

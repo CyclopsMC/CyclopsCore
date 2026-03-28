@@ -1,6 +1,5 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -39,7 +38,7 @@ public class EntityActionCommon<M extends IModBase, T extends Entity> extends Co
     protected void polish(EntityConfigCommon<M, T> config) {
         if (config.getMod().getModHelpers().getMinecraftHelpers().isClientSide()) {
             EntityRenderers.register(config.getInstance(),
-                    manager -> config.getEntityClientConfig().getRender(manager, Minecraft.getInstance().getItemRenderer()));
+                    manager -> config.getEntityClientConfig().getRender(manager));
         }
     }
 }

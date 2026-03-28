@@ -2,7 +2,8 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -12,9 +13,9 @@ import org.cyclops.cyclopscore.init.IModBase;
  * @param <M> The mod type
  * @see ExtendedConfigCommon
  */
-public abstract class LootFunctionConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<LootFunctionConfigCommon<M>, LootItemFunctionType<?>, M> {
+public abstract class LootFunctionConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<LootFunctionConfigCommon<M>, MapCodec<? extends LootItemFunction>, M> {
 
-    public LootFunctionConfigCommon(M mod, String namedId, LootItemFunctionType<?> lootItemFunctionType) {
+    public LootFunctionConfigCommon(M mod, String namedId, MapCodec<? extends LootItemFunction> lootItemFunctionType) {
         super(mod, namedId, (eConfig) -> lootItemFunctionType);
     }
 
@@ -35,7 +36,7 @@ public abstract class LootFunctionConfigCommon<M extends IModBase> extends Exten
     }
 
     @Override
-    public Registry<LootItemFunctionType<?>> getRegistry() {
+    public Registry<MapCodec<? extends LootItemFunction>> getRegistry() {
         return BuiltInRegistries.LOOT_FUNCTION_TYPE;
     }
 }

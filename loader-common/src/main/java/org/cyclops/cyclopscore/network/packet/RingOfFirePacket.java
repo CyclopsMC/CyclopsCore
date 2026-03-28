@@ -47,15 +47,15 @@ public class RingOfFirePacket extends PlayerPositionPacket<RingOfFirePacket> {
             double y = pos.y;
             double z = pos.z;
 
-            double particleX = x + xOffset + world.random.nextFloat() / 5;
-            double particleY = y + yOffset + world.random.nextFloat() / 5;
-            double particleZ = z + zOffset + world.random.nextFloat() / 5;
+            double particleX = x + xOffset + world.getRandom().nextFloat() / 5;
+            double particleY = y + yOffset + world.getRandom().nextFloat() / 5;
+            double particleZ = z + zOffset + world.getRandom().nextFloat() / 5;
 
             float particleMotionX = (float)xOffset / 50;
             float particleMotionY = 0.01F;
             float particleMotionZ = (float)zOffset / 50;
 
-            if(world.random.nextInt(20) == 0) {
+            if(world.getRandom().nextInt(20) == 0) {
                 world.addParticle(ParticleTypes.LAVA, particleX, particleY, particleZ, 0.0D, 0.0D, 0.0D);
             } else {
                 world.addParticle(ParticleTypes.FLAME, particleX, particleY, particleZ, particleMotionX, particleMotionY, particleMotionZ);

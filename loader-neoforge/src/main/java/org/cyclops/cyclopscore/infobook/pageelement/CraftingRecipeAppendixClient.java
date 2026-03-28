@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook.pageelement;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.NonNullList;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +33,7 @@ public class CraftingRecipeAppendixClient extends RecipeAppendixClient<CraftingR
     }
 
     @Override
-    protected void drawElementInner(ScreenInfoBook gui, GuiGraphics guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
+    protected void drawElementInner(ScreenInfoBook gui, GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int page, int mx, int my) {
         gui.drawArrowRight(guiGraphics, x + (CraftingRecipeAppendix.SLOT_SIZE + CraftingRecipeAppendix.SLOT_OFFSET_X) * 3 - 3, y + CraftingRecipeAppendix.SLOT_OFFSET_Y + CraftingRecipeAppendix.SLOT_SIZE + 2);
 
         // Prepare items

@@ -5,15 +5,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.block.BlockModelShaper;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.BlockStateModelSet;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -43,42 +42,40 @@ public class RenderHelpersCommon implements IRenderHelpers {
     }
 
     @Override
-    public void drawScaledString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, float scale, int color, boolean shadow, Font.DisplayMode displayMode) {
+    public void drawScaledString(GuiGraphicsExtractor guiGraphics, Font fontRenderer, String string, int x, int y, float scale, int color, boolean shadow, Font.DisplayMode displayMode) {
         guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().translate(x, y, guiGraphics.pose());
-        guiGraphics.pose().scale(scale, scale, guiGraphics.pose());
-        guiGraphics.drawString(fontRenderer, string, 0, 0, color, shadow);
+        guiGraphics.pose().translate(x, y);
+        guiGraphics.pose().scale(scale, scale);
+        guiGraphics.text(fontRenderer, string, 0, 0, color, shadow);
         guiGraphics.pose().popMatrix();
     }
 
     @Override
-    public void drawScaledCenteredString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, int maxWidth, int color, boolean shadow, Font.DisplayMode displayMode) {
+    public void drawScaledCenteredString(GuiGraphicsExtractor guiGraphics, Font fontRenderer, String string, int x, int y, int maxWidth, int color, boolean shadow, Font.DisplayMode displayMode) {
         drawScaledCenteredString(guiGraphics, fontRenderer, string, x, y, maxWidth, 1.0F, maxWidth, color, shadow, displayMode);
     }
 
     @Override
-    public void drawScaledCenteredString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow, Font.DisplayMode displayMode) {
+    public void drawScaledCenteredString(GuiGraphicsExtractor guiGraphics, Font fontRenderer, String string, int x, int y, int width, float originalScale, int maxWidth, int color, boolean shadow, Font.DisplayMode displayMode) {
         float originalWidth = fontRenderer.width(string) * originalScale;
         float scale = Math.min(originalScale, maxWidth / originalWidth * originalScale);
         drawScaledCenteredString(guiGraphics, fontRenderer, string, x, y, width, scale, color, shadow, displayMode);
     }
 
     @Override
-    public void drawScaledCenteredString(GuiGraphics guiGraphics, Font fontRenderer, String string, int x, int y, int width, float scale, int color, boolean shadow, Font.DisplayMode displayMode) {
+    public void drawScaledCenteredString(GuiGraphicsExtractor guiGraphics, Font fontRenderer, String string, int x, int y, int width, float scale, int color, boolean shadow, Font.DisplayMode displayMode) {
         guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().scale(scale, scale, guiGraphics.pose());
+        guiGraphics.pose().scale(scale, scale);
         int titleLength = fontRenderer.width(string);
         int titleHeight = fontRenderer.lineHeight;
-        guiGraphics.drawString(fontRenderer, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color, false);
+        guiGraphics.text(fontRenderer, string, Math.round((x + width / 2) / scale - titleLength / 2), Math.round(y / scale - titleHeight / 2), color, false);
         guiGraphics.pose().popMatrix();
     }
 
     @Override
     public BlockStateModel getBakedModel(BlockState blockState) {
-        Minecraft mc = Minecraft.getInstance();
-        BlockRenderDispatcher blockRendererDispatcher = mc.getBlockRenderer();
-        BlockModelShaper blockModelShapes = blockRendererDispatcher.getBlockModelShaper();
-        return blockModelShapes.getBlockModel(blockState);
+        BlockStateModelSet blockModelSet = Minecraft.getInstance().getModelManager().getBlockStateModelSet();
+        return blockModelSet.get(blockState);
     }
 
     @Override
@@ -118,7 +115,7 @@ public class RenderHelpersCommon implements IRenderHelpers {
 
     @Override
     public TextureAtlasSprite getBlockIcon(Block block) {
-        return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getParticleIcon(block.defaultBlockState());
+        return Minecraft.getInstance().getModelManager().getBlockStateModelSet().getParticleMaterial(block.defaultBlockState()).sprite();
     }
 
     @Override
@@ -137,12 +134,12 @@ public class RenderHelpersCommon implements IRenderHelpers {
     }
 
     @Override
-    public void blitColored(GuiGraphics guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a) {
+    public void blitColored(GuiGraphicsExtractor guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, float r, float g, float b, float a) {
         blitColored(guiGraphics, texture, x, y, u, v, width, height, 256, 256, r, g, b, a);
     }
 
     @Override
-    public void blitColored(GuiGraphics guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, float r, float g, float b, float a) {
+    public void blitColored(GuiGraphicsExtractor guiGraphics, Identifier texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight, float r, float g, float b, float a) {
         int color = ARGB.colorFromFloat(a, r, g, b);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, u, v, width, height, textureWidth, textureHeight, color);
     }

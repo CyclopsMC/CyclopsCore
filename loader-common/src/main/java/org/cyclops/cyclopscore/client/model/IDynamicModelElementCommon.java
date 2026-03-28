@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.model;
 
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;

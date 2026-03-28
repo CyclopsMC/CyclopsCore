@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import com.google.common.collect.Lists;
-import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -88,7 +88,7 @@ public class BlockAction<M extends IModBase> extends ConfigurableTypeActionRegis
             BlockClientConfig<M> clientConfig = config.getBlockClientConfig();
             if (clientConfig != null) {
                 // Handle colors
-                BlockColor blockColorHandler = clientConfig.getBlockColorHandler();
+                BlockTintSource blockColorHandler = clientConfig.getBlockColorHandler();
                 if (blockColorHandler != null) {
                     COLOR_ENTRIES.add(config);
                 }

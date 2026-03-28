@@ -55,7 +55,7 @@ public class MinecraftHelpersForge extends MinecraftHelpersCommon {
 
     @Override
     public boolean isModLoaded(String modId) {
-        return Reference.MOD_VANILLA.equals(modId) || ModList.get().isLoaded(modId);
+        return Reference.MOD_VANILLA.equals(modId) || ModList.isLoaded(modId);
     }
 
     @Override

@@ -1,13 +1,13 @@
 package org.cyclops.cyclopscore.helper;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.renderer.block.FluidStateModelSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import org.apache.commons.lang3.tuple.Triple;
 
 /**
@@ -30,15 +30,12 @@ public class RenderHelpersFabric extends RenderHelpersCommon implements IRenderH
     public TextureAtlasSprite getFluidIcon(FluidVariant fluidVariant, Direction side) {
         if (side == null) side = Direction.UP;
 
-        FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluidVariant.getFluid());
-        if (handler == null) {
-            handler = FluidRenderHandlerRegistry.INSTANCE.get(Fluids.WATER);
-        }
-        TextureAtlasSprite[] textures = handler.getFluidSprites(null, null, fluidVariant.getFluid().defaultFluidState());
+        FluidStateModelSet fluidModels = Minecraft.getInstance().getModelManager().getFluidStateModelSet();
+        FluidModel model = fluidModels.get(fluidVariant.getFluid().defaultFluidState());
         if (side == Direction.UP || side == Direction.DOWN) {
-            return textures[0];
+            return model.stillMaterial().sprite();
         }
-        return textures[1];
+        return model.flowingMaterial().sprite();
     }
 
     @Override
@@ -52,8 +49,10 @@ public class RenderHelpersFabric extends RenderHelpersCommon implements IRenderH
 
     @Override
     public Triple<Float, Float, Float> getFluidVertexBufferColor(FluidVariant fluidVariant) {
-        FluidRenderHandler handler = FluidRenderHandlerRegistry.INSTANCE.get(fluidVariant.getFluid());
-        return this.modHelpers.getBaseHelpers().intToRGB(handler != null ? handler.getFluidColor(null, null, fluidVariant.getFluid().defaultFluidState()) : -1);
+        FluidStateModelSet fluidModels = Minecraft.getInstance().getModelManager().getFluidStateModelSet();
+        FluidModel model = fluidModels.get(fluidVariant.getFluid().defaultFluidState());
+        int color = model.tintSource().color(fluidVariant.getFluid().defaultFluidState().createLegacyBlock());
+        return this.modHelpers.getBaseHelpers().intToRGB(color);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class WorldHelpersCommon implements IWorldHelpers {
         if(mod == 0) mod = 1;
         int offset = 0;
         for(int param : params) offset += param;
-        return world.random.nextInt(mod) == Math.abs(offset) % mod;
+        return world.getRandom().nextInt(mod) == Math.abs(offset) % mod;
     }
 
     @Override

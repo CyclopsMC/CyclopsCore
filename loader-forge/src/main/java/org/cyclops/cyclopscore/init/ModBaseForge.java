@@ -18,7 +18,7 @@ import org.cyclops.cyclopscore.config.ConfigHandlerForge;
 import org.cyclops.cyclopscore.helper.IModHelpersForge;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersForge;
-import org.cyclops.cyclopscore.neywork.PacketHandlerForge;
+import org.cyclops.cyclopscore.network.PacketHandlerForge;
 import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 import org.jetbrains.annotations.Nullable;
 

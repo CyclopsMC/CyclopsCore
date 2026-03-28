@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -54,20 +54,22 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
 
     @Override
     public void init() {
-        this.imageWidth = getBaseXSize() + offsetX * 2;
-        this.imageHeight = getBaseYSize() + offsetY * 2;
         super.init();
+        // imageWidth/imageHeight are final since MC 26.1; adjust leftPos/topPos instead
+        // Was:
+        //   this.imageWidth = getBaseXSize() + offsetX * 2;
+        //   this.imageHeight = getBaseYSize() + offsetY * 2;
+        this.leftPos = (this.width - (getBaseXSize() + offsetX * 2)) / 2;
+        this.topPos = (this.height - (getBaseYSize() + offsetY * 2)) / 2;
     }
 
     @Override
-    public final void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         this.drawCurrentScreen(guiGraphics, mouseX, mouseY, partialTicks);
-        this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
-    protected void drawCurrentScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
+    protected void drawCurrentScreen(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     protected int getBaseXSize() {
@@ -79,7 +81,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, float f, int x, int y) {
+    public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float f) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getGuiTexture(), leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY, 256, 256);
     }
 
@@ -98,7 +100,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
         return isHovering(region.x, region.y, region.width, region.height, mouse.x, mouse.y);
     }
 
-    public void drawTooltip(List<Component> lines, GuiGraphics guiGraphics, int x, int y) {
+    public void drawTooltip(List<Component> lines, GuiGraphicsExtractor guiGraphics, int x, int y) {
         IModHelpers.get().getGuiHelpers().drawTooltip(this, guiGraphics, lines, x, y);
     }
 

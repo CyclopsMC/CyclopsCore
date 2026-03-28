@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.component.button;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.input.InputWithModifiers;
@@ -34,7 +34,7 @@ public class ButtonCheckbox extends Button {
     }
 
     @Override
-    public void renderContents(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(visible) {
             // Determine image
             int i = 0;

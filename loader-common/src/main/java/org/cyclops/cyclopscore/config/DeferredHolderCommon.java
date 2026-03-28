@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Either;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderOwner;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
@@ -285,6 +286,18 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R> {
     @Override
     public Optional<ResourceKey<R>> unwrapKey() {
         return Optional.of(this.key);
+    }
+
+    @Override
+    public DataComponentMap components() {
+        bind(true);
+        return this.holder != null ? this.holder.components() : DataComponentMap.EMPTY;
+    }
+
+    @Override
+    public boolean areComponentsBound() {
+        bind(false);
+        return this.holder != null && this.holder.areComponentsBound();
     }
 
     @Override

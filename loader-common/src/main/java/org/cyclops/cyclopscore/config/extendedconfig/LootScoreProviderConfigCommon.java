@@ -2,7 +2,8 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.level.storage.loot.providers.score.LootScoreProviderType;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.world.level.storage.loot.providers.score.ScoreboardNameProvider;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;
 import org.cyclops.cyclopscore.init.IModBase;
 
@@ -12,9 +13,9 @@ import org.cyclops.cyclopscore.init.IModBase;
  * @param <M> The mod type
  * @see ExtendedConfigCommon
  */
-public abstract class LootScoreProviderConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<LootScoreProviderConfigCommon<M>, LootScoreProviderType, M> {
+public abstract class LootScoreProviderConfigCommon<M extends IModBase> extends ExtendedConfigRegistry<LootScoreProviderConfigCommon<M>, MapCodec<? extends ScoreboardNameProvider>, M> {
 
-    public LootScoreProviderConfigCommon(M mod, String namedId, LootScoreProviderType lootItemFunctionType) {
+    public LootScoreProviderConfigCommon(M mod, String namedId, MapCodec<? extends ScoreboardNameProvider> lootItemFunctionType) {
         super(mod, namedId, (eConfig) -> lootItemFunctionType);
     }
 
@@ -35,7 +36,7 @@ public abstract class LootScoreProviderConfigCommon<M extends IModBase> extends 
     }
 
     @Override
-    public Registry<LootScoreProviderType> getRegistry() {
+    public Registry<MapCodec<? extends ScoreboardNameProvider>> getRegistry() {
         return BuiltInRegistries.LOOT_SCORE_PROVIDER_TYPE;
     }
 }

@@ -1,7 +1,9 @@
 package org.cyclops.cyclopscore.inventory;
 
 import com.google.common.collect.Iterators;
+import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +27,13 @@ public class TestIndexedInventory {
     private static final Item ITEM1 = new ItemDummy();
     private static final Item ITEM2 = new ItemDummy();
     private static final Item ITEM3 = new ItemDummy();
+
+    static {
+        // Bind empty components so ItemStack construction works in 26.1 (components are normally bound during resource reload)
+        ((Holder.Reference<Item>) ITEM1.builtInRegistryHolder()).bindComponents(DataComponentMap.EMPTY);
+        ((Holder.Reference<Item>) ITEM2.builtInRegistryHolder()).bindComponents(DataComponentMap.EMPTY);
+        ((Holder.Reference<Item>) ITEM3.builtInRegistryHolder()).bindComponents(DataComponentMap.EMPTY);
+    }
 
     private static final ItemStack STACK1 = new ItemStack(ITEM1);
     private static final ItemStack STACK2 = new ItemStack(ITEM2);

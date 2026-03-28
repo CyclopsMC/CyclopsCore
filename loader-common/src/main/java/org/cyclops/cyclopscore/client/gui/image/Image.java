@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.client.gui.image;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
@@ -48,12 +48,12 @@ public class Image implements IImage {
     }
 
     @Override
-    public void draw(GuiGraphics gui, int x, int y) {
+    public void draw(GuiGraphicsExtractor gui, int x, int y) {
         gui.blit(RenderPipelines.GUI_TEXTURED, resourceLocation, x, y, sheetX, sheetY, sheetWidth, sheetHeight, 256, 256);
     }
 
     @Override
-    public void drawWithColor(GuiGraphics gui, int x, int y, float r, float g, float b, float a) {
+    public void drawWithColor(GuiGraphicsExtractor gui, int x, int y, float r, float g, float b, float a) {
         IModHelpers.get().getRenderHelpers().blitColored(gui, resourceLocation, x, y, sheetX, sheetY, sheetWidth, sheetHeight, r, g, b, a);
     }
 

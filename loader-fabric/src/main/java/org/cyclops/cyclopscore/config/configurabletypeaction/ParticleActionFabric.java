@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.config.configurabletypeaction;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteSet;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleResources;
 import net.minecraft.core.particles.ParticleOptions;
@@ -30,13 +30,13 @@ public class ParticleActionFabric<T extends ParticleOptions, M extends ModBaseFa
         ParticleConfigComponentClient<T, M> clientComponent = eConfig.getClientComponent();
         ParticleProvider<T> factory = clientComponent.getParticleFactory();
         if (factory != null) {
-            ParticleFactoryRegistry.getInstance().register(eConfig.getInstance(), factory);
+            ParticleProviderRegistry.getInstance().register(eConfig.getInstance(), factory);
         }
         ParticleResources.SpriteParticleRegistration<T> metaFactory = clientComponent.getParticleMetaFactory();
         if (metaFactory != null) {
-            ParticleFactoryRegistry.getInstance().register(eConfig.getInstance(), new ParticleFactoryRegistry.PendingParticleFactory<T>() {
+            ParticleProviderRegistry.getInstance().register(eConfig.getInstance(), new ParticleProviderRegistry.PendingParticleProvider<T>() {
                 @Override
-                public ParticleProvider<T> create(FabricSpriteProvider provider) {
+                public ParticleProvider<T> create(FabricSpriteSet provider) {
                     return metaFactory.create(provider);
                 }
             });

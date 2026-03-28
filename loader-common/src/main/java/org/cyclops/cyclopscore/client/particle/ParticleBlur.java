@@ -1,6 +1,7 @@
 package org.cyclops.cyclopscore.client.particle;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DestFactor;
 import com.mojang.blaze3d.platform.SourceFactor;
@@ -33,7 +34,7 @@ public class ParticleBlur extends SingleQuadParticle {
             .buildSnippet();
     public static final RenderPipeline RENDER_PIPELINE = RenderPipeline.builder(PARTICLE_SNIPPET_BLUR) // Modified from RenderPipelines.TRANSLUCENT_PARTICLE
             .withLocation(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "pipeline/translucent_particle_blur"))
-            .withBlend(new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE))
+            .withColorTargetState(new ColorTargetState(new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE)))
             .build();
     public static final SingleQuadParticle.Layer LAYER = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, RENDER_PIPELINE);
 
@@ -107,7 +108,7 @@ public class ParticleBlur extends SingleQuadParticle {
     }
 
     @Override
-    protected int getLightColor(float partialTicks) {
+    protected int getLightCoords(float partialTicks) {
         return 0xF000F0;
     }
 

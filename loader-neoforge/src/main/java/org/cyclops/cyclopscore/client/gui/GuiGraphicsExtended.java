@@ -1,21 +1,20 @@
 package org.cyclops.cyclopscore.client.gui;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.ItemDecoratorHandler;
-import org.cyclops.cyclopscore.helper.IModHelpers;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Additional helper functions related to {@link GuiGraphics}.
+ * Additional helper functions related to {@link GuiGraphicsExtractor}.
  * @author rubensworks
  */
 public class GuiGraphicsExtended {
 
-    private final GuiGraphics guiGraphics;
+    private final GuiGraphicsExtractor guiGraphics;
 
-    public GuiGraphicsExtended(GuiGraphics guiGraphics) {
+    public GuiGraphicsExtended(GuiGraphicsExtractor guiGraphics) {
         this.guiGraphics = guiGraphics;
     }
 
@@ -24,30 +23,35 @@ public class GuiGraphicsExtended {
         guiGraphics.pose().translate(0.0F, 0.0F);
         float scale = 0.5f; // This part was added
         guiGraphics.pose().scale(scale, scale); // This part was added
-        guiGraphics.drawString(font, text, (int) ((x + 19 - 2) / scale - font.width(text)), (int) ((y + 6 + 6) / scale), -1, true); // Scale was added here
+        guiGraphics.text(font, text, (int) ((x + 19 - 2) / scale - font.width(text)), (int) ((y + 6 + 6) / scale), -1, true); // Scale was added here
         guiGraphics.pose().popMatrix();
     }
 
-    private void renderItemCount(Font font, ItemStack stack, int x, int y, @javax.annotation.Nullable String text) {
-        if (stack.getCount() != 1 || text != null) {
-            String s = text == null ? IModHelpers.get().getGuiHelpers().quantityToScaledString(stack.getCount()) : text; // This part was changed
-            drawSlotText(font, s, x, y);
+    private void itemCount(Font font, ItemStack itemStack, int x, int y, @org.jspecify.annotations.Nullable String countText) {
+        if (itemStack.getCount() != 1 || countText != null) {
+            String amount = countText == null ? String.valueOf(itemStack.getCount()) : countText;
+            guiGraphics.pose().pushMatrix(); // This part was added
+            float scale = 0.5f; // This part was added
+            guiGraphics.pose().scale(scale, scale); // This part was added
+            this.guiGraphics.text(font, (String)amount, x + 19 - 2 - font.width(amount), y + 6 + 3, -1, true);
+            guiGraphics.pose().popMatrix(); // This part was added
         }
+
     }
 
-    public void renderItemDecorations(Font font, ItemStack stack, int x, int y) {
-        this.renderItemDecorations(font, stack, x, y, (String)null);
+    public void itemDecorations(Font font, ItemStack stack, int x, int y) {
+        this.itemDecorations(font, stack, x, y, (String)null);
     }
 
-    public void renderItemDecorations(Font font, ItemStack stack, int x, int y, @Nullable String text) {
-        // ----- Copied and adjusted from GuiGraphics#renderItemDecorations -----
-        if (!stack.isEmpty()) {
+    public void itemDecorations(Font font, ItemStack itemStack, int x, int y, @Nullable String text) {
+        // ----- Copied and adjusted from GuiGraphicsExtractor#itemDecorations -----
+        if (!itemStack.isEmpty()) {
             this.guiGraphics.pose().pushMatrix();
-            this.guiGraphics.renderItemBar(stack, x, y);
-            this.guiGraphics.renderItemCooldown(stack, x, y);
-            this.renderItemCount(font, stack, x, y, text); // Changed line
+            this.guiGraphics.itemBar(itemStack, x, y);
+            this.guiGraphics.itemCooldown(itemStack, x, y);
+            this.itemCount(font, itemStack, x, y, text); // Changed line
             this.guiGraphics.pose().popMatrix();
-            ItemDecoratorHandler.of(stack).render(this.guiGraphics, font, stack, x, y);
+            ItemDecoratorHandler.of(itemStack).render(this.guiGraphics, font, itemStack, x, y);
         }
     }
 }
