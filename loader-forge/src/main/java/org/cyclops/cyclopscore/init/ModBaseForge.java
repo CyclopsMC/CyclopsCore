@@ -15,6 +15,8 @@ import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.ConfigHandlerForge;
+import org.cyclops.cyclopscore.event.RegisterGameTestsForgeEvent;
+import org.cyclops.cyclopscore.gametest.GameTestLoaderHelpers;
 import org.cyclops.cyclopscore.helper.IModHelpersForge;
 import org.cyclops.cyclopscore.helper.ModBaseCommon;
 import org.cyclops.cyclopscore.helper.ModHelpersForge;
@@ -57,6 +59,7 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
         }
         RegisterCommandsEvent.BUS.addListener(this::onRegisterCommands);
         ServerStartingEvent.BUS.addListener(this::onServerStarting);
+        RegisterGameTestsForgeEvent.BUS.addListener(this::registerGameTests);
 
         // Initialize config handler
         this.onConfigsRegister(getConfigHandler());
@@ -64,6 +67,13 @@ public abstract class ModBaseForge<T extends ModBaseForge<T>> extends ModBaseCom
         getConfigHandler().loadModInit();
 
         loadModCompats(getModCompatLoader());
+    }
+
+    protected void registerGameTests(RegisterGameTestsForgeEvent event) {
+        if (!GameTestLoaderHelpers.areGameTestsEnabled(getModId())) {
+            return;
+        }
+        GameTestLoaderHelpers.registerCommonTests(getModId(), getGameTestClasses(), event.registerTest(), event.environmentsRegistry());
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {

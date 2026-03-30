@@ -24,6 +24,7 @@ public class GameTestLoaderHelpers {
 
     public static boolean areGameTestsEnabled(String modId) {
         return System.getProperty("neoforge.enabledGameTestNamespaces", "").contains(modId)
+                || System.getProperty("forge.enabledGameTestNamespaces", "").contains(modId)
                 || System.getProperty("cyclopsmc.enabledGameTestNamespaces", "").contains(modId);
     }
 
