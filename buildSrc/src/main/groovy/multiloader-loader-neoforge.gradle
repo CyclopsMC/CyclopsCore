@@ -46,8 +46,7 @@ neoForge {
         accessTransformers = [ at.absolutePath ]
     }
 
-    // TODO: enable this once the Forge ATs change format
-//    validateAccessTransformers = true
+    validateAccessTransformers = true
 
     runs {
         client {
