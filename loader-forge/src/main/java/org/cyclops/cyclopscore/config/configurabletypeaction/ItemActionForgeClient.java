@@ -11,7 +11,7 @@ import org.cyclops.cyclopscore.config.extendedconfig.ItemConfigCommon;
 /**
  * @author rubensworks
  */
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class ItemActionForgeClient {
 
     @SubscribeEvent

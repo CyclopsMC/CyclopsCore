@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.client.particle;
 
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.platform.DestFactor;
 import com.mojang.blaze3d.platform.SourceFactor;
@@ -31,6 +32,7 @@ public class ParticleBlur extends SingleQuadParticle {
             .withSampler("Sampler0")
             .withSampler("Sampler2")
             .withVertexFormat(DefaultVertexFormat.PARTICLE, VertexFormat.Mode.QUADS)
+            .withDepthStencilState(DepthStencilState.DEFAULT)
             .buildSnippet();
     public static final RenderPipeline RENDER_PIPELINE = RenderPipeline.builder(PARTICLE_SNIPPET_BLUR) // Modified from RenderPipelines.TRANSLUCENT_PARTICLE
             .withLocation(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "pipeline/translucent_particle_blur"))
