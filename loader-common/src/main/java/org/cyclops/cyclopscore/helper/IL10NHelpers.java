@@ -23,11 +23,6 @@ public interface IL10NHelpers {
 
     public void addStatusInfo(Consumer<Component> tooltipAdder, boolean isEnabled, String statusPrefixKey);
 
-    @Deprecated // TODO: rm in next major
-    public default void addOptionalInfo(Consumer<Component> tooltipAdder, String prefix) {
-        addOptionalInfo(tooltipAdder, prefix, TooltipFlag.NORMAL);
-    }
-
     public void addOptionalInfo(Consumer<Component> tooltipAdder, String prefix, TooltipFlag tooltipFlag);
 
 }

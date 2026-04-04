@@ -2,7 +2,6 @@ package org.cyclops.cyclopscore.capability.fluid;
 
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
@@ -12,14 +11,6 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 public interface IFluidHandlerCapacity extends ResourceHandler<FluidResource> {
 
     public void setTankCapacity(int tank, int capacity, TransactionContext transaction);
-
-    @Deprecated // TODO: rm in next major
-    public default void setTankCapacity(int tank, int capacity) {
-        try (var tx = Transaction.openRoot()) {
-            setTankCapacity(tank, capacity, tx);
-            tx.commit();
-        }
-    }
 
     public int getTankCapacity(int tank);
 
