@@ -21,6 +21,7 @@ sourceSets {
 
 configurations {
     apiImplementation.extendsFrom(implementation)
+    apiCompileOnly.extendsFrom(compileOnly)
     apiRuntimeOnly.extendsFrom(runtimeOnly)
     javadoc.classpath += sourceSets.api.output
 }
