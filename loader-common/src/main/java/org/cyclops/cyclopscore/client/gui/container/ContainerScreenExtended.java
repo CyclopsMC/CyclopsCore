@@ -82,6 +82,7 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
 
     @Override
     public void extractBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float f) {
+        super.extractBackground(guiGraphics, mouseX, mouseY, f);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getGuiTexture(), leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY, 256, 256);
     }
 
