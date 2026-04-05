@@ -10,6 +10,7 @@ import org.cyclops.cyclopscore.init.IModBase;
 import org.cyclops.cyclopscore.item.ItemInformationProviderCommon;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * The action used for {@link ItemConfigCommon}.
@@ -37,7 +38,7 @@ public class ItemAction<M extends IModBase> extends ConfigurableTypeActionRegist
 
     protected void polish(ItemConfigCommon<M> config) {
         // Register creative tab entry
-        for (ItemStack itemStack : config.getDefaultCreativeTabEntries()) {
+        for (Supplier<ItemStack> itemStack : config.getDefaultCreativeTabEntries()) {
             config.getMod().registerDefaultCreativeTabEntry(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
 

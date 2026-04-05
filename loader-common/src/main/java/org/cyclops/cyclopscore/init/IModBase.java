@@ -13,6 +13,7 @@ import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Base interface for mods which adds a few convenience methods.
@@ -42,9 +43,9 @@ public interface IModBase {
     @Nullable
     public CreativeModeTab getDefaultCreativeTab();
 
-    public void registerDefaultCreativeTabEntry(ItemStack itemStack, CreativeModeTab.TabVisibility visibility);
+    public void registerDefaultCreativeTabEntry(Supplier<ItemStack> itemStack, CreativeModeTab.TabVisibility visibility);
 
-    public List<Pair<ItemStack, CreativeModeTab.TabVisibility>> getDefaultCreativeTabEntries();
+    public List<Pair<Supplier<ItemStack>, CreativeModeTab.TabVisibility>> getDefaultCreativeTabEntries();
 
     /**
      * Log a new info message for this mod.

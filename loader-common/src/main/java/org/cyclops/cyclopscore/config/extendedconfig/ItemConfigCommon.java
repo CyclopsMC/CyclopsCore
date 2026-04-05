@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 /**
  * Config for items.
@@ -53,8 +54,8 @@ public class ItemConfigCommon<M extends IModBase> extends ExtendedConfigRegistry
         return ConfigurableTypeCommon.ITEM;
     }
 
-    public Collection<ItemStack> getDefaultCreativeTabEntries() {
-        return Collections.singleton(new ItemStack(getInstance()));
+    public Collection<Supplier<ItemStack>> getDefaultCreativeTabEntries() {
+        return Collections.singleton(() -> new ItemStack(getInstance()));
     }
 
     @Override

@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * @author rubensworks
@@ -40,7 +41,7 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
 
     @Nullable
     private CreativeModeTab defaultCreativeTab = null;
-    private final List<Pair<ItemStack, CreativeModeTab.TabVisibility>> defaultCreativeTabEntries = Lists.newArrayList();
+    private final List<Pair<Supplier<ItemStack>, CreativeModeTab.TabVisibility>> defaultCreativeTabEntries = Lists.newArrayList();
 
     public ModBaseCommon(String modId, Consumer<T> instanceSetter) {
         instanceSetter.accept((T) this);
@@ -109,17 +110,14 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
     }
 
     @Override
-    public List<Pair<ItemStack, CreativeModeTab.TabVisibility>> getDefaultCreativeTabEntries() {
+    public List<Pair<Supplier<ItemStack>, CreativeModeTab.TabVisibility>> getDefaultCreativeTabEntries() {
         return defaultCreativeTabEntries;
     }
 
     @Override
-    public void registerDefaultCreativeTabEntry(ItemStack itemStack, CreativeModeTab.TabVisibility visibility) {
+    public void registerDefaultCreativeTabEntry(Supplier<ItemStack> itemStack, CreativeModeTab.TabVisibility visibility) {
         if (defaultCreativeTabEntries == null) {
             throw new IllegalStateException("Tried to register default tab entries after the CreativeModeTabEvent.BuildContents event");
-        }
-        if (itemStack.getCount() != 1) {
-            throw new IllegalStateException("Tried to register default tab entries with a non-1-count ItemStack");
         }
         defaultCreativeTabEntries.add(Pair.of(itemStack, visibility));
     }
@@ -133,8 +131,12 @@ public abstract class ModBaseCommon<T extends ModBaseCommon<T>> implements IModB
                 .title(Component.translatable("itemGroup." + getModId()))
                 .icon(() -> new ItemStack(Items.BARRIER))
                 .displayItems((parameters, output) -> {
-                    for (Pair<ItemStack, CreativeModeTab.TabVisibility> entry : defaultCreativeTabEntries) {
-                        output.accept(entry.getLeft(), entry.getRight());
+                    for (Pair<Supplier<ItemStack>, CreativeModeTab.TabVisibility> entry : defaultCreativeTabEntries) {
+                        ItemStack itemStack = entry.getLeft().get();
+                        if (itemStack.getCount() != 1) {
+                            throw new IllegalStateException("Tried to register default tab entries with a non-1-count ItemStack: " + itemStack);
+                        }
+                        output.accept(itemStack, entry.getRight());
                     }
                 });
     }

@@ -3,8 +3,8 @@ package org.cyclops.cyclopscore.config.extendedconfig;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Config for blocks.
@@ -94,8 +95,8 @@ public abstract class BlockConfigCommon<M extends IModBase> extends ExtendedConf
         return ConfigurableTypeCommon.BLOCK;
     }
 
-    public Collection<ItemStack> getDefaultCreativeTabEntries() {
-        return Collections.singleton(new ItemStack(getInstance()));
+    public Collection<Supplier<ItemStack>> getDefaultCreativeTabEntries() {
+        return Collections.singleton(() -> new ItemStack(getInstance()));
     }
 
     @Override

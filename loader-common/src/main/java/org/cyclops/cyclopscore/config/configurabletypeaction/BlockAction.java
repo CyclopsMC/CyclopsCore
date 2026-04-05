@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 /**
  * The action used for {@link BlockConfigCommon}.
@@ -74,7 +75,7 @@ public class BlockAction<M extends IModBase> extends ConfigurableTypeActionRegis
 
     protected void polish(BlockConfigCommon<M> config) {
         // Register creative tab entry
-        for (ItemStack itemStack : config.getDefaultCreativeTabEntries()) {
+        for (Supplier<ItemStack> itemStack : config.getDefaultCreativeTabEntries()) {
             config.getMod().registerDefaultCreativeTabEntry(itemStack, CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
 
