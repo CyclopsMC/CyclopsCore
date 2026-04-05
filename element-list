@@ -49,7 +49,6 @@ org.cyclops.cyclopscore.loot.modifier
 org.cyclops.cyclopscore.metadata
 org.cyclops.cyclopscore.modcompat
 org.cyclops.cyclopscore.modcompat.capabilities
-org.cyclops.cyclopscore.modcompat.jei
 org.cyclops.cyclopscore.nbt.path
 org.cyclops.cyclopscore.nbt.path.navigate
 org.cyclops.cyclopscore.nbt.path.parse
