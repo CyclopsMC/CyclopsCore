@@ -54,13 +54,9 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
 
     @Override
     public void init() {
+        this.imageWidth = getBaseXSize() + offsetX * 2;
+        this.imageHeight = getBaseYSize() + offsetY * 2;
         super.init();
-        // imageWidth/imageHeight are final since MC 26.1; adjust leftPos/topPos instead
-        // Was:
-        //   this.imageWidth = getBaseXSize() + offsetX * 2;
-        //   this.imageHeight = getBaseYSize() + offsetY * 2;
-        this.leftPos = (this.width - (getBaseXSize() + offsetX * 2)) / 2;
-        this.topPos = (this.height - (getBaseYSize() + offsetY * 2)) / 2;
     }
 
     @Override
