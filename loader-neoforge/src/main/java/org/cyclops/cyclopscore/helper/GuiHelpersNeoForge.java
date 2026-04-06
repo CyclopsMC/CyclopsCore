@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -48,10 +47,6 @@ public class GuiHelpersNeoForge extends GuiHelpersCommon implements IGuiHelpersN
                     color = tintSource.colorAsStack(fluidStack);
                 } else {
                     color = ARGB.colorFromFloat(1, 1F, 1F, 1F);
-                }
-                // Override water color, otherwise it's gray, since it depends on world biome.
-                if (fluidStack.getFluid() == Fluids.WATER || fluidStack.getFluid() == Fluids.FLOWING_WATER) {
-                    color = ARGB.colorFromFloat(1, 0F, 0.335F, 1F);
                 }
 
                 gui.blitSprite(RenderPipelines.GUI_TEXTURED, icon, x, y - textureHeight - verticalOffset + height, width, textureHeight, color);

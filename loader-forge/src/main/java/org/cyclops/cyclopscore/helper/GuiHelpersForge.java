@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Triple;
@@ -44,10 +43,6 @@ public class GuiHelpersForge extends GuiHelpersCommon implements IGuiHelpersForg
                 // Fluids can have a custom overlay color, use this to render.
                 IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid().getFluidType());
                 Triple<Float, Float, Float> colorParts = modHelpers.getBaseHelpers().intToRGB(renderProperties.getTintColor(fluidStack));
-                // Override water color, otherwise it's gray, since it depends on world biome.
-                if (fluidStack.getFluid() == Fluids.WATER || fluidStack.getFluid() == Fluids.FLOWING_WATER) {
-                    colorParts = Triple.of(0F, 0.335F, 1F);
-                }
 
                 gui.blitSprite(RenderPipelines.GUI_OPAQUE_TEXTURED_BACKGROUND, icon, x, y - textureHeight - verticalOffset + height, width, textureHeight, ARGB.colorFromFloat(1, colorParts.getLeft(), colorParts.getMiddle(), colorParts.getRight()));
 
