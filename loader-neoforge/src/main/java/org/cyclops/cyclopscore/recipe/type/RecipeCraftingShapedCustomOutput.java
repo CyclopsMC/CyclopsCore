@@ -7,13 +7,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapedRecipePattern;
+import net.minecraft.world.item.crafting.*;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -24,12 +18,12 @@ import java.util.function.Supplier;
 public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
 
     private final RecipeCraftingShapedCustomOutput.Serializer serializer;
-    private final ItemStack recipeOutput;
+    private final ItemStackTemplate recipeOutput;
     public final ShapedRecipePattern shapedRecipePattern;
 
-    public RecipeCraftingShapedCustomOutput(RecipeCraftingShapedCustomOutput.Serializer serializer, String groupIn, CraftingBookCategory category, ShapedRecipePattern shapedRecipePattern, ItemStack recipeOutputIn, boolean showNotification) {
+    public RecipeCraftingShapedCustomOutput(RecipeCraftingShapedCustomOutput.Serializer serializer, String groupIn, CraftingBookCategory category, ShapedRecipePattern shapedRecipePattern, ItemStackTemplate recipeOutputIn, boolean showNotification) {
         super(new Recipe.CommonInfo(showNotification), new CraftingRecipe.CraftingBookInfo(category, groupIn),
-                shapedRecipePattern, new ItemStackTemplate(recipeOutputIn.typeHolder(), recipeOutputIn.getCount(), recipeOutputIn.getComponentsPatch()));
+                shapedRecipePattern, recipeOutputIn);
         this.serializer = serializer;
         this.recipeOutput = recipeOutputIn;
         this.shapedRecipePattern = shapedRecipePattern;
@@ -51,17 +45,17 @@ public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
     }
 
     public ItemStack getResultItem() {
-        return this.recipeOutput;
+        return this.recipeOutput.create();
     }
 
     // Partially copied from ShapedRecipe.Serializer
     public static class Serializer {
-        private final Supplier<ItemStack> outputProvider;
+        private final Supplier<ItemStackTemplate> outputProvider;
         @Nullable
         private final RecipeCraftingShapelessCustomOutput.Serializer.IOutputTransformer outputTransformer;
         private final RecipeSerializer<RecipeCraftingShapedCustomOutput> recipeSerializer;
 
-        public Serializer(Supplier<ItemStack> outputProvider, @Nullable RecipeCraftingShapelessCustomOutput.Serializer.IOutputTransformer outputTransformer) {
+        public Serializer(Supplier<ItemStackTemplate> outputProvider, @Nullable RecipeCraftingShapelessCustomOutput.Serializer.IOutputTransformer outputTransformer) {
             this.outputProvider = outputProvider;
             this.outputTransformer = outputTransformer;
             MapCodec<RecipeCraftingShapedCustomOutput> codec = RecordCodecBuilder.mapCodec(
@@ -77,7 +71,7 @@ public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
             this.recipeSerializer = new RecipeSerializer<>(codec, streamCodec);
         }
 
-        public Serializer(Supplier<ItemStack> outputProvider) {
+        public Serializer(Supplier<ItemStackTemplate> outputProvider) {
             this(outputProvider, null);
         }
 
@@ -94,7 +88,7 @@ public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
             String s = p_319998_.readUtf();
             CraftingBookCategory craftingbookcategory = p_319998_.readEnum(CraftingBookCategory.class);
             ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.STREAM_CODEC.decode(p_319998_);
-            ItemStack itemstack = ItemStack.STREAM_CODEC.decode(p_319998_);
+            ItemStackTemplate itemstack = ItemStackTemplate.STREAM_CODEC.decode(p_319998_);
             boolean flag = p_319998_.readBoolean();
             return new RecipeCraftingShapedCustomOutput(this, s, craftingbookcategory, shapedrecipepattern, itemstack, flag);
         }
@@ -103,7 +97,7 @@ public class RecipeCraftingShapedCustomOutput extends ShapedRecipe {
             p_320738_.writeUtf(p_320586_.group());
             p_320738_.writeEnum(p_320586_.category());
             ShapedRecipePattern.STREAM_CODEC.encode(p_320738_, p_320586_.shapedRecipePattern);
-            ItemStack.STREAM_CODEC.encode(p_320738_, p_320586_.getResultItem());
+            ItemStackTemplate.STREAM_CODEC.encode(p_320738_, p_320586_.recipeOutput);
             p_320738_.writeBoolean(p_320586_.showNotification());
         }
     }
