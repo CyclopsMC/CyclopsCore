@@ -9,6 +9,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import org.apache.commons.lang3.tuple.Pair;
 import org.cyclops.cyclopscore.recipe.ItemStackFromIngredient;
 
@@ -38,11 +39,32 @@ public class RecipeSerializerHelpers {
         return Codec.either(ItemStack.CODEC, getCodecItemStackFromIngredient(modPriorities));
     }
 
+    public static Codec<Either<ItemStackTemplate, ItemStackFromIngredient>> getCodecItemStackTemplateOrTag(Supplier<List<String>> modPriorities) {
+        return Codec.either(ItemStackTemplate.CODEC, getCodecItemStackFromIngredient(modPriorities));
+    }
+
     public static Codec<Either<Pair<ItemStack, Float>, Pair<ItemStackFromIngredient, Float>>> getCodecItemStackOrTagChance(Supplier<List<String>> modPriorities) {
         return Codec.either(
                 RecordCodecBuilder.create(
                         builder -> builder.group(
                                 ItemStack.CODEC.fieldOf("item").forGetter(Pair::getLeft),
+                                Codec.FLOAT.optionalFieldOf("chance", 1.0F).forGetter(Pair::getRight)
+                        ).apply(builder, Pair::of)
+                ),
+                RecordCodecBuilder.create(
+                        builder -> builder.group(
+                                RecipeSerializerHelpers.getCodecItemStackFromIngredient(modPriorities).fieldOf("tag").forGetter(Pair::getLeft),
+                                Codec.FLOAT.optionalFieldOf("chance", 1.0F).forGetter(Pair::getRight)
+                        ).apply(builder, Pair::of)
+                )
+        );
+    }
+
+    public static Codec<Either<Pair<ItemStackTemplate, Float>, Pair<ItemStackFromIngredient, Float>>> getCodecItemStackTemplateOrTagChance(Supplier<List<String>> modPriorities) {
+        return Codec.either(
+                RecordCodecBuilder.create(
+                        builder -> builder.group(
+                                ItemStackTemplate.CODEC.fieldOf("item").forGetter(Pair::getLeft),
                                 Codec.FLOAT.optionalFieldOf("chance", 1.0F).forGetter(Pair::getRight)
                         ).apply(builder, Pair::of)
                 ),
@@ -85,6 +107,36 @@ public class RecipeSerializerHelpers {
         return outputItem;
     }
 
+    public static final StreamCodec<RegistryFriendlyByteBuf, Either<ItemStackTemplate, ItemStackFromIngredient>> STREAM_CODEC_ITEMSTACKTEMPLATE_OR_TAG = StreamCodec.of(
+            RecipeSerializerHelpers::writeItemStackTemplateOrItemStackIngredient,
+            RecipeSerializerHelpers::readItemStackTemplateOrItemStackIngredient
+    );
+
+    public static void writeItemStackTemplateOrItemStackIngredient(RegistryFriendlyByteBuf buffer, Either<ItemStackTemplate, ItemStackFromIngredient> itemStackOrItemStackIngredient) {
+        itemStackOrItemStackIngredient.mapBoth(
+                itemStack -> {
+                    buffer.writeBoolean(true);
+                    ItemStackTemplate.STREAM_CODEC.encode(buffer, itemStack);
+                    return null;
+                },
+                ingredient -> {
+                    buffer.writeBoolean(false);
+                    ingredient.writeToPacket(buffer);
+                    return null;
+                }
+        );
+    }
+
+    public static Either<ItemStackTemplate, ItemStackFromIngredient> readItemStackTemplateOrItemStackIngredient(RegistryFriendlyByteBuf buffer) {
+        Either<ItemStackTemplate, ItemStackFromIngredient> outputItem;
+        if (buffer.readBoolean()) {
+            outputItem = Either.left(ItemStackTemplate.STREAM_CODEC.decode(buffer));
+        } else {
+            outputItem = Either.right(ItemStackFromIngredient.readFromPacket(buffer));
+        }
+        return outputItem;
+    }
+
     public static final StreamCodec<RegistryFriendlyByteBuf, Either<Pair<ItemStack, Float>, Pair<ItemStackFromIngredient, Float>>> STREAM_CODEC_ITEMSTACK_OR_ITEMSTACKINGREDIENT_CHANCE = StreamCodec.of(
             RecipeSerializerHelpers::writeItemStackOrItemStackIngredientChance,
             RecipeSerializerHelpers::readItemStackOrItemStackIngredientChance
@@ -111,6 +163,38 @@ public class RecipeSerializerHelpers {
         Either<Pair<ItemStack, Float>, Pair<ItemStackFromIngredient, Float>> outputItem;
         if (buffer.readBoolean()) {
             outputItem = Either.left(Pair.of(ItemStack.STREAM_CODEC.decode(buffer), buffer.readFloat()));
+        } else {
+            outputItem = Either.right(Pair.of(ItemStackFromIngredient.readFromPacket(buffer), buffer.readFloat()));
+        }
+        return outputItem;
+    }
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, Either<Pair<ItemStackTemplate, Float>, Pair<ItemStackFromIngredient, Float>>> STREAM_CODEC_ITEMSTACKTEMPLATE_OR_ITEMSTACKINGREDIENT_CHANCE = StreamCodec.of(
+            RecipeSerializerHelpers::writeItemStackTemplateOrItemStackIngredientChance,
+            RecipeSerializerHelpers::readItemStackTemplateOrItemStackIngredientChance
+    );
+
+    public static void writeItemStackTemplateOrItemStackIngredientChance(RegistryFriendlyByteBuf buffer, Either<Pair<ItemStackTemplate, Float>, Pair<ItemStackFromIngredient, Float>> itemStackOrItemStackIngredient) {
+        itemStackOrItemStackIngredient.mapBoth(
+                itemStack -> {
+                    buffer.writeBoolean(true);
+                    ItemStackTemplate.STREAM_CODEC.encode(buffer, itemStack.getLeft());
+                    buffer.writeFloat(itemStack.getRight());
+                    return null;
+                },
+                ingredient -> {
+                    buffer.writeBoolean(false);
+                    ingredient.getLeft().writeToPacket(buffer);
+                    buffer.writeFloat(ingredient.getRight());
+                    return null;
+                }
+        );
+    }
+
+    public static Either<Pair<ItemStackTemplate, Float>, Pair<ItemStackFromIngredient, Float>> readItemStackTemplateOrItemStackIngredientChance(RegistryFriendlyByteBuf buffer) {
+        Either<Pair<ItemStackTemplate, Float>, Pair<ItemStackFromIngredient, Float>> outputItem;
+        if (buffer.readBoolean()) {
+            outputItem = Either.left(Pair.of(ItemStackTemplate.STREAM_CODEC.decode(buffer), buffer.readFloat()));
         } else {
             outputItem = Either.right(Pair.of(ItemStackFromIngredient.readFromPacket(buffer), buffer.readFloat()));
         }
