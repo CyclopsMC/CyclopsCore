@@ -18,22 +18,13 @@ public class GuiGraphicsExtended {
         this.guiGraphics = guiGraphics;
     }
 
-    public void drawSlotText(Font font, @javax.annotation.Nullable String text, int x, int y) { // Abstracted for reuse
-        guiGraphics.pose().pushMatrix();
-        guiGraphics.pose().translate(0.0F, 0.0F);
-        float scale = 0.5f; // This part was added
-        guiGraphics.pose().scale(scale, scale); // This part was added
-        guiGraphics.text(font, text, (int) ((x + 19 - 2) / scale - font.width(text)), (int) ((y + 6 + 6) / scale), -1, true); // Scale was added here
-        guiGraphics.pose().popMatrix();
-    }
-
     private void itemCount(Font font, ItemStack itemStack, int x, int y, @org.jspecify.annotations.Nullable String countText) {
         if (itemStack.getCount() != 1 || countText != null) {
             String amount = countText == null ? String.valueOf(itemStack.getCount()) : countText;
             guiGraphics.pose().pushMatrix(); // This part was added
             float scale = 0.5f; // This part was added
             guiGraphics.pose().scale(scale, scale); // This part was added
-            this.guiGraphics.text(font, (String)amount, x + 19 - 2 - font.width(amount), y + 6 + 3, -1, true);
+            guiGraphics.text(font, amount, (int) ((x + 19 - 2) / scale - font.width(amount)), (int) ((y + 6 + 6) / scale), -1, true); // Scale was added here
             guiGraphics.pose().popMatrix(); // This part was added
         }
 
