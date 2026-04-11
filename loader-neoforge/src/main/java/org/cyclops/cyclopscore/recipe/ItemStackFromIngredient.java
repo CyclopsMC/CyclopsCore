@@ -10,6 +10,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
@@ -48,6 +49,10 @@ public class ItemStackFromIngredient {
             ingredient = Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(tag));
         }
         return ingredient;
+    }
+
+    public SlotDisplay display() {
+        return new SlotDisplay.TagSlotDisplay(tag);
     }
 
     public int getCount() {
