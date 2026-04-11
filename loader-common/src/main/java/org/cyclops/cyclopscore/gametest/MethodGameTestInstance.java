@@ -58,7 +58,11 @@ public class MethodGameTestInstance extends GameTestInstance {
         } catch (InvocationTargetException | IllegalAccessException | ClassNotFoundException | InstantiationException |
                  NoSuchMethodException e) {
             e.printStackTrace();
-            throw new GameTestAssertException(Component.literal(e.getMessage()), (int) gameTestHelper.getTick());
+            String message = e.getMessage();
+            if (message == null) {
+                message = e.toString();
+            }
+            throw new GameTestAssertException(Component.literal(message), (int) gameTestHelper.getTick());
         }
     }
 
