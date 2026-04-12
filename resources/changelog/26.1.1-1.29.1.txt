@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Restore removed drawSlotText method, Closes CyclopsMC/IntegratedTerminals#197
+* Make MethodGameTestInstance safe to null error messages
