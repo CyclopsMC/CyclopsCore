@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix exception when ItemStackFromIngredient has empty tag
+  Closes CyclopsMC/IntegratedDynamics#1650
