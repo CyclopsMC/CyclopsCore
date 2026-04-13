@@ -75,7 +75,7 @@ public class ItemStackFromIngredient {
                         BuiltInRegistries.ITEM.getKey(e.getItem()).getNamespace(),
                         Integer.MAX_VALUE
                 )))
-                .orElseThrow(() -> new IllegalStateException("No tag value found for " + tag))
+                .orElse(ItemStack.EMPTY)
                 .copy();
 
         firstItemStack = outputStack.copy();
