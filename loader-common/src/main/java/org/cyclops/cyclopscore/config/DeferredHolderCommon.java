@@ -9,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
+import org.cyclops.cyclopscore.holder.IHolderCommon;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -27,7 +28,7 @@ import java.util.stream.Stream;
  *
  * @param <T> The type of object being held by this DeferredHolder.
  */
-public class DeferredHolderCommon<R, T extends R> implements Holder<R> {
+public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderCommon<R> {
 
     // Modloaders such as Forge override this, to also gain access to IForgeRegistry's.
     public static Function<ResourceKey<?>, Holder<?>> BIND_OVERRIDE = null;
@@ -186,7 +187,7 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R> {
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH, "DeferredHolder{%s}", this.key);
+        return String.format(Locale.ENGLISH, "DeferredHolderCommon{%s}", this.key);
     }
 
     /**
@@ -311,9 +312,9 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R> {
         return this.holder != null && this.holder.canSerializeIn(owner);
     }
 
-//    @Override
-//    public Holder<R> getDelegate() {
-//        bind(false);
-//        return this.holder != null ? this.holder.getDelegate() : this;
-//    }
+    @Override
+    public Holder<R> getDelegate() {
+        bind(false);
+        return this.holder != null ? IHolderCommon.getDelegate(this.holder) : this;
+    }
 }

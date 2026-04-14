@@ -3,7 +3,7 @@
   "required": true,
   "compatibilityLevel": "JAVA_17",
   "package": "org.cyclops.cyclopscore.mixin",
-  "mixins": ["MixinRegistryDataLoader"],
+  "mixins": ["MixinHolder", "MixinRegistry", "MixinRegistryDataLoader"],
   "client": [],
   "setSourceFile": true
 }
