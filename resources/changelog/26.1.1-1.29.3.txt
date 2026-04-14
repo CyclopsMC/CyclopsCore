@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix DeferredHolderCommon not handling delegates correctly
+  This could sometimes lead to crashes in rare conditions during itemstack serialization.
