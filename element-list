@@ -47,6 +47,7 @@ org.cyclops.cyclopscore.inventory.slot
 org.cyclops.cyclopscore.item
 org.cyclops.cyclopscore.loot.modifier
 org.cyclops.cyclopscore.metadata
+org.cyclops.cyclopscore.mixin
 org.cyclops.cyclopscore.modcompat
 org.cyclops.cyclopscore.modcompat.capabilities
 org.cyclops.cyclopscore.nbt.path
