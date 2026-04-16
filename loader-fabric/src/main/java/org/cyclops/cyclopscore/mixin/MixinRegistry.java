@@ -36,8 +36,6 @@ public interface MixinRegistry<T> {
         Holder<T> delegate = IHolderCommon.getDelegate(holder);
         if (delegate instanceof Holder.Reference) {
             cir.setReturnValue(DataResult.success((Holder.Reference<T>) delegate));
-        } else {
-            cir.setReturnValue(DataResult.error(() -> "Unregistered holder in " + this.key() + ": " + holder));
         }
     }
 }
