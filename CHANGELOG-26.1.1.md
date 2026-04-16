@@ -1,8 +1,14 @@
 # Changelog for Minecraft 26.1.1
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.1-1.29.4"></a>
+## [26.1.1-1.29.4](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.1-1.29.3...26.1.1-1.29.4) - 2026-04-16 07:29:39
+
+### Fixed
+* Fix Mixin breaking other DeferredHolders
+
 <a name="26.1.1-1.29.3"></a>
-## [26.1.1-1.29.3](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.1-1.29.2...26.1.1-1.29.3) - 2026-04-14 20:08:17
+## [26.1.1-1.29.3](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.1-1.29.2...26.1.1-1.29.3) - 2026-04-14 20:08:17 +0200
 
 ### Fixed
 * Fix DeferredHolderCommon not handling delegates correctly
