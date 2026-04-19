@@ -69,7 +69,6 @@ minecraft {
 
         register('server') {
             systemProperty 'forge.enabledGameTestNamespaces', "cyclopscore,${mod_id}"
-            args '--nogui'
         }
 
         register('gameTestServer') {
