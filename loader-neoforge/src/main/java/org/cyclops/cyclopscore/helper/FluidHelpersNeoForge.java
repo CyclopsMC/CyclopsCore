@@ -51,7 +51,7 @@ public class FluidHelpersNeoForge implements IFluidHelpersNeoForge {
 
     @Override
     public FluidStack getFluid(@Nullable ResourceHandler<FluidResource> fluidHandler) {
-        return fluidHandler != null ? FluidUtil.getStack(fluidHandler, 0) : FluidStack.EMPTY;
+        return fluidHandler != null && fluidHandler.size() > 0 ? FluidUtil.getStack(fluidHandler, 0) : FluidStack.EMPTY;
     }
 
     @Override
