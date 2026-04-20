@@ -1,8 +1,14 @@
 # Changelog for Minecraft 26.1.1
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.1-1.29.5"></a>
+## [26.1.1-1.29.5](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.1-1.29.4...26.1.1-1.29.5) - 2026-04-20 18:50:42
+
+### Fixed
+* Add size check to FluidHelpersNeoForge.getFluid to avoid crash when fluidHandler is empty (#229), Closes CyclopsMC/EvilCraft#1197
+
 <a name="26.1.1-1.29.4"></a>
-## [26.1.1-1.29.4](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.1-1.29.3...26.1.1-1.29.4) - 2026-04-16 07:29:39
+## [26.1.1-1.29.4](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.1-1.29.3...26.1.1-1.29.4) - 2026-04-16 07:29:39 +0200
 
 ### Fixed
 * Fix Mixin breaking other DeferredHolders

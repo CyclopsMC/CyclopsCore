@@ -1,0 +1,4 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Add size check to FluidHelpersNeoForge.getFluid to avoid crash when fluidHandler is empty (#229), Closes CyclopsMC/EvilCraft#1197
