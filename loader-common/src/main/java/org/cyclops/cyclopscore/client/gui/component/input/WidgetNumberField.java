@@ -176,7 +176,7 @@ public class WidgetNumberField extends WidgetTextFieldExtended {
     }
 
     protected void updateArrowsState() {
-        if (this.arrows) {
+        if (this.arrows && this.isEnabled) {
             arrowDown.active = true;
             arrowUp.active = true;
             try {

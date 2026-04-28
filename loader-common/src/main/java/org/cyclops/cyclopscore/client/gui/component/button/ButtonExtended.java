@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.client.gui.component.button;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -24,6 +25,13 @@ public abstract class ButtonExtended extends Button {
                           Button.OnPress pressCallback, boolean background, Button.CreateNarration createNarration) {
         super(x, y, width, height, narrationMessage, pressCallback, createNarration);
         this.background = background;
+    }
+
+    @Override
+    public void onPress(InputWithModifiers input) {
+        if (this.isActive()) {
+            super.onPress(input);
+        }
     }
 
     protected int getYImage() {
