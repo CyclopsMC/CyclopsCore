@@ -1,8 +1,14 @@
 # Changelog for Minecraft 1.21.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.21.1-1.29.1"></a>
+## [1.21.1-1.29.1](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.0...1.21.1-1.29.1) - 2026-04-28 19:39:06
+
+### Fixed
+* Fix active arrows on disabled WidgetNumberFields
+
 <a name="1.21.1-1.29.0"></a>
-## [1.21.1-1.29.0](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.28.0...1.21.1-1.29.0) - 2026-02-17 10:55:45
+## [1.21.1-1.29.0](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.28.0...1.21.1-1.29.0) - 2026-02-17 10:55:45 +0100
 
 ### Added
 * Add AND, OR, and NOT logical expression support to NBT path
