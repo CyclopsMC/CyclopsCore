@@ -1,8 +1,14 @@
 # Changelog for Minecraft 1.20.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.20.1-1.22.1"></a>
+## [1.20.1-1.22.1](/compare/1.20.1-1.22.0...1.20.1-1.22.1) - 2026-04-28 19:36:58
+
+### Fixed
+* Fix active arrows on disabled WidgetNumberFields
+
 <a name="1.20.1-1.22.0"></a>
-## [1.20.1-1.22.0](/compare/1.20.1-1.21.3...1.20.1-1.22.0) - 2026-02-17 10:55:10
+## [1.20.1-1.22.0](/compare/1.20.1-1.21.3...1.20.1-1.22.0) - 2026-02-17 10:55:10 +0100
 
 ### Added
 * Add AND, OR, and NOT logical expression support to NBT path

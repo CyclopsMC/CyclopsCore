@@ -25,6 +25,13 @@ public abstract class ButtonExtended extends Button {
         this.background = background;
     }
 
+    @Override
+    public void onPress() {
+        if (this.isActive()) {
+            super.onPress();
+        }
+    }
+
     protected int getYImage() {
         int i = 1;
         if (!this.active) {
