@@ -82,7 +82,8 @@ public abstract class ContainerScreenExtended<T extends ContainerExtended> exten
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getGuiTexture(), leftPos + offsetX, topPos + offsetY, 0, 0, imageWidth - 2 * offsetX, imageHeight - 2 * offsetY, 256, 256);
     }
 
-    // @Override // This is an override in Forge and NeoForge, but not in Fabric
+
+    @Override
     public boolean isHovering(Slot slotIn, double mouseX, double mouseY) {
         return this.isHovering(slotIn.x - 1, slotIn.y - 1,
                 18, 18, mouseX, mouseY);
