@@ -64,7 +64,10 @@ public class FluidHelpersNeoForge implements IFluidHelpersNeoForge {
         long capacity = 0;
         if (fluidHandler != null) {
             for (int i = 0; i < fluidHandler.size(); i++) {
-                capacity += fluidHandler.getCapacityAsLong(i, fluidHandler.getResource(i));
+                FluidResource resource = fluidHandler.getResource(i);
+                if (!resource.isEmpty()) {
+                    capacity += fluidHandler.getCapacityAsLong(i, resource);
+                }
             }
         }
         return capacity;
@@ -156,8 +159,11 @@ public class FluidHelpersNeoForge implements IFluidHelpersNeoForge {
     public boolean canExtract(ResourceHandler<FluidResource> fluidHandler) {
         for(int index = 0; index < fluidHandler.size(); ++index) {
             try (var tx = Transaction.openRoot()) {
-                if (fluidHandler.extract(index, fluidHandler.getResource(index), Integer.MAX_VALUE, tx) > 0) {
-                    return true;
+                FluidResource resource = fluidHandler.getResource(index);
+                if (!resource.isEmpty()) {
+                    if (fluidHandler.extract(index, resource, Integer.MAX_VALUE, tx) > 0) {
+                        return true;
+                    }
                 }
             }
         }
