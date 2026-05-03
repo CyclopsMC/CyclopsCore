@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix fluid helper crashes on empty fluid handler resources
+

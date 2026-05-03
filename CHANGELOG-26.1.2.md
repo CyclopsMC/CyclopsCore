@@ -1,8 +1,14 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.29.8"></a>
+## [26.1.2-1.29.8](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.29.7...26.1.2-1.29.8) - 2026-05-03 06:50:28
+
+### Fixed
+* Fix fluid helper crashes on empty fluid handler resources
+
 <a name="26.1.2-1.29.7"></a>
-## [26.1.2-1.29.7](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.29.6...26.1.2-1.29.7) - 2026-04-29 19:45:35
+## [26.1.2-1.29.7](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.29.6...26.1.2-1.29.7) - 2026-04-29 19:45:35 +0200
 
 ### Fixed
 * Fix crash when registering GUIs on Fabric, Closes CyclopsMC/ColossalChests#200
