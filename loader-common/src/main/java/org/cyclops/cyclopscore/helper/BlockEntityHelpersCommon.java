@@ -32,9 +32,9 @@ public class BlockEntityHelpersCommon implements IBlockEntityHelpers {
         if (blockEntity == null) {
             return Optional.empty();
         }
-        try {
+        if (targetClazz.isInstance(blockEntity)) {
             return Optional.of(targetClazz.cast(blockEntity));
-        } catch (ClassCastException e) {
+        } else {
             return Optional.empty();
         }
     }
