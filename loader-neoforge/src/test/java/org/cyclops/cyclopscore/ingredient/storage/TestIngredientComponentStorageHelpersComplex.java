@@ -12,6 +12,9 @@ import org.cyclops.cyclopscore.ingredient.collection.IngredientList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -38,173 +41,188 @@ public class TestIngredientComponentStorageHelpersComplex {
     // The iterator will first return A, and then B
 
     @Test
-    public void testMoveIngredientsMatchDestinationFilterATag() throws InconsistentIngredientInsertionException {
+    public void testMoveIngredientsMatchDestinationFilterATag() {
         destinationSlottedInnerStorage.add(CA01_);
 
         sourceInnerStorage.add(CA01_);
         sourceInnerStorage.add(CB01_);
 
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.TAG, true), is(CA01_));
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.TAG, false), is(CA01_));
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.TAG, tx)), is(CA01_));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.TAG, tx)), is(CA01_));
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(CB01_)));
         assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_)));
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationFilterATagGroup() throws InconsistentIngredientInsertionException {
+    public void testMoveIngredientsMatchDestinationFilterATagGroup() {
         destinationSlottedInnerStorage.add(CA01_);
 
         sourceInnerStorage.add(CA01_);
         sourceInnerStorage.add(CB01_);
 
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(CB01_)));
         assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_)));
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationFilterATagGroupAmount() throws InconsistentIngredientInsertionException {
+    public void testMoveIngredientsMatchDestinationFilterATagGroupAmount() {
         destinationSlottedInnerStorage.add(CA01_);
 
         sourceInnerStorage.add(CA01_);
         sourceInnerStorage.add(CB01_);
 
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(CB01_)));
         assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_)));
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationFilterBTag() throws InconsistentIngredientInsertionException {
+    public void testMoveIngredientsMatchDestinationFilterBTag() {
         destinationSlottedInnerStorage.add(CB01_);
 
         sourceInnerStorage.add(CA01_);
         sourceInnerStorage.add(CB01_);
 
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.TAG, true), is(CB01_));
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.TAG, false), is(CB01_));
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.TAG, tx)), is(CB01_));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.TAG, tx)), is(CB01_));
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(CA01_)));
         assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CB02_)));
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationFilterBTagGroup() throws InconsistentIngredientInsertionException {
+    public void testMoveIngredientsMatchDestinationFilterBTagGroup() {
         destinationSlottedInnerStorage.add(CB01_);
 
         sourceInnerStorage.add(CA01_);
         sourceInnerStorage.add(CB01_);
 
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CB01_));
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CB01_));
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CB01_));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CB01_));
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(CA01_)));
         assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CB02_)));
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationFilterBTagGroupAmount() throws InconsistentIngredientInsertionException {
+    public void testMoveIngredientsMatchDestinationFilterBTagGroupAmount() {
         destinationSlottedInnerStorage.add(CB01_);
 
         sourceInnerStorage.add(CA01_);
         sourceInnerStorage.add(CB01_);
 
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CB01_));
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CB01_));
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CB01_));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CB01_));
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(CA01_)));
         assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CB02_)));
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationNoFilterATag() throws InconsistentIngredientInsertionException {
+    public void testMoveIngredientsMatchDestinationNoFilterATag() {
         destinationSlottedInnerStorage.add(null);
 
         sourceInnerStorage.add(CA01_);
         sourceInnerStorage.add(CB01_);
 
         // Simulate and non-simulate produce different results, as IngredientComponentStorageCollectionWrapper is unsafe!
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.TAG, true), is(CA01_));
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.TAG, false), is(CB01_));
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.TAG, tx)), is(CA01_));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.TAG, tx)), is(CB01_));
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(CA01_)));
         assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CB01_)));
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationNoFilterATagGroup() throws InconsistentIngredientInsertionException {
+    public void testMoveIngredientsMatchDestinationNoFilterATagGroup() {
         destinationSlottedInnerStorage.add(null);
 
         sourceInnerStorage.add(CA01_);
         sourceInnerStorage.add(CB01_);
 
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(CB01_)));
         assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_)));
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationNoFilterATagGroupAmount() throws InconsistentIngredientInsertionException {
+    public void testMoveIngredientsMatchDestinationNoFilterATagGroupAmount() {
         destinationSlottedInnerStorage.add(null);
 
         sourceInnerStorage.add(CA01_);
         sourceInnerStorage.add(CB01_);
 
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(CB01_)));
         assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_)));
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationNoFilterBTag() throws InconsistentIngredientInsertionException {
+    public void testMoveIngredientsMatchDestinationNoFilterBTag() {
         destinationSlottedInnerStorage.add(null);
 
         sourceInnerStorage.add(CA01_);
         sourceInnerStorage.add(CB01_);
 
         // Simulate and non-simulate produce different results, as IngredientComponentStorageCollectionWrapper is unsafe!
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.TAG, true), is(CA01_));
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.TAG, false), is(CB01_));
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.TAG, tx)), is(CA01_));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.TAG, tx)), is(CB01_));
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(CA01_)));
         assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CB01_)));
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationNoFilterBTagGroup() throws InconsistentIngredientInsertionException {
+    public void testMoveIngredientsMatchDestinationNoFilterBTagGroup() {
         destinationSlottedInnerStorage.add(null);
 
         sourceInnerStorage.add(CA01_);
         sourceInnerStorage.add(CB01_);
 
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CB01_));
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CB01_));
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CB01_));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CB01_));
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(CA01_)));
         assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CB01_)));
     }
 
     @Test
-    public void testMoveIngredientsMatchDestinationNoFilterBTagGroupAmount() throws InconsistentIngredientInsertionException {
+    public void testMoveIngredientsMatchDestinationNoFilterBTagGroupAmount() {
         destinationSlottedInnerStorage.add(null);
 
         sourceInnerStorage.add(CA01_);
         sourceInnerStorage.add(CB01_);
 
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CB01_));
-        assertThat(IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CB01_));
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CB01_));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorage, destinationSlotted, CB01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CB01_));
 
         assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(CA01_)));
         assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CB01_)));
+    }
+
+
+    private static <T> T simulateTx(java.util.function.Function<TransactionContext, T> fn) {
+        try (var tx = Transaction.openRoot()) {
+            return fn.apply(tx);
+        }
+    }
+
+    private static <T> T executeTx(java.util.function.Function<TransactionContext, T> fn) {
+        try (var tx = Transaction.openRoot()) {
+            T result = fn.apply(tx);
+            tx.commit();
+            return result;
+        }
     }
 
 }
