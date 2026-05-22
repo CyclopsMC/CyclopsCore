@@ -14,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -55,7 +58,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
     private static IngredientList<ComplexStack, Integer> destinationSlottedInnerStorage;
     private static IIngredientComponentStorageSlotted<ComplexStack, Integer> destinationSlotted;
 
-    public static void init() throws InconsistentIngredientInsertionException {
+    public static void init() {
         /* Slotless */
         sourceSlotlessInnerStorage = new IngredientCollectionPrototypeMap<>(IngredientComponentStubs.COMPLEX);
         sourceSlotless = new IngredientComponentStorageCollectionWrapper<>(sourceSlotlessInnerStorage, 100, 10);
@@ -85,124 +88,124 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
         public static class DestinationSlotless {
 
             @BeforeEach
-            public void beforeEach() throws InconsistentIngredientInsertionException {
+            public void beforeEach() {
                 init();
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotDefined() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotDefined() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotless, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotless, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotless, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotless, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoop() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoop() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA06_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceClear() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceClear() {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet()));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFew() {
                 // Move 1
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA01_);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet()));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA02_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceNotExtractable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceNotExtractable() {
                 // Move nothing
                 sourceSlotless = new IngredientComponentStorageCollectionWrapper<>(sourceSlotlessInnerStorage, 100, 0);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableRate() {
                 // Move nothing
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 100, 0);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableMaxAmount() {
                 // Move nothing
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 0, 10);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
@@ -211,90 +214,90 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             /* The following tests include an exact quantity matcher flag */
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopQuantitativeLess() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopQuantitativeLess() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA06_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopQuantitativeMore() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopQuantitativeMore() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA010_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA010_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA010_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA010_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceClearQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceClearQuantitative() {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet()));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitative() {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA01_);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA01_)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceMoreQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceMoreQuantitative() {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA05_);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA02_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceExactQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceExactQuantitative() {
                 // Move 5
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA05_);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet()));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA06_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceExactNotEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceExactNotEnoughRoom() {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA05_);
@@ -303,10 +306,10 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 IngredientComponentStorageCollectionWrapper<ComplexStack, Integer> destinationSlotless =
                         new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 1, 1);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA05_)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet()));
@@ -317,201 +320,201 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
         public static class DestinationSlotted {
 
             @BeforeEach
-            public void beforeEach() throws InconsistentIngredientInsertionException {
+            public void beforeEach() {
                 init();
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotDefined() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotDefined() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA06_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA05_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined2() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined2() {
                 // Move none
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 2,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 2,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 2,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 2,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined4() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA05_)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined5OutOfBounds() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined5OutOfBounds() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 5,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 5,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 5,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 5,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, 0, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoop() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoop() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA06_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceClear() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceClear() {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet()));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceFew() {
                 // Move 1
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA01_);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet()));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceMore() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceMore() {
                 // Move 1
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA05_);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceNotExtractable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceNotExtractable() {
                 // Move nothing
                 sourceSlotless = new IngredientComponentStorageCollectionWrapper<>(sourceSlotlessInnerStorage, 100, 0);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableRate() {
                 // Move nothing
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRate() {
                 // Move nothing
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA08_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableMaxAmount() {
                 // Move nothing
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -520,182 +523,182 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             /* The following tests include an exact quantity matcher flag */
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0QuantitativeLess() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0QuantitativeLess() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA06_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceClearQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceClearQuantitative() {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet()));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceFewQuantitative() {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA01_);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA01_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceExactQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceExactQuantitative() {
                 // Move 5
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA05_);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet()));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA06_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableRateQuantitative() {
                 // Move nothing
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRateQuantitative() {
                 // Move nothing
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRateQuantitativeButValidSource() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRateQuantitativeButValidSource() {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA05_);
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA05_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableMaxAmountQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableMaxAmountQuantitative() {
                 // Move nothing
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA09_, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceJustEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceJustEnoughRoom() {
                 // Move 4
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA04_);
 
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 5, 10);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
-                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA04_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
-                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA04_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA04_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA04_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet()));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA05_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceJustEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceJustEnoughRoom() {
                 // Move 4
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA04_);
 
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 5, 10);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA04_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA04_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA04_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA04_));
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet()));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA05_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceNotEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceNotEnoughRoom() {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA04_);
 
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 4, 10);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
-                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, 0,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceNotEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceNotEnoughRoom() {
                 // Move nothing
                 sourceSlotlessInnerStorage.clear();
                 sourceSlotlessInnerStorage.add(CA04_);
 
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 3, 10);
 
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
-                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
-                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotless, -1, destinationSlotted, -1,
+                        CA04_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlotlessInnerStorage), is(Sets.newHashSet(CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -710,120 +713,120 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
         public static class DestinationSlotless {
 
             @BeforeEach
-            public void beforeEach() throws InconsistentIngredientInsertionException {
+            public void beforeEach() {
                 init();
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotDefined() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotDefined() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop0() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop0() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop1() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA06_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop3() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop3() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 3, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 3, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 3, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 3, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop4() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroup() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroup() {
                 // Move 1 of tag B
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP, true), is(CA01B));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP, false), is(CA01B));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), is(CA01B));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), is(CA01B));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B, CA01B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop5OutOfBounds() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop5OutOfBounds() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 5, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 5, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 5, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 5, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoop() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoop() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA06_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1SourceClear() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop1SourceClear() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(EMPTY);
@@ -832,17 +835,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 sourceSlottedInnerStorage.add(EMPTY);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupSourceClear() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupSourceClear() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(EMPTY);
@@ -851,17 +854,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 sourceSlottedInnerStorage.add(EMPTY);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceClear() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceClear() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(EMPTY);
@@ -870,17 +873,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 sourceSlottedInnerStorage.add(EMPTY);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1SourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop1SourceFew() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -889,17 +892,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 sourceSlottedInnerStorage.add(EMPTY);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA02_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupSourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupSourceFew() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -908,17 +911,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 sourceSlottedInnerStorage.add(EMPTY);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA01_, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFew() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -927,136 +930,136 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 sourceSlottedInnerStorage.add(EMPTY);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA02_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1SourceNotExtractable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop1SourceNotExtractable() {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupNotExtractable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupNotExtractable() {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopNotExtractable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopNotExtractable() {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1DestinationNonInsertable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop1DestinationNonInsertable() {
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupDestinationNonInsertable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupDestinationNonInsertable() {
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationNonInsertable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationNonInsertable() {
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1DestinationNonInsertableMaxAmount() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop1DestinationNonInsertableMaxAmount() {
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 0, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupDestinationNonInsertableMaxAmount() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop4MatchGroupDestinationNonInsertableMaxAmount() {
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 0, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 4, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationNonInsertableMaxAmount() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationNonInsertableMaxAmount() {
                 destinationSlotless = new IngredientComponentStorageCollectionWrapper<>(destinationSlotlessInnerStorage, 0, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
@@ -1065,7 +1068,7 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             /* The following tests include an exact quantity matcher flag */
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1SourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop1SourceFewQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1074,17 +1077,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 sourceSlottedInnerStorage.add(EMPTY);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA01_, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop1SourceFewQuantitativeMatch() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop1SourceFewQuantitativeMatch() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1093,17 +1096,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 sourceSlottedInnerStorage.add(EMPTY);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotless, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA02_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1112,17 +1115,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 sourceSlottedInnerStorage.add(EMPTY);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA01_, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitativeMatch() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitativeMatch() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
@@ -1131,17 +1134,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 sourceSlottedInnerStorage.add(EMPTY);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA02_, CA91B)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceJustEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceJustEnoughRoom() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -1154,17 +1157,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 destinationSlotless.insert(CA01_, false);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA02_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA02_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA02_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA02_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA03_)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceNotEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceNotEnoughRoom() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -1177,10 +1180,10 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 destinationSlotless.insert(CA01_, false);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotless, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA02_, EMPTY, EMPTY, EMPTY)));
                 assertThat(Sets.newHashSet(destinationSlotlessInnerStorage), is(Sets.newHashSet(CA01_)));
@@ -1191,365 +1194,365 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
         public static class DestinationSlotted {
 
             @BeforeEach
-            public void beforeEach() throws InconsistentIngredientInsertionException {
+            public void beforeEach() {
                 init();
             }
 
             @Test
-            public void testSourceSlotDefined0DestinationSlotDefined0() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined0DestinationSlotDefined0() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined0() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA06_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined2DestinationSlotDefined0() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined2DestinationSlotDefined0() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined0() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined4DestinationSlotDefined0() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined0DestinationSlotDefined1() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined0DestinationSlotDefined1() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA05_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined2DestinationSlotDefined1() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined2DestinationSlotDefined1() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined1() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined4DestinationSlotDefined1() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined0DestinationSlotDefined1MatchGroup() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined0DestinationSlotDefined1MatchGroup() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroup() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroup() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA05_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined2DestinationSlotDefined1MatchGroup() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined2DestinationSlotDefined1MatchGroup() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined1MatchGroup() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined4DestinationSlotDefined1MatchGroup() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined0DestinationSlotDefined2() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined0DestinationSlotDefined2() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 2,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 2,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 2,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 2,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined2() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined2() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 2,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 2,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 2,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 2,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined2DestinationSlotDefined2() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined2DestinationSlotDefined2() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 2,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 2,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 2,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 2,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined2() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined4DestinationSlotDefined2() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 2,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 2,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 2,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 2,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined0DestinationSlotDefined4() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined0DestinationSlotDefined4() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined4() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA05_)));
             }
 
             @Test
-            public void testSourceSlotDefined2DestinationSlotDefined4() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined2DestinationSlotDefined4() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 2, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined4() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined4DestinationSlotDefined4() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined4MatchGroup() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined4DestinationSlotDefined4MatchGroup() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined4DestinationSlotDefined0MatchGroup() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined4DestinationSlotDefined0MatchGroup() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA06_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA05_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined2() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined2() {
                 // Move none
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 2,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 2,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 2,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 2,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined4() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA05_)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined5OutofBounds() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined5OutofBounds() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 5,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 5,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 5,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 5,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefinedDestinationSlotLoop() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefinedDestinationSlotLoop() {
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 0, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoop() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoop() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA06_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroup() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroup() {
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA05_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA05_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA05_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA06_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -1558,70 +1561,70 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Start clear
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0Clear() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0Clear() {
                 sourceSlottedInnerStorage.clear();
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet()));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1Clear() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1Clear() {
                 sourceSlottedInnerStorage.clear();
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet()));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4Clear() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined4Clear() {
                 sourceSlottedInnerStorage.clear();
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet()));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopClear() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopClear() {
                 sourceSlottedInnerStorage.clear();
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet()));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupClear() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupClear() {
                 sourceSlottedInnerStorage.clear();
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet()));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -1630,144 +1633,144 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Source few start
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0SourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined0SourceFew() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1SourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1SourceFew() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceFew() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4SourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined4SourceFew() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA01_)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceFew() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1SourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1SourceFew() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4SourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined4SourceFew() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA01_)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFew() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceFew() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceFew() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -1776,144 +1779,144 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Source more start
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0SourceMore() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined0SourceMore() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1SourceMore() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1SourceMore() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceMore() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceMore() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4SourceMore() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined4SourceMore() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA01_)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceMore() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceMore() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1SourceMore() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1SourceMore() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4SourceMore() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined4SourceMore() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA01_)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceMore() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceMore() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceMore() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceMore() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -1922,70 +1925,70 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Source not extractable
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceNotExtractable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceNotExtractable() {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1SourceNotExtractable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1SourceNotExtractable() {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4SourceNotExtractable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined4SourceNotExtractable() {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceNotExtractable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceNotExtractable() {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceNotExtractable() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceNotExtractable() {
                 sourceSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(sourceSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -1994,70 +1997,70 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Destination not insertable rate
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1DestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1DestinationNotInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4DestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined4DestinationNotInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationNotInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationNotInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 0);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -2066,126 +2069,126 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Destination fewer insertable rate
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined0DestinationFewerInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA08_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1DestinationFewerInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA08_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupDestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupDestinationFewerInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA08_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined4DestinationFewerInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA08_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA01_)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA08_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1DestinationFewerInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA08_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4DestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined4DestinationFewerInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA08_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA01_)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationFewerInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA08_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationFewerInsertableRate() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationFewerInsertableRate() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move 5
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA08_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -2194,70 +2197,70 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Destination not insertable max amount
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationNotInsertableMaxAmount() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1DestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1DestinationNotInsertableMaxAmount() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4DestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined4DestinationNotInsertableMaxAmount() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationNotInsertableMaxAmount() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationNotInsertableMaxAmount() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationNotInsertableMaxAmount() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 0, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -2266,176 +2269,176 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             /* The following tests include an exact quantity matcher flag */
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0SourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined0SourceFewQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA01_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0SourceFewQuantitativeOk() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined0SourceFewQuantitativeOk() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1SourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1SourceFewQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA01_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1SourceFewQuantitativeOk() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1SourceFewQuantitativeOk() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceFewQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA01_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4SourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined4SourceFewQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA01_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceFewQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA01_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1SourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1SourceFewQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA01_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4SourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined4SourceFewQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA01_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceFewQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA01_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceFewQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceFewQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA01_);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA01_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -2444,144 +2447,144 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Source more start
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0SourceMoreQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined0SourceMoreQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1SourceMoreQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1SourceMoreQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceMoreQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupSourceMoreQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4SourceMoreQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined4SourceMoreQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA01_)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0SourceMoreQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0SourceMoreQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1SourceMoreQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1SourceMoreQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA01_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4SourceMoreQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined4SourceMoreQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, CA01_)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopSourceMoreQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopSourceMoreQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceMoreQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceMoreQuantitative() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA05_);
 
                 // Move 1
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA01_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA01_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA01_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA01_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA04_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA02_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -2590,133 +2593,133 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
             // Destination fewer insertable rate
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined0DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined0DestinationFewerInsertableRateQuantitative() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1DestinationFewerInsertableRateQuantitative() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupDestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined1MatchGroupDestinationFewerInsertableRateQuantitative() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotDefined1DestinationSlotDefined4DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotDefined1DestinationSlotDefined4DestinationFewerInsertableRateQuantitative() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, 1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0DestinationFewerInsertableRateQuantitative() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1DestinationFewerInsertableRateQuantitative() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined4DestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined4DestinationFewerInsertableRateQuantitative() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 4,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopDestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopDestinationFewerInsertableRateQuantitative() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationFewerInsertableRateQuantitative() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupDestinationFewerInsertableRateQuantitative() {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 100, 1);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA05_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA09_, EMPTY, CB02_, CA01B)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceJustEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceJustEnoughRoom() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -2724,17 +2727,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 3, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA02_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA02_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA02_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA02_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA03_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0MatchGroupSourceJustEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0MatchGroupSourceJustEnoughRoom() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -2742,17 +2745,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 3, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA02_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA02_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA02_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA02_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA03_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1MatchGroupSourceJustEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1MatchGroupSourceJustEnoughRoom() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -2760,17 +2763,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 2, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), is(CA02_));
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), is(CA02_));
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA02_));
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), is(CA02_));
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, EMPTY)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, CA02_, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceNotEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotLoopMatchGroupSourceNotEnoughRoom() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -2778,17 +2781,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 1, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, -1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA02_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined0MatchGroupSourceNotEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined0MatchGroupSourceNotEnoughRoom() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -2796,17 +2799,17 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 2, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 0,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA02_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
             }
 
             @Test
-            public void testSourceSlotLoopDestinationSlotDefined1MatchGroupSourceNotEnoughRoom() throws InconsistentIngredientInsertionException {
+            public void testSourceSlotLoopDestinationSlotDefined1MatchGroupSourceNotEnoughRoom() {
                 sourceSlottedInnerStorage.clear();
                 sourceSlottedInnerStorage.add(EMPTY);
                 sourceSlottedInnerStorage.add(CA02_);
@@ -2814,10 +2817,10 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
                 destinationSlotted = new IngredientComponentStorageSlottedCollectionWrapper<>(destinationSlottedInnerStorage, 1, 10);
 
                 // Move nothing
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, true), nullValue());
-                assertThat(IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
-                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, false), nullValue());
+                assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
+                assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredientsSlotted(sourceSlotted, -1, destinationSlotted, 1,
+                        CA02_, ComplexStack.Match.GROUP | ComplexStack.Match.TAG | ComplexStack.Match.AMOUNT, tx)), nullValue());
 
                 assertThat(Sets.newHashSet(sourceSlottedInnerStorage), is(Sets.newHashSet(EMPTY, CA02_)));
                 assertThat(Lists.newArrayList(destinationSlotted), is(Lists.newArrayList(CA01_, EMPTY, CA91B, EMPTY, EMPTY)));
@@ -2825,6 +2828,21 @@ public class TestIngredientComponentStorageHelpersMoveIngredientsSlotted {
 
         }
 
+    }
+
+
+    private static <T> T simulateTx(java.util.function.Function<TransactionContext, T> fn) {
+        try (var tx = Transaction.openRoot()) {
+            return fn.apply(tx);
+        }
+    }
+
+    private static <T> T executeTx(java.util.function.Function<TransactionContext, T> fn) {
+        try (var tx = Transaction.openRoot()) {
+            T result = fn.apply(tx);
+            tx.commit();
+            return result;
+        }
     }
 
 }
