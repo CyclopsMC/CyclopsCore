@@ -19,6 +19,7 @@ public class TestIngredientComponentStorageHelpers {
 
     private IngredientCollectionPrototypeMap<Integer, Boolean> sourceInnerStorage;
     private IIngredientComponentStorage<Integer, Boolean> sourceStorage;
+    private IIngredientComponentStorage<Integer, Boolean> sourceStorageExtractOnly;
     private IngredientCollectionPrototypeMap<Integer, Boolean> destinationInnerStorage;
     private IIngredientComponentStorage<Integer, Boolean> destinationStorage;
 
@@ -26,6 +27,7 @@ public class TestIngredientComponentStorageHelpers {
     public void beforeEach() {
         sourceInnerStorage = new IngredientCollectionPrototypeMap<>(IngredientComponentStubs.SIMPLE);
         sourceStorage = new IngredientComponentStorageCollectionWrapper<>(sourceInnerStorage, 100, 10);
+        sourceStorageExtractOnly = IngredientStorageHelpers.wrapStorage(sourceStorage, true, false, true);
         destinationInnerStorage = new IngredientCollectionPrototypeMap<>(IngredientComponentStubs.SIMPLE);
         destinationStorage = new IngredientComponentStorageCollectionWrapper<>(destinationInnerStorage, 100, 10);
     }
@@ -950,6 +952,88 @@ public class TestIngredientComponentStorageHelpers {
         assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList()));
     }
 
+
+    // Tests for extract-only source storage (source does not accept re-insertion of overflow)
+
+    @Test
+    public void testMoveIngredientsExtractOnlySourceFittingRate() {
+        // Insert 10 into source (rate-limited to 10 per call)
+        sourceStorage.insert(10, false);
+
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorageExtractOnly, destinationStorage, 10, tx)), is(10));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorageExtractOnly, destinationStorage, 10, tx)), is(10));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(10)));
+    }
+
+    @Test
+    public void testMoveIngredientsExtractOnlySourceLimitedByDestination() {
+        // Fill destination to 95 by inserting 10 at a time (rate limit is 10)
+        for (int i = 0; i < 9; i++) {
+            destinationStorage.insert(10, false);
+        }
+        destinationStorage.insert(5, false);
+        // Now destination has 95, with only 5 remaining capacity
+        // Insert 10 into source
+        sourceStorage.insert(10, false);
+
+        // Only 5 can be moved because destination only has 5 remaining capacity
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorageExtractOnly, destinationStorage, 10, tx)), is(5));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorageExtractOnly, destinationStorage, 10, tx)), is(5));
+
+        // Source should still have 5 (not re-inserted wrongly)
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(5)));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(100)));
+    }
+
+    @Test
+    public void testMoveIngredientExtractOnlySourceFitting() {
+        sourceStorage.insert(10, false);
+
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredient(sourceStorageExtractOnly, destinationStorage, 10, IngredientComponentStubs.SIMPLE.getMatcher().getExactMatchNoQuantityCondition(), tx)), is(10));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredient(sourceStorageExtractOnly, destinationStorage, 10, IngredientComponentStubs.SIMPLE.getMatcher().getExactMatchNoQuantityCondition(), tx)), is(10));
+
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList()));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(10)));
+    }
+
+    @Test
+    public void testMoveIngredientExtractOnlySourceLimitedByDestination() {
+        // Fill destination to 95 by inserting 10 at a time (rate limit is 10)
+        for (int i = 0; i < 9; i++) {
+            destinationStorage.insert(10, false);
+        }
+        destinationStorage.insert(5, false);
+        // Now destination has 95, with only 5 remaining capacity
+        sourceStorage.insert(10, false);
+
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredient(sourceStorageExtractOnly, destinationStorage, 10, IngredientComponentStubs.SIMPLE.getMatcher().getExactMatchNoQuantityCondition(), tx)), is(5));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredient(sourceStorageExtractOnly, destinationStorage, 10, IngredientComponentStubs.SIMPLE.getMatcher().getExactMatchNoQuantityCondition(), tx)), is(5));
+
+        // Source should have 5 remaining, not lost
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(5)));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(100)));
+    }
+
+    @Test
+    public void testMoveIngredientsPredicateExtractOnlySourceLimitedByDestination() {
+        // Fill destination to 95 by inserting 10 at a time (rate limit is 10)
+        for (int i = 0; i < 9; i++) {
+            destinationStorage.insert(10, false);
+        }
+        destinationStorage.insert(5, false);
+        // Now destination has 95, with only 5 remaining capacity
+        sourceStorage.insert(10, false);
+
+        Predicate<Integer> predicate = i -> i > 0;
+        assertThat(simulateTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorageExtractOnly, destinationStorage, predicate, 10, false, tx)), is(5));
+        assertThat(executeTx(tx -> IngredientStorageHelpers.moveIngredients(sourceStorageExtractOnly, destinationStorage, predicate, 10, false, tx)), is(5));
+
+        // Source should have 5 remaining, not lost
+        assertThat(Lists.newArrayList(sourceInnerStorage), is(Lists.newArrayList(5)));
+        assertThat(Lists.newArrayList(destinationInnerStorage), is(Lists.newArrayList(100)));
+    }
 
     private static <T> T simulateTx(java.util.function.Function<TransactionContext, T> fn) {
         try (var tx = Transaction.openRoot()) {

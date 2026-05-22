@@ -115,14 +115,31 @@ public final class IngredientStorageHelpers {
                                            IIngredientComponentStorage<T, M> destination,
                                            long maxQuantity, TransactionContext transaction) {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
-        T extracted = source.extract(maxQuantity, transaction);
-        if (!matcher.isEmpty(extracted)) {
-            T remaining = destination.insert(extracted, transaction);
-            if (!matcher.isEmpty(remaining)) {
-                source.insert(remaining, transaction);
+
+        // Simulate extraction to find out what ingredient type and how much can be extracted.
+        // The simulation is rolled back so it does not affect the source.
+        T simulatedExtracted;
+        try (var simTx = Transaction.open(transaction)) {
+            simulatedExtracted = source.extract(maxQuantity, simTx);
+            // simTx not committed → rolled back
+        }
+        if (matcher.isEmpty(simulatedExtracted)) {
+            return matcher.getEmptyInstance();
+        }
+
+        // In one real transaction: insert into destination, then extract only the accepted amount from source.
+        // This avoids having to re-insert the remainder back into source (which may be extract-only).
+        try (var nestedTx = Transaction.open(transaction)) {
+            T remaining = destination.insert(simulatedExtracted, nestedTx);
+            long movedQuantity = matcher.getQuantity(simulatedExtracted) - matcher.getQuantity(remaining);
+            if (movedQuantity > 0) {
+                T toExtract = matcher.withQuantity(simulatedExtracted, movedQuantity);
+                T actualExtracted = source.extract(toExtract, matcher.getExactMatchCondition(), nestedTx);
+                if (matcher.getQuantity(actualExtracted) == movedQuantity) {
+                    nestedTx.commit();
+                    return actualExtracted;
+                }
             }
-            return matcher.withQuantity(extracted,
-                    matcher.getQuantity(extracted) - matcher.getQuantity(remaining));
         }
         return matcher.getEmptyInstance();
     }
@@ -344,18 +361,29 @@ public final class IngredientStorageHelpers {
                 if (exactQuantity && extractQuantity < maxQuantity) {
                     continue;
                 }
+                T toExtractPrototype = matcher.withQuantity(sourceInstance, extractQuantity);
+
+                // Simulate extraction to know what can actually be extracted (rolled back).
+                T simulatedExtracted;
+                try (var simTx = Transaction.open(transaction)) {
+                    simulatedExtracted = source.extract(toExtractPrototype,
+                            matcher.getExactMatchNoQuantityCondition(), simTx);
+                    // simTx not committed → rolled back
+                }
+                if (matcher.isEmpty(simulatedExtracted)) {
+                    continue;
+                }
+
+                // In one real transaction: insert into destination, then extract only the accepted amount.
                 try (var nestedTx = Transaction.open(transaction)) {
-                    T extracted = source.extract(matcher.withQuantity(sourceInstance, extractQuantity),
-                            matcher.getExactMatchNoQuantityCondition(), nestedTx);
-                    if (!matcher.isEmpty(extracted)) {
-                        T remaining = destination.insert(extracted, nestedTx);
-                        long movedQuantity = matcher.getQuantity(extracted) - matcher.getQuantity(remaining);
-                        if (movedQuantity > 0 && (!exactQuantity || movedQuantity == maxQuantity)) {
-                            if (!matcher.isEmpty(remaining)) {
-                                source.insert(remaining, nestedTx);
-                            }
+                    T remaining = destination.insert(simulatedExtracted, nestedTx);
+                    long movedQuantity = matcher.getQuantity(simulatedExtracted) - matcher.getQuantity(remaining);
+                    if (movedQuantity > 0 && (!exactQuantity || movedQuantity == maxQuantity)) {
+                        T toExtract = matcher.withQuantity(simulatedExtracted, movedQuantity);
+                        T actualExtracted = source.extract(toExtract, matcher.getExactMatchCondition(), nestedTx);
+                        if (matcher.getQuantity(actualExtracted) == movedQuantity) {
                             nestedTx.commit();
-                            return matcher.withQuantity(extracted, movedQuantity);
+                            return matcher.withQuantity(actualExtracted, movedQuantity);
                         }
                     }
                 }
@@ -448,21 +476,30 @@ public final class IngredientStorageHelpers {
             long prototypeQuantity = matcher.getQuantity(instance);
             T sourceContents = sourceSlotted.getSlotContents(sourceSlot);
             if (!matcher.isEmpty(sourceContents)) {
-                try (var nestedTx = Transaction.open(transaction)) {
-                    // Extract prototypeQuantity items and check if the result matches the instance+condition
-                    T extracted = sourceSlotted.extract(sourceSlot, prototypeQuantity, nestedTx);
-                    if (!matcher.isEmpty(extracted) && matcher.matches(instance, extracted, matchCondition)) {
-                        T remaining = destinationSlotted.insert(destinationSlot, extracted, nestedTx);
+                // Simulate extraction to check match and how much can be extracted (rolled back).
+                T simulatedExtracted;
+                try (var simTx = Transaction.open(transaction)) {
+                    T simEx = sourceSlotted.extract(sourceSlot, prototypeQuantity, simTx);
+                    if (matcher.isEmpty(simEx) || !matcher.matches(instance, simEx, matchCondition)) {
+                        simulatedExtracted = matcher.getEmptyInstance();
+                    } else {
+                        simulatedExtracted = simEx;
+                    }
+                    // simTx not committed → rolled back
+                }
+                if (!matcher.isEmpty(simulatedExtracted)) {
+                    boolean exactRequired = matcher.hasCondition(matchCondition,
+                            source.getComponent().getPrimaryQuantifier().getMatchCondition());
+                    try (var nestedTx = Transaction.open(transaction)) {
+                        T remaining = destinationSlotted.insert(destinationSlot, simulatedExtracted, nestedTx);
                         long remainingQuantity = matcher.getQuantity(remaining);
-                        long movedQuantity = matcher.getQuantity(extracted) - remainingQuantity;
-                        boolean exactRequired = matcher.hasCondition(matchCondition,
-                                source.getComponent().getPrimaryQuantifier().getMatchCondition());
+                        long movedQuantity = matcher.getQuantity(simulatedExtracted) - remainingQuantity;
                         if (remainingQuantity == 0 || (movedQuantity > 0 && !exactRequired)) {
-                            if (!matcher.isEmpty(remaining)) {
-                                sourceSlotted.insert(sourceSlot, remaining, nestedTx);
+                            T actualExtracted = sourceSlotted.extract(sourceSlot, movedQuantity, nestedTx);
+                            if (matcher.getQuantity(actualExtracted) == movedQuantity) {
+                                nestedTx.commit();
+                                return matcher.withQuantity(actualExtracted, movedQuantity);
                             }
-                            nestedTx.commit();
-                            return matcher.withQuantity(extracted, movedQuantity);
                         }
                     }
                 }
@@ -514,20 +551,30 @@ public final class IngredientStorageHelpers {
                             if (matcher.getQuantity(sourceInstance) != prototypeQuantity) {
                                 sourceInstance = matcher.withQuantity(sourceInstance, prototypeQuantity);
                             }
+                            boolean exactRequired = matcher.hasCondition(matchCondition,
+                                    source.getComponent().getPrimaryQuantifier().getMatchCondition());
+
+                            // Simulate extraction to know what can be extracted (rolled back).
+                            T simulatedExtracted;
+                            try (var simTx = Transaction.open(transaction)) {
+                                simulatedExtracted = source.extract(sourceInstance, matchCondition, simTx);
+                                // simTx not committed → rolled back
+                            }
+                            if (matcher.isEmpty(simulatedExtracted)) {
+                                continue;
+                            }
+
+                            // In one real transaction: insert into destination, then extract only the accepted amount.
                             try (var nestedTx = Transaction.open(transaction)) {
-                                T extracted = source.extract(sourceInstance, matchCondition, nestedTx);
-                                if (!matcher.isEmpty(extracted)) {
-                                    T remaining = destinationSlotted.insert(destinationSlot, extracted, nestedTx);
-                                    long remainingQuantity = matcher.getQuantity(remaining);
-                                    long movedQuantity = matcher.getQuantity(extracted) - remainingQuantity;
-                                    boolean exactRequired = matcher.hasCondition(matchCondition,
-                                            source.getComponent().getPrimaryQuantifier().getMatchCondition());
-                                    if (remainingQuantity == 0 || (movedQuantity > 0 && !exactRequired)) {
-                                        if (!matcher.isEmpty(remaining)) {
-                                            source.insert(remaining, nestedTx);
-                                        }
+                                T remaining = destinationSlotted.insert(destinationSlot, simulatedExtracted, nestedTx);
+                                long remainingQuantity = matcher.getQuantity(remaining);
+                                long movedQuantity = matcher.getQuantity(simulatedExtracted) - remainingQuantity;
+                                if (remainingQuantity == 0 || (movedQuantity > 0 && !exactRequired)) {
+                                    T toExtract = matcher.withQuantity(simulatedExtracted, movedQuantity);
+                                    T actualExtracted = source.extract(toExtract, matcher.getExactMatchCondition(), nestedTx);
+                                    if (matcher.getQuantity(actualExtracted) == movedQuantity) {
                                         nestedTx.commit();
-                                        return matcher.withQuantity(extracted, movedQuantity);
+                                        return matcher.withQuantity(actualExtracted, movedQuantity);
                                     }
                                 }
                             }
@@ -563,20 +610,31 @@ public final class IngredientStorageHelpers {
                 long prototypeQuantity = matcher.getQuantity(instance);
                 T sourceContents = sourceSlotted.getSlotContents(sourceSlot);
                 if (!matcher.isEmpty(sourceContents)) {
-                    try (var nestedTx = Transaction.open(transaction)) {
-                        T extracted = sourceSlotted.extract(sourceSlot, prototypeQuantity, nestedTx);
-                        if (!matcher.isEmpty(extracted) && matcher.matches(instance, extracted, matchCondition)) {
-                            T remaining = destination.insert(extracted, nestedTx);
+                    boolean exactRequired = matcher.hasCondition(matchCondition,
+                            source.getComponent().getPrimaryQuantifier().getMatchCondition());
+
+                    // Simulate extraction to check match and how much can be extracted (rolled back).
+                    T simulatedExtracted;
+                    try (var simTx = Transaction.open(transaction)) {
+                        T simEx = sourceSlotted.extract(sourceSlot, prototypeQuantity, simTx);
+                        if (matcher.isEmpty(simEx) || !matcher.matches(instance, simEx, matchCondition)) {
+                            simulatedExtracted = matcher.getEmptyInstance();
+                        } else {
+                            simulatedExtracted = simEx;
+                        }
+                        // simTx not committed → rolled back
+                    }
+                    if (!matcher.isEmpty(simulatedExtracted)) {
+                        try (var nestedTx = Transaction.open(transaction)) {
+                            T remaining = destination.insert(simulatedExtracted, nestedTx);
                             long remainingQuantity = matcher.getQuantity(remaining);
-                            long movedQuantity = matcher.getQuantity(extracted) - remainingQuantity;
-                            boolean exactRequired = matcher.hasCondition(matchCondition,
-                                    source.getComponent().getPrimaryQuantifier().getMatchCondition());
+                            long movedQuantity = matcher.getQuantity(simulatedExtracted) - remainingQuantity;
                             if (movedQuantity > 0 && (!exactRequired || remainingQuantity == 0)) {
-                                if (!matcher.isEmpty(remaining)) {
-                                    sourceSlotted.insert(sourceSlot, remaining, nestedTx);
+                                T actualExtracted = sourceSlotted.extract(sourceSlot, movedQuantity, nestedTx);
+                                if (matcher.getQuantity(actualExtracted) == movedQuantity) {
+                                    nestedTx.commit();
+                                    return matcher.withQuantity(actualExtracted, movedQuantity);
                                 }
-                                nestedTx.commit();
-                                return matcher.withQuantity(extracted, movedQuantity);
                             }
                         }
                     }
@@ -675,18 +733,23 @@ public final class IngredientStorageHelpers {
             if (!matcher.isEmpty(sourceContents) && predicate.test(sourceContents)) {
                 long extractQuantity = Math.min(maxQuantity, matcher.getQuantity(sourceContents));
                 if (!exactQuantity || extractQuantity == maxQuantity) {
-                    try (var nestedTx = Transaction.open(transaction)) {
-                        T extracted = sourceSlotted.extract(sourceSlot, extractQuantity, nestedTx);
-                        if (!matcher.isEmpty(extracted)) {
-                            T remaining = destinationSlotted.insert(destinationSlot, extracted, nestedTx);
+                    // Simulate extraction to know how much can actually be extracted (rolled back).
+                    T simulatedExtracted;
+                    try (var simTx = Transaction.open(transaction)) {
+                        simulatedExtracted = sourceSlotted.extract(sourceSlot, extractQuantity, simTx);
+                        // simTx not committed → rolled back
+                    }
+                    if (!matcher.isEmpty(simulatedExtracted)) {
+                        try (var nestedTx = Transaction.open(transaction)) {
+                            T remaining = destinationSlotted.insert(destinationSlot, simulatedExtracted, nestedTx);
                             long remainingQuantity = matcher.getQuantity(remaining);
-                            long movedQuantity = matcher.getQuantity(extracted) - remainingQuantity;
+                            long movedQuantity = matcher.getQuantity(simulatedExtracted) - remainingQuantity;
                             if (remainingQuantity == 0 || (movedQuantity > 0 && !exactQuantity)) {
-                                if (!matcher.isEmpty(remaining)) {
-                                    sourceSlotted.insert(sourceSlot, remaining, nestedTx);
+                                T actualExtracted = sourceSlotted.extract(sourceSlot, movedQuantity, nestedTx);
+                                if (matcher.getQuantity(actualExtracted) == movedQuantity) {
+                                    nestedTx.commit();
+                                    return matcher.withQuantity(actualExtracted, movedQuantity);
                                 }
-                                nestedTx.commit();
-                                return matcher.withQuantity(extracted, movedQuantity);
                             }
                         }
                     }
@@ -738,19 +801,30 @@ public final class IngredientStorageHelpers {
                             if (exactQuantity && extractQuantity < maxQuantity) {
                                 continue;
                             }
+                            T toExtractPrototype = matcher.withQuantity(sourceInstance, extractQuantity);
+
+                            // Simulate extraction to know what can be extracted (rolled back).
+                            T simulatedExtracted;
+                            try (var simTx = Transaction.open(transaction)) {
+                                simulatedExtracted = source.extract(toExtractPrototype,
+                                        matcher.getExactMatchCondition(), simTx);
+                                // simTx not committed → rolled back
+                            }
+                            if (matcher.isEmpty(simulatedExtracted)) {
+                                continue;
+                            }
+
+                            // In one real transaction: insert into destination, then extract only the accepted amount.
                             try (var nestedTx = Transaction.open(transaction)) {
-                                T extracted = source.extract(matcher.withQuantity(sourceInstance, extractQuantity),
-                                        matcher.getExactMatchCondition(), nestedTx);
-                                if (!matcher.isEmpty(extracted)) {
-                                    T remaining = destinationSlotted.insert(destinationSlot, extracted, nestedTx);
-                                    long remainingQuantity = matcher.getQuantity(remaining);
-                                    long movedQuantity = matcher.getQuantity(extracted) - remainingQuantity;
-                                    if (remainingQuantity == 0 || (movedQuantity > 0 && !exactQuantity)) {
-                                        if (!matcher.isEmpty(remaining)) {
-                                            source.insert(remaining, nestedTx);
-                                        }
+                                T remaining = destinationSlotted.insert(destinationSlot, simulatedExtracted, nestedTx);
+                                long remainingQuantity = matcher.getQuantity(remaining);
+                                long movedQuantity = matcher.getQuantity(simulatedExtracted) - remainingQuantity;
+                                if (remainingQuantity == 0 || (movedQuantity > 0 && !exactQuantity)) {
+                                    T toExtract = matcher.withQuantity(simulatedExtracted, movedQuantity);
+                                    T actualExtracted = source.extract(toExtract, matcher.getExactMatchCondition(), nestedTx);
+                                    if (matcher.getQuantity(actualExtracted) == movedQuantity) {
                                         nestedTx.commit();
-                                        return matcher.withQuantity(extracted, movedQuantity);
+                                        return matcher.withQuantity(actualExtracted, movedQuantity);
                                     }
                                 }
                             }
@@ -789,18 +863,24 @@ public final class IngredientStorageHelpers {
                     if (exactQuantity && extractQuantity < maxQuantity) {
                         return matcher.getEmptyInstance();
                     }
-                    try (var nestedTx = Transaction.open(transaction)) {
-                        T extracted = sourceSlotted.extract(sourceSlot, extractQuantity, nestedTx);
-                        if (!matcher.isEmpty(extracted)) {
-                            T remaining = destination.insert(extracted, nestedTx);
+
+                    // Simulate extraction to know how much can actually be extracted (rolled back).
+                    T simulatedExtracted;
+                    try (var simTx = Transaction.open(transaction)) {
+                        simulatedExtracted = sourceSlotted.extract(sourceSlot, extractQuantity, simTx);
+                        // simTx not committed → rolled back
+                    }
+                    if (!matcher.isEmpty(simulatedExtracted)) {
+                        try (var nestedTx = Transaction.open(transaction)) {
+                            T remaining = destination.insert(simulatedExtracted, nestedTx);
                             long remainingQuantity = matcher.getQuantity(remaining);
-                            long movedQuantity = matcher.getQuantity(extracted) - remainingQuantity;
+                            long movedQuantity = matcher.getQuantity(simulatedExtracted) - remainingQuantity;
                             if (movedQuantity > 0 && (!exactQuantity || remainingQuantity == 0)) {
-                                if (!matcher.isEmpty(remaining)) {
-                                    sourceSlotted.insert(sourceSlot, remaining, nestedTx);
+                                T actualExtracted = sourceSlotted.extract(sourceSlot, movedQuantity, nestedTx);
+                                if (matcher.getQuantity(actualExtracted) == movedQuantity) {
+                                    nestedTx.commit();
+                                    return matcher.withQuantity(actualExtracted, movedQuantity);
                                 }
-                                nestedTx.commit();
-                                return matcher.withQuantity(extracted, movedQuantity);
                             }
                         }
                     }
@@ -870,24 +950,34 @@ public final class IngredientStorageHelpers {
                                           IIngredientComponentStorage<T, M> destination,
                                           T instance, M matchCondition, TransactionContext transaction) {
         IIngredientMatcher<T, M> matcher = source.getComponent().getMatcher();
+        boolean exactRequired = matcher.hasCondition(matchCondition,
+                source.getComponent().getPrimaryQuantifier().getMatchCondition());
+
+        // Simulate extraction to know what can be extracted (rolled back).
+        T simulatedExtracted;
+        try (var simTx = Transaction.open(transaction)) {
+            simulatedExtracted = source.extract(instance, matchCondition, simTx);
+            // simTx not committed → rolled back
+        }
+        if (matcher.isEmpty(simulatedExtracted)) {
+            return matcher.getEmptyInstance();
+        }
+
+        // In one real transaction: insert into destination, then extract only the accepted amount.
+        // This avoids having to re-insert remainder back into source (which may be extract-only).
         try (var nestedTx = Transaction.open(transaction)) {
-            T extracted = source.extract(instance, matchCondition, nestedTx);
-            if (!matcher.isEmpty(extracted)) {
-                T remaining = destination.insert(extracted, nestedTx);
-                long movedQuantity = matcher.getQuantity(extracted) - matcher.getQuantity(remaining);
-                if (movedQuantity > 0) {
-                    boolean exactRequired = matcher.hasCondition(matchCondition,
-                            source.getComponent().getPrimaryQuantifier().getMatchCondition());
-                    if (exactRequired && movedQuantity != matcher.getQuantity(instance)) {
-                        // Exact quantity required but not fully accepted - rollback via nested tx
-                        return matcher.getEmptyInstance();
-                    }
-                    // Put back what destination didn't accept
-                    if (!matcher.isEmpty(remaining)) {
-                        source.insert(remaining, nestedTx);
-                    }
+            T remaining = destination.insert(simulatedExtracted, nestedTx);
+            long movedQuantity = matcher.getQuantity(simulatedExtracted) - matcher.getQuantity(remaining);
+            if (movedQuantity > 0) {
+                if (exactRequired && movedQuantity != matcher.getQuantity(instance)) {
+                    // Exact quantity required but destination couldn't accept it all - rollback
+                    return matcher.getEmptyInstance();
+                }
+                T toExtract = matcher.withQuantity(simulatedExtracted, movedQuantity);
+                T actualExtracted = source.extract(toExtract, matcher.getExactMatchCondition(), nestedTx);
+                if (matcher.getQuantity(actualExtracted) == movedQuantity) {
                     nestedTx.commit();
-                    return matcher.withQuantity(extracted, movedQuantity);
+                    return actualExtracted;
                 }
             }
         }
