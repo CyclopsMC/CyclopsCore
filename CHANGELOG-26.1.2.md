@@ -1,8 +1,21 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.29.9"></a>
+## [26.1.2-1.29.9](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.29.8...26.1.2-1.29.9) - 2026-05-22 11:20:34
+
+### Added
+* Add translations through Crowdin (#230)
+
+### Changed
+* Migrate from simulation to transaction logic in IngredientStorageHelpers
+
+### Fixed
+* Do class instance check before casting capabilities (#231)
+  This ensures that a ClassCastException won't be generated to improve performance
+
 <a name="26.1.2-1.29.8"></a>
-## [26.1.2-1.29.8](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.29.7...26.1.2-1.29.8) - 2026-05-03 06:50:28
+## [26.1.2-1.29.8](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.29.7...26.1.2-1.29.8) - 2026-05-03 06:50:28 +0200
 
 ### Fixed
 * Fix fluid helper crashes on empty fluid handler resources

@@ -1,0 +1,11 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Add translations through Crowdin (#230)
+
+Changes:
+* Migrate from simulation to transaction logic in IngredientStorageHelpers
+
+Fixes:
+* Do class instance check before casting capabilities (#231)
+  This ensures that a ClassCastException won't be generated to improve performance
