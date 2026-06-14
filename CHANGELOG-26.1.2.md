@@ -1,8 +1,14 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.30.0"></a>
+## [26.1.2-1.30.0](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.29.9...26.1.2-1.30.0) - 2026-06-14 13:02:01
+
+### Added
+* Add SlotSingleIngredient
+
 <a name="26.1.2-1.29.9"></a>
-## [26.1.2-1.29.9](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.29.8...26.1.2-1.29.9) - 2026-05-22 11:20:34
+## [26.1.2-1.29.9](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.29.8...26.1.2-1.29.9) - 2026-05-22 11:20:34 +0200
 
 ### Added
 * Add translations through Crowdin (#230)
