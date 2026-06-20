@@ -64,44 +64,6 @@ public final class IngredientStorageHelpers {
     }
 
     /**
-     * Iteratively move the given maximum quantity of instances from source to destination.
-     *
-     * This is useful in cases that the internal transfer rate of certain storages have to be overridden.
-     *
-     * Note: When simulating, only a single iteration will be done.
-     * This is because the iterations don't actually take effect,
-     * which could cause infinite loops.
-     *
-     * @param source A source storage to extract from.
-     * @param destination A destination storage to insert to.
-     * @param maxQuantity The maximum instance quantity to move.
-     * @param simulate If the movement should be simulated.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return The moved ingredient.
-     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
-     * @deprecated Use {@link #moveIngredientsIterative(IIngredientComponentStorage, IIngredientComponentStorage, long, TransactionContext)} instead.
-     */
-    @Deprecated
-    // TODO: remove in next major
-    public static <T, M> T moveIngredientsIterative(IIngredientComponentStorage<T, M> source,
-                                                    IIngredientComponentStorage<T, M> destination,
-                                                    long maxQuantity, boolean simulate)
-            throws InconsistentIngredientInsertionException {
-        if (simulate) {
-            // When simulating, only do one iteration to avoid infinite loops
-            try (var tx = Transaction.openRoot()) {
-                return moveIngredients(source, destination, maxQuantity, tx);
-            }
-        }
-        try (var tx = Transaction.openRoot()) {
-            T result = moveIngredientsIterative(source, destination, maxQuantity, tx);
-            tx.commit();
-            return result;
-        }
-    }
-
-    /**
      * Move the given maximum quantity of instances from source to destination.
      * @param source A source storage to extract from.
      * @param destination A destination storage to insert to.
@@ -142,31 +104,6 @@ public final class IngredientStorageHelpers {
             }
         }
         return matcher.getEmptyInstance();
-    }
-
-    /**
-     * Move the given maximum quantity of instances from source to destination.
-     * @param source A source storage to extract from.
-     * @param destination A destination storage to insert to.
-     * @param maxQuantity The maximum instance quantity to move.
-     * @param simulate If the movement should be simulated.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return The moved ingredient.
-     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
-     * @deprecated Use {@link #moveIngredients(IIngredientComponentStorage, IIngredientComponentStorage, long, TransactionContext)} instead.
-     */
-    @Deprecated
-    // TODO: remove in next major
-    public static <T, M> T moveIngredients(IIngredientComponentStorage<T, M> source,
-                                           IIngredientComponentStorage<T, M> destination,
-                                           long maxQuantity, boolean simulate)
-            throws InconsistentIngredientInsertionException {
-        try (var tx = Transaction.openRoot()) {
-            T result = moveIngredients(source, destination, maxQuantity, tx);
-            if (!simulate) tx.commit();
-            return result;
-        }
     }
 
     /**
@@ -216,46 +153,6 @@ public final class IngredientStorageHelpers {
     }
 
     /**
-     * Iteratively move the instance that matches the given match condition from source to destination.
-     * The quantity of the given instance indicates the maximum amount that can be moved.
-     *
-     * This is useful in cases that the internal transfer rate of certain storages have to be overridden.
-     *
-     * Note: When simulating, only a single iteration will be done.
-     * This is because the iterations don't actually take effect,
-     * which could cause infinite loops.
-     *
-     * @param source A source storage to extract from.
-     * @param destination A destination storage to insert to.
-     * @param instance The prototype instance.
-     * @param matchCondition The match condition.
-     * @param simulate If the movement should be simulated.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return The moved ingredient.
-     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
-     * @deprecated Use {@link #moveIngredientsIterative(IIngredientComponentStorage, IIngredientComponentStorage, Object, Object, TransactionContext)} instead.
-     */
-    @Deprecated
-    // TODO: remove in next major
-    public static <T, M> T moveIngredientsIterative(IIngredientComponentStorage<T, M> source,
-                                                    IIngredientComponentStorage<T, M> destination,
-                                                    T instance, M matchCondition, boolean simulate)
-            throws InconsistentIngredientInsertionException {
-        if (simulate) {
-            // When simulating, only do one iteration to avoid infinite loops
-            try (var tx = Transaction.openRoot()) {
-                return moveIngredients(source, destination, instance, matchCondition, tx);
-            }
-        }
-        try (var tx = Transaction.openRoot()) {
-            T result = moveIngredientsIterative(source, destination, instance, matchCondition, tx);
-            tx.commit();
-            return result;
-        }
-    }
-
-    /**
      * Move the first instance that matches the given match condition from source to destination.
      * @param source A source storage to extract from.
      * @param destination A destination storage to insert to.
@@ -293,32 +190,6 @@ public final class IngredientStorageHelpers {
             }
         }
         return matcher.getEmptyInstance();
-    }
-
-    /**
-     * Move the first instance that matches the given match condition from source to destination.
-     * @param source A source storage to extract from.
-     * @param destination A destination storage to insert to.
-     * @param instance The prototype instance.
-     * @param matchCondition The match condition.
-     * @param simulate If the movement should be simulated.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return The moved ingredient.
-     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
-     * @deprecated Use {@link #moveIngredients(IIngredientComponentStorage, IIngredientComponentStorage, Object, Object, TransactionContext)} instead.
-     */
-    @Deprecated
-    // TODO: remove in next major
-    public static <T, M> T moveIngredients(IIngredientComponentStorage<T, M> source,
-                                           IIngredientComponentStorage<T, M> destination,
-                                           T instance, M matchCondition, boolean simulate)
-            throws InconsistentIngredientInsertionException {
-        try (var tx = Transaction.openRoot()) {
-            T result = moveIngredients(source, destination, instance, matchCondition, tx);
-            if (!simulate) tx.commit();
-            return result;
-        }
     }
 
     /**
@@ -390,34 +261,6 @@ public final class IngredientStorageHelpers {
             }
         }
         return matcher.getEmptyInstance();
-    }
-
-    /**
-     * Move the first instance that matches the given predicate from source to destination.
-     * @param source A source storage to extract from.
-     * @param destination A destination storage to insert to.
-     * @param predicate The predicate to match instances by.
-     * @param maxQuantity The max quantity that can be moved.
-     * @param exactQuantity If the max quantity should be interpreted as an exact quantity.
-     * @param simulate If the movement should be simulated.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return The moved ingredient.
-     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
-     * @deprecated Use {@link #moveIngredients(IIngredientComponentStorage, IIngredientComponentStorage, Predicate, long, boolean, TransactionContext)} instead.
-     */
-    @Deprecated
-    // TODO: remove in next major
-    public static <T, M> T moveIngredients(IIngredientComponentStorage<T, M> source,
-                                           IIngredientComponentStorage<T, M> destination,
-                                           Predicate<T> predicate, long maxQuantity, boolean exactQuantity,
-                                           boolean simulate)
-            throws InconsistentIngredientInsertionException {
-        try (var tx = Transaction.openRoot()) {
-            T result = moveIngredients(source, destination, predicate, maxQuantity, exactQuantity, tx);
-            if (!simulate) tx.commit();
-            return result;
-        }
     }
 
     /**
@@ -646,42 +489,6 @@ public final class IngredientStorageHelpers {
 
     /**
      * Move ingredients from source to target with optional source and target slots,
-     * based on an ingredient prototype and match condition.
-     *
-     * If the algorithm should iterate over all source/destination slot,
-     * then the respective slot should be -1.
-     *
-     * If a slot is defined, and the storage is not an instance of {@link IIngredientComponentStorageSlotted},
-     * then nothing will be moved.
-     *
-     * @param source A source storage to extract from.
-     * @param sourceSlot The source slot or -1 for any.
-     * @param destination A destination storage to insert to.
-     * @param destinationSlot The destination slot or -1 for any.
-     * @param instance The prototype instance.
-     * @param matchCondition The match condition.
-     * @param simulate If the movement should be simulated.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return The moved ingredient.
-     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
-     * @deprecated Use {@link #moveIngredientsSlotted(IIngredientComponentStorage, int, IIngredientComponentStorage, int, Object, Object, TransactionContext)} instead.
-     */
-    @Deprecated
-    // TODO: remove in next major
-    public static <T, M> T moveIngredientsSlotted(IIngredientComponentStorage<T, M> source, int sourceSlot,
-                                                  IIngredientComponentStorage<T, M> destination, int destinationSlot,
-                                                  T instance, M matchCondition, boolean simulate)
-            throws InconsistentIngredientInsertionException {
-        try (var tx = Transaction.openRoot()) {
-            T result = moveIngredientsSlotted(source, sourceSlot, destination, destinationSlot, instance, matchCondition, tx);
-            if (!simulate) tx.commit();
-            return result;
-        }
-    }
-
-    /**
-     * Move ingredients from source to target with optional source and target slots,
      * based on an ingredient predicate.
      *
      * If the algorithm should iterate over all source/destination slot,
@@ -891,44 +698,6 @@ public final class IngredientStorageHelpers {
     }
 
     /**
-     * Move ingredients from source to target with optional source and target slots,
-     * based on an ingredient predicate.
-     *
-     * If the algorithm should iterate over all source/destination slot,
-     * then the respective slot should be -1.
-     *
-     * If a slot is defined, and the storage is not an instance of {@link IIngredientComponentStorageSlotted},
-     * then nothing will be moved.
-     *
-     * @param source A source storage to extract from.
-     * @param sourceSlot The source slot or -1 for any.
-     * @param destination A destination storage to insert to.
-     * @param destinationSlot The destination slot or -1 for any.
-     * @param predicate The instance predicate.
-     * @param maxQuantity The max quantity that can be moved.
-     * @param exactQuantity If the max quantity should be interpreted as an exact quantity.
-     * @param simulate If the movement should be simulated.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return The moved ingredient.
-     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
-     * @deprecated Use {@link #moveIngredientsSlotted(IIngredientComponentStorage, int, IIngredientComponentStorage, int, Predicate, long, boolean, TransactionContext)} instead.
-     */
-    @Deprecated
-    // TODO: remove in next major
-    public static <T, M> T moveIngredientsSlotted(IIngredientComponentStorage<T, M> source, int sourceSlot,
-                                                  IIngredientComponentStorage<T, M> destination, int destinationSlot,
-                                                  Predicate<T> predicate, long maxQuantity, boolean exactQuantity,
-                                                  boolean simulate)
-            throws InconsistentIngredientInsertionException {
-        try (var tx = Transaction.openRoot()) {
-            T result = moveIngredientsSlotted(source, sourceSlot, destination, destinationSlot, predicate, maxQuantity, exactQuantity, tx);
-            if (!simulate) tx.commit();
-            return result;
-        }
-    }
-
-    /**
      * Move the first instance that matches the given match condition from source to destination.
      *
      * The main difference of this method to
@@ -985,39 +754,6 @@ public final class IngredientStorageHelpers {
     }
 
     /**
-     * Move the first instance that matches the given match condition from source to destination.
-     *
-     * The main difference of this method to
-     * {@link #moveIngredients(IIngredientComponentStorage, IIngredientComponentStorage, Object, Object, boolean)}
-     * is that the latter method will try checking *multiple* ingredients from the source,
-     * while this method will only check the *first matching* ingredient.
-     * This makes this method potentially more efficient than the latter.
-     *
-     * @param source A source storage to extract from.
-     * @param destination A destination storage to insert to.
-     * @param instance The prototype instance.
-     * @param matchCondition The match condition.
-     * @param simulate If the movement should be simulated.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return The moved ingredient.
-     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
-     * @deprecated Use {@link #moveIngredient(IIngredientComponentStorage, IIngredientComponentStorage, Object, Object, TransactionContext)} instead.
-     */
-    @Deprecated
-    // TODO: remove in next major
-    public static <T, M> T moveIngredient(IIngredientComponentStorage<T, M> source,
-                                          IIngredientComponentStorage<T, M> destination,
-                                          T instance, M matchCondition, boolean simulate)
-            throws InconsistentIngredientInsertionException {
-        try (var tx = Transaction.openRoot()) {
-            T result = moveIngredient(source, destination, instance, matchCondition, tx);
-            if (!simulate) tx.commit();
-            return result;
-        }
-    }
-
-    /**
      * Insert an ingredient in a destination storage.
      *
      * The difference of this method compared to {@link IIngredientComponentStorage#insert(Object, TransactionContext)}
@@ -1046,32 +782,6 @@ public final class IngredientStorageHelpers {
     /**
      * Insert an ingredient in a destination storage.
      *
-     * The difference of this method compared to {@link IIngredientComponentStorage#insert(Object, boolean)}
-     * is that this method returns the actually inserted ingredient quantity
-     * instead of the remaining ingredient that was not inserted.
-     *
-     * @param destination A storage.
-     * @param instance An instance to insert.
-     * @param simulate If the insertion should be simulated.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return The actual inserted ingredient quantity, or would-be inserted ingredient quantity if simulated.
-     * @deprecated Use {@link #insertIngredientQuantity(IIngredientComponentStorage, Object, TransactionContext)} instead.
-     */
-    @Deprecated
-    // TODO: remove in next major
-    public static <T, M> long insertIngredientQuantity(IIngredientComponentStorage<T, M> destination,
-                                                       T instance, boolean simulate) {
-        try (var tx = Transaction.openRoot()) {
-            long result = insertIngredientQuantity(destination, instance, tx);
-            if (!simulate) tx.commit();
-            return result;
-        }
-    }
-
-    /**
-     * Insert an ingredient in a destination storage.
-     *
      * The difference of this method compared to {@link IIngredientComponentStorage#insert(Object, TransactionContext)}
      * is that this method returns the actually inserted ingredient
      * instead of the remaining ingredient that was not inserted.
@@ -1087,96 +797,6 @@ public final class IngredientStorageHelpers {
                                             T instance, TransactionContext transaction) {
         IIngredientMatcher<T, M> matcher = destination.getComponent().getMatcher();
         return matcher.withQuantity(instance, insertIngredientQuantity(destination, instance, transaction));
-    }
-
-    /**
-     * Insert an ingredient in a destination storage.
-     *
-     * The difference of this method compared to {@link IIngredientComponentStorage#insert(Object, boolean)}
-     * is that this method returns the actually inserted ingredient
-     * instead of the remaining ingredient that was not inserted.
-     *
-     * @param destination A storage.
-     * @param instance An instance to insert.
-     * @param simulate If the insertion should be simulated.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return The actual inserted ingredient, or would-be inserted ingredient if simulated.
-     * @deprecated Use {@link #insertIngredient(IIngredientComponentStorage, Object, TransactionContext)} instead.
-     */
-    @Deprecated
-    // TODO: remove in next major
-    public static <T, M> T insertIngredient(IIngredientComponentStorage<T, M> destination,
-                                            T instance, boolean simulate) {
-        try (var tx = Transaction.openRoot()) {
-            T result = insertIngredient(destination, instance, tx);
-            if (!simulate) tx.commit();
-            return result;
-        }
-    }
-
-    /**
-     * Insert an ingredient in a destination storage.
-     * If the instance does not completely fit into the destination,
-     * the remainder will be inserted into the source.
-     *
-     * The difference of this method compared to {@link IIngredientComponentStorage#insert(Object, TransactionContext)}
-     * is that this method returns the actually inserted ingredient
-     * instead of the remaining ingredient that was not inserted.
-     *
-     * @param source A source storage to insert fixup instances.
-     * @param destination A storage.
-     * @param instance An instance to insert.
-     * @param transaction The transaction context.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return The actual inserted ingredient in the transaction.
-     */
-    @Deprecated
-    // TODO: remove in next major
-    protected static <T, M> T insertIngredientRemainderFixup(IIngredientComponentStorage<T, M> source,
-                                                          IIngredientComponentStorage<T, M> destination,
-                                                          T instance, TransactionContext transaction) {
-        IIngredientMatcher<T, M> matcher = destination.getComponent().getMatcher();
-        T remaining = destination.insert(instance, transaction);
-        if (!matcher.isEmpty(remaining)) {
-            source.insert(remaining, transaction);
-        }
-        return matcher.withQuantity(instance, matcher.getQuantity(instance) - matcher.getQuantity(remaining));
-    }
-
-    /**
-     * Insert an ingredient in a destination storage.
-     * If not in simulation mode, and the instance does not completely fit into the destination,
-     * the remainder will be inserted into the source.
-     * If not everything can be re-inserted into the source,
-     * a warning will be emitted.
-     *
-     * The difference of this method compared to {@link IIngredientComponentStorage#insert(Object, boolean)}
-     * is that this method returns the actually inserted ingredient
-     * instead of the remaining ingredient that was not inserted.
-     *
-     * @param source A source storage to insert fixup instances.
-     * @param destination A storage.
-     * @param instance An instance to insert.
-     * @param simulate If the insertion should be simulated.
-     * @param <T> The instance type.
-     * @param <M> The matching condition parameter.
-     * @return The actual inserted ingredient, or would-be inserted ingredient if simulated.
-     * @throws InconsistentIngredientInsertionException When ingredients are lost due to inconsistent simulation.
-     * @deprecated Use {@link #insertIngredientRemainderFixup(IIngredientComponentStorage, IIngredientComponentStorage, Object, TransactionContext)} instead.
-     */
-    @Deprecated
-    // TODO: remove in next major
-    public static <T, M> T insertIngredientRemainderFixup(IIngredientComponentStorage<T, M> source,
-                                                          IIngredientComponentStorage<T, M> destination,
-                                                          T instance, boolean simulate)
-            throws InconsistentIngredientInsertionException {
-        try (var tx = Transaction.openRoot()) {
-            T result = insertIngredientRemainderFixup(source, destination, instance, tx);
-            if (!simulate) tx.commit();
-            return result;
-        }
     }
 
 
