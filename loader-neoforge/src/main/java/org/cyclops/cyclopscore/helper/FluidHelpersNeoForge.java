@@ -133,7 +133,7 @@ public class FluidHelpersNeoForge implements IFluidHelpersNeoForge {
 
             // Try picking up a fluid if we have space in the container
             if (fluidStack.isEmpty() || (fluidStack.getAmount() + IModHelpersNeoForge.get().getFluidHelpers().getBucketVolume() <= fluidHandler.getTankCapacity(0))) {
-                FluidStack resultPickUp = FluidUtil.tryPickupFluid(fluidHandler, player, world, blockPos, side);
+                FluidStack resultPickUp = FluidUtil.tryPickupFluid(fluidHandler, player, world, blockPos, side, null);
                 if (!resultPickUp.isEmpty()) {
                     return resultPickUp;
                 }
@@ -145,7 +145,7 @@ public class FluidHelpersNeoForge implements IFluidHelpersNeoForge {
                 drained = fluidHandler.extract(FluidResource.of(fluidStack), IModHelpersNeoForge.get().getFluidHelpers().getBucketVolume(), tx);
             }
             if (drained > 0) {
-                FluidStack resultPlace = FluidUtil.tryPlaceFluid(fluidHandler, player, world, hand, blockPos);
+                FluidStack resultPlace = FluidUtil.tryPlaceFluid(fluidHandler, player, world, blockPos, false, null);
                 if (!resultPlace.isEmpty()) {
                     return resultPlace;
                 }

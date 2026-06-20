@@ -1,16 +1,16 @@
 package org.cyclops.cyclopscore.client.particle;
 
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.DepthStencilState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.platform.DestFactor;
-import com.mojang.blaze3d.platform.SourceFactor;
+import com.mojang.blaze3d.platform.BlendFactor;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -29,14 +29,14 @@ public class ParticleBlur extends SingleQuadParticle {
             .withVertexShader("core/particle")
 //            .withFragmentShader("core/particle") // Was this
             .withFragmentShader(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "core/particle_blur"))
-            .withSampler("Sampler0")
-            .withSampler("Sampler2")
-            .withVertexFormat(DefaultVertexFormat.PARTICLE, VertexFormat.Mode.QUADS)
+            .withBindGroupLayout(BindGroupLayouts.SAMPLER0_SAMPLER2)
+            .withVertexBinding(0, DefaultVertexFormat.PARTICLE)
+            .withPrimitiveTopology(PrimitiveTopology.QUADS)
             .withDepthStencilState(DepthStencilState.DEFAULT)
             .buildSnippet();
     public static final RenderPipeline RENDER_PIPELINE = RenderPipeline.builder(PARTICLE_SNIPPET_BLUR) // Modified from RenderPipelines.TRANSLUCENT_PARTICLE
             .withLocation(Identifier.fromNamespaceAndPath(Reference.MOD_ID, "pipeline/translucent_particle_blur"))
-            .withColorTargetState(new ColorTargetState(new BlendFunction(SourceFactor.SRC_ALPHA, DestFactor.ONE)))
+            .withColorTargetState(new ColorTargetState(new BlendFunction(BlendFactor.SRC_ALPHA, BlendFactor.ONE)))
             .build();
     public static final SingleQuadParticle.Layer LAYER = new SingleQuadParticle.Layer(true, TextureAtlas.LOCATION_PARTICLES, RENDER_PIPELINE);
 

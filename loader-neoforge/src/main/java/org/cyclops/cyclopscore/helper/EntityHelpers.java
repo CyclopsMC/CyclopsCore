@@ -3,7 +3,6 @@ package org.cyclops.cyclopscore.helper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -13,9 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.EventHooks;
 
-import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Helpers for entities.
@@ -60,20 +57,18 @@ public class EntityHelpers {
     /**
      * Spawns the creature specified by the entity name in the location specified by the last three parameters.
      * @param world The world.
-     * @param entityName The name of the entity.
+     * @param entityType The entity type.
      * @param x X coordinate.
      * @param y Y coordinate.
      * @param z Z coordinate.
      * @param spawnReason The spawn reason
      * @return the entity that was spawned.
      */
-    public static Optional<Entity> spawnEntity(Level world, @Nullable Identifier entityName, double x, double y, double z, EntitySpawnReason spawnReason) {
-        return EntityType.byString(entityName.toString()).map((type) -> {
-            Entity entity = type.create(world, spawnReason);
-            entity.setPos(x, y, z);
-            world.addFreshEntity(entity);
-            return entity;
-        });
+    public static Entity spawnEntity(Level world, EntityType<?> entityType, double x, double y, double z, EntitySpawnReason spawnReason) {
+        Entity entity = entityType.create(world, spawnReason);
+        entity.setPos(x, y, z);
+        world.addFreshEntity(entity);
+        return entity;
     }
 
     /**

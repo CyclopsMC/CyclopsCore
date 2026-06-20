@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.config.extendedconfig;
 
-import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.triggers.CriterionTrigger;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import org.cyclops.cyclopscore.config.ConfigurableTypeCommon;

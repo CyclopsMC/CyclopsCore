@@ -11,10 +11,8 @@ public class StructureHelpersNeoForge extends StructureHelpersCommon implements 
 
     @Override
     public void addToStructureTemplatePool(Identifier structureTemplatePool, Identifier structureTemplate) {
-        NeoForge.EVENT_BUS.addListener((TagsUpdatedEvent event) -> {
-            if (event.getUpdateCause() == TagsUpdatedEvent.UpdateCause.SERVER_DATA_LOAD) {
-                addToStructureTemplatePool(structureTemplatePool, structureTemplate, event.getLookupProvider());
-            }
+        NeoForge.EVENT_BUS.addListener((TagsUpdatedEvent.ServerDataLoad event) -> {
+            addToStructureTemplatePool(structureTemplatePool, structureTemplate, event.getRegistries());
         });
     }
 }

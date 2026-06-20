@@ -6,8 +6,8 @@ import net.minecraft.core.HolderOwner;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import org.cyclops.cyclopscore.holder.IHolderCommon;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +28,8 @@ import java.util.stream.Stream;
  *
  * @param <T> The type of object being held by this DeferredHolder.
  */
-public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderCommon<R> {
+// TODO: Holder is sealed, so we can not just implement it anymore. Figure out how to handle this.
+public class DeferredHolderCommon<R, T extends R> implements /*Holder<R>, */ IHolderCommon<R> {
 
     // Modloaders such as Forge override this, to also gain access to IForgeRegistry's.
     public static Function<ResourceKey<?>, Holder<?>> BIND_OVERRIDE = null;
@@ -103,7 +104,7 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
      * @throws NullPointerException  If the underlying Holder has not been populated (the target object is not registered).
      */
     @SuppressWarnings("unchecked")
-    @Override
+    // @Override // TODO
     public T value() {
         bind(true);
         if (this.holder == null) {
@@ -177,7 +178,7 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        return obj instanceof Holder<?> h && h.kind() == Kind.REFERENCE && h.unwrapKey().orElseThrow() == this.key;
+        return obj instanceof Holder<?> h && h.kind() == Holder.Kind.REFERENCE && h.unwrapKey().orElseThrow() == this.key;
     }
 
     @Override
@@ -196,7 +197,7 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
      * <p>If {@code true}, the underlying object was added to the registry,
      * and {@link #value()} can be called.
      */
-    @Override
+    // @Override // TODO
     public boolean isBound() {
         bind(false);
         return this.holder != null && this.holder.isBound();
@@ -205,7 +206,7 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
     /**
      * {@return true if the passed Identifier is the same as the ID of the target object}
      */
-    @Override
+    // @Override // TODO
     public boolean is(Identifier id) {
         return id.equals(this.key.identifier());
     }
@@ -213,7 +214,7 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
     /**
      * {@return true if the passed ResourceKey is the same as this holder's resource key}
      */
-    @Override
+    // @Override // TODO
     public boolean is(ResourceKey<R> key) {
         return key == this.key;
     }
@@ -223,7 +224,7 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
      *
      * @return {@code true} if the filter matches {@linkplain #getKey() this DH's resource key}
      */
-    @Override
+    // @Override // TODO
     public boolean is(Predicate<ResourceKey<R>> filter) {
         return filter.test(this.key);
     }
@@ -231,7 +232,7 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
     /**
      * {@return true if this holder is a member of the passed tag}
      */
-    @Override
+    // @Override // TODO
     public boolean is(TagKey<R> tag) {
         bind(false);
         return this.holder != null && this.holder.is(tag);
@@ -240,7 +241,7 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
     /**
      * {@return {@code true} if the {@code holder} is the same as this holder}
      */
-    @Override
+    // @Override // TODO
     @Deprecated
     public boolean is(Holder<R> holder) {
         bind(false);
@@ -261,7 +262,7 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
      *
      * <p>If the underlying object is not {@linkplain #isBound() bound} yet, and empty stream is returned.
      */
-    @Override
+    // @Override // TODO
     public Stream<TagKey<R>> tags() {
         bind(false);
         return this.holder != null ? this.holder.tags() : Stream.empty();
@@ -272,7 +273,7 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
      *
      * This method is implemented for {@link Holder} compatibility, but {@link #getKey()} should be preferred.
      */
-    @Override
+    // @Override // TODO
     public Either<ResourceKey<R>, R> unwrap() {
         // Holder.Reference always returns the key, do the same here.
         return Either.left(this.key);
@@ -284,29 +285,29 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
      * @return a present optional containing {@linkplain #getKey() the resource key of this holder}
      * This method is implemented for {@link Holder} compatibility, but {@link #getKey()} should be preferred.
      */
-    @Override
+    // @Override // TODO
     public Optional<ResourceKey<R>> unwrapKey() {
         return Optional.of(this.key);
     }
 
-    @Override
+    // @Override // TODO
     public DataComponentMap components() {
         bind(true);
         return this.holder != null ? this.holder.components() : DataComponentMap.EMPTY;
     }
 
-    @Override
+    // @Override // TODO
     public boolean areComponentsBound() {
         bind(false);
         return this.holder != null && this.holder.areComponentsBound();
     }
 
-    @Override
-    public Kind kind() {
-        return Kind.REFERENCE;
+    // @Override // TODO
+    public Holder.Kind kind() {
+        return Holder.Kind.REFERENCE;
     }
 
-    @Override
+    // @Override // TODO
     public boolean canSerializeIn(HolderOwner<R> owner) {
         bind(false);
         return this.holder != null && this.holder.canSerializeIn(owner);
@@ -315,6 +316,12 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
     @Override
     public Holder<R> getDelegate() {
         bind(false);
-        return this.holder != null ? IHolderCommon.getDelegate(this.holder) : this;
+        var tmp = Holder.Reference.createStandAlone(new HolderOwner<R>() { // TODO: this was just "this" when Holder was not sealed.
+            @Override
+            public boolean canSerializeIn(HolderOwner<R> context) {
+                return false;
+            }
+        }, key);
+        return this.holder != null ? IHolderCommon.getDelegate(this.holder) : tmp;
     }
 }

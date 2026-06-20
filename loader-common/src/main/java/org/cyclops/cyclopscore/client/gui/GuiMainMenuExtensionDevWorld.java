@@ -1,7 +1,6 @@
 package org.cyclops.cyclopscore.client.gui;
 
 import net.minecraft.CrashReport;
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.ErrorScreen;
@@ -20,6 +19,7 @@ import net.minecraft.server.packs.repository.ServerPacksSource;
 import net.minecraft.server.permissions.LevelBasedPermissionSet;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FileUtil;
+import net.minecraft.util.Util;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.DataPackConfig;
@@ -31,11 +31,7 @@ import net.minecraft.world.level.levelgen.WorldDimensions;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
-import net.minecraft.world.level.storage.LevelDataAndDimensions;
-import net.minecraft.world.level.storage.LevelStorageException;
-import net.minecraft.world.level.storage.LevelStorageSource;
-import net.minecraft.world.level.storage.LevelSummary;
-import net.minecraft.world.level.storage.PrimaryLevelData;
+import net.minecraft.world.level.storage.*;
 import org.apache.logging.log4j.Level;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 
@@ -82,12 +78,12 @@ public class GuiMainMenuExtensionDevWorld {
 
                             } catch (InterruptedException | ExecutionException | TimeoutException | LevelStorageException e) {
                                 CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.ERROR, "Couldn't load level list" + e.getMessage());
-                                mc.setScreen(new ErrorScreen(Component.translatable("selectWorld.unable_to_load"), Component.literal(e.getMessage())));
+                                mc.gui.setScreen(new ErrorScreen(Component.translatable("selectWorld.unable_to_load"), Component.literal(e.getMessage())));
                             }
 
                             if (devWorldSummary != null && mc.getLevelSource().levelExists(devWorldSummary.getLevelId())) {
                                 mc.setScreenAndShow(new GenericMessageScreen(Component.translatable("selectWorld.data_read")));
-                                mc.createWorldOpenFlows().openWorld(devWorldSummary.getLevelId(), () -> minecraft.setScreen(screen));
+                                mc.createWorldOpenFlows().openWorld(devWorldSummary.getLevelId(), () -> minecraft.gui.setScreen(screen));
                                 return;
                             }
                         }
@@ -125,7 +121,7 @@ public class GuiMainMenuExtensionDevWorld {
                             levelSourceAccess = mc.getLevelSource().validateAndCreateAccess(saveName);
                         } catch (Exception e) {
                             CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.ERROR, "Failed to access world storage: " + e.getMessage());
-                            mc.setScreen(screen);
+                            mc.gui.setScreen(screen);
                             return;
                         }
                         PackRepository packRepository = ServerPacksSource.createPackRepository(levelSourceAccess);
@@ -152,10 +148,10 @@ public class GuiMainMenuExtensionDevWorld {
                         } catch (Exception e) {
                             CyclopsCoreInstance.MOD.getLoggerHelper().log(Level.ERROR, "Failed to create world: " + e.getMessage());
                             levelSourceAccess.safeClose();
-                            mc.setScreen(screen);
+                            mc.gui.setScreen(screen);
                         }
                     })
-                    .pos(screen.width / 2 + 102, screen.height / 4 + 48)
+                    .pos(screen.width / 2 + 102, screen.height / 4 + 56)
                     .size(58, 20)
                     .build();
             screen.addRenderableWidget(buttonBuilt);
