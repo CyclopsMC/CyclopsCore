@@ -175,6 +175,15 @@ public class DeferredHolderCommon<R, T extends R> implements /*Holder<R>, */ IHo
         return this.key;
     }
 
+    // TODO: Added as workaround for not implementing Holder directly. Not sure yet if we want this permanently.
+    public Holder<R> getHolder() {
+        bind(true);
+        if (holder == null) {
+            throw new IllegalStateException("Trying to access unbound holder: " + this.key);
+        }
+        return holder;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
