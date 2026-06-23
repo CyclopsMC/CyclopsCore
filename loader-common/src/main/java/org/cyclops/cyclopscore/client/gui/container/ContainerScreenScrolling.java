@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.container;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.CharacterEvent;
@@ -13,7 +14,6 @@ import net.minecraft.world.inventory.Slot;
 import org.cyclops.cyclopscore.client.gui.component.WidgetScrollBar;
 import org.cyclops.cyclopscore.client.gui.component.input.WidgetTextFieldExtended;
 import org.cyclops.cyclopscore.inventory.container.ScrollingInventoryContainer;
-import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 
@@ -97,7 +97,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
 
     @Override
     public boolean keyPressed(KeyEvent key) {
-        if (isSearchEnabled() && this.searchField.isFocused() && key.key() != GLFW.GLFW_KEY_ESCAPE) {
+        if (isSearchEnabled() && this.searchField.isFocused() && key.key() != InputConstants.KEY_ESCAPE) {
             if (this.searchField.keyPressed(key)) {
                 this.updateSearch(searchField.getValue());
             }
