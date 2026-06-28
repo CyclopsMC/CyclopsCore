@@ -1,0 +1,4 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix capacity-based fluid capability not taking into account stack size

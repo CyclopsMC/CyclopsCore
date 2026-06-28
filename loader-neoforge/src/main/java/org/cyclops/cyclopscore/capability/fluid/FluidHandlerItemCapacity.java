@@ -63,7 +63,7 @@ public class FluidHandlerItemCapacity extends ItemAccessFluidHandler implements 
 
     @Override
     public int getTankCapacity(int tank) {
-        return itemAccess.getResource().getOrDefault(RegistryEntries.COMPONENT_CAPACITY, this.capacity);
+        return itemAccess.getAmount() * itemAccess.getResource().getOrDefault(RegistryEntries.COMPONENT_CAPACITY, this.capacity);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class FluidHandlerItemCapacity extends ItemAccessFluidHandler implements 
 
     @Override
     public long getCapacityAsLong(int index, FluidResource resource) {
-        return getTankCapacity(index);
+        return (long) itemAccess.getAmount() * itemAccess.getResource().getOrDefault(RegistryEntries.COMPONENT_CAPACITY, this.capacity);
     }
 
     @Override
