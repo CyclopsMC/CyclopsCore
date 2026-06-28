@@ -1,8 +1,14 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.30.1"></a>
+## [26.1.2-1.30.1](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.0...26.1.2-1.30.1) - 2026-06-28 14:08:16
+
+### Fixed
+* Fix capacity-based fluid capability not taking into account stack size
+
 <a name="26.1.2-1.30.0"></a>
-## [26.1.2-1.30.0](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.29.9...26.1.2-1.30.0) - 2026-06-14 13:02:01
+## [26.1.2-1.30.0](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.29.9...26.1.2-1.30.0) - 2026-06-14 13:02:01 +0200
 
 ### Added
 * Add SlotSingleIngredient
