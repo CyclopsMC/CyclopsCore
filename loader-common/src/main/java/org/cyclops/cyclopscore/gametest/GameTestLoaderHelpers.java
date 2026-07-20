@@ -22,8 +22,13 @@ import java.util.function.BiConsumer;
  */
 public class GameTestLoaderHelpers {
 
+    public static boolean areGameTestsGloballyEnabled() {
+        return Boolean.getBoolean("cyclopsmc.enabledGameTestsGlobal");
+    }
+
     public static boolean areGameTestsEnabled(String modId) {
-        return System.getProperty("neoforge.enabledGameTestNamespaces", "").contains(modId)
+        return areGameTestsGloballyEnabled()
+                || System.getProperty("neoforge.enabledGameTestNamespaces", "").contains(modId)
                 || System.getProperty("forge.enabledGameTestNamespaces", "").contains(modId)
                 || System.getProperty("cyclopsmc.enabledGameTestNamespaces", "").contains(modId);
     }
