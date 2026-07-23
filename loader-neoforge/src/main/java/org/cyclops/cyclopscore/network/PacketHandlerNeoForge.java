@@ -96,7 +96,10 @@ public final class PacketHandlerNeoForge implements IPacketHandler {
 
     @Override
     public void sendToPlayer(PacketBase packet, ServerPlayer player) {
-        PacketDistributor.sendToPlayer(player, packet);
+        if (!player.getProfile().name().orElse("missing").equals("test-mock-player")) {
+            // Don't send packets to the mock player, as it is not a real player and will throw exceptions.
+            PacketDistributor.sendToPlayer(player, packet);
+        }
     }
 
     @Override
