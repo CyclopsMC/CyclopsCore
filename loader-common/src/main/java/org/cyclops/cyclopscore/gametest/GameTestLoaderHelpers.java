@@ -18,7 +18,8 @@ import java.util.List;
 public class GameTestLoaderHelpers {
 
     public static boolean areGameTestsGloballyEnabled() {
-        return Boolean.getBoolean("cyclopsmc.enabledGameTestsGlobal");
+        return Boolean.getBoolean("cyclopsmc.enabledGameTestsGlobal")
+                || System.getenv().getOrDefault("CYCLOPSMC_ENABLEDGAMETESTSGLOBAL", "false").equalsIgnoreCase("true");
     }
 
     public static boolean areGameTestsEnabled(String modId) {
