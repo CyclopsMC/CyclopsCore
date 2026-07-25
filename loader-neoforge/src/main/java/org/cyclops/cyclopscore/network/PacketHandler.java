@@ -97,10 +97,7 @@ public final class PacketHandler implements IPacketHandler {
 
     @Override
     public void sendToPlayer(PacketBase packet, ServerPlayer player) {
-        if (!player.getProfile().name().orElse("missing").equals("test-mock-player")) {
-            // Don't send packets to the mock player, as it is not a real player and will throw exceptions.
-            PacketDistributor.sendToPlayer(player, packet);
-        }
+        PacketDistributor.sendToPlayer(player, packet);
     }
 
     /**
