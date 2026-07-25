@@ -3,7 +3,12 @@
   "required": true,
   "compatibilityLevel": "JAVA_17",
   "package": "org.cyclops.cyclopscore.mixin",
-  "mixins": ["MixinHolder", "MixinRegistry", "MixinRegistryDataLoader"],
+  "mixins": [
+    "MixinForgeGameTestHooks",
+    "MixinHolder",
+    "MixinRegistry",
+    "MixinRegistryDataLoader"
+  ],
   "client": [],
   "setSourceFile": true
 }
