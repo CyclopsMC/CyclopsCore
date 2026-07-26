@@ -5,6 +5,7 @@
   "package": "org.cyclops.cyclopscore.mixin",
   "mixins": [
     "MixinGameTestHooks",
+    "MixinNetworkRegistry",
     "MixinPacketDistributor"
   ],
   "client": [
