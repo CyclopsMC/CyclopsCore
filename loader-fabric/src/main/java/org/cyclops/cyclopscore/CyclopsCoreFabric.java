@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -22,6 +23,7 @@ import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
 import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
+import org.cyclops.cyclopscore.gametest.GameTestLoaderHelpers;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
 import org.cyclops.cyclopscore.init.ModBaseFabric;
 import org.cyclops.cyclopscore.inventory.IRegistryInventoryLocation;
@@ -50,6 +52,11 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
         });
 
         getRegistryManager().addRegistry(IRegistryInventoryLocation.class, RegistryInventoryLocation.getInstance());
+
+        // Force game test command to be registered
+        if (GameTestLoaderHelpers.areGameTestsGloballyEnabled()) {
+            SharedConstants.IS_RUNNING_IN_IDE = true;
+        }
     }
 
     @Override
