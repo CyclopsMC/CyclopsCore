@@ -6,12 +6,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerConfig;
-import org.cyclops.cyclopscore.advancement.criterion.GuiContainerOpenTriggerEventHooksFabric;
-import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerConfig;
-import org.cyclops.cyclopscore.advancement.criterion.ItemCraftedTriggerTriggerEventHooksFabric;
-import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerConfig;
-import org.cyclops.cyclopscore.advancement.criterion.ModItemObtainedTriggerEventHooksFabric;
+import org.cyclops.cyclopscore.advancement.criterion.*;
 import org.cyclops.cyclopscore.client.particle.ParticleBlurConfig;
 import org.cyclops.cyclopscore.client.particle.ParticleDropColoredConfig;
 import org.cyclops.cyclopscore.command.CommandDebug;
@@ -56,6 +51,7 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
         // Force game test command to be registered
         if (GameTestLoaderHelpers.areGameTestsGloballyEnabled()) {
             SharedConstants.IS_RUNNING_IN_IDE = true;
+            SharedConstants.CHECK_DATA_FIXER_SCHEMA = false;
         }
     }
 
