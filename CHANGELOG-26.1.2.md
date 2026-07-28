@@ -1,8 +1,16 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.30.2"></a>
+## [26.1.2-1.30.2](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.1...26.1.2-1.30.2) - 2026-07-28 16:55:07
+
+### Fixed
+* Fix EntityHelpers not spawning any entities
+  Closes CyclopsMC/EvilCraft#1239
+  Regression due to CyclopsMC/EvilCraft#1102
+
 <a name="26.1.2-1.30.1"></a>
-## [26.1.2-1.30.1](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.0...26.1.2-1.30.1) - 2026-06-28 14:08:16
+## [26.1.2-1.30.1](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.0...26.1.2-1.30.1) - 2026-06-28 14:08:16 +0200
 
 ### Fixed
 * Fix capacity-based fluid capability not taking into account stack size
