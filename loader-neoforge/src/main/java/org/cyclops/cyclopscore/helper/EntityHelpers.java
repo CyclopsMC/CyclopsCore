@@ -84,12 +84,9 @@ public class EntityHelpers {
      * @return If the entity was spawned.
      */
     public static boolean spawnEntity(ServerLevelAccessor world, Mob entityLiving, EntitySpawnReason spawnReason) {
-        SpawnGroupData spawnData = EventHooks.finalizeMobSpawn(entityLiving, world, world.getCurrentDifficultyAt(entityLiving.blockPosition()), spawnReason, null);
-        if (spawnData != null) {
-            world.addFreshEntity(entityLiving);
-            return true;
-        }
-        return false;
+        EventHooks.finalizeMobSpawn(entityLiving, world, world.getCurrentDifficultyAt(entityLiving.blockPosition()), spawnReason, null);
+        world.addFreshEntity(entityLiving);
+        return true;
     }
 
     /**

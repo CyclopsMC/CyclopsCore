@@ -1,8 +1,16 @@
 # Changelog for Minecraft 1.21.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.21.1-1.29.2"></a>
+## [1.21.1-1.29.2](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.1...1.21.1-1.29.2) - 2026-07-28 16:53:34
+
+### Fixed
+* Fix EntityHelpers not spawning any entities
+  Closes CyclopsMC/EvilCraft#1239
+  Regression due to CyclopsMC/EvilCraft#1102
+
 <a name="1.21.1-1.29.1"></a>
-## [1.21.1-1.29.1](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.0...1.21.1-1.29.1) - 2026-04-28 19:39:06
+## [1.21.1-1.29.1](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.0...1.21.1-1.29.1) - 2026-04-28 19:39:06 +0200
 
 ### Fixed
 * Fix active arrows on disabled WidgetNumberFields
