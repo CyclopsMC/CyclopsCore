@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix EntityHelpers not spawning any entities
+  Closes CyclopsMC/EvilCraft#1239
+  Regression due to CyclopsMC/EvilCraft#1102
