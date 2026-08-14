@@ -80,8 +80,8 @@ public abstract class IngredientMapWrappedAdapter<T, M, V, C extends Map<Ingredi
 
     @Override
     public Iterator<Map.Entry<T, V>> iterator() {
-        return Iterators.transform(this.collection.keySet().iterator(),
-                key -> new AbstractMap.SimpleEntry<>(key.getInstance(), this.collection.get(key)));
+        return Iterators.transform(this.collection.entrySet().iterator(),
+                entry -> new AbstractMap.SimpleEntry<>(entry.getKey().getInstance(), entry.getValue()));
     }
 
 }
