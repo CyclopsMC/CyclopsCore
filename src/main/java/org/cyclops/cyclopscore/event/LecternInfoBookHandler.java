@@ -26,7 +26,7 @@ public class LecternInfoBookHandler {
                 && blockState.is(Blocks.LECTERN)
                 && blockEntity instanceof LecternBlockEntity lecternBlockEntity
                 && lecternBlockEntity.getBook().getItem() instanceof ItemGui itemGui) {
-            if (event.getEntity().isCrouching()) {
+            if (event.getEntity().isSecondaryUseActive()) {
                 // Remove book from lectern if sneaking
                 ItemStackHelpers.spawnItemStack(event.getLevel(), event.getPos().relative(blockState.getValue(LecternBlock.FACING)), lecternBlockEntity.getBook().copy());
                 LecternBlock.resetBookState(event.getEntity(), event.getLevel(), event.getPos(), blockState, false);
