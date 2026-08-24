@@ -39,8 +39,10 @@ public interface IBlockGui {
     }
 
     public static InteractionResult onBlockActivatedHook(IBlockGui block, IBlockContainerProvider blockContainerProvider, BlockState blockState, Level world, BlockPos blockPos, Player player, BlockHitResult rayTraceResult) {
-        // Drop through if the player is sneaking
-        if (player.isCrouching()) {
+        // Drop through if the player is sneaking.
+        // Note that we can not check isCrouching here, as that is pose-based,
+        // and is also true when the player is forced into a crouching pose by a low ceiling.
+        if (player.isSecondaryUseActive()) {
             return InteractionResult.PASS;
         }
 
