@@ -26,8 +26,10 @@ public class LecternInfoBookHandler {
                 && blockState.is(Blocks.LECTERN)
                 && blockEntity instanceof LecternBlockEntity lecternBlockEntity
                 && lecternBlockEntity.getBook().getItem() instanceof ItemGui itemGui) {
-            if (entity.isCrouching()) {
-                // Remove book from lectern if sneaking
+            // Remove book from lectern if sneaking.
+            // Note that we can not check isCrouching here, as that is pose-based,
+            // and is also true when the player is forced into a crouching pose by a low ceiling.
+            if (entity.isSecondaryUseActive()) {
                 IModHelpers.get().getItemStackHelpers().spawnItemStack(level, pos.relative(blockState.getValue(LecternBlock.FACING)), lecternBlockEntity.getBook().copy());
                 LecternBlock.resetBookState(entity, level, pos, blockState, false);
                 lecternBlockEntity.clearContent();

@@ -1,8 +1,15 @@
 # Changelog for Minecraft 1.21.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.21.1-1.29.3"></a>
+## [1.21.1-1.29.3](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.2...1.21.1-1.29.3) - 2026-08-24 17:28:30
+
+### Fixed
+* Fix GUIs not opening when player is forced into a crouching pose (#233)
+  Closes CyclopsMC/IntegratedDynamics#1695
+
 <a name="1.21.1-1.29.2"></a>
-## [1.21.1-1.29.2](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.1...1.21.1-1.29.2) - 2026-07-28 16:53:34
+## [1.21.1-1.29.2](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.1...1.21.1-1.29.2) - 2026-07-28 16:53:34 +0200
 
 ### Fixed
 * Fix EntityHelpers not spawning any entities
