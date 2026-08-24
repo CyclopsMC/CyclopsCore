@@ -1,8 +1,15 @@
 # Changelog for Minecraft 1.20.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.20.1-1.22.2"></a>
+## [1.20.1-1.22.2](/compare/1.20.1-1.22.1...1.20.1-1.22.2) - 2026-08-24 17:16:25
+
+### Fixed
+* Fix GUIs not opening when player is forced into a crouching pose (#233)
+  Closes CyclopsMC/IntegratedDynamics#1695
+
 <a name="1.20.1-1.22.1"></a>
-## [1.20.1-1.22.1](/compare/1.20.1-1.22.0...1.20.1-1.22.1) - 2026-04-28 19:36:58
+## [1.20.1-1.22.1](/compare/1.20.1-1.22.0...1.20.1-1.22.1) - 2026-04-28 19:36:58 +0200
 
 ### Fixed
 * Fix active arrows on disabled WidgetNumberFields

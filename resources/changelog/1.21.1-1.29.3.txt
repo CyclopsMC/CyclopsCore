@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix GUIs not opening when player is forced into a crouching pose (#233)
+  Closes CyclopsMC/IntegratedDynamics#1695
