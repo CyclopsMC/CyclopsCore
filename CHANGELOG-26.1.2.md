@@ -1,8 +1,15 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.30.3"></a>
+## [26.1.2-1.30.3](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.2...26.1.2-1.30.3) - 2026-08-24 17:30:29
+
+### Fixed
+* Fix GUIs not opening when player is forced into a crouching pose (#233)
+  Closes CyclopsMC/IntegratedDynamics#1695
+
 <a name="26.1.2-1.30.2"></a>
-## [26.1.2-1.30.2](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.1...26.1.2-1.30.2) - 2026-07-28 16:55:07
+## [26.1.2-1.30.2](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.1...26.1.2-1.30.2) - 2026-07-28 16:55:07 +0200
 
 ### Fixed
 * Fix EntityHelpers not spawning any entities
