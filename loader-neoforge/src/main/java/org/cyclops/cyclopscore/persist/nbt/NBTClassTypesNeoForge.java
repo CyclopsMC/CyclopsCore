@@ -40,7 +40,7 @@ public class NBTClassTypesNeoForge {
 
             @Override
             public void writePersistedField(String name, DimPos object, ValueOutput tag) {
-                ValueOutput dimPos = tag.child("dim");
+                ValueOutput dimPos = tag.child(name);
                 dimPos.putString("dim", object.getLevel());
                 dimPos.putInt("x", object.getBlockPos().getX());
                 dimPos.putInt("y", object.getBlockPos().getY());
@@ -49,7 +49,10 @@ public class NBTClassTypesNeoForge {
 
             @Override
             public DimPos readPersistedField(String name, ValueInput tag) {
-                ValueInput dimPos = tag.child(name).orElseThrow();
+                ValueInput dimPos = tag.child(name)
+                        // Fallback for data that was written under a hardcoded key by older versions
+                        .or(() -> tag.child("dim"))
+                        .orElseThrow();
                 String dimensionName = dimPos.getString("dim").orElseThrow();
                 ResourceKey<Level> dimensionType = ResourceKey.create(Registries.DIMENSION, Identifier.parse(dimensionName));
                 return DimPos.of(dimensionType, new BlockPos(dimPos.getInt("x").orElseThrow(), dimPos.getInt("y").orElseThrow(), dimPos.getInt("z").orElseThrow()));
