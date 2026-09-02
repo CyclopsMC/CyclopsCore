@@ -40,7 +40,7 @@ public abstract class ScrollingInventoryContainer<E> extends InventoryContainer 
         this.unfilteredItems = Lists.newArrayList(items);
         this.filteredItems = Lists.newLinkedList();
         this.visibleItems = (List<E>) Arrays.asList(new Object[getPageSize() * getColumns()]);
-        for(int i = 0; i < getPageSize(); i++) {
+        for(int i = 0; i < this.visibleItems.size(); i++) {
             this.visibleItems.set(i, null);
         }
         this.itemSearchPredicate = filterer;
@@ -114,11 +114,11 @@ public abstract class ScrollingInventoryContainer<E> extends InventoryContainer 
 
     /**
      * Check if the given element is visible.
-     * @param row The row the the given element is at.
+     * @param row The index of the given element within the visible elements.
      * @return If it is visible.
      */
     public boolean isElementVisible(int row) {
-        return row < getPageSize() && getVisibleElement(row) != null;
+        return row < getPageSize() * getColumns() && getVisibleElement(row) != null;
     }
 
     /**
