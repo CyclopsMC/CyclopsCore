@@ -296,6 +296,10 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
 
         @Override
         public void renderTooltip(GuiGraphics guiGraphics, Font font, int mx, int my) {
+            if (getElement() == null) {
+                // Buttons for empty recipe slots have no element, and are never positioned
+                return;
+            }
             RecipeAppendix.renderItemTooltip(gui, guiGraphics, getX(), getY(), getElement(), mx, my);
         }
 
@@ -319,6 +323,10 @@ public abstract class RecipeAppendix<T extends Recipe<?>> extends SectionAppendi
 
         @Override
         public void renderTooltip(GuiGraphics guiGraphics, Font font, int mx, int my) {
+            if (getElement() == null) {
+                // Buttons for empty recipe slots have no element, and are never positioned
+                return;
+            }
             RecipeAppendix.renderFluidTooltip(gui, guiGraphics, getX(), getY(), getElement(), mx, my);
         }
     }

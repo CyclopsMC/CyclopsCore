@@ -1,0 +1,4 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix infobook crash when hovering the top-left corner on recipe pages (#237)
