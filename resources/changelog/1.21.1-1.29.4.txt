@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix infobook crash when hovering the top-left corner on recipe pages (#237)
+* Make the scrolling container reach the last row of a multi-column grid (#236)
