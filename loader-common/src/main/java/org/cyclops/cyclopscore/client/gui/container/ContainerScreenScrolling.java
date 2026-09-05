@@ -9,6 +9,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import org.cyclops.cyclopscore.client.gui.component.WidgetScrollBar;
@@ -65,7 +66,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
             this.scrollbar = new WidgetScrollBar(this.leftPos + getScrollX(), this.topPos + getScrollY(), getScrollHeight(),
                     Component.translatable("gui.cyclopscore.scrollbar"), getMenu(),
                     getMenu().getPageSize(), getScrollRegion());
-            this.scrollbar.setTotalRows(getMenu().getFilteredItemCount() / getMenu().getColumns());
+            this.scrollbar.setTotalRows(getTotalRows());
         } else {
             this.scrollbar.setX(this.leftPos + getScrollX());
             this.scrollbar.setY(this.topPos + getScrollY());
@@ -156,8 +157,20 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
 
     protected void updateSearch(String searchString) {
         getMenu().updateFilter(searchString);
-        this.scrollbar.setTotalRows(getMenu().getFilteredItemCount() / getMenu().getColumns());
+        this.scrollbar.setTotalRows(getTotalRows());
         this.scrollbar.scrollTo(0);
+    }
+
+    /**
+     * The number of rows that the filtered elements occupy.
+     *
+     * This is rounded up, as a last row that is only partially filled
+     * must still be reachable by the scrollbar.
+     *
+     * @return The number of rows.
+     */
+    protected int getTotalRows() {
+        return Mth.ceil((double) getMenu().getFilteredItemCount() / getMenu().getColumns());
     }
 
     public EditBox getSearchField() {

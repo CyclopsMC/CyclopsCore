@@ -1,8 +1,15 @@
 # Changelog for Minecraft 1.21.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.21.1-1.29.4"></a>
+## [1.21.1-1.29.4](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.3...1.21.1-1.29.4) - 2026-09-05 12:43:00
+
+### Fixed
+* Fix infobook crash when hovering the top-left corner on recipe pages (#237)
+* Make the scrolling container reach the last row of a multi-column grid (#236)
+
 <a name="1.21.1-1.29.3"></a>
-## [1.21.1-1.29.3](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.2...1.21.1-1.29.3) - 2026-08-24 17:28:30
+## [1.21.1-1.29.3](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.2...1.21.1-1.29.3) - 2026-08-24 17:28:30 +0200
 
 ### Fixed
 * Fix GUIs not opening when player is forced into a crouching pose (#233)

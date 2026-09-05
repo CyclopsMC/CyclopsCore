@@ -1,8 +1,16 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.30.4"></a>
+## [26.1.2-1.30.4](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.3...26.1.2-1.30.4) - 2026-09-05 12:47:48
+
+### Fixed
+* Make the scrolling container reach the last row of a multi-column grid (#236)
+* Fix infobook crash when hovering the top-left corner on recipe pages (#237)
+* Fix DimPos being persisted under a hardcoded NBT key (#235)
+
 <a name="26.1.2-1.30.3"></a>
-## [26.1.2-1.30.3](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.2...26.1.2-1.30.3) - 2026-08-24 17:30:29
+## [26.1.2-1.30.3](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.2...26.1.2-1.30.3) - 2026-08-24 17:30:29 +0200
 
 ### Fixed
 * Fix GUIs not opening when player is forced into a crouching pose (#233)
