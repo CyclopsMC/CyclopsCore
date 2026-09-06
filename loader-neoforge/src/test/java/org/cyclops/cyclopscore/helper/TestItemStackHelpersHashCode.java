@@ -96,6 +96,32 @@ public class TestItemStackHelpersHashCode {
     }
 
     /**
+     * Stacks carrying no component patch skip the component hash, so this pins that they still
+     * spread over items and counts, and still agree with equality.
+     */
+    @Test
+    public void testPlainStacksSpreadOverItemsAndCounts() {
+        assertThat(hash(new ItemStack(ITEM1, 1)), is(not(hash(new ItemStack(ITEM2, 1)))));
+        assertThat(hash(new ItemStack(ITEM1, 1)), is(not(hash(new ItemStack(ITEM1, 2)))));
+        assertThat(hash(new ItemStack(ITEM1, 5)), is(hash(new ItemStack(ITEM1, 5))));
+    }
+
+    /**
+     * A stack whose only component is set back to its default carries no patch any more, so it is
+     * equal to the plain stack and has to hash like one.
+     */
+    @Test
+    public void testComponentSetBackToDefaultHashesAsPlain() {
+        ItemStack plain = new ItemStack(ITEM1);
+        ItemStack restored = new ItemStack(ITEM1);
+        restored.set(DataComponents.CUSTOM_NAME, Component.literal("a"));
+        assertThat(hash(restored), is(not(hash(plain))));
+        restored.set(DataComponents.CUSTOM_NAME, null);
+        assertThat(ItemStack.isSameItemSameComponents(plain, restored), is(true));
+        assertThat(hash(restored), is(hash(plain)));
+    }
+
+    /**
      * The hash may never distinguish two stacks that count as equal, or lookups miss.
      */
     @Test
