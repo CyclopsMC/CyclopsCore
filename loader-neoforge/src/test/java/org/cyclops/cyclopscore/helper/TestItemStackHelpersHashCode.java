@@ -41,8 +41,10 @@ public class TestItemStackHelpersHashCode {
         ((Holder.Reference<Item>) ITEM2.builtInRegistryHolder()).bindComponents(DataComponentMap.EMPTY);
     }
 
+    private static final IItemStackHelpers HELPERS = new ItemStackHelpersNeoForge();
+
     private static int hash(ItemStack stack) {
-        return new ItemStackHelpersCommon() {}.getItemStackHashCode(stack);
+        return HELPERS.getItemStackHashCode(stack);
     }
 
     private static ItemStack named(Item item, int count, String name) {
