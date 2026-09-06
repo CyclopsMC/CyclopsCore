@@ -97,9 +97,14 @@ public abstract class ItemStackHelpersCommon implements IItemStackHelpers {
         int result = 1;
         result = 37 * result + stack.getCount();
         result = 37 * result + stack.getItem().hashCode();
-        // Tags can be very large, and expensive to calculate, which is not needed for hashCodes.
-        // CompoundTag tagCompound = stack.getTag();
-        // result = 37 * result + (tagCompound != null ? tagCompound.hashCode() : 0);
+        // Data components have to be part of the hash, because equality compares them.
+        // Leaving them out makes every stack of the same item hash alike, so hash-based
+        // ingredient collections collapse into one bucket per item and every lookup turns
+        // into a scan doing full component comparisons. This is what made large storage
+        // networks scale quadratically. The exclusion dates from NBT tags, which were
+        // expensive to hash; component maps are not.
+        // Mirrors ItemStack.hashItemAndComponents, which vanilla uses for the same purpose.
+        result = 37 * result + stack.getComponents().hashCode();
         // Not factoring in capability compatibility. Doing so would require either reflection (slow)
         // or an access transformer, it's highly unlikely that it'd be the only difference between
         // many ItemStacks in practice, and occasional hash code collisions are okay.
