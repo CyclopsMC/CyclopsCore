@@ -115,11 +115,36 @@ public abstract class ItemStackHelpersCommon implements IItemStackHelpers {
         // into a scan doing full component comparisons. This is what made large storage
         // networks scale quadratically. The exclusion dates from NBT tags, which were
         // expensive to hash; component maps are not.
-        // Mirrors ItemStack.hashItemAndComponents, which vanilla uses for the same purpose.
-        result = 37 * result + stack.getComponents().hashCode();
+        //
+        // Only stacks carrying a patch need it. A component map hashes its prototype alongside its
+        // patch, and the prototype is the item's defaults, which the item hashed above already
+        // stands for. Hashing it again distinguishes nothing, and it is the dominant cost for the
+        // plain stacks that most of a storage network consists of.
+        //
+        // This stays consistent with equality because the patch is kept sanitized: setting a
+        // component to its default removes it from the patch rather than storing it, so two stacks
+        // of one item have equal components exactly when they have equal patches.
+        if (hasComponentPatch(stack)) {
+            result = 37 * result + stack.getComponents().hashCode();
+        }
         // Not factoring in capability compatibility. Doing so would require either reflection (slow)
         // or an access transformer, it's highly unlikely that it'd be the only difference between
         // many ItemStacks in practice, and occasional hash code collisions are okay.
         return result;
+    }
+
+    /**
+     * If the given stack carries data components that differ from its item's defaults.
+     *
+     * Only those have to take part in {@link #getItemStackHashCode(ItemStack)}.
+     *
+     * @param stack A non-empty stack.
+     * @return If the stack has a non-empty component patch.
+     */
+    protected boolean hasComponentPatch(ItemStack stack) {
+        // Vanilla exposes the patch only by building one. That costs nothing for the stacks this
+        // is here to catch, as an empty patch yields the shared empty instance. Loaders that can
+        // answer without building anything should override this.
+        return !stack.getComponentsPatch().isEmpty();
     }
 }
