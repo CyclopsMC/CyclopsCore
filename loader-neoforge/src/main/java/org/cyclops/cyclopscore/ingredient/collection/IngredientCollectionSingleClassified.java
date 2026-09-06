@@ -176,13 +176,17 @@ public class IngredientCollectionSingleClassified<T, M, C, L extends IIngredient
         }
         if (appliesToClassifier(matchCondition)) {
             IIngredientCollectionMutable<T, M> collection = this.classifiedCollections.get(getClassifier(instance));
-            if (collection != null) {
-                if (Objects.equals(getCategoryType().getMatchCondition(), matchCondition)) {
-                    return collection.size();
-                } else {
-                    M subMatchCondition = getComponent().getMatcher().withoutCondition(matchCondition, getCategoryType().getMatchCondition());
-                    return collection.count(instance, subMatchCondition);
-                }
+            if (collection == null) {
+                // The match condition requires the classifier to be equal, so an absent classifier
+                // means nothing can match. Falling through to the unclassified path here would scan
+                // every instance for a result that is known to be zero.
+                return 0;
+            }
+            if (Objects.equals(getCategoryType().getMatchCondition(), matchCondition)) {
+                return collection.size();
+            } else {
+                M subMatchCondition = getComponent().getMatcher().withoutCondition(matchCondition, getCategoryType().getMatchCondition());
+                return collection.count(instance, subMatchCondition);
             }
         }
         return super.count(instance, matchCondition);
