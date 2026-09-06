@@ -5,6 +5,7 @@ import org.cyclops.commoncapabilities.api.ingredient.IngredientComponent;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 
 /**
  * A mutable mapping from ingredient component instances to values of any type.
@@ -88,6 +89,33 @@ public interface IIngredientMapMutable<T, M, V> extends IIngredientMap<T, M, V> 
             removed += removeAll(instance, matchCondition);
         }
         return removed;
+    }
+
+    /**
+     * Compute a new value for the given key instance, following {@link Map#compute} semantics.
+     *
+     * The remapping function is passed the key and the currently mapped value, or null when the key
+     * is absent. Returning null removes the mapping, returning anything else stores it.
+     *
+     * Implementations back onto a hash of the key instance, which for some component types is
+     * expensive. Doing this in one call rather than a get followed by a put lets them hash once.
+     *
+     * @param key An instance key.
+     * @param remappingFunction A function computing the new value from the key and the old value.
+     * @return The new value associated with the key, or null if none.
+     */
+    @Nullable
+    default V compute(T key, BiFunction<T, V, V> remappingFunction) {
+        V oldValue = get(key);
+        V newValue = remappingFunction.apply(key, oldValue);
+        if (newValue == null) {
+            if (oldValue != null) {
+                remove(key);
+            }
+        } else {
+            put(key, newValue);
+        }
+        return newValue;
     }
 
     /**
