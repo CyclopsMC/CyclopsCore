@@ -2,13 +2,13 @@ package org.cyclops.cyclopscore.ingredient.collection;
 
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -22,27 +22,36 @@ import static org.hamcrest.MatcherAssert.assertThat;
  *
  * @author rubensworks
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@RunWith(Parameterized.class)
 public class TestIngredientMapCompute {
 
     private static final ComplexStack A01 = new ComplexStack(ComplexStack.Group.A, 0, 1, null);
     private static final ComplexStack A12 = new ComplexStack(ComplexStack.Group.A, 1, 2, null);
     private static final ComplexStack B01 = new ComplexStack(ComplexStack.Group.B, 0, 1, null);
 
-    public Stream<Arguments> maps() {
-        return Stream.<Supplier<IIngredientMapMutable<ComplexStack, Integer, String>>>of(
-                () -> new IngredientHashMap<>(IngredientComponentStubs.COMPLEX),
-                () -> new IngredientTreeMap<>(IngredientComponentStubs.COMPLEX),
-                () -> new IngredientMapSingleClassified<>(IngredientComponentStubs.COMPLEX,
-                        () -> new IngredientHashMap<>(IngredientComponentStubs.COMPLEX),
-                        IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0))
-        ).map(Arguments::of);
+    @Parameterized.Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.<Object[]>asList(new Object[][]{
+                {(Supplier<IIngredientMapMutable<ComplexStack, Integer, String>>)
+                        () -> new IngredientHashMap<>(IngredientComponentStubs.COMPLEX)},
+                {(Supplier<IIngredientMapMutable<ComplexStack, Integer, String>>)
+                        () -> new IngredientTreeMap<>(IngredientComponentStubs.COMPLEX)},
+                {(Supplier<IIngredientMapMutable<ComplexStack, Integer, String>>)
+                        () -> new IngredientMapSingleClassified<>(IngredientComponentStubs.COMPLEX,
+                                () -> new IngredientHashMap<>(IngredientComponentStubs.COMPLEX),
+                                IngredientComponentStubs.COMPLEX.getCategoryTypes().get(0))},
+        });
     }
 
-    @ParameterizedTest
-    @MethodSource("maps")
-    public void testInsertsWhenAbsent(Supplier<IIngredientMapMutable<ComplexStack, Integer, String>> factory) {
-        IIngredientMapMutable<ComplexStack, Integer, String> map = factory.get();
+    private final Supplier<IIngredientMapMutable<ComplexStack, Integer, String>> factory;
+
+    public TestIngredientMapCompute(Supplier<IIngredientMapMutable<ComplexStack, Integer, String>> factory) {
+        this.factory = factory;
+    }
+
+    @Test
+    public void testInsertsWhenAbsent() {
+        IIngredientMapMutable<ComplexStack, Integer, String> map = this.factory.get();
         assertThat(map.compute(A01, (key, value) -> {
             assertThat(value, is(nullValue()));
             return "first";
@@ -51,20 +60,18 @@ public class TestIngredientMapCompute {
         assertThat(map.size(), is(1));
     }
 
-    @ParameterizedTest
-    @MethodSource("maps")
-    public void testUpdatesWhenPresent(Supplier<IIngredientMapMutable<ComplexStack, Integer, String>> factory) {
-        IIngredientMapMutable<ComplexStack, Integer, String> map = factory.get();
+    @Test
+    public void testUpdatesWhenPresent() {
+        IIngredientMapMutable<ComplexStack, Integer, String> map = this.factory.get();
         map.put(A01, "first");
         assertThat(map.compute(A01, (key, value) -> value + "+second"), is("first+second"));
         assertThat(map.get(A01), is("first+second"));
         assertThat(map.size(), is(1));
     }
 
-    @ParameterizedTest
-    @MethodSource("maps")
-    public void testRemovesOnNull(Supplier<IIngredientMapMutable<ComplexStack, Integer, String>> factory) {
-        IIngredientMapMutable<ComplexStack, Integer, String> map = factory.get();
+    @Test
+    public void testRemovesOnNull() {
+        IIngredientMapMutable<ComplexStack, Integer, String> map = this.factory.get();
         map.put(A01, "first");
         map.put(A12, "other");
         assertThat(map.compute(A01, (key, value) -> null), is(nullValue()));
@@ -73,19 +80,17 @@ public class TestIngredientMapCompute {
         assertThat(map.size(), is(1));
     }
 
-    @ParameterizedTest
-    @MethodSource("maps")
-    public void testNullOnAbsentIsNoOp(Supplier<IIngredientMapMutable<ComplexStack, Integer, String>> factory) {
-        IIngredientMapMutable<ComplexStack, Integer, String> map = factory.get();
+    @Test
+    public void testNullOnAbsentIsNoOp() {
+        IIngredientMapMutable<ComplexStack, Integer, String> map = this.factory.get();
         assertThat(map.compute(A01, (key, value) -> null), is(nullValue()));
         assertThat(map.size(), is(0));
         assertThat(map.isEmpty(), is(true));
     }
 
-    @ParameterizedTest
-    @MethodSource("maps")
-    public void testKeyIsPassedThrough(Supplier<IIngredientMapMutable<ComplexStack, Integer, String>> factory) {
-        IIngredientMapMutable<ComplexStack, Integer, String> map = factory.get();
+    @Test
+    public void testKeyIsPassedThrough() {
+        IIngredientMapMutable<ComplexStack, Integer, String> map = this.factory.get();
         map.compute(A01, (key, value) -> {
             assertThat(key, is(A01));
             return "v";
@@ -96,10 +101,9 @@ public class TestIngredientMapCompute {
      * The classified map keeps its own size and drops classifiers that run empty, so computing
      * away the last entry of a classifier has to clean up just as a remove would.
      */
-    @ParameterizedTest
-    @MethodSource("maps")
-    public void testSizeTracksAcrossClassifiers(Supplier<IIngredientMapMutable<ComplexStack, Integer, String>> factory) {
-        IIngredientMapMutable<ComplexStack, Integer, String> map = factory.get();
+    @Test
+    public void testSizeTracksAcrossClassifiers() {
+        IIngredientMapMutable<ComplexStack, Integer, String> map = this.factory.get();
         map.compute(A01, (key, value) -> "a");
         map.compute(B01, (key, value) -> "b");
         assertThat(map.size(), is(2));
@@ -112,11 +116,10 @@ public class TestIngredientMapCompute {
         assertThat(map.get(B01), is("b again"));
     }
 
-    @ParameterizedTest
-    @MethodSource("maps")
-    public void testMatchesGetThenPut(Supplier<IIngredientMapMutable<ComplexStack, Integer, String>> factory) {
-        IIngredientMapMutable<ComplexStack, Integer, String> computed = factory.get();
-        IIngredientMapMutable<ComplexStack, Integer, String> manual = factory.get();
+    @Test
+    public void testMatchesGetThenPut() {
+        IIngredientMapMutable<ComplexStack, Integer, String> computed = this.factory.get();
+        IIngredientMapMutable<ComplexStack, Integer, String> manual = this.factory.get();
         ComplexStack[] keys = {A01, A12, B01, A01, B01, A12};
         for (int i = 0; i < keys.length; i++) {
             ComplexStack key = keys[i];
