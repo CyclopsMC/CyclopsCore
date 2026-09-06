@@ -1,17 +1,21 @@
 package org.cyclops.cyclopscore.helper;
 
+import net.minecraft.DetectedVersion;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.MappedRegistry;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.Bootstrap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.cyclops.cyclopscore.inventory.ItemDummy;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -30,15 +34,26 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class TestItemStackHelpersHashCode {
 
     static {
-        ((MappedRegistry) BuiltInRegistries.ITEM).unfreeze(true);
+        SharedConstants.setVersion(DetectedVersion.BUILT_IN);
+        Bootstrap.bootStrap();
+        ((MappedRegistry) BuiltInRegistries.ITEM).unfreeze();
     }
 
     private static final Item ITEM1 = new ItemDummy();
     private static final Item ITEM2 = new ItemDummy();
 
     static {
-        ((Holder.Reference<Item>) ITEM1.builtInRegistryHolder()).bindComponents(DataComponentMap.EMPTY);
-        ((Holder.Reference<Item>) ITEM2.builtInRegistryHolder()).bindComponents(DataComponentMap.EMPTY);
+        // Same intrusive-holder bootstrap the other item tests use
+        try {
+            Field field = MappedRegistry.class.getDeclaredField("unregisteredIntrusiveHolders");
+            field.setAccessible(true);
+            Map<Item, Holder.Reference<Item>> delegates = ((Map<Item, Holder.Reference<Item>>) field
+                    .get(BuiltInRegistries.ITEM));
+            delegates.put(ITEM1, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM.asLookup(), ITEM1));
+            delegates.put(ITEM2, Holder.Reference.createIntrusive(BuiltInRegistries.ITEM.asLookup(), ITEM2));
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static final IItemStackHelpers HELPERS = new ItemStackHelpersNeoForge();

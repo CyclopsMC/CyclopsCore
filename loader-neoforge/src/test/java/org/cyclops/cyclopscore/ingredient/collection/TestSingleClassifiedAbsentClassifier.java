@@ -2,8 +2,8 @@ package org.cyclops.cyclopscore.ingredient.collection;
 
 import org.cyclops.cyclopscore.ingredient.ComplexStack;
 import org.cyclops.cyclopscore.ingredient.IngredientComponentStubs;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -45,7 +45,7 @@ public class TestSingleClassifiedAbsentClassifier {
     private IngredientCollectionSingleClassified<ComplexStack, Integer, ?, IIngredientCollectionMutable<ComplexStack, Integer>> collection;
     private IngredientMapSingleClassified<ComplexStack, Integer, String, ?> map;
 
-    @BeforeEach
+    @Before
     public void before() {
         this.innerIterations = new AtomicInteger();
 
