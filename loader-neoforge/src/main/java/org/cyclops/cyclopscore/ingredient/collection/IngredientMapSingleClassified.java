@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 /**
@@ -110,6 +111,29 @@ public class IngredientMapSingleClassified<T, M, V, C> extends IngredientMapAdap
 
         }
         return null;
+    }
+
+    @Nullable
+    @Override
+    public V compute(T key, BiFunction<T, V, V> remappingFunction) {
+        C classifier = getClassifier(key);
+        IIngredientMapMutable<T, M, V> map = this.classifiedMaps.get(classifier);
+        if (map == null) {
+            // Nothing is stored under this classifier, so only an insertion can come out of this
+            V newValue = remappingFunction.apply(key, null);
+            if (newValue != null) {
+                getOrCreateClassifiedCollection(classifier).put(key, newValue);
+                this.size++;
+            }
+            return newValue;
+        }
+        int sizeBefore = map.size();
+        V newValue = map.compute(key, remappingFunction);
+        this.size += map.size() - sizeBefore;
+        if (map.isEmpty()) {
+            this.classifiedMaps.remove(classifier);
+        }
+        return newValue;
     }
 
     @Override
