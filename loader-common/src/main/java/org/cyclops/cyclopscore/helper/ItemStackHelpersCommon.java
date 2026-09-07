@@ -115,9 +115,6 @@ public abstract class ItemStackHelpersCommon implements IItemStackHelpers {
      * @return If the stack has a non-empty component patch.
      */
     protected boolean hasComponentPatch(ItemStack stack) {
-        // Vanilla exposes the patch only by building one. That costs nothing for the stacks this
-        // is here to catch, as an empty patch yields the shared empty instance. Loaders that can
-        // answer without building anything should override this.
         return !stack.getComponentsPatch().isEmpty();
     }
 }
