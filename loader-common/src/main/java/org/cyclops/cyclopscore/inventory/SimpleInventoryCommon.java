@@ -24,6 +24,9 @@ import java.util.stream.IntStream;
 
 /**
  * A basic inventory implementation.
+ *
+ * Instances are compared by identity, not by contents.
+ *
  * @author rubensworks
  *
  */
@@ -285,25 +288,8 @@ public class SimpleInventoryCommon implements INBTInventory, WorldlyContainer {
         return true;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SimpleInventoryCommon)) return false;
-
-        SimpleInventoryCommon that = (SimpleInventoryCommon) o;
-
-        if (stackLimit != that.stackLimit) return false;
-        if (contents.length != that.contents.length) return false;
-        for (int i = 0; i < contents.length; i++) {
-            if (!ItemStack.isSameItemSameComponents(contents[i], that.contents[i])) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.hash;
-    }
+    // Deliberately no equals/hashCode overrides: inventories are mutable and are identified by instance.
+    // Comparing them by contents made two separate but equally-filled inventories interchangeable as map keys,
+    // which corrupts equality-keyed container caches such as Fabric's InventoryStorage.
+    // Use getState() if you need to detect content changes.
 }
