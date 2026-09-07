@@ -97,21 +97,6 @@ public abstract class ItemStackHelpersCommon implements IItemStackHelpers {
         int result = 1;
         result = 37 * result + stack.getCount();
         result = 37 * result + stack.getItem().hashCode();
-        // Data components have to be part of the hash, because equality compares them.
-        // Leaving them out makes every stack of the same item hash alike, so hash-based
-        // ingredient collections collapse into one bucket per item and every lookup turns
-        // into a scan doing full component comparisons. This is what made large storage
-        // networks scale quadratically. The exclusion dates from NBT tags, which were
-        // expensive to hash; component maps are not.
-        //
-        // Only stacks carrying a patch need it. A component map hashes its prototype alongside its
-        // patch, and the prototype is the item's defaults, which the item hashed above already
-        // stands for. Hashing it again distinguishes nothing, and it is the dominant cost for the
-        // plain stacks that most of a storage network consists of.
-        //
-        // This stays consistent with equality because the patch is kept sanitized: setting a
-        // component to its default removes it from the patch rather than storing it, so two stacks
-        // of one item have equal components exactly when they have equal patches.
         if (hasComponentPatch(stack)) {
             result = 37 * result + stack.getComponents().hashCode();
         }
