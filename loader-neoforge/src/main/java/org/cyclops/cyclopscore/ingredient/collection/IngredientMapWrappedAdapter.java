@@ -9,6 +9,7 @@ import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 /**
  * An abstract ingredient map adapter.
@@ -66,6 +67,14 @@ public abstract class IngredientMapWrappedAdapter<T, M, V, C extends Map<Ingredi
     @Override
     public V get(T key) {
         return this.collection.get(wrap(key));
+    }
+
+    @Nullable
+    @Override
+    public V compute(T key, BiFunction<T, V, V> remappingFunction) {
+        // One wrapper, so the key is hashed once instead of once for the get and once for the put
+        return this.collection.compute(wrap(key),
+                (wrapper, value) -> remappingFunction.apply(wrapper.getInstance(), value));
     }
 
     @Override
