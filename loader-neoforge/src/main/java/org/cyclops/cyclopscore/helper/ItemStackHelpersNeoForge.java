@@ -13,7 +13,6 @@ public class ItemStackHelpersNeoForge extends ItemStackHelpersCommon {
 
     @Override
     protected boolean hasComponentPatch(ItemStack stack) {
-        // Answers without building the patch instance that the common implementation needs
         return !stack.isComponentsPatchEmpty();
     }
 }
