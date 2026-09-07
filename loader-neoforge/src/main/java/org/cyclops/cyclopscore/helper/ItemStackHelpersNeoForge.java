@@ -10,4 +10,9 @@ public class ItemStackHelpersNeoForge extends ItemStackHelpersCommon {
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
         return itemStack.getCraftingRemainder().create();
     }
+
+    @Override
+    protected boolean hasComponentPatch(ItemStack stack) {
+        return !stack.isComponentsPatchEmpty();
+    }
 }
