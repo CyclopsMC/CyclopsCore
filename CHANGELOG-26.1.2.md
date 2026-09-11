@@ -1,8 +1,21 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.31.0"></a>
+## [26.1.2-1.31.0](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.4...26.1.2-1.31.0) - 2026-09-11 19:05:23
+
+### Added
+* Hash an ingredient key once per index update (#241)
+  This is done using a new `compute` function on `IIngredientMapMutable`.
+
+### Changed
+* Avoid redundant HashMap lookup in IngredientMapWrappedAdapter.iterator() (#232)
+  Improves performance in IntegratedTerminals
+* Hash an ingredient key once per index update (#239)
+* Improve ItemStack hashing and classified ingredient lookup performance (#238)
+
 <a name="26.1.2-1.30.4"></a>
-## [26.1.2-1.30.4](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.3...26.1.2-1.30.4) - 2026-09-05 12:47:48
+## [26.1.2-1.30.4](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.3...26.1.2-1.30.4) - 2026-09-05 12:47:48 +0200
 
 ### Fixed
 * Make the scrolling container reach the last row of a multi-column grid (#236)
