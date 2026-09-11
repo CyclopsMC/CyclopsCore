@@ -1,0 +1,10 @@
+As always, don't forget to backup your world before updating!
+
+Additions:
+* Hash an ingredient key once per index update (#241)
+  This is done using a new `compute` function on `IIngredientMapMutable`.
+
+Changes:
+* Avoid redundant HashMap lookup in IngredientMapWrappedAdapter.iterator() (#232)
+  Improves performance in IntegratedTerminals
+* Improve ItemStack hashing and classified ingredient lookup performance (#240)
