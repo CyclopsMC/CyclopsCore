@@ -109,12 +109,24 @@ public abstract class ItemStackHelpersCommon implements IItemStackHelpers {
         int result = 1;
         result = 37 * result + stack.getCount();
         result = 37 * result + stack.getItem().hashCode();
-        // Tags can be very large, and expensive to calculate, which is not needed for hashCodes.
-        // CompoundTag tagCompound = stack.getTag();
-        // result = 37 * result + (tagCompound != null ? tagCompound.hashCode() : 0);
+        if (hasComponentPatch(stack)) {
+            result = 37 * result + stack.getComponents().hashCode();
+        }
         // Not factoring in capability compatibility. Doing so would require either reflection (slow)
         // or an access transformer, it's highly unlikely that it'd be the only difference between
         // many ItemStacks in practice, and occasional hash code collisions are okay.
         return result;
+    }
+
+    /**
+     * If the given stack carries data components that differ from its item's defaults.
+     *
+     * Only those have to take part in {@link #getItemStackHashCode(ItemStack)}.
+     *
+     * @param stack A non-empty stack.
+     * @return If the stack has a non-empty component patch.
+     */
+    protected boolean hasComponentPatch(ItemStack stack) {
+        return !stack.getComponentsPatch().isEmpty();
     }
 }

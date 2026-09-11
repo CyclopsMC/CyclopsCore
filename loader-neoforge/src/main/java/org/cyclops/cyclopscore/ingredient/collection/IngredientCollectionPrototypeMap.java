@@ -52,14 +52,14 @@ public class IngredientCollectionPrototypeMap<T, M> extends IngredientCollection
     public boolean add(T instance) {
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
         T prototype = getPrototype(instance);
-        Long value = ingredients.get(prototype);
-        long existingValue = value == null ? 0 : value;
-        long newValue = Math.addExact(existingValue, matcher.getQuantity(instance));
-        if (newValue != 0) {
-            ingredients.put(prototype, newValue);
-        } else {
-            ingredients.remove(prototype);
-        }
+        long quantity = matcher.getQuantity(instance);
+        // Computed in one call so the prototype is hashed once rather than once to read and once
+        // to write. Hashing a prototype is the dominant cost here for component-bearing instances.
+        ingredients.compute(prototype, (key, value) -> {
+            long existingValue = value == null ? 0 : value;
+            long newValue = Math.addExact(existingValue, quantity);
+            return newValue == 0 ? null : newValue;
+        });
         return true;
     }
 
@@ -67,17 +67,20 @@ public class IngredientCollectionPrototypeMap<T, M> extends IngredientCollection
     public boolean remove(T instance) {
         IIngredientMatcher<T, M> matcher = getComponent().getMatcher();
         T prototype = getPrototype(instance);
-        Long value = ingredients.get(prototype);
-        long existingValue = value == null ? 0 : value;
         long currentValue = matcher.getQuantity(instance);
-        if (currentValue == existingValue) {
-            ingredients.remove(prototype);
-            return true;
-        } else if (currentValue < existingValue || isNegativeQuantities()) {
-            ingredients.put(prototype, existingValue - currentValue);
-            return true;
-        }
-        return false;
+        boolean[] removed = new boolean[1];
+        ingredients.compute(prototype, (key, value) -> {
+            long existingValue = value == null ? 0 : value;
+            if (currentValue == existingValue) {
+                removed[0] = true;
+                return null;
+            } else if (currentValue < existingValue || isNegativeQuantities()) {
+                removed[0] = true;
+                return existingValue - currentValue;
+            }
+            return value;
+        });
+        return removed[0];
     }
 
     @Override

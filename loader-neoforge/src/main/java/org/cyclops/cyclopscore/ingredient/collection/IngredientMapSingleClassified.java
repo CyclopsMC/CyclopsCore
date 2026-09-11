@@ -8,10 +8,12 @@ import org.cyclops.commoncapabilities.api.ingredient.IngredientComponentCategory
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 /**
@@ -112,6 +114,29 @@ public class IngredientMapSingleClassified<T, M, V, C> extends IngredientMapAdap
         return null;
     }
 
+    @Nullable
+    @Override
+    public V compute(T key, BiFunction<T, V, V> remappingFunction) {
+        C classifier = getClassifier(key);
+        IIngredientMapMutable<T, M, V> map = this.classifiedMaps.get(classifier);
+        if (map == null) {
+            // Nothing is stored under this classifier, so only an insertion can come out of this
+            V newValue = remappingFunction.apply(key, null);
+            if (newValue != null) {
+                getOrCreateClassifiedCollection(classifier).put(key, newValue);
+                this.size++;
+            }
+            return newValue;
+        }
+        int sizeBefore = map.size();
+        V newValue = map.compute(key, remappingFunction);
+        this.size += map.size() - sizeBefore;
+        if (map.isEmpty()) {
+            this.classifiedMaps.remove(classifier);
+        }
+        return newValue;
+    }
+
     @Override
     public int size() {
         return this.size;
@@ -121,13 +146,17 @@ public class IngredientMapSingleClassified<T, M, V, C> extends IngredientMapAdap
     public boolean containsKey(T instance, M matchCondition) {
         if (appliesToClassifier(matchCondition)) {
             IIngredientMapMutable<T, M, V> map = this.classifiedMaps.get(getClassifier(instance));
-            if (map != null) {
-                if (Objects.equals(getCategoryType().getMatchCondition(), matchCondition)) {
-                    return true;
-                } else {
-                    M subMatchCondition = getComponent().getMatcher().withoutCondition(matchCondition, getCategoryType().getMatchCondition());
-                    return map.containsKey(instance, subMatchCondition);
-                }
+            if (map == null) {
+                // The match condition requires the classifier to be equal, so an absent classifier
+                // means nothing can match. Falling through to the unclassified path here would scan
+                // every key for a result that is known to be empty.
+                return false;
+            }
+            if (Objects.equals(getCategoryType().getMatchCondition(), matchCondition)) {
+                return true;
+            } else {
+                M subMatchCondition = getComponent().getMatcher().withoutCondition(matchCondition, getCategoryType().getMatchCondition());
+                return map.containsKey(instance, subMatchCondition);
             }
         }
         return super.containsKey(instance, matchCondition);
@@ -137,13 +166,14 @@ public class IngredientMapSingleClassified<T, M, V, C> extends IngredientMapAdap
     public int countKey(T instance, M matchCondition) {
         if (appliesToClassifier(matchCondition)) {
             IIngredientMapMutable<T, M, V> map = this.classifiedMaps.get(getClassifier(instance));
-            if (map != null) {
-                if (Objects.equals(getCategoryType().getMatchCondition(), matchCondition)) {
-                    return map.size();
-                } else {
-                    M subMatchCondition = getComponent().getMatcher().withoutCondition(matchCondition, getCategoryType().getMatchCondition());
-                    return map.countKey(instance, subMatchCondition);
-                }
+            if (map == null) {
+                return 0;
+            }
+            if (Objects.equals(getCategoryType().getMatchCondition(), matchCondition)) {
+                return map.size();
+            } else {
+                M subMatchCondition = getComponent().getMatcher().withoutCondition(matchCondition, getCategoryType().getMatchCondition());
+                return map.countKey(instance, subMatchCondition);
             }
         }
         return super.countKey(instance, matchCondition);
@@ -192,13 +222,14 @@ public class IngredientMapSingleClassified<T, M, V, C> extends IngredientMapAdap
     public Collection<V> getAll(T key, M matchCondition) {
         if (appliesToClassifier(matchCondition)) {
             IIngredientMapMutable<T, M, V> map = this.classifiedMaps.get(getClassifier(key));
-            if (map != null) {
-                if (Objects.equals(getCategoryType().getMatchCondition(), matchCondition)) {
-                    return map.values();
-                } else {
-                    M subMatchCondition = getComponent().getMatcher().withoutCondition(matchCondition, getCategoryType().getMatchCondition());
-                    return map.getAll(key, subMatchCondition);
-                }
+            if (map == null) {
+                return Collections.emptyList();
+            }
+            if (Objects.equals(getCategoryType().getMatchCondition(), matchCondition)) {
+                return map.values();
+            } else {
+                M subMatchCondition = getComponent().getMatcher().withoutCondition(matchCondition, getCategoryType().getMatchCondition());
+                return map.getAll(key, subMatchCondition);
             }
         }
         return super.getAll(key, matchCondition);
@@ -208,13 +239,14 @@ public class IngredientMapSingleClassified<T, M, V, C> extends IngredientMapAdap
     public IngredientSet<T, M> keySet(T key, M matchCondition) {
         if (appliesToClassifier(matchCondition)) {
             IIngredientMapMutable<T, M, V> map = this.classifiedMaps.get(getClassifier(key));
-            if (map != null) {
-                if (Objects.equals(getCategoryType().getMatchCondition(), matchCondition)) {
-                    return map.keySet();
-                } else {
-                    M subMatchCondition = getComponent().getMatcher().withoutCondition(matchCondition, getCategoryType().getMatchCondition());
-                    return map.keySet(key, subMatchCondition);
-                }
+            if (map == null) {
+                return new IngredientHashSet<>(getComponent());
+            }
+            if (Objects.equals(getCategoryType().getMatchCondition(), matchCondition)) {
+                return map.keySet();
+            } else {
+                M subMatchCondition = getComponent().getMatcher().withoutCondition(matchCondition, getCategoryType().getMatchCondition());
+                return map.keySet(key, subMatchCondition);
             }
         }
         return super.keySet(key, matchCondition);
