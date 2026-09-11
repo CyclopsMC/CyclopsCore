@@ -1,8 +1,20 @@
 # Changelog for Minecraft 1.21.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.21.1-1.30.0"></a>
+## [1.21.1-1.30.0](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.4...1.21.1-1.30.0) - 2026-09-11 19:01:09
+
+### Added
+* Hash an ingredient key once per index update (#241)
+  This is done using a new `compute` function on `IIngredientMapMutable`.
+
+### Changed
+* Avoid redundant HashMap lookup in IngredientMapWrappedAdapter.iterator() (#232)
+  Improves performance in IntegratedTerminals
+* Improve ItemStack hashing and classified ingredient lookup performance (#240)
+
 <a name="1.21.1-1.29.4"></a>
-## [1.21.1-1.29.4](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.3...1.21.1-1.29.4) - 2026-09-05 12:43:00
+## [1.21.1-1.29.4](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.3...1.21.1-1.29.4) - 2026-09-05 12:43:00 +0200
 
 ### Fixed
 * Fix infobook crash when hovering the top-left corner on recipe pages (#237)
