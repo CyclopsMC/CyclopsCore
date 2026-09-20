@@ -211,7 +211,11 @@ public abstract class DynamicBaseModel implements BlockStateModel {
                 UVPair.pack(texture.getU(uvs[(2 + rotation) % 4][0]), texture.getV(uvs[(2 + rotation) % 4][1])),
                 UVPair.pack(texture.getU(uvs[(3 + rotation) % 4][0]), texture.getV(uvs[(3 + rotation) % 4][1])),
                 side,
-                new BakedQuad.MaterialInfo(texture, ChunkSectionLayer.CUTOUT, RenderTypes.entityCutout(texture.atlasLocation()), -1, false, 0, true),
+                new BakedQuad.MaterialInfo(texture, ChunkSectionLayer.CUTOUT,
+                        RenderTypes.entityCutout(texture.atlasLocation()),
+                        RenderTypes.itemCutoutGlint(texture.atlasLocation()),
+                        RenderTypes.itemCutoutGlintSpecial(texture.atlasLocation()),
+                        -1, Direction.UP, 0, true), // Shading along UP is unshaded, matching the previous shade=false
                 BakedNormals.UNSPECIFIED,
                 isColored ? BakedColors.of(shadeColor) : BakedColors.DEFAULT
         ));

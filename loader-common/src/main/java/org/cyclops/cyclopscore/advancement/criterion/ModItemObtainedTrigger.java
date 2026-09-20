@@ -2,12 +2,12 @@ package org.cyclops.cyclopscore.advancement.criterion;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -20,7 +20,7 @@ public class ModItemObtainedTrigger extends SimpleCriterionTrigger<ModItemObtain
 
     public static final Codec<Instance> CODEC = RecordCodecBuilder.create(
             p_311401_ -> p_311401_.group(
-                            EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
+                            LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
                             Codec.STRING.fieldOf("mod_id").forGetter(Instance::modId)
                     )
                     .apply(p_311401_, Instance::new)
@@ -36,7 +36,7 @@ public class ModItemObtainedTrigger extends SimpleCriterionTrigger<ModItemObtain
     }
 
     public static record Instance(
-            Optional<ContextAwarePredicate> player,
+            Optional<Holder<LootItemCondition>> player,
             String modId
     ) implements SimpleInstance, ICriterionInstanceTestable<ItemStack> {
 

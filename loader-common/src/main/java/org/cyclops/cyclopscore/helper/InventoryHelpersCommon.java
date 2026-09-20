@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.helper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.Container;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -48,7 +49,7 @@ public class InventoryHelpersCommon implements IInventoryHelpers {
                     originalStack.shrink(1);
                 }
                 if(!player.getInventory().add(newStackPart)) {
-                    player.drop(newStackPart, false);
+                    player.drop(newStackPart, false, Prediction.PREDICTED);
                 }
             }
         }

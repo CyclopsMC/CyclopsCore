@@ -5,6 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -14,6 +15,7 @@ import net.neoforged.neoforge.common.loot.LootModifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -32,8 +34,8 @@ public class LootModifierInjectItem extends LootModifier {
     private final List<String> lootTables;
     private final int maxStackSize;
 
-    public LootModifierInjectItem(LootItemCondition[] conditionsIn, int priority, ItemStackTemplate itemStack, List<String> lootTables, int maxStackSize) {
-        super(conditionsIn, priority);
+    public LootModifierInjectItem(Optional<Holder<LootItemCondition>> condition, int priority, ItemStackTemplate itemStack, List<String> lootTables, int maxStackSize) {
+        super(condition, priority);
         this.itemStack = itemStack;
         this.lootTables = lootTables;
         this.maxStackSize = maxStackSize;
