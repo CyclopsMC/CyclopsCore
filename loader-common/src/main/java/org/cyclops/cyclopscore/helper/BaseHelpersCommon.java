@@ -1,6 +1,6 @@
 package org.cyclops.cyclopscore.helper;
 
-import net.minecraft.util.Util;
+import com.mojang.blaze3d.Blaze3D;
 import org.apache.commons.lang3.tuple.Triple;
 import org.apache.logging.log4j.Level;
 
@@ -98,7 +98,7 @@ public class BaseHelpersCommon implements IBaseHelpers {
     public void openUrl(String url) {
         try {
             URI uri = new URI(url);
-            Util.getPlatform().openUri(uri);
+            Blaze3D.openUri(uri);
         } catch (Throwable e) {
             e.printStackTrace();
             CyclopsCoreInstance.MOD.log(Level.ERROR, e.getMessage());

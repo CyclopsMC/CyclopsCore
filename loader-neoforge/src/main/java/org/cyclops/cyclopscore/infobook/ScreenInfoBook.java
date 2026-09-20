@@ -1,7 +1,7 @@
 package org.cyclops.cyclopscore.infobook;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

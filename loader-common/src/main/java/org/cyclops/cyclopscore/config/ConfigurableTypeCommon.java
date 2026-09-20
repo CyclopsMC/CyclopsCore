@@ -30,7 +30,8 @@ public class ConfigurableTypeCommon {
     public static final ConfigurableTypeCommon CRITERION_TRIGGER = new ConfigurableTypeCommon(true, CriterionTriggerConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "criterion_trigger");
     public static final ConfigurableTypeCommon LOOT_FUNCTION = new ConfigurableTypeCommon(true, LootFunctionConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "loot_function");
     public static final ConfigurableTypeCommon LOOT_CONDITION = new ConfigurableTypeCommon(true, LootConditionConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "loot_condition");
-    public static final ConfigurableTypeCommon LOOT_NUMBER_PROVIDER = new ConfigurableTypeCommon(true, LootNumberProviderConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "loot_number_provider");
+    public static final ConfigurableTypeCommon LOOT_CONTEXT_FLOAT_PROVIDER = new ConfigurableTypeCommon(true, LootContextFloatProviderConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "loot_context_float_provider");
+    public static final ConfigurableTypeCommon LOOT_CONTEXT_INT_PROVIDER = new ConfigurableTypeCommon(true, LootContextIntProviderConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "loot_context_int_provider");
     public static final ConfigurableTypeCommon LOOT_NBT_PROVIDER = new ConfigurableTypeCommon(true, LootNbtProviderConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "loot_nbt_provider");
     public static final ConfigurableTypeCommon LOOT_SCORE_PROVIDER = new ConfigurableTypeCommon(true, LootScoreProviderConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "loot_score_provider");
     public static final ConfigurableTypeCommon SOUND_EVENT = new ConfigurableTypeCommon(true, SoundEventConfigCommon.class, new ConfigurableTypeActionRegistry<>(), "sound_event");

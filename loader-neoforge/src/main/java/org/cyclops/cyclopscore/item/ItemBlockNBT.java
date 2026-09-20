@@ -1,17 +1,14 @@
 package org.cyclops.cyclopscore.item;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.cyclops.cyclopscore.block.BlockWithEntity;
-
-import javax.annotation.Nullable;
 
 /**
  * An extended {@link BlockItem} that will add the NBT data that is stored inside
@@ -33,17 +30,20 @@ public class ItemBlockNBT extends BlockItem {
     }
 
     @Override
-    protected boolean updateCustomBlockEntityTag(BlockPos pos, Level world, @Nullable Player player, ItemStack itemStack, BlockState blockState) {
-        if (super.updateCustomBlockEntityTag(pos, world, player, itemStack, blockState)) {
-            return true;
+    protected boolean placeBlock(BlockPlaceContext context, BlockState placementState) {
+        if (!super.placeBlock(context, placementState)) {
+            return false;
         }
 
-        BlockEntity tile = world.getBlockEntity(pos);
-        if (tile != null) {
-            return itemStackDataToTile(itemStack.copy().split(1), tile);
+        Level world = context.getLevel();
+        if (!world.isClientSide()) {
+            BlockEntity tile = world.getBlockEntity(context.getClickedPos());
+            if (tile != null) {
+                itemStackDataToTile(context.getItemInHand().copy().split(1), tile);
+            }
         }
 
-        return false;
+        return true;
     }
 
     /**

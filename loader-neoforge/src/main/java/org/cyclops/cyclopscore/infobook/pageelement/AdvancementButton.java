@@ -36,8 +36,8 @@ public class AdvancementButton extends AdvancedButton {
             AdvancementHolder advancement = AdvancementHelpers.getAdvancement(Dist.CLIENT, advancementId);
             if (advancement != null) {
                 advancement.value().display().ifPresent(display -> {
-                    lines.add(display.getTitle().getVisualOrderText());
-                    lines.add(display.getDescription().getVisualOrderText());
+                    lines.add(display.title().getVisualOrderText());
+                    lines.add(display.description().getVisualOrderText());
                 });
             }
             guiGraphics.setTooltipForNextFrame(font, lines, mx, my);

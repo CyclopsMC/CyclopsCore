@@ -39,7 +39,6 @@ repositories {
 }
 
 dependencies {
-    //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-neoforge:${curios_version}") // https://maven.theillusivec4.top/top/theillusivec4/curios/curios-neoforge/
     compileOnly "top.theillusivec4.curios:curios-neoforge:${neoforge_curios_version}:api"
 }
 

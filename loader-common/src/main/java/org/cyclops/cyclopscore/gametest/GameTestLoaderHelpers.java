@@ -9,6 +9,7 @@ import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -55,6 +56,7 @@ public class GameTestLoaderHelpers {
                     testsList.add(new MethodGameTestInstance(
                             new TestData<>(
                                     environment,
+                                    Level.OVERWORLD,
                                     Identifier.parse(gameTest.template()),
                                     gameTest.timeoutTicks(),
                                     gameTest.setupTicks(),

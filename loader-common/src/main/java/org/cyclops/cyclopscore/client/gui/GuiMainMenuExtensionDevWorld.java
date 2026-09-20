@@ -132,7 +132,7 @@ public class GuiMainMenuExtensionDevWorld {
                             WorldOptions worldOptionsFinal = worldOptions;
                             Function<HolderLookup.Provider, WorldDimensions> generatorSettingsFinal = generatorSettings;
                             CompletableFuture<WorldStem> resourceLoad = WorldLoader.load(initConfig, context -> {
-                                WorldDimensions dimensions = generatorSettingsFinal.apply(context.datapackWorldgen());
+                                WorldDimensions dimensions = generatorSettingsFinal.apply(context.datapackWorldRegistries());
                                 WorldDimensions.Complete completeDimensions = dimensions.bake(context.datapackDimensions().lookupOrThrow(Registries.LEVEL_STEM));
                                 return new WorldLoader.DataLoadOutput<>(
                                         new LevelDataAndDimensions.WorldDataAndGenSettings(

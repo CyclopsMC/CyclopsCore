@@ -82,7 +82,7 @@ public abstract class RenderBlockEntityModel<T extends CyclopsBlockEntity, S ext
             rotation = -90;
         }
 
-        matrixStack.mulPose(Axis.YP.rotationDegrees(rotation));
+        matrixStack.rotateDegrees(Axis.YP, rotation);
         postRotate(renderState, matrixStack);
 
         submitModel(renderState, getModel(), matrixStack, nodeCollector, cameraRenderState);

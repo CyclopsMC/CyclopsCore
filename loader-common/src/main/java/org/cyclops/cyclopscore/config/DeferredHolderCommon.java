@@ -327,7 +327,7 @@ public class DeferredHolderCommon<R, T extends R> implements /*Holder<R>, */ IHo
         bind(false);
         var tmp = Holder.Reference.createStandAlone(new HolderOwner<R>() { // TODO: this was just "this" when Holder was not sealed.
             @Override
-            public boolean canSerializeIn(HolderOwner<R> context) {
+            public boolean canSerialize(HolderOwner<R> context) {
                 return false;
             }
         }, key);

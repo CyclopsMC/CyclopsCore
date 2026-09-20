@@ -53,7 +53,7 @@ public class AdvancementRewardsAppendixClient extends SectionAppendixClient<Adva
             } else {
                 int finalOffsetX = offsetX;
                 int finalOffsetY = offsetY;
-                advancement.value().display().ifPresent(display -> RecipeAppendixClient.renderItemForButton(gui, guiGraphics, x + finalOffsetX, y + finalOffsetY, display.getIcon().create(), mx, my, true, null));
+                advancement.value().display().ifPresent(display -> RecipeAppendixClient.renderItemForButton(gui, guiGraphics, x + finalOffsetX, y + finalOffsetY, display.icon().create(), mx, my, true, null));
                 if (AdvancementHelpers.hasAdvancementUnlocked(Minecraft.getInstance().player, advancementId)) {
                     Images.OK.draw(guiGraphics, x + offsetX + 1, y + offsetY + 2);
                 } else {

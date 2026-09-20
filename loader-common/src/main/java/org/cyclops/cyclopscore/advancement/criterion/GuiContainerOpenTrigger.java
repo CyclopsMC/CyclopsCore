@@ -2,11 +2,11 @@ package org.cyclops.cyclopscore.advancement.criterion;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -19,7 +19,7 @@ public class GuiContainerOpenTrigger extends SimpleCriterionTrigger<GuiContainer
 
     public static final Codec<Instance> CODEC = RecordCodecBuilder.create(
             p_311401_ -> p_311401_.group(
-                            EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
+                            LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
                             Codec.STRING.optionalFieldOf("container_class").forGetter(Instance::containerClass)
                     )
                     .apply(p_311401_, Instance::new)
@@ -35,7 +35,7 @@ public class GuiContainerOpenTrigger extends SimpleCriterionTrigger<GuiContainer
     }
 
     public static record Instance(
-            Optional<ContextAwarePredicate> player,
+            Optional<Holder<LootItemCondition>> player,
             Optional<String> containerClass
     ) implements SimpleInstance, ICriterionInstanceTestable<AbstractContainerMenu> {
         @Override

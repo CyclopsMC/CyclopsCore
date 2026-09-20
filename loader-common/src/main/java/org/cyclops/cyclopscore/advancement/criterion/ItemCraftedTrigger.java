@@ -2,12 +2,12 @@ package org.cyclops.cyclopscore.advancement.criterion;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.advancements.predicates.ContextAwarePredicate;
 import net.minecraft.advancements.predicates.ItemPredicate;
-import net.minecraft.advancements.predicates.entity.EntityPredicate;
 import net.minecraft.advancements.triggers.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -20,7 +20,7 @@ public class ItemCraftedTrigger extends SimpleCriterionTrigger<ItemCraftedTrigge
 
     public static final Codec<Instance> CODEC = RecordCodecBuilder.create(
             p_311401_ -> p_311401_.group(
-                            EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player),
+                            LootItemCondition.CODEC.optionalFieldOf("player").forGetter(Instance::player),
                             ItemPredicate.CODEC.fieldOf("item").forGetter(Instance::itemPredicate)
                     )
                     .apply(p_311401_, Instance::new)
@@ -36,7 +36,7 @@ public class ItemCraftedTrigger extends SimpleCriterionTrigger<ItemCraftedTrigge
     }
 
     public static record Instance(
-            Optional<ContextAwarePredicate> player,
+            Optional<Holder<LootItemCondition>> player,
             ItemPredicate itemPredicate
     ) implements SimpleInstance, ICriterionInstanceTestable<ItemStack> {
 
@@ -46,7 +46,7 @@ public class ItemCraftedTrigger extends SimpleCriterionTrigger<ItemCraftedTrigge
         }
 
         @Override
-        public Optional<ContextAwarePredicate> player() {
+        public Optional<Holder<LootItemCondition>> player() {
             return player;
         }
     }
