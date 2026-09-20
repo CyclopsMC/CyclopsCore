@@ -29,8 +29,6 @@ public class ItemBlockNBT extends BlockItem {
         super(block, builder);
     }
 
-    // BlockItem#updateCustomBlockEntityTag became static in MC 26.3, so we hook into block placement instead.
-    // Vanilla block entity data still takes precedence, as it is applied after this.
     @Override
     protected boolean placeBlock(BlockPlaceContext context, BlockState placementState) {
         if (!super.placeBlock(context, placementState)) {

@@ -39,9 +39,6 @@ repositories {
 }
 
 dependencies {
-    // Curios has no 26.3 release yet. We compile against its 26.2 API, which is safe because we only
-    // touch CuriosCapability.ITEM_HANDLER; the parts of that API still tied to the removed
-    // net.neoforged.neoforge.items package are never referenced from here.
     compileOnly "top.theillusivec4.curios:curios-neoforge:${neoforge_curios_version}:api"
 }
 
