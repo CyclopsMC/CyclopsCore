@@ -38,11 +38,12 @@ repositories {
     }
 }
 
-// TODO: re-enable the Curios integration once Curios is available for Minecraft 26.3.
-// It still compiles against net.neoforged.neoforge.items, which NeoForge removed in 26.3.
-//dependencies {
-//    compileOnly "top.theillusivec4.curios:curios-neoforge:${neoforge_curios_version}:api"
-//}
+dependencies {
+    // Curios has no 26.3 release yet. We compile against its 26.2 API, which is safe because we only
+    // touch CuriosCapability.ITEM_HANDLER; the parts of that API still tied to the removed
+    // net.neoforged.neoforge.items package are never referenced from here.
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${neoforge_curios_version}:api"
+}
 
 test {
     useJUnitPlatform()
@@ -63,6 +64,7 @@ neoForge {
 
 javadoc {
     source = [sourceSets.main.allJava, sourceSets.api.allJava]
+    exclude 'org/cyclops/cyclopscore/modcompat/curios/*'
 }
 
 task publishCurseForge(type: TaskPublishCurseForge) {

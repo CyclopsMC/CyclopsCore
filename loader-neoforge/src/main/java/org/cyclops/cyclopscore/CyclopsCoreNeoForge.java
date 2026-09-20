@@ -37,6 +37,7 @@ import org.cyclops.cyclopscore.metadata.IRegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportableRegistry;
 import org.cyclops.cyclopscore.metadata.RegistryExportables;
 import org.cyclops.cyclopscore.modcompat.ModCompatLoader;
+import org.cyclops.cyclopscore.modcompat.curios.ModCompatCurios;
 import org.cyclops.cyclopscore.network.PacketCodecsNeoForge;
 import org.cyclops.cyclopscore.persist.nbt.NBTClassTypesNeoForge;
 import org.cyclops.cyclopscore.proxy.ClientProxyNeoForge;
@@ -87,6 +88,7 @@ public class CyclopsCoreNeoForge extends ModBaseNeoForge<CyclopsCoreNeoForge> {
     protected ModCompatLoader constructModCompatLoader() {
         ModCompatLoader modCompatLoader = super.constructModCompatLoader();
 
+        modCompatLoader.addModCompat(new ModCompatCurios());
 
         return modCompatLoader;
     }
