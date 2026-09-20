@@ -25,6 +25,7 @@ import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
 import org.cyclops.cyclopscore.config.ConfigurableTypesForge;
 import org.cyclops.cyclopscore.config.DeferredHolderCommon;
+import org.cyclops.cyclopscore.gametest.DeferredHolderCommonTest;
 import org.cyclops.cyclopscore.gametest.MethodGameTestInstanceConfig;
 import org.cyclops.cyclopscore.gametest.StartupTestForge;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
@@ -36,6 +37,8 @@ import org.cyclops.cyclopscore.proxy.CommonProxyForge;
 import org.cyclops.cyclopscore.proxy.IClientProxyCommon;
 import org.cyclops.cyclopscore.proxy.ICommonProxyCommon;
 import org.cyclops.cyclopscore.tracking.ImportantUsers;
+
+import java.util.Optional;
 
 /**
  * The main mod class of CyclopsCore.
@@ -62,6 +65,11 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
         DeferredHolderCommon.BIND_OVERRIDE = (key) -> {
             ForgeRegistry<Object> registry = RegistryManager.ACTIVE.getRegistry(key.registry());
             if (registry != null) {
+                // Prefer the registry's delegate, as only Holder.Reference can be serialized.
+                Optional<Holder.Reference<Object>> delegate = registry.getDelegate(key.identifier());
+                if (delegate.isPresent()) {
+                    return delegate.get();
+                }
                 Object value = registry.getValue(key.identifier());
                 if (value != null) {
                     return Holder.direct(value);
@@ -141,6 +149,6 @@ public class CyclopsCoreForge extends ModBaseForge<CyclopsCoreForge> {
 
     @Override
     public Class<?>[] getGameTestClasses() {
-        return new Class[]{ StartupTestForge.class };
+        return new Class[]{ StartupTestForge.class, DeferredHolderCommonTest.class };
     }
 }
