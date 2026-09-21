@@ -10,6 +10,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -53,7 +54,8 @@ public abstract class DamageIndicatedItemFluidContainer extends Item implements 
         this.fluid = fluid;
         init();
 
-        CyclopsCoreNeoForge._instance.getModEventBus().addListener(this::registerCapability);
+        // Register at lowest priority to allow other mods to override it.
+        CyclopsCoreNeoForge._instance.getModEventBus().addListener(EventPriority.LOWEST, this::registerCapability);
     }
 
     private void registerCapability(RegisterCapabilitiesEvent event) {
