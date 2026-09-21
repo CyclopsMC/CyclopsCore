@@ -144,18 +144,19 @@ public class DeferredHolderCommon<R, T extends R> implements Holder<R>, IHolderC
     protected final void bind(boolean throwOnMissingRegistry) {
         if (this.holder != null) return;
 
-        // Check if we have an override for specific mod loaders
-        if (DeferredHolderCommon.BIND_OVERRIDE != null) {
-            this.holder = (Holder<R>) DeferredHolderCommon.BIND_OVERRIDE.apply(this.key);
-            if (this.holder != null) {
-                return;
-            }
-        }
-
+        // Bind via the registry first, as that gives us a Holder.Reference, which is required by delegates.
         Registry<R> registry = getRegistry();
         if (registry != null) {
             this.holder = registry.get(this.key).orElse(null);
-        } else if (throwOnMissingRegistry) {
+        }
+
+        // Check if we have an override for specific mod loaders,
+        // for entries that are not present in a regular registry.
+        if (this.holder == null && DeferredHolderCommon.BIND_OVERRIDE != null) {
+            this.holder = (Holder<R>) DeferredHolderCommon.BIND_OVERRIDE.apply(this.key);
+        }
+
+        if (this.holder == null && registry == null && throwOnMissingRegistry) {
             throw new IllegalStateException("Registry not present for " + this + ": " + this.key.registry());
         }
     }
