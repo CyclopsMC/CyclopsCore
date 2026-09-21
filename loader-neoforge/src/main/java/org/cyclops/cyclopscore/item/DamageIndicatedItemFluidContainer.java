@@ -54,10 +54,7 @@ public abstract class DamageIndicatedItemFluidContainer extends Item implements 
         this.fluid = fluid;
         init();
 
-        // Register at the lowest priority: this is a generic fallback handler, so a subclass that registers
-        // its own fluid handler for the same item must win. NeoForge returns the first registered non-null
-        // provider, and RegisterCapabilitiesEvent is dispatched per priority first and per mod second, so
-        // without this the winner would depend on the mod load order between cyclopscore and the subclass' mod.
+        // Register at lowest priority to allow other mods to override it.
         CyclopsCoreNeoForge._instance.getModEventBus().addListener(EventPriority.LOWEST, this::registerCapability);
     }
 
