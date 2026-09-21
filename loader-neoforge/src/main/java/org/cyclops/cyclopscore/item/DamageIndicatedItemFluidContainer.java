@@ -10,6 +10,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -53,7 +54,11 @@ public abstract class DamageIndicatedItemFluidContainer extends Item implements 
         this.fluid = fluid;
         init();
 
-        CyclopsCoreNeoForge._instance.getModEventBus().addListener(this::registerCapability);
+        // Register at the lowest priority: this is a generic fallback handler, so a subclass that registers
+        // its own fluid handler for the same item must win. NeoForge returns the first registered non-null
+        // provider, and RegisterCapabilitiesEvent is dispatched per priority first and per mod second, so
+        // without this the winner would depend on the mod load order between cyclopscore and the subclass' mod.
+        CyclopsCoreNeoForge._instance.getModEventBus().addListener(EventPriority.LOWEST, this::registerCapability);
     }
 
     private void registerCapability(RegisterCapabilitiesEvent event) {
