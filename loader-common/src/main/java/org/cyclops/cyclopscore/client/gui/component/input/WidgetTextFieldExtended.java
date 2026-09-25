@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.component.input;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
@@ -63,7 +64,7 @@ public class WidgetTextFieldExtended extends EditBox {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDoubleClick) {
-        if (event.button() == 1 && event.x() >= this.getX() && event.x() < this.getX() + this.width
+        if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT && event.x() >= this.getX() && event.x() < this.getX() + this.width
                 && event.y() >= this.getY() && event.y() < this.getY() + this.height) {
             // Select everything
             this.setFocused(true);
