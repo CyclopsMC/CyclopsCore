@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.client.gui.component;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -91,7 +92,7 @@ public class WidgetScrollBar extends AbstractWidget {
 
     @Override
     public boolean mouseDragged(MouseButtonEvent mouse, double offsetX, double offsetY) {
-        boolean flag = mouse.button() == 0 || mouse.button() == 1;
+        boolean flag = mouse.button() == InputConstants.MOUSE_BUTTON_LEFT || mouse.button() == InputConstants.MOUSE_BUTTON_RIGHT;
         int xMax = getX() + 14;
         int yMax = getY() + height;
 

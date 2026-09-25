@@ -142,7 +142,7 @@ public abstract class ContainerScreenScrolling<T extends ScrollingInventoryConta
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double mouseX, double mouseY) {
-        if (this.getFocused() != null && this.isDragging() && event.button() == 0
+        if (this.getFocused() != null && this.isDragging() && event.button() == InputConstants.MOUSE_BUTTON_LEFT
                 && this.getFocused().mouseDragged(event, mouseX, mouseY)) {
             return true;
         }
