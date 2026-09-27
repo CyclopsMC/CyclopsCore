@@ -1,8 +1,16 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.31.1"></a>
+## [26.1.2-1.31.1](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.0...26.1.2-1.31.1) - 2026-09-27 07:35:32
+
+### Fixed
+* Fix DeferredHolderCommon delegates not being references on Forge (#245)
+* Register the damage-indicated fluid container handler at the lowest priority (#246)
+  This fixes EvilCraft's creative blood drop to sometimes not work.
+
 <a name="26.1.2-1.31.0"></a>
-## [26.1.2-1.31.0](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.4...26.1.2-1.31.0) - 2026-09-11 19:05:23
+## [26.1.2-1.31.0](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.30.4...26.1.2-1.31.0) - 2026-09-11 19:05:24 +0200
 
 ### Added
 * Hash an ingredient key once per index update (#241)

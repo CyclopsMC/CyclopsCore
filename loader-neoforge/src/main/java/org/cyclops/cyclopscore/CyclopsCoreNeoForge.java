@@ -22,6 +22,7 @@ import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.component.DataComponentFluidContentConfig;
 import org.cyclops.cyclopscore.component.DataComponentInventoryConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
+import org.cyclops.cyclopscore.gametest.DeferredHolderCommonTest;
 import org.cyclops.cyclopscore.gametest.MethodGameTestInstanceConfig;
 import org.cyclops.cyclopscore.gametest.StartupTestNeoForge;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
@@ -177,7 +178,7 @@ public class CyclopsCoreNeoForge extends ModBaseNeoForge<CyclopsCoreNeoForge> {
 
     @Override
     public Class<?>[] getGameTestClasses() {
-        return new Class<?>[] { StartupTestNeoForge.class };
+        return new Class<?>[] { StartupTestNeoForge.class, DeferredHolderCommonTest.class };
     }
 
     private void loadComplete(FMLLoadCompleteEvent event) {

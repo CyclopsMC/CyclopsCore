@@ -17,6 +17,7 @@ import org.cyclops.cyclopscore.command.argument.ArgumentTypeEnumConfig;
 import org.cyclops.cyclopscore.component.DataComponentCapacityConfig;
 import org.cyclops.cyclopscore.component.DataComponentEnergyStorageConfig;
 import org.cyclops.cyclopscore.config.ConfigHandlerCommon;
+import org.cyclops.cyclopscore.gametest.DeferredHolderCommonTest;
 import org.cyclops.cyclopscore.gametest.MethodGameTestInstanceConfig;
 import org.cyclops.cyclopscore.gametest.StartupTestFabric;
 import org.cyclops.cyclopscore.helper.CyclopsCoreInstance;
@@ -112,6 +113,6 @@ public class CyclopsCoreFabric extends ModBaseFabric<CyclopsCoreFabric> implemen
 
     @Override
     public Class<?>[] getGameTestClasses() {
-        return new Class[]{ StartupTestFabric.class };
+        return new Class[]{ StartupTestFabric.class, DeferredHolderCommonTest.class };
     }
 }
