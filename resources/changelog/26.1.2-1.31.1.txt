@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix DeferredHolderCommon delegates not being references on Forge (#245)
+* Register the damage-indicated fluid container handler at the lowest priority (#246)
+  This fixes EvilCraft's creative blood drop to sometimes not work.
