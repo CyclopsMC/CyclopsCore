@@ -97,10 +97,10 @@ public class ConfigHandlerNeoForge extends ConfigHandlerCommon {
 
         // Pass config builder to all configurables
         for (ExtendedConfigCommon<?, ?, ?> eConfig : getConfigurables()) {
-            ModConfigSpec.Builder configBuilder = configBuilders.get(ModConfig.Type.COMMON);
+            ModConfigSpec.Builder configBuilder = configBuilders.get(ModConfig.Type.LOCAL);
             if (configBuilder == null) {
                 configBuilder = new ModConfigSpec.Builder();
-                configBuilders.put(ModConfig.Type.COMMON, configBuilder);
+                configBuilders.put(ModConfig.Type.LOCAL, configBuilder);
             }
             addCategory(eConfig.getConfigurableType().getCategory());
 
@@ -169,13 +169,13 @@ public class ConfigHandlerNeoForge extends ConfigHandlerCommon {
     public static ModConfig.Type modConfigLocationToType(ModConfigLocation modConfigLocation) {
         switch (modConfigLocation) {
             case COMMON -> {
-                return ModConfig.Type.COMMON;
+                return ModConfig.Type.LOCAL;
             }
             case CLIENT -> {
                 return ModConfig.Type.CLIENT;
             }
             case SERVER -> {
-                return ModConfig.Type.SERVER;
+                return ModConfig.Type.SYNCED;
             }
             case STARTUP -> {
                 return ModConfig.Type.STARTUP;
