@@ -53,7 +53,6 @@ public class RenderHelpersFabric extends RenderHelpersCommon implements IRenderH
         FluidStateModelSet fluidModels = Minecraft.getInstance().getModelManager().getFluidStateModelSet();
         FluidModel model = fluidModels.get(fluidVariant.getFluid().defaultFluidState());
         BlockTintSource tintSource = model.tintSource();
-        // Untinted fluids (such as lava) have no tint source
         int color = tintSource == null ? 0xFFFFFF : tintSource.color(fluidVariant.getFluid().defaultFluidState().createLegacyBlock());
         return this.modHelpers.getBaseHelpers().intToRGB(color);
     }
