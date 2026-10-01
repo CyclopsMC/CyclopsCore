@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix Fabric crash when rendering fluids without tint source (#250)
+  Closes CyclopsMC/Flopper#47

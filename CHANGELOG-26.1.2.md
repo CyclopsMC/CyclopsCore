@@ -1,8 +1,15 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.31.2"></a>
+## [26.1.2-1.31.2](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.1...26.1.2-1.31.2) - 2026-10-01 16:54:56
+
+### Fixed
+* Fix Fabric crash when rendering fluids without tint source (#250)
+  Closes CyclopsMC/Flopper#47
+
 <a name="26.1.2-1.31.1"></a>
-## [26.1.2-1.31.1](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.0...26.1.2-1.31.1) - 2026-09-27 07:35:32
+## [26.1.2-1.31.1](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.0...26.1.2-1.31.1) - 2026-09-27 07:35:32 +0200
 
 ### Fixed
 * Fix DeferredHolderCommon delegates not being references on Forge (#245)
