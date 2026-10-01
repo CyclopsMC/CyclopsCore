@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.helper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.block.FluidStateModelSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -51,7 +52,9 @@ public class RenderHelpersFabric extends RenderHelpersCommon implements IRenderH
     public Triple<Float, Float, Float> getFluidVertexBufferColor(FluidVariant fluidVariant) {
         FluidStateModelSet fluidModels = Minecraft.getInstance().getModelManager().getFluidStateModelSet();
         FluidModel model = fluidModels.get(fluidVariant.getFluid().defaultFluidState());
-        int color = model.tintSource().color(fluidVariant.getFluid().defaultFluidState().createLegacyBlock());
+        BlockTintSource tintSource = model.tintSource();
+        // Untinted fluids (such as lava) have no tint source
+        int color = tintSource == null ? 0xFFFFFF : tintSource.color(fluidVariant.getFluid().defaultFluidState().createLegacyBlock());
         return this.modHelpers.getBaseHelpers().intToRGB(color);
     }
 
