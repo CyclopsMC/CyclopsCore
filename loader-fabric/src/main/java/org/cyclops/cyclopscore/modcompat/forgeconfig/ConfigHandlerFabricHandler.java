@@ -27,12 +27,12 @@ public class ConfigHandlerFabricHandler {
 
     public void onLoad(ModConfig configEvent) {
         this.configHandler.getMod().log(Level.TRACE, "Load config");
-        syncProcessedConfigs(false);
+        syncProcessedConfigs(configEvent, false);
     }
 
     public void onReload(ModConfig configEvent) {
         this.configHandler.getMod().log(Level.TRACE, "Reload config");
-        syncProcessedConfigs(true);
+        syncProcessedConfigs(configEvent, true);
     }
 
     /**
@@ -62,7 +62,7 @@ public class ConfigHandlerFabricHandler {
                     configBuilders.put(modConfigLocationToType(configProperty.getConfigLocation()), configBuilderProperty);
                 }
                 this.configHandler.getCategories().add(configProperty.getCategory());
-                this.onConfigPropertyInit(configProperty, configBuilder);
+                this.onConfigPropertyInit(configProperty, configBuilderProperty);
                 if (configProperty.isCommandable()) {
                     this.configHandler.getCommandableProperties().put(configProperty.getName(), configProperty);
                 }
@@ -102,13 +102,18 @@ public class ConfigHandlerFabricHandler {
     /**
      * Sync the config values that were already loaded.
      * This will update the values in-game and in the config file.
+     * @param config The mod config that is being loaded.
      * @param reload If we are reloading, otherwise this is an initial load.
      */
     @SuppressWarnings("unchecked")
-    public void syncProcessedConfigs(boolean reload) {
+    public void syncProcessedConfigs(ModConfig config, boolean reload) {
         for(ExtendedConfigCommon<?, ?, ?> eConfig : this.configHandler.getConfigurables()) {
             // Re-save additional properties
             for(ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
+                // Only properties of the loaded config have values, others would throw.
+                if (modConfigLocationToType(configProperty.getConfigLocation()) != config.getType()) {
+                    continue;
+                }
                 configProperty.saveToField();
                 eConfig.onConfigPropertyReload(configProperty, reload);
             }

@@ -112,7 +112,7 @@ public class ConfigHandlerNeoForge extends ConfigHandlerCommon {
                     configBuilders.put(modConfigLocationToType(configProperty.getConfigLocation()), configBuilderProperty);
                 }
                 getCategories().add(configProperty.getCategory());
-                this.onConfigPropertyInit(configProperty, configBuilder);
+                this.onConfigPropertyInit(configProperty, configBuilderProperty);
                 if (configProperty.isCommandable()) {
                     getCommandableProperties().put(configProperty.getName(), configProperty);
                 }
@@ -160,6 +160,10 @@ public class ConfigHandlerNeoForge extends ConfigHandlerCommon {
         for(ExtendedConfigCommon<?, ?, ?> eConfig : this.getConfigurables()) {
             // Re-save additional properties
             for(ConfigurablePropertyData configProperty : eConfig.configProperties.values()) {
+                // Only properties of the loaded config have values, others would throw.
+                if (modConfigLocationToType(configProperty.getConfigLocation()) != config.getType()) {
+                    continue;
+                }
                 configProperty.saveToField();
                 eConfig.onConfigPropertyReload(configProperty, reload);
             }
