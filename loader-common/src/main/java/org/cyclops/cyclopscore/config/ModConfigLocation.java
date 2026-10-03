@@ -4,6 +4,7 @@ package org.cyclops.cyclopscore.config;
  * Copied from NeoForge's ModConfig.Type to be aligned with it.
  * @author rubensworks
  */
+// TODO: in next major, rename COMMON to LOCAL and SERVER to SYNCED to match NeoForge's ModConfig.Type
 public enum ModConfigLocation {
     /**
      * Common mod config for configuration that needs to be loaded on both environments.
