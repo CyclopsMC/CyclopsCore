@@ -1,5 +1,6 @@
 package org.cyclops.cyclopscore.tracking;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.Level;
@@ -30,7 +31,7 @@ public class ImportantUsers {
     public static void checkAll() {
         if(!checked) {
             checked = true;
-            new Thread(() -> {
+            createThread(() -> {
                 Set<UUID> uuids = Sets.newHashSet();
                 try {
                     URL url = new URL(SOURCE);
@@ -53,6 +54,14 @@ public class ImportantUsers {
                 PlayerRingOfFire.ALLOW_RING.addAll(uuids);
             }).start();
         }
+    }
+
+    // Daemon thread, so a stalled download doesn't prevent the client JVM from exiting.
+    @VisibleForTesting
+    static Thread createThread(Runnable runnable) {
+        Thread thread = new Thread(runnable, "CyclopsCore Important Users");
+        thread.setDaemon(true);
+        return thread;
     }
 
 }
