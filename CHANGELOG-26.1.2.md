@@ -1,8 +1,15 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.31.3"></a>
+## [26.1.2-1.31.3](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.2...26.1.2-1.31.3) - 2026-10-10 08:37:22
+
+### Fixed
+* Fix Forge configurable type actions not always being set (#253)
+  Closes CyclopsMC/EverlastingAbilities#329
+
 <a name="26.1.2-1.31.2"></a>
-## [26.1.2-1.31.2](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.1...26.1.2-1.31.2) - 2026-10-01 16:54:56
+## [26.1.2-1.31.2](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.1...26.1.2-1.31.2) - 2026-10-01 16:54:56 +0200
 
 ### Fixed
 * Fix Fabric crash when rendering fluids without tint source (#250)

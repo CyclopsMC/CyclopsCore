@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix Forge configurable type actions not always being set (#253)
+  Closes CyclopsMC/EverlastingAbilities#329
