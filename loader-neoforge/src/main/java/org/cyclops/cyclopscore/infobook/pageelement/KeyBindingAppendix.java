@@ -59,7 +59,7 @@ public class KeyBindingAppendix extends SectionAppendix {
         gui.drawScaledCenteredString(guiGraphics, ChatFormatting.ITALIC.toString() + L10NHelpers.localize(keyBinding.getName()),
                 x, y - 2 + 12, width, 0.9f, gui.getBannerWidth() + 8, Helpers.RGBToInt(30, 20, 120));
 
-        String binding = L10NHelpers.localize(keyBinding.saveString());
+        String binding = keyBinding.getTranslatedKeyMessage().getString();
         int bindingWidth = gui.getFont().width(binding) + 2;
         gui.drawOuterBorder(guiGraphics, x + width / 2 - bindingWidth / 2 - 1, y + 17, bindingWidth, 10, 1, 1, 1, 0.2f);
         gui.drawScaledCenteredString(guiGraphics, binding, x, y + 22, width, 0.9f, gui.getBannerWidth() - 6, Helpers.RGBToInt(30, 20, 120));
