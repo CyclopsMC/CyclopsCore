@@ -17,7 +17,10 @@ public class SingleCache<K, V> {
         this.updater = updater;
     }
 
-    public V get(K key) {
+    // Synchronized: packets are encoded on several Netty threads at once (e.g. one PacketCodec
+    // instance broadcast to many players), and without it a thread could see initialized == true
+    // while value was still null.
+    public synchronized V get(K key) {
         if(!this.initialized || !this.updater.isKeyEqual(this.key, key)) {
             this.value = this.updater.getNewValue(key);
             this.key = key;
