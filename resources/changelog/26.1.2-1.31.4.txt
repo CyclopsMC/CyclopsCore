@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Make SingleCache#get thread-safe to fix random crashes (#257), Closes #256
+* Fix incorrect key binding labels being shown in appendices (#255)
