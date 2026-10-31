@@ -1,8 +1,15 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.31.4"></a>
+## [26.1.2-1.31.4](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.3...26.1.2-1.31.4) - 2026-10-31 13:33:20
+
+### Fixed
+* Make SingleCache#get thread-safe to fix random crashes (#257), Closes #256
+* Fix incorrect key binding labels being shown in appendices (#255)
+
 <a name="26.1.2-1.31.3"></a>
-## [26.1.2-1.31.3](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.2...26.1.2-1.31.3) - 2026-10-10 08:37:22
+## [26.1.2-1.31.3](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.2...26.1.2-1.31.3) - 2026-10-10 08:37:22 +0200
 
 ### Fixed
 * Fix Forge configurable type actions not always being set (#253)

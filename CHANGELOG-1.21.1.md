@@ -1,8 +1,14 @@
 # Changelog for Minecraft 1.21.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.21.1-1.30.1"></a>
+## [1.21.1-1.30.1](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.30.0...1.21.1-1.30.1) - 2026-10-31 13:30:01
+
+### Fixed
+* Fix incorrect key binding labels being shown in appendices (#255)
+
 <a name="1.21.1-1.30.0"></a>
-## [1.21.1-1.30.0](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.4...1.21.1-1.30.0) - 2026-09-11 19:01:09
+## [1.21.1-1.30.0](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.29.4...1.21.1-1.30.0) - 2026-09-11 19:01:09 +0200
 
 ### Added
 * Hash an ingredient key once per index update (#241)
