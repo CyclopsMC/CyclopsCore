@@ -61,7 +61,7 @@ public final class PacketHandler {
                         try {
                             packet.encode(packetBuffer);
                         } catch (Throwable e) {
-                            throw new PacketCodecException("An exception occurred during encoding of packet " + packet.toString(), e);
+                            throw logCodecException("An exception occurred during encoding of packet " + packet.toString(), e);
                         }
                     },
                     (packetBuffer) -> {
@@ -74,7 +74,7 @@ public final class PacketHandler {
                         try {
                             packet.decode(packetBuffer);
                         } catch (Throwable e) {
-                            throw new PacketCodecException("An exception occurred during decoding of packet " + packet.toString(), e);
+                            throw logCodecException("An exception occurred during decoding of packet " + packetType.getName(), e);
                         }
                         return packet;
                     },
@@ -99,6 +99,12 @@ public final class PacketHandler {
             e.printStackTrace();
             CyclopsCore.clog(org.apache.logging.log4j.Level.ERROR, "Could not find a default constructor for packet " + packetType.getName());
         }
+    }
+
+    // Vanilla only logs the cause at debug level when disconnecting, so log it here.
+    private PacketCodecException logCodecException(String message, Throwable cause) {
+        mod.getLoggerHelper().getLogger().error(message, cause);
+        return new PacketCodecException(message, cause);
     }
 
     @OnlyIn(Dist.CLIENT)
