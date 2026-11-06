@@ -1,0 +1,6 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Improve concurrency robustness of Map packet codec
+  This also adds more detailed error logging for when it fails again.
+  Related to #258

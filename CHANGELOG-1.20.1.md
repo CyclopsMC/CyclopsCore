@@ -1,8 +1,16 @@
 # Changelog for Minecraft 1.20.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.20.1-1.22.4"></a>
+## [1.20.1-1.22.4](/compare/1.20.1-1.22.3...1.20.1-1.22.4) - 2026-11-06 16:27:18
+
+### Fixed
+* Improve concurrency robustness of Map packet codec
+  This also adds more detailed error logging for when it fails again.
+  Related to #258
+
 <a name="1.20.1-1.22.3"></a>
-## [1.20.1-1.22.3](/compare/1.20.1-1.22.2...1.20.1-1.22.3) - 2026-09-05 12:41:33
+## [1.20.1-1.22.3](/compare/1.20.1-1.22.2...1.20.1-1.22.3) - 2026-09-05 12:41:33 +0200
 
 ### Fixed
 * Fix infobook crash when hovering the top-left corner on recipe pages (#237)
