@@ -13,6 +13,8 @@ import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -137,6 +139,33 @@ public class TestPacketCodec {
         MapPacketCodec packet2 = new MapPacketCodec();
         encodeDecode(packet1, packet2);
         assertThat("Input equals output", packet1.value, equalTo(packet2.value));
+    }
+
+    @Test
+    public void testMapModifiedDuringEncoding() {
+        // Simulates another thread adding an entry after the map size was read.
+        Map<String, Integer> mapA = new ConcurrentHashMap<>() {
+            @Override
+            public Set<Entry<String, Integer>> entrySet() {
+                putIfAbsent("late", 3);
+                return super.entrySet();
+            }
+        };
+        mapA.put("a", 1);
+        Map<String, Integer> mapB = Maps.newHashMap();
+        mapB.put("b", 2);
+        DoubleMapPacketCodec packet1 = new DoubleMapPacketCodec();
+        packet1.a = mapA;
+        packet1.b = mapB;
+        DoubleMapPacketCodec packet2 = new DoubleMapPacketCodec();
+
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        packet1.encode(buffer);
+        packet2.decode(buffer);
+
+        assertThat("Input equals output", packet2.a, equalTo(Maps.newHashMap(mapA)));
+        assertThat("Input equals output", packet2.b, equalTo(mapB));
+        assertThat("Buffer is fully read", buffer.readableBytes(), is(0));
     }
 
     @Test
@@ -283,6 +312,13 @@ public class TestPacketCodec {
     public static class MapPacketCodec extends SimplePacketCodec {
         @CodecField
         public Map value;
+    }
+
+    public static class DoubleMapPacketCodec extends SimplePacketCodec {
+        @CodecField
+        public Map a;
+        @CodecField
+        public Map b;
     }
 
     public static class NBTPacketCodec extends SimplePacketCodec {

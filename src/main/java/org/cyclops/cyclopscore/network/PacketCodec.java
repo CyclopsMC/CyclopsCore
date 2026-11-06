@@ -28,7 +28,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Packet with automatic coding and decoding of basic fields annotated with {@link CodecField}.
@@ -201,8 +200,9 @@ public abstract class PacketCodec extends PacketBase {
             @Override
             public void encode(Object object, FriendlyByteBuf output) {
                 Map map = (Map) object;
-                output.writeInt(map.size());
-                Set<Map.Entry> entries = map.entrySet();
+                // Snapshot, so the written size matches the written entries if the map is modified concurrently.
+                List<Map.Entry> entries = Lists.newArrayList(map.entrySet());
+                output.writeInt(entries.size());
                 ICodecAction keyAction = null;
                 ICodecAction valueAction = null;
                 for(Map.Entry entry : entries) {
