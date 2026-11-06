@@ -200,7 +200,6 @@ public abstract class PacketCodec extends PacketBase {
             @Override
             public void encode(Object object, FriendlyByteBuf output) {
                 Map map = (Map) object;
-                // Snapshot, so the written size matches the written entries if the map is modified concurrently.
                 List<Map.Entry> entries = Lists.newArrayList(map.entrySet());
                 output.writeInt(entries.size());
                 ICodecAction keyAction = null;
