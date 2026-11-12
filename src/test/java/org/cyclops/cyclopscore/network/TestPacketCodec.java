@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.network;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.DecoderException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -235,6 +237,137 @@ public class TestPacketCodec {
         assertThat("Input equals output", packet1.value, equalTo(packet2.value));
     }
 
+    @Test
+    public void testListOnlyNulls() {
+        ListPacketCodec packet1 = new ListPacketCodec();
+        List<String> list = Lists.newArrayList();
+        list.add(null);
+        list.add(null);
+        packet1.value = list;
+        ListPacketCodec packet2 = new ListPacketCodec();
+        encodeDecode(packet1, packet2);
+        assertThat("Input equals output", packet1.value, equalTo(packet2.value));
+    }
+
+    @Test
+    public void testListMaxNullElements() {
+        ListPacketCodec packet1 = new ListPacketCodec();
+        List<String> list = Lists.newArrayList();
+        for (int i = 0; i < PacketCodec.MAX_LIST_NULL_ELEMENTS; i++) {
+            list.add(null);
+        }
+        list.add("a");
+        packet1.value = list;
+        ListPacketCodec packet2 = new ListPacketCodec();
+        encodeDecode(packet1, packet2);
+        assertThat("Input equals output", packet1.value, equalTo(packet2.value));
+    }
+
+    @Test(expected = DecoderException.class)
+    public void testListSizeTooLarge() {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeInt(300000000);
+        buffer.writeUtf("__noclass");
+        new ListPacketCodec().decode(buffer);
+    }
+
+    @Test(expected = DecoderException.class)
+    public void testListSizeNegative() {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeInt(-1);
+        buffer.writeUtf("__noclass");
+        new ListPacketCodec().decode(buffer);
+    }
+
+    @Test(expected = DecoderException.class)
+    public void testListTooManyNullsNoClass() {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeInt(PacketCodec.MAX_LIST_NULL_ELEMENTS + 1);
+        buffer.writeUtf("__noclass");
+        new ListPacketCodec().decode(buffer);
+    }
+
+    @Test(expected = DecoderException.class)
+    public void testListTooManyNullsBeforeIndex() {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeInt(PacketCodec.MAX_LIST_NULL_ELEMENTS + 10);
+        buffer.writeUtf(String.class.getName());
+        buffer.writeInt(PacketCodec.MAX_LIST_NULL_ELEMENTS + 1);
+        buffer.writeUtf("a");
+        buffer.writeInt(-1);
+        new ListPacketCodec().decode(buffer);
+    }
+
+    @Test(expected = DecoderException.class)
+    public void testListIndexOutOfBounds() {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeInt(2);
+        buffer.writeUtf(String.class.getName());
+        buffer.writeInt(5);
+        buffer.writeUtf("a");
+        buffer.writeInt(-1);
+        new ListPacketCodec().decode(buffer);
+    }
+
+    @Test(expected = DecoderException.class)
+    public void testListIndexDecreasing() {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeInt(3);
+        buffer.writeUtf(String.class.getName());
+        buffer.writeInt(1);
+        buffer.writeUtf("a");
+        buffer.writeInt(0);
+        buffer.writeUtf("b");
+        buffer.writeInt(-1);
+        new ListPacketCodec().decode(buffer);
+    }
+
+    @Test(expected = DecoderException.class)
+    public void testListUnknownClass() {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeInt(1);
+        buffer.writeUtf("org.cyclops.cyclopscore.DoesNotExist");
+        buffer.writeInt(0);
+        buffer.writeInt(-1);
+        new ListPacketCodec().decode(buffer);
+    }
+
+    @Test
+    public void testListClassWithoutCodecIsNotInitialized() {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeInt(1);
+        buffer.writeUtf("org.cyclops.cyclopscore.network.TestPacketCodec$ClassWithInitializer");
+        buffer.writeInt(0);
+        buffer.writeInt(-1);
+        try {
+            new ListPacketCodec().decode(buffer);
+            throw new AssertionError("Expected a DecoderException");
+        } catch (DecoderException e) {
+            // Expected
+        }
+        assertFalse("Class must not be initialized", ClassInitializationTracker.initialized);
+    }
+
+    @Test(expected = DecoderException.class)
+    public void testMapSizeTooLarge() {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeInt(Integer.MAX_VALUE);
+        buffer.writeUtf(String.class.getName());
+        buffer.writeUtf(String.class.getName());
+        new MapPacketCodec().decode(buffer);
+    }
+
+    @Test(expected = DecoderException.class)
+    public void testMapUnknownClass() {
+        FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.buffer());
+        buffer.writeInt(1);
+        buffer.writeUtf("org.cyclops.cyclopscore.DoesNotExist");
+        buffer.writeUtf(String.class.getName());
+        buffer.writeUtf("a");
+        buffer.writeUtf("b");
+        new MapPacketCodec().decode(buffer);
+    }
+
     //@Test
     //@Ignore // Not yet supported
     public void testMapList() {
@@ -344,6 +477,16 @@ public class TestPacketCodec {
     public static class ListPacketCodec extends SimplePacketCodec {
         @CodecField
         public List<String> value;
+    }
+
+    public static class ClassInitializationTracker {
+        public static boolean initialized = false;
+    }
+
+    public static class ClassWithInitializer {
+        static {
+            ClassInitializationTracker.initialized = true;
+        }
     }
 
 }
