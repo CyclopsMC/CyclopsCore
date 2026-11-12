@@ -38,10 +38,6 @@ import java.util.Objects;
 public abstract class PacketCodec extends PacketBase {
 
     public static final int READ_STRING_MAX_LENGTH = 32767;
-    /**
-     * The maximum number of null elements in a decoded list.
-     * Null elements are not encoded, so they are limited separately from the packet size.
-     */
     public static final int MAX_LIST_NULL_ELEMENTS = 1024;
 
     private static Map<Class<?>, ICodecAction> codecActions = Maps.newHashMap();
