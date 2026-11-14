@@ -27,7 +27,6 @@ public class LootHelpers {
 
     /**
      * Register a new loot condition.
-     * This is thread-safe, as mods can call this in parallel during mod loading.
      * @param id The loot condition id.
      * @param serializer The loot condition serializer.
      * @return The created loot condition type
