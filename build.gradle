@@ -102,7 +102,6 @@ dependencies {
 
     testImplementation "junit:junit:4.12"
     testImplementation "org.mockito:mockito-core:1.+"
-    testImplementation "org.objenesis:objenesis:2.1"
 
     // Locally sourced extra mods for runtime (i.e. testing)
     for (extraModJar in fileTree(dir: extraModsDir, include: '*.jar')) {
