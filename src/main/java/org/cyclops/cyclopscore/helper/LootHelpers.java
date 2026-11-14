@@ -21,7 +21,7 @@ public class LootHelpers {
      * @param serializer The loot function serializer.
      * @return The created loot function type
      */
-    public static LootItemFunctionType registerFunction(ResourceLocation id, Serializer<? extends LootItemFunction> serializer) {
+    public static synchronized LootItemFunctionType registerFunction(ResourceLocation id, Serializer<? extends LootItemFunction> serializer) {
         return Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, id, new LootItemFunctionType(serializer));
     }
 
@@ -31,7 +31,7 @@ public class LootHelpers {
      * @param serializer The loot condition serializer.
      * @return The created loot condition type
      */
-    public static LootItemConditionType registerCondition(ResourceLocation id, Serializer<? extends LootItemCondition> serializer) {
+    public static synchronized LootItemConditionType registerCondition(ResourceLocation id, Serializer<? extends LootItemCondition> serializer) {
         return Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, id, new LootItemConditionType(serializer));
     }
 
