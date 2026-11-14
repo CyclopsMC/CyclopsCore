@@ -49,7 +49,7 @@ public class Helpers {
      * @param mod The mod to register the id for.
      * @return The incremented ID.
      */
-    public static int getNewId(ModBase mod, IDType type) {
+    public static synchronized int getNewId(ModBase mod, IDType type) {
         Integer ID = ID_COUNTER.get(Pair.of(mod, type));
         if(ID == null) ID = 0;
         ID_COUNTER.put(Pair.of(mod, type), ID + 1);
