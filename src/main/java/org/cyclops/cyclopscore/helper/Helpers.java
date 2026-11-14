@@ -45,7 +45,6 @@ public class Helpers {
 
     /**
      * Get a new ID for the given type.
-     * This is thread-safe, as mods can call this in parallel during mod loading.
      * @param type Type for something.
      * @param mod The mod to register the id for.
      * @return The incremented ID.
