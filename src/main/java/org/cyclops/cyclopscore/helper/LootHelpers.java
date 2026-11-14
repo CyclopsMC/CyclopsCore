@@ -17,7 +17,6 @@ public class LootHelpers {
 
     /**
      * Register a new loot function.
-     * This is thread-safe, as mods can call this in parallel during mod loading.
      * @param id The loot function id.
      * @param serializer The loot function serializer.
      * @return The created loot function type
