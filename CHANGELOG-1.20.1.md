@@ -1,8 +1,18 @@
 # Changelog for Minecraft 1.20.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.20.1-1.22.5"></a>
+## [1.20.1-1.22.5](/compare/1.20.1-1.22.4...1.20.1-1.22.5) - 2026-11-14 09:47:52
+
+### Changed
+* Limit list and map sizes and avoid class init when decoding packets (#260), Closes GHSA-4jfp-83qj-mr8r
+
+### Fixed
+* Fix loot registry corruption when mods load in parallel (#263)
+* Fix duplicate packet IDs when mods load in parallel (#262), Closes #258
+
 <a name="1.20.1-1.22.4"></a>
-## [1.20.1-1.22.4](/compare/1.20.1-1.22.3...1.20.1-1.22.4) - 2026-11-06 16:27:18
+## [1.20.1-1.22.4](/compare/1.20.1-1.22.3...1.20.1-1.22.4) - 2026-11-06 16:27:18 +0100
 
 ### Fixed
 * Improve concurrency robustness of Map packet codec

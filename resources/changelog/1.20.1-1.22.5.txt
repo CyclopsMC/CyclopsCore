@@ -1,0 +1,8 @@
+As always, don't forget to backup your world before updating!
+
+Changes:
+* Limit list and map sizes and avoid class init when decoding packets (#260), Closes GHSA-4jfp-83qj-mr8r
+
+Fixes:
+* Fix loot registry corruption when mods load in parallel (#263)
+* Fix duplicate packet IDs when mods load in parallel (#262), Closes #258
