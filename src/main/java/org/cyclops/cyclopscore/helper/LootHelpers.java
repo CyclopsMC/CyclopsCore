@@ -17,21 +17,23 @@ public class LootHelpers {
 
     /**
      * Register a new loot function.
+     * This is thread-safe, as mods can call this in parallel during mod loading.
      * @param id The loot function id.
      * @param serializer The loot function serializer.
      * @return The created loot function type
      */
-    public static LootItemFunctionType registerFunction(ResourceLocation id, Serializer<? extends LootItemFunction> serializer) {
+    public static synchronized LootItemFunctionType registerFunction(ResourceLocation id, Serializer<? extends LootItemFunction> serializer) {
         return Registry.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, id, new LootItemFunctionType(serializer));
     }
 
     /**
      * Register a new loot condition.
+     * This is thread-safe, as mods can call this in parallel during mod loading.
      * @param id The loot condition id.
      * @param serializer The loot condition serializer.
      * @return The created loot condition type
      */
-    public static LootItemConditionType registerCondition(ResourceLocation id, Serializer<? extends LootItemCondition> serializer) {
+    public static synchronized LootItemConditionType registerCondition(ResourceLocation id, Serializer<? extends LootItemCondition> serializer) {
         return Registry.register(BuiltInRegistries.LOOT_CONDITION_TYPE, id, new LootItemConditionType(serializer));
     }
 
