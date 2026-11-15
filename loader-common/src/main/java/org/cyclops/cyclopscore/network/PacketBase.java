@@ -6,6 +6,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.function.Supplier;
 
@@ -16,6 +18,8 @@ import java.util.function.Supplier;
  *
  */
 public abstract class PacketBase<T extends PacketBase<T>> implements CustomPacketPayload {
+
+    private static final Logger LOGGER = LogManager.getLogger(PacketBase.class);
 
     private final Type<T> type;
 
@@ -32,7 +36,7 @@ public abstract class PacketBase<T extends PacketBase<T>> implements CustomPacke
         try {
             this.encode(buf);
         } catch (Throwable e) {
-            throw new PacketCodecException("An exception occurred during encoding of packet " + this.toString(), e);
+            throw logCodecException("An exception occurred during encoding of packet " + this.toString(), e);
         }
     }
 
@@ -68,6 +72,12 @@ public abstract class PacketBase<T extends PacketBase<T>> implements CustomPacke
      */
     public abstract void actionServer(Level level, ServerPlayer player);
 
+    // Vanilla only logs the cause at debug level when disconnecting, so log it here.
+    private static PacketCodecException logCodecException(String message, Throwable cause) {
+        LOGGER.error(message, cause);
+        return new PacketCodecException(message, cause);
+    }
+
     public static <T extends PacketBase<T>> StreamCodec<RegistryFriendlyByteBuf, T> getCodec(Supplier<T> packetFactory) {
         return StreamCodec.ofMember(
                 T::write,
@@ -76,7 +86,7 @@ public abstract class PacketBase<T extends PacketBase<T>> implements CustomPacke
                     try {
                         payload.decode(buff);
                     } catch (Throwable e) {
-                        throw new PacketCodecException("An exception occurred during decoding of packet " + payload.toString(), e);
+                        throw logCodecException("An exception occurred during decoding of packet " + payload.getClass().getName(), e);
                     }
                     return payload;
                 }
