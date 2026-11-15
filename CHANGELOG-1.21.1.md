@@ -1,8 +1,19 @@
 # Changelog for Minecraft 1.21.1
 All notable changes to this project will be documented in this file.
 
+<a name="1.21.1-1.30.2"></a>
+## [1.21.1-1.30.2](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.30.1...1.21.1-1.30.2) - 2026-11-15 09:57:56
+
+### Fixed
+* Fix loot registry corruption when mods load in parallel (#263)
+* Fix duplicate packet IDs when mods load in parallel (#262), Closes #258
+* Limit list and map sizes and avoid class init when decoding packets (#260), Closes GHSA-4jfp-83qj-mr8r
+* Improve concurrency robustness of Map packet codec
+  This also adds more detailed error logging for when it fails again.
+  Related to #258
+
 <a name="1.21.1-1.30.1"></a>
-## [1.21.1-1.30.1](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.30.0...1.21.1-1.30.1) - 2026-10-31 13:30:01
+## [1.21.1-1.30.1](https://github.com/CyclopsMC/CyclopsCore/compare/1.21.1-1.30.0...1.21.1-1.30.1) - 2026-10-31 13:30:01 +0100
 
 ### Fixed
 * Fix incorrect key binding labels being shown in appendices (#255)
