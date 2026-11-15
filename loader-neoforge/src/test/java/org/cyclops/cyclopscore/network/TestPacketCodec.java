@@ -3,6 +3,7 @@ package org.cyclops.cyclopscore.network;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.DecoderException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -13,10 +14,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author rubensworks
@@ -140,6 +145,33 @@ public class TestPacketCodec {
     }
 
     @Test
+    public void testMapModifiedDuringEncoding() {
+        // Simulates another thread adding an entry after the map size was read.
+        Map<String, Integer> mapA = new ConcurrentHashMap<>() {
+            @Override
+            public Set<Entry<String, Integer>> entrySet() {
+                putIfAbsent("late", 3);
+                return super.entrySet();
+            }
+        };
+        mapA.put("a", 1);
+        Map<String, Integer> mapB = Maps.newHashMap();
+        mapB.put("b", 2);
+        DoubleMapPacketCodec packet1 = new DoubleMapPacketCodec();
+        packet1.a = mapA;
+        packet1.b = mapB;
+        DoubleMapPacketCodec packet2 = new DoubleMapPacketCodec();
+
+        RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), null, null);
+        packet1.encode(buffer);
+        packet2.decode(buffer);
+
+        assertThat("Input equals output", packet2.a, equalTo(Maps.newHashMap(mapA)));
+        assertThat("Input equals output", packet2.b, equalTo(mapB));
+        assertThat("Buffer is fully read", buffer.readableBytes(), is(0));
+    }
+
+    @Test
     public void testNBTEmpty() {
         NBTPacketCodec packet1 = new NBTPacketCodec();
         packet1.value = new CompoundTag();
@@ -204,6 +236,155 @@ public class TestPacketCodec {
         ListPacketCodec packet2 = new ListPacketCodec();
         encodeDecode(packet1, packet2);
         assertThat("Input equals output", packet1.value, equalTo(packet2.value));
+    }
+
+    @Test
+    public void testListOnlyNulls() {
+        ListPacketCodec packet1 = new ListPacketCodec();
+        List<String> list = Lists.newArrayList();
+        list.add(null);
+        list.add(null);
+        packet1.value = list;
+        ListPacketCodec packet2 = new ListPacketCodec();
+        encodeDecode(packet1, packet2);
+        assertThat("Input equals output", packet1.value, equalTo(packet2.value));
+    }
+
+    @Test
+    public void testListMaxNullElements() {
+        ListPacketCodec packet1 = new ListPacketCodec();
+        List<String> list = Lists.newArrayList();
+        for (int i = 0; i < PacketCodecs.MAX_LIST_NULL_ELEMENTS; i++) {
+            list.add(null);
+        }
+        list.add("a");
+        packet1.value = list;
+        ListPacketCodec packet2 = new ListPacketCodec();
+        encodeDecode(packet1, packet2);
+        assertThat("Input equals output", packet1.value, equalTo(packet2.value));
+    }
+
+    @Test
+    public void testListSizeTooLarge() {
+        assertThrows(DecoderException.class, () -> {
+            RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), null, null);
+            buffer.writeInt(300000000);
+            buffer.writeUtf("__noclass");
+            new ListPacketCodec().decode(buffer);
+        });
+    }
+
+    @Test
+    public void testListSizeNegative() {
+        assertThrows(DecoderException.class, () -> {
+            RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), null, null);
+            buffer.writeInt(-1);
+            buffer.writeUtf("__noclass");
+            new ListPacketCodec().decode(buffer);
+        });
+    }
+
+    @Test
+    public void testListTooManyNullsNoClass() {
+        assertThrows(DecoderException.class, () -> {
+            RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), null, null);
+            buffer.writeInt(PacketCodecs.MAX_LIST_NULL_ELEMENTS + 1);
+            buffer.writeUtf("__noclass");
+            new ListPacketCodec().decode(buffer);
+        });
+    }
+
+    @Test
+    public void testListTooManyNullsBeforeIndex() {
+        assertThrows(DecoderException.class, () -> {
+            RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), null, null);
+            buffer.writeInt(PacketCodecs.MAX_LIST_NULL_ELEMENTS + 10);
+            buffer.writeUtf(String.class.getName());
+            buffer.writeInt(PacketCodecs.MAX_LIST_NULL_ELEMENTS + 1);
+            buffer.writeUtf("a");
+            buffer.writeInt(-1);
+            new ListPacketCodec().decode(buffer);
+        });
+    }
+
+    @Test
+    public void testListIndexOutOfBounds() {
+        assertThrows(DecoderException.class, () -> {
+            RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), null, null);
+            buffer.writeInt(2);
+            buffer.writeUtf(String.class.getName());
+            buffer.writeInt(5);
+            buffer.writeUtf("a");
+            buffer.writeInt(-1);
+            new ListPacketCodec().decode(buffer);
+        });
+    }
+
+    @Test
+    public void testListIndexDecreasing() {
+        assertThrows(DecoderException.class, () -> {
+            RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), null, null);
+            buffer.writeInt(3);
+            buffer.writeUtf(String.class.getName());
+            buffer.writeInt(1);
+            buffer.writeUtf("a");
+            buffer.writeInt(0);
+            buffer.writeUtf("b");
+            buffer.writeInt(-1);
+            new ListPacketCodec().decode(buffer);
+        });
+    }
+
+    @Test
+    public void testListUnknownClass() {
+        assertThrows(DecoderException.class, () -> {
+            RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), null, null);
+            buffer.writeInt(1);
+            buffer.writeUtf("org.cyclops.cyclopscore.DoesNotExist");
+            buffer.writeInt(0);
+            buffer.writeInt(-1);
+            new ListPacketCodec().decode(buffer);
+        });
+    }
+
+    @Test
+    public void testListClassWithoutCodecIsNotInitialized() {
+        RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), null, null);
+        buffer.writeInt(1);
+        buffer.writeUtf("org.cyclops.cyclopscore.network.TestPacketCodec$ClassWithInitializer");
+        buffer.writeInt(0);
+        buffer.writeInt(-1);
+        try {
+            new ListPacketCodec().decode(buffer);
+            throw new AssertionError("Expected a DecoderException");
+        } catch (DecoderException e) {
+            // Expected
+        }
+        assertFalse(ClassInitializationTracker.initialized, "Class must not be initialized");
+    }
+
+    @Test
+    public void testMapSizeTooLarge() {
+        assertThrows(DecoderException.class, () -> {
+            RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), null, null);
+            buffer.writeInt(Integer.MAX_VALUE);
+            buffer.writeUtf(String.class.getName());
+            buffer.writeUtf(String.class.getName());
+            new MapPacketCodec().decode(buffer);
+        });
+    }
+
+    @Test
+    public void testMapUnknownClass() {
+        assertThrows(DecoderException.class, () -> {
+            RegistryFriendlyByteBuf buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), null, null);
+            buffer.writeInt(1);
+            buffer.writeUtf("org.cyclops.cyclopscore.DoesNotExist");
+            buffer.writeUtf(String.class.getName());
+            buffer.writeUtf("a");
+            buffer.writeUtf("b");
+            new MapPacketCodec().decode(buffer);
+        });
     }
 
     //@Test
@@ -285,6 +466,13 @@ public class TestPacketCodec {
         public Map value;
     }
 
+    public static class DoubleMapPacketCodec extends SimplePacketCodec {
+        @CodecField
+        public Map a;
+        @CodecField
+        public Map b;
+    }
+
     public static class NBTPacketCodec extends SimplePacketCodec {
         @CodecField
         public CompoundTag value;
@@ -308,6 +496,16 @@ public class TestPacketCodec {
     public static class ListPacketCodec extends SimplePacketCodec {
         @CodecField
         public List<String> value;
+    }
+
+    public static class ClassInitializationTracker {
+        public static boolean initialized = false;
+    }
+
+    public static class ClassWithInitializer {
+        static {
+            ClassInitializationTracker.initialized = true;
+        }
     }
 
 }

@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * @author rubensworks
@@ -77,8 +78,9 @@ public class CraftingHelpersCommon implements ICraftingHelpers {
     @Override
     public List<Pair<Identifier, RecipeDisplayEntry>> getRecipeDisplays(RecipeType<?> recipeType, String recipeNameRegex) {
         List<Pair<Identifier, RecipeDisplayEntry>> displays = Lists.newArrayList();
+        Pattern pattern = recipeNameRegex.isEmpty() ? null : Pattern.compile(recipeNameRegex);
         for (Map.Entry<ResourceKey<Recipe<?>>, List<RecipeManager.ServerDisplayInfo>> entry : modHelpers.getMinecraftHelpers().getCurrentServer().overworld().recipeAccess().recipeToDisplay.entrySet()) {
-            if (recipeNameRegex.isEmpty() || entry.getKey().identifier().toString().matches(recipeNameRegex)) {
+            if (pattern == null || pattern.matcher(entry.getKey().identifier().toString()).matches()) {
                 for (RecipeManager.ServerDisplayInfo display : entry.getValue()) {
                     displays.add(Pair.of(display.parent().id().identifier(), display.display()));
                 }

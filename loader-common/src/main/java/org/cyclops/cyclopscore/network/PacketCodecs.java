@@ -2,6 +2,7 @@ package org.cyclops.cyclopscore.network;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import io.netty.handler.codec.DecoderException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -26,6 +27,7 @@ import java.util.*;
 public class PacketCodecs {
 
     public static final int READ_STRING_MAX_LENGTH = 32767;
+    public static final int MAX_LIST_NULL_ELEMENTS = 1024;
 
     private static Map<Class<?>, PacketCodec.ICodecAction> codecActions = Maps.newHashMap();
 
@@ -254,8 +256,8 @@ public class PacketCodecs {
             @Override
             public void encode(Object object, RegistryFriendlyByteBuf output) {
                 Map map = (Map) object;
-                output.writeInt(map.size());
-                Set<Map.Entry> entries = map.entrySet();
+                List<Map.Entry> entries = Lists.newArrayList(map.entrySet());
+                output.writeInt(entries.size());
                 PacketCodec.ICodecAction keyAction = null;
                 PacketCodec.ICodecAction valueAction = null;
                 for(Map.Entry entry : entries) {
@@ -280,16 +282,16 @@ public class PacketCodecs {
                 if(size == 0) {
                     return map;
                 }
-                try {
-                    PacketCodec.ICodecAction keyAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
-                    PacketCodec.ICodecAction valueAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
-                    for(int i = 0; i < size; i++) {
-                        Object key = keyAction.decode(input);
-                        Object value = valueAction.decode(input);
-                        map.put(key, value);
-                    }
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                // Each entry takes at least one byte
+                if(size < 0 || size > input.readableBytes()) {
+                    throw new DecoderException("Invalid map size: " + size);
+                }
+                PacketCodec.ICodecAction keyAction = getActionForClassName(input.readUtf(READ_STRING_MAX_LENGTH));
+                PacketCodec.ICodecAction valueAction = getActionForClassName(input.readUtf(READ_STRING_MAX_LENGTH));
+                for(int i = 0; i < size; i++) {
+                    Object key = keyAction.decode(input);
+                    Object value = valueAction.decode(input);
+                    map.put(key, value);
                 }
                 return map;
             }
@@ -428,38 +430,44 @@ public class PacketCodecs {
             @SuppressWarnings({ "rawtypes", "unchecked" })
             @Override
             public Object decode(RegistryFriendlyByteBuf input) {
-                List list;
                 int size = input.readInt();
                 if(size == 0) {
                     return Collections.emptyList();
-                } else {
-                    list = Lists.newArrayListWithExpectedSize(size);
                 }
-                try {
-                    String className = input.readUtf(READ_STRING_MAX_LENGTH);
-                    if(!className.equals("__noclass")) {
-                        PacketCodec.ICodecAction valueAction = getAction(Class.forName(className));
-                        int i, currentLength = 0;
-                        while((i = input.readInt()) >= 0) {
-                            while(currentLength < i) {
-                                list.add(null);
-                                currentLength++;
-                            }
-                            Object value = valueAction.decode(input);
-                            list.add(value);
-                            currentLength++;
+                // Each non-null element takes at least one byte
+                if(size < 0 || size > input.readableBytes() + MAX_LIST_NULL_ELEMENTS) {
+                    throw new DecoderException("Invalid list size: " + size);
+                }
+                List list = Lists.newArrayListWithExpectedSize(Math.min(size, input.readableBytes()));
+                String className = input.readUtf(READ_STRING_MAX_LENGTH);
+                int nullElements;
+                if(!className.equals("__noclass")) {
+                    PacketCodec.ICodecAction valueAction = getActionForClassName(className);
+                    int i, currentLength = 0;
+                    nullElements = 0;
+                    while((i = input.readInt()) >= 0) {
+                        if(i < currentLength || i >= size) {
+                            throw new DecoderException("Invalid list index: " + i);
                         }
-                        while(currentLength < size) {
+                        nullElements = checkListNullElements(nullElements + (i - currentLength));
+                        while(currentLength < i) {
                             list.add(null);
                             currentLength++;
                         }
-                    } else {
-                        for (int i = 0; i < size; i++) {
-                            list.add(null);
-                        }
+                        Object value = valueAction.decode(input);
+                        list.add(value);
+                        currentLength++;
                     }
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
+                    checkListNullElements(nullElements + (size - currentLength));
+                    while(currentLength < size) {
+                        list.add(null);
+                        currentLength++;
+                    }
+                } else {
+                    checkListNullElements(size);
+                    for (int i = 0; i < size; i++) {
+                        list.add(null);
+                    }
                 }
                 return list;
             }
@@ -477,18 +485,41 @@ public class PacketCodecs {
 
             @Override
             public Object decode(RegistryFriendlyByteBuf input) {
-                try {
-                    PacketCodec.ICodecAction keyAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
-                    PacketCodec.ICodecAction valueAction = getAction(Class.forName(input.readUtf(READ_STRING_MAX_LENGTH)));
-                    Object key = keyAction.decode(input);
-                    Object value = valueAction.decode(input);
-                    return Pair.of(key, value);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                return Pair.of(null, null);
+                PacketCodec.ICodecAction keyAction = getActionForClassName(input.readUtf(READ_STRING_MAX_LENGTH));
+                PacketCodec.ICodecAction valueAction = getActionForClassName(input.readUtf(READ_STRING_MAX_LENGTH));
+                Object key = keyAction.decode(input);
+                Object value = valueAction.decode(input);
+                return Pair.of(key, value);
             }
         });
+    }
+
+    /**
+     * Get the codec action for a class name that was read from a packet.
+     * The class is not initialized, and it must have a codec action.
+     * @param className A class name.
+     * @return The codec action.
+     * @throws DecoderException If the class does not exist or has no codec action.
+     */
+    public static PacketCodec.ICodecAction getActionForClassName(String className) {
+        Class<?> clazz;
+        try {
+            clazz = Class.forName(className, false, PacketCodecs.class.getClassLoader());
+        } catch (ClassNotFoundException | LinkageError e) {
+            throw new DecoderException("Unknown class in packet: " + className, e);
+        }
+        PacketCodec.ICodecAction action = getActionSuper(clazz);
+        if(action == null) {
+            throw new DecoderException("No ICodecAction was found for class in packet: " + className);
+        }
+        return action;
+    }
+
+    protected static int checkListNullElements(int nullElements) {
+        if(nullElements > MAX_LIST_NULL_ELEMENTS) {
+            throw new DecoderException("Too many null elements in list: " + nullElements);
+        }
+        return nullElements;
     }
 
 }

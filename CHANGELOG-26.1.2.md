@@ -1,8 +1,20 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.31.5"></a>
+## [26.1.2-1.31.5](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.4...26.1.2-1.31.5) - 2026-11-15 10:02:47
+
+### Fixed
+* Fix loot registry corruption when mods load in parallel (#263)
+* Fix duplicate packet IDs when mods load in parallel (#262), Closes #258
+* Restrict recipe display regex requests from clients (#261), Closes GHSA-8469-hgvj-5g4r
+* Limit list and map sizes and avoid class init when decoding packets (#260), Closes GHSA-4jfp-83qj-mr8r
+* Improve concurrency robustness of Map packet codec
+  This also adds more detailed error logging for when it fails again.
+  Related to #258
+
 <a name="26.1.2-1.31.4"></a>
-## [26.1.2-1.31.4](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.3...26.1.2-1.31.4) - 2026-10-31 13:33:20
+## [26.1.2-1.31.4](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.3...26.1.2-1.31.4) - 2026-10-31 13:33:20 +0100
 
 ### Fixed
 * Make SingleCache#get thread-safe to fix random crashes (#257), Closes #256
