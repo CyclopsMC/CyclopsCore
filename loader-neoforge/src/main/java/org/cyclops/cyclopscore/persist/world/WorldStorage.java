@@ -9,6 +9,8 @@ import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.cyclops.cyclopscore.init.ModBaseNeoForge;
 
+import javax.annotation.Nullable;
+
 /**
  * Instances of this can store data inside the world NBT.
  *
@@ -34,6 +36,8 @@ public abstract class WorldStorage<T extends WorldStorage> extends SavedData {
 
         private final SavedDataType<T> savedDataType;
         protected final ModBaseNeoForge<?> mod;
+        @Nullable
+        private T transientInstance;
 
         public Access(SavedDataType<T> savedDataType, ModBaseNeoForge<?> mod) {
             this.savedDataType = savedDataType;
@@ -44,8 +48,25 @@ public abstract class WorldStorage<T extends WorldStorage> extends SavedData {
             return server.getLevel(Level.OVERWORLD).getDataStorage().computeIfAbsent(savedDataType);
         }
 
+        /**
+         * Get the data of the currently running server.
+         * If no server is running, such as on a client connected to a remote server,
+         * a transient instance is returned that is not persisted nor synced.
+         * @return The data instance.
+         */
         public T get() {
-            return get(ServerLifecycleHooks.getCurrentServer());
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+            if (server == null) {
+                return getTransientInstance();
+            }
+            return get(server);
+        }
+
+        protected synchronized T getTransientInstance() {
+            if (transientInstance == null) {
+                transientInstance = savedDataType.factory().create(null);
+            }
+            return transientInstance;
         }
 
         /**
