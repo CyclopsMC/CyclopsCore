@@ -1,8 +1,15 @@
 # Changelog for Minecraft 26.1.2
 All notable changes to this project will be documented in this file.
 
+<a name="26.1.2-1.31.6"></a>
+## [26.1.2-1.31.6](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.5...26.1.2-1.31.6) - 2026-11-21 13:32:12
+
+### Fixed
+* Fix crash in AE2 clients when crafting items using WorldStorage (#264), Closes CyclopsMC/IntegratedDynamics#1793
+  This fixes crafting of IntegratedDynamics's Omni-Directional Connectors in AE2.
+
 <a name="26.1.2-1.31.5"></a>
-## [26.1.2-1.31.5](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.4...26.1.2-1.31.5) - 2026-11-15 10:02:47
+## [26.1.2-1.31.5](https://github.com/CyclopsMC/CyclopsCore/compare/26.1.2-1.31.4...26.1.2-1.31.5) - 2026-11-15 10:02:47 +0100
 
 ### Fixed
 * Fix loot registry corruption when mods load in parallel (#263)

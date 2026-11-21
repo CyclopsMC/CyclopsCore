@@ -1,0 +1,5 @@
+As always, don't forget to backup your world before updating!
+
+Fixes:
+* Fix crash in AE2 clients when crafting items using WorldStorage (#264), Closes CyclopsMC/IntegratedDynamics#1793
+  This fixes crafting of IntegratedDynamics's Omni-Directional Connectors in AE2.
